@@ -1,0 +1,141 @@
+/**
+ * SFP Page Config - Sales Page Styles
+ *
+ * Brand colours are injected as CSS custom properties via PHP:
+ *   --brand-cta-bg, --brand-cta-hover, --brand-cta-text,
+ *   --brand-heading-font, --brand-button-weight.
+ *
+ * Branding is centraal vastgesteld per site in sfp-page-config.php.
+ * Per pagina kan alleen de CTA-tekst en -link worden aangepast.
+ */
+
+/* =====================================================================
+ * Sticky CTA bar - only visible on mobile and tablet (max 1024px)
+ * =================================================================== */
+
+.sticky-mobile-cta {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+
+    .sticky-mobile-cta {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        text-align: center;
+        padding: 10px;
+        background: #ffffff;
+        border-radius: 0;
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sticky-mobile-cta.visible {
+        transform: translateY(0);
+    }
+
+    .sticky-mobile-cta a {
+        display: block;
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+        color: var(--brand-cta-text, #ffffff);
+        background: var(--brand-cta-bg, #d22d00);
+        font-family: var(--brand-heading-font, inherit);
+        font-weight: var(--brand-button-weight, 700);
+        font-size: 1.05rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 14px 20px;
+        border-radius: 0;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+    .sticky-mobile-cta a:hover,
+    .sticky-mobile-cta a:focus {
+        color: var(--brand-cta-text, #ffffff);
+        background: var(--brand-cta-hover, #f89b80);
+    }
+
+}
+
+/* =====================================================================
+ * Sales page scoped styles
+ * =================================================================== */
+
+.is-sales-page .wp-block-button .wp-block-button__link {
+    font-family: var(--brand-heading-font, inherit);
+    font-weight: var(--brand-button-weight, 700);
+}
+
+/* Tablet: centre buttons */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .is-sales-page .wp-block-buttons {
+        justify-content: center;
+    }
+}
+
+/* =====================================================================
+ * Hide secondary (outline) buttons on mobile/tablet
+ *
+ * The sticky CTA replaces the secondary button on smaller screens.
+ * Only the hero section keeps its outline button visible.
+ * =================================================================== */
+
+@media (max-width: 1024px) {
+    .is-sales-page .ast-outline-button {
+        display: none !important;
+    }
+    .is-sales-page .sfp-hero-section .ast-outline-button {
+        display: inline-flex !important;
+    }
+}
+
+/* =====================================================================
+ * Hide floating elements on sales pages
+ *
+ * WhatsApp widget and scroll-to-top button are hidden so they don't
+ * overlap with the sticky CTA bar.
+ * =================================================================== */
+
+.is-sales-page .wa__btn_popup,
+.is-sales-page #ast-scroll-top {
+    display: none !important;
+}
+
+/* =====================================================================
+ * Smooth scroll for anchor links
+ * =================================================================== */
+
+.is-sales-page {
+    scroll-behavior: smooth;
+}
+
+/* =====================================================================
+ * Cursusdata shortcode output
+ * =================================================================== */
+
+.cursus-data-wrapper {
+    margin: 0;
+    padding: 0;
+}
+
+.cursus-datum-groep {
+    margin: 0 0 0.35em 0;
+    padding: 0;
+}
+
+.cursus-datum-label {
+    font-weight: 700;
+}
+
+.cursus-datum-groep:last-child {
+    margin-bottom: 0;
+}
