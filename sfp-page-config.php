@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     1.9.6
+ * Version:     1.9.7
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '1.9.6' );
+define( 'SFP_PAGE_CONFIG_VERSION', '1.9.7' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -172,13 +172,27 @@ function sfp_page_config_post_types() {
  * ====================================================================== */
 
 /**
- * Format a date string to Dutch short format (e.g., "di 15 apr").
+ * Format a date string to Dutch.
+ *
+ * Supports two modes:
+ *
+ * 1. Keyword format:
+ *    - 'short' → "di 15 apr"
+ *    - 'long'  → "dinsdag 15 april 2026"
+ *
+ * 2. PHP date format string (e.g. 'l j F Y', 'j F', 'D j F Y'):
+ *    Month names (F, M) and day names (l, D) are replaced with Dutch.
+ *    All other PHP date tokens (j, d, n, m, Y, y, etc.) work as usual.
+ *
+ * Uses the site's timezone via wp_date() so dates rendered near
+ * midnight don't drift on servers set to UTC.
  *
  * @param  string $date_string Date string in Y-m-d or other parseable format.
- * @param  string $format      'short' for "di 15 apr" or 'long' for "dinsdag 15 april 2026".
+ * @param  string $format      'short', 'long', or a PHP date format string.
  * @return string              Formatted date or empty on failure.
  */
 function sfp_page_config_format_date_nl( $date_string, $format = 'short' ) {
+
     $months_short = array(1=>'jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec');
     $months_long  = array(1=>'januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december');
     $days_short   = array('Monday'=>'ma','Tuesday'=>'di','Wednesday'=>'wo','Thursday'=>'do','Friday'=>'vr','Saturday'=>'za','Sunday'=>'zo');
@@ -189,15 +203,66 @@ function sfp_page_config_format_date_nl( $date_string, $format = 'short' ) {
         return '';
     }
 
-    $day_en  = date( 'l', $ts );
-    $month_n = (int) date( 'n', $ts );
-    $day_n   = date( 'j', $ts );
-    $year    = date( 'Y', $ts );
-
+    // Keyword shortcuts (used internally by date-injector, cron, dashboard).
     if ( 'long' === $format ) {
-        return sprintf( '%s %s %s %s', $days_long[ $day_en ] ?? $day_en, $day_n, $months_long[ $month_n ] ?? $month_n, $year );
+        $day_en  = wp_date( 'l', $ts );
+        $month_n = (int) wp_date( 'n', $ts );
+        return sprintf(
+            '%s %s %s %s',
+            $days_long[ $day_en ] ?? $day_en,
+            wp_date( 'j', $ts ),
+            $months_long[ $month_n ] ?? $month_n,
+            wp_date( 'Y', $ts )
+        );
     }
-    return sprintf( '%s %s %s', $days_short[ $day_en ] ?? $day_en, $day_n, $months_short[ $month_n ] ?? $month_n );
+    if ( 'short' === $format ) {
+        $day_en  = wp_date( 'l', $ts );
+        $month_n = (int) wp_date( 'n', $ts );
+        return sprintf(
+            '%s %s %s',
+            $days_short[ $day_en ] ?? $day_en,
+            wp_date( 'j', $ts ),
+            $months_short[ $month_n ] ?? $month_n
+        );
+    }
+
+    // PHP date format string. Render via wp_date() to honour the site
+    // timezone, then substitute English day/month names with Dutch.
+    $formatted = wp_date( $format, $ts );
+    if ( ! $formatted ) {
+        return '';
+    }
+
+    // Replace full names first (to avoid matching inside them).
+    $map = array();
+    foreach ( $days_long as $en => $nl ) {
+        $map[ $en ] = $nl;
+    }
+    // Full month names (January → januari, etc.). wp_date outputs English
+    // when format uses F/M because the Dutch translation only kicks in if
+    // the site locale is nl_NL. We handle both cases safely.
+    $months_en_long = array(
+        'January'=>'januari','February'=>'februari','March'=>'maart','April'=>'april',
+        'May'=>'mei','June'=>'juni','July'=>'juli','August'=>'augustus',
+        'September'=>'september','October'=>'oktober','November'=>'november','December'=>'december',
+    );
+    foreach ( $months_en_long as $en => $nl ) {
+        $map[ $en ] = $nl;
+    }
+
+    // Short names after (D, M).
+    foreach ( $days_short as $en => $nl ) {
+        $map[ substr( $en, 0, 3 ) ] = $nl;
+    }
+    $months_en_short = array(
+        'Jan'=>'jan','Feb'=>'feb','Mar'=>'mrt','Apr'=>'apr','May'=>'mei','Jun'=>'jun',
+        'Jul'=>'jul','Aug'=>'aug','Sep'=>'sep','Oct'=>'okt','Nov'=>'nov','Dec'=>'dec',
+    );
+    foreach ( $months_en_short as $en => $nl ) {
+        $map[ $en ] = $nl;
+    }
+
+    return strtr( $formatted, $map );
 }
 
 /* =========================================================================
@@ -214,12 +279,14 @@ add_filter( 'rocket_delay_js_exclusions', 'sfp_page_config_delay_js_exclusions' 
 function sfp_page_config_delay_js_exclusions( $exclusions ) {
     $exclusions[] = 'sfp-page-config/assets/dropdown';
     $exclusions[] = 'sfp-page-config/assets/sticky-cta';
+    $exclusions[] = 'sfp-page-config/assets/longread-nav';
     // Also exclude the inline config scripts. WP Rocket delays inline
     // <script> tags independently of their associated external scripts.
     // Without these, sfpStickyConfig and sfpCourseData are undefined
     // when the main scripts execute.
     $exclusions[] = 'sfpStickyConfig';
     $exclusions[] = 'sfpCourseData';
+    $exclusions[] = 'sfpPromoConfig';
     return $exclusions;
 }
 

@@ -36,14 +36,30 @@ function sfp_page_config_whatsapp_button() {
         return;
     }
 
-    // Get WhatsApp number from settings with fallback to default.
-    $whatsapp_number = sfp_page_config_get_setting( 'whatsapp_number', '31850601355' );
-    $whatsapp_href = sprintf( 'https://api.whatsapp.com/send/?phone=%s&text=Hoi%%2C+ik+heb+een+vraag&type=phone_number&app_absent=0', esc_attr( $whatsapp_number ) );
+    // Get WhatsApp number + message from settings with sensible fallbacks.
+    $whatsapp_number  = sfp_page_config_get_setting( 'whatsapp_number', '31850601355' );
+    $whatsapp_message = sfp_page_config_get_setting( 'whatsapp_message', 'Hoi, ik heb een vraag' );
+
+    // Only digits in the phone number for the URL.
+    $whatsapp_number = preg_replace( '/[^0-9]/', '', $whatsapp_number );
+
+    $whatsapp_href = add_query_arg(
+        array(
+            'phone'      => $whatsapp_number,
+            'text'       => $whatsapp_message,
+            'type'       => 'phone_number',
+            'app_absent' => '0',
+        ),
+        'https://api.whatsapp.com/send/'
+    );
 
     ?>
 <a href="<?php echo esc_url( $whatsapp_href ); ?>"
-   class="whatsapp-float" id="waButton" target="_blank" rel="noopener noreferrer">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Chat" width="32" height="32">
+   class="whatsapp-float" id="waButton" target="_blank" rel="noopener noreferrer"
+   aria-label="WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
+        <path fill="#ffffff" d="M26.6 5.4C23.8 2.6 20 1 16 1 7.7 1 1 7.7 1 16c0 2.6.7 5.2 2 7.5L1 31l7.7-2c2.2 1.2 4.7 1.9 7.3 1.9 8.3 0 15-6.7 15-15 0-4-1.6-7.8-4.4-10.5zM16 28.4c-2.3 0-4.6-.6-6.6-1.8l-.5-.3-4.6 1.2 1.2-4.5-.3-.5C4 20.4 3.3 18.2 3.3 16c0-7 5.7-12.7 12.7-12.7 3.4 0 6.6 1.3 9 3.7 2.4 2.4 3.7 5.6 3.7 9C28.7 22.7 23 28.4 16 28.4zm7-9.5c-.4-.2-2.3-1.1-2.6-1.2-.3-.1-.6-.2-.9.2-.3.4-1 1.2-1.3 1.5-.2.2-.5.3-.8.1-.4-.2-1.7-.6-3.2-2-1.2-1.1-2-2.4-2.2-2.8-.2-.4 0-.6.2-.8.2-.2.4-.4.6-.7.2-.2.2-.4.3-.6.1-.2 0-.5 0-.7-.1-.2-.9-2.1-1.2-2.9-.3-.8-.6-.7-.9-.7h-.7c-.2 0-.6.1-1 .5s-1.3 1.3-1.3 3.2 1.3 3.7 1.5 3.9c.2.2 2.6 3.9 6.2 5.5.9.4 1.5.6 2.1.8.9.3 1.7.2 2.3.1.7-.1 2.3-.9 2.6-1.8.3-.9.3-1.7.2-1.8 0-.2-.3-.3-.7-.5z"/>
+    </svg>
 </a>
 <style>
 .whatsapp-float {
@@ -75,10 +91,9 @@ function sfp_page_config_whatsapp_button() {
     transform: translateX(-50%) translateY(120px) !important;
     pointer-events: none;
 }
-.whatsapp-float img {
+.whatsapp-float svg {
     width: 32px;
     height: 32px;
-    filter: brightness(0) invert(1);
 }
 @media screen and (max-width: 767px) {
     .whatsapp-float { width: 55px; height: 55px; bottom: 20px; }

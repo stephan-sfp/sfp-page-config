@@ -12,11 +12,16 @@
 
     /* =====================================================================
      * Configuration
+     *
+     * Defaults are overridden by window.sfpPromoConfig, which is injected
+     * from PHP (see includes/body-class.php) with values from the
+     * Instellingen tab.
      * =================================================================== */
 
-    var SCROLL_GATE_PERCENT = 30;
-    var COOLDOWN_HOURS = 24;
-    var STORAGE_PREFIX = 'sfp_promo_';
+    var cfg = window.sfpPromoConfig || {};
+    var SCROLL_GATE_PERCENT = typeof cfg.scrollGate === 'number' ? cfg.scrollGate : 30;
+    var COOLDOWN_HOURS      = typeof cfg.cooldownHours === 'number' ? cfg.cooldownHours : 24;
+    var STORAGE_PREFIX      = 'sfp_promo_';
 
     /* =====================================================================
      * Helpers

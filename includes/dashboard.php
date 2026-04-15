@@ -769,7 +769,7 @@ function sfp_page_config_ajax_save() {
     }
 
     // Update legacy 'startdatum' field with next upcoming date.
-    $today   = current_time( 'Y-m-d' );
+    $today   = wp_date( 'Y-m-d' );
     $closest = null;
     foreach ( $clean as $sm ) {
         foreach ( $sm['data'] as $d ) {
@@ -785,10 +785,18 @@ function sfp_page_config_ajax_save() {
         delete_post_meta( $post_id, 'startdatum' );
     }
 
+    // Invalidate the dashboard transient so the Cursusdata tab reflects
+    // the change immediately on next load (instead of waiting up to 6h).
+    delete_transient( 'sfp_dashboard_pages' );
+
+    // Reset the cron notification state for this training. The cron
+    // handler listens for this action (see includes/cron.php).
+    do_action( 'sfp_page_config_cursusdata_updated', $post_id );
+
     wp_send_json_success( array(
         'clean'         => $clean,
         'cursusdata'    => $clean,
-        'eerstvolgende' => $closest ? date_i18n( 'j M Y', strtotime( $closest ) ) : '-',
+        'eerstvolgende' => $closest ? sfp_page_config_format_date_nl( $closest, 'short' ) : '-',
     ) );
 }
 

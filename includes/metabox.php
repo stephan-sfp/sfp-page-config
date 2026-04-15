@@ -194,18 +194,45 @@ function sfp_page_config_render_metabox( $post ) {
     })();
     </script>
 
-    <!-- Longread toggle -->
-    <div class="sfp-mb-field">
-        <label>
-            <input
-                type="checkbox"
-                name="sfp_longread"
-                value="1"
-                <?php checked( $longread, '1' ); ?>
-            />
-            Longread activeren (navigatie + leestijd + voortgangsbalk)
-        </label>
-    </div>
+    <?php
+    /* =====================================================================
+     * Longread navigation toggle
+     *
+     * Only applicable on:
+     *  - Blog posts
+     *  - Pages tagged "pijler"
+     *
+     * On sales pages (paginatype set), the toggle has no effect because
+     * sfp_page_config_is_longread() always returns false there. We still
+     * show the checkbox state read-only if a legacy value is stored, so
+     * the editor can see it exists, but we disable interaction.
+     *
+     * Reading time and scroll progress bar are now sitewide and no longer
+     * controlled here. See reading-time.php.
+     * =================================================================== */
+    $is_post         = ( 'post' === $post->post_type );
+    $is_pijler_page  = false;
+    if ( ! $is_post && 'page' === $post->post_type ) {
+        $lr_terms       = wp_get_object_terms( $post->ID, 'post_tag', array( 'fields' => 'slugs' ) );
+        $is_pijler_page = ! is_wp_error( $lr_terms ) && in_array( 'pijler', (array) $lr_terms, true );
+    }
+    $longread_available = $is_post || $is_pijler_page;
+    ?>
+    <?php if ( $longread_available ) : ?>
+        <hr class="sfp-mb-separator" />
+        <div class="sfp-mb-field">
+            <label>
+                <input
+                    type="checkbox"
+                    name="sfp_longread"
+                    value="1"
+                    <?php checked( $longread, '1' ); ?>
+                />
+                Longread-navigatie activeren
+            </label>
+            <span class="sfp-mb-note">Inhoudsopgave op desktop, hoofdstukbalk op mobiel. Alleen op blogposts en pijlerpagina's.</span>
+        </div>
+    <?php endif; ?>
 
     <!-- WhatsApp button toggle -->
     <?php $whatsapp = get_post_meta( $post->ID, 'sfp_whatsapp', true ); ?>
