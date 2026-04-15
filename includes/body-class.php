@@ -137,4 +137,16 @@ function sfp_page_config_enqueue_sales_assets() {
         SFP_PAGE_CONFIG_VERSION,
         true
     );
+
+    // Pass configurable thresholds to the promo script. Values come from
+    // the Instellingen tab; the sanitizer clamps them to sane ranges.
+    $promo_config = array(
+        'scrollGate'    => (int) sfp_page_config_get_setting( 'promo_scroll_gate', 30 ),
+        'cooldownHours' => (int) sfp_page_config_get_setting( 'promo_cooldown_hours', 24 ),
+    );
+    wp_add_inline_script(
+        'sfp-page-config-promo',
+        'window.sfpPromoConfig=' . wp_json_encode( $promo_config ) . ';',
+        'before'
+    );
 }

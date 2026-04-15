@@ -30,7 +30,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function sfp_page_config_calculate_reading_time( $content ) {
 
-    $words_per_minute = 250;
+    // Read from settings (default 250). Clamped between 100 and 500 by
+    // the sanitizer, so no need to re-validate here.
+    $words_per_minute = (int) sfp_page_config_get_setting( 'words_per_minute', 250 );
+    if ( $words_per_minute < 100 ) {
+        $words_per_minute = 250;
+    }
 
     $readable_blocks = array(
         'core/paragraph',
@@ -126,9 +131,11 @@ function sfp_page_config_shortcode_reading_time() {
 add_action( 'wp_footer', 'sfp_page_config_scroll_progress_bar', 25 );
 
 /**
- * Render the scroll progress bar container and its JS driver.
+ * Render the scroll progress bar container, its styles, and its JS driver.
  *
- * Only outputs on singular longread pages.
+ * Sitewide on all singular posts and pages (not gated by the longread
+ * toggle anymore). Uses a brand-coloured bar with requestAnimationFrame
+ * throttling. Brand colour comes from the site config (CTA background).
  */
 function sfp_page_config_scroll_progress_bar() {
 
@@ -136,20 +143,52 @@ function sfp_page_config_scroll_progress_bar() {
         return;
     }
 
-    if ( ! function_exists( 'sfp_page_config_is_longread' ) || ! sfp_page_config_is_longread() ) {
-        return;
-    }
+    $brand = sfp_page_config_get_brand();
+    $bar_color = isset( $brand['cta_bg'] ) ? sanitize_hex_color( $brand['cta_bg'] ) : '#d22d00';
 
     ?>
-    <div id="custom-scroll-container"><div id="custom-scroll-bar"></div></div>
+    <style>
+    #sfp-scroll-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: transparent;
+        z-index: 9995;
+        pointer-events: none;
+    }
+    #sfp-scroll-bar {
+        height: 100%;
+        width: 0;
+        background: <?php echo esc_attr( $bar_color ); ?>;
+        transition: width 0.08s linear;
+    }
+    </style>
+    <div id="sfp-scroll-container" aria-hidden="true"><div id="sfp-scroll-bar"></div></div>
     <script>
-    window.addEventListener('scroll', function () {
-        var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        var height    = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        var scrolled  = (winScroll / height) * 100;
-        var bar       = document.getElementById('custom-scroll-bar');
-        if (bar) { bar.style.width = scrolled + '%'; }
-    });
+    (function () {
+        var bar = document.getElementById('sfp-scroll-bar');
+        if (!bar) return;
+        var ticking = false;
+        function update() {
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            if (height <= 0) return;
+            var pct = (scrollTop / height) * 100;
+            if (pct < 0) pct = 0;
+            if (pct > 100) pct = 100;
+            bar.style.width = pct + '%';
+            ticking = false;
+        }
+        window.addEventListener('scroll', function () {
+            if (!ticking) {
+                window.requestAnimationFrame(update);
+                ticking = true;
+            }
+        }, { passive: true });
+        update();
+    })();
     </script>
     <?php
 }

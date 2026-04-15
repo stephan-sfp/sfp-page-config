@@ -16,6 +16,31 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Enqueue the nav JS on the standard enqueue hook. Previously the script
+// was registered during wp_footer, which races with wp_print_footer_scripts
+// (both at priority 20) and caused the nav to silently disappear on some
+// pages. Enqueuing on wp_enqueue_scripts is the standard, reliable place.
+add_action( 'wp_enqueue_scripts', 'sfp_page_config_longread_nav_enqueue' );
+
+function sfp_page_config_longread_nav_enqueue() {
+
+    if ( ! is_singular( sfp_page_config_post_types() ) ) {
+        return;
+    }
+
+    if ( ! function_exists( 'sfp_page_config_is_longread' ) || ! sfp_page_config_is_longread() ) {
+        return;
+    }
+
+    wp_enqueue_script(
+        'sfp-longread-nav',
+        SFP_PAGE_CONFIG_URL . 'assets/longread-nav.js',
+        array(),
+        SFP_PAGE_CONFIG_VERSION,
+        true
+    );
+}
+
 add_action( 'wp_footer', 'sfp_page_config_longread_nav_output', 20 );
 
 /**
@@ -40,6 +65,11 @@ function sfp_page_config_longread_nav_output() {
     $lr_sidebar_text = isset( $brand['lr_sidebar_text'] ) ? $brand['lr_sidebar_text'] : '#333333';
     $lr_sidebar_muted= isset( $brand['lr_sidebar_muted'] )? $brand['lr_sidebar_muted']: '#cccccc';
     $heading_font    = isset( $brand['font'] )            ? $brand['font']            : "'Nunito', sans-serif";
+
+    // Strip characters that could break out of the CSS value context.
+    // esc_attr() turns quotes into HTML entities (invalid in CSS), so
+    // we use a whitelist instead. Same pattern as body-class.php.
+    $safe_font = preg_replace( '/[^a-zA-Z0-9\s\'",\-]/', '', $heading_font );
     ?>
 
 <div id="sfp-lr-nav" aria-label="Artikelnavigatie">
@@ -94,7 +124,7 @@ function sfp_page_config_longread_nav_output() {
     --lr-bar-text: <?php echo esc_attr( $lr_bar_text ); ?>;
     --lr-sidebar-text: <?php echo esc_attr( $lr_sidebar_text ); ?>;
     --lr-sidebar-muted: <?php echo esc_attr( $lr_sidebar_muted ); ?>;
-    --lr-heading-font: <?php echo $heading_font; ?>;
+    --lr-heading-font: <?php echo $safe_font; ?>;
     --lr-sticky-offset: 120px;
 }
 
@@ -352,14 +382,5 @@ function sfp_page_config_longread_nav_output() {
 </style>
 
 <?php
-// Enqueue the external longread-nav JavaScript file
-wp_enqueue_script(
-    'sfp-longread-nav',
-    SFP_PAGE_CONFIG_URL . 'assets/longread-nav.js',
-    array(),
-    SFP_PAGE_CONFIG_VERSION,
-    true
-);
-?>
-<?php
+    // Note: the script is enqueued earlier via wp_enqueue_scripts.
 }

@@ -94,8 +94,13 @@ class SFP_Page_Config_Updater {
         );
 
         $response = wp_remote_get( $url, array(
+            'timeout' => 15,
             'headers' => array(
-                'Accept' => 'application/vnd.github.v3+json',
+                'Accept'     => 'application/vnd.github.v3+json',
+                // GitHub's API requires a User-Agent. Without it the
+                // response is 403. Using the plugin slug + version makes
+                // the request identifiable in rate-limit diagnostics.
+                'User-Agent' => 'SFP-Page-Config/' . $this->plugin_version . ' (+https://schoolforprofessionals.com)',
             ),
         ) );
 
