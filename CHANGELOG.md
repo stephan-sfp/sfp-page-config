@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [1.9.8] - 2026-04-16
+
+### Gerepareerd
+
+- **Longread-navigatie crashte op `Uncaught TypeError: Cannot read properties of null (reading 'appendChild')` in `longread-nav.js`.** Regressie geintroduceerd in 1.9.7: door de enqueue naar `wp_enqueue_scripts` te verplaatsen, werd het script door `wp_print_footer_scripts` geprint vóór de HTML-output van de plugin (beide op `wp_footer` priority 20, core-hook gaat eerst). Het script zocht daardoor DOM-elementen die nog niet bestonden en viel om op de eerste `appendChild`. De initialisatie wordt nu uitgesteld tot `DOMContentLoaded`, waarmee de order van printen niet meer uitmaakt. De scrollbar en leestijd waren niet geraakt (apart script).
+
 ## [1.9.7] - 2026-04-15
 
 ### Gerepareerd

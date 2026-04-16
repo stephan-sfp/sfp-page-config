@@ -1,5 +1,7 @@
 (function () {
     'use strict';
+
+    function init() {
     if (!document.body.classList.contains('is-longread')) return;
 
     var BREAKPOINT = 1024;
@@ -327,4 +329,16 @@
     setTimeout(applyLayout, 300);
     setTimeout(applyLayout, 1000);
     window.addEventListener('load', applyLayout);
+    }
+
+    // Wait for the DOM to be ready before looking up elements.
+    // The longread HTML is printed on wp_footer priority 20, which can
+    // happen AFTER wp_print_footer_scripts (same priority). Without this
+    // guard, document.getElementById(...) calls would return null and
+    // the sidebar/bar would silently fail to render.
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();
