@@ -137,15 +137,50 @@
             if (nextH2 && h === nextH2) { inSection = false; return; }
             if (inSection && h.tagName === 'H3') items.push(h);
         });
-        items.forEach(function (h) {
+
+        /* Spectra FAQ accordion support: if the active H2 section has
+         * no H3 sub-headings, check for a Spectra FAQ block
+         * (.wp-block-uagb-faq) inside the content. FAQ questions live
+         * in <span class="uagb-question"> instead of H3 tags, so
+         * buildDrawer() would otherwise produce an empty drawer. */
+        var isFaqSection = items.length === 0;
+        if (isFaqSection) {
+            var faqBlock = content.querySelector('.wp-block-uagb-faq');
+            if (faqBlock) {
+                var faqItems = faqBlock.querySelectorAll('.uagb-faq-child__outer-wrap');
+                faqItems.forEach(function (wrap, i) {
+                    var q = wrap.querySelector('.uagb-question');
+                    if (!q) return;
+                    if (!wrap.id) wrap.id = 'lr-faq-' + i;
+                    items.push({ el: wrap, text: q.textContent.trim(), isFaq: true });
+                });
+            }
+        }
+
+        items.forEach(function (item) {
+            var isFaq = item.isFaq === true;
+            var el    = isFaq ? item.el : item;
+            var text  = isFaq ? item.text : item.textContent;
+            var id    = el.id || '';
+
             var a = document.createElement('a');
-            a.href = '#' + h.id;
-            a.className = 'sfp-lr-drawer__item' + (h === allHeadings[activeAllIndex] ? ' is-active' : '');
-            a.textContent = h.textContent;
+            a.href = '#' + id;
+            a.className = 'sfp-lr-drawer__item';
+            if (!isFaq && el === allHeadings[activeAllIndex]) {
+                a.classList.add('is-active');
+            }
+            a.textContent = text;
             a.addEventListener('click', function (e) {
                 e.preventDefault();
                 closeDrawer();
-                scrollToHeading(h);
+                scrollToHeading(el);
+                /* For FAQ items, open the accordion if it is collapsed. */
+                if (isFaq) {
+                    var btn = el.querySelector('.uagb-faq-questions-button');
+                    if (btn && el.getAttribute('aria-expanded') !== 'true') {
+                        setTimeout(function () { btn.click(); }, 400);
+                    }
+                }
             });
             drawer.appendChild(a);
         });
@@ -225,10 +260,15 @@
         var gap      = 36;
         var ref      = null;
 
+        /* Pick the WIDEST Spectra container that is narrower than the
+         * viewport. Previous code picked the first match, which on pages
+         * with multi-column layouts could be a narrow sub-column, causing
+         * sidebarHasRoom to be true on tablets where it shouldn't be. */
         var candidates = document.querySelectorAll('.uagb-container-inner-blocks-wrap');
+        var maxW = 0;
         for (var i = 0; i < candidates.length; i++) {
             var w = candidates[i].offsetWidth;
-            if (w > 0 && w < window.innerWidth - 100) { ref = candidates[i]; break; }
+            if (w > maxW && w < window.innerWidth - 100) { ref = candidates[i]; maxW = w; }
         }
         if (!ref) ref = document.querySelector('.ast-container') || content;
 

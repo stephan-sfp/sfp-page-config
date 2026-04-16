@@ -16,6 +16,30 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Inject viewport-fit=cover as an early inline script in <head> so that
+// env(safe-area-inset-bottom) returns the correct value when the longread
+// CSS is parsed. The JS-only approach in longread-nav.js (kept as fallback)
+// runs too late: by the time the footer CSS is parsed, the viewport meta
+// has already been evaluated without viewport-fit, causing env() to return 0
+// and leaving a visible gap between the bar and the screen edge on iPhones.
+add_action( 'wp_head', 'sfp_page_config_longread_viewport_fit', 3 );
+
+function sfp_page_config_longread_viewport_fit() {
+    if ( ! is_singular( sfp_page_config_post_types() ) ) {
+        return;
+    }
+    if ( ! function_exists( 'sfp_page_config_is_longread' ) || ! sfp_page_config_is_longread() ) {
+        return;
+    }
+    // Synchronous inline script: runs before any subsequent CSS is parsed,
+    // so env(safe-area-inset-bottom) will resolve correctly in the footer.
+    echo '<script id="sfp-viewport-fit">'
+        . '(function(){var m=document.querySelector("meta[name=viewport]");'
+        . 'if(m&&m.content.indexOf("viewport-fit")===-1){m.content+=", viewport-fit=cover";}'
+        . '})();'
+        . "</script>\n";
+}
+
 // Enqueue the nav JS on the standard enqueue hook. Previously the script
 // was registered during wp_footer, which races with wp_print_footer_scripts
 // (both at priority 20) and caused the nav to silently disappear on some
@@ -102,8 +126,9 @@ function sfp_page_config_longread_nav_output() {
         </button>
         <div class="sfp-lr-bar__chapter" id="sfp-lr-chapter-wrap" role="button" aria-expanded="false" tabindex="0">
             <span id="sfp-lr-chapter-label"></span>
-            <svg class="sfp-lr-bar__chevron" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M3 10l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg class="sfp-lr-bar__toggle" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line class="sfp-lr-bar__toggle-v" x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
         </div>
         <button class="sfp-lr-bar__btn" id="sfp-lr-next" aria-label="Volgend hoofdstuk">
@@ -229,12 +254,16 @@ function sfp_page_config_longread_nav_output() {
     justify-content: flex-start !important;
     gap: 6px !important;
 }
-.sfp-lr-bar__chevron {
+.sfp-lr-bar__toggle {
     flex-shrink: 0 !important;
-    transition: transform 0.2s !important;
 }
-.sfp-lr-bar.drawer-open .sfp-lr-bar__chevron {
-    transform: rotate(180deg) !important;
+.sfp-lr-bar__toggle-v {
+    transition: transform 0.2s ease, opacity 0.2s ease !important;
+    transform-origin: center !important;
+}
+.sfp-lr-bar.drawer-open .sfp-lr-bar__toggle-v {
+    transform: rotate(90deg) !important;
+    opacity: 0 !important;
 }
 
 /* Drawer (mobile sub-chapters) */

@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.2.0] - 2026-04-16
+
+### Toegevoegd
+
+- **Spectra FAQ-accordion in de drawer.** Wanneer het actieve H2-hoofdstuk geen H3-subhoofdstukken bevat maar wel een Spectra FAQ-blok (`wp-block-uagb-faq`), toont de drawer nu de FAQ-vragen als navigeerbare items. Bij klikken scrollt de pagina naar de vraag en opent het accordion automatisch als het gesloten was.
+- **Server-side `viewport-fit=cover` injectie.** Inline script in `wp_head` dat het viewport meta-element patcht voordat de longread CSS geparsed wordt. Voorheen deed alleen de JS in longread-nav.js dit, maar dat was te laat: `env(safe-area-inset-bottom)` was al als 0 verwerkt, waardoor er op iPhones een gap zat tussen de balk en de onderkant van het scherm.
+
+### Gewijzigd
+
+- **Drawer-icoon: chevron vervangen door plus/min.** Het omhoog-pijltje naast de hoofdstuknaam was visueel identiek aan de naar-boven-knop. Vervangen door een plus-icoon dat animeert naar een min-streepje wanneer de drawer open is.
+- **Tablet-fix: breedste Spectra-container selecteren.** `positionSidebar()` pakte voorheen de eerste `.uagb-container-inner-blocks-wrap` die smaller was dan het scherm. Op pagina's met multi-kolom-layouts kon dit een smalle sub-kolom zijn, waardoor de sidebar onterecht "paste" en de balk verborgen werd. Nu wordt de breedste container gebruikt.
+
 ## [2.1.0] - 2026-04-16
 
 ### Toegevoegd
