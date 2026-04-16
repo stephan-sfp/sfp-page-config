@@ -56,13 +56,6 @@ function sfp_page_config_register_affiliate_meta() {
  */
 function sfp_page_config_get_affiliate_layout_id() {
 
-    // Highest priority: value set in the Instellingen tab. This lets each
-    // site override the hardcoded default without a plugin release.
-    $override = (int) sfp_page_config_get_setting( 'affiliate_layout_id', 0 );
-    if ( $override > 0 ) {
-        return $override;
-    }
-
     $domain = wp_parse_url( home_url(), PHP_URL_HOST );
 
     $layouts = array(

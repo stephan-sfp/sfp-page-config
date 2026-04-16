@@ -143,13 +143,28 @@ function sfp_page_config_longread_nav_output() {
     }
 }
 
-/* === Bottom bar (mobile) === */
+/* === Bottom bar (mobile) ===
+ *
+ * Total bar height = 54px content row + env(safe-area-inset-bottom).
+ * The safe-area value is 0 on Android and non-iOS browsers; on iPhones
+ * with a home indicator it typically ranges from 20px to 34px.
+ *
+ * The bar is anchored to bottom: 0 and its background extends across
+ * the full height including the safe area, so the bar always sits
+ * flush against the physical bottom of the screen. Padding-bottom
+ * offsets the button row so the buttons themselves stay above the
+ * home indicator.
+ *
+ * viewport-fit=cover is added to the viewport meta by the JS init so
+ * env(safe-area-inset-bottom) actually returns non-zero on iOS; without
+ * it Safari ignores the variable and reports 0.
+ */
 .sfp-lr-bar {
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: 54px !important;
+    height: calc(54px + env(safe-area-inset-bottom, 0)) !important;
     padding-bottom: env(safe-area-inset-bottom, 0) !important;
     display: none !important;
     align-items: center !important;
@@ -160,19 +175,12 @@ function sfp_page_config_longread_nav_output() {
     padding-left: 4px !important;
     padding-right: 4px !important;
     box-sizing: border-box !important;
+    /* Force own compositing layer so iOS Safari does not shift the
+     * bar while the address bar hides/shows during scroll. */
+    transform: translateZ(0) !important;
+    will-change: transform !important;
 }
 .sfp-lr-bar.is-visible { display: flex !important; }
-
-/* iOS home indicator gap */
-.sfp-lr-bar::after {
-    content: '' !important;
-    position: absolute !important;
-    bottom: -40px !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: 40px !important;
-    background: var(--lr-bar-bg) !important;
-}
 
 .sfp-lr-bar__btn {
     background: none !important;
@@ -228,7 +236,9 @@ function sfp_page_config_longread_nav_output() {
 /* Drawer (mobile sub-chapters) */
 .sfp-lr-drawer {
     position: absolute !important;
-    bottom: 54px !important;
+    /* Drawer's bottom edge must align with the bar's top edge, which
+     * sits at (54px + safe-area) above the viewport bottom. */
+    bottom: calc(54px + env(safe-area-inset-bottom, 0)) !important;
     left: 0 !important;
     right: 0 !important;
     background: #F7FCFE !important;
@@ -238,10 +248,11 @@ function sfp_page_config_longread_nav_output() {
     -webkit-overflow-scrolling: touch !important;
     overscroll-behavior: contain !important;
 }
-/* When open, cap the drawer at 70% of the viewport minus the bar height,
- * and enable vertical scrolling so long TOCs (>7-8 H3s) are reachable. */
+/* When open, cap the drawer at 70% of the viewport minus the bar height
+ * (including safe-area), and enable vertical scrolling so long TOCs
+ * (>7-8 H3s) are reachable. */
 .sfp-lr-bar.drawer-open .sfp-lr-drawer {
-    max-height: calc(70vh - 54px) !important;
+    max-height: calc(70vh - 54px - env(safe-area-inset-bottom, 0)) !important;
     overflow-y: auto !important;
 }
 .sfp-lr-drawer__item {
@@ -260,9 +271,13 @@ function sfp_page_config_longread_nav_output() {
 .sfp-lr-drawer__item.is-active { color: var(--lr-brand) !important; }
 .sfp-lr-drawer__item:active { background: rgba(0,0,0,0.05) !important; }
 
-/* Extra bottom padding so content is not hidden behind bar */
+/* Extra bottom padding so content is not hidden behind bar.
+ * Add safe-area so the last line of text clears the home indicator
+ * as well as the 54px bar. */
 .is-longread .site-content,
-.is-longread article { padding-bottom: 60px !important; }
+.is-longread article {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0)) !important;
+}
 
 /* === Sidebar TOC (desktop) === */
 .sfp-lr-sidebar {
@@ -380,11 +395,14 @@ function sfp_page_config_longread_nav_output() {
     font-weight: 700 !important;
 }
 
-/* Desktop: hide bar, reset padding */
+/* Desktop: only hide the bar when the sidebar actually has room. The JS
+ * adds .sfp-lr-has-sidebar to <body> in that case. Without that class we
+ * fall back to the mobile bar (e.g. on tablets in landscape or narrow
+ * desktops) because the sidebar cannot be positioned there. */
 @media (min-width: 1024px) {
-    .sfp-lr-bar { display: none !important; }
-    .is-longread .site-content,
-    .is-longread article { padding-bottom: 0 !important; }
+    .is-longread.sfp-lr-has-sidebar .sfp-lr-bar { display: none !important; }
+    .is-longread.sfp-lr-has-sidebar .site-content,
+    .is-longread.sfp-lr-has-sidebar article { padding-bottom: 0 !important; }
 }
 </style>
 

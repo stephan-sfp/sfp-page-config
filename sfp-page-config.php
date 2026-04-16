@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     1.9.9
+ * Version:     1.9.10
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '1.9.9' );
+define( 'SFP_PAGE_CONFIG_VERSION', '1.9.10' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -59,10 +59,10 @@ function sfp_page_config_get_brand() {
             'cta_hover' => '#fd7257',
             'font'      => "'Rubik', sans-serif",
             'weight'    => '900',
-            'lr_brand'        => '#1a1a2e',
+            'lr_brand'        => '#fc5130',
             'lr_bar_bg'       => '#fc5130',
             'lr_bar_text'     => '#ffffff',
-            'lr_sidebar_text' => '#1a1a2e',
+            'lr_sidebar_text' => '#333333',
             'lr_sidebar_muted'=> '#cccccc',
         ),
         'depresenteerschool.nl' => array(
@@ -81,10 +81,10 @@ function sfp_page_config_get_brand() {
             'cta_hover' => '#ff625f',
             'font'      => "'Nunito', sans-serif",
             'weight'    => '900',
-            'lr_brand'        => '#1a1a2e',
+            'lr_brand'        => '#ff3c38',
             'lr_bar_bg'       => '#ff3c38',
             'lr_bar_text'     => '#ffffff',
-            'lr_sidebar_text' => '#1a1a2e',
+            'lr_sidebar_text' => '#333333',
             'lr_sidebar_muted'=> '#cccccc',
         ),
         'deschrijftrainers.nl' => array(
@@ -92,10 +92,10 @@ function sfp_page_config_get_brand() {
             'cta_hover' => '#ffb857',
             'font'      => "'Rubik', sans-serif",
             'weight'    => '900',
-            'lr_brand'        => '#1a1a2e',
+            'lr_brand'        => '#ff9f1c',
             'lr_bar_bg'       => '#ff9f1c',
             'lr_bar_text'     => '#ffffff',
-            'lr_sidebar_text' => '#1a1a2e',
+            'lr_sidebar_text' => '#333333',
             'lr_sidebar_muted'=> '#cccccc',
         ),
     );

@@ -7,6 +7,22 @@
     var BREAKPOINT = 1024;
     var SCROLL_OFFSET = 90;
 
+    /* Ensure viewport-fit=cover is active so iOS Safari reports a
+     * non-zero env(safe-area-inset-bottom). Without this the mobile
+     * bar's background does not extend into the home indicator area
+     * and a visible gap appears between the bar and the bottom edge
+     * of the screen. Most themes (Astra included) ship a viewport
+     * meta without viewport-fit, so we patch it here. */
+    var vp = document.querySelector('meta[name="viewport"]');
+    if (vp && vp.content.indexOf('viewport-fit') === -1) {
+        vp.content = vp.content.replace(/\s*,?\s*$/, '') + ', viewport-fit=cover';
+    } else if (!vp) {
+        vp = document.createElement('meta');
+        vp.name = 'viewport';
+        vp.content = 'width=device-width, initial-scale=1, viewport-fit=cover';
+        document.head.appendChild(vp);
+    }
+
     var content = document.querySelector('.entry-content')
         || document.querySelector('main')
         || document.querySelector('.site-content');
@@ -271,15 +287,24 @@
     function applyLayout() {
         var isDesktop = window.innerWidth >= BREAKPOINT;
         if (isDesktop) {
-            bar.classList.remove('is-visible');
             positionSidebar();
             if (!sidebarHasRoom) {
+                /* Tablet/narrow-desktop fallback: no room for the sidebar,
+                 * so keep the mobile bar available. Without this branch,
+                 * pages between roughly 768px and 1100px (tablets in
+                 * landscape, narrow laptops) ended up with no navigation
+                 * at all. The body class flips so CSS can match. */
+                document.body.classList.remove('sfp-lr-has-sidebar');
                 sidebar.style.display = 'none';
                 sidebarVisible = false;
+                bar.classList.toggle('is-visible', isPastHero() && !isAtRealFooter());
             } else {
+                document.body.classList.add('sfp-lr-has-sidebar');
+                bar.classList.remove('is-visible');
                 updateSidebarVisibility();
             }
         } else {
+            document.body.classList.remove('sfp-lr-has-sidebar');
             sidebar.style.display = 'none';
             sidebar.classList.remove('is-visible');
             sidebarVisible = false;
@@ -293,11 +318,17 @@
         window.scrollBy({ top: e.deltaY, behavior: 'auto' });
     }, { passive: false });
 
-    /* Scroll listener */
+    /* Scroll listener
+     *
+     * The sidebar is only used when it is shown on desktop AND has
+     * room next to the content. In every other case (mobile, tablet,
+     * narrow desktop without margins) the mobile bar + drawer takes
+     * over. That mirrors the fallback inside applyLayout(). */
     window.addEventListener('scroll', function () {
         var prevH2 = activeH2Index;
         syncActiveStates();
-        if (window.innerWidth >= BREAKPOINT) {
+        var useSidebar = window.innerWidth >= BREAKPOINT && sidebarHasRoom;
+        if (useSidebar) {
             updateSidebarVisibility();
             if (sidebarVisible) updateSidebarTop();
         } else {
