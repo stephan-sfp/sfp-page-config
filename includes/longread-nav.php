@@ -88,8 +88,10 @@ function sfp_page_config_longread_nav_output() {
     $lr_bar_text     = isset( $brand['lr_bar_text'] )      ? $brand['lr_bar_text']      : '#ffffff';
     $lr_drawer_bg    = isset( $brand['lr_drawer_bg'] )     ? $brand['lr_drawer_bg']     : '#F7FCFE';
     $lr_drawer_text  = isset( $brand['lr_drawer_text'] )   ? $brand['lr_drawer_text']   : $lr_bar_bg;
-    $lr_sidebar_text = isset( $brand['lr_sidebar_text'] )  ? $brand['lr_sidebar_text']  : '#333333';
-    $lr_sidebar_muted= isset( $brand['lr_sidebar_muted'] ) ? $brand['lr_sidebar_muted'] : '#cccccc';
+    $lr_sidebar_text  = isset( $brand['lr_sidebar_text'] )   ? $brand['lr_sidebar_text']   : '#333333';
+    $lr_sidebar_muted = isset( $brand['lr_sidebar_muted'] )  ? $brand['lr_sidebar_muted']  : '#cccccc';
+    $lr_sidebar_active= isset( $brand['lr_sidebar_active'] ) ? $brand['lr_sidebar_active'] : $lr_bar_bg;
+    $lr_sidebar_h3    = isset( $brand['lr_sidebar_h3'] )     ? $brand['lr_sidebar_h3']     : '#575757';
     $heading_font    = isset( $brand['font'] )            ? $brand['font']            : "'Nunito', sans-serif";
 
     // Strip characters that could break out of the CSS value context.
@@ -153,6 +155,8 @@ function sfp_page_config_longread_nav_output() {
     --lr-drawer-text: <?php echo esc_attr( $lr_drawer_text ); ?>;
     --lr-sidebar-text: <?php echo esc_attr( $lr_sidebar_text ); ?>;
     --lr-sidebar-muted: <?php echo esc_attr( $lr_sidebar_muted ); ?>;
+    --lr-sidebar-active: <?php echo esc_attr( $lr_sidebar_active ); ?>;
+    --lr-sidebar-h3: <?php echo esc_attr( $lr_sidebar_h3 ); ?>;
     --lr-heading-font: <?php echo $safe_font; ?>;
     --lr-sticky-offset: 120px;
 }
@@ -399,12 +403,12 @@ function sfp_page_config_longread_nav_output() {
     word-break: break-word !important;
 }
 .sfp-lr-toc__link:hover {
-    color: var(--lr-bar-bg) !important;
+    color: var(--lr-sidebar-active) !important;
     border-left-color: var(--lr-sidebar-muted) !important;
 }
 .sfp-lr-toc__link.is-active {
-    color: var(--lr-bar-bg) !important;
-    border-left-color: var(--lr-bar-bg) !important;
+    color: var(--lr-sidebar-active) !important;
+    border-left-color: var(--lr-sidebar-active) !important;
     font-weight: 700 !important;
 }
 
@@ -416,15 +420,15 @@ function sfp_page_config_longread_nav_output() {
     font-weight: 400 !important;
     text-transform: none !important;
     letter-spacing: 0 !important;
-    color: #575757 !important;
+    color: var(--lr-sidebar-h3) !important;
 }
 .sfp-lr-toc__item--h3 .sfp-lr-toc__link:hover {
-    color: var(--lr-bar-bg) !important;
+    color: var(--lr-sidebar-active) !important;
     border-left-color: var(--lr-sidebar-muted) !important;
 }
 .sfp-lr-toc__item--h3 .sfp-lr-toc__link.is-active {
-    color: var(--lr-bar-bg) !important;
-    border-left-color: var(--lr-bar-bg) !important;
+    color: var(--lr-sidebar-active) !important;
+    border-left-color: var(--lr-sidebar-active) !important;
     font-weight: 700 !important;
 }
 

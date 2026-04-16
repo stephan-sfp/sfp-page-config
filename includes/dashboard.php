@@ -86,7 +86,7 @@ function sfp_page_config_sanitize_settings( $input ) {
     // An empty value is allowed: it means "fall back to the domain default"
     // in sfp_page_config_get_brand(). Invalid values are stored as empty
     // so they also fall back safely.
-    foreach ( array( 'lr_brand', 'lr_bar_bg', 'lr_bar_text', 'lr_drawer_bg', 'lr_drawer_text', 'lr_sidebar_text', 'lr_sidebar_muted' ) as $color_key ) {
+    foreach ( array( 'lr_brand', 'lr_bar_bg', 'lr_bar_text', 'lr_drawer_bg', 'lr_drawer_text', 'lr_sidebar_text', 'lr_sidebar_muted', 'lr_sidebar_active', 'lr_sidebar_h3' ) as $color_key ) {
         $raw = isset( $input[ $color_key ] ) ? trim( (string) $input[ $color_key ] ) : '';
         if ( '' === $raw ) {
             $clean[ $color_key ] = '';
@@ -626,6 +626,14 @@ function sfp_page_config_render_tab_settings() {
             'lr_sidebar_muted' => array(
                 'label'   => 'Zijbalk-muted (desktop)',
                 'help'    => 'Kleur van de verticale lijn en het titellabel boven de TOC.',
+            ),
+            'lr_sidebar_active' => array(
+                'label'   => 'Zijbalk-actief/hover (desktop)',
+                'help'    => 'Kleur van het actieve of gehoverde item in de zijbalk-TOC. Was gekoppeld aan de balk-achtergrond.',
+            ),
+            'lr_sidebar_h3' => array(
+                'label'   => 'Zijbalk H3-items (desktop)',
+                'help'    => 'Rustkleur van de H3-subitems in de zijbalk-TOC.',
             ),
         );
         ?>

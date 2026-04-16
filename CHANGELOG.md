@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.3.0] - 2026-04-16
+
+### Toegevoegd
+
+- **CSS-variabele `--lr-sidebar-active`.** Ontkoppelt de hover-/actieve kleur van de zijbalk-TOC van `--lr-bar-bg`. Defaults zijn per site gelijk aan de huidige `lr_bar_bg`, dus visueel verandert er niets bij de upgrade.
+- **CSS-variabele `--lr-sidebar-h3`.** Vervangt de hardcoded `#575757` kleur van de H3-subitems in de zijbalk-TOC. Default is `#575757` voor alle sites.
+- **Twee nieuwe kleurvelden in Longread-branding.** "Zijbalk-actief/hover (desktop)" en "Zijbalk H3-items (desktop)" in het Instellingen-tabblad, met Astra-paletpicker.
+
 ## [2.2.0] - 2026-04-16
 
 ### Toegevoegd
