@@ -189,6 +189,12 @@ function sfp_page_config_scroll_progress_bar() {
         background: <?php echo esc_attr( $bar_color ); ?>;
         transition: width 0.08s linear;
     }
+    /* Keep progress bar below the WP admin bar on desktop */
+    body.admin-bar #sfp-scroll-container { top: 32px; }
+    @media (max-width: 782px) {
+        /* Admin bar is not fixed on mobile, so reset to top: 0 */
+        body.admin-bar #sfp-scroll-container { top: 0; }
+    }
     </style>
     <div id="sfp-scroll-container" aria-hidden="true"><div id="sfp-scroll-bar"></div></div>
     <script>

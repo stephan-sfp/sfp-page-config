@@ -163,17 +163,18 @@ function sfp_page_config_longread_nav_output() {
 
 /* Hide floating widgets on longread pages */
 .is-longread .whatsapp-float,
-.is-longread .wa__btn_popup,
-.is-longread .cookie-toggle {
+.is-longread .wa__btn_popup {
     display: none !important;
     visibility: hidden !important;
 }
-@media (max-width: 1023px) {
-    .is-longread #ast-scroll-top,
-    .is-longread .ast-scroll-top {
-        display: none !important;
-        visibility: hidden !important;
-    }
+/* Hide scroll-to-top, Complianz consent button and cookie toggle when
+   the mobile longread bar is active (i.e. sidebar does NOT have room). */
+.is-longread:not(.sfp-lr-has-sidebar) #ast-scroll-top,
+.is-longread:not(.sfp-lr-has-sidebar) .ast-scroll-top,
+.is-longread:not(.sfp-lr-has-sidebar) .cmplz-manage-consent,
+.is-longread:not(.sfp-lr-has-sidebar) .cookie-toggle {
+    display: none !important;
+    visibility: hidden !important;
 }
 
 /* === Bottom bar (mobile) ===

@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.4.0] - 2026-04-16
+
+### Gerepareerd
+
+- **Voortgangsbalk onzichtbaar op desktop voor ingelogde gebruikers.** De WP admin bar (`z-index: 99999`, `position: fixed`, `top: 0`, hoogte 32px) bedekte de voortgangsbalk (`z-index: 9995`, `top: 0`, hoogte 3px). Op mobiel (<783px) is de admin bar niet fixed en scrollt mee, waardoor de balk daar wel zichtbaar was. Fix: `body.admin-bar #sfp-scroll-container { top: 32px }` met een `@media (max-width: 782px)` reset naar 0.
+- **Scroll-to-top en Complianz-consentknop bleven zichtbaar op longread-pagina's met mobiele balk.** De CSS gebruikte `@media (max-width: 1023px)` wat niet alle viewports dekte waar de mobiele balk actief is (bijv. narrow desktops waar de sidebar niet past). Vervangen door `.is-longread:not(.sfp-lr-has-sidebar)` zodat de verberging exact meeloopt met de balktoestand. Daarnaast: `.cookie-toggle` bestond niet in Complianz; de juiste selector `.cmplz-manage-consent` is toegevoegd.
+- **Zijbalk-TOC te ver van de content op desktop.** `positionSidebar()` gebruikte de breedste Spectra-container als referentie, maar op pagina's met full-width decoratieve secties (1280px) was dat veel breder dan de eigenlijke contentkolom (720px). De sidebar dacht dan dat er geen ruimte was. Referentie gewijzigd naar `.entry-content`, die betrouwbaar de contentkolombreedte vertegenwoordigt.
+
 ## [2.3.1] - 2026-04-16
 
 ### Gerepareerd

@@ -258,19 +258,15 @@
     function positionSidebar() {
         var sidebarW = 300;
         var gap      = 36;
-        var ref      = null;
 
-        /* Pick the WIDEST Spectra container that is narrower than the
-         * viewport. Previous code picked the first match, which on pages
-         * with multi-column layouts could be a narrow sub-column, causing
-         * sidebarHasRoom to be true on tablets where it shouldn't be. */
-        var candidates = document.querySelectorAll('.uagb-container-inner-blocks-wrap');
-        var maxW = 0;
-        for (var i = 0; i < candidates.length; i++) {
-            var w = candidates[i].offsetWidth;
-            if (w > maxW && w < window.innerWidth - 100) { ref = candidates[i]; maxW = w; }
-        }
-        if (!ref) ref = document.querySelector('.ast-container') || content;
+        /* Use .entry-content as the reference element. Spectra containers
+         * can include full-width decorative sections (e.g. 1280px) that
+         * are much wider than the actual content column, causing the
+         * sidebar to think there is no room. .entry-content reliably
+         * represents the content column width (typically ~720px). */
+        var ref = content || document.querySelector('.entry-content')
+            || document.querySelector('.ast-container');
+        if (!ref) return;
 
         var contentLeft  = Math.round(ref.getBoundingClientRect().left);
         var contentRight = Math.round(ref.getBoundingClientRect().right);
