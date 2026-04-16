@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.3.1] - 2026-04-16
+
+### Gerepareerd
+
+- **Outline-knop in hero niet full-width op mobiel/tablet.** De secundaire CTA ("Eerst kennismaken") bleef op contendbreedte in plaats van 100% van de container. Oorzaak: de CSS-uitzondering voor de hero-sectie gebruikte `display: inline-flex` (inline-level, neemt alleen contentbreedte in) in plaats van `display: flex` (block-level, vult de parent). Geldt voor alle salespages op alle 5 sites.
+
 ## [2.3.0] - 2026-04-16
 
 ### Toegevoegd

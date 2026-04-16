@@ -94,7 +94,7 @@
         display: none !important;
     }
     .is-sales-page .sfp-hero-section .ast-outline-button {
-        display: inline-flex !important;
+        display: flex !important;
     }
 }
 
