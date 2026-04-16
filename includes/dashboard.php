@@ -21,6 +21,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * ====================================================================== */
 
 add_action( 'save_post_page', function() {
+    delete_transient( 'sfp_dashboard_pages_training' );
+    // Legacy key from versions before 1.9.10.
     delete_transient( 'sfp_dashboard_pages' );
 } );
 
@@ -77,9 +79,6 @@ function sfp_page_config_sanitize_settings( $input ) {
     $clean['promo_scroll_gate']    = absint( $input['promo_scroll_gate'] ?? 30 );
     $clean['promo_cooldown_hours'] = absint( $input['promo_cooldown_hours'] ?? 24 );
 
-    // Affiliate layout ID.
-    $clean['affiliate_layout_id'] = absint( $input['affiliate_layout_id'] ?? 0 );
-
     // Cron notification email.
     $clean['cron_email'] = sanitize_email( $input['cron_email'] ?? '' );
 
@@ -95,6 +94,14 @@ function sfp_page_config_sanitize_settings( $input ) {
         }
         $hex = sanitize_hex_color( $raw );
         $clean[ $color_key ] = $hex ? $hex : '';
+    }
+
+    // Custom CSS for the reading-time meter and scroll progress bar.
+    // Stored as-is, but stripped of HTML tags so no </style> can escape
+    // the inline <style> block we render on the front-end.
+    $clean['custom_css_rp'] = '';
+    if ( isset( $input['custom_css_rp'] ) ) {
+        $clean['custom_css_rp'] = wp_strip_all_tags( (string) $input['custom_css_rp'] );
     }
 
     return $clean;
@@ -133,12 +140,65 @@ function sfp_page_config_dashboard_assets( $hook_suffix ) {
         'nonce'   => wp_create_nonce( 'sfp_dashboard_nonce' ),
     ) );
 
-    // Native WordPress color picker for the Instellingen tab.
+    // Native WordPress color picker for the Instellingen tab, limited to
+    // the Astra global color palette so we only pick from brand-approved
+    // values instead of arbitrary hex codes.
     wp_enqueue_style( 'wp-color-picker' );
     wp_enqueue_script( 'wp-color-picker' );
-    wp_add_inline_script( 'wp-color-picker',
-        'jQuery(function($){ $(".sfp-color-field").wpColorPicker(); });'
+
+    $palette = sfp_page_config_get_astra_palette();
+    wp_add_inline_script(
+        'wp-color-picker',
+        'var sfpAstraPalette = ' . wp_json_encode( $palette ) . ';' .
+        'jQuery(function($){' .
+        '  var opts = { hide: true, change: null };' .
+        '  if (Array.isArray(sfpAstraPalette) && sfpAstraPalette.length) {' .
+        '    opts.palettes = sfpAstraPalette;' .
+        '  }' .
+        '  $(".sfp-color-field").wpColorPicker(opts);' .
+        '});'
     );
+}
+
+/**
+ * Pull the Astra Customizer global color palette so the color picker
+ * only offers brand-approved swatches.
+ *
+ * Astra stores its color palette in the `astra-settings` option under
+ * `global-color-palette.palette`. That array always contains 9 hex
+ * values in a fixed order (primary, secondary, ...). We return up to
+ * 8 entries because the WP color picker renders at most 8 swatches.
+ *
+ * Returns an empty array when no palette can be resolved, in which case
+ * the color picker falls back to its default swatches.
+ *
+ * @return string[]
+ */
+function sfp_page_config_get_astra_palette() {
+
+    $astra = get_option( 'astra-settings', array() );
+    if ( ! is_array( $astra ) ) {
+        return array();
+    }
+
+    $palette = array();
+    if ( isset( $astra['global-color-palette']['palette'] ) && is_array( $astra['global-color-palette']['palette'] ) ) {
+        $palette = $astra['global-color-palette']['palette'];
+    }
+
+    $clean = array();
+    foreach ( $palette as $hex ) {
+        $hex = is_string( $hex ) ? trim( $hex ) : '';
+        $hex = sanitize_hex_color( $hex );
+        if ( $hex ) {
+            $clean[] = $hex;
+        }
+        if ( count( $clean ) >= 8 ) {
+            break;
+        }
+    }
+
+    return $clean;
 }
 
 /* =========================================================================
@@ -196,7 +256,11 @@ function sfp_page_config_render_admin() {
 
 function sfp_page_config_render_tab_cursusdata() {
 
-    $cache_key = 'sfp_dashboard_pages';
+    // Only training pages (sfp_page_type = training) can have cursusdata,
+    // so there is no point offering editors the full page list. The cache
+    // key was bumped to invalidate any stale "all pages" transients saved
+    // by prior versions.
+    $cache_key = 'sfp_dashboard_pages_training';
     $pages = get_transient( $cache_key );
 
     if ( false === $pages ) {
@@ -206,6 +270,12 @@ function sfp_page_config_render_tab_cursusdata() {
             'post_status'    => 'publish',
             'orderby'        => 'title',
             'order'          => 'ASC',
+            'meta_query'     => array(
+                array(
+                    'key'   => 'sfp_page_type',
+                    'value' => 'training',
+                ),
+            ),
         ) );
         set_transient( $cache_key, $pages, 6 * HOUR_IN_SECONDS );
     }
@@ -236,7 +306,7 @@ function sfp_page_config_render_tab_cursusdata() {
     );
 
     ?>
-    <p>Beheer hier de cursusdata voor alle pagina's op deze site. Klik op <strong>Bewerken</strong> om startmomenten en dagdata toe te voegen.</p>
+    <p>Beheer hier de cursusdata voor alle <strong>open-trainingpagina's</strong> op deze site (paginatype <code>training</code>). Klik op <strong>Bewerken</strong> om startmomenten en dagdata toe te voegen.</p>
 
     <style>
         .sfp-cd-table{width:100%;border-collapse:collapse;margin-top:15px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.04)}
@@ -670,6 +740,25 @@ function sfp_page_config_render_tab_settings() {
                     <p class="description">Gemiddelde leessnelheid (standaard 250).</p>
                 </td>
             </tr>
+            <tr>
+                <th><label for="sfp-custom-css-rp">Aangepaste CSS</label></th>
+                <td>
+                    <textarea id="sfp-custom-css-rp"
+                              name="sfp_settings[custom_css_rp]"
+                              rows="10"
+                              class="large-text code"
+                              placeholder=".custom-read-meter { ... }&#10;.tijd-getal { ... }&#10;#sfp-scroll-container { ... }&#10;#sfp-scroll-bar { ... }"
+                              spellcheck="false"><?php echo esc_textarea( $s['custom_css_rp'] ?? '' ); ?></textarea>
+                    <p class="description">
+                        CSS-regels voor de leestijdmeter en voortgangsbalk. De volgende selectors zijn beschikbaar:
+                        <br><code>.custom-read-meter</code> &mdash; de container van de leestijd.
+                        <br><code>.tijd-getal</code> &mdash; alleen het cijfer in de leestijd.
+                        <br><code>#sfp-scroll-container</code> &mdash; de container van de voortgangsbalk (staat bovenaan de viewport).
+                        <br><code>#sfp-scroll-bar</code> &mdash; het oplopende balkje zelf.
+                        <br>Wordt via een <code>&lt;style&gt;</code>-blok in de head van elke pagina en post uitgevoerd.
+                    </p>
+                </td>
+            </tr>
         </table>
 
         <!-- Promo / Convert Pro -->
@@ -691,20 +780,6 @@ function sfp_page_config_render_tab_settings() {
                            value="<?php echo esc_attr( $s['promo_cooldown_hours'] ?? 24 ); ?>"
                            min="1" max="168" step="1" style="width:80px;" />
                     <p class="description">Hoe lang een popup verborgen blijft na sluiting.</p>
-                </td>
-            </tr>
-        </table>
-
-        <!-- Affiliate -->
-        <h2>Affiliate</h2>
-        <table class="form-table" role="presentation">
-            <tr>
-                <th><label for="sfp-aff-id">Astra Custom Layout ID</label></th>
-                <td>
-                    <input type="number" id="sfp-aff-id" name="sfp_settings[affiliate_layout_id]"
-                           value="<?php echo esc_attr( $s['affiliate_layout_id'] ?? '' ); ?>"
-                           min="0" step="1" style="width:100px;" />
-                    <p class="description">Post-ID van het Astra Custom Layout blok voor de affiliate-disclaimer.</p>
                 </td>
             </tr>
         </table>
@@ -864,6 +939,7 @@ function sfp_page_config_ajax_save() {
 
     // Invalidate the dashboard transient so the Cursusdata tab reflects
     // the change immediately on next load (instead of waiting up to 6h).
+    delete_transient( 'sfp_dashboard_pages_training' );
     delete_transient( 'sfp_dashboard_pages' );
 
     // Reset the cron notification state for this training. The cron

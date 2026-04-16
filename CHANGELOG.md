@@ -4,6 +4,24 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [1.9.10] - 2026-04-16
+
+### Toegevoegd
+
+- **WP Color Picker beperkt tot Astra-palet.** De vijf longread-kleurvelden in `Instellingen` laden nu uitsluitend de kleuren die in de Astra Customizer zijn vastgesteld (`astra-settings.global-color-palette.palette`). Zo wordt per ongeluk kiezen van een off-brand hex-code voorkomen. Bij een lege of ontbrekende Astra-palette valt de picker terug op de standaard WP-swatches.
+- **Aangepaste CSS voor leestijdmeter en voortgangsbalk.** Nieuwe textarea in `Instellingen → Leestijd en voortgangsbalk` waarin je CSS-regels opgeeft voor `.custom-read-meter`, `.tijd-getal`, `#sfp-scroll-container` en `#sfp-scroll-bar`. Wordt via een `<style id="sfp-custom-css-rp">` in de head van elke singuliere pagina/post uitgevoerd. HTML-tags worden bij opslaan gestript zodat geen `</style>` kan ontsnappen.
+
+### Gewijzigd
+
+- **Cursusdata-tabblad toont nu alleen open-trainingpagina's.** Paginatype `training` wordt via `meta_query` gefilterd; andere paginatypes (coaching, incompany, about, contact, homepage, overig) komen niet meer in de lijst omdat ze geen cursusdata kunnen dragen. Cache-key gemigreerd naar `sfp_dashboard_pages_training`.
+- **Affiliate-layout-ID is niet meer als instelling beschikbaar.** Het veld in `Instellingen` verwarde: affiliate is een Custom Hook die per post via de metabox wordt aangezet. De domein-specifieke fallback in `affiliate.php` (DPS: 27038) blijft als enige bron van waarheid. Eventuele oude `affiliate_layout_id` in de optiedatabase wordt genegeerd en mag blijven staan (harmless).
+- **Longread-branding defaults voor DGA, CVD en DST gecorrigeerd.** `lr_brand`, `lr_bar_bg` en `lr_sidebar_text` hadden in 1.9.9 een onjuiste fallback (`#1a1a2e`/`#000000`) die niet bij de huisstijl paste. Defaults sluiten nu aan op de CTA-kleur van het domein.
+
+### Gerepareerd
+
+- **Mobiele longread-balk staat nu flush tegen de onderkant van het scherm.** `viewport-fit=cover` wordt via JS aan de viewport-meta toegevoegd zodat `env(safe-area-inset-bottom)` op iOS niet meer `0` retourneert. De bar gebruikt `height: calc(54px + safe-area)` met matching `padding-bottom`, waardoor de knoprij boven de home indicator staat en de bar-achtergrond zonder gat doorloopt tot de echte schermrand. De oude `::after`-hack met `bottom: -40px` is verwijderd. De drawer en de content-padding schalen mee met de safe-area.
+- **Longread-navigatie verschijnt nu ook op tablets in landscape en narrow-desktop schermen.** Body class `sfp-lr-has-sidebar` wordt door de JS alleen geplaatst als de zijbalk daadwerkelijk naast de content past. De CSS verbergt de mobiele balk alleen op desktop als die class aanwezig is, zodat pagina's tussen ~768px en ~1100px terugvallen op de mobiele balk in plaats van zonder navigatie te zijn.
+
 ## [1.9.9] - 2026-04-16
 
 ### Toegevoegd

@@ -128,6 +128,31 @@ function sfp_page_config_shortcode_reading_time() {
  * 3. Scroll progress bar (HTML + JS)
  * ====================================================================== */
 
+add_action( 'wp_head', 'sfp_page_config_reading_progress_custom_css', 99 );
+
+/**
+ * Emit the Aangepaste CSS from the Instellingen tab so editors can style
+ * the reading-time meter and scroll progress bar without a code snippet.
+ *
+ * Runs sitewide on singular posts/pages. The value is sanitized on save
+ * (wp_strip_all_tags) so no </style> can escape the block, but we still
+ * print it inside a clearly-labeled <style id> so it is obvious in the
+ * source where the rules came from.
+ */
+function sfp_page_config_reading_progress_custom_css() {
+
+    if ( ! is_singular( sfp_page_config_post_types() ) ) {
+        return;
+    }
+
+    $css = sfp_page_config_get_setting( 'custom_css_rp', '' );
+    if ( '' === trim( (string) $css ) ) {
+        return;
+    }
+
+    echo "\n<style id=\"sfp-custom-css-rp\">\n" . $css . "\n</style>\n";
+}
+
 add_action( 'wp_footer', 'sfp_page_config_scroll_progress_bar', 25 );
 
 /**
