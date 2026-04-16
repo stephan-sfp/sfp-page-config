@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.0.0] - 2026-04-16
+
+Major bump omdat de Sticky CTA voor het eerst via de Instellingen-tab beheerbaar is. Geen breaking changes voor bestaande sites: de hardcoded defaults uit v1.9.x blijven als fallback staan, dus een site die zonder instellingen upgrade draait gedrag-identiek door.
+
+### Toegevoegd
+
+- **Sticky CTA beheerbaar vanuit Instellingen.** Nieuwe sectie `Instellingen → Sticky CTA` met per paginatype (coaching, training, incompany) vier velden: knoptekst, knoplink, anchor-ID en hero-selector. Leeg laten valt terug op de hardcoded default uit `sfp_page_config_get_sticky_cta_defaults()`. Kleuren blijven gekoppeld aan de CTA-branding uit de sitematrix zodat de sticky consistent is met de rest van de pagina.
+- **`sfp_page_config_get_sticky_cta_defaults()`.** Nieuwe helper die de hardcoded defaults retourneert. Wordt zowel door de merge-laag in `sfp_page_config_get_sticky_cta()` als door de UI gebruikt voor de placeholders en de "Default:"-regels onder elk veld.
+
+### Gewijzigd
+
+- **`sfp_page_config_get_sticky_cta()` doet nu een merge.** Leest `sfp_settings.sticky_cta[<type>]` en overschrijft alleen de niet-lege velden op de default. Dat betekent dat een kapot of leeg veld automatisch terugvalt in plaats van een stukkende CTA op te leveren.
+- **Anchor-invoer gesanitized via `sanitize_key()`.** Een editor die per ongeluk `#inschrijven` intypt krijgt automatisch `inschrijven` opgeslagen; de sticky-cta.js doet `getElementById(anchor)` en dus zonder hash-prefix.
+
 ## [1.9.10] - 2026-04-16
 
 ### Toegevoegd

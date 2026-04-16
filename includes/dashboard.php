@@ -104,6 +104,25 @@ function sfp_page_config_sanitize_settings( $input ) {
         $clean['custom_css_rp'] = wp_strip_all_tags( (string) $input['custom_css_rp'] );
     }
 
+    // Sticky CTA overrides per paginatype (coaching, training, incompany).
+    // Each type has four optional fields: text, href, anchor, hero.
+    // Empty strings mean "fall back to the hardcoded default" in
+    // sfp_page_config_get_sticky_cta(), so editors can wipe a field
+    // without breaking the CTA.
+    $clean['sticky_cta'] = array();
+    $types = array( 'coaching', 'training', 'incompany' );
+    if ( isset( $input['sticky_cta'] ) && is_array( $input['sticky_cta'] ) ) {
+        foreach ( $types as $type ) {
+            $raw = isset( $input['sticky_cta'][ $type ] ) ? (array) $input['sticky_cta'][ $type ] : array();
+            $clean['sticky_cta'][ $type ] = array(
+                'text'   => isset( $raw['text'] )   ? sanitize_text_field( $raw['text'] ) : '',
+                'href'   => isset( $raw['href'] )   ? esc_url_raw( trim( (string) $raw['href'] ) ) : '',
+                'anchor' => isset( $raw['anchor'] ) ? sanitize_key( ltrim( (string) $raw['anchor'], '#' ) ) : '',
+                'hero'   => isset( $raw['hero'] )   ? sanitize_text_field( $raw['hero'] ) : '',
+            );
+        }
+    }
+
     return $clean;
 }
 
@@ -705,6 +724,76 @@ function sfp_page_config_render_tab_settings() {
             </tr>
             <?php endforeach; ?>
         </table>
+
+        <!-- Sticky CTA per paginatype -->
+        <?php
+        $sticky_defaults  = sfp_page_config_get_sticky_cta_defaults();
+        $sticky_stored    = isset( $s['sticky_cta'] ) && is_array( $s['sticky_cta'] ) ? $s['sticky_cta'] : array();
+        $sticky_type_meta = array(
+            'coaching'  => 'Coaching (salespage)',
+            'training'  => 'Training (salespage)',
+            'incompany' => 'Incompany (salespage)',
+        );
+        ?>
+        <h2>Sticky CTA</h2>
+        <p style="color:#666;">De sticky CTA verschijnt op mobiel en tablet (tot 1024px) zodra de hero uit beeld scrollt, en verdwijnt weer zodra de bezoeker bij het aanvraag- of inschrijfformulier is. Kleuren komen automatisch uit de CTA-branding hierboven. Laat een veld leeg om terug te vallen op de default rechts.</p>
+
+        <?php foreach ( $sticky_type_meta as $type => $label ) :
+            $def    = $sticky_defaults[ $type ];
+            $stored = isset( $sticky_stored[ $type ] ) && is_array( $sticky_stored[ $type ] ) ? $sticky_stored[ $type ] : array();
+            ?>
+            <h3 style="margin-top:1.5em;"><?php echo esc_html( $label ); ?></h3>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th><label for="sfp-sticky-<?php echo esc_attr( $type ); ?>-text">Knoptekst</label></th>
+                    <td>
+                        <input type="text"
+                               id="sfp-sticky-<?php echo esc_attr( $type ); ?>-text"
+                               name="sfp_settings[sticky_cta][<?php echo esc_attr( $type ); ?>][text]"
+                               value="<?php echo esc_attr( $stored['text'] ?? '' ); ?>"
+                               class="regular-text"
+                               placeholder="<?php echo esc_attr( $def['text'] ); ?>" />
+                        <p class="description">Default: <code><?php echo esc_html( $def['text'] ); ?></code></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="sfp-sticky-<?php echo esc_attr( $type ); ?>-href">Knoplink (URL)</label></th>
+                    <td>
+                        <input type="url"
+                               id="sfp-sticky-<?php echo esc_attr( $type ); ?>-href"
+                               name="sfp_settings[sticky_cta][<?php echo esc_attr( $type ); ?>][href]"
+                               value="<?php echo esc_attr( $stored['href'] ?? '' ); ?>"
+                               class="regular-text code"
+                               placeholder="<?php echo esc_attr( $def['href'] ); ?>" />
+                        <p class="description">Default: <code><?php echo esc_html( $def['href'] ); ?></code></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="sfp-sticky-<?php echo esc_attr( $type ); ?>-anchor">Anchor-ID op de pagina</label></th>
+                    <td>
+                        <input type="text"
+                               id="sfp-sticky-<?php echo esc_attr( $type ); ?>-anchor"
+                               name="sfp_settings[sticky_cta][<?php echo esc_attr( $type ); ?>][anchor]"
+                               value="<?php echo esc_attr( $stored['anchor'] ?? '' ); ?>"
+                               class="regular-text code"
+                               placeholder="<?php echo esc_attr( $def['anchor'] ); ?>" />
+                        <p class="description">Zonder de <code>#</code>. Zodra dit element in beeld komt verdwijnt de sticky CTA. Default: <code><?php echo esc_html( $def['anchor'] ); ?></code></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th><label for="sfp-sticky-<?php echo esc_attr( $type ); ?>-hero">Hero-selector (CSS)</label></th>
+                    <td>
+                        <input type="text"
+                               id="sfp-sticky-<?php echo esc_attr( $type ); ?>-hero"
+                               name="sfp_settings[sticky_cta][<?php echo esc_attr( $type ); ?>][hero]"
+                               value="<?php echo esc_attr( $stored['hero'] ?? '' ); ?>"
+                               class="regular-text code"
+                               placeholder="<?php echo esc_attr( $def['hero'] ); ?>" />
+                        <p class="description">CSS-selector van de hero-sectie. Zodra deze uit beeld scrollt verschijnt de sticky CTA. Default: <code><?php echo esc_html( $def['hero'] ); ?></code></p>
+                    </td>
+                </tr>
+            </table>
+        <?php endforeach; ?>
 
         <!-- WhatsApp -->
         <h2>WhatsApp-widget</h2>
