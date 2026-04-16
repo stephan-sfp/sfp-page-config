@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     1.9.10
+ * Version:     2.0.0
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '1.9.10' );
+define( 'SFP_PAGE_CONFIG_VERSION', '2.0.0' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -136,16 +136,21 @@ function sfp_page_config_get_brand() {
  * ====================================================================== */
 
 /**
- * Get the sticky CTA configuration for a given page type.
+ * Get the hardcoded default sticky CTA config per page type.
  *
- * @param  string $type  One of 'coaching', 'training', 'incompany'.
- * @return array|null    Config array or null when the type is unknown.
+ * These act as a fallback when the editor has not entered anything in
+ * the Sticky CTA section of the Instellingen tab. The values mirror the
+ * pre-2.0 hardcoded setup (Google Calendar link, anchor IDs, UAGB hero
+ * selector) so that sites that upgrade without changing settings keep
+ * behaving exactly as before.
+ *
+ * @return array<string, array>
  */
-function sfp_page_config_get_sticky_cta( $type ) {
+function sfp_page_config_get_sticky_cta_defaults() {
 
     $calendar_url = 'https://calendar.app.google/eqRPknhnTDV3FjjX7';
 
-    $configs = array(
+    return array(
         'coaching' => array(
             'text'   => 'Boek je gratis proefsessie',
             'href'   => $calendar_url,
@@ -168,8 +173,48 @@ function sfp_page_config_get_sticky_cta( $type ) {
             'hero'   => '.uagb-block-0b4df88b',
         ),
     );
+}
 
-    return isset( $configs[ $type ] ) ? $configs[ $type ] : null;
+/**
+ * Get the sticky CTA configuration for a given page type, merging any
+ * per-paginatype overrides from the Instellingen tab on top of the
+ * hardcoded defaults.
+ *
+ * Overrides are stored under the `sticky_cta` key in the `sfp_settings`
+ * option as a nested array: `sticky_cta[<type>][text|href|anchor|hero]`.
+ * Empty strings mean "fall back to default" so an editor can clear a
+ * field without breaking the CTA.
+ *
+ * @param  string $type  One of 'coaching', 'training', 'incompany'.
+ * @return array|null    Merged config array or null when the type is unknown.
+ */
+function sfp_page_config_get_sticky_cta( $type ) {
+
+    $defaults = sfp_page_config_get_sticky_cta_defaults();
+    if ( ! isset( $defaults[ $type ] ) ) {
+        return null;
+    }
+
+    $default = $defaults[ $type ];
+
+    if ( ! function_exists( 'sfp_page_config_get_setting' ) ) {
+        return $default;
+    }
+
+    $overrides_all = sfp_page_config_get_setting( 'sticky_cta', array() );
+    if ( ! is_array( $overrides_all ) || empty( $overrides_all[ $type ] ) ) {
+        return $default;
+    }
+
+    $override = $overrides_all[ $type ];
+    $merged   = $default;
+    foreach ( array( 'text', 'href', 'anchor', 'hero' ) as $key ) {
+        if ( isset( $override[ $key ] ) && '' !== trim( (string) $override[ $key ] ) ) {
+            $merged[ $key ] = (string) $override[ $key ];
+        }
+    }
+
+    return $merged;
 }
 
 /* =========================================================================
