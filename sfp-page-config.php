@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     1.9.8
+ * Version:     1.9.9
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '1.9.8' );
+define( 'SFP_PAGE_CONFIG_VERSION', '1.9.9' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -100,14 +100,35 @@ function sfp_page_config_get_brand() {
         ),
     );
 
+    $resolved = $configs['schoolforprofessionals.com']; // Safe fallback.
     foreach ( $configs as $host => $cfg ) {
         if ( false !== strpos( $domain, $host ) ) {
-            return $cfg;
+            $resolved = $cfg;
+            break;
         }
     }
 
-    // Fallback: SFP branding.
-    return $configs['schoolforprofessionals.com'];
+    // Merge stored longread branding overrides from the Instellingen tab.
+    // An empty or invalid value falls back to the domain default, so a
+    // cleared field never produces a broken CSS variable.
+    $settings = get_option( 'sfp_settings', array() );
+    $overrides = array(
+        'lr_brand'         => 'lr_brand',
+        'lr_bar_bg'        => 'lr_bar_bg',
+        'lr_bar_text'      => 'lr_bar_text',
+        'lr_sidebar_text'  => 'lr_sidebar_text',
+        'lr_sidebar_muted' => 'lr_sidebar_muted',
+    );
+    foreach ( $overrides as $option_key => $brand_key ) {
+        if ( ! empty( $settings[ $option_key ] ) ) {
+            $hex = sanitize_hex_color( $settings[ $option_key ] );
+            if ( $hex ) {
+                $resolved[ $brand_key ] = $hex;
+            }
+        }
+    }
+
+    return $resolved;
 }
 
 /* =========================================================================

@@ -83,6 +83,20 @@ function sfp_page_config_sanitize_settings( $input ) {
     // Cron notification email.
     $clean['cron_email'] = sanitize_email( $input['cron_email'] ?? '' );
 
+    // Longread branding overrides (hex colors).
+    // An empty value is allowed: it means "fall back to the domain default"
+    // in sfp_page_config_get_brand(). Invalid values are stored as empty
+    // so they also fall back safely.
+    foreach ( array( 'lr_brand', 'lr_bar_bg', 'lr_bar_text', 'lr_sidebar_text', 'lr_sidebar_muted' ) as $color_key ) {
+        $raw = isset( $input[ $color_key ] ) ? trim( (string) $input[ $color_key ] ) : '';
+        if ( '' === $raw ) {
+            $clean[ $color_key ] = '';
+            continue;
+        }
+        $hex = sanitize_hex_color( $raw );
+        $clean[ $color_key ] = $hex ? $hex : '';
+    }
+
     return $clean;
 }
 
@@ -118,6 +132,13 @@ function sfp_page_config_dashboard_assets( $hook_suffix ) {
         'ajaxUrl' => admin_url( 'admin-ajax.php' ),
         'nonce'   => wp_create_nonce( 'sfp_dashboard_nonce' ),
     ) );
+
+    // Native WordPress color picker for the Instellingen tab.
+    wp_enqueue_style( 'wp-color-picker' );
+    wp_enqueue_script( 'wp-color-picker' );
+    wp_add_inline_script( 'wp-color-picker',
+        'jQuery(function($){ $(".sfp-color-field").wpColorPicker(); });'
+    );
 }
 
 /* =========================================================================
@@ -531,9 +552,9 @@ function sfp_page_config_render_tab_settings() {
     <form method="post">
         <?php wp_nonce_field( 'sfp_save_settings', 'sfp_settings_nonce' ); ?>
 
-        <!-- Branding (read-only, set in code) -->
-        <h2>Branding <small style="font-size:12px;color:#888;">(<?php echo esc_html( $domain ); ?>)</small></h2>
-        <p style="color:#666;">Brandingkleuren worden centraal per site vastgesteld in de plugincode. Hieronder de huidige waarden ter referentie.</p>
+        <!-- CTA branding (read-only, set in code) -->
+        <h2>CTA-branding <small style="font-size:12px;color:#888;">(<?php echo esc_html( $domain ); ?>)</small></h2>
+        <p style="color:#666;">CTA-kleuren en fonts worden centraal per site vastgesteld in de plugincode. Hieronder de huidige waarden ter referentie.</p>
         <table class="form-table" role="presentation">
             <tr>
                 <th>CTA achtergrondkleur</th>
@@ -557,6 +578,62 @@ function sfp_page_config_render_tab_settings() {
                 <th>Button font-weight</th>
                 <td><code><?php echo esc_html( $brand['weight'] ); ?></code></td>
             </tr>
+        </table>
+
+        <!-- Longread-branding (editable per site) -->
+        <?php
+        // The resolved brand already contains the merged values (domain defaults
+        // + stored overrides). To show the user what's *stored* vs. what's
+        // inherited, also pull the raw settings.
+        $lr_fields = array(
+            'lr_brand'         => array(
+                'label'   => 'Accentkleur (actief item in TOC)',
+                'help'    => 'Kleur van het actieve link-item en de geactiveerde lijn in de zijbalk.',
+            ),
+            'lr_bar_bg'        => array(
+                'label'   => 'Balk-achtergrond (mobiel)',
+                'help'    => 'Achtergrondkleur van de hoofdstukbalk onderaan op mobiel.',
+            ),
+            'lr_bar_text'      => array(
+                'label'   => 'Balk-tekstkleur (mobiel)',
+                'help'    => 'Tekstkleur in de mobiele hoofdstukbalk.',
+            ),
+            'lr_sidebar_text'  => array(
+                'label'   => 'Zijbalk-tekstkleur (desktop)',
+                'help'    => 'Standaardkleur van de links in de TOC op desktop.',
+            ),
+            'lr_sidebar_muted' => array(
+                'label'   => 'Zijbalk-muted (desktop)',
+                'help'    => 'Kleur van de verticale lijn en het titellabel boven de TOC.',
+            ),
+        );
+        ?>
+        <h2>Longread-branding</h2>
+        <p style="color:#666;">Kleuren voor de inhoudsopgave (desktop) en hoofdstukbalk (mobiel). Laat een veld leeg om terug te vallen op de domein-default in de plugincode.</p>
+        <table class="form-table" role="presentation">
+            <?php foreach ( $lr_fields as $key => $meta ) :
+                $stored  = isset( $s[ $key ] ) ? $s[ $key ] : '';
+                $current = $brand[ $key ] ?? ''; // Resolved (stored or fallback).
+                $is_inherited = ( '' === $stored );
+                ?>
+            <tr>
+                <th><label for="sfp-<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $meta['label'] ); ?></label></th>
+                <td>
+                    <input type="text"
+                           id="sfp-<?php echo esc_attr( $key ); ?>"
+                           class="sfp-color-field"
+                           name="sfp_settings[<?php echo esc_attr( $key ); ?>]"
+                           value="<?php echo esc_attr( $stored ); ?>"
+                           data-default-color="<?php echo esc_attr( $current ); ?>" />
+                    <p class="description">
+                        <?php echo esc_html( $meta['help'] ); ?>
+                        <?php if ( $is_inherited ) : ?>
+                            <br><em>Huidig (default): <code><?php echo esc_html( $current ); ?></code></em>
+                        <?php endif; ?>
+                    </p>
+                </td>
+            </tr>
+            <?php endforeach; ?>
         </table>
 
         <!-- WhatsApp -->

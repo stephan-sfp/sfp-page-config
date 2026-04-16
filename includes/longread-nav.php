@@ -235,8 +235,15 @@ function sfp_page_config_longread_nav_output() {
     max-height: 0 !important;
     overflow: hidden !important;
     transition: max-height 0.25s ease !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
 }
-.sfp-lr-bar.drawer-open .sfp-lr-drawer { max-height: 400px !important; }
+/* When open, cap the drawer at 70% of the viewport minus the bar height,
+ * and enable vertical scrolling so long TOCs (>7-8 H3s) are reachable. */
+.sfp-lr-bar.drawer-open .sfp-lr-drawer {
+    max-height: calc(70vh - 54px) !important;
+    overflow-y: auto !important;
+}
 .sfp-lr-drawer__item {
     display: block !important;
     padding: 10px 20px !important;

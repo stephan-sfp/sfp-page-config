@@ -198,29 +198,20 @@ function sfp_page_config_render_metabox( $post ) {
     /* =====================================================================
      * Longread navigation toggle
      *
-     * Only applicable on:
-     *  - Blog posts
-     *  - Pages tagged "pijler"
-     *
-     * On sales pages (paginatype set), the toggle has no effect because
-     * sfp_page_config_is_longread() always returns false there. We still
-     * show the checkbox state read-only if a legacy value is stored, so
-     * the editor can see it exists, but we disable interaction.
+     * Available on all posts and pages EXCEPT sales pages (paginatype set
+     * to coaching, training, or incompany). On those, the toggle would
+     * have no effect anyway because sfp_page_config_is_longread() always
+     * returns false there, so we simply hide the checkbox.
      *
      * Reading time and scroll progress bar are now sitewide and no longer
      * controlled here. See reading-time.php.
      * =================================================================== */
-    $is_post         = ( 'post' === $post->post_type );
-    $is_pijler_page  = false;
-    if ( ! $is_post && 'page' === $post->post_type ) {
-        $lr_terms       = wp_get_object_terms( $post->ID, 'post_tag', array( 'fields' => 'slugs' ) );
-        $is_pijler_page = ! is_wp_error( $lr_terms ) && in_array( 'pijler', (array) $lr_terms, true );
-    }
-    $longread_available = $is_post || $is_pijler_page;
+    $is_salespage       = ! empty( $page_type );
+    $longread_available = ! $is_salespage;
     ?>
     <?php if ( $longread_available ) : ?>
         <hr class="sfp-mb-separator" />
-        <div class="sfp-mb-field">
+        <div class="sfp-mb-field sfp-lr-toggle">
             <label>
                 <input
                     type="checkbox"
@@ -230,9 +221,30 @@ function sfp_page_config_render_metabox( $post ) {
                 />
                 Longread-navigatie activeren
             </label>
-            <span class="sfp-mb-note">Inhoudsopgave op desktop, hoofdstukbalk op mobiel. Alleen op blogposts en pijlerpagina's.</span>
+            <span class="sfp-mb-note">Inhoudsopgave op desktop, hoofdstukbalk op mobiel. Verdwijnt automatisch als je een paginatype (coaching/training/incompany) kiest.</span>
         </div>
     <?php endif; ?>
+
+    <script>
+    /* Hide the longread toggle when a salespage type is selected,
+       show it again when the editor reverts to "Geen". Keeps the
+       stored meta intact; hidden checkbox posts no value so the
+       save handler will delete the flag. That is the desired
+       behaviour since longread would be ignored on salespages
+       anyway. */
+    (function(){
+        var lrToggle = document.querySelector('.sfp-lr-toggle');
+        if (!lrToggle) return;
+        var radios = document.querySelectorAll('input[name="sfp_page_type"]');
+        function syncLongread(){
+            var checked = document.querySelector('input[name="sfp_page_type"]:checked');
+            var isSales = checked && checked.value !== '';
+            lrToggle.style.display = isSales ? 'none' : '';
+        }
+        radios.forEach(function(r){ r.addEventListener('change', syncLongread); });
+        syncLongread();
+    })();
+    </script>
 
     <!-- WhatsApp button toggle -->
     <?php $whatsapp = get_post_meta( $post->ID, 'sfp_whatsapp', true ); ?>

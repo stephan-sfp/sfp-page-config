@@ -41,14 +41,12 @@ function sfp_page_config_longread_body_class( $classes ) {
  * Check whether the current singular page has longread navigation enabled.
  *
  * Scope rules (enforced here so every caller respects them):
- *  - Allowed on ALL blog posts.
- *  - Allowed on pages with the "pijler" tag.
+ *  - Longread is OFF by default on all posts and pages.
+ *  - Editors activate it explicitly via the sfp_longread meta (checkbox
+ *    in the metabox), which is available on posts and pages except on
+ *    sales pages.
  *  - NEVER active on sales pages (sfp_page_type set to coaching, training,
  *    or incompany). Even if the legacy meta is set, we ignore it.
- *
- * Within the allowed scope, the longread nav is enabled either via the
- * new `sfp_longread` meta or the legacy `longread` meta from the old
- * ASE Pro snippet.
  *
  * @param  int|null $post_id Optional post ID. Defaults to queried object.
  * @return bool
@@ -68,19 +66,13 @@ function sfp_page_config_is_longread( $post_id = null ) {
         return false;
     }
 
+    // Only posts and pages qualify for longread.
     $post_type = get_post_type( $post_id );
-
-    // Pages must have the "pijler" tag to qualify.
-    if ( 'page' === $post_type ) {
-        $terms = wp_get_object_terms( $post_id, 'post_tag', array( 'fields' => 'slugs' ) );
-        if ( is_wp_error( $terms ) || ! in_array( 'pijler', (array) $terms, true ) ) {
-            return false;
-        }
-    } elseif ( 'post' !== $post_type ) {
+    if ( 'post' !== $post_type && 'page' !== $post_type ) {
         return false;
     }
 
-    // Inside the allowed scope: check meta toggles.
+    // Check meta toggles (new key first, legacy key as fallback).
     if ( '1' === get_post_meta( $post_id, 'sfp_longread', true ) ) {
         return true;
     }

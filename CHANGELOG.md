@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [1.9.9] - 2026-04-16
+
+### Toegevoegd
+
+- **Longread-branding editable per site.** In `SFP Customizations → Instellingen` is een nieuwe sectie "Longread-branding" verschenen met vijf kleurkiezers (native WP color picker) voor de accentkleur, mobiele balk-achtergrond en -tekst, en de zijbalk-tekst- en muted-kleur. Leeg laten valt terug op de domein-default, zodat een per ongeluk gewist veld nooit een gebroken CSS-variabele oplevert.
+
+### Gewijzigd
+
+- **Longread-checkbox in de metabox werkt nu zoals verwacht.** De checkbox is beschikbaar op alle posts en pagina's, behalve op salespages (paginatype ingesteld op coaching/training/incompany). Op het moment dat je in de metabox zo'n paginatype kiest, verdwijnt de checkbox direct via JS. De pijler-tag-eis is losgelaten.
+- **`sfp_page_config_is_longread()` vereist nu alleen de checkbox** (naast de salespage-uitsluiting), niet meer de `pijler`-tag op pagina's.
+
+### Gerepareerd
+
+- **Mobiele hoofdstuk-drawer scrollt nu bij veel H3's.** De drawer had `overflow: hidden` met een vaste `max-height: 400px`, waardoor H3's onderaan onbereikbaar waren bij long-form content. Gewijzigd naar `overflow-y: auto` met `max-height: calc(70vh - 54px)` plus `overscroll-behavior: contain` tegen scroll-chaining.
+
 ## [1.9.8] - 2026-04-16
 
 ### Gerepareerd
