@@ -86,7 +86,7 @@ function sfp_page_config_sanitize_settings( $input ) {
     // An empty value is allowed: it means "fall back to the domain default"
     // in sfp_page_config_get_brand(). Invalid values are stored as empty
     // so they also fall back safely.
-    foreach ( array( 'lr_brand', 'lr_bar_bg', 'lr_bar_text', 'lr_sidebar_text', 'lr_sidebar_muted' ) as $color_key ) {
+    foreach ( array( 'lr_brand', 'lr_bar_bg', 'lr_bar_text', 'lr_drawer_bg', 'lr_drawer_text', 'lr_sidebar_text', 'lr_sidebar_muted' ) as $color_key ) {
         $raw = isset( $input[ $color_key ] ) ? trim( (string) $input[ $color_key ] ) : '';
         if ( '' === $raw ) {
             $clean[ $color_key ] = '';
@@ -300,10 +300,6 @@ function sfp_page_config_render_tab_cursusdata() {
     }
 
     $nonce  = wp_create_nonce( 'sfp_cursusdata_nonce' );
-    $hidden = get_option( 'sfp_cursusdata_hidden', array() );
-    if ( ! is_array( $hidden ) ) {
-        $hidden = array();
-    }
 
     // Build page data array for JS.
     $page_data_js = array();
@@ -332,7 +328,6 @@ function sfp_page_config_render_tab_cursusdata() {
         .sfp-cd-table th,.sfp-cd-table td{padding:10px 14px;border:1px solid #e1e1e1;text-align:left;vertical-align:top}
         .sfp-cd-table th{background:#f6f7f7;font-weight:600;position:sticky;top:0}
         .sfp-cd-table tr:hover{background:#f9f9f9}
-        .sfp-cd-table tr.sfp-cd-hidden-row{opacity:.5}
         .sfp-cd-sm{background:#f0f6fc;border:1px solid #c3d9ed;border-radius:4px;padding:10px 12px;margin-bottom:8px}
         .sfp-cd-sm .sfp-cd-sm-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
         .sfp-cd-sm .datum-row{display:flex;align-items:center;gap:8px;margin:4px 0}
@@ -345,26 +340,15 @@ function sfp_page_config_render_tab_cursusdata() {
         .sfp-cd-btn-add:hover{background:#008a20}
         .sfp-cd-btn-del{color:#b32d2e;border-color:#b32d2e;padding:3px 8px}
         .sfp-cd-btn-del:hover{background:#fcf0f1}
-        .sfp-cd-btn-hide{color:#666;border-color:#ccc;font-size:11px;padding:3px 8px}
-        .sfp-cd-btn-hide:hover{background:#f0f0f0}
         .sfp-cd-saved{color:#00a32a;font-weight:bold;display:none;margin-left:10px}
         .sfp-cd-no-dates{color:#999;font-style:italic}
         .sfp-cd-edit-panel{display:none}
         .sfp-cd-display .sfp-cd-sm-display{margin-bottom:4px;padding:4px 8px;background:#f0f6fc;border-radius:3px;display:inline-block;margin-right:6px}
-        .sfp-cd-filter{margin:15px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-        .sfp-cd-filter select,.sfp-cd-filter input[type="text"]{padding:6px 10px;border:1px solid #bbb;border-radius:3px}
         .sfp-cd-count{background:#2271b1;color:#fff;border-radius:10px;padding:2px 10px;font-size:12px;margin-left:6px}
+        .sfp-cd-counter{margin:15px 0;display:flex;align-items:center;gap:8px}
     </style>
 
-    <div class="sfp-cd-filter">
-        <label><strong>Filter:</strong></label>
-        <select id="sfp-cd-filter">
-            <option value="all">Alle pagina's</option>
-            <option value="with">Met cursusdata</option>
-            <option value="without">Zonder cursusdata</option>
-            <option value="hidden">Verborgen pagina's</option>
-        </select>
-        <input type="text" id="sfp-cd-search" placeholder="Zoek op paginanaam..." style="width:280px;">
+    <div class="sfp-cd-counter">
         <span id="sfp-cd-counter"></span>
     </div>
 
@@ -381,13 +365,10 @@ function sfp_page_config_render_tab_cursusdata() {
             $data      = isset( $page_data_js[ $page->ID ] ) ? $page_data_js[ $page->ID ] : array();
             $has_dates = ! empty( $data );
             $pid       = intval( $page->ID );
-            $is_hidden = in_array( $pid, $hidden ) ? '1' : '0';
-            $row_class = $is_hidden === '1' ? 'sfp-cd-row sfp-cd-hidden-row' : 'sfp-cd-row';
         ?>
-            <tr class="<?php echo $row_class; ?>"
+            <tr class="sfp-cd-row"
                 data-pid="<?php echo $pid; ?>"
-                data-has="<?php echo $has_dates ? '1' : '0'; ?>"
-                data-hidden="<?php echo $is_hidden; ?>">
+                data-has="<?php echo $has_dates ? '1' : '0'; ?>">
 
                 <!-- Kolom: Pagina -->
                 <td>
@@ -444,11 +425,6 @@ function sfp_page_config_render_tab_cursusdata() {
                 <!-- Kolom: Acties -->
                 <td>
                     <button class="sfp-cd-btn" onclick="sfpToggle(<?php echo $pid; ?>)" id="btn-<?php echo $pid; ?>">Bewerken</button>
-                    <?php if ( $is_hidden === '1' ) : ?>
-                        <button class="sfp-cd-btn sfp-cd-btn-hide" onclick="sfpHide(<?php echo $pid; ?>,0)" id="hbtn-<?php echo $pid; ?>">Tonen</button>
-                    <?php else : ?>
-                        <button class="sfp-cd-btn sfp-cd-btn-hide" onclick="sfpHide(<?php echo $pid; ?>,1)" id="hbtn-<?php echo $pid; ?>">Verbergen</button>
-                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -554,67 +530,15 @@ function sfp_page_config_render_tab_cursusdata() {
             });
     }
 
-    function sfpHide(id, hide) {
-        var fd = new FormData();
-        fd.append('action', 'sfp_toggle_hidden');
-        fd.append('nonce', sfpN);
-        fd.append('post_id', id);
-        fd.append('hide', hide ? '1' : '0');
-        fetch(sfpU, {method: 'POST', body: fd})
-            .then(function(r) { return r.json(); })
-            .then(function(r) {
-                if (r.success) {
-                    var row = document.querySelector('tr[data-pid="' + id + '"]');
-                    var btn = document.getElementById('hbtn-' + id);
-                    if (hide) {
-                        row.setAttribute('data-hidden', '1');
-                        row.classList.add('sfp-cd-hidden-row');
-                        btn.textContent = 'Tonen';
-                        btn.setAttribute('onclick', 'sfpHide(' + id + ',0)');
-                    } else {
-                        row.setAttribute('data-hidden', '0');
-                        row.classList.remove('sfp-cd-hidden-row');
-                        btn.textContent = 'Verbergen';
-                        btn.setAttribute('onclick', 'sfpHide(' + id + ',1)');
-                    }
-                    sfpFilter();
-                }
-            });
-    }
-
-    document.getElementById('sfp-cd-filter').addEventListener('change', sfpFilter);
-    document.getElementById('sfp-cd-search').addEventListener('input', sfpFilter);
-
-    function sfpFilter() {
-        var f = document.getElementById('sfp-cd-filter').value;
-        var s = document.getElementById('sfp-cd-search').value.toLowerCase();
-        document.querySelectorAll('.sfp-cd-row').forEach(function(r) {
-            var has = r.getAttribute('data-has') === '1';
-            var hid = r.getAttribute('data-hidden') === '1';
-            var t = r.querySelector('strong').textContent.toLowerCase();
-            var sf = false;
-            if (f === 'all') sf = !hid;
-            else if (f === 'with') sf = has && !hid;
-            else if (f === 'without') sf = !has && !hid;
-            else if (f === 'hidden') sf = hid;
-            var ss = !s || t.indexOf(s) > -1;
-            r.style.display = (sf && ss) ? '' : 'none';
-        });
-        sfpCount();
-    }
-
     function sfpCount() {
-        var vis = document.querySelectorAll('.sfp-cd-row:not([style*="display: none"])').length;
-        var tot = document.querySelectorAll('.sfp-cd-row:not([data-hidden="1"])').length;
-        var wd  = document.querySelectorAll('.sfp-cd-row[data-has="1"]:not([data-hidden="1"])').length;
-        var hd  = document.querySelectorAll('.sfp-cd-row[data-hidden="1"]').length;
-        var txt = vis + ' van ' + tot + " pagina's getoond ";
-        txt += '<span class="sfp-cd-count">' + wd + ' met data</span>';
-        if (hd > 0) txt += ' <span class="sfp-cd-count" style="background:#666">' + hd + ' verborgen</span>';
+        var tot = document.querySelectorAll('.sfp-cd-row').length;
+        var wd  = document.querySelectorAll('.sfp-cd-row[data-has="1"]').length;
+        var txt = tot + " trainingpagina's";
+        txt += ' <span class="sfp-cd-count">' + wd + ' met data</span>';
         document.getElementById('sfp-cd-counter').innerHTML = txt;
     }
 
-    sfpFilter();
+    sfpCount();
     </script>
     <?php
 }
@@ -686,6 +610,14 @@ function sfp_page_config_render_tab_settings() {
             'lr_bar_text'      => array(
                 'label'   => 'Balk-tekstkleur (mobiel)',
                 'help'    => 'Tekstkleur in de mobiele hoofdstukbalk.',
+            ),
+            'lr_drawer_bg'     => array(
+                'label'   => 'Drawer-achtergrond (mobiel)',
+                'help'    => 'Achtergrondkleur van het uitklapmenu met H3-hoofdstukken op mobiel.',
+            ),
+            'lr_drawer_text'   => array(
+                'label'   => 'Drawer-tekstkleur (mobiel)',
+                'help'    => 'Tekstkleur van de H3-items in het mobiele uitklapmenu.',
             ),
             'lr_sidebar_text'  => array(
                 'label'   => 'Zijbalk-tekstkleur (desktop)',

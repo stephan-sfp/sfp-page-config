@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     2.0.0
+ * Version:     2.1.0
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '2.0.0' );
+define( 'SFP_PAGE_CONFIG_VERSION', '2.1.0' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -48,55 +48,65 @@ function sfp_page_config_get_brand() {
             'font'      => "'Archivo Black', sans-serif",
             'weight'    => '400',
             // Longread navigation colours.
-            'lr_brand'        => '#d22d00',
-            'lr_bar_bg'       => '#d22d00',
-            'lr_bar_text'     => '#ffffff',
-            'lr_sidebar_text' => '#333333',
-            'lr_sidebar_muted'=> '#cccccc',
+            'lr_brand'         => '#d22d00',
+            'lr_bar_bg'        => '#d22d00',
+            'lr_bar_text'      => '#ffffff',
+            'lr_drawer_bg'     => '#F7FCFE',
+            'lr_drawer_text'   => '#d22d00',
+            'lr_sidebar_text'  => '#333333',
+            'lr_sidebar_muted' => '#cccccc',
         ),
         'degespreksacademie.nl' => array(
             'cta_bg'    => '#fc5130',
             'cta_hover' => '#fd7257',
             'font'      => "'Rubik', sans-serif",
             'weight'    => '900',
-            'lr_brand'        => '#fc5130',
-            'lr_bar_bg'       => '#fc5130',
-            'lr_bar_text'     => '#ffffff',
-            'lr_sidebar_text' => '#333333',
-            'lr_sidebar_muted'=> '#cccccc',
+            'lr_brand'         => '#fc5130',
+            'lr_bar_bg'        => '#fc5130',
+            'lr_bar_text'      => '#ffffff',
+            'lr_drawer_bg'     => '#F7FCFE',
+            'lr_drawer_text'   => '#fc5130',
+            'lr_sidebar_text'  => '#333333',
+            'lr_sidebar_muted' => '#cccccc',
         ),
         'depresenteerschool.nl' => array(
             'cta_bg'    => '#ff5a06',
             'cta_hover' => '#ff7420',
             'font'      => "'Nunito', sans-serif",
             'weight'    => '900',
-            'lr_brand'        => '#2E2864',
-            'lr_bar_bg'       => '#00B0E3',
-            'lr_bar_text'     => '#ffffff',
-            'lr_sidebar_text' => '#2E2864',
-            'lr_sidebar_muted'=> '#A1D9F4',
+            'lr_brand'         => '#2E2864',
+            'lr_bar_bg'        => '#00B0E3',
+            'lr_bar_text'      => '#ffffff',
+            'lr_drawer_bg'     => '#F7FCFE',
+            'lr_drawer_text'   => '#00B0E3',
+            'lr_sidebar_text'  => '#2E2864',
+            'lr_sidebar_muted' => '#A1D9F4',
         ),
         'centrumvoordidactiek.nl' => array(
             'cta_bg'    => '#ff3c38',
             'cta_hover' => '#ff625f',
             'font'      => "'Nunito', sans-serif",
             'weight'    => '900',
-            'lr_brand'        => '#ff3c38',
-            'lr_bar_bg'       => '#ff3c38',
-            'lr_bar_text'     => '#ffffff',
-            'lr_sidebar_text' => '#333333',
-            'lr_sidebar_muted'=> '#cccccc',
+            'lr_brand'         => '#ff3c38',
+            'lr_bar_bg'        => '#ff3c38',
+            'lr_bar_text'      => '#ffffff',
+            'lr_drawer_bg'     => '#F7FCFE',
+            'lr_drawer_text'   => '#ff3c38',
+            'lr_sidebar_text'  => '#333333',
+            'lr_sidebar_muted' => '#cccccc',
         ),
         'deschrijftrainers.nl' => array(
             'cta_bg'    => '#ff9f1c',
             'cta_hover' => '#ffb857',
             'font'      => "'Rubik', sans-serif",
             'weight'    => '900',
-            'lr_brand'        => '#ff9f1c',
-            'lr_bar_bg'       => '#ff9f1c',
-            'lr_bar_text'     => '#ffffff',
-            'lr_sidebar_text' => '#333333',
-            'lr_sidebar_muted'=> '#cccccc',
+            'lr_brand'         => '#ff9f1c',
+            'lr_bar_bg'        => '#ff9f1c',
+            'lr_bar_text'      => '#ffffff',
+            'lr_drawer_bg'     => '#F7FCFE',
+            'lr_drawer_text'   => '#ff9f1c',
+            'lr_sidebar_text'  => '#333333',
+            'lr_sidebar_muted' => '#cccccc',
         ),
     );
 
@@ -116,6 +126,8 @@ function sfp_page_config_get_brand() {
         'lr_brand'         => 'lr_brand',
         'lr_bar_bg'        => 'lr_bar_bg',
         'lr_bar_text'      => 'lr_bar_text',
+        'lr_drawer_bg'     => 'lr_drawer_bg',
+        'lr_drawer_text'   => 'lr_drawer_text',
         'lr_sidebar_text'  => 'lr_sidebar_text',
         'lr_sidebar_muted' => 'lr_sidebar_muted',
     );

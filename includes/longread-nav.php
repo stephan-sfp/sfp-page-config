@@ -59,11 +59,13 @@ function sfp_page_config_longread_nav_output() {
     $brand = sfp_page_config_get_brand();
 
     // CSS custom properties from brand config.
-    $lr_brand        = isset( $brand['lr_brand'] )        ? $brand['lr_brand']        : '#333333';
-    $lr_bar_bg       = isset( $brand['lr_bar_bg'] )       ? $brand['lr_bar_bg']       : '#333333';
-    $lr_bar_text     = isset( $brand['lr_bar_text'] )     ? $brand['lr_bar_text']     : '#ffffff';
-    $lr_sidebar_text = isset( $brand['lr_sidebar_text'] ) ? $brand['lr_sidebar_text'] : '#333333';
-    $lr_sidebar_muted= isset( $brand['lr_sidebar_muted'] )? $brand['lr_sidebar_muted']: '#cccccc';
+    $lr_brand        = isset( $brand['lr_brand'] )         ? $brand['lr_brand']         : '#333333';
+    $lr_bar_bg       = isset( $brand['lr_bar_bg'] )        ? $brand['lr_bar_bg']        : '#333333';
+    $lr_bar_text     = isset( $brand['lr_bar_text'] )      ? $brand['lr_bar_text']      : '#ffffff';
+    $lr_drawer_bg    = isset( $brand['lr_drawer_bg'] )     ? $brand['lr_drawer_bg']     : '#F7FCFE';
+    $lr_drawer_text  = isset( $brand['lr_drawer_text'] )   ? $brand['lr_drawer_text']   : $lr_bar_bg;
+    $lr_sidebar_text = isset( $brand['lr_sidebar_text'] )  ? $brand['lr_sidebar_text']  : '#333333';
+    $lr_sidebar_muted= isset( $brand['lr_sidebar_muted'] ) ? $brand['lr_sidebar_muted'] : '#cccccc';
     $heading_font    = isset( $brand['font'] )            ? $brand['font']            : "'Nunito', sans-serif";
 
     // Strip characters that could break out of the CSS value context.
@@ -122,6 +124,8 @@ function sfp_page_config_longread_nav_output() {
     --lr-brand: <?php echo esc_attr( $lr_brand ); ?>;
     --lr-bar-bg: <?php echo esc_attr( $lr_bar_bg ); ?>;
     --lr-bar-text: <?php echo esc_attr( $lr_bar_text ); ?>;
+    --lr-drawer-bg: <?php echo esc_attr( $lr_drawer_bg ); ?>;
+    --lr-drawer-text: <?php echo esc_attr( $lr_drawer_text ); ?>;
     --lr-sidebar-text: <?php echo esc_attr( $lr_sidebar_text ); ?>;
     --lr-sidebar-muted: <?php echo esc_attr( $lr_sidebar_muted ); ?>;
     --lr-heading-font: <?php echo $safe_font; ?>;
@@ -241,7 +245,7 @@ function sfp_page_config_longread_nav_output() {
     bottom: calc(54px + env(safe-area-inset-bottom, 0)) !important;
     left: 0 !important;
     right: 0 !important;
-    background: #F7FCFE !important;
+    background: var(--lr-drawer-bg) !important;
     max-height: 0 !important;
     overflow: hidden !important;
     transition: max-height 0.25s ease !important;
@@ -263,7 +267,7 @@ function sfp_page_config_longread_nav_output() {
     font-weight: 900 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.06em !important;
-    color: var(--lr-bar-bg) !important;
+    color: var(--lr-drawer-text) !important;
     text-decoration: none !important;
     border-top: 1px solid rgba(0,0,0,0.08) !important;
     cursor: pointer !important;

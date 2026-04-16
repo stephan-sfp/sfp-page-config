@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.1.0] - 2026-04-16
+
+### Toegevoegd
+
+- **Drawer-kleurvelden in Longread-branding.** Twee nieuwe kleurvelden: "Drawer-achtergrond (mobiel)" en "Drawer-tekstkleur (mobiel)". De achtergrond van het mobiele H3-uitklapmenu was hardcoded op `#F7FCFE` en de tekstkleur was gekoppeld aan de balk-achtergrond. Beide zijn nu instelbaar via `Instellingen > Longread-branding` en als CSS-variabelen (`--lr-drawer-bg`, `--lr-drawer-text`) beschikbaar.
+- **Domein-defaults voor drawer-kleuren.** Elke site in de sitematrix heeft nu een eigen `lr_drawer_bg` (standaard `#F7FCFE`) en `lr_drawer_text` (standaard de balk-achtergrondkleur van die site).
+
+### Gewijzigd
+
+- **Cursusdata-tab vereenvoudigd.** Filter-dropdown (Alle/Met/Zonder/Verborgen), zoekbalk en Verbergen-knoppen verwijderd. De server-side `meta_query` toont al alleen trainingpagina's, waardoor clientside filtering overbodig was. De teller toont nu enkel het totaal aantal trainingpagina's en hoeveel daarvan cursusdata hebben.
+
 ## [2.0.0] - 2026-04-16
 
 Major bump omdat de Sticky CTA voor het eerst via de Instellingen-tab beheerbaar is. Geen breaking changes voor bestaande sites: de hardcoded defaults uit v1.9.x blijven als fallback staan, dus een site die zonder instellingen upgrade draait gedrag-identiek door.
