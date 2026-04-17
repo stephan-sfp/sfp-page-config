@@ -153,14 +153,40 @@ function sfp_page_config_reading_progress_custom_css() {
     echo "\n<style id=\"sfp-custom-css-rp\">\n" . $css . "\n</style>\n";
 }
 
+add_action( 'wp_enqueue_scripts', 'sfp_page_config_scroll_progress_enqueue' );
+
+/**
+ * Enqueue the scroll progress bar stylesheet on singular pages.
+ */
+function sfp_page_config_scroll_progress_enqueue() {
+
+    if ( ! is_singular( sfp_page_config_post_types() ) ) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'sfp-reading-time',
+        SFP_PAGE_CONFIG_URL . 'assets/reading-time.css',
+        array(),
+        SFP_PAGE_CONFIG_VERSION
+    );
+
+    // Inject the dynamic bar colour as a CSS custom property.
+    $brand     = sfp_page_config_get_brand();
+    $bar_color = isset( $brand['cta_bg'] ) ? sanitize_hex_color( $brand['cta_bg'] ) : '#d22d00';
+
+    wp_add_inline_style( 'sfp-reading-time', ':root{--sfp-bar-color:' . esc_attr( $bar_color ) . '}' );
+}
+
 add_action( 'wp_footer', 'sfp_page_config_scroll_progress_bar', 25 );
 
 /**
- * Render the scroll progress bar container, its styles, and its JS driver.
+ * Render the scroll progress bar container and its JS driver.
  *
  * Sitewide on all singular posts and pages (not gated by the longread
  * toggle anymore). Uses a brand-coloured bar with requestAnimationFrame
  * throttling. Brand colour comes from the site config (CTA background).
+ * CSS is loaded via wp_enqueue_style in sfp_page_config_scroll_progress_enqueue().
  */
 function sfp_page_config_scroll_progress_bar() {
 
@@ -168,34 +194,7 @@ function sfp_page_config_scroll_progress_bar() {
         return;
     }
 
-    $brand = sfp_page_config_get_brand();
-    $bar_color = isset( $brand['cta_bg'] ) ? sanitize_hex_color( $brand['cta_bg'] ) : '#d22d00';
-
     ?>
-    <style>
-    #sfp-scroll-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: transparent;
-        z-index: 9995;
-        pointer-events: none;
-    }
-    #sfp-scroll-bar {
-        height: 100%;
-        width: 0;
-        background: <?php echo esc_attr( $bar_color ); ?>;
-        transition: width 0.08s linear;
-    }
-    /* Keep progress bar below the WP admin bar on desktop */
-    body.admin-bar #sfp-scroll-container { top: 32px; }
-    @media (max-width: 782px) {
-        /* Admin bar is not fixed on mobile, so reset to top: 0 */
-        body.admin-bar #sfp-scroll-container { top: 0; }
-    }
-    </style>
     <div id="sfp-scroll-container" aria-hidden="true"><div id="sfp-scroll-bar"></div></div>
     <script>
     (function () {
