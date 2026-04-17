@@ -1,11 +1,18 @@
 /**
  * SFP Page Config - Sitewide Sticky CTA
- * Version: 1.9.6
+ * Version: 2.5.0
  *
  * Builds a sticky CTA bar based on window.sfpStickyConfig.
- * Uses dual IntersectionObservers:
- *   - Appears when the hero CTA scrolls out of view.
- *   - Disappears when the form/anchor section scrolls into view.
+ *
+ * Hero detection (three layers, first match wins):
+ *   1. Manual override: cfg.hero selector from admin settings.
+ *   2. Auto-detect: first top-level Spectra container in .entry-content.
+ *   3. Scroll fallback: show after cfg.scrollThreshold (default 400px).
+ *
+ * When a hero element is found, dual IntersectionObservers control
+ * visibility:
+ *   - Appears when the hero section scrolls out of view.
+ *   - Disappears when the anchor/form section scrolls into view.
  *
  * Supports WP Rocket delay-JS by listening for both standard
  * DOMContentLoaded and rocket-DOMContentLoaded.
@@ -50,15 +57,60 @@
             bar.classList.toggle('visible', show);
         }
 
-        // Observe hero CTA and mark it for CSS targeting.
-        var heroCTA = document.querySelector(cfg.hero || '.uagb-block-0b4df88b');
+        // --- Hero detection: three layers ---
+
+        var heroCTA = null;
+
+        // Layer 1: manual override from admin settings.
+        if (cfg.hero && cfg.hero.length > 0) {
+            try {
+                heroCTA = document.querySelector(cfg.hero);
+            } catch (e) {
+                // Invalid selector; fall through to auto-detect.
+                heroCTA = null;
+            }
+        }
+
+        // Layer 2: auto-detect first top-level Spectra container.
+        if (!heroCTA) {
+            heroCTA = document.querySelector(
+                '.entry-content > .wp-block-uagb-container'
+            );
+        }
+
         if (heroCTA) {
+            // Mark the hero for CSS targeting (outline-button visibility).
             heroCTA.classList.add('sfp-hero-section');
+
             new IntersectionObserver(function (entries) {
                 heroVisible = entries[0].isIntersecting;
                 if (heroVisible) heroEverSeen = true;
                 updateVisibility();
             }, { threshold: 0 }).observe(heroCTA);
+        } else {
+            // Layer 3: scroll-threshold fallback.
+            // No hero element found; show after scrolling past threshold.
+            var threshold = parseInt(cfg.scrollThreshold, 10) || 400;
+            var ticking = false;
+
+            function onScroll() {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(function () {
+                    ticking = false;
+                    var scrolled = window.pageYOffset || document.documentElement.scrollTop;
+                    var pastThreshold = scrolled >= threshold;
+                    if (pastThreshold && !heroEverSeen) {
+                        heroEverSeen = true;
+                    }
+                    heroVisible = !pastThreshold;
+                    updateVisibility();
+                });
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            // Run once to set initial state.
+            onScroll();
         }
 
         // Observe anchor (form section).

@@ -56,6 +56,44 @@ function sfp_page_config_longread_nav_enqueue() {
         return;
     }
 
+    wp_enqueue_style(
+        'sfp-longread-nav',
+        SFP_PAGE_CONFIG_URL . 'assets/longread-nav.css',
+        array(),
+        SFP_PAGE_CONFIG_VERSION
+    );
+
+    // Dynamic brand colours as CSS custom properties.
+    $brand = sfp_page_config_get_brand();
+
+    $lr_brand        = isset( $brand['lr_brand'] )         ? $brand['lr_brand']         : '#333333';
+    $lr_bar_bg       = isset( $brand['lr_bar_bg'] )        ? $brand['lr_bar_bg']        : '#333333';
+    $lr_bar_text     = isset( $brand['lr_bar_text'] )      ? $brand['lr_bar_text']      : '#ffffff';
+    $lr_drawer_bg    = isset( $brand['lr_drawer_bg'] )     ? $brand['lr_drawer_bg']     : '#F7FCFE';
+    $lr_drawer_text  = isset( $brand['lr_drawer_text'] )   ? $brand['lr_drawer_text']   : $lr_bar_bg;
+    $lr_sidebar_text  = isset( $brand['lr_sidebar_text'] )   ? $brand['lr_sidebar_text']   : '#333333';
+    $lr_sidebar_muted = isset( $brand['lr_sidebar_muted'] )  ? $brand['lr_sidebar_muted']  : '#cccccc';
+    $lr_sidebar_active= isset( $brand['lr_sidebar_active'] ) ? $brand['lr_sidebar_active'] : $lr_bar_bg;
+    $lr_sidebar_h3    = isset( $brand['lr_sidebar_h3'] )     ? $brand['lr_sidebar_h3']     : '#575757';
+    $heading_font    = isset( $brand['font'] )            ? $brand['font']            : "'Nunito', sans-serif";
+    $safe_font = preg_replace( '/[^a-zA-Z0-9\s\'\",\-]/', '', $heading_font );
+
+    $root_css = ':root {'
+        . '--lr-brand:'          . esc_attr( $lr_brand )         . ';'
+        . '--lr-bar-bg:'         . esc_attr( $lr_bar_bg )        . ';'
+        . '--lr-bar-text:'       . esc_attr( $lr_bar_text )      . ';'
+        . '--lr-drawer-bg:'      . esc_attr( $lr_drawer_bg )     . ';'
+        . '--lr-drawer-text:'    . esc_attr( $lr_drawer_text )   . ';'
+        . '--lr-sidebar-text:'   . esc_attr( $lr_sidebar_text )  . ';'
+        . '--lr-sidebar-muted:'  . esc_attr( $lr_sidebar_muted ) . ';'
+        . '--lr-sidebar-active:' . esc_attr( $lr_sidebar_active ). ';'
+        . '--lr-sidebar-h3:'     . esc_attr( $lr_sidebar_h3 )    . ';'
+        . '--lr-heading-font:'   . $safe_font                    . ';'
+        . '--lr-sticky-offset:120px'
+        . '}';
+
+    wp_add_inline_style( 'sfp-longread-nav', $root_css );
+
     wp_enqueue_script(
         'sfp-longread-nav',
         SFP_PAGE_CONFIG_URL . 'assets/longread-nav.js',
@@ -80,24 +118,6 @@ function sfp_page_config_longread_nav_output() {
         return;
     }
 
-    $brand = sfp_page_config_get_brand();
-
-    // CSS custom properties from brand config.
-    $lr_brand        = isset( $brand['lr_brand'] )         ? $brand['lr_brand']         : '#333333';
-    $lr_bar_bg       = isset( $brand['lr_bar_bg'] )        ? $brand['lr_bar_bg']        : '#333333';
-    $lr_bar_text     = isset( $brand['lr_bar_text'] )      ? $brand['lr_bar_text']      : '#ffffff';
-    $lr_drawer_bg    = isset( $brand['lr_drawer_bg'] )     ? $brand['lr_drawer_bg']     : '#F7FCFE';
-    $lr_drawer_text  = isset( $brand['lr_drawer_text'] )   ? $brand['lr_drawer_text']   : $lr_bar_bg;
-    $lr_sidebar_text  = isset( $brand['lr_sidebar_text'] )   ? $brand['lr_sidebar_text']   : '#333333';
-    $lr_sidebar_muted = isset( $brand['lr_sidebar_muted'] )  ? $brand['lr_sidebar_muted']  : '#cccccc';
-    $lr_sidebar_active= isset( $brand['lr_sidebar_active'] ) ? $brand['lr_sidebar_active'] : $lr_bar_bg;
-    $lr_sidebar_h3    = isset( $brand['lr_sidebar_h3'] )     ? $brand['lr_sidebar_h3']     : '#575757';
-    $heading_font    = isset( $brand['font'] )            ? $brand['font']            : "'Nunito', sans-serif";
-
-    // Strip characters that could break out of the CSS value context.
-    // esc_attr() turns quotes into HTML entities (invalid in CSS), so
-    // we use a whitelist instead. Same pattern as body-class.php.
-    $safe_font = preg_replace( '/[^a-zA-Z0-9\s\'",\-]/', '', $heading_font );
     ?>
 
 <div id="sfp-lr-nav" aria-label="Artikelnavigatie">
@@ -146,304 +166,6 @@ function sfp_page_config_longread_nav_output() {
     </div>
 </div>
 
-<style>
-:root {
-    --lr-brand: <?php echo esc_attr( $lr_brand ); ?>;
-    --lr-bar-bg: <?php echo esc_attr( $lr_bar_bg ); ?>;
-    --lr-bar-text: <?php echo esc_attr( $lr_bar_text ); ?>;
-    --lr-drawer-bg: <?php echo esc_attr( $lr_drawer_bg ); ?>;
-    --lr-drawer-text: <?php echo esc_attr( $lr_drawer_text ); ?>;
-    --lr-sidebar-text: <?php echo esc_attr( $lr_sidebar_text ); ?>;
-    --lr-sidebar-muted: <?php echo esc_attr( $lr_sidebar_muted ); ?>;
-    --lr-sidebar-active: <?php echo esc_attr( $lr_sidebar_active ); ?>;
-    --lr-sidebar-h3: <?php echo esc_attr( $lr_sidebar_h3 ); ?>;
-    --lr-heading-font: <?php echo $safe_font; ?>;
-    --lr-sticky-offset: 120px;
-}
-
-/* Hide floating widgets on longread pages */
-.is-longread .whatsapp-float,
-.is-longread .wa__btn_popup {
-    display: none !important;
-    visibility: hidden !important;
-}
-/* Hide scroll-to-top, Complianz consent button and cookie toggle when
-   the mobile longread bar is active (i.e. sidebar does NOT have room). */
-.is-longread:not(.sfp-lr-has-sidebar) #ast-scroll-top,
-.is-longread:not(.sfp-lr-has-sidebar) .ast-scroll-top,
-.is-longread:not(.sfp-lr-has-sidebar) .cmplz-manage-consent,
-.is-longread:not(.sfp-lr-has-sidebar) .cookie-toggle {
-    display: none !important;
-    visibility: hidden !important;
-}
-
-/* === Bottom bar (mobile) ===
- *
- * Total bar height = 54px content row + env(safe-area-inset-bottom).
- * The safe-area value is 0 on Android and non-iOS browsers; on iPhones
- * with a home indicator it typically ranges from 20px to 34px.
- *
- * The bar is anchored to bottom: 0 and its background extends across
- * the full height including the safe area, so the bar always sits
- * flush against the physical bottom of the screen. Padding-bottom
- * offsets the button row so the buttons themselves stay above the
- * home indicator.
- *
- * viewport-fit=cover is added to the viewport meta by the JS init so
- * env(safe-area-inset-bottom) actually returns non-zero on iOS; without
- * it Safari ignores the variable and reports 0.
- */
-.sfp-lr-bar {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: calc(54px + env(safe-area-inset-bottom, 0)) !important;
-    padding-bottom: env(safe-area-inset-bottom, 0) !important;
-    display: none !important;
-    align-items: center !important;
-    background: var(--lr-bar-bg) !important;
-    color: var(--lr-bar-text) !important;
-    z-index: 9990 !important;
-    box-shadow: 0 -2px 12px rgba(0,0,0,0.18) !important;
-    padding-left: 4px !important;
-    padding-right: 4px !important;
-    box-sizing: border-box !important;
-    /* Force own compositing layer so iOS Safari does not shift the
-     * bar while the address bar hides/shows during scroll. */
-    transform: translateZ(0) !important;
-    will-change: transform !important;
-}
-.sfp-lr-bar.is-visible { display: flex !important; }
-
-.sfp-lr-bar__btn {
-    background: none !important;
-    border: none !important;
-    color: var(--lr-bar-text) !important;
-    padding: 0 14px !important;
-    height: 54px !important;
-    cursor: pointer !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-shrink: 0 !important;
-    opacity: 1 !important;
-    transition: opacity 0.15s !important;
-}
-.sfp-lr-bar__btn:disabled {
-    opacity: 0.25 !important;
-    cursor: default !important;
-    pointer-events: none !important;
-}
-.sfp-lr-bar__btn:not(:disabled):hover { opacity: 0.7 !important; }
-.sfp-lr-bar__top {
-    border-left: 1px solid rgba(255,255,255,0.15) !important;
-    margin-left: auto !important;
-}
-.sfp-lr-bar__chapter {
-    flex: 1 1 auto !important;
-    overflow: hidden !important;
-    text-align: left !important;
-    font-family: var(--lr-heading-font) !important;
-    font-size: 13px !important;
-    font-weight: 900 !important;
-    line-height: 1.3 !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.06em !important;
-    padding: 0 8px !important;
-    cursor: pointer !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 6px !important;
-}
-.sfp-lr-bar__toggle {
-    flex-shrink: 0 !important;
-}
-.sfp-lr-bar__toggle-v {
-    transition: transform 0.2s ease, opacity 0.2s ease !important;
-    transform-origin: center !important;
-}
-.sfp-lr-bar.drawer-open .sfp-lr-bar__toggle-v {
-    transform: rotate(90deg) !important;
-    opacity: 0 !important;
-}
-
-/* Drawer (mobile sub-chapters) */
-.sfp-lr-drawer {
-    position: absolute !important;
-    /* Drawer's bottom edge must align with the bar's top edge, which
-     * sits at (54px + safe-area) above the viewport bottom. */
-    bottom: calc(54px + env(safe-area-inset-bottom, 0)) !important;
-    left: 0 !important;
-    right: 0 !important;
-    background: var(--lr-drawer-bg) !important;
-    max-height: 0 !important;
-    overflow: hidden !important;
-    transition: max-height 0.25s ease !important;
-    -webkit-overflow-scrolling: touch !important;
-    overscroll-behavior: contain !important;
-}
-/* When open, cap the drawer at 70% of the viewport minus the bar height
- * (including safe-area), and enable vertical scrolling so long TOCs
- * (>7-8 H3s) are reachable. */
-.sfp-lr-bar.drawer-open .sfp-lr-drawer {
-    max-height: calc(70vh - 54px - env(safe-area-inset-bottom, 0)) !important;
-    overflow-y: auto !important;
-}
-.sfp-lr-drawer__item {
-    display: block !important;
-    padding: 10px 20px !important;
-    font-family: var(--lr-heading-font) !important;
-    font-size: 12px !important;
-    font-weight: 900 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.06em !important;
-    color: var(--lr-drawer-text) !important;
-    text-decoration: none !important;
-    border-top: 1px solid rgba(0,0,0,0.08) !important;
-    cursor: pointer !important;
-}
-.sfp-lr-drawer__item.is-active { color: var(--lr-brand) !important; }
-.sfp-lr-drawer__item:active { background: rgba(0,0,0,0.05) !important; }
-
-/* Extra bottom padding so content is not hidden behind bar.
- * Add safe-area so the last line of text clears the home indicator
- * as well as the 54px bar. */
-.is-longread .site-content,
-.is-longread article {
-    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0)) !important;
-}
-
-/* === Sidebar TOC (desktop) === */
-.sfp-lr-sidebar {
-    position: fixed !important;
-    width: 300px !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.25s ease !important;
-    z-index: 9989 !important;
-    scrollbar-width: none !important;
-}
-.sfp-lr-sidebar::-webkit-scrollbar { display: none !important; }
-.sfp-lr-sidebar.is-visible { opacity: 1 !important; }
-
-.sfp-lr-sidebar__title {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    background: none !important;
-    border: none !important;
-    font-family: var(--lr-heading-font) !important;
-    font-size: 10px !important;
-    font-weight: 900 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.12em !important;
-    color: var(--lr-sidebar-muted) !important;
-    margin: 0 0 10px 14px !important;
-    padding: 0 !important;
-    cursor: pointer !important;
-    width: 100% !important;
-}
-.sfp-lr-sidebar__title:hover { color: var(--lr-sidebar-text) !important; }
-.sfp-lr-sidebar__toggle-icon {
-    transition: transform 0.2s !important;
-    flex-shrink: 0 !important;
-}
-.sfp-lr-sidebar.is-minimized .sfp-lr-sidebar__toggle-icon {
-    transform: rotate(-90deg) !important;
-}
-.sfp-lr-sidebar.is-minimized .sfp-lr-sidebar__list,
-.sfp-lr-sidebar.is-minimized .sfp-lr-sidebar__top {
-    display: none !important;
-}
-
-.sfp-lr-sidebar__top {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    margin: 12px 0 0 14px !important;
-    padding: 0 !important;
-    background: none !important;
-    border: none !important;
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    color: var(--lr-sidebar-muted) !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
-    cursor: pointer !important;
-    transition: color 0.15s !important;
-}
-.sfp-lr-sidebar__top:hover { color: var(--lr-sidebar-text) !important; }
-
-.sfp-lr-sidebar__list {
-    margin: 0 0 0 12px !important;
-    padding: 0 !important;
-    border-left: 2px solid var(--lr-sidebar-muted) !important;
-}
-
-.sfp-lr-toc__item { margin: 0 !important; padding: 0 !important; }
-.sfp-lr-toc__link {
-    display: block !important;
-    font-family: var(--lr-heading-font) !important;
-    font-size: 12px !important;
-    font-weight: 400 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.06em !important;
-    line-height: 1.4 !important;
-    padding: 5px 8px 5px 14px !important;
-    margin-left: -2px !important;
-    color: var(--lr-sidebar-text) !important;
-    text-decoration: none !important;
-    border-left: 2px solid transparent !important;
-    transition: color 0.15s, border-color 0.15s !important;
-    word-break: break-word !important;
-}
-.sfp-lr-toc__link:hover {
-    color: var(--lr-sidebar-active) !important;
-    border-left-color: var(--lr-sidebar-muted) !important;
-}
-.sfp-lr-toc__link.is-active {
-    color: var(--lr-sidebar-active) !important;
-    border-left-color: var(--lr-sidebar-active) !important;
-    font-weight: 700 !important;
-}
-
-/* H3 sub-items */
-.sfp-lr-toc__item--h3 .sfp-lr-toc__link {
-    padding-left: 26px !important;
-    font-family: 'Roboto', sans-serif !important;
-    font-size: 12px !important;
-    font-weight: 400 !important;
-    text-transform: none !important;
-    letter-spacing: 0 !important;
-    color: var(--lr-sidebar-h3) !important;
-}
-.sfp-lr-toc__item--h3 .sfp-lr-toc__link:hover {
-    color: var(--lr-sidebar-active) !important;
-    border-left-color: var(--lr-sidebar-muted) !important;
-}
-.sfp-lr-toc__item--h3 .sfp-lr-toc__link.is-active {
-    color: var(--lr-sidebar-active) !important;
-    border-left-color: var(--lr-sidebar-active) !important;
-    font-weight: 700 !important;
-}
-
-/* Desktop: only hide the bar when the sidebar actually has room. The JS
- * adds .sfp-lr-has-sidebar to <body> in that case. Without that class we
- * fall back to the mobile bar (e.g. on tablets in landscape or narrow
- * desktops) because the sidebar cannot be positioned there. */
-@media (min-width: 1024px) {
-    .is-longread.sfp-lr-has-sidebar .sfp-lr-bar { display: none !important; }
-    .is-longread.sfp-lr-has-sidebar .site-content,
-    .is-longread.sfp-lr-has-sidebar article { padding-bottom: 0 !important; }
-}
-</style>
-
 <?php
-    // Note: the script is enqueued earlier via wp_enqueue_scripts.
+    // Note: styles and script are enqueued via wp_enqueue_scripts.
 }

@@ -120,11 +120,12 @@ function sfp_page_config_enqueue_sales_assets() {
     $inline_js = sprintf(
         'window.sfpStickyConfig=%s;',
         wp_json_encode( array(
-            'text'   => $config['text'],
-            'href'   => $config['href'],
-            'target' => $config['target'],
-            'anchor' => $config['anchor'],
-            'hero'   => $config['hero'],
+            'text'            => $config['text'],
+            'href'            => $config['href'],
+            'target'          => $config['target'],
+            'anchor'          => $config['anchor'],
+            'hero'            => $config['hero'],
+            'scrollThreshold' => 400,
         ) )
     );
     wp_add_inline_script( 'sfp-page-config-sticky-cta', $inline_js, 'before' );

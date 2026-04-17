@@ -1,0 +1,35 @@
+/**
+ * SFP Page Config - Scroll Progress Bar
+ * Extracted from includes/reading-time.php (v2.5.0)
+ *
+ * Dynamic value: --sfp-bar-color is set via wp_add_inline_style().
+ */
+#sfp-scroll-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    z-index: 9995;
+    pointer-events: none;
+}
+
+#sfp-scroll-bar {
+    height: 100%;
+    width: 0;
+    background: var(--sfp-bar-color, #0170B9);
+    transition: width 0.08s linear;
+}
+
+/* Keep progress bar below the WP admin bar on desktop. */
+body.admin-bar #sfp-scroll-container {
+    top: 32px;
+}
+
+@media (max-width: 782px) {
+    /* Admin bar is not fixed on mobile, so reset to top: 0. */
+    body.admin-bar #sfp-scroll-container {
+        top: 0;
+    }
+}

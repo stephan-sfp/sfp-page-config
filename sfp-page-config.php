@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     2.4.0
+ * Version:     2.5.0
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '2.4.0' );
+define( 'SFP_PAGE_CONFIG_VERSION', '2.5.0' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -163,10 +163,15 @@ function sfp_page_config_get_brand() {
  * Get the hardcoded default sticky CTA config per page type.
  *
  * These act as a fallback when the editor has not entered anything in
- * the Sticky CTA section of the Instellingen tab. The values mirror the
- * pre-2.0 hardcoded setup (Google Calendar link, anchor IDs, UAGB hero
- * selector) so that sites that upgrade without changing settings keep
- * behaving exactly as before.
+ * the Sticky CTA section of the Instellingen tab.
+ *
+ * Hero detection is handled in sticky-cta.js with three layers:
+ *   1. Manual override via the 'hero' field (CSS selector).
+ *   2. Auto-detect: first Spectra container in .entry-content.
+ *   3. Scroll-threshold fallback (default 400px).
+ *
+ * The 'hero' default is intentionally empty so that auto-detection
+ * kicks in without requiring per-page configuration.
  *
  * @return array<string, array>
  */
@@ -180,21 +185,21 @@ function sfp_page_config_get_sticky_cta_defaults() {
             'href'   => $calendar_url,
             'target' => '_blank',
             'anchor' => 'aanvragen',
-            'hero'   => '.uagb-block-0b4df88b',
+            'hero'   => '',
         ),
         'training' => array(
             'text'   => 'Plan een kennismaking in',
             'href'   => $calendar_url,
             'target' => '_blank',
             'anchor' => 'inschrijven',
-            'hero'   => '.uagb-block-0b4df88b',
+            'hero'   => '',
         ),
         'incompany' => array(
             'text'   => 'Plan een kennismaking in',
             'href'   => $calendar_url,
             'target' => '_blank',
             'anchor' => 'aanvragen',
-            'hero'   => '.uagb-block-0b4df88b',
+            'hero'   => '',
         ),
     );
 }
@@ -399,6 +404,7 @@ $sfp_includes = array(
     'includes/affiliate.php',
     'includes/hero-focal.php',
     'includes/date-injector.php',
+    'includes/schema-fix.php',
     'includes/updater.php',
 );
 

@@ -4,6 +4,28 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.5.0] - 2026-04-17
+
+### Toegevoegd
+
+- **FAQ schema fix via `render_block` filter.** Spectra's FAQ-blok (`uagb/faq`) genereerde ongeldige FAQPage JSON-LD wanneer een FAQ-antwoord HTML met `class="..."` attributen bevatte (zoals de `[cursus_datum]` shortcode-output). De dubbele aanhalingstekens in HTML-attributen braken de JSON string voortijdig af. Nieuw filter `render_block_uagb/faq` onderschept de blockoutput, detecteert broken JSON-LD, en herbouwt het schema vanuit de FAQ-HTML met `DOMDocument` en `wp_json_encode()`. Betrokken DPS-pagina's: `/spreekangsttraining/` en `/presentatietraining/`. Pagina's zonder shortcodes in FAQ-antwoorden (bijv. `/spreekangst/`) worden niet aangeraakt.
+
+### Gewijzigd
+
+- **Hero-detectie in sticky CTA herschreven met drielaagse strategie.** De hardcoded CSS-selector `.uagb-block-0b4df88b` werkte alleen op pagina's die toevallig dat specifieke Spectra-blok bevatten. UAGB block-ID's worden random gegenereerd per blok-instantie, waardoor de selector op andere pagina's niet matchte. Nieuwe aanpak:
+  1. **Handmatige override:** als de admin een hero-selector heeft ingevuld in Instellingen en die matcht, wordt die gebruikt.
+  2. **Auto-detectie:** het eerste top-level Spectra container-blok (`.wp-block-uagb-container`) in `.entry-content` wordt automatisch als hero gemarkeerd. Dit is structureel betrouwbaar, onafhankelijk van random block-ID's.
+  3. **Scroll-drempel fallback:** als geen hero-element gevonden wordt, verschijnt de sticky CTA na 400px scroll. Gebruikt `requestAnimationFrame`-throttled scroll-listener.
+- **Hero-selector default leeggemaakt.** De drie paginatypes (coaching, training, incompany) hadden allemaal `.uagb-block-0b4df88b` als default. Die is nu leeg, zodat de auto-detectie het overneemt. Bestaande handmatige overrides in de Instellingen-tab blijven werken.
+- **Outline-button CSS verbreed.** Naast `.ast-outline-button` wordt nu ook `.wp-block-button.is-style-outline` verborgen op mobiel/tablet, met dezelfde uitzondering voor de hero-sectie. Dit dekt zowel Astra- als Gutenberg-native outline-knoppen.
+- **`scrollThreshold` toegevoegd aan `sfpStickyConfig`.** Het JS-configuratieobject bevat nu een `scrollThreshold` veld (standaard 400) voor de fallback-drempel.
+- **Inline CSS geextraheerd naar losse bestanden.** Voor betere cachebaarheid en onderhoudbaarheid:
+  - `includes/longread-nav.php` inline CSS naar `assets/longread-nav.css` (262 regels statische CSS; dynamische brandkleuren via `wp_add_inline_style` als CSS custom properties).
+  - `includes/reading-time.php` inline CSS naar `assets/reading-time.css` (scroll progress bar; `--sfp-bar-color` via `wp_add_inline_style`).
+  - `includes/whatsapp.php` inline CSS naar `assets/whatsapp.css` (volledig statische CSS, geen PHP-variabelen).
+- Alle drie de stylesheets worden nu geladen via `wp_enqueue_style()` met `SFP_PAGE_CONFIG_VERSION` als cache-buster.
+- WhatsApp CSS wordt alleen geladen op pagina's waar de WhatsApp-knop is ingeschakeld (conditional enqueue).
+
 ## [2.4.0] - 2026-04-16
 
 ### Gerepareerd

@@ -90,10 +90,12 @@
  * =================================================================== */
 
 @media (max-width: 1024px) {
-    .is-sales-page .ast-outline-button {
+    .is-sales-page .ast-outline-button,
+    .is-sales-page .wp-block-button.is-style-outline {
         display: none !important;
     }
-    .is-sales-page .sfp-hero-section .ast-outline-button {
+    .is-sales-page .sfp-hero-section .ast-outline-button,
+    .is-sales-page .sfp-hero-section .wp-block-button.is-style-outline {
         display: flex !important;
     }
 }
