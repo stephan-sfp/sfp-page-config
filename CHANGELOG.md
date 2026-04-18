@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.5.3] - 2026-04-18
+
+### Gewijzigd
+
+- **Specificiteit outline-button hide-regel verhoogd.** De sitewide mobiele knop-alignment CSS (`.entry-content a.uagb-buttons-repeater { display: flex !important }`, specificiteit 0,2,1) overschreef de plugin-regel die outline-knoppen verbergt op salespagina's. Opgelost door `body.is-sales-page .entry-content` als prefix toe te voegen (specificiteit 0,3,1), zodat de hide-regel altijd wint ongeacht laadvolgorde.
+
 ## [2.5.2] - 2026-04-18
 
 ### Gewijzigd

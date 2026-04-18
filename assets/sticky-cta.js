@@ -1,6 +1,6 @@
 /**
  * SFP Page Config - Sitewide Sticky CTA
- * Version: 2.5.2
+ * Version: 2.5.3
  *
  * Builds a sticky CTA bar based on window.sfpStickyConfig.
  *
