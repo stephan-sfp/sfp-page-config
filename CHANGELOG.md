@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.5.2] - 2026-04-18
+
+### Gewijzigd
+
+- **Leestijdmeter-CSS verplaatst naar de plugin.** De `.custom-read-meter` en `.custom-read-meter .tijd-getal` regels stonden in de sitewide CSS (ASE Pro), maar het HTML-element wordt door de plugin aangemaakt via de `[mijn_leestijd]` shortcode. CSS nu opgenomen in `assets/reading-time.css` zodat de styling bij de plugin hoort en de sitewide CSS lichter wordt. Gebruikt de bestaande sitewide brand-variabelen (`--brand-font`, `--brand-main`, `--brand-accent`).
+
 ## [2.5.1] - 2026-04-18
 
 ### Gewijzigd

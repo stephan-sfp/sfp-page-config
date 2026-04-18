@@ -1,9 +1,28 @@
 /**
- * SFP Page Config - Scroll Progress Bar
+ * SFP Page Config - Reading Time Meter + Scroll Progress Bar
  * Extracted from includes/reading-time.php (v2.5.0)
  *
  * Dynamic value: --sfp-bar-color is set via wp_add_inline_style().
+ * Brand variables (--brand-font, --brand-main, --brand-accent) are
+ * defined sitewide and used here for the read meter display.
  */
+
+/* === Reading time meter ([mijn_leestijd] shortcode) === */
+
+.custom-read-meter {
+    font-family: var(--brand-font);
+    text-transform: uppercase;
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--brand-main);
+    text-align: center;
+}
+
+.custom-read-meter .tijd-getal {
+    color: var(--brand-accent);
+}
+
+/* === Scroll progress bar === */
 #sfp-scroll-container {
     position: fixed;
     top: 0;
