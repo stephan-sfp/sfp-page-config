@@ -1,12 +1,13 @@
 /**
  * SFP Page Config - Sitewide Sticky CTA
- * Version: 2.5.0
+ * Version: 2.5.1
  *
  * Builds a sticky CTA bar based on window.sfpStickyConfig.
  *
  * Hero detection (three layers, first match wins):
  *   1. Manual override: cfg.hero selector from admin settings.
- *   2. Auto-detect: first top-level Spectra container in .entry-content.
+ *   2. Auto-detect: first top-level Spectra container that contains an
+ *      outline button; falls back to the very first container.
  *   3. Scroll fallback: show after cfg.scrollThreshold (default 400px).
  *
  * When a hero element is found, dual IntersectionObservers control
@@ -71,11 +72,25 @@
             }
         }
 
-        // Layer 2: auto-detect first top-level Spectra container.
+        // Layer 2: auto-detect first top-level Spectra container that
+        // contains an outline button. Falls back to the very first
+        // container if none has one.
         if (!heroCTA) {
-            heroCTA = document.querySelector(
+            var topContainers = document.querySelectorAll(
                 '.entry-content > .wp-block-uagb-container'
             );
+            for (var i = 0; i < topContainers.length; i++) {
+                if (topContainers[i].querySelector(
+                    '.ast-outline-button, .wp-block-button.is-style-outline'
+                )) {
+                    heroCTA = topContainers[i];
+                    break;
+                }
+            }
+            // Fallback: first container (original behaviour).
+            if (!heroCTA && topContainers.length) {
+                heroCTA = topContainers[0];
+            }
         }
 
         if (heroCTA) {

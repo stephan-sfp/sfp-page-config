@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.5.1] - 2026-04-18
+
+### Gewijzigd
+
+- **Hero-detectie houdt rekening met responsieve Spectra-containers.** De auto-detectie koos het eerste top-level Spectra container-blok als hero, maar op DPS salespagina's is dat een statistiekenbalk met `uag-hide-mob` (verborgen op mobiel) die geen knoppen bevat. Het daadwerkelijke hero-blok met CTA-knoppen zit in de volgende container, waardoor `.sfp-hero-section` op het verkeerde element terechtkwam. De outline-button CSS-uitzondering matchte daardoor nooit: op tablet verdwenen alle outline-knoppen (ook die in de hero), op mobiel bleven ze juist staan. Nieuwe logica: auto-detectie zoekt nu het eerste top-level Spectra container-blok dat een outline-knop bevat (`.ast-outline-button` of `.wp-block-button.is-style-outline`). Valt terug op de eerste container als geen enkele een outline-knop heeft.
+
 ## [2.5.0] - 2026-04-17
 
 ### Toegevoegd
