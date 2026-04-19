@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.6.0] - 2026-04-19
+
+### Toegevoegd
+
+- **Autoloaded Options Analyzer (nieuwe submenu-pagina onder SFP Page Config).** WordPress 6.6+ waarschuwt via Site Health zodra de autoloaded options over 800 KB gaan; op DPS, CVD en DST is die waarschuwing structureel. De nieuwe pagina (`SFP Page Config > Autoloaded Options`) leest `wp_options` uit met een prepared statement (autoload IN `on`, `auto`, `yes`), toont totalen en een kleurgecodeerde voortgangsbalk (groen < 600 KB, oranje 600-800 KB, rood > 800 KB), en rendert een `wp-list-table` gesorteerd op grootte. Filter-tabs: Alles, Groot (>1 KB), Verweest, Transients.
+- **Automatische bronherkenning per optie.** Een lengtegesorteerde prefix-map (`admin_site_enhancements` voor ASE Pro vóór de kortere varianten, `astra-` / `astra_` voor Astra, `surerank` voor SureRank, enz.) koppelt option_names aan de actieve SFP-stack. Prefixes die niet matchen worden als `Onbekend` getoond, zodat onverwachte opties direct opvallen.
+- **Verweesde opties worden automatisch gemarkeerd.** Opties met een prefix die niet overlapt met een actieve plugin- of theme-slug (of die matcht met een hardcoded lijst van bekende deactivated plugins: `aioseo`, `yoast`, `rank_math`, `jetpack`, `elementor`, `wordfence`, `litespeed`, etc.) krijgen de status `Verweest`. Transients en WordPress core-opties krijgen een eigen status-badge zodat ze niet per ongeluk in de opruim-flow belanden.
+- **Bulk- en per-rij acties: autoload uitschakelen en verwijderen.** Via een admin-post handler met nonce + `manage_options` capability + beschermde-lijst. Autoload-uit gebruikt `wpdb->update` zodat de optiewaarde ongemoeid blijft en verwijdert daarna de `options` + `alloptions` object-cache entries. Beschermde opties (`siteurl`, `home`, `active_plugins`, `cron`, `widget_block`, `theme_mods_*`, `wp_user_roles`, enz.) kunnen niet verwijderd worden en zijn visueel gemarkeerd.
+- **Cache-reminder na elke mutatie.** Elke succesvolle actie toont in de admin notice expliciet de purge-checklist (WP Rocket, SiteGround, Cloudflare, browser) zodat het onderhoud consistent blijft over de vijf sites.
+
+### Gewijzigd
+
+- **`sfp-page-config.php`:** versie-header en `SFP_PAGE_CONFIG_VERSION` opgehoogd naar 2.6.0, `includes/autoloaded-options.php` toegevoegd aan de `$sfp_includes` array.
+
 ## [2.5.4] - 2026-04-19
 
 ### Gerepareerd
