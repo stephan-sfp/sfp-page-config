@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.6.3] - 2026-04-19
+
+### Gerepareerd
+
+- **Verweesd-detectie gaf false positives bij actieve plugins met afwijkende option-prefixes.** Complianz (map `complianz-gdpr`, opties `cmplz_*`), SureForms (map `sureforms`, opties `srfm_*`), Progress Planner (map `progress-planner`, opties `html-regression-*`), ASE Pro (map `admin-site-enhancements-pro`, opties `admin_site_enhancements*`) en Brainstorm Force-opties (`bsf_*`, `brainstrom_*` die door de hele BSF-familie gedeeld worden) werden ten onrechte als Verweesd gemarkeerd. Opgelost met een expliciete `sfp_ao_source_to_active_slugs()` map die bron-labels koppelt aan de plugin-slugs die in `active_plugins` staan als die bron geïnstalleerd is. `sfp_ao_active_prefixes()` breidt zichzelf nu met deze option-prefixes uit zodra de bijbehorende plugin draait.
+- **Detectievolgorde in `sfp_ao_detect_status()` gewijzigd.** De actieve-plugin-match wordt nu vóór de `known_orphan_prefixes`-check uitgevoerd. Dat betekent dat een heringestalleerde plugin (bijvoorbeeld Yoast of MainWP) automatisch terugkeert naar status Actief zonder codewijziging, en maakt de orphan-lijst veilig uit te breiden met plugins die mogelijk ooit terugkeren.
+
+### Toegevoegd
+
+- **Bronherkenning uitgebreid met oude plugins en gedeelde frameworks.** `sfp_ao_known_prefixes()` herkent nu ook: Yoast SEO (`wpseo`, `yoast`), Rank Math (`rank_math`, `rank-math`, `rankmath`), Surfer SEO (`surfer_`), Elementor (`elementor_`, `elementor-`), FluentMail (`fluentmail`), Better Search Replace (`bsr_`), Custom Post Type UI (`cptui_`), Google Site Kit (`googlesitekit`), All in One SEO (`aioseo`, `aioseop`), Freemius (`fs_`), Brainstorm Force (`bsf_`, `brainstrom`), en de SureForms interne prefix `srfm_`. Opties van deze herkomst verschijnen niet meer als `Onbekend` in de Bron-kolom.
+- **Orphan-lijst uitgebreid.** `sfp_ao_known_orphan_prefixes()` bevat nu ook: `surfer_`, `mainwp`, `mwp_`, `fluentmail`, `bsr_`, `cptui_`, `googlesitekit`, `xrk_`, plus `rank-math` met streepje. Opties van deze uit-het-stack-verdwenen plugins worden daarmee direct als Verweesd gevlagd (tenzij het plugin-slug weer in `active_plugins` verschijnt, dan wint Actief).
+
 ## [2.6.2] - 2026-04-19
 
 ### Toegevoegd

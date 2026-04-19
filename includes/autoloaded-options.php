@@ -143,6 +143,7 @@ function sfp_ao_known_prefixes() {
         'surerank'                   => 'SureRank SEO',
         'surecart'                   => 'SureCart',
         'sureforms'                  => 'SureForms',
+        'srfm_'                      => 'SureForms',
         'surecontact'                => 'SureContact',
         'suretriggers'               => 'Ottokit (SureTriggers)',
         'ottokit'                    => 'Ottokit',
@@ -157,6 +158,7 @@ function sfp_ao_known_prefixes() {
         'convert_pro'                => 'Convert Pro',
         'cp_'                        => 'Convert Pro',
         'presto_player'              => 'Presto Player',
+        'presto-player'              => 'Presto Player',
         'updraftplus'                => 'UpdraftPlus',
         'updraft_'                   => 'UpdraftPlus',
         'mainwp'                     => 'MainWP Child',
@@ -171,14 +173,89 @@ function sfp_ao_known_prefixes() {
         'spectra_'                   => 'Spectra',
         'uag_'                       => 'Spectra',
         'uagb_'                      => 'Spectra',
-        'presto-player'              => 'Presto Player',
+        // Ex-plugins and shared frameworks (added in v2.6.3).
+        'wpseo'                      => 'Yoast SEO',
+        'yoast'                      => 'Yoast SEO',
+        'rank_math'                  => 'Rank Math SEO',
+        'rank-math'                  => 'Rank Math SEO',
+        'rankmath'                   => 'Rank Math SEO',
+        'surfer_'                    => 'Surfer SEO',
+        'elementor_'                 => 'Elementor',
+        'elementor-'                 => 'Elementor',
+        'fluentmail'                 => 'FluentMail',
+        'bsr_'                       => 'Better Search Replace',
+        'cptui_'                     => 'Custom Post Type UI',
+        'googlesitekit'              => 'Google Site Kit',
+        'aioseo'                     => 'All in One SEO',
+        'aioseop'                    => 'All in One SEO',
+        'fs_'                        => 'Freemius',
+        'bsf_'                       => 'Brainstorm Force',
+        'brainstrom'                 => 'Brainstorm Force',
+        'xrk_'                       => 'Onbekend (xrk)',
+    );
+}
+
+/**
+ * Map known source labels to the plugin slug(s) that would appear in
+ * WordPress' active_plugins list when that source is installed and
+ * active. Also used for active-theme recognition (Astra).
+ *
+ * This lets us mark options as "Actief" when their option_name prefix
+ * does not match the plugin's folder slug. Example: Complianz lives in
+ * the folder "complianz-gdpr/" but its options start with "cmplz_";
+ * without this map they would be flagged Verweesd by mistake.
+ *
+ * If a source is not listed here, the status falls back to the
+ * folder-slug match in sfp_ao_active_prefixes().
+ *
+ * @return array<string, string[]>
+ */
+function sfp_ao_source_to_active_slugs() {
+    return array(
+        'ASE Pro'                => array( 'admin-site-enhancements', 'admin-site-enhancements-pro' ),
+        'Astra Theme'            => array( 'astra' ),
+        'Spectra'                => array( 'spectra-pro', 'ultimate-addons-for-gutenberg' ),
+        'SureRank SEO'           => array( 'surerank', 'surerank-pro' ),
+        'SureCart'               => array( 'surecart' ),
+        'SureForms'              => array( 'sureforms', 'sureforms-pro' ),
+        'SureContact'            => array( 'surecontact' ),
+        'Ottokit (SureTriggers)' => array( 'suretriggers', 'ottokit' ),
+        'Ottokit'                => array( 'suretriggers', 'ottokit' ),
+        'SFP Page Config'        => array( 'sfp-page-config' ),
+        'Imagify'                => array( 'imagify' ),
+        'WP Rocket'              => array( 'wp-rocket' ),
+        'Complianz'              => array( 'complianz-gdpr', 'complianz-gdpr-premium' ),
+        'Convert Pro'            => array( 'convert-pro', 'convert-pro-addon' ),
+        'Presto Player'          => array( 'presto-player', 'presto-player-pro' ),
+        'UpdraftPlus'            => array( 'updraftplus' ),
+        'MainWP Child'           => array( 'mainwp-child' ),
+        'Progress Planner'       => array( 'progress-planner' ),
+        'FluentSMTP'             => array( 'fluent-smtp' ),
+        'Sigmize'                => array( 'sigmize' ),
+        'SiteGround Optimizer'   => array( 'sg-cachepress' ),
+        'Yoast SEO'              => array( 'wordpress-seo', 'wordpress-seo-premium' ),
+        'Rank Math SEO'          => array( 'seo-by-rank-math', 'seo-by-rank-math-pro' ),
+        'Elementor'              => array( 'elementor', 'elementor-pro' ),
+        'FluentMail'             => array( 'fluent-mail' ),
+        'Better Search Replace'  => array( 'better-search-replace' ),
+        'Custom Post Type UI'    => array( 'custom-post-type-ui' ),
+        'Google Site Kit'        => array( 'google-site-kit' ),
+        'All in One SEO'         => array( 'all-in-one-seo-pack', 'all-in-one-seo-pack-pro' ),
+        'Surfer SEO'             => array( 'surferseo' ),
+        'Freemius'               => array( 'imagify', 'presto-player', 'presto-player-pro', 'sureforms', 'sureforms-pro', 'convert-pro', 'convert-pro-addon' ),
+        'Brainstorm Force'       => array( 'astra', 'spectra-pro', 'ultimate-addons-for-gutenberg', 'surerank', 'surerank-pro', 'surecart', 'sureforms', 'sureforms-pro', 'surecontact', 'convert-pro', 'convert-pro-addon', 'presto-player-pro', 'sfp-page-config' ),
     );
 }
 
 /**
  * Known deactivated / abandoned plugin prefixes. An option matching
- * one of these is always flagged as orphaned even if it does not
- * overlap with the active-plugin slug list.
+ * one of these is flagged as orphaned when its owning plugin is not
+ * also present in the active-plugins list.
+ *
+ * Since v2.6.3 this check runs AFTER the active-plugin match, so the
+ * prefix only marks an option orphan when the plugin is truly gone.
+ * That keeps the list safe to extend with plugins that might be
+ * reinstalled later: they will automatically flip back to "Actief".
  *
  * @return string[]
  */
@@ -191,6 +268,7 @@ function sfp_ao_known_orphan_prefixes() {
         'yoast',
         'wpseo',
         'rank_math',
+        'rank-math',
         'rankmath',
         'jetpack',
         'elementor',
@@ -198,6 +276,15 @@ function sfp_ao_known_orphan_prefixes() {
         'litespeed',
         'w3tc',
         'wpsupercache',
+        // Added in v2.6.3 after audit of CVD and the other SFP sites.
+        'surfer_',
+        'mainwp',
+        'mwp_',
+        'fluentmail',
+        'bsr_',
+        'cptui_',
+        'googlesitekit',
+        'xrk_',
     );
 }
 
@@ -297,14 +384,8 @@ function sfp_ao_detect_status( $name, array $active_prefixes ) {
         return 'transient';
     }
 
-    // Known-deactivated plugin prefixes always win.
-    foreach ( sfp_ao_known_orphan_prefixes() as $orphan ) {
-        if ( 0 === strpos( $name, $orphan ) ) {
-            return 'orphan';
-        }
-    }
-
-    // Core options and recognised structural WP options.
+    // Core options and recognised structural WP options. Core always
+    // wins over any later prefix check.
     $core_exact = array(
         'siteurl', 'home', 'blogname', 'blogdescription', 'admin_email',
         'active_plugins', 'current_theme', 'template', 'stylesheet',
@@ -318,12 +399,23 @@ function sfp_ao_detect_status( $name, array $active_prefixes ) {
         return 'core';
     }
 
-    // If no prefix matches an active plugin, flag as orphan.
-    if ( ! sfp_ao_matches_active_plugin( $name, $active_prefixes ) ) {
-        return 'orphan';
+    // v2.6.3: check the active-plugin set BEFORE the orphan-prefix
+    // list so that reinstalled plugins (e.g. a returning Yoast or
+    // MainWP) immediately flip back to "Actief" without needing code
+    // changes in the orphan list.
+    if ( sfp_ao_matches_active_plugin( $name, $active_prefixes ) ) {
+        return 'active';
     }
 
-    return 'active';
+    // Known-deactivated plugin prefixes.
+    foreach ( sfp_ao_known_orphan_prefixes() as $orphan ) {
+        if ( 0 === strpos( $name, $orphan ) ) {
+            return 'orphan';
+        }
+    }
+
+    // Default fallback: no prefix matches, treat as orphan.
+    return 'orphan';
 }
 
 /**
@@ -342,7 +434,8 @@ function sfp_ao_active_prefixes() {
         return $cache;
     }
 
-    $prefixes = array();
+    $prefixes     = array();
+    $active_slugs = array();
 
     $active = (array) get_option( 'active_plugins', array() );
     // Network-active plugins (multisite) would normally be merged in
@@ -352,7 +445,8 @@ function sfp_ao_active_prefixes() {
         if ( '' === $slug ) {
             continue;
         }
-        $prefixes[ $slug ] = true;
+        $active_slugs[ $slug ] = true;
+        $prefixes[ $slug ]     = true;
         // Common variations: replace dashes with underscores and strip
         // 'wp-' / 'wp_' prefixes so 'wp-rocket' also matches 'wp_rocket'
         // and 'rocket_'.
@@ -363,8 +457,12 @@ function sfp_ao_active_prefixes() {
     // Active theme (and parent, if it's a child theme).
     $theme = function_exists( 'wp_get_theme' ) ? wp_get_theme() : null;
     if ( $theme ) {
-        $prefixes[ $theme->get_stylesheet() ] = true;
-        $prefixes[ $theme->get_template() ]   = true;
+        $stylesheet = $theme->get_stylesheet();
+        $template   = $theme->get_template();
+        $prefixes[ $stylesheet ]     = true;
+        $prefixes[ $template ]       = true;
+        $active_slugs[ $stylesheet ] = true;
+        $active_slugs[ $template ]   = true;
     }
 
     // WordPress core prefixes always count as "active".
@@ -377,6 +475,33 @@ function sfp_ao_active_prefixes() {
     $sfp_known = array( 'sfp', 'sfp_', 'sfp-' );
     foreach ( $sfp_known as $p ) {
         $prefixes[ $p ] = true;
+    }
+
+    // v2.6.3: cross-reference the known source-label → plugin-slug map.
+    // For each option-prefix we recognise, check whether any of the
+    // plugin slugs that would own that source is actually active (or
+    // the active theme). If yes, add the option-prefix itself to the
+    // active set. This fixes false "Verweesd" flags for plugins whose
+    // option_name prefix differs from their folder slug, e.g.:
+    //   - Complianz:    folder 'complianz-gdpr'  vs options 'cmplz_*'
+    //   - SureForms:    folder 'sureforms'       vs options 'srfm_*'
+    //   - ASE Pro:      folder 'admin-site-enhancements-pro' vs
+    //                   options 'admin_site_enhancements*'
+    //   - Progress Pl.: folder 'progress-planner' vs options
+    //                   'html-regression-*'
+    //   - Brainstorm Force: 'bsf_*' and 'brainstrom_*' options are
+    //                   shared by the whole BSF plugin family.
+    $source_slugs = sfp_ao_source_to_active_slugs();
+    foreach ( sfp_ao_known_prefixes() as $option_prefix => $source_label ) {
+        if ( ! isset( $source_slugs[ $source_label ] ) ) {
+            continue;
+        }
+        foreach ( $source_slugs[ $source_label ] as $candidate_slug ) {
+            if ( isset( $active_slugs[ $candidate_slug ] ) ) {
+                $prefixes[ $option_prefix ] = true;
+                break;
+            }
+        }
     }
 
     $cache = $prefixes;
