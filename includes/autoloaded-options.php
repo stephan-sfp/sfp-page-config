@@ -687,7 +687,7 @@ function sfp_ao_render_page() {
                 <strong>800 KB</strong>
             </div>
             <div class="sfp-ao-card">
-                <span>Verweest</span>
+                <span>Verweesd</span>
                 <strong><?php echo esc_html( number_format_i18n( $count_orphan ) ); ?></strong>
             </div>
         </div>
@@ -710,7 +710,7 @@ function sfp_ao_render_page() {
             $tabs = array(
                 'all'       => array( 'Alles',       $count_all ),
                 'large'     => array( 'Groot (>1 KB)', $count_large ),
-                'orphan'    => array( 'Verweest',    $count_orphan ),
+                'orphan'    => array( 'Verweesd',    $count_orphan ),
                 'transient' => array( 'Transients',  $count_transient ),
             );
             $last_key = array_key_last( $tabs );
@@ -772,7 +772,7 @@ function sfp_ao_render_page() {
                                      || sfp_ao_is_structural_widget_option( $r->option_name );
                         $status_label = array(
                             'active'    => array( 'Actief',    'sfp-ao-status-active' ),
-                            'orphan'    => array( 'Verweest',  'sfp-ao-status-orphan' ),
+                            'orphan'    => array( 'Verweesd',  'sfp-ao-status-orphan' ),
                             'transient' => array( 'Transient', 'sfp-ao-status-transient' ),
                             'core'      => array( 'WP Core',   'sfp-ao-status-core' ),
                         );
