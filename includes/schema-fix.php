@@ -6,12 +6,27 @@
  * FAQ block (uagb/faq) when FAQ answers contain HTML with class
  * attributes. Spectra dumps raw innerHTML into a JSON string value
  * without escaping the double quotes in HTML attributes, which breaks
- * the JSON at the first class="..." occurrence.
+ * the JSON at the first class="..." occurrence in the answer text.
  *
- * This filter intercepts the rendered block output, detects broken
- * JSON-LD, and rebuilds it from the HTML content of the FAQ block
- * (Strategy A: DOM rebuild). This is more robust than trying to
- * repair the broken JSON string.
+ * Strategy (v2.5.4, Option D: render_block + the_content with strip
+ * and regex fallback):
+ *
+ *   1. Primary hook `render_block_uagb/faq` (priority 10): intercepts
+ *      each FAQ block output, detects broken FAQPage JSON-LD, and
+ *      rebuilds it from the block's own HTML.
+ *   2. Safety net hook `the_content` (priority 99, after do_shortcode):
+ *      scans the full post content for any still-broken FAQPage JSON-LD
+ *      that may have slipped past the render_block filter (for example
+ *      when a theme or another plugin transforms the block output after
+ *      our filter runs).
+ *   3. Before running DOMDocument on the block HTML the broken
+ *      <script> tag is stripped out. Leaving it in has been observed
+ *      to destabilise DOMDocument parsing because the broken JSON
+ *      contains raw HTML tags and unbalanced quotes.
+ *   4. If DOMDocument extraction yields no Q&A pairs, a regex-based
+ *      fallback extractor kicks in. It walks per `uagb-faq-child`
+ *      chunk and pulls the question from `.uagb-question` and the
+ *      answer from `.uagb-faq-content`.
  *
  * Only affects JSON-LD within FAQ block output in the page body.
  * SureRank schema in <head> is not touched.
@@ -24,71 +39,162 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-add_filter( 'render_block_uagb/faq', 'sfp_page_config_fix_faq_schema', 10, 2 );
+/* =========================================================================
+ * Hook registration
+ *
+ * Two filters cover the same problem at different layers:
+ *
+ *   - render_block_uagb/faq: the ideal spot because it is scoped to the
+ *     FAQ block and runs as soon as the block is rendered.
+ *   - the_content priority 99: a safety net that runs after shortcodes
+ *     (priority 11). Protects against edge cases where the render_block
+ *     filter did not repair the output (for example, the block output
+ *     was wrapped or transformed by another plugin before reaching the
+ *     DOM, or the filter was short-circuited).
+ * ====================================================================== */
+
+add_filter( 'render_block_uagb/faq', 'sfp_page_config_fix_faq_schema_block', 10, 2 );
+add_filter( 'the_content', 'sfp_page_config_fix_faq_schema_content', 99 );
 
 /**
- * Filter the rendered output of Spectra FAQ blocks to fix broken
- * FAQPage JSON-LD structured data.
+ * Filter: render_block_uagb/faq.
  *
  * @param  string $block_content The block's rendered HTML.
  * @param  array  $block         The parsed block data.
  * @return string                Fixed HTML.
  */
-function sfp_page_config_fix_faq_schema( $block_content, $block ) {
+function sfp_page_config_fix_faq_schema_block( $block_content, $block ) {
 
     // Bail early if there is no FAQPage schema in this block's output.
-    if ( strpos( $block_content, 'FAQPage' ) === false ) {
+    if ( false === strpos( $block_content, 'FAQPage' ) ) {
         return $block_content;
     }
 
-    // Find and process each JSON-LD script tag in the block output.
-    $block_content = preg_replace_callback(
-        '/<script\s+type=["\']application\/ld\+json["\']>(.*?)<\/script>/s',
-        function ( $matches ) use ( $block_content ) {
-            return sfp_page_config_repair_faq_json( $matches, $block_content );
-        },
-        $block_content
-    );
-
-    return $block_content;
+    return sfp_page_config_repair_faq_schema_html( $block_content );
 }
 
 /**
- * Attempt to repair a single JSON-LD script tag from a FAQ block.
+ * Filter: the_content.
  *
- * If the JSON is already valid, it is returned unchanged.
- * If broken, the FAQPage schema is rebuilt from the HTML content
- * of the FAQ block.
+ * Runs as a safety net at priority 99 (after do_shortcode at 11). Only
+ * does work when a broken FAQPage JSON-LD is still present.
  *
- * @param  array  $matches       Regex matches: [0] = full script tag, [1] = JSON content.
- * @param  string $block_content The full block HTML (used to extract Q&A from DOM).
- * @return string                The (possibly repaired) script tag.
+ * @param  string $content Post content HTML.
+ * @return string
  */
-function sfp_page_config_repair_faq_json( $matches, $block_content ) {
+function sfp_page_config_fix_faq_schema_content( $content ) {
+
+    // Quick rejection: no FAQPage schema present, nothing to do.
+    if ( false === strpos( $content, 'FAQPage' ) ) {
+        return $content;
+    }
+
+    // Scan each JSON-LD script to decide whether any repair is needed.
+    if ( ! preg_match_all(
+        '#<script\s+type=["\']application/ld\+json["\']>(.*?)</script>#s',
+        $content,
+        $matches
+    ) ) {
+        return $content;
+    }
+
+    $needs_repair = false;
+    foreach ( $matches[1] as $json_payload ) {
+        if ( false === strpos( $json_payload, 'FAQPage' ) ) {
+            continue;
+        }
+        json_decode( $json_payload, true );
+        if ( JSON_ERROR_NONE !== json_last_error() ) {
+            $needs_repair = true;
+            break;
+        }
+    }
+
+    if ( ! $needs_repair ) {
+        return $content;
+    }
+
+    return sfp_page_config_repair_faq_schema_html( $content );
+}
+
+/**
+ * Core repair routine. Walks every JSON-LD script in the supplied HTML,
+ * leaves valid JSON untouched, and rebuilds broken FAQPage schemas
+ * using a DOM extraction with a regex-based fallback.
+ *
+ * @param  string $html HTML that may contain a broken FAQPage JSON-LD.
+ * @return string       HTML with the FAQPage JSON-LD repaired where needed.
+ */
+function sfp_page_config_repair_faq_schema_html( $html ) {
+
+    return preg_replace_callback(
+        '#<script\s+type=["\']application/ld\+json["\']>(.*?)</script>#s',
+        function ( $matches ) use ( $html ) {
+            return sfp_page_config_repair_faq_json( $matches, $html );
+        },
+        $html
+    );
+}
+
+/**
+ * Attempt to repair a single JSON-LD script tag.
+ *
+ * If the JSON is already valid, or if the script is not a FAQPage,
+ * the original tag is returned unchanged. Otherwise the FAQPage
+ * schema is rebuilt from the Q&A pairs in the surrounding HTML.
+ *
+ * @param  array  $matches Regex matches: [0] = full script tag, [1] = JSON content.
+ * @param  string $html    The surrounding HTML (used to extract Q&A pairs).
+ * @return string          The (possibly repaired) script tag.
+ */
+function sfp_page_config_repair_faq_json( $matches, $html ) {
 
     $raw = $matches[1];
 
     // If JSON is already valid, leave it alone.
-    $decoded = json_decode( $raw, true );
-    if ( json_last_error() === JSON_ERROR_NONE ) {
+    json_decode( $raw, true );
+    if ( JSON_ERROR_NONE === json_last_error() ) {
         return $matches[0];
     }
 
-    // JSON is broken. Rebuild from the HTML.
-    $qa_pairs = sfp_page_config_extract_faq_from_html( $block_content );
+    // Only rebuild FAQPage schemas. Any other broken JSON-LD is out of
+    // scope for this fix and should be investigated separately.
+    if ( false === strpos( $raw, 'FAQPage' ) ) {
+        return $matches[0];
+    }
+
+    // Strip every JSON-LD script tag from the HTML before parsing. The
+    // broken JSON contains raw HTML tags and unbalanced quotes that
+    // destabilise DOMDocument when the script remains inline.
+    $clean_html = preg_replace(
+        '#<script\s+type=["\']application/ld\+json["\']>.*?</script>#s',
+        '',
+        $html
+    );
+
+    if ( null === $clean_html ) {
+        $clean_html = $html;
+    }
+
+    // Primary: DOM-based extraction on the cleaned HTML.
+    $qa_pairs = sfp_page_config_extract_faq_from_dom( $clean_html );
+
+    // Fallback: regex-based extraction if DOM produced nothing.
+    if ( empty( $qa_pairs ) ) {
+        $qa_pairs = sfp_page_config_extract_faq_from_regex( $clean_html );
+    }
 
     if ( empty( $qa_pairs ) ) {
-        // Could not extract Q&A pairs. Log and return original.
         if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
             error_log(
-                'SFP Page Config: FAQ schema repair failed - could not extract Q&A pairs from block HTML. '
+                'SFP Page Config: FAQ schema repair failed - could not extract Q&A pairs (DOM and regex both empty). '
                 . 'Post ID: ' . get_queried_object_id()
             );
         }
         return $matches[0];
     }
 
-    // Build clean FAQPage schema.
+    // Build a clean FAQPage schema.
     $schema = array(
         '@context'   => 'https://schema.org',
         '@type'      => 'FAQPage',
@@ -122,23 +228,24 @@ function sfp_page_config_repair_faq_json( $matches, $block_content ) {
 }
 
 /**
- * Extract question/answer pairs from FAQ block HTML.
+ * Extract Q&A pairs from FAQ block HTML via DOMDocument.
  *
- * Parses the block HTML to find Spectra FAQ items and extracts the
- * question text and answer text (HTML-stripped for schema purposes).
+ * The caller is expected to pass HTML with the broken JSON-LD script
+ * already stripped out.
  *
- * @param  string $html The full FAQ block HTML.
+ * @param  string $html Cleaned FAQ block HTML (no inline JSON-LD script).
  * @return array        Array of ['question' => '...', 'answer' => '...'] pairs.
  */
-function sfp_page_config_extract_faq_from_html( $html ) {
+function sfp_page_config_extract_faq_from_dom( $html ) {
 
     $qa_pairs = array();
 
-    // Use DOMDocument for robust HTML parsing.
+    if ( '' === trim( (string) $html ) ) {
+        return $qa_pairs;
+    }
+
     $doc = new DOMDocument();
 
-    // Suppress warnings from malformed HTML. Prefix with XML encoding
-    // declaration to handle UTF-8 correctly.
     $prev = libxml_use_internal_errors( true );
     $doc->loadHTML(
         '<?xml encoding="UTF-8">' . $html,
@@ -150,26 +257,27 @@ function sfp_page_config_extract_faq_from_html( $html ) {
     $xpath = new DOMXPath( $doc );
 
     // Spectra FAQ structure:
-    // .uagb-faq-child wraps each Q&A pair.
-    // .uagb-question contains the question text.
-    // .uagb-faq-content contains the answer HTML.
+    //   .wp-block-uagb-faq-child (or any class containing "uagb-faq-child")
+    //     .uagb-question    = question text
+    //     .uagb-faq-content = answer HTML
     $faq_items = $xpath->query( '//*[contains(@class, "uagb-faq-child")]' );
 
-    if ( $faq_items->length === 0 ) {
-        // Fallback: try matching question/answer elements directly.
-        $questions = $xpath->query( '//*[contains(@class, "uagb-question")]' );
-        $answers   = $xpath->query( '//*[contains(@class, "uagb-faq-content")]' );
+    if ( $faq_items instanceof DOMNodeList && $faq_items->length > 0 ) {
+        foreach ( $faq_items as $item ) {
+            $question_nodes = $xpath->query( './/*[contains(@class, "uagb-question")]', $item );
+            $answer_nodes   = $xpath->query( './/*[contains(@class, "uagb-faq-content")]', $item );
 
-        if ( $questions->length === 0 || $answers->length === 0 ) {
-            return array();
-        }
+            if ( ! $question_nodes instanceof DOMNodeList || 0 === $question_nodes->length ) {
+                continue;
+            }
+            if ( ! $answer_nodes instanceof DOMNodeList || 0 === $answer_nodes->length ) {
+                continue;
+            }
 
-        $count = min( $questions->length, $answers->length );
-        for ( $i = 0; $i < $count; $i++ ) {
-            $q_text = trim( $questions->item( $i )->textContent );
-            $a_text = sfp_page_config_get_schema_safe_text( $answers->item( $i ), $doc );
+            $q_text = sfp_page_config_get_schema_safe_text( $question_nodes->item( 0 ), $doc );
+            $a_text = sfp_page_config_get_schema_safe_text( $answer_nodes->item( 0 ), $doc );
 
-            if ( $q_text && $a_text ) {
+            if ( '' !== $q_text && '' !== $a_text ) {
                 $qa_pairs[] = array(
                     'question' => $q_text,
                     'answer'   => $a_text,
@@ -177,21 +285,28 @@ function sfp_page_config_extract_faq_from_html( $html ) {
             }
         }
 
+        if ( ! empty( $qa_pairs ) ) {
+            return $qa_pairs;
+        }
+    }
+
+    // Fallback within DOM: pair question/answer lists directly.
+    $questions = $xpath->query( '//*[contains(@class, "uagb-question")]' );
+    $answers   = $xpath->query( '//*[contains(@class, "uagb-faq-content")]' );
+
+    if ( ! $questions instanceof DOMNodeList || ! $answers instanceof DOMNodeList ) {
+        return $qa_pairs;
+    }
+    if ( 0 === $questions->length || 0 === $answers->length ) {
         return $qa_pairs;
     }
 
-    foreach ( $faq_items as $item ) {
-        $question_nodes = $xpath->query( './/*[contains(@class, "uagb-question")]', $item );
-        $answer_nodes   = $xpath->query( './/*[contains(@class, "uagb-faq-content")]', $item );
+    $count = min( $questions->length, $answers->length );
+    for ( $i = 0; $i < $count; $i++ ) {
+        $q_text = sfp_page_config_get_schema_safe_text( $questions->item( $i ), $doc );
+        $a_text = sfp_page_config_get_schema_safe_text( $answers->item( $i ), $doc );
 
-        if ( $question_nodes->length === 0 || $answer_nodes->length === 0 ) {
-            continue;
-        }
-
-        $q_text = trim( $question_nodes->item( 0 )->textContent );
-        $a_text = sfp_page_config_get_schema_safe_text( $answer_nodes->item( 0 ), $doc );
-
-        if ( $q_text && $a_text ) {
+        if ( '' !== $q_text && '' !== $a_text ) {
             $qa_pairs[] = array(
                 'question' => $q_text,
                 'answer'   => $a_text,
@@ -203,28 +318,131 @@ function sfp_page_config_extract_faq_from_html( $html ) {
 }
 
 /**
+ * Regex-based fallback extractor for when DOMDocument yields no pairs.
+ *
+ * Splits the HTML on FAQ-child boundaries, then within each chunk
+ * pulls the first `.uagb-question` text and the first
+ * `.uagb-faq-content` HTML. This is deliberately forgiving: the chunk
+ * boundary is a lookahead on `wp-block-uagb-faq-child`, so even if
+ * answer markup contains nested divs the chunk stops at the next
+ * Q&A wrapper.
+ *
+ * @param  string $html Cleaned FAQ block HTML.
+ * @return array
+ */
+function sfp_page_config_extract_faq_from_regex( $html ) {
+
+    $qa_pairs = array();
+
+    if ( '' === trim( (string) $html ) ) {
+        return $qa_pairs;
+    }
+
+    // Split on the opening tag of each faq-child wrapper. Keep the
+    // boundary using a lookahead so the opening tag stays in the chunk.
+    $chunks = preg_split(
+        '#(?=<div[^>]*class="[^"]*wp-block-uagb-faq-child[^"]*")#i',
+        $html
+    );
+
+    if ( false === $chunks || ! is_array( $chunks ) ) {
+        return $qa_pairs;
+    }
+
+    foreach ( $chunks as $chunk ) {
+
+        // Skip chunks that do not contain a question marker. Avoids
+        // processing the leading wrapper content that precedes the
+        // first faq-child.
+        if ( false === strpos( $chunk, 'uagb-question' ) ) {
+            continue;
+        }
+
+        // Extract question text from the first .uagb-question element.
+        if ( ! preg_match(
+            '#<(?:span|div|p|h\d)[^>]*class="[^"]*uagb-question[^"]*"[^>]*>([\s\S]*?)</(?:span|div|p|h\d)>#i',
+            $chunk,
+            $q_m
+        ) ) {
+            continue;
+        }
+
+        // Extract answer HTML from the .uagb-faq-content element. The
+        // capture runs until the end of the chunk because the chunk
+        // already stops at the next faq-child wrapper; any trailing
+        // HTML is stripped by wp_strip_all_tags below.
+        if ( ! preg_match(
+            '#<div[^>]*class="[^"]*uagb-faq-content[^"]*"[^>]*>([\s\S]*)#i',
+            $chunk,
+            $a_m
+        ) ) {
+            continue;
+        }
+
+        $question = sfp_page_config_flatten_html_text( $q_m[1] );
+        $answer   = sfp_page_config_flatten_html_text( $a_m[1] );
+
+        if ( '' !== $question && '' !== $answer ) {
+            $qa_pairs[] = array(
+                'question' => $question,
+                'answer'   => $answer,
+            );
+        }
+    }
+
+    return $qa_pairs;
+}
+
+/**
+ * Strip tags, decode entities and collapse whitespace for a JSON-safe
+ * text value.
+ *
+ * @param  string $html HTML fragment.
+ * @return string       Plain text, trimmed and normalised.
+ */
+function sfp_page_config_flatten_html_text( $html ) {
+
+    // wp_strip_all_tags also removes <script> and <style> blocks.
+    $text = wp_strip_all_tags( (string) $html );
+
+    // Decode HTML entities back to their characters. wp_json_encode
+    // will re-escape anything JSON-sensitive.
+    $text = html_entity_decode( $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+
+    // Collapse any run of whitespace (newlines, tabs, spaces) to a
+    // single space.
+    $text = preg_replace( '/\s+/', ' ', $text );
+
+    return trim( (string) $text );
+}
+
+/**
  * Get schema-safe text content from a DOM node.
  *
- * Strips HTML tags but preserves line breaks as plain text.
- * Google accepts plain text with <br> in FAQ schema answers.
+ * Converts the node's inner HTML to plain text (tags stripped, entities
+ * decoded, whitespace collapsed). Google accepts plain text for FAQ
+ * schema answers.
  *
- * @param  DOMNode     $node The DOM node to extract text from.
+ * @param  DOMNode     $node The DOM node.
  * @param  DOMDocument $doc  The parent document.
  * @return string            Cleaned text suitable for JSON-LD.
  */
 function sfp_page_config_get_schema_safe_text( $node, $doc ) {
 
-    // Get the inner HTML of the node.
+    if ( ! $node instanceof DOMNode ) {
+        return '';
+    }
+
     $inner_html = '';
     foreach ( $node->childNodes as $child ) {
         $inner_html .= $doc->saveHTML( $child );
     }
 
-    // Strip all HTML tags. wp_strip_all_tags also handles script/style.
-    $text = wp_strip_all_tags( $inner_html );
+    if ( '' === $inner_html ) {
+        // Some nodes (plain text elements) have no child nodes but do
+        // have textContent. Fall back to that.
+        $inner_html = $node->textContent;
+    }
 
-    // Collapse multiple whitespace/newlines into single spaces.
-    $text = preg_replace( '/\s+/', ' ', $text );
-
-    return trim( $text );
+    return sfp_page_config_flatten_html_text( $inner_html );
 }

@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.5.4] - 2026-04-19
+
+### Gerepareerd
+
+- **FAQ schema repair op DPS `/spreekangsttraining/` werkt nu.** Google Search Console meldde nog steeds een parseerfout op de FAQPage JSON-LD ("',' of '}' ontbreekt", positie 311 bij `class="cursus-data-wrapper"`). Het `render_block_uagb/faq` filter uit v2.5.0 draaide wel, maar de DOMDocument-gebaseerde extractie vond geen Q&A-paren in de blok-HTML: de kapotte `<script>` tag met ongebalanceerde aanhalingstekens en losse HTML-fragmenten in de JSON destabiliseerde het DOMDocument-parsen, waardoor de herstelfunctie terugviel op de originele kapotte output.
+
+### Gewijzigd
+
+- **`includes/schema-fix.php` herschreven (Optie D: render_block + the_content, met script-strip en regex-fallback).** Het repair-pad werkt nu in vier lagen: (1) kapotte `<script type="application/ld+json">` tag wordt uit de blok-HTML gestript voordat DOMDocument de HTML parseert; (2) als DOMDocument geen Q&A-paren vindt, kickt een regex-gebaseerde fallback in die per `wp-block-uagb-faq-child` chunk de vraag en het antwoord extraheert; (3) naast het bestaande `render_block_uagb/faq` filter is er een `the_content` filter (priority 99) als vangnet voor gevallen waarin de render_block-hook het probleem niet oplost (bijvoorbeeld omdat een ander filter de blockoutput wrapt voordat DOM-parsing lukt); (4) wp_strip_all_tags + html_entity_decode + whitespace-collapse staat in één helperfunctie (`sfp_page_config_flatten_html_text`) zodat DOM- en regex-paden identieke schema-veilige tekst produceren.
+- **Schema-repair blijft scoped op FAQPage.** Andere broken JSON-LD scripts (mocht er ooit eentje opduiken) worden bewust niet aangeraakt, zodat de fix geen onbedoelde neveneffecten heeft op schema's die SureRank of Spectra zelf genereren.
+
 ## [2.5.3] - 2026-04-18
 
 ### Gewijzigd
