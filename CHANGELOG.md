@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.6.2] - 2026-04-19
+
+### Toegevoegd
+
+- **Sorteerbare kolommen op de Autoloaded Options-pagina.** Alle vijf kolommen (option name, grootte, autoload, bron, status) zijn nu klikbaar voor sortering. Een tweede klik op dezelfde kolom draait de richting om. Tekstkolommen gebruiken `strnatcasecmp` zodat bijvoorbeeld `widget_2` na `widget_1` komt en niet na `widget_10`. Standaard-volgorde blijft grootte aflopend zodat de grootste kostenposten direct bovenaan staan. De filter-tabs houden de gekozen sortering vast bij het wisselen tussen Alles / Groot / Verweesd / Transients.
+
 ## [2.6.1] - 2026-04-19
 
 ### Gerepareerd
