@@ -635,6 +635,34 @@ function sfp_ao_render_page() {
         }
     } ) );
 
+    // Sort. Default: size DESC. Clickable column headers set orderby +
+    // order via the query string; a second click on the same column
+    // flips the order.
+    $orderby = isset( $_GET['orderby'] ) ? sanitize_key( wp_unslash( $_GET['orderby'] ) ) : 'size';
+    $order   = isset( $_GET['order'] )   ? strtolower( sanitize_key( wp_unslash( $_GET['order'] ) ) ) : '';
+
+    $valid_orderby = array( 'option_name', 'size', 'autoload', 'source', 'status' );
+    if ( ! in_array( $orderby, $valid_orderby, true ) ) {
+        $orderby = 'size';
+    }
+    if ( ! in_array( $order, array( 'asc', 'desc' ), true ) ) {
+        // Sensible default per column: numeric columns DESC, text columns ASC.
+        $order = ( 'size' === $orderby ) ? 'desc' : 'asc';
+    }
+
+    usort( $filtered, function ( $a, $b ) use ( $orderby, $order ) {
+        if ( 'size' === $orderby ) {
+            $cmp = ( (int) $a->size ) <=> ( (int) $b->size );
+        } else {
+            $cmp = strnatcasecmp( (string) $a->{$orderby}, (string) $b->{$orderby} );
+        }
+        // Secondary sort by option_name ASC so equal values stay stable.
+        if ( 0 === $cmp && 'option_name' !== $orderby ) {
+            $cmp = strnatcasecmp( (string) $a->option_name, (string) $b->option_name );
+        }
+        return 'desc' === $order ? -$cmp : $cmp;
+    } );
+
     // Status bar maths. Site Health warns at 800 KB; we use 600 KB as
     // the green/orange cut-off so the warning comes well before WP's.
     $threshold = 800 * 1024;
@@ -715,7 +743,14 @@ function sfp_ao_render_page() {
             );
             $last_key = array_key_last( $tabs );
             foreach ( $tabs as $key => $meta ) :
-                $url     = add_query_arg( array( 'filter' => $key ), sfp_ao_page_url() );
+                $url     = add_query_arg(
+                    array(
+                        'filter'  => $key,
+                        'orderby' => $orderby,
+                        'order'   => $order,
+                    ),
+                    sfp_ao_page_url()
+                );
                 $current = $filter === $key ? ' class="current"' : '';
                 ?>
                 <li>
@@ -749,17 +784,54 @@ function sfp_ao_render_page() {
                 </div>
             </div>
 
+            <?php
+            $columns = array(
+                'option_name' => array( 'Option name', '' ),
+                'size'        => array( 'Grootte',    'width: 90px;' ),
+                'autoload'    => array( 'Autoload',   'width: 70px;' ),
+                'source'      => array( 'Bron',       'width: 180px;' ),
+                'status'      => array( 'Status',     'width: 110px;' ),
+            );
+            ?>
             <table class="wp-list-table widefat fixed striped sfp-ao-table">
                 <thead>
                     <tr>
                         <td class="manage-column column-cb check-column">
                             <input type="checkbox" onclick="sfpAoToggleAll(this);" />
                         </td>
-                        <th class="manage-column">Option name</th>
-                        <th class="manage-column" style="width: 90px;">Grootte</th>
-                        <th class="manage-column" style="width: 70px;">Autoload</th>
-                        <th class="manage-column" style="width: 180px;">Bron</th>
-                        <th class="manage-column" style="width: 110px;">Status</th>
+                        <?php foreach ( $columns as $col_key => $col_meta ) :
+                            $is_current = $orderby === $col_key;
+                            // Clicking the current column flips its order;
+                            // clicking a new column uses the column's default.
+                            if ( $is_current ) {
+                                $next_order = 'asc' === $order ? 'desc' : 'asc';
+                            } else {
+                                $next_order = ( 'size' === $col_key ) ? 'desc' : 'asc';
+                            }
+                            $col_url = add_query_arg(
+                                array(
+                                    'filter'  => $filter,
+                                    'orderby' => $col_key,
+                                    'order'   => $next_order,
+                                ),
+                                sfp_ao_page_url()
+                            );
+                            $th_classes = array( 'manage-column', 'sortable' );
+                            if ( $is_current ) {
+                                $th_classes[] = 'sorted';
+                                $th_classes[] = $order;
+                            } else {
+                                $th_classes[] = 'desc'; // idle state gets down-chevron per WP convention
+                            }
+                            $style_attr = $col_meta[1] ? ' style="' . esc_attr( $col_meta[1] ) . '"' : '';
+                            ?>
+                            <th scope="col" class="<?php echo esc_attr( implode( ' ', $th_classes ) ); ?>"<?php echo $style_attr; // phpcs:ignore WordPress.Security.EscapeOutput ?>>
+                                <a href="<?php echo esc_url( $col_url ); ?>">
+                                    <span><?php echo esc_html( $col_meta[0] ); ?></span>
+                                    <span class="sorting-indicator"></span>
+                                </a>
+                            </th>
+                        <?php endforeach; ?>
                     </tr>
                 </thead>
                 <tbody>
