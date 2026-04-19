@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.6.4] - 2026-04-19
+
+### Toegevoegd
+
+- **Safe Cleanup-knop op de Autoloaded Options-pagina.** Nieuwe groene-blok-sectie tussen voortgangsbalk en filter-tabs die aangeeft hoeveel verweesde opties (en hoeveel KB) in één druk op de knop kunnen worden opgeruimd. De knop werkt in twee stappen: "Safe Cleanup voorbereiden" toont een preview met de samenvatting per voormalige plugin en een uitklapbare volledige lijst van elke option_name + grootte. Pas na een tweede klik ("Bevestigen en verwijderen", met browser-confirm dialog) gaat de admin-post handler `sfp_ao_safe_cleanup` aan de slag. Deze flow vereist geen handmatige selectie van individuele opties meer.
+- **Safe Cleanup-lijst in `sfp_ao_safe_cleanup_prefixes()`.** Expliciete whitelist van plugin-prefixes die 100% veilig te verwijderen zijn omdat ze buiten de SFP-stack vallen: Yoast SEO (`wpseo`, `yoast`), Rank Math (`rank_math`, `rank-math`, `rankmath`), All in One SEO (`aioseo`, `aioseop`), Surfer SEO (`surfer_`), Elementor (`elementor_`, `elementor-`), MainWP (`mainwp`, `mwp_`), FluentMail (`fluentmail`), Better Search Replace (`bsr_`), Custom Post Type UI (`cptui_`) en Google Site Kit (`googlesitekit`). Ambigue of algemene prefixes (`jetpack`, `w3tc`, `wordfence`) staan bewust niet op deze lijst.
+- **Core-prefixed patroon whitelist (`sfp_ao_is_core_prefixed_option`).** Opties die eindigen op `user_roles`, `user_count` of `user_count_start`, ongeacht het voorloop-prefix, worden nu automatisch als Core herkend en kunnen nooit verwijderd worden. Dit voorkomt dat op hardened-prefix installaties (bijvoorbeeld CVD met `xrk_`) de kern-gebruikersrollen-optie (`xrk_user_roles`) foutief als Verweesd wordt gemarkeerd. Werkt ook bij `sfp_ao_handle_action` (bulk-verwijderen respecteert dezelfde whitelist).
+
+### Gewijzigd
+
+- **`xrk_` is uit `sfp_ao_known_orphan_prefixes()` gehaald.** Deze prefix is site-specifiek (random db-prefix na hardening) en hoort niet thuis in een site-agnostische orphan-lijst. De core-suffix-whitelist vangt de enige kritieke optie (`xrk_user_roles`) nu betrouwbaar op.
+
 ## [2.6.3] - 2026-04-19
 
 ### Gerepareerd
