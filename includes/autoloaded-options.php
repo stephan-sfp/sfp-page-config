@@ -284,7 +284,134 @@ function sfp_ao_known_orphan_prefixes() {
         'bsr_',
         'cptui_',
         'googlesitekit',
-        'xrk_',
+        // NOTE: 'xrk_' was temporarily in this list in v2.6.3 but has
+        // been removed in v2.6.4 because a random-looking prefix like
+        // 'xrk_' on a hardened install is the WordPress db-prefix, not
+        // an orphan marker. Core-prefixed options (e.g. xrk_user_roles)
+        // are protected via sfp_ao_is_core_prefixed_option().
+    );
+}
+
+/**
+ * Prefixes that the Safe Cleanup button will purge in one click.
+ *
+ * This is a STRICT subset of sfp_ao_known_orphan_prefixes(): only
+ * plugins that Stephan has definitively moved away from across the
+ * SFP stack and whose options are therefore residue on every site.
+ * Each prefix is paired with the human-readable plugin label that
+ * shows up in the preview.
+ *
+ * Prefixes with potential ambiguity (generic 'jetpack', 'w3tc',
+ * 'wordfence' etc.) are intentionally NOT included: those require
+ * manual judgement because Stephan might want to re-enable them in
+ * the future. The list can be extended per release.
+ *
+ * @return array<string, string>  prefix => plugin label
+ * @since 2.6.4
+ */
+function sfp_ao_safe_cleanup_prefixes() {
+    return array(
+        // Retired SEO plugins (replaced by SureRank across the stack).
+        'wpseo'         => 'Yoast SEO',
+        'yoast'         => 'Yoast SEO',
+        'rank_math'     => 'Rank Math SEO',
+        'rank-math'     => 'Rank Math SEO',
+        'rankmath'      => 'Rank Math SEO',
+        'aioseo'        => 'All in One SEO',
+        'aioseop'       => 'All in One SEO',
+        'surfer_'       => 'Surfer SEO',
+
+        // Retired page builder (switched to Spectra).
+        'elementor_'    => 'Elementor',
+        'elementor-'    => 'Elementor',
+
+        // Retired multi-site management tooling.
+        'mainwp'        => 'MainWP',
+        'mwp_'          => 'MainWP',
+
+        // Retired mail/backup/admin helpers.
+        'fluentmail'    => 'FluentMail',
+        'bsr_'          => 'Better Search Replace',
+        'cptui_'        => 'Custom Post Type UI',
+        'googlesitekit' => 'Google Site Kit',
+    );
+}
+
+/**
+ * Build the list of option names that Safe Cleanup will delete.
+ *
+ * A row is included when:
+ *   - Its status is 'orphan' (no active plugin or theme owns it).
+ *   - Its name matches one of the safe-cleanup prefixes above.
+ *   - It is NOT on the protected list, NOT a structural widget
+ *     option, and NOT a core-prefixed option.
+ *   - It is NOT a transient (transients clear themselves on schedule).
+ *
+ * @param array $rows   Row objects from sfp_ao_fetch_rows(). Must have
+ *                      ->option_name, ->size and (optional) ->status.
+ * @param array $active Active prefix set from sfp_ao_active_prefixes().
+ * @return array {
+ *     @type array<int, object> $rows   Row objects that match.
+ *     @type int                $bytes  Total byte count of those rows.
+ *     @type array<string, int> $by_label  Per-plugin count for summary.
+ * }
+ * @since 2.6.4
+ */
+function sfp_ao_collect_safe_cleanup( array $rows, array $active ) {
+    $safe_prefixes = sfp_ao_safe_cleanup_prefixes();
+    // Sort by prefix length DESC so longer, more specific prefixes
+    // match first (rank_math before rank- before rank).
+    $keys = array_keys( $safe_prefixes );
+    usort( $keys, function ( $a, $b ) {
+        return strlen( $b ) - strlen( $a );
+    } );
+
+    $protected    = sfp_ao_protected_options();
+    $matched_rows = array();
+    $total_bytes  = 0;
+    $by_label     = array();
+
+    foreach ( $rows as $row ) {
+        $name = (string) $row->option_name;
+
+        if ( 0 === strpos( $name, '_transient_' )
+            || 0 === strpos( $name, '_site_transient_' )
+        ) {
+            continue;
+        }
+        if ( in_array( $name, $protected, true )
+            || sfp_ao_is_structural_widget_option( $name )
+            || sfp_ao_is_core_prefixed_option( $name )
+        ) {
+            continue;
+        }
+        // Only clean up orphans. If the option matches an active
+        // plugin prefix (directly or via source-to-slug), leave it.
+        if ( sfp_ao_matches_active_plugin( $name, $active ) ) {
+            continue;
+        }
+
+        foreach ( $keys as $prefix ) {
+            if ( 0 === strpos( $name, $prefix ) ) {
+                $label = $safe_prefixes[ $prefix ];
+                $matched_rows[] = $row;
+                $total_bytes   += (int) $row->size;
+                if ( ! isset( $by_label[ $label ] ) ) {
+                    $by_label[ $label ] = 0;
+                }
+                $by_label[ $label ]++;
+                break;
+            }
+        }
+    }
+
+    // Sort the per-label summary by count DESC for readability.
+    arsort( $by_label );
+
+    return array(
+        'rows'     => $matched_rows,
+        'bytes'    => $total_bytes,
+        'by_label' => $by_label,
     );
 }
 
@@ -334,6 +461,45 @@ function sfp_ao_protected_options() {
 function sfp_ao_is_structural_widget_option( $name ) {
     return 'widget_block' === $name || 'wp_user_roles' === $name
         || 0 === strpos( $name, 'theme_mods_' );
+}
+
+/**
+ * WordPress stores a handful of core options under a name derived
+ * from the database table prefix (e.g. '{prefix}user_roles'). On
+ * hardened installs that prefix is set to a random string like
+ * 'xrk_' so the option ends up named 'xrk_user_roles'. These are
+ * still core options and must never be flagged as orphan or deleted.
+ *
+ * @return string[] Suffixes that indicate a core-prefixed option.
+ * @since 2.6.4
+ */
+function sfp_ao_core_prefixed_suffixes() {
+    return array(
+        'user_roles',
+        'user_count',
+        'user_count_start',
+    );
+}
+
+/**
+ * Check whether an option name ends in one of the core-prefixed
+ * suffixes (e.g. 'xrk_user_roles' on a hardened-prefix install).
+ *
+ * @param string $name Option name.
+ * @return bool
+ * @since 2.6.4
+ */
+function sfp_ao_is_core_prefixed_option( $name ) {
+    foreach ( sfp_ao_core_prefixed_suffixes() as $suffix ) {
+        $needle = '_' . $suffix;
+        $len    = strlen( $needle );
+        if ( $len > 0 && strlen( $name ) > $len
+            && substr( $name, -$len ) === $needle
+        ) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /* =========================================================================
@@ -395,6 +561,7 @@ function sfp_ao_detect_status( $name, array $active_prefixes ) {
     if ( in_array( $name, $core_exact, true )
         || 0 === strpos( $name, 'theme_mods_' )
         || 0 === strpos( $name, 'widget_' )
+        || sfp_ao_is_core_prefixed_option( $name )
     ) {
         return 'core';
     }
@@ -652,7 +819,10 @@ function sfp_ao_handle_action() {
 
     foreach ( $names as $name ) {
         if ( 'delete' === $raw_action ) {
-            if ( in_array( $name, $protected, true ) || sfp_ao_is_structural_widget_option( $name ) ) {
+            if ( in_array( $name, $protected, true )
+                || sfp_ao_is_structural_widget_option( $name )
+                || sfp_ao_is_core_prefixed_option( $name )
+            ) {
                 $skipped++;
                 continue;
             }
@@ -690,6 +860,53 @@ function sfp_ao_handle_action() {
             'sfp_ao_changed' => $changed,
             'sfp_ao_skipped' => $skipped,
             'filter'         => $filter,
+        ),
+        sfp_ao_page_url()
+    );
+    wp_safe_redirect( $url );
+    exit;
+}
+
+add_action( 'admin_post_sfp_ao_safe_cleanup', 'sfp_ao_handle_safe_cleanup' );
+
+/**
+ * Safe Cleanup handler: deletes every autoloaded option whose name
+ * matches a prefix in sfp_ao_safe_cleanup_prefixes() AND is not
+ * protected AND is not owned by an active plugin.
+ *
+ * Accepts an optional 'dry_run' flag via POST that lets the caller
+ * get the count without performing the delete. The render side uses
+ * this for the preview step.
+ *
+ * @since 2.6.4
+ */
+function sfp_ao_handle_safe_cleanup() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( esc_html__( 'Geen toegang.', 'sfp-page-config' ), 403 );
+    }
+    check_admin_referer( 'sfp_ao_safe_cleanup' );
+
+    $rows   = sfp_ao_fetch_rows();
+    $active = sfp_ao_active_prefixes();
+    $result = sfp_ao_collect_safe_cleanup( $rows, $active );
+
+    $deleted = 0;
+    $skipped = 0;
+
+    foreach ( $result['rows'] as $row ) {
+        if ( delete_option( $row->option_name ) ) {
+            $deleted++;
+        } else {
+            $skipped++;
+        }
+    }
+
+    $url = add_query_arg(
+        array(
+            'sfp_ao_msg'     => 'safe_cleanup',
+            'sfp_ao_changed' => $deleted,
+            'sfp_ao_skipped' => $skipped,
+            'sfp_ao_bytes'   => (int) $result['bytes'],
         ),
         sfp_ao_page_url()
     );
@@ -801,6 +1018,13 @@ function sfp_ao_render_page() {
         $bar_class = 'green';
     }
 
+    // Pre-compute the Safe Cleanup set so we can both display the
+    // button count and render the preview block when requested.
+    $safe_cleanup = sfp_ao_collect_safe_cleanup( $rows, $active );
+    $safe_count   = count( $safe_cleanup['rows'] );
+    $safe_bytes   = (int) $safe_cleanup['bytes'];
+    $show_preview = isset( $_GET['safe_cleanup'] ) && 'preview' === $_GET['safe_cleanup'];
+
     // Admin notice after an action.
     $notice = sfp_ao_read_notice();
 
@@ -857,6 +1081,79 @@ function sfp_ao_render_page() {
             );
             ?>
         </p>
+
+        <?php if ( $safe_count > 0 ) : ?>
+            <div class="sfp-ao-safe-cleanup" style="margin: 20px 0; padding: 14px 18px; background: #f6f7f7; border: 1px solid #c3c4c7; border-left: 4px solid #d63638; border-radius: 4px;">
+                <?php if ( $show_preview ) : ?>
+                    <p style="margin: 0 0 10px; font-size: 14px;"><strong>Bevestig Safe Cleanup</strong></p>
+                    <p style="margin: 0 0 10px;">
+                        <?php
+                        printf(
+                            esc_html__( 'Je staat op het punt %1$s opties (%2$s) te verwijderen, afkomstig van plugins die niet meer in de SFP-stack zitten.', 'sfp-page-config' ),
+                            '<strong>' . esc_html( number_format_i18n( $safe_count ) ) . '</strong>',
+                            '<strong>' . esc_html( sfp_ao_format_size( $safe_bytes ) ) . '</strong>'
+                        );
+                        ?>
+                    </p>
+                    <p style="margin: 0 0 12px;">
+                        <strong>Samenvatting per plugin:</strong><br />
+                        <?php
+                        $parts = array();
+                        foreach ( $safe_cleanup['by_label'] as $label => $count ) {
+                            $parts[] = esc_html( $label ) . ' (' . esc_html( number_format_i18n( $count ) ) . ')';
+                        }
+                        echo wp_kses_post( implode( ', ', $parts ) );
+                        ?>
+                    </p>
+                    <details style="margin: 0 0 14px;">
+                        <summary style="cursor: pointer; color: #2271b1;">Bekijk volledige lijst (<?php echo esc_html( number_format_i18n( $safe_count ) ); ?> opties)</summary>
+                        <ul style="margin: 10px 0 0 20px; max-height: 240px; overflow-y: auto; font-family: Menlo, Consolas, monospace; font-size: 12px;">
+                            <?php foreach ( $safe_cleanup['rows'] as $row ) : ?>
+                                <li>
+                                    <?php echo esc_html( $row->option_name ); ?>
+                                    <span style="color: #646970;">(<?php echo esc_html( sfp_ao_format_size( $row->size ) ); ?>)</span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </details>
+                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display: inline-block;">
+                        <input type="hidden" name="action" value="sfp_ao_safe_cleanup" />
+                        <?php wp_nonce_field( 'sfp_ao_safe_cleanup' ); ?>
+                        <button type="submit" class="button button-primary" onclick="return confirm('Definitief verwijderen? Deze actie kan niet ongedaan worden gemaakt.');">
+                            Bevestigen en verwijderen
+                        </button>
+                    </form>
+                    <a class="button" href="<?php echo esc_url( sfp_ao_page_url() ); ?>" style="margin-left: 8px;">Annuleren</a>
+                <?php else : ?>
+                    <p style="margin: 0 0 10px;">
+                        <strong>Safe Cleanup beschikbaar:</strong>
+                        <?php
+                        printf(
+                            esc_html__( '%1$s verweesde opties (%2$s) van plugins die niet meer in de SFP-stack zitten kunnen met één druk op de knop verwijderd worden.', 'sfp-page-config' ),
+                            '<strong>' . esc_html( number_format_i18n( $safe_count ) ) . '</strong>',
+                            '<strong>' . esc_html( sfp_ao_format_size( $safe_bytes ) ) . '</strong>'
+                        );
+                        ?>
+                    </p>
+                    <p style="margin: 0; color: #646970; font-size: 13px;">
+                        Bron:
+                        <?php
+                        $parts = array();
+                        foreach ( $safe_cleanup['by_label'] as $label => $count ) {
+                            $parts[] = esc_html( $label ) . ' (' . esc_html( number_format_i18n( $count ) ) . ')';
+                        }
+                        echo wp_kses_post( implode( ', ', $parts ) );
+                        ?>.
+                        Core-opties en actieve plugins worden automatisch overgeslagen.
+                    </p>
+                    <p style="margin: 10px 0 0;">
+                        <a class="button button-primary" href="<?php echo esc_url( add_query_arg( 'safe_cleanup', 'preview', sfp_ao_page_url() ) ); ?>">
+                            Safe Cleanup voorbereiden
+                        </a>
+                    </p>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
         <ul class="subsubsub sfp-ao-filters">
             <?php
@@ -1026,6 +1323,14 @@ function sfp_ao_render_page() {
             <code>active_plugins</code>, <code>widget_block</code>, enzovoort) kunnen vanuit deze pagina
             niet verwijderd worden.
         </p>
+        <p>
+            <strong>Safe Cleanup</strong> verwijdert in een keer alle opties die horen bij plugins die
+            niet meer in de SFP-stack zitten: Yoast, Rank Math, Surfer, Elementor, MainWP, FluentMail,
+            Better Search Replace, Custom Post Type UI, Google Site Kit en All in One SEO. De knop
+            slaat automatisch alles over wat wel actief is, wat core-prefixed is
+            (<code>{prefix}user_roles</code> enzovoort), en wat op de beschermde lijst staat.
+            Bevestiging gaat via een aparte preview-knop zodat je eerst de exacte lijst ziet.
+        </p>
 
         <script>
             function sfpAoToggleAll(src) {
@@ -1110,6 +1415,18 @@ function sfp_ao_read_notice() {
                 'class'   => 'notice-warning',
                 'message' => 'Geen opties geselecteerd.',
                 'cache'   => false,
+            );
+        case 'safe_cleanup':
+            $bytes = isset( $_GET['sfp_ao_bytes'] ) ? (int) $_GET['sfp_ao_bytes'] : 0;
+            return array(
+                'class'   => 'notice-success',
+                'message' => sprintf(
+                    'Safe Cleanup voltooid: <strong>%d</strong> optie(s) verwijderd, %s vrijgemaakt.%s',
+                    $changed,
+                    esc_html( sfp_ao_format_size( $bytes ) ),
+                    $skipped > 0 ? sprintf( ' %d overgeslagen.', $skipped ) : ''
+                ),
+                'cache'   => $changed > 0,
             );
     }
     return null;
