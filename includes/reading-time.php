@@ -171,11 +171,25 @@ function sfp_page_config_scroll_progress_enqueue() {
         SFP_PAGE_CONFIG_VERSION
     );
 
-    // Inject the dynamic bar colour as a CSS custom property.
-    $brand     = sfp_page_config_get_brand();
-    $bar_color = isset( $brand['cta_bg'] ) ? sanitize_hex_color( $brand['cta_bg'] ) : '#d22d00';
+    // Resolve the colors: editor-setting wins, brand CTA color is the
+    // default fallback. Both sanitize_hex_color calls return null on
+    // invalid input so we keep a safe final fallback.
+    $brand        = sfp_page_config_get_brand();
+    $brand_cta    = isset( $brand['cta_bg'] ) ? sanitize_hex_color( $brand['cta_bg'] ) : '#d22d00';
 
-    wp_add_inline_style( 'sfp-reading-time', ':root{--sfp-bar-color:' . esc_attr( $bar_color ) . '}' );
+    $stored_bar   = sanitize_hex_color( (string) sfp_page_config_get_setting( 'progress_bar_color', '' ) );
+    $bar_color    = $stored_bar ? $stored_bar : $brand_cta;
+
+    $stored_rt    = sanitize_hex_color( (string) sfp_page_config_get_setting( 'reading_time_accent_color', '' ) );
+    // The reading-time accent intentionally has no PHP-level fallback so
+    // that an unset value lets the CSS fall back to the theme's
+    // --brand-accent variable via var(--sfp-rt-accent, var(--brand-accent)).
+    $rt_inline    = $stored_rt ? '--sfp-rt-accent:' . esc_attr( $stored_rt ) . ';' : '';
+
+    wp_add_inline_style(
+        'sfp-reading-time',
+        ':root{--sfp-bar-color:' . esc_attr( $bar_color ) . ';' . $rt_inline . '}'
+    );
 }
 
 add_action( 'wp_footer', 'sfp_page_config_scroll_progress_bar', 25 );

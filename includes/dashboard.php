@@ -75,6 +75,19 @@ function sfp_page_config_sanitize_settings( $input ) {
     if ( $clean['words_per_minute'] < 100 ) $clean['words_per_minute'] = 100;
     if ( $clean['words_per_minute'] > 500 ) $clean['words_per_minute'] = 500;
 
+    // Kleur-overrides voor voortgangsbalk en leestijdmeter.
+    // Een leeg veld valt terug op de brand-default in reading-time.php.
+    // Ongeldige waarden worden als leeg opgeslagen zodat de fallback blijft werken.
+    foreach ( array( 'progress_bar_color', 'reading_time_accent_color' ) as $rp_color_key ) {
+        $raw = isset( $input[ $rp_color_key ] ) ? trim( (string) $input[ $rp_color_key ] ) : '';
+        if ( '' === $raw ) {
+            $clean[ $rp_color_key ] = '';
+            continue;
+        }
+        $hex = sanitize_hex_color( $raw );
+        $clean[ $rp_color_key ] = $hex ? $hex : '';
+    }
+
     // Promo/Convert Pro.
     $clean['promo_scroll_gate']    = absint( $input['promo_scroll_gate'] ?? 30 );
     $clean['promo_cooldown_hours'] = absint( $input['promo_cooldown_hours'] ?? 24 );
@@ -759,6 +772,7 @@ function sfp_page_config_render_tab_settings() {
 
         <!-- Leestijd -->
         <h2>Leestijd en voortgangsbalk</h2>
+        <p style="color:#666;">De voortgangsbalk verschijnt sitebreed op alle posts, pagina's en begrippen. Laat de kleur-velden leeg om terug te vallen op de CTA-kleur van de site.</p>
         <table class="form-table" role="presentation">
             <tr>
                 <th><label for="sfp-wpm">Woorden per minuut</label></th>
@@ -767,6 +781,46 @@ function sfp_page_config_render_tab_settings() {
                            value="<?php echo esc_attr( $s['words_per_minute'] ?? 250 ); ?>"
                            min="100" max="500" step="10" style="width:80px;" />
                     <p class="description">Gemiddelde leessnelheid (standaard 250).</p>
+                </td>
+            </tr>
+            <?php
+            // Resolved brand fallback voor de voortgangsbalk en leestijdmeter.
+            $rp_brand_fallback = isset( $brand['cta_bg'] ) ? $brand['cta_bg'] : '#0170B9';
+            $rp_stored_bar     = isset( $s['progress_bar_color'] ) ? $s['progress_bar_color'] : '';
+            $rp_stored_rt      = isset( $s['reading_time_accent_color'] ) ? $s['reading_time_accent_color'] : '';
+            ?>
+            <tr>
+                <th><label for="sfp-progress-bar-color">Kleur voortgangsbalk</label></th>
+                <td>
+                    <input type="text"
+                           id="sfp-progress-bar-color"
+                           class="sfp-color-field"
+                           name="sfp_settings[progress_bar_color]"
+                           value="<?php echo esc_attr( $rp_stored_bar ); ?>"
+                           data-default-color="<?php echo esc_attr( $rp_brand_fallback ); ?>" />
+                    <p class="description">
+                        Kleur van het oplopende balkje bovenaan de viewport.
+                        <?php if ( '' === $rp_stored_bar ) : ?>
+                            <br><em>Huidig (default): <code><?php echo esc_html( $rp_brand_fallback ); ?></code></em>
+                        <?php endif; ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="sfp-reading-time-accent">Kleur leestijd-cijfer</label></th>
+                <td>
+                    <input type="text"
+                           id="sfp-reading-time-accent"
+                           class="sfp-color-field"
+                           name="sfp_settings[reading_time_accent_color]"
+                           value="<?php echo esc_attr( $rp_stored_rt ); ?>"
+                           data-default-color="<?php echo esc_attr( $rp_brand_fallback ); ?>" />
+                    <p class="description">
+                        Accentkleur van het cijfer in <code>[mijn_leestijd]</code> (de <code>.tijd-getal</code> span).
+                        <?php if ( '' === $rp_stored_rt ) : ?>
+                            <br><em>Huidig (default): <code>var(--brand-accent)</code> van het thema</em>
+                        <?php endif; ?>
+                    </p>
                 </td>
             </tr>
             <tr>

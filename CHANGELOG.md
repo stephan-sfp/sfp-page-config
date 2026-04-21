@@ -4,6 +4,19 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.7.2] - 2026-04-21
+
+### Toegevoegd
+
+- **Begrippen (custom post type) meegenomen in de post-type-whitelist.** `sfp_page_config_post_types()` geeft nu `array( 'page', 'post', 'begrippen' )` terug in plaats van alleen `page` en `post`. Alle frontend-features die op deze whitelist zijn geport werken daarmee automatisch ook op begrippen-pagina's: de leestijdmeter-styling, de sitebreed actieve voortgangsbalk, de Aangepaste CSS uit de Instellingen-tab, de WhatsApp-widget, de datum-injector en de longread-modus. De sales-page-assets en sticky CTA blijven inactief op begrippen omdat die een tweede gate hebben op de `sfp_page_type` meta.
+- **Kleur-picker voor de voortgangsbalk.** Nieuwe setting `progress_bar_color` in de Instellingen-tab onder "Leestijd en voortgangsbalk". Stelt de CSS custom property `--sfp-bar-color` in. Leeg laten valt terug op de CTA-kleur van de site (zoals voorheen automatisch gebeurde).
+- **Kleur-picker voor het leestijd-cijfer.** Nieuwe setting `reading_time_accent_color` voor de kleur van de `.tijd-getal` span in `[mijn_leestijd]`. Stelt de CSS custom property `--sfp-rt-accent` in. Leeg laten valt terug op de thema-variable `--brand-accent` via `var(--sfp-rt-accent, var(--brand-accent))`.
+
+### Gewijzigd
+
+- **`includes/reading-time.php`:** inline-style injectie leest nu eerst de nieuwe kleur-settings en gebruikt de brand-CTA-kleur alleen als fallback. Ongeldige hex-waarden vallen altijd veilig terug.
+- **`assets/reading-time.css`:** `.tijd-getal` gebruikt nu `var(--sfp-rt-accent, var(--brand-accent))` zodat de editor-override werkt zonder de bestaande thema-fallback te breken.
+
 ## [2.7.1] - 2026-04-21
 
 ### Gewijzigd

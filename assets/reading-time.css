@@ -2,9 +2,12 @@
  * SFP Page Config - Reading Time Meter + Scroll Progress Bar
  * Extracted from includes/reading-time.php (v2.5.0)
  *
- * Dynamic value: --sfp-bar-color is set via wp_add_inline_style().
+ * Dynamic values injected via wp_add_inline_style():
+ *   --sfp-bar-color  = editor-override (Instellingen) or brand CTA color
+ *   --sfp-rt-accent  = editor-override (Instellingen); if unset, the CSS
+ *                      falls back to the theme's --brand-accent.
  * Brand variables (--brand-font, --brand-main, --brand-accent) are
- * defined sitewide and used here for the read meter display.
+ * defined sitewide by the theme and used here for the read meter.
  */
 
 /* === Reading time meter ([mijn_leestijd] shortcode) === */
@@ -19,7 +22,7 @@
 }
 
 .custom-read-meter .tijd-getal {
-    color: var(--brand-accent);
+    color: var(--sfp-rt-accent, var(--brand-accent));
 }
 
 /* === Scroll progress bar === */
