@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.7.1] - 2026-04-21
+
+### Gewijzigd
+
+- **Revert van v2.7.0.** De nav-component voor portfolio-pagina's (paginatype `portfolio`, sticky jump-nav, accordion-blokken) is verwijderd omdat het ontwerp niet paste bij de uiteindelijke behoefte. Deze release bevat dezelfde code als v2.6.4 met alleen een versie-bump, zodat WP Update Agent v2.7.0 op alle 5 sites automatisch overschrijft en de plugin functioneel terug is op het v2.6.4-niveau. De navigatie en accordion worden op een later moment opnieuw ontworpen.
+
 ## [2.6.4] - 2026-04-19
 
 ### Toegevoegd
