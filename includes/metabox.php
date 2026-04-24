@@ -46,6 +46,44 @@ function sfp_page_config_register_metabox() {
 }
 
 /* =========================================================================
+ * Register sfp_page_type via WP REST API
+ *
+ * The metabox still writes via the classic save_post path (see bottom of this
+ * file). This registration ONLY exposes the meta read-only via the REST API so
+ * automated monitors (such as the Course-rich-results scheduled task) can read
+ * sfp_page_type without scraping post.php edit screens. Write-flow is
+ * unchanged and still requires the metabox nonce in save_post.
+ *
+ * Added in v2.7.3.
+ * ====================================================================== */
+
+add_action( 'init', 'sfp_page_config_register_meta_for_rest' );
+
+/**
+ * Expose sfp_page_type via the REST API on every post type the plugin
+ * supports. Read requires "edit_posts" capability. Write is deliberately not
+ * enabled here so the existing metabox save path remains the single source of
+ * truth.
+ */
+function sfp_page_config_register_meta_for_rest() {
+
+    foreach ( sfp_page_config_post_types() as $post_type ) {
+        register_post_meta(
+            $post_type,
+            'sfp_page_type',
+            array(
+                'type'          => 'string',
+                'single'        => true,
+                'show_in_rest'  => true,
+                'auth_callback' => function() {
+                    return current_user_can( 'edit_posts' );
+                },
+            )
+        );
+    }
+}
+
+/* =========================================================================
  * Render the metabox
  * ====================================================================== */
 

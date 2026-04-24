@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.7.3] - 2026-04-23
+
+### Toegevoegd
+
+- **REST-exposure van `sfp_page_type`.** De meta key `sfp_page_type` (waarden `coaching`, `training`, `incompany`, of leeg) is nu beschikbaar via de WP REST API via `register_post_meta()` met `show_in_rest = true`. Read-permission vereist `edit_posts`. De write-flow blijft ongewijzigd via de classic save_post-handler in de metabox, zodat er één source of truth is voor schrijfacties. Deze toevoeging maakt het mogelijk voor scheduled tasks en externe monitors (bijvoorbeeld `sfp-course-rich-results-monitor`) om programmatisch te checken welke pagina's een sales-paginatype hebben zonder post.php edit-screens te scrapen.
+
 ## [2.7.2] - 2026-04-21
 
 ### Toegevoegd
