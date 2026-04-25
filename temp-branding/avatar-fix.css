@@ -1,0 +1,12 @@
+
+/* ============================================================
+   AVATAR FIX (toegevoegd 2026-04-25 v2.1)
+   Reset de plugin-iconen filter voor user-avatars in admin bar
+   ============================================================ */
+html body #wpadminbar img.avatar,
+html body #wpadminbar [class*="avatar"] img,
+html body #wpadminbar [class*="avatar"],
+html body img.avatar {
+    filter: none !important;
+    opacity: 1 !important;
+}
