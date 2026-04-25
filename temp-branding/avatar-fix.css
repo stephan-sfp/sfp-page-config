@@ -1,11 +1,14 @@
 
 /* ============================================================
-   AVATAR FIX (toegevoegd 2026-04-25 v2.1)
-   Reset de plugin-iconen filter voor user-avatars in admin bar
+   ASENHA ADMIN-BAR LOGO REVERT (toegevoegd 2026-04-25 v2.2)
+   Bovenstaande filter maakte het BB-icoon een witte avatar-blob.
+   Tot light-versie geupload is (task #22), terug naar origineel:
+   icoon valt weg op donkere bg, maar geen featureless wit blob meer.
    ============================================================ */
+html body #wp-admin-bar-asenha-admin-bar-logo img,
+html body #wp-admin-bar-asenha-admin-bar-logo a img,
+html body #wpadminbar .ab-item img.avatar,
 html body #wpadminbar img.avatar,
-html body #wpadminbar [class*="avatar"] img,
-html body #wpadminbar [class*="avatar"],
 html body img.avatar {
     filter: none !important;
     opacity: 1 !important;
