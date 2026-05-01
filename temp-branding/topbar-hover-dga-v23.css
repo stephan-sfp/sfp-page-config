@@ -1,0 +1,15 @@
+
+/* TOPBAR HOVER FIX v2.3 (dga) */
+html body #wpadminbar .quicklinks > ul > li:hover > .ab-item,
+html body #wpadminbar .quicklinks > ul > li > .ab-item:focus,
+html body #wpadminbar.nojq .quicklinks .ab-item:focus,
+html body #wpadminbar.mobile .quicklinks .ab-icon:hover,
+html body #wpadminbar.mobile .quicklinks .ab-item:hover {
+    background-color: #fdb927 !important;
+    color: #552583 !important;
+}
+html body #wpadminbar .quicklinks > ul > li:hover > .ab-item .ab-icon,
+html body #wpadminbar .quicklinks > ul > li:hover > .ab-item:before,
+html body #wpadminbar .quicklinks > ul > li > .ab-item:focus .ab-icon {
+    color: #552583 !important;
+}
