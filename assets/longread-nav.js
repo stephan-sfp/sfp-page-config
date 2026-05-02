@@ -260,16 +260,19 @@
         var gap      = 16;
 
         /* Use .entry-content as the reference element. Spectra containers
-         * can include full-width decorative sections (e.g. 1280px) that
-         * are much wider than the actual content column, causing the
-         * sidebar to think there is no room. .entry-content reliably
-         * represents the content column width (typically ~720px).
+         * can include full-width decorative sections that are much wider
+         * than the actual content column, causing the sidebar to think
+         * there is no room. .entry-content reliably represents the content
+         * column width (typically ~720px) on normal post/page layouts.
          *
          * Exception: pages built entirely from alignfull Spectra blocks
          * (e.g. /bibliografie/) have .entry-content spanning the full
-         * viewport (left ~0, right ~1920). In that case fall back to the
-         * inner Spectra block wrapper, which is a centred 1280px column
-         * and gives ~320px of free space on either side. */
+         * viewport. The Spectra inner-blocks-wrap is also full-width on
+         * viewports narrower than the max-content-width (1280px), so a
+         * class-name lookup is unreliable. Instead, walk up the DOM from
+         * the first H2 heading until we find an ancestor that is genuinely
+         * narrower than the viewport. That ancestor is the actual content
+         * column, regardless of how many wrapping divs Spectra adds. */
         var ref = content || document.querySelector('.entry-content')
             || document.querySelector('.ast-container');
         if (!ref) return;
@@ -278,10 +281,19 @@
         var contentRight = Math.round(ref.getBoundingClientRect().right);
 
         if (contentLeft <= 10 && contentRight >= window.innerWidth - 10) {
-            var innerRef = document.querySelector('.uagb-container-inner-blocks-wrap');
-            if (innerRef) {
-                contentLeft  = Math.round(innerRef.getBoundingClientRect().left);
-                contentRight = Math.round(innerRef.getBoundingClientRect().right);
+            var ancestor = h2s[0] ? h2s[0].parentElement : null;
+            while (ancestor && ancestor !== document.body) {
+                var ar = ancestor.getBoundingClientRect();
+                /* Accept the first ancestor that is both wider than a
+                 * typical sidebar (>300px) and genuinely narrower than
+                 * the viewport (<88%). This reliably lands on the
+                 * centred content column at any viewport width. */
+                if (ar.width > 300 && ar.width < window.innerWidth * 0.88) {
+                    contentLeft  = Math.round(ar.left);
+                    contentRight = Math.round(ar.right);
+                    break;
+                }
+                ancestor = ancestor.parentElement;
             }
         }
         var leftSpace    = contentLeft;
