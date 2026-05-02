@@ -257,19 +257,33 @@
 
     function positionSidebar() {
         var sidebarW = 300;
-        var gap      = 36;
+        var gap      = 16;
 
         /* Use .entry-content as the reference element. Spectra containers
          * can include full-width decorative sections (e.g. 1280px) that
          * are much wider than the actual content column, causing the
          * sidebar to think there is no room. .entry-content reliably
-         * represents the content column width (typically ~720px). */
+         * represents the content column width (typically ~720px).
+         *
+         * Exception: pages built entirely from alignfull Spectra blocks
+         * (e.g. /bibliografie/) have .entry-content spanning the full
+         * viewport (left ~0, right ~1920). In that case fall back to the
+         * inner Spectra block wrapper, which is a centred 1280px column
+         * and gives ~320px of free space on either side. */
         var ref = content || document.querySelector('.entry-content')
             || document.querySelector('.ast-container');
         if (!ref) return;
 
         var contentLeft  = Math.round(ref.getBoundingClientRect().left);
         var contentRight = Math.round(ref.getBoundingClientRect().right);
+
+        if (contentLeft <= 10 && contentRight >= window.innerWidth - 10) {
+            var innerRef = document.querySelector('.uagb-container-inner-blocks-wrap');
+            if (innerRef) {
+                contentLeft  = Math.round(innerRef.getBoundingClientRect().left);
+                contentRight = Math.round(innerRef.getBoundingClientRect().right);
+            }
+        }
         var leftSpace    = contentLeft;
         var rightSpace   = window.innerWidth - contentRight;
 

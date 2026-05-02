@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.7.4] - 2026-05-02
+
+### Gerepareerd
+
+- **Longread-sidebar niet zichtbaar op alignfull-pagina's (bibliografie).** Op pagina's die volledig zijn opgebouwd uit `alignfull` Spectra-containers (zoals `/bibliografie/`) besloeg `.entry-content` de volledige viewportbreedte. `positionSidebar()` berekende daardoor `leftSpace = 0`, viel terug op de bottombar en toonde de sidebar nooit. Fix: als `contentLeft <= 10` en `contentRight >= window.innerWidth - 10` (entry-content beslaat volledige viewport), wordt `.uagb-container-inner-blocks-wrap` als referentie-element gebruikt. Die wrapper is een gecentreerde kolom van ~1280px en biedt ~320px vrije ruimte aan weerszijden. (`assets/longread-nav.js`)
+- **Gap verlaagd van 36px naar 16px.** Met de nieuwe referentie-fallback is er ~320px vrije ruimte; sidebarW (300) + gap (16) = 316 past daarbinnen. De ruimere gap van 36px was conservatief voor reguliere posts en is niet meer nodig nu de referentie preciezer is. (`assets/longread-nav.js`)
+
 ## [2.7.3] - 2026-04-23
 
 ### Toegevoegd
