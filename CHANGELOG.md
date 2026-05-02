@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.7.5] - 2026-05-02
+
+### Gerepareerd
+
+- **Longread-sidebar nog steeds verborgen op viewports smaller dan de Spectra max-content-width.** v2.7.4 gebruikte `.uagb-container-inner-blocks-wrap` als fallback-referentie wanneer `.entry-content` de volledige viewport besloeg. Op viewports smaller dan 1280px (bv. 1229px laptop) is die wrapper echter ook volledig breed, waardoor `leftSpace` en `rightSpace` alsnog 0 waren en `sidebarHasRoom` false bleef. Vervangen door een DOM-walk: vanaf `h2s[0]` loopt de code omhoog door de ancestorelementen totdat het een element vindt dat breder is dan 300px maar smaller dan 88% van de viewport. Dat is de actuele contentkolom, ongeacht viewport-breedte of Spectra-wrapperstructuur. (`assets/longread-nav.js`)
+
 ## [2.7.4] - 2026-05-02
 
 ### Gerepareerd
