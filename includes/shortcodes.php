@@ -175,3 +175,142 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
         : '';
 }
 
+/* =========================================================================
+ * [cursus_tijd]
+ * ====================================================================== */
+
+// Only register if the shortcode hasn't already been registered by ASE.
+if ( ! shortcode_exists( 'cursus_tijd' ) ) {
+    add_shortcode( 'cursus_tijd', 'sfp_page_config_shortcode_cursus_tijd' );
+}
+
+/**
+ * Shortcode: [cursus_tijd]
+ *
+ * Renders the lesson time(s) for a training page, read from the optional
+ * 'start'/'eind' keys per startmoment in the sfp_cursusdata JSON. Mirrors
+ * [cursus_datum]: same post-id resolution, request-level caching and Dutch
+ * output.
+ *
+ * Parameters:
+ *   post_id   - Defaults to current queried object (works in SureForms).
+ *   groep     - 1-based index to show a single groep's time only.
+ *   separator - Between start and end time. Default: ' - '.
+ *   suffix    - Trailing text after the time. Default: ' uur'. Use suffix=""
+ *               to omit it.
+ *   layout    - 'inline' (default) or 'list' (each groep on its own line with
+ *               a "Groep 1:" label, useful when times differ).
+ *   fallback  - Text to show when no per-startmoment time exists. When empty,
+ *               the site-wide default lestijd from the Instellingen tab is
+ *               used; if that is also empty, nothing is rendered.
+ *
+ * Behaviour:
+ *   - When every groep shares the same time, a single line is returned so a
+ *     hero shows "09:00 - 17:00 uur" once.
+ *   - When times differ, layout=list labels each groep; inline joins the
+ *     distinct times with ' / '.
+ *
+ * @param  array $atts Shortcode attributes.
+ * @return string      Formatted HTML.
+ */
+function sfp_page_config_shortcode_cursus_tijd( $atts ) {
+
+    $atts = shortcode_atts( array(
+        'post_id'   => '',
+        'groep'     => '',
+        'separator' => ' - ',
+        'suffix'    => ' uur',
+        'layout'    => 'inline',
+        'fallback'  => '',
+    ), $atts, 'cursus_tijd' );
+
+    // Resolve post ID: explicit param > main query > get_the_ID().
+    if ( '' !== $atts['post_id'] ) {
+        $post_id = intval( $atts['post_id'] );
+    } else {
+        $queried = get_queried_object_id();
+        $post_id = $queried ? $queried : intval( get_the_ID() );
+    }
+
+    // Request-level caching for cursusdata meta lookups.
+    static $cache = array();
+    if ( isset( $cache[ $post_id ] ) ) {
+        $data = $cache[ $post_id ];
+    } else {
+        $json = get_post_meta( $post_id, 'sfp_cursusdata', true );
+        $data = $json ? json_decode( $json, true ) : array();
+        if ( json_last_error() !== JSON_ERROR_NONE ) {
+            $data = array();
+        }
+        $cache[ $post_id ] = $data;
+    }
+
+    $sep    = $atts['separator'];
+    $suffix = $atts['suffix'];
+
+    // Collect formatted times per groep (1-based) for groups that have one.
+    $times = array();
+    if ( ! empty( $data ) && is_array( $data ) ) {
+        foreach ( $data as $i => $sm ) {
+            $start     = isset( $sm['start'] ) ? $sm['start'] : '';
+            $eind      = isset( $sm['eind'] ) ? $sm['eind'] : '';
+            $formatted = sfp_page_config_format_cursus_tijd( $start, $eind, $sep, $suffix );
+            if ( '' !== $formatted ) {
+                $times[ $i + 1 ] = $formatted;
+            }
+        }
+    }
+
+    // Single groep requested.
+    if ( '' !== $atts['groep'] ) {
+        $num = intval( $atts['groep'] );
+        if ( isset( $times[ $num ] ) ) {
+            return '<span class="cursus-tijd">' . esc_html( $times[ $num ] ) . '</span>';
+        }
+        // No time for that groep: fall through to the fallback logic.
+        $times = array();
+    }
+
+    if ( ! empty( $times ) ) {
+
+        $unique = array_values( array_unique( $times ) );
+
+        // All groups share one time: render it once.
+        if ( 1 === count( $unique ) ) {
+            return '<span class="cursus-tijd">' . esc_html( $unique[0] ) . '</span>';
+        }
+
+        // Distinct times, per-groep layout.
+        if ( 'list' === $atts['layout'] ) {
+            $parts = array();
+            foreach ( $times as $num => $t ) {
+                $parts[] = '<div class="cursus-tijd-groep">'
+                    . '<span class="cursus-tijd-label">Groep ' . intval( $num ) . ':</span> '
+                    . '<span class="cursus-tijd">' . esc_html( $t ) . '</span>'
+                    . '</div>';
+            }
+            return '<div class="cursus-tijd-wrapper">' . implode( '', $parts ) . '</div>';
+        }
+
+        // Distinct times, inline: join the unique values.
+        $spans = array();
+        foreach ( $unique as $t ) {
+            $spans[] = '<span class="cursus-tijd">' . esc_html( $t ) . '</span>';
+        }
+        return implode( ' / ', $spans );
+    }
+
+    // No per-startmoment time. Fallback order: explicit param > site default.
+    if ( '' !== $atts['fallback'] ) {
+        return '<span class="cursus-tijd">' . esc_html( $atts['fallback'] ) . '</span>';
+    }
+
+    $def_start = function_exists( 'sfp_page_config_get_setting' ) ? sfp_page_config_get_setting( 'cursus_tijd_default_start', '' ) : '';
+    $def_eind  = function_exists( 'sfp_page_config_get_setting' ) ? sfp_page_config_get_setting( 'cursus_tijd_default_eind', '' ) : '';
+    $def       = sfp_page_config_format_cursus_tijd( $def_start, $def_eind, $sep, $suffix );
+
+    return '' !== $def
+        ? '<span class="cursus-tijd">' . esc_html( $def ) . '</span>'
+        : '';
+}
+
