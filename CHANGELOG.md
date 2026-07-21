@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.8.0] - 2026-07-21
+
+### Toegevoegd
+
+- **Placeholder-vangnet tegen niet-vervangen sjabloon-invulplekken.** Nieuw bestand `includes/placeholder-guard.php`. Trainingspagina's worden per site gedupliceerd vanuit een privé-sjabloon "Trainingspagina (concept)" dat vol staat met invulplekken (`[Probleem]`, `[Programma]`, `[Naam]`, `[Organisatie]` en reeksen puntjes). Bij het publiceren of bijwerken van een gepubliceerde pagina, post of begrip detecteert de plugin nu tekst tussen vierkante haken die geen geregistreerde shortcode is (via `shortcode_exists()`, dus het groeit vanzelf mee met nieuwe shortcodes) plus reeksen van vier of meer puntjes. De waarschuwing is niet-blokkerend: een dismissible admin-notice op het bewerkscherm plus een directe melding in de Gutenberg-editor na opslaan (`assets/placeholder-editor.js`). Concepten en privépagina's worden overgeslagen zodat het sjabloon zelf zijn invulplekken mag houden.
+- **Sitebrede invulplek-controle op het dashboard.** Nieuwe tab "Invulplekken" onder SFP Page Config. Scant alle gepubliceerde pagina's, posts en begrippen en toont een teller plus een lijst van live pagina's die nog invulplekken bevatten, met bekijk- en bewerklinks. Het resultaat wordt maximaal een uur gecachet en ververst automatisch bij elke opslag; met "Opnieuw scannen" forceer je een verse scan.
+- **Lestijd per startmoment in de cursusdata plus shortcode `[cursus_tijd]`.** De cursusdata-structuur (`sfp_cursusdata`) kent nu een optionele start- en eindtijd per startmoment, te beheren in het Cursusdata-dashboard naast de dagdata. De nieuwe shortcode `[cursus_tijd]` toont de lestijd in nette Nederlandse weergave ("09:00 - 17:00 uur"), in lijn met `[cursus_datum]` (params `groep`, `separator`, `suffix`, `layout`, `fallback`, `post_id`, met request-caching). Wanneer alle startmomenten dezelfde tijd hebben toont de shortcode één regel; bij afwijkende tijden zet `layout="list"` elke groep op een eigen regel. Nieuwe helpers `sfp_page_config_sanitize_time()` en `sfp_page_config_format_cursus_tijd()` in het hoofdbestand.
+- **Standaard lestijd als fallback.** Nieuwe instelling "Cursustijd (standaard)" op de Instellingen-tab. `[cursus_tijd]` valt hierop terug wanneer een pagina nog geen eigen tijd per startmoment heeft, zodat bestaande pagina's meteen een correcte tijd tonen. Een eigen tijd per startmoment heeft altijd voorrang.
+
+### Gewijzigd
+
+- **AJAX-opslag van cursusdata behoudt nu de tijd.** `sfp_page_config_ajax_save()` herbouwt de cursusdata-array bij elke opslag; die rebuild bewaart nu expliciet de gesanitiseerde `start`/`eind` per startmoment. Ongeldige tijden worden weggelaten zodat de shortcode netjes terugvalt. Zonder deze wijziging zou een ingevoerde tijd bij elke opslag stil verdwijnen.
+- **Metabox en Cursusdata-dashboard tonen de lestijd** in de read-only samenvatting per startmoment, met een `[cursus_tijd]`-hint in de metabox naast de bestaande `[cursus_datum]`-hint.
+
 ## [2.7.5] - 2026-05-02
 
 ### Gerepareerd

@@ -347,10 +347,15 @@ function sfp_page_config_render_metabox( $post ) {
                     }
                 }
                 if ( ! empty( $dates_formatted ) ) {
+                    $sm_tijd = sfp_page_config_format_cursus_tijd(
+                        isset( $startmoment['start'] ) ? $startmoment['start'] : '',
+                        isset( $startmoment['eind'] ) ? $startmoment['eind'] : ''
+                    );
                     printf(
-                        '<div class="sfp-mb-sm"><strong>Groep %d:</strong> %s</div>',
+                        '<div class="sfp-mb-sm"><strong>Groep %d:</strong> %s%s</div>',
                         intval( $index + 1 ),
-                        implode( ' &bull; ', $dates_formatted )
+                        implode( ' &bull; ', $dates_formatted ),
+                        $sm_tijd ? ' <em>(' . esc_html( $sm_tijd ) . ')</em>' : ''
                     );
                 }
             }
@@ -367,6 +372,9 @@ function sfp_page_config_render_metabox( $post ) {
         ?>
         <code class="sfp-mb-hint">[cursus_datum]</code>
         <span class="sfp-mb-note">Params: <code>format</code>, <code>groep</code>, <code>separator</code>, <code>show</code>, <code>layout</code></span>
+        <br />
+        <code class="sfp-mb-hint">[cursus_tijd]</code>
+        <span class="sfp-mb-note">Lestijd per startmoment. Beheer tijden in SFP Page Config &rarr; Cursusdata.</span>
     </div>
     <?php endif; ?>
 

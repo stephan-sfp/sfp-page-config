@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     2.7.5
+ * Version:     2.8.0
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '2.7.5' );
+define( 'SFP_PAGE_CONFIG_VERSION', '2.8.0' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -361,6 +361,85 @@ function sfp_page_config_format_date_nl( $date_string, $format = 'short' ) {
 }
 
 /* =========================================================================
+ * Time helpers for cursus lestijden
+ *
+ * Defined BEFORE includes so shortcodes.php and dashboard.php can call
+ * them during require_once. Times are stored per startmoment in the
+ * sfp_cursusdata JSON as 'start' and 'eind' keys (24h "HH:MM").
+ * ====================================================================== */
+
+/**
+ * Sanitize a time string to a strict 24-hour "HH:MM" value.
+ *
+ * Accepts "9:00", "09.00", "09:00" and normalises to "09:00". Returns an
+ * empty string for anything that is not a valid time, so a bad value never
+ * ends up stored or rendered.
+ *
+ * @param  mixed $value Raw time input.
+ * @return string       "HH:MM" or "" when invalid.
+ */
+function sfp_page_config_sanitize_time( $value ) {
+
+    if ( ! is_string( $value ) && ! is_numeric( $value ) ) {
+        return '';
+    }
+
+    $value = trim( (string) $value );
+    if ( '' === $value ) {
+        return '';
+    }
+
+    // Allow a dot as separator ("09.00") next to the canonical colon.
+    $value = str_replace( '.', ':', $value );
+
+    if ( ! preg_match( '/^(\d{1,2}):(\d{2})$/', $value, $m ) ) {
+        return '';
+    }
+
+    $hours   = (int) $m[1];
+    $minutes = (int) $m[2];
+
+    if ( $hours > 23 || $minutes > 59 ) {
+        return '';
+    }
+
+    return sprintf( '%02d:%02d', $hours, $minutes );
+}
+
+/**
+ * Format a start/end time pair into a Dutch lestijd string.
+ *
+ * Examples:
+ *   ("09:00", "17:00")               -> "09:00 - 17:00 uur"
+ *   ("09:00", "")                    -> "vanaf 09:00 uur"
+ *   ("", "17:00")                    -> "tot 17:00 uur"
+ *   ("", "")                         -> ""
+ *
+ * @param  string $start     Sanitised "HH:MM" start time (may be empty).
+ * @param  string $eind      Sanitised "HH:MM" end time (may be empty).
+ * @param  string $separator Separator between start and end. Default " - ".
+ * @param  string $suffix    Trailing text. Default " uur".
+ * @return string            Formatted string or "" when both times are empty.
+ */
+function sfp_page_config_format_cursus_tijd( $start, $eind, $separator = ' - ', $suffix = ' uur' ) {
+
+    $start = sfp_page_config_sanitize_time( $start );
+    $eind  = sfp_page_config_sanitize_time( $eind );
+
+    if ( '' !== $start && '' !== $eind ) {
+        $body = $start . $separator . $eind;
+    } elseif ( '' !== $start ) {
+        $body = 'vanaf ' . $start;
+    } elseif ( '' !== $eind ) {
+        $body = 'tot ' . $eind;
+    } else {
+        return '';
+    }
+
+    return $body . $suffix;
+}
+
+/* =========================================================================
  * WP Rocket delay-JS exclusions
  *
  * dropdown.js must load before SureForms/Tom Select to populate options.
@@ -395,6 +474,7 @@ $sfp_includes = array(
     'includes/metabox.php',
     'includes/dashboard.php',
     'includes/shortcodes.php',
+    'includes/placeholder-guard.php',
     'includes/body-class.php',
     'includes/longread.php',
     'includes/longread-nav.php',

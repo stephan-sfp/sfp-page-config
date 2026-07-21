@@ -95,6 +95,12 @@ function sfp_page_config_sanitize_settings( $input ) {
     // Cron notification email.
     $clean['cron_email'] = sanitize_email( $input['cron_email'] ?? '' );
 
+    // Site-wide default lestijd. Used by [cursus_tijd] as a fallback when a
+    // page has no per-startmoment time yet. Stored as sanitised "HH:MM"
+    // start/end; an invalid value is stored empty so the fallback stays safe.
+    $clean['cursus_tijd_default_start'] = sfp_page_config_sanitize_time( $input['cursus_tijd_default_start'] ?? '' );
+    $clean['cursus_tijd_default_eind']  = sfp_page_config_sanitize_time( $input['cursus_tijd_default_eind'] ?? '' );
+
     // Longread branding overrides (hex colors).
     // An empty value is allowed: it means "fall back to the domain default"
     // in sfp_page_config_get_brand(). Invalid values are stored as empty
@@ -248,6 +254,7 @@ function sfp_page_config_render_admin() {
         'cursusdata'   => 'Cursusdata',
         'instellingen' => 'Instellingen',
         'shortcodes'   => 'Shortcode Referentie',
+        'controle'     => 'Invulplekken',
     );
 
     $base_url = admin_url( 'admin.php?page=sfp-page-config' );
@@ -272,6 +279,9 @@ function sfp_page_config_render_admin() {
                 break;
             case 'shortcodes':
                 sfp_page_config_render_tab_shortcodes();
+                break;
+            case 'controle':
+                sfp_page_config_render_tab_controle();
                 break;
             default:
                 sfp_page_config_render_tab_cursusdata();
@@ -412,11 +422,16 @@ function sfp_page_config_render_tab_cursusdata() {
                                     $formatted[] = $str;
                                 }
                             }
-                            $num = $i + 1;
+                            $num  = $i + 1;
+                            $tijd = sfp_page_config_format_cursus_tijd(
+                                isset( $sm['start'] ) ? $sm['start'] : '',
+                                isset( $sm['eind'] ) ? $sm['eind'] : ''
+                            );
                             ?>
                             <span class="sfp-cd-sm-display">
                                 <strong><?php echo $num; ?>.</strong>
                                 <?php echo esc_html( implode( ' | ', $formatted ) ); ?>
+                                <?php if ( $tijd ) : ?><em>(<?php echo esc_html( $tijd ); ?>)</em><?php endif; ?>
                             </span>
                         <?php endforeach;
                     else : ?>
@@ -483,6 +498,9 @@ function sfp_page_config_render_tab_cursusdata() {
             h += '<div class="sfp-cd-sm">';
             h += '<div class="sfp-cd-sm-head"><strong>Startmoment ' + (si+1) + '</strong>';
             h += '<button class="sfp-cd-btn sfp-cd-btn-del" onclick="sfpDelSM('+id+','+si+')">Verwijderen</button></div>';
+            h += '<div class="datum-row"><label style="min-width:45px">Tijd:</label>';
+            h += '<input type="time" value="'+(sm.start||'')+'" onchange="sfpUpdT('+id+','+si+',\'start\',this.value)" title="Starttijd" style="width:110px"> tot ';
+            h += '<input type="time" value="'+(sm.eind||'')+'" onchange="sfpUpdT('+id+','+si+',\'eind\',this.value)" title="Eindtijd" style="width:110px"></div>';
             (sm.data || ['']).forEach(function(d, di) {
                 h += '<div class="datum-row">';
                 h += '<label style="min-width:45px">Dag '+(di+1)+':</label>';
@@ -503,6 +521,7 @@ function sfp_page_config_render_tab_cursusdata() {
     function sfpAddD(id,si) { sfpD[id][si].data.push(''); sfpRender(id); }
     function sfpDelD(id,si,di) { sfpD[id][si].data.splice(di,1); sfpRender(id); }
     function sfpUpd(id,si,di,v) { sfpD[id][si].data[di] = v; }
+    function sfpUpdT(id,si,f,v) { sfpD[id][si][f] = v; }
 
     function sfpSave(id) {
         var fd = new FormData();
@@ -526,7 +545,11 @@ function sfp_page_config_render_tab_cursusdata() {
                                 var months = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
                                 return days[dt.getDay()] + ' ' + dt.getDate() + ' ' + months[dt.getMonth()] + ' ' + dt.getFullYear();
                             });
-                            h += '<span class="sfp-cd-sm-display"><strong>' + (i+1) + '.</strong> ' + parts.join(' | ') + '</span>';
+                            var tijd = '';
+                            if (sm.start && sm.eind) tijd = ' <em>(' + sm.start + ' - ' + sm.eind + ' uur)</em>';
+                            else if (sm.start) tijd = ' <em>(vanaf ' + sm.start + ' uur)</em>';
+                            else if (sm.eind) tijd = ' <em>(tot ' + sm.eind + ' uur)</em>';
+                            h += '<span class="sfp-cd-sm-display"><strong>' + (i+1) + '.</strong> ' + parts.join(' | ') + tijd + '</span>';
                         });
                         dsp.innerHTML = h;
                         dsp.closest('tr').setAttribute('data-has', '1');
@@ -867,6 +890,29 @@ function sfp_page_config_render_tab_settings() {
             </tr>
         </table>
 
+        <!-- Cursustijd default -->
+        <h2>Cursustijd (standaard)</h2>
+        <p style="color:#666;">Standaard lestijd die <code>[cursus_tijd]</code> toont wanneer een trainingpagina nog geen eigen tijd per startmoment heeft. Vul je per startmoment in de Cursusdata-tab een tijd in, dan heeft die voorrang. Laat beide velden leeg om geen standaardtijd te tonen.</p>
+        <table class="form-table" role="presentation">
+            <tr>
+                <th><label for="sfp-tijd-start">Starttijd</label></th>
+                <td>
+                    <input type="time" id="sfp-tijd-start" name="sfp_settings[cursus_tijd_default_start]"
+                           value="<?php echo esc_attr( $s['cursus_tijd_default_start'] ?? '' ); ?>"
+                           style="width:120px;" />
+                </td>
+            </tr>
+            <tr>
+                <th><label for="sfp-tijd-eind">Eindtijd</label></th>
+                <td>
+                    <input type="time" id="sfp-tijd-eind" name="sfp_settings[cursus_tijd_default_eind]"
+                           value="<?php echo esc_attr( $s['cursus_tijd_default_eind'] ?? '' ); ?>"
+                           style="width:120px;" />
+                    <p class="description">Weergave bijvoorbeeld: <code>09:00 - 17:00 uur</code>.</p>
+                </td>
+            </tr>
+        </table>
+
         <!-- Cron -->
         <h2>Cursusdata-meldingen</h2>
         <table class="form-table" role="presentation">
@@ -934,6 +980,45 @@ function sfp_page_config_render_tab_shortcodes() {
         </tbody>
     </table>
 
+    <h2 style="margin-top:2em;"><code>[cursus_tijd]</code></h2>
+    <p>Toont de lestijd van de huidige trainingpagina. Haalt de tijd per startmoment uit de Cursusdata, dedupliceert wanneer alle startmomenten dezelfde tijd hebben, en valt terug op de standaard lestijd uit de Instellingen-tab wanneer er nog geen tijd is ingevuld.</p>
+
+    <table class="widefat fixed striped" style="max-width:800px;">
+        <thead>
+            <tr>
+                <th style="width:20%;">Attribuut</th>
+                <th style="width:25%;">Opties</th>
+                <th style="width:20%;">Standaard</th>
+                <th style="width:35%;">Toelichting</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>groep</code></td><td><code>1</code>, <code>2</code>, <code>3</code></td><td>alle groepen</td><td>Toon alleen de tijd van deze groep (1-gebaseerd).</td></tr>
+            <tr><td><code>separator</code></td><td>elk teken/tekst</td><td><code> - </code></td><td>Tussen start- en eindtijd.</td></tr>
+            <tr><td><code>suffix</code></td><td>elke tekst</td><td><code> uur</code></td><td>Achter de tijd. Gebruik <code>suffix=""</code> om weg te laten.</td></tr>
+            <tr><td><code>layout</code></td><td><code>inline</code>, <code>list</code></td><td><code>inline</code></td><td><code>list</code> toont per groep een eigen regel met label wanneer de tijden verschillen.</td></tr>
+            <tr><td><code>fallback</code></td><td>elke tekst</td><td>Instellingen-default</td><td>Wat te tonen als er geen tijd is. Leeg = de standaard lestijd uit Instellingen, anders niets.</td></tr>
+            <tr><td><code>post_id</code></td><td>een post ID</td><td>huidige pagina</td><td>Forceer de tijd van een andere pagina.</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Voorbeelden</h3>
+    <table class="widefat fixed striped" style="max-width:800px;">
+        <thead>
+            <tr>
+                <th style="width:55%;">Shortcode</th>
+                <th style="width:45%;">Resultaat</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><code>[cursus_tijd]</code></td><td>E&eacute;n regel als alle startmomenten dezelfde tijd hebben (bijv. "09:00 - 17:00 uur").</td></tr>
+            <tr><td><code>[cursus_tijd groep="1"]</code></td><td>Alleen de tijd van groep 1.</td></tr>
+            <tr><td><code>[cursus_tijd suffix=""]</code></td><td>Zonder "uur" (bijv. "09:00 - 17:00").</td></tr>
+            <tr><td><code>[cursus_tijd layout="list"]</code></td><td>Per groep een eigen regel met label, handig bij afwijkende tijden.</td></tr>
+            <tr><td><code>[cursus_tijd fallback="in overleg"]</code></td><td>Toont "in overleg" als er nog geen tijd is ingesteld.</td></tr>
+        </tbody>
+    </table>
+
     <h2 style="margin-top:2em;"><code>[training_naam]</code></h2>
     <p>Toont de trainingsnaam zoals ingesteld in de metabox. Geen attributen.</p>
     <?php
@@ -986,7 +1071,22 @@ function sfp_page_config_ajax_save() {
         }
         if ( ! empty( $dates ) ) {
             sort( $dates );
-            $clean[] = array( 'data' => $dates );
+            $group = array( 'data' => $dates );
+
+            // Preserve optional per-startmoment lestijd. Each value is
+            // sanitised to "HH:MM"; empty or invalid values are dropped so the
+            // shortcode falls back cleanly. Without this, the rebuild below
+            // would silently strip the time on every save.
+            $start = isset( $sm['start'] ) ? sfp_page_config_sanitize_time( $sm['start'] ) : '';
+            $eind  = isset( $sm['eind'] ) ? sfp_page_config_sanitize_time( $sm['eind'] ) : '';
+            if ( '' !== $start ) {
+                $group['start'] = $start;
+            }
+            if ( '' !== $eind ) {
+                $group['eind'] = $eind;
+            }
+
+            $clean[] = $group;
         }
     }
 
