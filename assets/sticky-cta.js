@@ -31,29 +31,40 @@
         var cfg = window.sfpStickyConfig;
         if (!cfg) return;
 
-        // An on-page anchor href is only useful when that section exists.
-        // Without this guard a page missing the anchor would show a bar
-        // whose button does nothing.
-        if (cfg.href && cfg.href.charAt(0) === '#') {
-            if (!document.getElementById(cfg.href.slice(1))) return;
-        }
-
         initialized = true;
 
-        // Build the sticky bar.
-        var bar = document.createElement('div');
-        bar.id = 'sticky-mobile-cta';
-        bar.className = 'sticky-mobile-cta';
+        // Is there anywhere to send the visitor? An on-page anchor href is
+        // only useful when that section actually exists on this page.
+        // Without this check the bar could show a button that does nothing.
+        var hasDestination = true;
+        if (!cfg.href) {
+            hasDestination = false;
+        } else if (cfg.href.charAt(0) === '#' && !document.getElementById(cfg.href.slice(1))) {
+            hasDestination = false;
+        }
 
-        var link = document.createElement('a');
-        link.href = cfg.href;
-        link.textContent = cfg.text;
-        if (cfg.target) link.target = cfg.target;
+        // Build the sticky bar, but only when there is a destination.
+        // The hero detection further down keeps running either way: it adds
+        // the .sfp-hero-section class that sales-page.css needs to keep the
+        // hero outline button visible below 1024px. Skipping the whole
+        // function here would hide that button as well.
+        var bar = null;
 
-        link.setAttribute('role', 'button');
+        if (hasDestination) {
+            bar = document.createElement('div');
+            bar.id = 'sticky-mobile-cta';
+            bar.className = 'sticky-mobile-cta';
 
-        bar.appendChild(link);
-        document.body.appendChild(bar);
+            var link = document.createElement('a');
+            link.href = cfg.href;
+            link.textContent = cfg.text;
+            if (cfg.target) link.target = cfg.target;
+
+            link.setAttribute('role', 'button');
+
+            bar.appendChild(link);
+            document.body.appendChild(bar);
+        }
 
         // Visibility state.
         var heroEverSeen = false;
@@ -61,6 +72,7 @@
         var anchorVisible = false;
 
         function updateVisibility() {
+            if (!bar) return;
             var show = heroEverSeen && !heroVisible && !anchorVisible;
             bar.classList.toggle('visible', show);
         }

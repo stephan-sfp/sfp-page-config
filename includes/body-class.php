@@ -110,33 +110,33 @@ function sfp_page_config_enqueue_sales_assets() {
     }
 
     // No destination at all (no URL configured and no anchor set) means
-    // there is nothing to link to, so we skip the bar entirely rather
-    // than rendering a dead button.
-    if ( '' === trim( (string) $config['href'] ) ) {
-        return;
+    // there is nothing to link to, so we skip the sticky CTA rather than
+    // rendering a dead button. Only this block is skipped: the promo
+    // script below is unrelated to the CTA and must still load.
+    if ( '' !== trim( (string) $config['href'] ) ) {
+
+        wp_enqueue_script(
+            'sfp-page-config-sticky-cta',
+            SFP_PAGE_CONFIG_URL . 'assets/sticky-cta.js',
+            array(),
+            SFP_PAGE_CONFIG_VERSION,
+            true
+        );
+
+        // Pass config to JS.
+        $inline_js = sprintf(
+            'window.sfpStickyConfig=%s;',
+            wp_json_encode( array(
+                'text'            => $config['text'],
+                'href'            => $config['href'],
+                'target'          => $config['target'],
+                'anchor'          => $config['anchor'],
+                'hero'            => $config['hero'],
+                'scrollThreshold' => 400,
+            ) )
+        );
+        wp_add_inline_script( 'sfp-page-config-sticky-cta', $inline_js, 'before' );
     }
-
-    wp_enqueue_script(
-        'sfp-page-config-sticky-cta',
-        SFP_PAGE_CONFIG_URL . 'assets/sticky-cta.js',
-        array(),
-        SFP_PAGE_CONFIG_VERSION,
-        true
-    );
-
-    // Pass config to JS.
-    $inline_js = sprintf(
-        'window.sfpStickyConfig=%s;',
-        wp_json_encode( array(
-            'text'            => $config['text'],
-            'href'            => $config['href'],
-            'target'          => $config['target'],
-            'anchor'          => $config['anchor'],
-            'hero'            => $config['hero'],
-            'scrollThreshold' => 400,
-        ) )
-    );
-    wp_add_inline_script( 'sfp-page-config-sticky-cta', $inline_js, 'before' );
 
     // Promo frequency/conflict resolution JS (loaded alongside sticky CTA).
     wp_enqueue_script(
