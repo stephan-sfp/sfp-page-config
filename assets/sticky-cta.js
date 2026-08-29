@@ -31,6 +31,13 @@
         var cfg = window.sfpStickyConfig;
         if (!cfg) return;
 
+        // An on-page anchor href is only useful when that section exists.
+        // Without this guard a page missing the anchor would show a bar
+        // whose button does nothing.
+        if (cfg.href && cfg.href.charAt(0) === '#') {
+            if (!document.getElementById(cfg.href.slice(1))) return;
+        }
+
         initialized = true;
 
         // Build the sticky bar.
