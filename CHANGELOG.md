@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.8.2] - 2026-08-29
+
+### Gerepareerd
+
+- **De vangnetten uit 2.8.1 konden meer verbergen dan bedoeld.** Twee regressies, gevonden bij review voordat 2.8.1 ergens was uitgerold.
+  - `assets/sticky-cta.js` stopte `init()` volledig wanneer de href naar een anker wees dat niet op de pagina staat. Diezelfde functie zet ook de class `sfp-hero-section`, en `assets/sales-page.css` heeft die class nodig om de outline-knop in de hero zichtbaar te houden onder 1024px. Op zo'n pagina verdween dus niet alleen de sticky balk maar ook de knop in de hero. De controle bepaalt nu alleen nog of de balk gebouwd wordt; de hero-detectie loopt altijd door.
+  - `includes/body-class.php` deed een vroege `return` bij een lege href, waardoor ook `assets/promo.js` en `window.sfpPromoConfig` niet meer laadden. Dat script regelt de frequentie en conflictafhandeling van promoties en staat los van de sticky CTA. De controle omsluit nu alleen het sticky-CTA-blok.
+
 ## [2.8.1] - 2026-08-29
 
 ### Gerepareerd
