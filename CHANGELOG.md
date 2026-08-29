@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.8.3] - 2026-08-30
+
+### Gerepareerd
+
+- **De auto-updateknop ontbrak op sites die al up-to-date waren.** `check_update()` zette de plugin alleen in `$transient->response` wanneer er een nieuwere versie was, en nooit in `$transient->no_update`. WordPress toont de schakelaar voor automatische updates alleen voor plugins die in een van beide lijsten staan, dus op elke site die toevallig de laatste versie draaide was die schakelaar er simpelweg niet. Live vastgesteld op DPS, DGA, CVD en SLB. De plugin meldt zich nu in beide gevallen netjes aan, met `id`, `slug`, `plugin` en `new_version`, zoals WordPress verwacht.
+- **"Opnieuw controleren" op de updatepagina deed niets voor deze plugin.** `get_latest_release()` cachet het antwoord van GitHub twaalf uur in de transient `sfp_page_config_github_release`. WordPress leegt bij `force-check=1` zijn eigen updatetransient, maar niet die van de plugin, waardoor een verse release tot twaalf uur onzichtbaar bleef en de uitrol per site onvoorspelbaar was. Een geforceerde controle leegt die cache nu wel. Nieuwe helper `is_forced_check()` doet dat alleen in de beheeromgeving, alleen voor een gebruiker met het recht `update_plugins`, hoogstens een keer per verzoek en hoogstens een keer per vijf minuten. Die laatste drempel is er omdat de URL geen nonce draagt: zonder drempel kon een ingelogde beheerder die een vijandige pagina bezoekt de uurlimiet van de GitHub-API leegtrekken, waarna elke volgende controle zou mislukken.
+- **Een onbereikbare GitHub liet de auto-updateknop verdwijnen en een verouderde updatemelding staan.** Mislukte de API-aanroep, dan zette `check_update()` de plugin in geen van beide lijsten. De schakelaar viel dan weg en een eerder gemelde update bleef in `response` hangen, zodat WordPress een versie bleef aanbieden die niet meer te downloaden was. De plugin meldt zich nu ook bij een mislukte aanroep aan als up-to-date, met een leeg pakket, en ruimt de oude vermelding op.
+
+### Gewijzigd
+
+- **Hardening tegen ontbrekende sleutels in het GitHub-antwoord.** `html_url` en `zipball_url` worden nu met een `isset`-controle gelezen, zodat een afwijkend of ouder gecachet antwoord geen PHP-melding oplevert. Het opbouwen van de transient-vermelding zit in een nieuwe helper `build_item()`, zodat de drie paden (update beschikbaar, up-to-date, API onbereikbaar) niet uiteen kunnen lopen.
+
 ## [2.8.2] - 2026-08-29
 
 ### Gerepareerd
