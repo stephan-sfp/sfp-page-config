@@ -103,9 +103,17 @@ function sfp_page_config_enqueue_sales_assets() {
         $config['text'] = $custom_text;
     }
     if ( $custom_href ) {
+        // The resolver sets the matching target: an on-page anchor stays
+        // in the same tab, an external URL opens in a new one.
         $config['href'] = $custom_href;
-        // Auto-detect external links for target attribute.
-        $config['target'] = ( 0 === strpos( $custom_href, '#' ) ) ? '_self' : '_blank';
+        $config         = sfp_page_config_resolve_sticky_cta_href( $config );
+    }
+
+    // No destination at all (no URL configured and no anchor set) means
+    // there is nothing to link to, so we skip the bar entirely rather
+    // than rendering a dead button.
+    if ( '' === trim( (string) $config['href'] ) ) {
+        return;
     }
 
     wp_enqueue_script(

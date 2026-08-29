@@ -4,6 +4,22 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.8.1] - 2026-08-29
+
+### Gerepareerd
+
+- **Sticky CTA wees naar een agenda die niet meer gebruikt wordt.** `sfp_page_config_get_sticky_cta_defaults()` bevatte een hardcoded boekings-URL (`calendar.app.google/eqRPknhnTDV3FjjX7`), gedeeld door alle drie de paginatypes. Liet een redacteur het veld "Knoplink (URL)" op de Instellingen-tab leeg, dan viel de sticky mobiele balk terug op die URL. Op DPS raakte dat negen live pagina's, en het was niet op te lossen zonder pluginwijziging omdat juist het leeglaten de foute default activeerde. De hardcoded URL is verwijderd; de default is nu leeg.
+
+### Gewijzigd
+
+- **Leeg gelaten knoplink valt nu terug op het anker van dezelfde pagina.** Nieuwe helper `sfp_page_config_resolve_sticky_cta_href()` bepaalt de uiteindelijke href: is er geen URL ingesteld voor dit paginatype, dan wijst de knop naar het anker (bijvoorbeeld `#inschrijven`), de sectie waar de echte knop staat. De bezoeker komt daarmee altijd ergens zinnigs uit, ook op een site waar de boekingslink nog niet is ingevuld.
+- **Het `target`-attribuut volgt nu de uiteindelijke link.** Een anker op de pagina opent in hetzelfde tabblad, een externe URL in een nieuw tabblad. Dat gold al voor de per-pagina override in de metabox, maar niet voor de instelling per paginatype; nu wordt het op één plek bepaald voor alle drie de bronnen (default, Instellingen-tab, per-pagina override).
+- **De boekingslink is beheerbaar per site en per paginatype** via SFP Page Config > Instellingen > Sticky CTA. Het veld had die mogelijkheid al maar werd overschaduwd door de hardcoded default. De omschrijving bij het veld legt nu uit wat er gebeurt als je het leeglaat.
+
+### Toegevoegd
+
+- **Vangnet tegen een dode knop.** Staat er geen URL en geen anker ingesteld, dan wordt de sticky balk helemaal niet meer geladen (`includes/body-class.php`). Wijst de knop naar een anker dat niet op de pagina staat, dan rendert `assets/sticky-cta.js` de balk niet. Voorheen kon er een knop verschijnen die bij een klik niets deed.
+
 ## [2.8.0] - 2026-07-21
 
 ### Toegevoegd

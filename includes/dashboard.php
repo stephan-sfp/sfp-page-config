@@ -712,7 +712,7 @@ function sfp_page_config_render_tab_settings() {
         );
         ?>
         <h2>Sticky CTA</h2>
-        <p style="color:#666;">De sticky CTA verschijnt op mobiel en tablet (tot 1024px) zodra de hero uit beeld scrollt, en verdwijnt weer zodra de bezoeker bij het aanvraag- of inschrijfformulier is. Kleuren komen automatisch uit de CTA-branding hierboven. Laat een veld leeg om terug te vallen op de default rechts.</p>
+        <p style="color:#666;">De sticky CTA verschijnt op mobiel en tablet (tot 1024px) zodra de hero uit beeld scrollt, en verdwijnt weer zodra de bezoeker bij het aanvraag- of inschrijfformulier is. Kleuren komen automatisch uit de CTA-branding hierboven. Laat een veld leeg om terug te vallen op de default die eronder staat. De knoplink is de uitzondering: die heeft geen default en hoort per site te worden ingevuld.</p>
 
         <?php foreach ( $sticky_type_meta as $type => $label ) :
             $def    = $sticky_defaults[ $type ];
@@ -740,8 +740,8 @@ function sfp_page_config_render_tab_settings() {
                                name="sfp_settings[sticky_cta][<?php echo esc_attr( $type ); ?>][href]"
                                value="<?php echo esc_attr( $stored['href'] ?? '' ); ?>"
                                class="regular-text code"
-                               placeholder="<?php echo esc_attr( $def['href'] ); ?>" />
-                        <p class="description">Default: <code><?php echo esc_html( $def['href'] ); ?></code></p>
+                               placeholder="https://calendar.app.google/..." />
+                        <p class="description">De boekingslink voor dit paginatype op deze site, bijvoorbeeld de agenda-URL. Laat je dit leeg, dan springt de sticky knop naar het anker hieronder op dezelfde pagina, waar de echte knop staat.</p>
                     </td>
                 </tr>
                 <tr>
