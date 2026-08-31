@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.8.4] - 2026-09-01
+
+### Gerepareerd
+
+- **De blokeditor klapte om na het opslaan van een pagina.** `assets/placeholder-editor.js` luistert via `wp.data.subscribe()` op de overgang van "bezig met opslaan" naar "klaar", en roept dan `check()` aan. Die functie dispatcht naar `core/notices`, en elke dispatch draait alle subscribers synchroon opnieuw. Omdat `wasSaving` pas werd bijgewerkt nadat `check()` was teruggekeerd, zag de heringetreden aanroep exact dezelfde overgang en riep `check()` opnieuw aan, tot de aanroepstapel vol was. Resultaat in de console: `Uncaught RangeError: Maximum call stack size exceeded`. `wasSaving` wordt nu bijgewerkt voordat `check()` draait, en een `isChecking`-vlag vangt registries af die de statuswijziging uitstellen of bundelen. De controle draait daardoor precies een keer per opslag.
+
 ## [2.8.3] - 2026-08-30
 
 ### Gerepareerd
