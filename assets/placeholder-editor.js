@@ -90,16 +90,36 @@
     }
 
     // Fire once a save transitions from "saving" back to "done".
+    //
+    // Two guards keep this from recursing. check() dispatches to
+    // core/notices, and every dispatch re-runs this listener synchronously.
+    // So wasSaving must be updated BEFORE check() runs, otherwise the
+    // re-entrant call still sees the same "just finished saving" edge and
+    // calls check() again, until the call stack overflows. The isChecking
+    // flag is a second line of defence for registries that batch or defer
+    // the state update.
     var wasSaving = false;
+    var isChecking = false;
     wp.data.subscribe(function () {
         var editor = wp.data.select('core/editor');
         if (!editor || typeof editor.isSavingPost !== 'function') {
             return;
         }
-        var saving = editor.isSavingPost() && !editor.isAutosavingPost();
-        if (wasSaving && !saving) {
-            check();
-        }
+
+        var saving       = editor.isSavingPost() && !editor.isAutosavingPost();
+        var justFinished = wasSaving && !saving;
+
         wasSaving = saving;
+
+        if (!justFinished || isChecking) {
+            return;
+        }
+
+        isChecking = true;
+        try {
+            check();
+        } finally {
+            isChecking = false;
+        }
     });
 })(window.wp);
