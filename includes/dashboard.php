@@ -733,15 +733,27 @@ function sfp_page_config_render_tab_settings() {
                     </td>
                 </tr>
                 <tr>
-                    <th><label for="sfp-sticky-<?php echo esc_attr( $type ); ?>-href">Knoplink (URL)</label></th>
+                    <th><label for="sfp-sticky-<?php echo esc_attr( $type ); ?>-href">Knoplink (URL of anker)</label></th>
                     <td>
-                        <input type="url"
+                        <?php
+                        // Bewust type="text" en niet type="url". Een anker zoals
+                        // #aanvragen is een geldige waarde voor dit veld, maar
+                        // geen geldige URL volgens de browser. Met type="url"
+                        // blokkeerde de browservalidatie bij zo'n waarde het
+                        // hele formulier, waardoor de Instellingen-tab niets
+                        // meer opsloeg en er ook geen bevestiging verscheen.
+                        // Het metavak per pagina gebruikt om dezelfde reden
+                        // type="text". inputmode="url" houdt het mobiele
+                        // toetsenbord wel op URL-invoer.
+                        ?>
+                        <input type="text"
+                               inputmode="url"
                                id="sfp-sticky-<?php echo esc_attr( $type ); ?>-href"
                                name="sfp_settings[sticky_cta][<?php echo esc_attr( $type ); ?>][href]"
                                value="<?php echo esc_attr( $stored['href'] ?? '' ); ?>"
                                class="regular-text code"
-                               placeholder="https://calendar.app.google/..." />
-                        <p class="description">De boekingslink voor dit paginatype op deze site, bijvoorbeeld de agenda-URL. Laat je dit leeg, dan springt de sticky knop naar het anker hieronder op dezelfde pagina, waar de echte knop staat.</p>
+                               placeholder="https://... of #<?php echo esc_attr( $def['anchor'] ); ?>" />
+                        <p class="description">De boekingslink voor dit paginatype op deze site. Een anker op de pagina zelf mag ook, bijvoorbeeld <code>#<?php echo esc_html( $def['anchor'] ); ?></code>. Laat je dit leeg, dan springt de sticky knop naar het anker hieronder op dezelfde pagina, waar de echte knop staat.</p>
                     </td>
                 </tr>
                 <tr>

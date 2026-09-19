@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.8.5] - 2026-09-19
+
+### Gerepareerd
+
+- **De Instellingen-tab sloeg niets meer op zodra er een anker in een knoplink stond.** De drie velden "Knoplink (URL)" onder Sticky CTA waren `<input type="url">`. Een anker zoals `#proefsessie` is een geldige waarde voor dat veld, maar geen geldige URL volgens de browser. Bij een echte muisklik op "Instellingen opslaan" blokkeerde de browservalidatie daarom het hele formulier voordat er iets verstuurd werd: geen opslag, geen bevestigingsmelding, en na herladen een leeg veld. Dat gold voor de volledige Instellingen-tab, niet alleen voor het Sticky CTA-blok, want een ongeldig veld blokkeert het hele formulier. Een programmatische submit sloeg de validatie over en leek daardoor wel te werken. De velden zijn nu `type="text"` met `inputmode="url"`, gelijk aan het metavak "CTA anker / URL" per pagina, dat altijd al `type="text"` was.
+
+### Gewijzigd
+
+- **Het label en de hulptekst bij de knoplink benoemen het anker expliciet.** Het veld heet nu "Knoplink (URL of anker)" en de omschrijving noemt `#aanvragen` als geldige waarde naast een volledige URL.
+- **De placeholder verwijst niet langer naar een agenda-URL.** Die stond nog op `https://calendar.app.google/...` uit de tijd dat boekingen via Google Agenda liepen. De placeholder toont nu een neutrale URL naast het anker van het betreffende paginatype. Daarmee staat er nergens in de plugincode nog een agendaverwijzing.
+
 ## [2.8.4] - 2026-09-01
 
 ### Gerepareerd
