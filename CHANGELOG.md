@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.8.6] - 2026-09-20
+
+### Toegevoegd
+
+- **De sticky CTA-overrides per pagina zijn nu leesbaar en schrijfbaar via de REST API.** `sfp_cta_text` en `sfp_cta_href` zijn geregistreerd met `register_post_meta()` en `show_in_rest`, op alle drie de ondersteunde post types (`page`, `post`, `begrippen`). Daarmee is het veld "CTA anker / URL" netwerkbreed te inspecteren en te corrigeren zonder per pagina een bewerkscherm te openen. Schrijven vereist `edit_post` op die specifieke pagina, niet alleen `edit_posts` op het post type.
+- **`sfp_page_config_sanitize_cta_href()`.** Nieuwe sanitizer voor de bestemming, gelijk aan wat de metabox-save al deed: leeg blijft leeg (en betekent "val terug op het anker van dit paginatype"), een anker zoals `#aanvragen` blijft intact, en `esc_url_raw()` weert alles wat geen bruikbare bestemming is.
+
+### Gewijzigd
+
+- **De klassieke save-flow is ongewijzigd.** Het metavak blijft opslaan via `save_post` met zijn eigen nonce. De REST-registratie komt daar naast te staan, niet in de plaats van. `sfp_page_type` blijft zoals het sinds v2.7.3 was: alleen lezen.
+
 ## [2.8.5] - 2026-09-19
 
 ### Gerepareerd
