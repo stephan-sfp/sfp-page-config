@@ -46,15 +46,22 @@ function sfp_page_config_register_metabox() {
 }
 
 /* =========================================================================
- * Register sfp_page_type via WP REST API
+ * Register plugin meta via WP REST API
  *
  * The metabox still writes via the classic save_post path (see bottom of this
- * file). This registration ONLY exposes the meta read-only via the REST API so
- * automated monitors (such as the Course-rich-results scheduled task) can read
- * sfp_page_type without scraping post.php edit screens. Write-flow is
- * unchanged and still requires the metabox nonce in save_post.
+ * file); that path is unchanged and still requires the metabox nonce.
  *
- * Added in v2.7.3.
+ * sfp_page_type is exposed read-only so automated monitors (such as the
+ * Course-rich-results scheduled task) can read it without scraping post.php
+ * edit screens. Added in v2.7.3.
+ *
+ * The two sticky CTA overrides, sfp_cta_text and sfp_cta_href, are exposed
+ * read and write as of v2.8.6, so they can be inspected and corrected across
+ * the network without opening 28 edit screens. Writing requires edit_post on
+ * the specific post, and the same sanitisation runs as in the metabox save:
+ * sanitize_text_field for the label, esc_url_raw for the destination. That
+ * last one keeps an on-page anchor such as #aanvragen intact, which is a
+ * valid value for this field.
  * ====================================================================== */
 
 add_action( 'init', 'sfp_page_config_register_meta_for_rest' );
@@ -66,6 +73,13 @@ add_action( 'init', 'sfp_page_config_register_meta_for_rest' );
  * truth.
  */
 function sfp_page_config_register_meta_for_rest() {
+
+    // Writing one of the CTA overrides is an edit of that specific post, so
+    // the capability is checked against the post and not against the post
+    // type as a whole.
+    $cta_auth = function( $allowed, $meta_key, $post_id ) {
+        return current_user_can( 'edit_post', $post_id );
+    };
 
     foreach ( sfp_page_config_post_types() as $post_type ) {
         register_post_meta(
@@ -80,7 +94,52 @@ function sfp_page_config_register_meta_for_rest() {
                 },
             )
         );
+
+        register_post_meta(
+            $post_type,
+            'sfp_cta_text',
+            array(
+                'type'              => 'string',
+                'single'            => true,
+                'show_in_rest'      => true,
+                'sanitize_callback' => 'sanitize_text_field',
+                'auth_callback'     => $cta_auth,
+            )
+        );
+
+        register_post_meta(
+            $post_type,
+            'sfp_cta_href',
+            array(
+                'type'              => 'string',
+                'single'            => true,
+                'show_in_rest'      => true,
+                'sanitize_callback' => 'sfp_page_config_sanitize_cta_href',
+                'auth_callback'     => $cta_auth,
+            )
+        );
     }
+}
+
+/**
+ * Sanitise the sticky CTA destination.
+ *
+ * Mirrors the metabox save path. An empty value is allowed and means "fall
+ * back to the anchor for this page type", exactly as the help text promises.
+ * An on-page anchor such as #aanvragen survives esc_url_raw() untouched.
+ *
+ * @param  mixed $value Raw meta value.
+ * @return string       Sanitised destination, or an empty string.
+ */
+function sfp_page_config_sanitize_cta_href( $value ) {
+
+    $value = trim( (string) $value );
+
+    if ( '' === $value ) {
+        return '';
+    }
+
+    return esc_url_raw( $value );
 }
 
 /* =========================================================================
