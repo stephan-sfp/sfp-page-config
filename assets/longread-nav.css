@@ -237,7 +237,7 @@
 /* H3 sub-items */
 .sfp-lr-toc__item--h3 .sfp-lr-toc__link {
     padding-left: 26px !important;
-    font-family: 'Roboto', sans-serif !important;
+    font-family: var(--lr-body-font, inherit) !important;
     font-size: 12px !important;
     font-weight: 400 !important;
     text-transform: none !important;

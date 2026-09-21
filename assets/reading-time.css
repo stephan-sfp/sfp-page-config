@@ -40,7 +40,7 @@
 #sfp-scroll-bar {
     height: 100%;
     width: 0;
-    background: var(--sfp-bar-color, #0170B9);
+    background: var(--sfp-bar-color, currentColor);
     transition: width 0.08s linear;
 }
 

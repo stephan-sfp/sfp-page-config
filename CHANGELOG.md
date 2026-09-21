@@ -4,6 +4,25 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.9.0] - 2026-09-21
+
+### Gewijzigd
+
+- **De plugin draagt geen eigen merkwaarden meer.** Knopkleur, hover, knoptekst, kopfont en gewicht komen uit de Astra-instellingen van de site zelf (`button-bg-color`, `button-bg-h-color`, `button-color`, `headings-font-family`, `headings-font-weight`). Een kleurwijziging in de Customizer werkt zonder release door, en de plugin kan niet meer uit de pas lopen met de merkbron. De sitematrix met 65 hardgecodeerde waarden voor vijf domeinen is verwijderd.
+- **Longread-navigatie volgt de netwerknorm: de balk voert de knopkleur, de inhoudsopgave de primaire kleur.** De primaire kleur komt uit Astra's koppenkleur (`heading-base-color`). Randen en de gedempte tekst zijn de primaire kleur met transparantie, zoals de merkbron voorschrijft. De drawer-achtergrond is palet-slot 8 (Tint 3), de enige slot die op alle acht sites dezelfde rol draagt.
+- **Kopfont voor knoppen en inhoudsopgave is het H2-tot-H6-font**, niet het H1-displayfont. Op SFP wordt dat Archivo 900 in plaats van Archivo Black 400. DPS, DGA, CVD en DST houden hun font.
+- **De Instellingen-tab toont waar de waarden vandaan komen** en waarschuwt als een longread-veld de norm overschrijft.
+
+### Gerepareerd
+
+- **SFP had twee hovers.** Knoppen hoverden naar `#e63100`, de sticky mobiele CTA naar `#f89b80`. Beide volgen nu Astra.
+- **SLB, SwS en FL kregen stilzwijgend SFP-branding** omdat ze niet in de sitematrix stonden (PC-06). Ze lezen nu hun eigen Astra-waarden.
+- **Hardgecodeerde fallbacks verwijderd:** DPS-oranje in `dropdown.js` en in de focuspunt-marker van het metavak, SFP-rood en -hover in `sales-page.css` en `reading-time.php`, `#0170B9` in `reading-time.css` en `dashboard.php`, en `'Roboto'` in `longread-nav.css` (nu de bodyfont uit Astra).
+
+### Toegevoegd
+
+- `sfp_page_config_astra_option()`, `sfp_page_config_sanitize_css_color()`, `sfp_page_config_sanitize_font_family()`, `sfp_page_config_longread_color_keys()`. Kleurwaarden uit Astra worden gevalideerd voordat ze in inline CSS belanden: hex, `var(--...)`, `rgb()`/`hsl()` of `currentColor`, verder niets.
+
 ## [2.8.6] - 2026-09-20
 
 ### Toegevoegd

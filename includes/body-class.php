@@ -70,20 +70,20 @@ function sfp_page_config_enqueue_sales_assets() {
         SFP_PAGE_CONFIG_VERSION
     );
 
-    // Inject brand CSS custom properties.
-    // Note: wp_add_inline_style outputs raw CSS, so we must NOT use
-    // esc_attr() for font-family values (it converts quotes to HTML
-    // entities which are invalid in CSS). Instead, we strip any
-    // characters that could break out of the CSS value context.
-    $brand = sfp_page_config_get_brand();
-    $safe_font = preg_replace( '/[^a-zA-Z0-9\s\'",\-]/', '', $brand['font'] );
+    // Inject brand CSS custom properties. Every value comes from Astra
+    // via sfp_page_config_get_brand() and is already validated there:
+    // colours by sfp_page_config_sanitize_css_color() (hex, var(), rgb/hsl),
+    // fonts by sfp_page_config_sanitize_font_family(). esc_attr() is not
+    // used because wp_add_inline_style() outputs raw CSS and esc_attr()
+    // would turn the quotes in a font stack into entities.
+    $brand      = sfp_page_config_get_brand();
     $inline_css = sprintf(
         ':root{--brand-cta-bg:%s;--brand-cta-hover:%s;--brand-cta-text:%s;--brand-heading-font:%s;--brand-button-weight:%s;}',
-        sanitize_hex_color( $brand['cta_bg'] ),
-        sanitize_hex_color( $brand['cta_hover'] ),
-        sanitize_hex_color( isset( $brand['cta_text'] ) ? $brand['cta_text'] : '#ffffff' ),
-        $safe_font,
-        esc_attr( $brand['weight'] )
+        $brand['cta_bg'],
+        $brand['cta_hover'],
+        $brand['cta_text'],
+        $brand['font'],
+        $brand['weight']
     );
 
     wp_add_inline_style( 'sfp-page-config-sales', $inline_css );

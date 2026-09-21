@@ -25,7 +25,7 @@
 
     function hideDropdowns() {
         if (dropdownsHidden) return;
-        var ctaColor = (window.sfpDropdownConfig && window.sfpDropdownConfig.ctaColor) || '#ff5a06';
+        var ctaColor = (window.sfpDropdownConfig && window.sfpDropdownConfig.ctaColor) || 'currentColor';
         var containers = document.querySelectorAll('.sfp-startmoment-select');
         containers.forEach(function (container) {
             // Find the SureForms field wrapper (parent of the dropdown).

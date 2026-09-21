@@ -63,34 +63,33 @@ function sfp_page_config_longread_nav_enqueue() {
         SFP_PAGE_CONFIG_VERSION
     );
 
-    // Dynamic brand colours as CSS custom properties.
+    // Brand colours and fonts as CSS custom properties. All values come
+    // from Astra via sfp_page_config_get_brand() and are validated there.
+    // Norm: the chapter bar carries the button colour, the table of
+    // contents the primary colour. color-mix() values for muted and H3
+    // are built from the validated primary colour.
     $brand = sfp_page_config_get_brand();
 
-    $lr_brand        = isset( $brand['lr_brand'] )         ? $brand['lr_brand']         : '#333333';
-    $lr_bar_bg       = isset( $brand['lr_bar_bg'] )        ? $brand['lr_bar_bg']        : '#333333';
-    $lr_bar_text     = isset( $brand['lr_bar_text'] )      ? $brand['lr_bar_text']      : '#ffffff';
-    $lr_drawer_bg    = isset( $brand['lr_drawer_bg'] )     ? $brand['lr_drawer_bg']     : '#F7FCFE';
-    $lr_drawer_text  = isset( $brand['lr_drawer_text'] )   ? $brand['lr_drawer_text']   : $lr_bar_bg;
-    $lr_sidebar_text  = isset( $brand['lr_sidebar_text'] )   ? $brand['lr_sidebar_text']   : '#333333';
-    $lr_sidebar_muted = isset( $brand['lr_sidebar_muted'] )  ? $brand['lr_sidebar_muted']  : '#cccccc';
-    $lr_sidebar_active= isset( $brand['lr_sidebar_active'] ) ? $brand['lr_sidebar_active'] : $lr_bar_bg;
-    $lr_sidebar_h3    = isset( $brand['lr_sidebar_h3'] )     ? $brand['lr_sidebar_h3']     : '#575757';
-    $heading_font    = isset( $brand['font'] )            ? $brand['font']            : "'Nunito', sans-serif";
-    $safe_font = preg_replace( '/[^a-zA-Z0-9\s\'\",\-]/', '', $heading_font );
+    $vars = array(
+        '--lr-brand'          => $brand['lr_brand'],
+        '--lr-bar-bg'         => $brand['lr_bar_bg'],
+        '--lr-bar-text'       => $brand['lr_bar_text'],
+        '--lr-drawer-bg'      => $brand['lr_drawer_bg'],
+        '--lr-drawer-text'    => $brand['lr_drawer_text'],
+        '--lr-sidebar-text'   => $brand['lr_sidebar_text'],
+        '--lr-sidebar-muted'  => $brand['lr_sidebar_muted'],
+        '--lr-sidebar-active' => $brand['lr_sidebar_active'],
+        '--lr-sidebar-h3'     => $brand['lr_sidebar_h3'],
+        '--lr-heading-font'   => $brand['font'],
+        '--lr-body-font'      => $brand['body_font'],
+        '--lr-sticky-offset'  => '120px',
+    );
 
-    $root_css = ':root {'
-        . '--lr-brand:'          . esc_attr( $lr_brand )         . ';'
-        . '--lr-bar-bg:'         . esc_attr( $lr_bar_bg )        . ';'
-        . '--lr-bar-text:'       . esc_attr( $lr_bar_text )      . ';'
-        . '--lr-drawer-bg:'      . esc_attr( $lr_drawer_bg )     . ';'
-        . '--lr-drawer-text:'    . esc_attr( $lr_drawer_text )   . ';'
-        . '--lr-sidebar-text:'   . esc_attr( $lr_sidebar_text )  . ';'
-        . '--lr-sidebar-muted:'  . esc_attr( $lr_sidebar_muted ) . ';'
-        . '--lr-sidebar-active:' . esc_attr( $lr_sidebar_active ). ';'
-        . '--lr-sidebar-h3:'     . esc_attr( $lr_sidebar_h3 )    . ';'
-        . '--lr-heading-font:'   . $safe_font                    . ';'
-        . '--lr-sticky-offset:120px'
-        . '}';
+    $root_css = ':root{';
+    foreach ( $vars as $name => $value ) {
+        $root_css .= $name . ':' . $value . ';';
+    }
+    $root_css .= '}';
 
     wp_add_inline_style( 'sfp-longread-nav', $root_css );
 

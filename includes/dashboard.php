@@ -102,10 +102,10 @@ function sfp_page_config_sanitize_settings( $input ) {
     $clean['cursus_tijd_default_eind']  = sfp_page_config_sanitize_time( $input['cursus_tijd_default_eind'] ?? '' );
 
     // Longread branding overrides (hex colors).
-    // An empty value is allowed: it means "fall back to the domain default"
-    // in sfp_page_config_get_brand(). Invalid values are stored as empty
+    // An empty value is allowed: it means "follow Astra" in
+    // sfp_page_config_get_brand(). Invalid values are stored as empty
     // so they also fall back safely.
-    foreach ( array( 'lr_brand', 'lr_bar_bg', 'lr_bar_text', 'lr_drawer_bg', 'lr_drawer_text', 'lr_sidebar_text', 'lr_sidebar_muted', 'lr_sidebar_active', 'lr_sidebar_h3' ) as $color_key ) {
+    foreach ( sfp_page_config_longread_color_keys() as $color_key ) {
         $raw = isset( $input[ $color_key ] ) ? trim( (string) $input[ $color_key ] ) : '';
         if ( '' === $raw ) {
             $clean[ $color_key ] = '';
@@ -601,9 +601,9 @@ function sfp_page_config_render_tab_settings() {
     <form method="post">
         <?php wp_nonce_field( 'sfp_save_settings', 'sfp_settings_nonce' ); ?>
 
-        <!-- CTA branding (read-only, set in code) -->
+        <!-- CTA branding (read-only, read from Astra) -->
         <h2>CTA-branding <small style="font-size:12px;color:#888;">(<?php echo esc_html( $domain ); ?>)</small></h2>
-        <p style="color:#666;">CTA-kleuren en fonts worden centraal per site vastgesteld in de plugincode. Hieronder de huidige waarden ter referentie.</p>
+        <p style="color:#666;">Kleuren en fonts komen uit Astra: Customizer &gt; Globaal &gt; Knoppen (knopkleur, hover, knoptekst) en Typografie (kopfont, koppenkleur). Wijzig ze daar; de plugin volgt automatisch. Hieronder de waarden zoals de plugin ze nu leest.</p>
         <table class="form-table" role="presentation">
             <tr>
                 <th>CTA achtergrondkleur</th>
@@ -617,6 +617,20 @@ function sfp_page_config_render_tab_settings() {
                 <td>
                     <span style="display:inline-block;width:24px;height:24px;background:<?php echo esc_attr( $brand['cta_hover'] ); ?>;border:1px solid #ccc;vertical-align:middle;border-radius:3px;"></span>
                     <code style="margin-left:8px;"><?php echo esc_html( $brand['cta_hover'] ); ?></code>
+                </td>
+            </tr>
+            <tr>
+                <th>Knoptekst</th>
+                <td>
+                    <span style="display:inline-block;width:24px;height:24px;background:<?php echo esc_attr( $brand['cta_text'] ); ?>;border:1px solid #ccc;vertical-align:middle;border-radius:3px;"></span>
+                    <code style="margin-left:8px;"><?php echo esc_html( $brand['cta_text'] ); ?></code>
+                </td>
+            </tr>
+            <tr>
+                <th>Primair (koppenkleur)</th>
+                <td>
+                    <span style="display:inline-block;width:24px;height:24px;background:<?php echo esc_attr( $brand['primary'] ); ?>;border:1px solid #ccc;vertical-align:middle;border-radius:3px;"></span>
+                    <code style="margin-left:8px;"><?php echo esc_html( $brand['primary'] ); ?></code>
                 </td>
             </tr>
             <tr>
@@ -674,7 +688,17 @@ function sfp_page_config_render_tab_settings() {
         );
         ?>
         <h2>Longread-branding</h2>
-        <p style="color:#666;">Kleuren voor de inhoudsopgave (desktop) en hoofdstukbalk (mobiel). Laat een veld leeg om terug te vallen op de domein-default in de plugincode.</p>
+        <p style="color:#666;">Norm: de hoofdstukbalk voert de knopkleur, de inhoudsopgave de primaire kleur. Beide komen uit Astra. Laat een veld leeg om de norm te volgen.</p>
+        <?php
+        $lr_overrides = array();
+        foreach ( sfp_page_config_longread_color_keys() as $lr_key ) {
+            if ( ! empty( $s[ $lr_key ] ) ) {
+                $lr_overrides[] = $lr_key;
+            }
+        }
+        if ( $lr_overrides ) : ?>
+            <div class="notice notice-warning inline"><p><strong>Afwijking van de netwerknorm.</strong> Deze velden overschrijven de waarde uit Astra: <code><?php echo esc_html( implode( ', ', $lr_overrides ) ); ?></code>. Maak ze leeg om de norm te volgen.</p></div>
+        <?php endif; ?>
         <table class="form-table" role="presentation">
             <?php foreach ( $lr_fields as $key => $meta ) :
                 $stored  = isset( $s[ $key ] ) ? $s[ $key ] : '';
@@ -689,7 +713,7 @@ function sfp_page_config_render_tab_settings() {
                            class="sfp-color-field"
                            name="sfp_settings[<?php echo esc_attr( $key ); ?>]"
                            value="<?php echo esc_attr( $stored ); ?>"
-                           data-default-color="<?php echo esc_attr( $current ); ?>" />
+                           data-default-color="<?php echo esc_attr( sanitize_hex_color( $current ) ? $current : '' ); ?>" />
                     <p class="description">
                         <?php echo esc_html( $meta['help'] ); ?>
                         <?php if ( $is_inherited ) : ?>
@@ -820,7 +844,7 @@ function sfp_page_config_render_tab_settings() {
             </tr>
             <?php
             // Resolved brand fallback voor de voortgangsbalk en leestijdmeter.
-            $rp_brand_fallback = isset( $brand['cta_bg'] ) ? $brand['cta_bg'] : '#0170B9';
+            $rp_brand_fallback = $brand['cta_bg'];
             $rp_stored_bar     = isset( $s['progress_bar_color'] ) ? $s['progress_bar_color'] : '';
             $rp_stored_rt      = isset( $s['reading_time_accent_color'] ) ? $s['reading_time_accent_color'] : '';
             ?>
@@ -832,7 +856,7 @@ function sfp_page_config_render_tab_settings() {
                            class="sfp-color-field"
                            name="sfp_settings[progress_bar_color]"
                            value="<?php echo esc_attr( $rp_stored_bar ); ?>"
-                           data-default-color="<?php echo esc_attr( $rp_brand_fallback ); ?>" />
+                           data-default-color="<?php echo esc_attr( sanitize_hex_color( $rp_brand_fallback ) ? $rp_brand_fallback : '' ); ?>" />
                     <p class="description">
                         Kleur van het oplopende balkje bovenaan de viewport.
                         <?php if ( '' === $rp_stored_bar ) : ?>
@@ -849,7 +873,7 @@ function sfp_page_config_render_tab_settings() {
                            class="sfp-color-field"
                            name="sfp_settings[reading_time_accent_color]"
                            value="<?php echo esc_attr( $rp_stored_rt ); ?>"
-                           data-default-color="<?php echo esc_attr( $rp_brand_fallback ); ?>" />
+                           data-default-color="<?php echo esc_attr( sanitize_hex_color( $rp_brand_fallback ) ? $rp_brand_fallback : '' ); ?>" />
                     <p class="description">
                         Accentkleur van het cijfer in <code>[mijn_leestijd]</code> (de <code>.tijd-getal</code> span).
                         <?php if ( '' === $rp_stored_rt ) : ?>
