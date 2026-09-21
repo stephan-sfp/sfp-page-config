@@ -458,7 +458,7 @@ function sfp_page_config_render_metabox( $post ) {
             <p style="font-size:11px;color:#666;margin-bottom:6px;">Klik op het onderwerp in de foto.</p>
             <div id="sfp-focal-canvas" style="position:relative;display:inline-block;width:100%;cursor:crosshair;border:1px solid #ddd;border-radius:4px;overflow:hidden;line-height:0;">
                 <img id="sfp-focal-img" src="<?php echo esc_url( $thumbnail_url ); ?>" style="width:100%;display:block;" draggable="false" />
-                <div id="sfp-focal-marker" style="position:absolute;width:20px;height:20px;margin-left:-10px;margin-top:-10px;border-radius:50%;background:rgba(255,90,6,0.85);border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.4);pointer-events:none;left:<?php echo esc_attr( $focal_x ); ?>%;top:<?php echo esc_attr( $focal_y ); ?>%;"></div>
+                <div id="sfp-focal-marker" style="position:absolute;width:20px;height:20px;margin-left:-10px;margin-top:-10px;border-radius:50%;background:var(--wp-admin-theme-color, #2271b1);border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.4);pointer-events:none;left:<?php echo esc_attr( $focal_x ); ?>%;top:<?php echo esc_attr( $focal_y ); ?>%;"></div>
             </div>
         <?php else : ?>
             <p style="font-size:11px;color:#999;margin:0;">Stel eerst een uitgelichte afbeelding in.</p>

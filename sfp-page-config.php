@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     2.8.6
+ * Version:     2.9.0
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '2.8.6' );
+define( 'SFP_PAGE_CONFIG_VERSION', '2.9.0' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -28,131 +28,251 @@ define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
 /* =========================================================================
  * Brand configuration per site
  *
- * Returns an array with CTA colours, heading font and weight for the
- * current site, detected via the domain in home_url().
+ * Since v2.9.0 the plugin carries no brand values of its own. Every colour
+ * and font is read from the Astra settings of the site it runs on, so a
+ * change in the Customizer reaches the plugin without a release, and the
+ * plugin cannot drift from the brand source.
+ *
+ * Source of truth for the brands themselves:
+ * https://raw.githubusercontent.com/stephan-sfp/sfp-brand-source/main/branding.md
+ *
+ * Role mapping (brand role -> Astra setting):
+ *   Links en knoppen -> button-bg-color
+ *   Hover            -> button-bg-h-color
+ *   Knoptekst        -> button-color
+ *   Primair          -> heading-base-color (the dark anchor: headings)
+ *   Tint 3           -> global palette slot 8 (same role on all 8 sites,
+ *                       measured 2026-09-21; slots 0-6 are NOT uniform)
+ *   Kopfont          -> headings-font-family / headings-font-weight
+ *   Bodyfont         -> body-font-family
+ *
+ * Longread norm (vastgesteld 2026-09-21): the chapter bar carries the
+ * button colour, the table of contents carries the primary colour.
  * ====================================================================== */
+
+/**
+ * Read one Astra setting as a trimmed string.
+ *
+ * Uses astra_get_option() when the theme is loaded, so Astra's own
+ * defaults apply. Falls back to the raw option for contexts where the
+ * theme functions are not available (cron, CLI, a different theme).
+ *
+ * @param  string $key Astra option key.
+ * @return string      Trimmed value, or '' when missing or not a string.
+ */
+function sfp_page_config_astra_option( $key ) {
+    if ( function_exists( 'astra_get_option' ) ) {
+        $value = astra_get_option( $key );
+    } else {
+        $settings = get_option( 'astra-settings', array() );
+        $value    = is_array( $settings ) && isset( $settings[ $key ] ) ? $settings[ $key ] : '';
+    }
+    return is_string( $value ) ? trim( $value ) : '';
+}
+
+/**
+ * Validate a CSS colour value coming from Astra or the Instellingen tab.
+ *
+ * Accepts hex (3, 4, 6 or 8 digits), a single CSS custom property such as
+ * var(--ast-global-color-1), rgb()/rgba()/hsl()/hsla() with numeric
+ * arguments, and the keyword currentColor. Anything else returns '' so a
+ * malformed value can never break out of the inline CSS.
+ *
+ * @param  string $value Raw colour value.
+ * @return string        The value when valid, '' otherwise.
+ */
+function sfp_page_config_sanitize_css_color( $value ) {
+    $value = trim( (string) $value );
+    if ( '' === $value ) {
+        return '';
+    }
+    if ( preg_match( '/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i', $value ) ) {
+        return $value;
+    }
+    if ( preg_match( '/^var\(\s*--[a-z0-9_-]+\s*\)$/i', $value ) ) {
+        return $value;
+    }
+    if ( preg_match( '/^(?:rgb|rgba|hsl|hsla)\(\s*[0-9.,%\s\/deg]+\)$/i', $value ) ) {
+        return $value;
+    }
+    if ( 0 === strcasecmp( $value, 'currentColor' ) ) {
+        return 'currentColor';
+    }
+    return '';
+}
+
+/**
+ * Validate a font-family value for use in raw inline CSS.
+ *
+ * wp_add_inline_style() outputs raw CSS, so esc_attr() is wrong here (it
+ * turns quotes into entities). Strip everything that could leave the
+ * value context instead. 'inherit' and '' fall through to the caller.
+ *
+ * @param  string $value Raw font-family value.
+ * @return string        Safe value, or '' when empty or 'inherit'.
+ */
+function sfp_page_config_sanitize_font_family( $value ) {
+    $value = trim( preg_replace( '/[^a-zA-Z0-9\s\'",\-]/', '', (string) $value ) );
+    if ( '' === $value || 0 === strcasecmp( $value, 'inherit' ) ) {
+        return '';
+    }
+    return $value;
+}
+
+/**
+ * Return the first valid colour from a list of candidates.
+ *
+ * @param  string[] $candidates Colour values in order of preference.
+ * @param  string   $fallback   Returned when no candidate is valid.
+ * @return string
+ */
+function sfp_page_config_first_color( array $candidates, $fallback ) {
+    foreach ( $candidates as $candidate ) {
+        $clean = sfp_page_config_sanitize_css_color( $candidate );
+        if ( '' !== $clean ) {
+            return $clean;
+        }
+    }
+    return $fallback;
+}
+
+/**
+ * Mix a colour with transparency, for borders and muted text.
+ *
+ * The brand source: "Randen en lijnen komen uit de merkkleuren, of uit de
+ * primaire kleur met transparantie." color-mix() accepts var() and hex.
+ *
+ * @param  string $color   A value that passed sfp_page_config_sanitize_css_color().
+ * @param  int    $percent Share of the colour, 0-100.
+ * @return string
+ */
+function sfp_page_config_color_alpha( $color, $percent ) {
+    $percent = max( 0, min( 100, (int) $percent ) );
+    return 'color-mix(in srgb, ' . $color . ' ' . $percent . '%, transparent)';
+}
 
 /**
  * Get the brand configuration for the current site.
  *
- * @return array{cta_bg: string, cta_hover: string, font: string, weight: string}
+ * All values come from Astra. The nine longread keys can still be
+ * overridden per site in the Instellingen tab; an override is a
+ * deviation from the network norm and the tab says so.
+ *
+ * Not cached: astra_get_option() already reads a cached option, and a
+ * static cache would show stale values on the Instellingen tab right
+ * after saving.
+ *
+ * @return array{cta_bg: string, cta_hover: string, cta_text: string, font: string, weight: string, body_font: string, primary: string}
  */
 function sfp_page_config_get_brand() {
 
-    $domain = parse_url( home_url(), PHP_URL_HOST );
-
-    $configs = array(
-        'schoolforprofessionals.com' => array(
-            'cta_bg'    => '#d22d00',
-            'cta_hover' => '#f89b80',
-            'font'      => "'Archivo Black', sans-serif",
-            'weight'    => '400',
-            // Longread navigation colours.
-            'lr_brand'          => '#d22d00',
-            'lr_bar_bg'         => '#d22d00',
-            'lr_bar_text'       => '#ffffff',
-            'lr_drawer_bg'      => '#F7FCFE',
-            'lr_drawer_text'    => '#d22d00',
-            'lr_sidebar_text'   => '#333333',
-            'lr_sidebar_muted'  => '#cccccc',
-            'lr_sidebar_active' => '#d22d00',
-            'lr_sidebar_h3'     => '#575757',
+    // Buttons. The fallback chain mirrors Astra's own: an empty button
+    // colour means Astra uses the theme colour, then the link colour.
+    $cta_bg = sfp_page_config_first_color(
+        array(
+            sfp_page_config_astra_option( 'button-bg-color' ),
+            sfp_page_config_astra_option( 'theme-color' ),
+            sfp_page_config_astra_option( 'link-color' ),
         ),
-        'degespreksacademie.nl' => array(
-            'cta_bg'    => '#fc5130',
-            'cta_hover' => '#fd7257',
-            'font'      => "'Rubik', sans-serif",
-            'weight'    => '900',
-            'lr_brand'          => '#fc5130',
-            'lr_bar_bg'         => '#fc5130',
-            'lr_bar_text'       => '#ffffff',
-            'lr_drawer_bg'      => '#F7FCFE',
-            'lr_drawer_text'    => '#fc5130',
-            'lr_sidebar_text'   => '#333333',
-            'lr_sidebar_muted'  => '#cccccc',
-            'lr_sidebar_active' => '#fc5130',
-            'lr_sidebar_h3'     => '#575757',
+        'currentColor'
+    );
+    $cta_hover = sfp_page_config_first_color(
+        array(
+            sfp_page_config_astra_option( 'button-bg-h-color' ),
+            sfp_page_config_astra_option( 'link-h-color' ),
         ),
-        'depresenteerschool.nl' => array(
-            'cta_bg'    => '#ff5a06',
-            'cta_hover' => '#ff7420',
-            'font'      => "'Nunito', sans-serif",
-            'weight'    => '900',
-            'lr_brand'          => '#2E2864',
-            'lr_bar_bg'         => '#00B0E3',
-            'lr_bar_text'       => '#ffffff',
-            'lr_drawer_bg'      => '#F7FCFE',
-            'lr_drawer_text'    => '#00B0E3',
-            'lr_sidebar_text'   => '#2E2864',
-            'lr_sidebar_muted'  => '#A1D9F4',
-            'lr_sidebar_active' => '#00B0E3',
-            'lr_sidebar_h3'     => '#575757',
-        ),
-        'centrumvoordidactiek.nl' => array(
-            'cta_bg'    => '#ff3c38',
-            'cta_hover' => '#ff625f',
-            'font'      => "'Nunito', sans-serif",
-            'weight'    => '900',
-            'lr_brand'          => '#ff3c38',
-            'lr_bar_bg'         => '#ff3c38',
-            'lr_bar_text'       => '#ffffff',
-            'lr_drawer_bg'      => '#F7FCFE',
-            'lr_drawer_text'    => '#ff3c38',
-            'lr_sidebar_text'   => '#333333',
-            'lr_sidebar_muted'  => '#cccccc',
-            'lr_sidebar_active' => '#ff3c38',
-            'lr_sidebar_h3'     => '#575757',
-        ),
-        'deschrijftrainers.nl' => array(
-            'cta_bg'    => '#ff9f1c',
-            'cta_hover' => '#ffb857',
-            'font'      => "'Rubik', sans-serif",
-            'weight'    => '900',
-            'lr_brand'          => '#ff9f1c',
-            'lr_bar_bg'         => '#ff9f1c',
-            'lr_bar_text'       => '#ffffff',
-            'lr_drawer_bg'      => '#F7FCFE',
-            'lr_drawer_text'    => '#ff9f1c',
-            'lr_sidebar_text'   => '#333333',
-            'lr_sidebar_muted'  => '#cccccc',
-            'lr_sidebar_active' => '#ff9f1c',
-            'lr_sidebar_h3'     => '#575757',
-        ),
+        $cta_bg
+    );
+    // White is the network-wide "Wit" role, not a brand colour.
+    $cta_text = sfp_page_config_first_color(
+        array( sfp_page_config_astra_option( 'button-color' ) ),
+        '#ffffff'
     );
 
-    $resolved = $configs['schoolforprofessionals.com']; // Safe fallback.
-    foreach ( $configs as $host => $cfg ) {
-        if ( false !== strpos( $domain, $host ) ) {
-            $resolved = $cfg;
-            break;
-        }
+    // Primary: Astra's heading colour carries the "Primair" role.
+    $primary = sfp_page_config_first_color(
+        array(
+            sfp_page_config_astra_option( 'heading-base-color' ),
+            sfp_page_config_astra_option( 'text-color' ),
+        ),
+        'currentColor'
+    );
+
+    // Fonts. Astra stores 'inherit' when a level follows its parent.
+    $font = sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'headings-font-family' ) );
+    if ( '' === $font ) {
+        $font = sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'body-font-family' ) );
+    }
+    if ( '' === $font ) {
+        $font = 'inherit';
     }
 
-    // Merge stored longread branding overrides from the Instellingen tab.
-    // An empty or invalid value falls back to the domain default, so a
-    // cleared field never produces a broken CSS variable.
-    $settings = get_option( 'sfp_settings', array() );
-    $overrides = array(
-        'lr_brand'         => 'lr_brand',
-        'lr_bar_bg'        => 'lr_bar_bg',
-        'lr_bar_text'      => 'lr_bar_text',
-        'lr_drawer_bg'     => 'lr_drawer_bg',
-        'lr_drawer_text'   => 'lr_drawer_text',
-        'lr_sidebar_text'   => 'lr_sidebar_text',
-        'lr_sidebar_muted'  => 'lr_sidebar_muted',
-        'lr_sidebar_active' => 'lr_sidebar_active',
-        'lr_sidebar_h3'     => 'lr_sidebar_h3',
+    $weight = sfp_page_config_astra_option( 'headings-font-weight' );
+    if ( ! preg_match( '/^(?:[1-9]00|normal|bold|inherit)$/', $weight ) ) {
+        $weight = '700';
+    }
+
+    $body_font = sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'body-font-family' ) );
+    if ( '' === $body_font ) {
+        $body_font = 'inherit';
+    }
+
+    $resolved = array(
+        'cta_bg'    => $cta_bg,
+        'cta_hover' => $cta_hover,
+        'cta_text'  => $cta_text,
+        'font'      => $font,
+        'weight'    => $weight,
+        'body_font' => $body_font,
+        'primary'   => $primary,
+
+        // Longread: bar = button colour, table of contents = primary.
+        'lr_bar_bg'         => $cta_bg,
+        'lr_bar_text'       => $cta_text,
+        'lr_drawer_bg'      => 'var(--ast-global-color-8)',
+        'lr_drawer_text'    => $primary,
+        'lr_brand'          => $primary,
+        'lr_sidebar_text'   => $primary,
+        'lr_sidebar_active' => $primary,
+        'lr_sidebar_muted'  => sfp_page_config_color_alpha( $primary, 30 ),
+        'lr_sidebar_h3'     => sfp_page_config_color_alpha( $primary, 75 ),
     );
-    foreach ( $overrides as $option_key => $brand_key ) {
-        if ( ! empty( $settings[ $option_key ] ) ) {
-            $hex = sanitize_hex_color( $settings[ $option_key ] );
-            if ( $hex ) {
-                $resolved[ $brand_key ] = $hex;
+
+    // Stored overrides from the Instellingen tab. An empty or invalid
+    // value keeps the Astra-derived default, so a cleared field never
+    // produces a broken CSS variable.
+    $settings = get_option( 'sfp_settings', array() );
+    if ( is_array( $settings ) ) {
+        foreach ( sfp_page_config_longread_color_keys() as $key ) {
+            if ( ! empty( $settings[ $key ] ) ) {
+                $clean = sfp_page_config_sanitize_css_color( $settings[ $key ] );
+                if ( '' !== $clean ) {
+                    $resolved[ $key ] = $clean;
+                }
             }
         }
     }
 
     return $resolved;
+}
+
+/**
+ * The nine longread colour keys that can be overridden per site.
+ *
+ * @return string[]
+ */
+function sfp_page_config_longread_color_keys() {
+    return array(
+        'lr_brand',
+        'lr_bar_bg',
+        'lr_bar_text',
+        'lr_drawer_bg',
+        'lr_drawer_text',
+        'lr_sidebar_text',
+        'lr_sidebar_muted',
+        'lr_sidebar_active',
+        'lr_sidebar_h3',
+    );
 }
 
 /* =========================================================================

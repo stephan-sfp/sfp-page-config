@@ -5,7 +5,7 @@
  *   --brand-cta-bg, --brand-cta-hover, --brand-cta-text,
  *   --brand-heading-font, --brand-button-weight.
  *
- * Branding is centraal vastgesteld per site in sfp-page-config.php.
+ * Branding komt uit Astra, zie sfp_page_config_get_brand().
  * Per pagina kan alleen de CTA-tekst en -link worden aangepast.
  */
 
@@ -44,8 +44,8 @@
         width: 100%;
         text-align: center;
         text-decoration: none;
-        color: var(--brand-cta-text, #ffffff);
-        background: var(--brand-cta-bg, #d22d00);
+        color: var(--brand-cta-text);
+        background: var(--brand-cta-bg);
         font-family: var(--brand-heading-font, inherit);
         font-weight: var(--brand-button-weight, 700);
         font-size: 1.05rem;
@@ -60,8 +60,8 @@
 
     .sticky-mobile-cta a:hover,
     .sticky-mobile-cta a:focus {
-        color: var(--brand-cta-text, #ffffff);
-        background: var(--brand-cta-hover, #f89b80);
+        color: var(--brand-cta-text);
+        background: var(--brand-cta-hover);
     }
 
 }

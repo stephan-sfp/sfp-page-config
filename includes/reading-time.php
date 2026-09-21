@@ -175,7 +175,7 @@ function sfp_page_config_scroll_progress_enqueue() {
     // default fallback. Both sanitize_hex_color calls return null on
     // invalid input so we keep a safe final fallback.
     $brand        = sfp_page_config_get_brand();
-    $brand_cta    = isset( $brand['cta_bg'] ) ? sanitize_hex_color( $brand['cta_bg'] ) : '#d22d00';
+    $brand_cta    = $brand['cta_bg']; // Validated in sfp_page_config_get_brand().
 
     $stored_bar   = sanitize_hex_color( (string) sfp_page_config_get_setting( 'progress_bar_color', '' ) );
     $bar_color    = $stored_bar ? $stored_bar : $brand_cta;
@@ -188,7 +188,7 @@ function sfp_page_config_scroll_progress_enqueue() {
 
     wp_add_inline_style(
         'sfp-reading-time',
-        ':root{--sfp-bar-color:' . esc_attr( $bar_color ) . ';' . $rt_inline . '}'
+        ':root{--sfp-bar-color:' . $bar_color . ';' . $rt_inline . '}'
     );
 }
 
