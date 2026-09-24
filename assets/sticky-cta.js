@@ -56,6 +56,8 @@
             bar.className = 'sticky-mobile-cta';
 
             var link = document.createElement('a');
+            // Astra owns button size, padding, border and radius.
+            link.className = 'button';
             link.href = cfg.href;
             link.textContent = cfg.text;
             if (cfg.target) link.target = cfg.target;

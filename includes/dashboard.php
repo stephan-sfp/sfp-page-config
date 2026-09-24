@@ -603,7 +603,7 @@ function sfp_page_config_render_tab_settings() {
 
         <!-- CTA branding (read-only, read from Astra) -->
         <h2>CTA-branding <small style="font-size:12px;color:#888;">(<?php echo esc_html( $domain ); ?>)</small></h2>
-        <p style="color:#666;">Kleuren en fonts komen uit Astra: Customizer &gt; Globaal &gt; Knoppen (knopkleur, hover, knoptekst) en Typografie (kopfont, koppenkleur). Wijzig ze daar; de plugin volgt automatisch. Hieronder de waarden zoals de plugin ze nu leest.</p>
+        <p style="color:#666;">Kleuren en fonts komen uit Astra: Customizer &gt; Globaal &gt; Knoppen (knopkleur, hover, knoptekst), Kleuren en Typografie (kopfont, gewicht, koppenkleur). Wijzig ze daar; de plugin volgt automatisch. Hieronder de waarden zoals de plugin ze nu leest.</p>
         <table class="form-table" role="presentation">
             <tr>
                 <th>CTA achtergrondkleur</th>
