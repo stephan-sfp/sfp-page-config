@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.9.2] - 2026-09-25
+
+### Gewijzigd
+
+- **Subhoofdstukken in de inhoudsopgave staan weer in het bodyfont met gewone hoofdletters.** In 2.9.1 kregen ze het kopfont in hoofdletters, waardoor de hele inhoudsopgave een blok werd en het niveauverschil met de hoofdstukken wegviel.
+- **Het actieve item voert de knopkleur**, met de lijn ernaast in dezelfde kleur. De tekst van de inhoudsopgave blijft de primaire kleur. Besluit van 25-09-2026.
+- **Meer lucht tussen de inhoudsopgave en de tekstkolom.** De zijbalk reserveert 32 px rechts, wat het gat van 29 naar 59 px brengt zonder de rest van de layout te verschuiven.
+
 ## [2.9.1] - 2026-09-24
 
 ### Gerepareerd
