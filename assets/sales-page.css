@@ -41,19 +41,16 @@
 
     .sticky-mobile-cta a {
         display: block;
+        box-sizing: border-box;
         width: 100%;
         text-align: center;
         text-decoration: none;
         color: var(--brand-cta-text);
         background: var(--brand-cta-bg);
         font-family: var(--brand-heading-font, inherit);
-        font-weight: var(--brand-button-weight, 700);
-        font-size: 1.05rem;
+        font-weight: var(--brand-button-weight, inherit);
         text-transform: uppercase;
-        letter-spacing: 0.04em;
-        padding: 14px 20px;
-        border-radius: 0;
-        border: none;
+        /* Size, padding, border and radius come from Astra's .button. */
         cursor: pointer;
         transition: background 0.2s ease;
     }
@@ -72,7 +69,7 @@
 
 .is-sales-page .wp-block-button .wp-block-button__link {
     font-family: var(--brand-heading-font, inherit);
-    font-weight: var(--brand-button-weight, 700);
+    font-weight: var(--brand-button-weight, inherit);
 }
 
 /* Tablet: centre buttons */

@@ -4,6 +4,23 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.9.1] - 2026-09-24
+
+### Gerepareerd
+
+- **Een fontgewicht dat Astra als getal opslaat werd genegeerd.** `sfp_page_config_astra_option()` liet alles vallen wat geen string was, waardoor het kopgewicht op elke site terugviel op de noodwaarde. Getallen worden nu gelezen. Dit raakte alle acht sites.
+- **De noodwaarde voor het kopgewicht is `inherit` in plaats van 700.** Een vaste 700 legde een gewicht op dat het thema niet voert.
+- **De inhoudsopgave voert het kopfont en het kopgewicht uit Astra**, ook in de subitems en de mobiele balk. De vaste gewichten 400, 600 en 900 zijn weg. Het actieve item houdt bewust een zwaarder gewicht dan de rustitems, zodat de leespositie zichtbaar blijft.
+- **De sticky mobiele knop gebruikt Astra's eigen knopopmaak** voor binnenruimte, rand, radius en lettergrootte, via de klasse `button`. Kleur, font en de bestaande klikbestemming blijven werken zoals ze deden.
+
+### Gewijzigd
+
+- De Instellingen-tab noemt Kleuren en Typografie als bron, naast Knoppen.
+
+### Toegevoegd
+
+- `tests/brand-regression.php`: 59 controles over de acht domeinen, numerieke fontgewichten, ongeldige invoer, bestaande afwijkende instellingen en de regel dat geen enkel domein een eigen tak in de code krijgt. Draait met en zonder de Astra-themafunctie.
+
 ## [2.9.0] - 2026-09-21
 
 ### Gewijzigd

@@ -74,7 +74,7 @@
     text-align: left !important;
     font-family: var(--lr-heading-font) !important;
     font-size: 13px !important;
-    font-weight: 900 !important;
+    font-weight: var(--lr-heading-weight, inherit) !important;
     line-height: 1.3 !important;
     white-space: nowrap !important;
     text-overflow: ellipsis !important;
@@ -121,7 +121,7 @@
     padding: 10px 20px !important;
     font-family: var(--lr-heading-font) !important;
     font-size: 12px !important;
-    font-weight: 900 !important;
+    font-weight: var(--lr-heading-weight, inherit) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.06em !important;
     color: var(--lr-drawer-text) !important;
@@ -161,7 +161,7 @@
     border: none !important;
     font-family: var(--lr-heading-font) !important;
     font-size: 10px !important;
-    font-weight: 900 !important;
+    font-weight: var(--lr-heading-weight, inherit) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.12em !important;
     color: var(--lr-sidebar-muted) !important;
@@ -192,7 +192,8 @@
     background: none !important;
     border: none !important;
     font-size: 11px !important;
-    font-weight: 600 !important;
+    font-family: var(--lr-heading-font) !important;
+    font-weight: var(--lr-heading-weight, inherit) !important;
     color: var(--lr-sidebar-muted) !important;
     text-transform: uppercase !important;
     letter-spacing: 0.08em !important;
@@ -212,7 +213,9 @@
     display: block !important;
     font-family: var(--lr-heading-font) !important;
     font-size: 12px !important;
-    font-weight: 400 !important;
+    /* Rustitems lichter dan het actieve item, zodat de leespositie
+       zichtbaar blijft. Het accentgewicht komt uit Astra. */
+    font-weight: normal !important;
     text-transform: uppercase !important;
     letter-spacing: 0.06em !important;
     line-height: 1.4 !important;
@@ -231,16 +234,16 @@
 .sfp-lr-toc__link.is-active {
     color: var(--lr-sidebar-active) !important;
     border-left-color: var(--lr-sidebar-active) !important;
-    font-weight: 700 !important;
+    font-weight: var(--lr-heading-weight, inherit) !important;
 }
 
 /* H3 sub-items */
 .sfp-lr-toc__item--h3 .sfp-lr-toc__link {
     padding-left: 26px !important;
-    font-family: var(--lr-body-font, inherit) !important;
+    font-family: var(--lr-heading-font) !important;
     font-size: 12px !important;
-    font-weight: 400 !important;
-    text-transform: none !important;
+    font-weight: normal !important;
+    text-transform: uppercase !important;
     letter-spacing: 0 !important;
     color: var(--lr-sidebar-h3) !important;
 }
@@ -251,7 +254,7 @@
 .sfp-lr-toc__item--h3 .sfp-lr-toc__link.is-active {
     color: var(--lr-sidebar-active) !important;
     border-left-color: var(--lr-sidebar-active) !important;
-    font-weight: 700 !important;
+    font-weight: var(--lr-heading-weight, inherit) !important;
 }
 
 /* Desktop: only hide the bar when the sidebar actually has room. */

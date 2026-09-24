@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     2.9.0
+ * Version:     2.9.1
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '2.9.0' );
+define( 'SFP_PAGE_CONFIG_VERSION', '2.9.1' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -40,7 +40,8 @@ define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
  *   Links en knoppen -> button-bg-color
  *   Hover            -> button-bg-h-color
  *   Knoptekst        -> button-color
- *   Primair          -> heading-base-color (the dark anchor: headings)
+ *   Primair          -> heading-base-color, except SwS/FL: palette slot 0
+ *   FL TOC text      -> palette slot 2 (secondary, approved exception)
  *   Tint 3           -> global palette slot 8 (same role on all 8 sites,
  *                       measured 2026-09-21; slots 0-6 are NOT uniform)
  *   Kopfont          -> headings-font-family / headings-font-weight
@@ -48,6 +49,7 @@ define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
  *
  * Longread norm (vastgesteld 2026-09-21): the chapter bar carries the
  * button colour, the table of contents carries the primary colour.
+ * FL uses its secondary colour for readable TOC text on a light background.
  * ====================================================================== */
 
 /**
@@ -58,7 +60,7 @@ define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
  * theme functions are not available (cron, CLI, a different theme).
  *
  * @param  string $key Astra option key.
- * @return string      Trimmed value, or '' when missing or not a string.
+ * @return string      Trimmed string/number, or '' for unsupported values.
  */
 function sfp_page_config_astra_option( $key ) {
     if ( function_exists( 'astra_get_option' ) ) {
@@ -67,7 +69,7 @@ function sfp_page_config_astra_option( $key ) {
         $settings = get_option( 'astra-settings', array() );
         $value    = is_array( $settings ) && isset( $settings[ $key ] ) ? $settings[ $key ] : '';
     }
-    return is_string( $value ) ? trim( $value ) : '';
+    return is_string( $value ) || is_numeric( $value ) ? trim( (string) $value ) : '';
 }
 
 /**
@@ -190,6 +192,12 @@ function sfp_page_config_get_brand() {
     );
 
     // Primary: Astra's heading colour carries the "Primair" role.
+    //
+    // Geen uitzondering per domein. Voert een site hier de verkeerde
+    // kleur, dan staat de koppenkleur in Astra verkeerd en rendert die
+    // site zijn eigen koppen ook fout: dat hoort daar gerepareerd te
+    // worden, niet hier. Een paletpositie is geen alternatief, want die
+    // draagt per site een andere rol en verschuift in de praktijk.
     $primary = sfp_page_config_first_color(
         array(
             sfp_page_config_astra_option( 'heading-base-color' ),
@@ -209,7 +217,7 @@ function sfp_page_config_get_brand() {
 
     $weight = sfp_page_config_astra_option( 'headings-font-weight' );
     if ( ! preg_match( '/^(?:[1-9]00|normal|bold|inherit)$/', $weight ) ) {
-        $weight = '700';
+        $weight = 'inherit';
     }
 
     $body_font = sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'body-font-family' ) );
@@ -703,4 +711,3 @@ function sfp_page_config_deactivate() {
     }
 }
 register_deactivation_hook( __FILE__, 'sfp_page_config_deactivate' );
-
