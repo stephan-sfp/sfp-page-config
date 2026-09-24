@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     2.9.1
+ * Version:     2.9.2
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '2.9.1' );
+define( 'SFP_PAGE_CONFIG_VERSION', '2.9.2' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -234,14 +234,16 @@ function sfp_page_config_get_brand() {
         'body_font' => $body_font,
         'primary'   => $primary,
 
-        // Longread: bar = button colour, table of contents = primary.
+        // Longread: bar = button colour, table of contents = primary,
+        // and the active item = button colour so the reading position
+        // stands out (besluit Stephan 25-09-2026).
         'lr_bar_bg'         => $cta_bg,
         'lr_bar_text'       => $cta_text,
         'lr_drawer_bg'      => 'var(--ast-global-color-8)',
         'lr_drawer_text'    => $primary,
-        'lr_brand'          => $primary,
+        'lr_brand'          => $cta_bg,
         'lr_sidebar_text'   => $primary,
-        'lr_sidebar_active' => $primary,
+        'lr_sidebar_active' => $cta_bg,
         'lr_sidebar_muted'  => sfp_page_config_color_alpha( $primary, 30 ),
         'lr_sidebar_h3'     => sfp_page_config_color_alpha( $primary, 75 ),
     );

@@ -45,6 +45,7 @@ foreach ( array( 'schoolforprofessionals.com', 'depresenteerschool.nl', 'degespr
     $b = sfp_page_config_get_brand();
     same( 'var(--ast-global-color-2)', $b['primary'], $host . ' primary unchanged' );
     same( $b['primary'], $b['lr_sidebar_text'], $host . ' TOC primary' );
+    same( $b['cta_bg'], $b['lr_sidebar_active'], $host . ' active item button colour' );
     same( $b['cta_bg'], $b['lr_bar_bg'], $host . ' bar button colour' );
     same( '900', $b['weight'], $host . ' heading weight' );
 }
@@ -57,7 +58,7 @@ foreach ( array( 'speakwithsteve.com', 'www.SpeakWithSteve.com', 'falaliberada.c
     same( 'var(--ast-global-color-2)', $b['primary'], $host . ' follows the Astra heading colour' );
     same( $b['primary'], $b['lr_sidebar_text'], $host . ' TOC primary' );
     same( $b['primary'], $b['lr_drawer_text'], $host . ' drawer primary' );
-    same( $b['primary'], $b['lr_sidebar_active'], $host . ' active primary' );
+    same( $b['cta_bg'], $b['lr_sidebar_active'], $host . ' active item button colour' );
     same( 'var(--ast-global-color-1)', $b['lr_bar_bg'], $host . ' bar keeps button role' );
     same( 'color-mix(in srgb, var(--ast-global-color-2) 75%, transparent)', $b['lr_sidebar_h3'], $host . ' H3 derives from primary' );
 }

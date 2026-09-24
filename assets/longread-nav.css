@@ -141,6 +141,11 @@
 /* === Sidebar TOC (desktop) === */
 .sfp-lr-sidebar {
     position: fixed !important;
+    /* De tekstkolom begint 16px na de zijbalk. Die 16px is te krap, dus
+       de zijbalk houdt zijn breedte en reserveert rechts ruimte, wat het
+       gat op ongeveer 48px brengt zonder de layout te verschuiven. */
+    box-sizing: border-box !important;
+    padding-right: 32px !important;
     width: 300px !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
@@ -240,10 +245,13 @@
 /* H3 sub-items */
 .sfp-lr-toc__item--h3 .sfp-lr-toc__link {
     padding-left: 26px !important;
-    font-family: var(--lr-heading-font) !important;
+    /* Subhoofdstukken staan een niveau lager: bodyfont, gewone
+       hoofdletters. In het kopfont met hoofdletters wordt de hele
+       inhoudsopgave een blok en valt het niveauverschil weg. */
+    font-family: var(--lr-body-font, inherit) !important;
     font-size: 12px !important;
     font-weight: normal !important;
-    text-transform: uppercase !important;
+    text-transform: none !important;
     letter-spacing: 0 !important;
     color: var(--lr-sidebar-h3) !important;
 }

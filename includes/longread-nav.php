@@ -82,6 +82,7 @@ function sfp_page_config_longread_nav_enqueue() {
         '--lr-sidebar-h3'     => $brand['lr_sidebar_h3'],
         '--lr-heading-font'   => $brand['font'],
         '--lr-heading-weight' => $brand['weight'],
+        '--lr-body-font'      => $brand['body_font'],
         '--lr-sticky-offset'  => '120px',
     );
 
