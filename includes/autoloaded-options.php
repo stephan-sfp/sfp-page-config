@@ -103,6 +103,7 @@ function sfp_ao_enqueue( $hook_suffix ) {
         .sfp-ao-status-orphan { background: #fde8e9; color: #8a1f24; }
         .sfp-ao-status-transient { background: #fff4e5; color: #8a5a00; }
         .sfp-ao-status-core { background: #e5f0fb; color: #0b4f8a; }
+        .sfp-ao-status-unknown { background: #f0f0f1; color: #50575e; }
         .sfp-ao-protected { color: #646970; font-style: italic; }
         .sfp-ao-reminder { background: #f0f6fc; border-left: 4px solid #2271b1; padding: 10px 14px; margin: 12px 0 20px; }
         .sfp-ao-option-name { font-family: Consolas, Monaco, monospace; word-break: break-all; }
@@ -182,7 +183,8 @@ function sfp_ao_known_prefixes() {
         'surfer_'                    => 'Surfer SEO',
         'elementor_'                 => 'Elementor',
         'elementor-'                 => 'Elementor',
-        'fluentmail'                 => 'FluentMail',
+        'fluentmail'                 => 'FluentSMTP',
+        '_fluentmail'                => 'FluentSMTP',
         'bsr_'                       => 'Better Search Replace',
         'cptui_'                     => 'Custom Post Type UI',
         'googlesitekit'              => 'Google Site Kit',
@@ -191,7 +193,65 @@ function sfp_ao_known_prefixes() {
         'fs_'                        => 'Freemius',
         'bsf_'                       => 'Brainstorm Force',
         'brainstrom'                 => 'Brainstorm Force',
-        'xrk_'                       => 'Onbekend (xrk)',
+        // v2.9.4: more prefixes of the current stack and shared libraries.
+        'asenha_'                    => 'ASE Pro',
+        'default_term_asenha'        => 'ASE Pro',
+        'allowed_astra_notices'      => 'Astra Theme',
+        '_astra_'                    => 'Astra Theme',
+        'ast-'                       => 'Astra Theme',
+        'ast_'                       => 'Astra Theme',
+        'is_beta_enable_rollback_'   => 'Brainstorm Force',
+        'allowed_BSF'                => 'Brainstorm Force',
+        'bsf-'                       => 'Brainstorm Force',
+        'nps-survey-convertpro'      => 'Convert Pro',
+        'nps-survey-'                => 'Brainstorm Force',
+        'uagb-'                      => 'Spectra',
+        '_uagb_'                     => 'Spectra',
+        '__uagb_'                    => 'Spectra',
+        '__spectra_pro_'             => 'Spectra',
+        'srfm-'                      => 'SureForms',
+        '__srfm_'                    => 'SureForms',
+        'presto_'                    => 'Presto Player',
+        'latepoint'                  => 'LatePoint',
+        'gtm_server_side'            => 'Stape Conversion Tracking',
+        'automatic_platform_optimization' => 'Cloudflare',
+        'cloudflare_'                => 'Cloudflare',
+        'sgo_'                       => 'SiteGround Optimizer',
+        'sgs_'                       => 'SiteGround Security',
+        'sg_security'                => 'SiteGround Security',
+        'wpr_'                       => 'WP Rocket',
+        'action_scheduler'           => 'Action Scheduler (gedeeld)',
+        'schema-ActionScheduler'     => 'Action Scheduler (gedeeld)',
+        'cp-pro-'                    => 'Convert Pro',
+        'cpro-'                      => 'Convert Pro',
+        // Retired plugins seen on the network (autoload clean-up 25-09-2026).
+        'code_snippets'              => 'Code Snippets',
+        'recently_activated_snippets' => 'Code Snippets',
+        'duplicate_post_'            => 'Yoast Duplicate Post',
+        'cfkef'                      => 'Cool FormKit (Elementor)',
+        'cfef_'                      => 'Conditional Fields (Elementor)',
+        'pum_'                       => 'Popup Maker',
+        'pum-'                       => 'Popup Maker',
+        '_pum_'                      => 'Popup Maker',
+        'popmake_'                   => 'Popup Maker',
+        'thirsty'                    => 'ThirstyAffiliates',
+        'wpstg_'                     => 'WP Staging',
+        'cfturnstile_'               => 'Simple Cloudflare Turnstile',
+        'kc_us_'                     => 'URL Shortify',
+        'wts_eae_'                   => 'Elementor Addon Elements',
+        'ai1wm_'                     => 'All-in-One WP Migration',
+        'omapi_'                     => 'OptinMonster',
+        'optinmonster_'              => 'OptinMonster',
+        'mmb_'                       => 'ManageWP Worker',
+        'worker_migration_version'   => 'ManageWP Worker',
+        'image_optimizer_'           => 'Image Optimizer (Elementor)',
+        'clarity_'                   => 'Microsoft Clarity',
+        'hello_theme_'               => 'Hello Elementor',
+        'e_editor_'                  => 'Elementor',
+        'uael-'                      => 'Ultimate Addons for Elementor',
+        'swift_performance_'         => 'Swift Performance',
+        '_wpforms_'                  => 'WPForms',
+        'wpforms'                    => 'WPForms',
     );
 }
 
@@ -236,13 +296,17 @@ function sfp_ao_source_to_active_slugs() {
         'Yoast SEO'              => array( 'wordpress-seo', 'wordpress-seo-premium' ),
         'Rank Math SEO'          => array( 'seo-by-rank-math', 'seo-by-rank-math-pro' ),
         'Elementor'              => array( 'elementor', 'elementor-pro' ),
-        'FluentMail'             => array( 'fluent-mail' ),
         'Better Search Replace'  => array( 'better-search-replace' ),
         'Custom Post Type UI'    => array( 'custom-post-type-ui' ),
         'Google Site Kit'        => array( 'google-site-kit' ),
         'All in One SEO'         => array( 'all-in-one-seo-pack', 'all-in-one-seo-pack-pro' ),
         'Surfer SEO'             => array( 'surferseo' ),
-        'Freemius'               => array( 'imagify', 'presto-player', 'presto-player-pro', 'sureforms', 'sureforms-pro', 'convert-pro', 'convert-pro-addon' ),
+        'Freemius'               => array( 'admin-site-enhancements', 'admin-site-enhancements-pro', 'imagify', 'presto-player', 'presto-player-pro', 'sureforms', 'sureforms-pro', 'convert-pro', 'convert-pro-addon' ),
+        'LatePoint'              => array( 'latepoint' ),
+        'Stape Conversion Tracking' => array( 'gtm-server-side' ),
+        'Cloudflare'             => array( 'cloudflare' ),
+        'SiteGround Security'    => array( 'sg-security' ),
+        'Action Scheduler (gedeeld)' => array( 'surecontact', 'sureforms', 'sureforms-pro', 'suretriggers', 'wp-rocket', 'presto-player', 'latepoint', 'surerank', 'imagify' ),
         'Brainstorm Force'       => array( 'astra', 'spectra-pro', 'ultimate-addons-for-gutenberg', 'surerank', 'surerank-pro', 'surecart', 'sureforms', 'sureforms-pro', 'surecontact', 'convert-pro', 'convert-pro-addon', 'presto-player-pro', 'sfp-page-config' ),
     );
 }
@@ -280,10 +344,45 @@ function sfp_ao_known_orphan_prefixes() {
         'surfer_',
         'mainwp',
         'mwp_',
-        'fluentmail',
         'bsr_',
         'cptui_',
         'googlesitekit',
+        // v2.9.4: 'fluentmail' removed. FluentSMTP (active on every site)
+        // stores its settings in 'fluentmail-settings'; the old entry made
+        // the analyzer flag that option as orphan and Safe Cleanup delete it.
+        // Added in v2.9.4 after the autoload clean-up of CVD and DST.
+        'html-regression',
+        'progress_planner',
+        'code_snippets',
+        'recently_activated_snippets',
+        'duplicate_post_',
+        'cfkef',
+        'cfef_',
+        'pum_',
+        'pum-',
+        '_pum_',
+        'popmake_',
+        'thirsty',
+        'wpstg_',
+        'cfturnstile_',
+        'kc_us_',
+        'wts_eae_',
+        'ai1wm_',
+        'omapi_',
+        'optinmonster_',
+        'mmb_',
+        'worker_migration_version',
+        'image_optimizer_',
+        'clarity_',
+        'hello_theme_',
+        'e_editor_',
+        'uael-',
+        'swift_performance_',
+        'nps-survey-convertpro',
+        'cp_parent_page_url',
+        'cp-pro-',
+        'cpro-',
+        '_wpforms_',
         // NOTE: 'xrk_' was temporarily in this list in v2.6.3 but has
         // been removed in v2.6.4 because a random-looking prefix like
         // 'xrk_' on a hardened install is the WordPress db-prefix, not
@@ -329,8 +428,8 @@ function sfp_ao_safe_cleanup_prefixes() {
         'mainwp'        => 'MainWP',
         'mwp_'          => 'MainWP',
 
-        // Retired mail/backup/admin helpers.
-        'fluentmail'    => 'FluentMail',
+        // Retired backup/admin helpers. 'fluentmail' was removed in
+        // v2.9.4: those options belong to FluentSMTP, which is active.
         'bsr_'          => 'Better Search Replace',
         'cptui_'        => 'Custom Post Type UI',
         'googlesitekit' => 'Google Site Kit',
@@ -526,6 +625,15 @@ function sfp_ao_detect_source( $name ) {
         } );
     }
 
+    // v2.9.4: '{db-prefix}user_roles' and friends are core options on
+    // installs with a custom table prefix (e.g. 'xrk_user_roles').
+    if ( sfp_ao_is_core_prefixed_option( $name ) ) {
+        return 'WordPress Core';
+    }
+    if ( in_array( $name, sfp_ao_core_option_names(), true ) ) {
+        return 'WordPress Core';
+    }
+
     foreach ( $sorted_keys as $prefix ) {
         if ( 0 === strpos( $name, $prefix ) ) {
             return $prefixes[ $prefix ];
@@ -538,7 +646,10 @@ function sfp_ao_detect_source( $name ) {
 /**
  * Determine the status classification of an option.
  *
- * Returns one of: 'transient', 'orphan', 'core', 'active'.
+ * Returns one of: 'transient', 'orphan', 'core', 'active', 'unknown'.
+ *
+ * Since v2.9.4 an option that matches no known prefix is 'unknown'
+ * instead of 'orphan'. Only 'orphan' options can be deleted.
  *
  * @param string $name           Option name.
  * @param array  $active_prefixes Set of prefixes belonging to active plugins.
@@ -559,6 +670,7 @@ function sfp_ao_detect_status( $name, array $active_prefixes ) {
         'wp_user_roles', 'permalink_structure', 'WPLANG',
     );
     if ( in_array( $name, $core_exact, true )
+        || in_array( $name, sfp_ao_core_option_names(), true )
         || 0 === strpos( $name, 'theme_mods_' )
         || 0 === strpos( $name, 'widget_' )
         || sfp_ao_is_core_prefixed_option( $name )
@@ -581,8 +693,55 @@ function sfp_ao_detect_status( $name, array $active_prefixes ) {
         }
     }
 
-    // Default fallback: no prefix matches, treat as orphan.
-    return 'orphan';
+    // Default fallback (v2.9.4): no prefix matches, so we do not know
+    // who owns this option. That is not proof it is orphaned.
+    return 'unknown';
+}
+
+/**
+ * Option names WordPress core creates itself (populate_options() and
+ * options core adds later at runtime). These are always 'core'.
+ *
+ * @return string[]
+ * @since 2.9.4
+ */
+function sfp_ao_core_option_names() {
+    return array(
+        'siteurl', 'home', 'blogname', 'blogdescription', 'users_can_register',
+        'admin_email', 'start_of_week', 'use_balanceTags', 'use_smilies',
+        'require_name_email', 'comments_notify', 'posts_per_rss', 'rss_use_excerpt',
+        'mailserver_url', 'mailserver_login', 'mailserver_pass', 'mailserver_port',
+        'default_category', 'default_comment_status', 'default_ping_status',
+        'default_pingback_flag', 'posts_per_page', 'date_format', 'time_format',
+        'links_updated_date_format', 'comment_moderation', 'moderation_notify',
+        'permalink_structure', 'rewrite_rules', 'hack_file', 'blog_charset',
+        'moderation_keys', 'active_plugins', 'category_base', 'ping_sites',
+        'comment_max_links', 'gmt_offset', 'default_email_category', 'recently_edited',
+        'template', 'stylesheet', 'comment_registration', 'html_type', 'use_trackback',
+        'default_role', 'db_version', 'uploads_use_yearmonth_folders', 'upload_path',
+        'blog_public', 'default_link_category', 'show_on_front', 'tag_base',
+        'show_avatars', 'avatar_rating', 'upload_url_path', 'thumbnail_size_w',
+        'thumbnail_size_h', 'thumbnail_crop', 'medium_size_w', 'medium_size_h',
+        'avatar_default', 'large_size_w', 'large_size_h', 'image_default_link_type',
+        'image_default_size', 'image_default_align', 'close_comments_for_old_posts',
+        'close_comments_days_old', 'thread_comments', 'thread_comments_depth',
+        'page_comments', 'comments_per_page', 'default_comments_page', 'comment_order',
+        'sticky_posts', 'uninstall_plugins', 'timezone_string', 'page_for_posts',
+        'page_on_front', 'default_post_format', 'link_manager_enabled',
+        'finished_splitting_shared_terms', 'site_icon', 'medium_large_size_w',
+        'medium_large_size_h', 'wp_page_for_privacy_policy', 'show_comments_cookies_opt_in',
+        'admin_email_lifespan', 'disallowed_keys', 'comment_previously_approved',
+        'auto_plugin_theme_update_emails', 'auto_update_core_dev', 'auto_update_core_minor',
+        'auto_update_core_major', 'wp_force_deactivated_plugins', 'wp_attachment_pages_enabled',
+        'wp_notes_notify', 'initial_db_version', 'current_theme', 'WPLANG', 'cron',
+        'sidebars_widgets', 'can_compress_scripts', 'recently_activated', 'recovery_keys',
+        'recovery_mode_email_last_sent', 'https_detection_errors', 'fresh_site',
+        'user_count', 'new_admin_email', 'auto_core_update_notified', 'theme_switched',
+        'category_children', 'site_logo', 'db_upgraded', 'finished_updating_comment_type',
+        'https_migration_required', 'nav_menu_options', 'wp_calendar_block_has_published_posts',
+        'widget_block', 'wp_user_roles', 'embed_autourls', 'embed_size_w', 'embed_size_h',
+        'secret', 'upload_space_check_disabled',
+    );
 }
 
 /**
@@ -814,6 +973,7 @@ function sfp_ao_handle_action() {
     $protected = sfp_ao_protected_options();
     $changed   = 0;
     $skipped   = 0;
+    $active    = sfp_ao_active_prefixes();
 
     global $wpdb;
 
@@ -822,6 +982,9 @@ function sfp_ao_handle_action() {
             if ( in_array( $name, $protected, true )
                 || sfp_ao_is_structural_widget_option( $name )
                 || sfp_ao_is_core_prefixed_option( $name )
+                // v2.9.4: only options that are certainly orphaned may be
+                // deleted. 'unknown', 'active', 'core' and transients are skipped.
+                || 'orphan' !== sfp_ao_detect_status( $name, $active )
             ) {
                 $skipped++;
                 continue;
@@ -949,6 +1112,7 @@ function sfp_ao_render_page() {
     $count_all       = count( $rows );
     $count_large     = 0;
     $count_orphan    = 0;
+    $count_unknown   = 0;
     $count_transient = 0;
     foreach ( $rows as $r ) {
         if ( $r->size > 1024 ) {
@@ -957,13 +1121,16 @@ function sfp_ao_render_page() {
         if ( 'orphan' === $r->status ) {
             $count_orphan++;
         }
+        if ( 'unknown' === $r->status ) {
+            $count_unknown++;
+        }
         if ( 'transient' === $r->status ) {
             $count_transient++;
         }
     }
 
     $filter = isset( $_GET['filter'] ) ? sanitize_key( wp_unslash( $_GET['filter'] ) ) : 'all';
-    if ( ! in_array( $filter, array( 'all', 'large', 'orphan', 'transient' ), true ) ) {
+    if ( ! in_array( $filter, array( 'all', 'large', 'orphan', 'unknown', 'transient' ), true ) ) {
         $filter = 'all';
     }
 
@@ -972,6 +1139,7 @@ function sfp_ao_render_page() {
         switch ( $filter ) {
             case 'large':     return $r->size > 1024;
             case 'orphan':    return 'orphan' === $r->status;
+            case 'unknown':   return 'unknown' === $r->status;
             case 'transient': return 'transient' === $r->status;
             default:          return true;
         }
@@ -1161,6 +1329,7 @@ function sfp_ao_render_page() {
                 'all'       => array( 'Alles',       $count_all ),
                 'large'     => array( 'Groot (>1 KB)', $count_large ),
                 'orphan'    => array( 'Verweesd',    $count_orphan ),
+                'unknown'   => array( 'Onbekend',    $count_unknown ),
                 'transient' => array( 'Transients',  $count_transient ),
             );
             $last_key = array_key_last( $tabs );
@@ -1263,12 +1432,14 @@ function sfp_ao_render_page() {
                         </td></tr>
                     <?php else : foreach ( $filtered as $r ) :
                         $is_protected = in_array( $r->option_name, sfp_ao_protected_options(), true )
-                                     || sfp_ao_is_structural_widget_option( $r->option_name );
+                                     || sfp_ao_is_structural_widget_option( $r->option_name )
+                                     || 'orphan' !== $r->status;
                         $status_label = array(
                             'active'    => array( 'Actief',    'sfp-ao-status-active' ),
                             'orphan'    => array( 'Verweesd',  'sfp-ao-status-orphan' ),
                             'transient' => array( 'Transient', 'sfp-ao-status-transient' ),
                             'core'      => array( 'WP Core',   'sfp-ao-status-core' ),
+                            'unknown'   => array( 'Onbekend',  'sfp-ao-status-unknown' ),
                         );
                         $label = $status_label[ $r->status ] ?? $status_label['active'];
                         ?>
@@ -1282,7 +1453,7 @@ function sfp_ao_render_page() {
                             <td class="sfp-ao-option-name">
                                 <?php echo esc_html( $r->option_name ); ?>
                                 <?php if ( $is_protected ) : ?>
-                                    <br><span class="sfp-ao-protected">Beschermd (kan niet verwijderd worden)</span>
+                                    <br><span class="sfp-ao-protected"><?php echo 'orphan' !== $r->status && ! in_array( $r->option_name, sfp_ao_protected_options(), true ) && ! sfp_ao_is_structural_widget_option( $r->option_name ) ? 'Niet verweesd (alleen autoload uitzetten kan)' : 'Beschermd (kan niet verwijderd worden)'; ?></span>
                                 <?php endif; ?>
                             </td>
                             <td class="sfp-ao-size"><?php echo esc_html( sfp_ao_format_size( $r->size ) ); ?></td>
@@ -1319,13 +1490,14 @@ function sfp_ao_render_page() {
         </p>
         <p>
             <strong>Verwijderen</strong> schrapt de rij uit <code>wp_options</code>. Doe dit alleen voor
-            verweesde opties van gedeinstalleerde plugins. Beschermde opties (<code>siteurl</code>,
+            verweesde opties van gedeinstalleerde plugins; opties met status Actief, WP Core of Onbekend
+            worden altijd overgeslagen. Beschermde opties (<code>siteurl</code>,
             <code>active_plugins</code>, <code>widget_block</code>, enzovoort) kunnen vanuit deze pagina
             niet verwijderd worden.
         </p>
         <p>
             <strong>Safe Cleanup</strong> verwijdert in een keer alle opties die horen bij plugins die
-            niet meer in de SFP-stack zitten: Yoast, Rank Math, Surfer, Elementor, MainWP, FluentMail,
+            niet meer in de SFP-stack zitten: Yoast, Rank Math, Surfer, Elementor, MainWP,
             Better Search Replace, Custom Post Type UI, Google Site Kit en All in One SEO. De knop
             slaat automatisch alles over wat wel actief is, wat core-prefixed is
             (<code>{prefix}user_roles</code> enzovoort), en wat op de beschermde lijst staat.
