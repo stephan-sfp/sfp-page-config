@@ -147,7 +147,7 @@ function sfp_page_config_longread_nav_output() {
             </svg>
         </button>
         <div class="sfp-lr-bar__chapter" id="sfp-lr-chapter-wrap" role="button" aria-expanded="false" tabindex="0">
-            <span id="sfp-lr-chapter-label"></span>
+            <span class="sfp-lr-bar__label" id="sfp-lr-chapter-label"></span>
             <svg class="sfp-lr-bar__toggle" width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 <line class="sfp-lr-bar__toggle-v" x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>

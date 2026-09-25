@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.9.3] - 2026-09-25
+
+### Gerepareerd
+
+- **Hoofdstuktitel in de mobiele balk kapt af met puntjes in plaats van hard midden in een woord.** De titel stond in een kale span die buiten zijn flex-ouder stak; de ouder knipte hem af, waardoor `text-overflow: ellipsis` nooit werkte en ook het plus-icoon van de drawer uit beeld viel. De span krijgt de klasse `sfp-lr-bar__label` en kapt nu zelf af; de ouder mag krimpen (`min-width: 0`). Raakte elke kop langer dan ongeveer 28 tekens, op alle acht sites.
+
 ## [2.9.2] - 2026-09-25
 
 ### Gewijzigd
