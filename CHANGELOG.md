@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.9.4] - 2026-09-25
+
+### Gerepareerd
+- Autoloaded Options: `fluentmail-settings` gold als verweesd en kon via Safe Cleanup verwijderd worden, terwijl FluentSMTP (actief op alle sites) daar zijn instellingen bewaart. Nu herkend als FluentSMTP en uit de opruimlijsten gehaald.
+- Autoloaded Options: `fs_*` (Freemius) gold als verweesd op sites waar alleen ASE Pro Freemius gebruikt. ASE Pro telt nu mee.
+- Autoloaded Options: standaardopties van WordPress (zoals `date_format`, `blog_public`) stonden als verweesd. De volledige lijst met core-opties staat er nu in.
+
+### Gewijzigd
+- Autoloaded Options: een optie die bij geen bekende plugin hoort heet nu "Onbekend" in plaats van "Verweesd", met een eigen filter.
+- Autoloaded Options: verwijderen (per rij en in bulk) werkt alleen nog voor opties met status Verweesd; Actief, WP Core en Onbekend worden altijd overgeslagen.
+- Autoloaded Options: `{tabelprefix}user_roles` toont als bron WordPress Core.
+
+### Toegevoegd
+- Autoloaded Options: herkenning van meer stack-opties (Cloudflare, LatePoint, Stape, SiteGround Security, Action Scheduler, WP Rocket-versies) en van resten van verwijderde plugins die op 25-09-2026 op CVD en DST zijn gevonden.
+
 ## [2.9.3] - 2026-09-25
 
 ### Gerepareerd
