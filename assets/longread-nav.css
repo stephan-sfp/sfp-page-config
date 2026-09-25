@@ -81,11 +81,21 @@
     text-transform: uppercase !important;
     letter-spacing: 0.06em !important;
     padding: 0 8px !important;
+    min-width: 0 !important;
     cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: flex-start !important;
     gap: 6px !important;
+}
+/* De titel kapt zelf af met puntjes. Zonder min-width: 0 steekt de span
+   buiten de flex-ouder, knipt die hem hard af en valt ook de toggle weg. */
+.sfp-lr-bar__label {
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
 }
 .sfp-lr-bar__toggle {
     flex-shrink: 0 !important;
