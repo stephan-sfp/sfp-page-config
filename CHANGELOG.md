@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.9.5] - 2026-09-27
+
+### Toegevoegd
+- Drie shortcodes voor de feitelijke verantwoording op DPS, DGA, CVD en DST, in `includes/feiten-shortcodes.php`.
+  - `[sfp_reviews]`: de beoordeling van het eigen Google-bedrijfsprofiel, altijd met het reviewaantal erbij. Bron is het filter `sfp_feiten_reviews` of de opgeslagen data van SFP Google Reviews. Zonder bron valt hij terug op een zin die naar het profiel verwijst, nooit op een cijfer.
+  - `[sfp_publicaties]`: het aantal artikelen in de kennisbanken van het netwerk. Telt de eigen site direct en de andere sites via hun REST API, met een transient van 24 uur. De sitelijst is te wijzigen met het filter `sfp_feiten_publicaties_sites`.
+  - `[sfp_stand]`: de wijzigingsdatum van de pagina zelf, via `wp_date()` dus in de tijdzone van de site.
+
 ## [2.9.4] - 2026-09-25
 
 ### Gerepareerd
