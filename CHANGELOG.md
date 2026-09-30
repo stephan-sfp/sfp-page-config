@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.9.6] - 2026-09-30
+
+### Gerepareerd
+- `[sfp_reviews]` toonde op de feitelijke verantwoording van DPS, DGA, CVD en DST de terugvaltekst in plaats van het Google-cijfer. `sfp_feiten_reviews_data()` zocht in vier opties die SFP Google Reviews nooit aanmaakt. Hij leest nu de place_id uit `sfp_reviews_options` en haalt de transient `sfp_reviews_` + md5( place_id ) op. Cijfer en aantal komen uit `meta.rating` en `meta.total`, de totalen van het Google-bedrijfsprofiel; de gefilterde vijfsterrenreviews tellen nooit mee.
+
+### Toegevoegd
+- Laatst bekende meting: elke geldige meting gaat naar de optie `sfp_feiten_reviews_laatste` (cijfer, aantal, datum; niet autoloaded). Is de transient verlopen, dan toont `[sfp_reviews]` die meting. De terugvaltekst verschijnt alleen als er nog nooit gemeten is. De optie wordt alleen herschreven als de waarde verandert of de vorige meting van een andere dag is.
+
+### Verwijderd
+- De vier geraden optienamen (`sfp_google_reviews_data`, `sfp_google_reviews_cache`, `sfp_gr_reviews_data`, `sfp_gr_cache`). Het filter `sfp_feiten_reviews` blijft als override bovenaan.
+
 ## [2.9.5] - 2026-09-27
 
 ### Toegevoegd
