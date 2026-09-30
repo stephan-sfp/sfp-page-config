@@ -642,6 +642,7 @@ $sfp_includes = array(
     'includes/placeholder-guard.php',
     'includes/body-class.php',
     'includes/kopfont.php',
+    'includes/footer-groepen.php',
     'includes/longread.php',
     'includes/longread-nav.php',
     'includes/reading-time.php',

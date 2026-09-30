@@ -8,6 +8,7 @@ Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies 
 
 ### Toegevoegd
 - Kopfont als CSS-variabele op elke front-endpagina, in `includes/kopfont.php`: `--sfp-kopfont` (Astra `headings-font-family`, het font van H2 tot en met H6) en `--sfp-kopfont-gewicht` (Astra `headings-font-weight`). Bedoeld voor labels in kapitalen die geen kop zijn, zoals de groepen in het juridische footerblok, zodat ze het kopfont dragen zonder fontnaam in code. Waarden komen uit `sfp_page_config_get_brand()` en zijn daar gevalideerd. Het inline blok (`id="sfp-kopfont"`) is uitgesloten van WP Rocket Remove Unused CSS.
+- Juridisch footerblok in groepen, in `includes/footer-groepen.php`: CSS en een klein script voor de markup `nav.sfp-fj` met per groep `details.sfp-fj__groep` en `summary.sfp-fj__kop`. Desktop: groepen naast elkaar en altijd open. Tot 921 px: onder elkaar, dichtgeklapt en uit te schuiven met een tik op de groepsnaam. Zonder JavaScript blijft alles open. Groepsnaam in `--sfp-kopfont` en Astra global color 2, links 14 px met bullets. Alleen geladen als footer-widget-4 inhoud heeft. CSS uitgesloten van WP Rocket Remove Unused CSS, script uitgesloten van Delay JS zodat de groepen op mobiel niet eerst open staan.
 
 ## [2.9.6] - 2026-09-30
 
