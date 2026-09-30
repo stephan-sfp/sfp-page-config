@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     2.9.6
+ * Version:     2.9.7
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '2.9.6' );
+define( 'SFP_PAGE_CONFIG_VERSION', '2.9.7' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -641,6 +641,7 @@ $sfp_includes = array(
     'includes/feiten-shortcodes.php',
     'includes/placeholder-guard.php',
     'includes/body-class.php',
+    'includes/kopfont.php',
     'includes/longread.php',
     'includes/longread-nav.php',
     'includes/reading-time.php',

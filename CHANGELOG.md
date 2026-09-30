@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.9.7] - 2026-09-30
+
+### Toegevoegd
+- Kopfont als CSS-variabele op elke front-endpagina, in `includes/kopfont.php`: `--sfp-kopfont` (Astra `headings-font-family`, het font van H2 tot en met H6) en `--sfp-kopfont-gewicht` (Astra `headings-font-weight`). Bedoeld voor labels in kapitalen die geen kop zijn, zoals de groepen in het juridische footerblok, zodat ze het kopfont dragen zonder fontnaam in code. Waarden komen uit `sfp_page_config_get_brand()` en zijn daar gevalideerd. Het inline blok (`id="sfp-kopfont"`) is uitgesloten van WP Rocket Remove Unused CSS.
+
 ## [2.9.6] - 2026-09-30
 
 ### Gerepareerd
