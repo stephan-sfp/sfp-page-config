@@ -2,7 +2,8 @@
 /**
  * Shortcodes voor de feitelijke verantwoording.
  *
- * [sfp_reviews]      Google-beoordeling van het eigen bedrijfsprofiel, met reviewaantal.
+ * [sfp_reviews]      Google-beoordeling van het eigen bedrijfsprofiel, met reviewaantal
+ *                    (uit SFP Google Reviews, met de laatst bekende meting als vangnet).
  * [sfp_publicaties]  Aantal artikelen in de kennisbanken van het netwerk.
  * [sfp_stand]        Wijzigingsdatum van de pagina zelf.
  *
@@ -21,65 +22,121 @@ if ( ! defined( 'ABSPATH' ) ) {
  * ====================================================================== */
 
 /**
+ * Optienaam voor de laatst bekende geldige meting van de Google-beoordeling.
+ */
+if ( ! defined( 'SFP_FEITEN_REVIEWS_OPTIE' ) ) {
+    define( 'SFP_FEITEN_REVIEWS_OPTIE', 'sfp_feiten_reviews_laatste' );
+}
+
+/**
+ * Leest de actuele profieltotalen uit de cache van SFP Google Reviews.
+ *
+ * SFP Google Reviews bewaart de place_id in de optie sfp_reviews_options en
+ * de opgehaalde data in de transient 'sfp_reviews_' . md5( place_id ). Daarin
+ * staan onder ['meta'] de totalen van het Google-bedrijfsprofiel: rating en
+ * total. ['reviews'] bevat alleen de gefilterde reviews en is dus nooit een
+ * bron voor het cijfer of het aantal.
+ *
+ * @return array array( rating, count ) of een lege array.
+ */
+function sfp_feiten_reviews_uit_transient() {
+    $opties = get_option( 'sfp_reviews_options' );
+
+    if ( ! is_array( $opties ) || empty( $opties['place_id'] ) || ! is_string( $opties['place_id'] ) ) {
+        return array();
+    }
+
+    $cache = get_transient( 'sfp_reviews_' . md5( $opties['place_id'] ) );
+
+    if ( ! is_array( $cache ) || empty( $cache['meta'] ) || ! is_array( $cache['meta'] ) ) {
+        return array();
+    }
+
+    $meta = $cache['meta'];
+
+    if ( ! isset( $meta['rating'] ) || ! is_numeric( $meta['rating'] ) ) {
+        return array();
+    }
+
+    $rating = (float) $meta['rating'];
+    $aantal = ( isset( $meta['total'] ) && is_numeric( $meta['total'] ) ) ? (int) $meta['total'] : 0;
+
+    if ( $rating <= 0 || $rating > 5 || $aantal < 1 ) {
+        return array();
+    }
+
+    return array(
+        'rating' => $rating,
+        'count'  => $aantal,
+    );
+}
+
+/**
+ * Bewaart een geldige meting als laatst bekende waarde.
+ *
+ * Schrijft alleen als cijfer of aantal veranderd is, of als de vorige meting
+ * van een andere dag is, zodat een paginaweergave niet elke keer de database
+ * raakt.
+ *
+ * @param array $data array( rating, count ).
+ * @return void
+ */
+function sfp_feiten_reviews_bewaar_meting( $data ) {
+    $vorige  = get_option( SFP_FEITEN_REVIEWS_OPTIE );
+    $vandaag = wp_date( 'Y-m-d' );
+
+    if (
+        is_array( $vorige )
+        && isset( $vorige['rating'], $vorige['count'], $vorige['datum'] )
+        && (float) $vorige['rating'] === (float) $data['rating']
+        && (int) $vorige['count'] === (int) $data['count']
+        && wp_date( 'Y-m-d', (int) $vorige['datum'] ) === $vandaag
+    ) {
+        return;
+    }
+
+    update_option(
+        SFP_FEITEN_REVIEWS_OPTIE,
+        array(
+            'rating' => (float) $data['rating'],
+            'count'  => (int) $data['count'],
+            'datum'  => time(),
+        ),
+        false
+    );
+}
+
+/**
  * Leest de beoordeling van het eigen Google-bedrijfsprofiel.
  *
- * Bron in volgorde: het filter sfp_feiten_reviews, daarna de opgeslagen data
- * van SFP Google Reviews. Geeft array( rating, count ) of een lege array.
+ * Bron in volgorde:
+ * 1. het filter sfp_feiten_reviews (override);
+ * 2. de transient van SFP Google Reviews (meta.rating en meta.total);
+ * 3. de laatst bekende geldige meting, als de transient verlopen is.
  *
- * @return array
+ * @return array array( rating, count ) of een lege array als er nooit gemeten is.
  */
 function sfp_feiten_reviews_data() {
     $data = apply_filters( 'sfp_feiten_reviews', array() );
 
-    if ( ! empty( $data['rating'] ) ) {
+    if ( is_array( $data ) && ! empty( $data['rating'] ) ) {
         return $data;
     }
 
-    $kandidaten = array(
-        'sfp_google_reviews_data',
-        'sfp_google_reviews_cache',
-        'sfp_gr_reviews_data',
-        'sfp_gr_cache',
-    );
+    $actueel = sfp_feiten_reviews_uit_transient();
 
-    foreach ( $kandidaten as $optie ) {
-        $waarde = get_option( $optie );
+    if ( ! empty( $actueel ) ) {
+        sfp_feiten_reviews_bewaar_meting( $actueel );
+        return $actueel;
+    }
 
-        if ( empty( $waarde ) ) {
-            continue;
-        }
+    $laatste = get_option( SFP_FEITEN_REVIEWS_OPTIE );
 
-        if ( is_string( $waarde ) ) {
-            $waarde = json_decode( $waarde, true );
-        }
-
-        if ( ! is_array( $waarde ) ) {
-            continue;
-        }
-
-        $rating = 0;
-        $aantal = 0;
-
-        foreach ( array( 'rating', 'average', 'average_rating', 'score' ) as $sleutel ) {
-            if ( isset( $waarde[ $sleutel ] ) && is_numeric( $waarde[ $sleutel ] ) ) {
-                $rating = (float) $waarde[ $sleutel ];
-                break;
-            }
-        }
-
-        foreach ( array( 'user_ratings_total', 'total', 'count', 'reviews_count' ) as $sleutel ) {
-            if ( isset( $waarde[ $sleutel ] ) && is_numeric( $waarde[ $sleutel ] ) ) {
-                $aantal = (int) $waarde[ $sleutel ];
-                break;
-            }
-        }
-
-        if ( $rating > 0 ) {
-            return array(
-                'rating' => $rating,
-                'count'  => $aantal,
-            );
-        }
+    if ( is_array( $laatste ) && ! empty( $laatste['rating'] ) && ! empty( $laatste['count'] ) ) {
+        return array(
+            'rating' => (float) $laatste['rating'],
+            'count'  => (int) $laatste['count'],
+        );
     }
 
     return array();
