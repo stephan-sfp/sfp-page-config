@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.9.8] - 2026-10-05
+
+### Gerepareerd
+- Juridisch footerblok in groepen: de groepsnaam (`.sfp-fj__kop`) haalt zijn kleur nu uit `--sfp-rol-primair`, met Astra global color 2 als terugval. Slot 2 is op SwS de secundaire kleur (groen), waardoor de groepskoppen daar groen stonden in plaats van primair; SwS had daarvoor een override in ASE-snippet 373. Op de andere sites wijst `--sfp-rol-primair` naar slot 2, dus daar verandert niets.
+
 ## [2.9.7] - 2026-09-30
 
 ### Toegevoegd
