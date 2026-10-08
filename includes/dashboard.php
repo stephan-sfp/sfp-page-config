@@ -95,6 +95,17 @@ function sfp_page_config_sanitize_settings( $input ) {
     // Cron notification email.
     $clean['cron_email'] = sanitize_email( $input['cron_email'] ?? '' );
 
+    // Lichtere LatePoint-boekformulieraanroepen (includes/ajax-lean.php).
+    // Een lege lijst valt terug op de standaardlijst, zodat aanzetten zonder
+    // de lijst te bekijken toch de bedoelde plugins overslaat.
+    $clean['ajax_lean_enabled'] = ! empty( $input['ajax_lean_enabled'] ) ? '1' : '';
+    $clean['ajax_lean_skip']    = function_exists( 'sfp_ajax_lean_sanitize_skip' )
+        ? sfp_ajax_lean_sanitize_skip( $input['ajax_lean_skip'] ?? '' )
+        : array();
+    if ( empty( $clean['ajax_lean_skip'] ) && function_exists( 'sfp_ajax_lean_default_skip' ) ) {
+        $clean['ajax_lean_skip'] = sfp_ajax_lean_default_skip();
+    }
+
     // Site-wide default lestijd. Used by [cursus_tijd] as a fallback when a
     // page has no per-startmoment time yet. Stored as sanitised "HH:MM"
     // start/end; an invalid value is stored empty so the fallback stays safe.
@@ -959,6 +970,40 @@ function sfp_page_config_render_tab_settings() {
                            value="<?php echo esc_attr( $s['cron_email'] ?? '' ); ?>"
                            class="regular-text" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>" />
                     <p class="description">Ontvangt dagelijkse meldingen over verlopen/aankomende cursusdata. Leeg = site-admin.</p>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Ajax Lean -->
+        <?php
+        $lean_skip    = ! empty( $s['ajax_lean_skip'] ) && is_array( $s['ajax_lean_skip'] ) ? $s['ajax_lean_skip'] : sfp_ajax_lean_default_skip();
+        $lean_error   = get_option( 'sfp_ajax_lean_error', '' );
+        $lean_version = sfp_ajax_lean_installed_version();
+        $lean_active  = array();
+        foreach ( (array) get_option( 'active_plugins', array() ) as $lean_plugin ) {
+            $lean_active[] = strtok( (string) $lean_plugin, '/' );
+        }
+        $lean_missing = array_diff( $lean_skip, $lean_active );
+        ?>
+        <h2>Boekformulier sneller (LatePoint)</h2>
+        <p style="color:#666;">Bij elke klik in een LatePoint-boekformulier start de hele site op. Met deze functie laden bij die aanroepen alleen de plugins die het boeken nodig heeft. Geldt alleen voor bezoekers; LatePoint in wp-admin laadt altijd alles. Test na aanzetten een boeking van begin tot eind, inclusief bevestigingsmail en automatiseringen.</p>
+        <table class="form-table" role="presentation">
+            <tr>
+                <th><label for="sfp-ajax-lean-enabled">Aan</label></th>
+                <td>
+                    <label><input type="checkbox" id="sfp-ajax-lean-enabled" name="sfp_settings[ajax_lean_enabled]" value="1" <?php checked( ! empty( $s['ajax_lean_enabled'] ) ); ?> /> Plugins overslaan bij boekformulieraanroepen</label>
+                    <p class="description">
+                        Status: <?php echo '' !== $lean_version ? 'mu-plugin geplaatst (versie ' . esc_html( $lean_version ) . ')' : 'mu-plugin niet geplaatst'; ?>.
+                        <?php if ( $lean_error ) : ?><br><strong style="color:#A4262C;"><?php echo esc_html( $lean_error ); ?></strong><?php endif; ?>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="sfp-ajax-lean-skip">Overslaan</label></th>
+                <td>
+                    <textarea id="sfp-ajax-lean-skip" name="sfp_settings[ajax_lean_skip]" rows="8" class="large-text code"><?php echo esc_textarea( implode( "\n", $lean_skip ) ); ?></textarea>
+                    <p class="description">Eén pluginmap per regel. Leeg opslaan zet de standaardlijst terug. LatePoint en add-ons en SFP Page Config worden nooit overgeslagen.
+                    <?php if ( $lean_missing ) : ?><br>Niet actief op deze site: <code><?php echo esc_html( implode( ', ', $lean_missing ) ); ?></code><?php endif; ?></p>
                 </td>
             </tr>
         </table>

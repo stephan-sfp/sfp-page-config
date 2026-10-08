@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     2.9.8
+ * Version:     2.10.0
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '2.9.8' );
+define( 'SFP_PAGE_CONFIG_VERSION', '2.10.0' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -653,6 +653,7 @@ $sfp_includes = array(
     'includes/date-injector.php',
     'includes/schema-fix.php',
     'includes/autoloaded-options.php',
+    'includes/ajax-lean.php',
     'includes/updater.php',
 );
 
@@ -713,6 +714,9 @@ function sfp_page_config_deactivate() {
     $timestamp = wp_next_scheduled( 'sfp_page_config_daily_check' );
     if ( $timestamp ) {
         wp_unschedule_event( $timestamp, 'sfp_page_config_daily_check' );
+    }
+    if ( function_exists( 'sfp_ajax_lean_remove' ) ) {
+        sfp_ajax_lean_remove();
     }
 }
 register_deactivation_hook( __FILE__, 'sfp_page_config_deactivate' );
