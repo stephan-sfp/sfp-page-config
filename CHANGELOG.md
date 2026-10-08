@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.10.0] - 2026-10-08
+
+### Toegevoegd
+- Boekformulier sneller (LatePoint), in `includes/ajax-lean.php` en `mu-plugin/sfp-ajax-lean.php`. Elke klik in een LatePoint-boekformulier is een admin-ajax-aanroep die de hele site opstart; gemeten op DPS ruim 5000 PHP-bestanden en ongeveer 850 ms serverrespons, waarvan LatePoint zelf ongeveer 95 ms. Bij `latepoint_route_call`-aanroepen van bezoekers slaat een mu-plugin nu de plugins over die voor het boeken niets doen. Een gewone plugin kan dat niet, omdat andere plugins dan al geladen zijn; SFP Page Config plaatst het mu-plugin daarom zelf in `wp-content/mu-plugins/`.
+  - Uit tot je het aanzet in de Instellingen-tab (sectie Boekformulier sneller). Uitzetten of SFP Page Config deactiveren verwijdert het mu-plugin weer.
+  - De lijst met over te slaan plugins staat in de Instellingen-tab, met een standaardlijst: SureRank (en Pro), Spectra (en Pro), Astra Pro, Complianz, Imagify, Presto Player (en Pro), SureForms (en Pro), WP Rocket, Cloudflare, SFP Google Reviews en SFP Tooltip. LatePoint en add-ons en SFP Page Config worden nooit overgeslagen. OttoKit, SureContact, FluentSMTP, Stape, Sigmize en ASE Pro staan niet op de lijst, omdat ze bij een boeking mails, automatiseringen, meting of de bevestiging verzorgen.
+  - Geldt niet voor LatePoint in wp-admin (zelfde ajax-actie, maar met een wp-admin-referer) en niet voor andere ajax-acties.
+  - Ter controle stuurt een lichte aanroep de header `X-SFP-Ajax-Lean` mee met het aantal overgeslagen plugins.
+- Eenmalige taken per pluginversie (`sfp_page_config_run_upgrades()`), op basis van de optie `sfp_page_config_version`.
+- Test `tests/ajax-lean.php`.
+
+### Verwijderd
+- De optie `sfp_prof_resultaten`, achtergebleven van een tijdelijk meetsnippet op DPS (2026-10-08). Wordt bij de eerste aanroep na de update eenmalig verwijderd.
+
 ## [2.9.8] - 2026-10-05
 
 ### Gerepareerd
