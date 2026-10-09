@@ -1,0 +1,5 @@
+/* Bouwstenen: stappen. Genummerde lijst met groene lijn erboven; drie naast elkaar vanaf 981 px. */
+:root .sfp-stappen{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;padding:0;margin:0;list-style:none;counter-reset:sfp-stap;align-items:stretch}
+:root .sfp-stap{display:grid;grid-template-columns:minmax(0,1fr);row-gap:8px;align-content:start;padding:20px 0 0;margin:0;border-top:2px solid var(--sfp-b-secundair);counter-increment:sfp-stap;min-width:0;list-style:none}
+.sfp-stap::before{content:counter(sfp-stap);font-family:var(--sfp-b-display);font-weight:400;font-size:34px;line-height:1;color:var(--sfp-b-secundair)}
+@media (min-width:981px){:root .sfp-stappen{grid-template-columns:repeat(3,minmax(0,1fr))}}

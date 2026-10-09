@@ -1,0 +1,14 @@
+/* Bouwstenen: tabs. Labels in het kopfont, gecentreerd; actief tabblad met groene lijn. */
+:root .sfp-tabs{max-width:900px;margin:0 auto}
+.sfp-tablijst{display:flex;justify-content:center;gap:32px;width:max-content;max-width:100%;margin:0 auto;border-bottom:1px solid var(--sfp-b-lijn-sterk);overflow:visible}
+:root .sfp-tablijst [role=tab]{flex:0 0 auto;display:flex;justify-content:center;align-items:center;background:none;border:0;border-bottom:4px solid transparent;margin-bottom:-1px;padding:18px 0 14px;cursor:pointer;font-family:var(--sfp-b-kop);font-weight:900;font-size:clamp(15px,.3vw + 13px,18px);line-height:1;letter-spacing:.02em;text-transform:uppercase;color:var(--sfp-b-primair);opacity:.45;text-align:center;border-radius:0}
+:root .sfp-tablijst [role=tab][aria-selected=true]{opacity:1;border-bottom-color:var(--sfp-b-secundair)}
+:root .sfp-tablijst [role=tab]:hover{opacity:1;background:none}
+:root .sfp-tablijst [role=tab]:focus,:root .sfp-tablijst [role=tab]:active{outline:none;background:none;box-shadow:none}
+:root .sfp-tablijst [role=tab]:focus-visible{outline:2px solid var(--sfp-b-secundair);outline-offset:-2px}
+:root .sfp-tabpaneel{padding:28px 0 0;display:grid;gap:14px;max-width:680px;margin:0 auto;text-align:center;justify-items:center}
+:root .sfp-tabpaneel p{font-size:18px;margin:0}
+:root .sfp-tabpaneel .is-style-sfp-groot{font-size:clamp(19px,.5vw + 15px,22px)}
+:root .sfp-tabpaneel .is-style-sfp-pijl{font-size:15px}
+.sfp-tabpaneel[hidden]{display:none}
+@media (max-width:600px){:root .sfp-tablijst [role=tab]{padding:16px 4px 12px;font-size:15px}}

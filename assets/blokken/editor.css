@@ -1,0 +1,5 @@
+/* Alleen in de blokeditor: binnenblokken van tabs en uitklap zichtbaar en herkenbaar. */
+.block-editor-block-list__layout .sfp-tabpaneel[hidden]{display:grid}
+.sfp-editor-label{display:block;font:600 11px/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#757575;margin:0 0 6px}
+.sfp-editor-regel{border:1px dashed #c3c4c7;border-radius:6px;padding:10px 12px;margin:0 0 8px}
+.sfp-editor-regel .rich-text,.sfp-editor-vraag .rich-text{font-weight:700}
