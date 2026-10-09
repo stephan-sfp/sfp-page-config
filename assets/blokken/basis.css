@@ -1,0 +1,82 @@
+/*
+ * Bouwstenen: basis. Sectie, koppen, alinea's, knoppen en de blokstijlen op
+ * WordPress-blokken. Overgenomen uit het SwS-snippet "Vormgeving: kernpagina's".
+ * Variabelen (--sfp-b-*) zet de plugin vooraf, met de rolvariabelen en de
+ * Astra-waarden van de site.
+ */
+
+/* sectie */
+:root .sfp-sectie{padding:72px 0;margin:0;width:100%;max-width:none;font-size:17px;line-height:1.7;color:var(--sfp-b-body)}
+:root .sfp-sectie--tint{background:var(--sfp-b-tint3)}
+.sfp-sectie__binnen{width:100%;max-width:1180px;margin:0 auto;padding:0 24px;box-sizing:border-box}
+:root :is(.sfp-sectie,.sfp-held) p{margin:0}
+:root :is(.sfp-sectie,.sfp-held) p+p{margin-top:12px}
+.sfp-sectie a{text-underline-offset:3px}
+:is(.sfp-sectie,.sfp-held) :focus-visible{outline:2px solid var(--sfp-b-secundair);outline-offset:2px}
+:is(.sfp-sectie,.sfp-held) :focus:not(:focus-visible){outline:none}
+.sfp-sectie img{max-width:100%;height:auto;display:block}
+.sfp-sectie figure{margin:0}
+
+/* koppen: font, gewicht, kapitalen, kleur en maat komen uit Astra en de netwerkafkapping; hier ruimte en regelafstand (8 px boven en onder, de netwerknorm voor koppen) */
+:root :is(.sfp-sectie,.sfp-held) :is(h1,h2,h3){margin:0;padding:8px 0;text-wrap:balance}
+:root .sfp-sectie h1{line-height:1.12}
+:root .sfp-sectie h2{line-height:1.18}
+:root .sfp-sectie h3{line-height:1.25}
+.sfp-groen{color:var(--sfp-b-secundair)}
+
+/* sectiekop: de eerste H2 van een sectie */
+:root .sfp-sectie__binnen>h2:first-child{margin:0 0 32px;max-width:26ch}
+:root .sfp-sectie__binnen>h2.has-text-align-center:first-child{max-width:none;margin-left:auto;margin-right:auto}
+:root .sfp-sectie__binnen>h2:first-child+p.has-text-align-center{max-width:40em;margin:0 auto 32px}
+@media (min-width:981px){:root .sfp-sectie__binnen>h2:first-child{max-width:none}}
+
+/* paginatitel over de volle breedte (boekpagina); deler 32 hoort bij de lengte van de huidige titel */
+:root .sfp-sectie__binnen>h1.is-style-sfp-paginatitel{margin:0 0 clamp(20px,3vw,40px);font-size:clamp(24px,1.8vw + 14px,38px);line-height:1.15}
+@media (min-width:981px){.sfp-sectie__binnen:has(>h1.is-style-sfp-paginatitel){container-type:inline-size}:root .sfp-sectie__binnen>h1.is-style-sfp-paginatitel{font-size:calc(100cqi / 32)}}
+
+/* knoppen: Astra levert de knop (rol links en knoppen); radius 6 px is het SwS-besluit van 30-09-2026 */
+:root :is(.sfp-sectie,.sfp-held) .wp-block-buttons{display:flex;flex-wrap:wrap;gap:12px;margin:0}
+:is(.sfp-sectie,.sfp-held) .wp-block-button{margin:0}
+:root :is(.sfp-sectie,.sfp-held) .wp-block-button__link{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:var(--sfp-b-r-knop)!important;font-family:var(--sfp-b-kop);font-weight:900!important;font-size:15px;line-height:1;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;border:2px solid var(--sfp-b-links);background:var(--sfp-b-links);color:var(--sfp-b-wit)}
+:root :is(.sfp-sectie,.sfp-held) .wp-block-button__link:hover{background:var(--sfp-b-hover);border-color:var(--sfp-b-hover);color:var(--sfp-b-wit)}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link{background:transparent;border-color:rgba(255,255,255,.55);color:var(--sfp-b-wit)}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-wit);color:var(--sfp-b-wit)}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link{background:transparent;border-color:var(--sfp-b-lijn-sterk);color:var(--sfp-b-primair)}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
+
+/* alinea-stijlen */
+:root .sfp-sectie .is-style-sfp-intro{font-size:19px;line-height:1.6;max-width:34em}
+.is-style-sfp-pijl{font-family:var(--sfp-b-kop);font-weight:700;font-size:15px;line-height:1.3;letter-spacing:0}
+.is-style-sfp-pijl a{color:var(--sfp-b-links);text-decoration:none}
+.is-style-sfp-pijl a::after{content:" \2192"}
+.is-style-sfp-pijl a:hover{color:var(--sfp-b-hover)}
+.is-style-sfp-bovenschrift{font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+.is-style-sfp-groot{font-family:var(--sfp-b-kop);font-weight:700;font-size:clamp(19px,.5vw + 15px,22px);line-height:1.3;color:var(--sfp-b-primair)}
+.is-style-sfp-prijs{font-weight:700;font-size:15px;line-height:1.3;color:var(--sfp-b-primair);padding-top:14px;border-top:1px solid var(--sfp-b-lijn)}
+.is-style-sfp-prijs .sfp-excl{font-weight:400;font-size:13px;color:var(--sfp-b-body)}
+:root .is-style-sfp-wie{display:flex;gap:12px;align-items:center}
+.is-style-sfp-wie img{width:56px;height:56px;border-radius:50%;display:block}
+.is-style-sfp-wie strong{display:block;color:var(--sfp-b-primair)}
+:root .sfp-sectie .is-style-sfp-mailregel{margin-top:40px;padding:0 16px;font-size:15px;line-height:1.9;text-align:center}
+.is-style-sfp-klein{font-size:14px}
+
+/* afbeeldingsstijlen */
+.is-style-sfp-afgerond img{border-radius:var(--sfp-b-r-kaart);aspect-ratio:4/3;object-fit:cover;object-position:70% 30%;width:100%}
+:root .is-style-sfp-omslag{margin:0;justify-self:start;width:min(70%,260px);text-align:center}
+.is-style-sfp-omslag img{width:100%;height:auto;border:1px solid var(--sfp-b-lijn);box-shadow:0 2px 6px rgba(0,0,0,.08),0 18px 36px rgba(0,0,0,.14)}
+@media (min-width:981px){:root .is-style-sfp-omslag{justify-self:end;width:min(100%,300px)}}
+
+/* zichtbaarheid per scherm */
+.sfp-alleen-mobiel{display:none}
+@media (max-width:600px){:root .sfp-niet-mobiel{display:none}.sfp-alleen-mobiel{display:block}}
+
+@media (max-width:600px){
+  :root .sfp-sectie{padding:52px 0;font-size:16px}
+  .sfp-sectie__binnen{padding:0 16px}
+  :root .sfp-sectie__binnen>h2:first-child{margin-bottom:24px}
+  :root :is(.sfp-sectie,.sfp-held) .wp-block-buttons{flex-direction:column}
+  :root :is(.sfp-sectie,.sfp-held) .wp-block-button{flex:0 0 auto;width:100%;margin:0}
+  :root :is(.sfp-sectie,.sfp-held) .wp-block-button__link{width:100%;box-sizing:border-box}
+  :root .sfp-sectie .is-style-sfp-mailregel{margin-top:32px}
+}
+@media (prefers-reduced-motion:reduce){:is(.sfp-sectie,.sfp-held) *{transition:none!important}}
