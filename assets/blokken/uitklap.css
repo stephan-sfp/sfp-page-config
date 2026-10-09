@@ -31,7 +31,7 @@
 .sfp-uitklap__sub{display:block;font-weight:400;font-size:14px;line-height:1.5;color:var(--sfp-b-body);margin-top:4px}
 :root .sfp-uitklap--kaart .wp-block-table{overflow-x:auto;padding:0 22px;margin:0}
 :root .sfp-uitklap--kaart table{width:100%;border-collapse:collapse;font-size:15px;min-width:520px;margin:0;table-layout:auto}
-:root .sfp-uitklap--kaart :is(th,td){text-align:left;padding:10px 12px;border:0;border-bottom:1px solid var(--sfp-b-lijn);vertical-align:top;background:none}
+:root .sfp-uitklap--kaart :is(th,td){text-align:left;padding:10px 12px;border:0;word-break:normal;border-bottom:1px solid var(--sfp-b-lijn);vertical-align:top;background:none}
 :root .sfp-uitklap--kaart thead{border:0}
 :root .sfp-uitklap--kaart thead th{color:var(--sfp-b-primair);font-weight:700}
 :root .sfp-uitklap--kaart tbody th{font-weight:700;color:var(--sfp-b-secundair)}

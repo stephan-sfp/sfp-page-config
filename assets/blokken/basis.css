@@ -9,6 +9,8 @@
 :root .sfp-sectie{padding:72px 0;margin:0;width:100%;max-width:none;font-size:17px;line-height:1.7;color:var(--sfp-b-body)}
 :root .sfp-sectie--tint{background:var(--sfp-b-tint3)}
 .sfp-sectie__binnen{width:100%;max-width:1180px;margin:0 auto;padding:0 24px;box-sizing:border-box}
+/* Astra zet in de page-builder-indeling max-width:none op kinderen van blokken in de inhoud; deze regel wint daarvan */
+:root body .entry-content .sfp-sectie>.sfp-sectie__binnen{max-width:1180px}
 :root :is(.sfp-sectie,.sfp-held) p{margin:0}
 :root :is(.sfp-sectie,.sfp-held) p+p{margin-top:12px}
 .sfp-sectie a{text-underline-offset:3px}
@@ -18,7 +20,8 @@
 .sfp-sectie figure{margin:0}
 
 /* koppen: font, gewicht, kapitalen, kleur en maat komen uit Astra en de netwerkafkapping; hier ruimte en regelafstand (8 px boven en onder, de netwerknorm voor koppen) */
-:root :is(.sfp-sectie,.sfp-held) :is(h1,h2,h3){margin:0;padding:8px 0;text-wrap:balance}
+:root :is(.sfp-sectie,.sfp-held) :is(h1,h2,h3){margin:0;padding:8px 0}
+:root .sfp-sectie :is(h1,h2,h3){text-wrap:balance}
 :root .sfp-sectie h1{line-height:1.12}
 :root .sfp-sectie h2{line-height:1.18}
 :root .sfp-sectie h3{line-height:1.25}
@@ -28,11 +31,12 @@
 :root .sfp-sectie__binnen>h2:first-child{margin:0 0 32px;max-width:26ch}
 :root .sfp-sectie__binnen>h2.has-text-align-center:first-child{max-width:none;margin-left:auto;margin-right:auto}
 :root .sfp-sectie__binnen>h2:first-child+p.has-text-align-center{max-width:40em;margin:0 auto 32px}
+:root .sfp-sectie__binnen>.sfp-kolommen+.sfp-kaart{margin-top:32px}
 @media (min-width:981px){:root .sfp-sectie__binnen>h2:first-child{max-width:none}}
 
 /* paginatitel over de volle breedte (boekpagina); deler 32 hoort bij de lengte van de huidige titel */
-:root .sfp-sectie__binnen>h1.is-style-sfp-paginatitel{margin:0 0 clamp(20px,3vw,40px);font-size:clamp(24px,1.8vw + 14px,38px);line-height:1.15}
-@media (min-width:981px){.sfp-sectie__binnen:has(>h1.is-style-sfp-paginatitel){container-type:inline-size}:root .sfp-sectie__binnen>h1.is-style-sfp-paginatitel{font-size:calc(100cqi / 32)}}
+:root .sfp-sectie__binnen>h1.is-style-sfp-paginatitel{margin:0 0 clamp(20px,3vw,40px);font-size:clamp(24px,1.8vw + 14px,38px)!important;line-height:1.15!important}
+@media (min-width:981px){.sfp-sectie__binnen:has(>h1.is-style-sfp-paginatitel){container-type:inline-size}:root .sfp-sectie__binnen>h1.is-style-sfp-paginatitel{font-size:calc(100cqi / 32)!important}}
 
 /* knoppen: Astra levert de knop (rol links en knoppen); radius 6 px is het SwS-besluit van 30-09-2026 */
 :root :is(.sfp-sectie,.sfp-held) .wp-block-buttons{display:flex;flex-wrap:wrap;gap:12px;margin:0}
@@ -73,7 +77,6 @@
 @media (max-width:600px){
   :root .sfp-sectie{padding:52px 0;font-size:16px}
   .sfp-sectie__binnen{padding:0 16px}
-  :root .sfp-sectie__binnen>h2:first-child{margin-bottom:24px}
   :root :is(.sfp-sectie,.sfp-held) .wp-block-buttons{flex-direction:column}
   :root :is(.sfp-sectie,.sfp-held) .wp-block-button{flex:0 0 auto;width:100%;margin:0}
   :root :is(.sfp-sectie,.sfp-held) .wp-block-button__link{width:100%;box-sizing:border-box}

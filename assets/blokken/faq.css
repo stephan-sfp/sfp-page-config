@@ -2,7 +2,7 @@
 :root .sfp-faq{max-width:820px;width:100%;margin:0}
 :root .sfp-sectie__binnen>h2.has-text-align-center~.sfp-faq{margin:0 auto}
 :root .sfp-faq__vraag{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);margin:0 0 12px}
-.sfp-faq__vraag summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;font-weight:700;font-size:17px;line-height:1.4;color:var(--sfp-b-primair)}
+.sfp-faq__vraag summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:26px;font-weight:700;font-size:17px;line-height:1.4;color:var(--sfp-b-primair)}
 .sfp-faq__vraag summary::-webkit-details-marker{display:none}
 .sfp-faq__vraag summary::after{content:"";flex:0 0 14px;width:14px;height:14px;background:linear-gradient(currentColor,currentColor) center/14px 2px no-repeat,linear-gradient(currentColor,currentColor) center/2px 14px no-repeat}
 .sfp-faq__vraag[open] summary::after{background:linear-gradient(currentColor,currentColor) center/14px 2px no-repeat}
