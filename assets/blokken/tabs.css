@@ -9,6 +9,5 @@
 :root .sfp-tabpaneel{padding:28px 0 0;display:grid;gap:14px;max-width:680px;margin:0 auto;text-align:center;justify-items:center}
 :root .sfp-tabpaneel p{font-size:18px;margin:0}
 :root .sfp-tabpaneel .is-style-sfp-groot{font-size:clamp(19px,.5vw + 15px,22px)}
-:root .sfp-tabpaneel .is-style-sfp-pijl{font-size:15px}
+:root .sfp-tabpaneel .is-style-sfp-pijl{font-size:18px}
 .sfp-tabpaneel[hidden]{display:none}
-@media (max-width:600px){:root .sfp-tablijst [role=tab]{padding:16px 4px 12px;font-size:15px}}

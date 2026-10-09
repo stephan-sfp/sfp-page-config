@@ -6,6 +6,7 @@
  */
 :root .sfp-held{background:var(--sfp-b-primair);color:var(--sfp-b-wit);position:relative;isolation:isolate;overflow:hidden;padding:0;margin:0;width:100%;max-width:none}
 .sfp-held__binnen{width:100%;max-width:1180px;margin:0 auto;padding:44px 24px 0;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"kop" "intro" "foto" "knoppen";align-content:center}
+:root body .entry-content .sfp-held>.sfp-held__binnen{max-width:1180px}
 :root .sfp-held__binnen>h1{grid-area:kop;color:var(--sfp-b-wit);padding:0 0 8px;position:relative;z-index:2}
 :root .sfp-held__binnen>p{grid-area:intro;margin:16px 0 0;font-size:20px;line-height:1.55;max-width:30em;color:var(--sfp-b-wit);opacity:.9;position:relative;z-index:2}
 .sfp-held h1,.sfp-held__binnen>p{text-shadow:0 2px 18px rgba(0,0,0,.45)}
@@ -16,7 +17,7 @@
 
 @media (max-width:980px){
   :root .sfp-held__binnen>p{display:none}
-  :root .sfp-held__binnen>h1{padding-bottom:32px}
+  :root .sfp-held__binnen>h1{padding-bottom:12px}
 }
 
 @media (min-width:981px){

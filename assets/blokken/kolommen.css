@@ -16,6 +16,7 @@
 :root .sfp-kolommen--boeking>:first-child{background:var(--sfp-b-tint2);padding:32px;row-gap:18px}
 :root .sfp-kolommen--boeking>:not(:first-child){padding:28px 32px;display:block}
 .sfp-kolommen--boeking .latepoint-book-form-wrapper{margin:0}
+:root .sfp-kolommen--boeking .sfp-kolom>p+p{margin-top:0}
 :root .sfp-kolommen--breed-smal{gap:28px;align-items:center}
 .sfp-kolommen--breed-smal .sfp-lijst{justify-self:start;width:100%}
 

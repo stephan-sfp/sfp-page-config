@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.11.1] - 2026-10-09
+
+### Gerepareerd
+Bouwstenen gelijkgetrokken met de live SwS-pagina's na de proef met conceptkopieën (uitgelogd gemeten, desktop 1440 en mobiel 390).
+- Breedte: Astra zet in de page-builder-indeling `max-width:none` op kinderen van blokken in de inhoud. Sectie en held vielen daardoor over de volle schermbreedte; de binnenkant blijft nu op 1180 px.
+- Held: kop zonder `text-wrap:balance` (zoals live); op mobiel 12 px in plaats van 32 px onder de kop, zodat de foto op dezelfde plek staat.
+- Sectiekop: ook op mobiel 32 px ruimte eronder (was 24 px).
+- Pakketkaart: opmaak hangt nu aan het getal in de kaart in plaats van aan de variant vlak, zodat de donkere kaart dezelfde prijs, regelafstand en dunne bovenrand krijgt. Geen extra 12 px boven alinea's in een kaart.
+- Kolommen en kaart: 32 px ruimte als een kaart direct onder een rij kolommen staat (boekpagina). Geen extra ruimte boven de naam met portret in de boekingskaart.
+- Lijst: wint van de Customizer-regel `.entry-content ul.wp-block-list` (16 px inspringing en ondermarge); regels-lijst over de volle breedte zoals live.
+- Tabs: pijllink in een tabblad 18 px; op mobiel dezelfde tabmaat als op desktop (labels vielen anders over de rand).
+- FAQ: 26 px tussen vraag en plusteken, zodat de vragen op mobiel net zo omlopen als live.
+- Paginatitel: grootte en regelafstand met `!important`, omdat de Customizer-CSS koppen in `.site-content` met `!important` op 34 px zet.
+- Vergelijkingstabel: geen woordafbreking midden in een woord op mobiel.
+
 ## [2.11.0] - 2026-10-09
 
 ### Toegevoegd
