@@ -1,0 +1,46 @@
+/*
+ * Bouwstenen: uitklap. Groot (dienstpagina's), compact (Read more) en kaart
+ * (vergelijkingstabel). Werkt zonder JavaScript.
+ */
+.sfp-uitklap summary{list-style:none;cursor:pointer}
+.sfp-uitklap summary::-webkit-details-marker{display:none}
+.sfp-uitklap__inhoud p{margin:0}
+
+/* groot */
+:root .sfp-uitklap--groot{border-top:2px solid var(--sfp-b-secundair);max-width:820px}
+.sfp-uitklap--groot .sfp-uitklap__regel{border-bottom:1px solid var(--sfp-b-lijn-sterk)}
+.sfp-uitklap--groot summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;font-family:var(--sfp-b-kop);font-weight:700;font-size:clamp(19px,.8vw + 15px,24px);line-height:1.35;color:var(--sfp-b-primair)}
+.sfp-uitklap--groot summary::after{content:"+";flex:0 0 34px;height:34px;border-radius:50%;border:1px solid var(--sfp-b-lijn-sterk);display:grid;place-items:center;font-family:inherit;font-weight:400;font-size:22px;line-height:1}
+.sfp-uitklap--groot .sfp-uitklap__regel[open] summary::after{content:"\2212";background:var(--sfp-b-secundair);border-color:var(--sfp-b-secundair);color:var(--sfp-b-wit)}
+:root .sfp-uitklap--groot .sfp-uitklap__inhoud{padding:0 50px 24px 0;font-size:18px;max-width:720px}
+@media (min-width:981px){:root .sfp-uitklap--groot{max-width:60%}}
+
+/* compact: Read more */
+.sfp-uitklap--compact summary{display:inline-flex;align-items:center;gap:8px;font-family:var(--sfp-b-kop);font-weight:700;font-size:14px;line-height:1;letter-spacing:.05em;color:var(--sfp-b-primair);margin-top:4px}
+.sfp-uitklap--compact summary::before{content:"+";width:22px;height:22px;border-radius:50%;background:var(--sfp-b-tint2);display:grid;place-items:center;font-family:inherit;font-weight:700;font-size:15px;line-height:1}
+.sfp-uitklap--compact .sfp-uitklap__regel[open] summary::before{content:"\2212";background:var(--sfp-b-secundair);color:var(--sfp-b-wit)}
+:root .sfp-uitklap--compact .sfp-uitklap__inhoud>*{margin-top:12px}
+
+/* kaart: vergelijkingstabel */
+:root .sfp-uitklap--kaart{margin:18px 0 0}
+.sfp-uitklap--kaart .sfp-uitklap__regel{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);min-width:0;box-shadow:0 14px 40px rgba(0,0,0,.07)}
+.sfp-uitklap--kaart summary{padding:18px 22px;display:flex;justify-content:space-between;gap:16px;align-items:center;font-weight:700;font-size:17px;line-height:1.4;color:var(--sfp-b-primair)}
+.sfp-uitklap--kaart summary:focus,.sfp-uitklap--kaart summary:focus-visible{outline:none}
+.sfp-uitklap--kaart summary::after{content:"+";flex:0 0 32px;height:32px;border-radius:50%;border:1px solid var(--sfp-b-lijn-sterk);display:grid;place-items:center;font-weight:400;font-size:20px;line-height:1}
+.sfp-uitklap--kaart .sfp-uitklap__regel[open] summary::after{content:"\2212"}
+.sfp-uitklap__sub{display:block;font-weight:400;font-size:14px;line-height:1.5;color:var(--sfp-b-body);margin-top:4px}
+:root .sfp-uitklap--kaart .wp-block-table{overflow-x:auto;padding:0 22px;margin:0}
+:root .sfp-uitklap--kaart table{width:100%;border-collapse:collapse;font-size:15px;min-width:520px;margin:0;table-layout:auto}
+:root .sfp-uitklap--kaart :is(th,td){text-align:left;padding:10px 12px;border:0;border-bottom:1px solid var(--sfp-b-lijn);vertical-align:top;background:none}
+:root .sfp-uitklap--kaart thead{border:0}
+:root .sfp-uitklap--kaart thead th{color:var(--sfp-b-primair);font-weight:700}
+:root .sfp-uitklap--kaart tbody th{font-weight:700;color:var(--sfp-b-secundair)}
+:root .sfp-uitklap--kaart .sfp-uitklap__inhoud>p{padding:12px 22px 20px;font-size:14px;margin:0}
+
+@media (max-width:600px){
+  :root .sfp-uitklap--groot .sfp-uitklap__inhoud{padding-right:0}
+  .sfp-uitklap--groot summary{padding:18px 0}
+  :root .sfp-uitklap--kaart .wp-block-table{padding:0 10px}
+  :root .sfp-uitklap--kaart table{min-width:0;font-size:13px}
+  :root .sfp-uitklap--kaart :is(th,td){padding:9px 5px}
+}

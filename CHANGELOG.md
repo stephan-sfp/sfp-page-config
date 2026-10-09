@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.11.0] - 2026-10-09
+
+### Toegevoegd
+- Bouwstenen: negen dynamische Gutenberg-blokken in `includes/blokken.php`, met CSS per blok in `assets/blokken/` en een editorscript zonder buildstap (`assets/blokken/editor.js`). Bedoeld om pagina's en straks artikelen zonder Spectra te bouwen; eerst ingezet op SwS. Netwerkbreed beschikbaar, maar zonder gebruik op een pagina verandert er aan de voorkant niets.
+  - `sfp/sectie` (wit of tint, anker), `sfp/held` (hero, variant recht of breed), `sfp/kolommen` met `sfp/kolom` (twee, drie, tekst-beeld, tekst-boek, boeking, breed-smal), `sfp/kaart` (standaard, vlak, donker; ruim, smal; hele kaart klikbaar met een link), `sfp/stappen` met `sfp/stap`, `sfp/uitklap` met `sfp/uitklap-regel` (groot, compact, kaart; optioneel één tegelijk open), `sfp/tabs` met `sfp/tab`, `sfp/lijst` (vink, regels, letters; inhoud is een gewone lijst) en `sfp/faq` met `sfp/faq-vraag`.
+  - Blokstijlen op WordPress-blokken: alinea (intro, groot, pijllink, bovenschrift, getal, prijs, naam met portret, mailregel, klein), kop (paginatitel), afbeelding (afgerond, boekomslag), knop (licht, tweede) en kolom (wachtlijst).
+  - Opmaak overgenomen uit het SwS-snippet "Vormgeving: kernpagina's" (stand 9 oktober 2026). Kleuren via de rolvariabelen `--sfp-rol-*` met de Astra-waarden van de site als terugval, fonts via Astra en `--ux-display-font`/`--ux-heading-font`. Geen merkwaarden in code.
+  - CSS alleen voor de blokken die op de pagina staan, inline in de head (`id="sfp-blokken"`), uitgesloten van WP Rocket Remove Unused CSS. Staat een blok buiten de hoofdinhoud, dan plaatst het zijn CSS zelf.
+  - FAQ: één FAQPage-schema voor alle FAQ-blokken op een pagina, opgebouwd uit dezelfde tekst als de zichtbare vragen. Een link naar `#vraag` opent die vraag.
+  - Script (tabs en FAQ-ankers) alleen op pagina's met tabs of FAQ, uitgesloten van WP Rocket Delay JS.
+
 ## [2.10.0] - 2026-10-08
 
 ### Toegevoegd

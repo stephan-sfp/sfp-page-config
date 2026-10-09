@@ -1,0 +1,58 @@
+/*
+ * Bouwstenen: kolommen en kolom. Onder 981 px altijd één kolom.
+ * Indelingen: twee, drie, tekst-beeld, tekst-boek, boeking, breed-smal.
+ * Stijl wachtlijst: e-mailveld en knop van SureForms op één regel.
+ */
+:root .sfp-kolommen{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;width:100%;align-items:stretch;margin:0}
+.sfp-kolommen>*{min-width:0}
+:root .sfp-kolom{display:grid;row-gap:16px;align-content:start;min-width:0;margin:0}
+.sfp-kolom>h2{margin-bottom:6px}
+
+:root .sfp-kolommen--tekst-beeld{gap:clamp(28px,4vw,56px);align-items:center}
+:root .sfp-kolommen--tekst-boek{gap:clamp(32px,6vw,96px);align-items:center}
+:root .sfp-kolommen--tekst-boek>.sfp-kolom{row-gap:18px;max-width:620px}
+:root .sfp-kolommen--boeking{border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);overflow:hidden;background:var(--sfp-b-wit);gap:0}
+:root .sfp-kolommen--boeking>*{align-self:stretch;height:auto}
+:root .sfp-kolommen--boeking>:first-child{background:var(--sfp-b-tint2);padding:32px;row-gap:18px}
+:root .sfp-kolommen--boeking>:not(:first-child){padding:28px 32px;display:block}
+.sfp-kolommen--boeking .latepoint-book-form-wrapper{margin:0}
+:root .sfp-kolommen--breed-smal{gap:28px;align-items:center}
+.sfp-kolommen--breed-smal .sfp-lijst{justify-self:start;width:100%}
+
+@media (min-width:981px){
+  :root .sfp-kolommen--twee{grid-template-columns:repeat(2,minmax(0,1fr))}
+  :root .sfp-kolommen--drie{grid-template-columns:repeat(3,minmax(0,1fr))}
+  :root .sfp-kolommen--tekst-beeld{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+  :root .sfp-kolommen--tekst-boek{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
+  :root .sfp-kolommen--boeking{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
+  :root .sfp-kolommen--breed-smal{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:56px}
+}
+@media (max-width:980px){
+  :root .sfp-kolommen--tekst-boek>.is-style-sfp-omslag{order:-1;justify-self:center;width:min(60%,220px)}
+  :root .sfp-kolommen--breed-smal>.sfp-kolom:first-child{display:contents}
+  :root .sfp-kolommen--breed-smal .is-style-sfp-wachtlijst{order:2;margin-top:0}
+}
+@media (max-width:600px){
+  :root .sfp-kolommen--boeking>:first-child,:root .sfp-kolommen--boeking>:not(:first-child){padding:22px}
+}
+
+/* wachtlijst: e-mailveld en knop op één lijn, even hoog; veld altijd wit */
+:root .is-style-sfp-wachtlijst{display:block;margin-top:6px;padding:0;width:100%}
+:root .is-style-sfp-wachtlijst .srfm-form-container{padding:0!important;background:transparent!important}
+:root .is-style-sfp-wachtlijst .srfm-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+.is-style-sfp-wachtlijst .srfm-form>.srfm-block,.is-style-sfp-wachtlijst .srfm-submit-container{margin:0!important;padding:0!important}
+.is-style-sfp-wachtlijst .srfm-email-block-wrap{flex:1 1 220px;min-width:0}
+.is-style-sfp-wachtlijst .srfm-hidden-block{display:none!important}
+.is-style-sfp-wachtlijst .srfm-common-error-message{flex:1 1 100%}
+.is-style-sfp-wachtlijst .srfm-block-label{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:root .is-style-sfp-wachtlijst .srfm-input-email.srfm-input-email{margin:0!important;height:50px;min-height:50px;box-sizing:border-box;border-radius:var(--sfp-b-r-knop)!important;background:var(--sfp-b-wit)!important}
+.is-style-sfp-wachtlijst .srfm-submit-container{flex:0 0 auto}
+:root .is-style-sfp-wachtlijst #srfm-submit-btn{height:50px;min-height:50px;padding:12px 22px;box-sizing:border-box}
+:root .sfp-kolommen--breed-smal .is-style-sfp-wachtlijst .srfm-email-block-wrap{flex-basis:220px}
+:root .sfp-kolommen--breed-smal .is-style-sfp-wachtlijst .srfm-submit-container.srfm-submit-container{flex:1 1 auto}
+:root .sfp-kolommen--breed-smal .is-style-sfp-wachtlijst .srfm-submit-container .wp-block-button,:root .sfp-kolommen--breed-smal .is-style-sfp-wachtlijst #srfm-submit-btn{width:100%!important}
+@media (min-width:601px){:root .is-style-sfp-wachtlijst .srfm-submit-container,:root .is-style-sfp-wachtlijst .srfm-submit-container .wp-block-button,:root .is-style-sfp-wachtlijst #srfm-submit-btn{width:auto!important;max-width:none}}
+@media (max-width:600px){.is-style-sfp-wachtlijst .srfm-submit-container,.is-style-sfp-wachtlijst .srfm-submit-container .wp-block-button,:root .is-style-sfp-wachtlijst #srfm-submit-btn{flex:1 1 100%;width:100%}}
+
+/* knop in SureForms in de stijl van de site */
+.sfp-sectie .srfm-form-container button.wp-block-button__link,.sfp-sectie .srfm-form-container #srfm-submit-btn{font-family:var(--sfp-b-kop)!important;font-weight:900!important;text-transform:uppercase;letter-spacing:.04em;border-radius:var(--sfp-b-r-knop)!important}
