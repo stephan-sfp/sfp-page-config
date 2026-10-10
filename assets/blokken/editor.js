@@ -451,4 +451,101 @@
 			veld( 'anker', 'Hoofdstuk met het antwoord', 'Het anker van de H2, zonder #. Leeg: geen verwijzing.' ),
 		] );
 	} );
+
+	/*
+	 * Rustig ritme in artikelen: tussen twee UX-elementen horen minstens
+	 * drie alinea's. Staan er twee te dicht op elkaar, dan verschijnt een
+	 * waarschuwing boven het bericht. Publiceren blijft mogelijk.
+	 *
+	 * Alinea: een gevulde paragraaf of een lijst. Koppen tellen niet mee en
+	 * onderbreken de telling niet. UX-element: de eigen blokken (samenvatting,
+	 * kader, citaat, inzicht, lees ook, uitklap, kolommen, FAQ) en beeld,
+	 * tabel, citaat en video uit WordPress.
+	 */
+	( function () {
+		var data = wp.data;
+		if ( ! data || ! data.subscribe ) {
+			return;
+		}
+		var MINIMUM = 3;
+		var MELDING = 'sfp-ux-ritme';
+		var TEKST = { 'core/list': 1, 'sfp/lijst': 1 };
+		var NEUTRAAL = { 'sfp/warming-up': 1 };
+		var KERN_UX = { 'core/image': 1, 'core/gallery': 1, 'core/table': 1, 'core/quote': 1, 'core/pullquote': 1, 'core/video': 1, 'core/embed': 1, 'core/media-text': 1, 'core/cover': 1 };
+
+		function soort( blok ) {
+			var naam = blok.name || '';
+			if ( 'core/paragraph' === naam ) {
+				var inhoud = blok.attributes ? blok.attributes.content : '';
+				var tekst = inhoud && inhoud.toString ? inhoud.toString() : '';
+				return tekst.replace( /<[^>]*>/g, '' ).trim() ? 'tekst' : 'neutraal';
+			}
+			if ( TEKST[ naam ] ) { return 'tekst'; }
+			if ( NEUTRAAL[ naam ] ) { return 'neutraal'; }
+			if ( KERN_UX[ naam ] || 0 === naam.indexOf( 'sfp/' ) || 0 === naam.indexOf( 'presto-player/' ) ) { return 'ux'; }
+			return 'neutraal';
+		}
+		function titel( blok ) {
+			var type = wp.blocks.getBlockType( blok.name );
+			return type && type.title ? type.title : blok.name;
+		}
+		function teDicht( blokken ) {
+			var fouten = [], vorige = null, alineas = 0;
+			blokken.forEach( function ( blok ) {
+				var s = soort( blok );
+				if ( 'tekst' === s ) { alineas++; return; }
+				if ( 'ux' !== s ) { return; }
+				if ( vorige && alineas < MINIMUM ) {
+					fouten.push( { id: blok.clientId, tekst: titel( blok ) + ' na ' + titel( vorige ) + ' (' + alineas + ( 1 === alineas ? ' alinea' : ' alinea’s' ) + ' ertussen)' } );
+				}
+				vorige = blok;
+				alineas = 0;
+			} );
+			return fouten;
+		}
+
+		var laatsteBlokken = null, laatsteSleutel = '';
+		data.subscribe( function () {
+			var editor, blokken;
+			try {
+				editor = data.select( 'core/editor' );
+				if ( ! editor || ! editor.getCurrentPostType || 'post' !== editor.getCurrentPostType() ) {
+					return;
+				}
+				blokken = data.select( 'core/block-editor' ).getBlocks();
+			} catch ( fout ) {
+				return;
+			}
+			if ( blokken === laatsteBlokken ) {
+				return;
+			}
+			laatsteBlokken = blokken;
+			var fouten = teDicht( blokken );
+			var sleutel = fouten.map( function ( f ) { return f.tekst; } ).join( '|' );
+			if ( sleutel === laatsteSleutel ) {
+				return;
+			}
+			laatsteSleutel = sleutel;
+			var meldingen = data.dispatch( 'core/notices' );
+			if ( ! meldingen ) {
+				return;
+			}
+			if ( ! fouten.length ) {
+				meldingen.removeNotice( MELDING );
+				return;
+			}
+			var eerste = fouten[ 0 ].id;
+			meldingen.createWarningNotice(
+				'Rustig ritme: tussen twee UX-elementen horen minstens drie alinea’s. Te dicht op elkaar: ' + fouten.map( function ( f ) { return f.tekst; } ).join( '; ' ) + '.',
+				{
+					id: MELDING,
+					isDismissible: true,
+					actions: [ {
+						label: 'Ga naar het eerste',
+						onClick: function () { data.dispatch( 'core/block-editor' ).selectBlock( eerste ); },
+					} ],
+				}
+			);
+		} );
+	}() );
 }( window.wp ) );

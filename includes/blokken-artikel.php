@@ -218,7 +218,7 @@ function sfp_page_config_deelkaart_voet() {
     $auteur = (int) get_post_field( 'post_author', get_the_ID() );
     $naam   = $auteur ? get_the_author_meta( 'display_name', $auteur ) : get_bloginfo( 'name' );
     $domein = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
-    $foto   = $auteur ? get_avatar( $auteur, 64, '', '', array( 'loading' => 'lazy' ) ) : '';
+    $foto   = $auteur ? get_avatar( $auteur, 32, '', '', array( 'loading' => 'lazy' ) ) : '';
     return '<span class="sfp-deelkaart__voet">' . $foto . '<span><b>' . esc_html( $naam ) . '</b>' . esc_html( $domein ) . '</span></span>';
 }
 
@@ -322,7 +322,7 @@ function sfp_page_config_render_citaat( $attrs, $content ) {
         $foto = '';
         if ( ! isset( $attrs['portret'] ) || $attrs['portret'] ) {
             $auteur = (int) get_post_field( 'post_author', get_the_ID() );
-            $foto   = $auteur ? get_avatar( $auteur, 72, '', '', array( 'loading' => 'lazy' ) ) : '';
+            $foto   = $auteur ? get_avatar( $auteur, 36, '', '', array( 'loading' => 'lazy' ) ) : '';
         }
         $voet = '<footer>' . $foto . '<span>' . $bijschrift . '</span></footer>';
     }
@@ -353,7 +353,9 @@ function sfp_page_config_render_inzicht( $attrs, $content ) {
     $beeld   = function_exists( 'sfp_page_config_deelbeeld_voor' ) ? sfp_page_config_deelbeeld_voor( $post_id, 'inzicht', $nr, sfp_page_config_deelbeeld_controle( $kaal ) ) : null;
 
     if ( $beeld ) {
-        $kaart = '<img class="sfp-inzicht__beeld" src="' . esc_url( $beeld['url'] ) . '" width="' . (int) $beeld['breedte'] . '" height="' . (int) $beeld['hoogte'] . '" loading="lazy" decoding="async" alt="' . esc_attr( $label . ': ' . $kaal ) . '">';
+        // In het artikel de lichtere versie waar die past; het JPG op volle maat blijft voor delen en downloaden.
+        $srcset = ! empty( $beeld['klein'] ) ? ' srcset="' . esc_url( $beeld['klein'] ) . ' 800w, ' . esc_url( $beeld['url'] ) . ' ' . (int) $beeld['breedte'] . 'w" sizes="(max-width: 740px) calc(100vw - 32px), 680px"' : '';
+        $kaart  = '<img class="sfp-inzicht__beeld" src="' . esc_url( $beeld['url'] ) . '"' . $srcset . ' width="' . (int) $beeld['breedte'] . '" height="' . (int) $beeld['hoogte'] . '" loading="lazy" decoding="async" alt="' . esc_attr( $label . ': ' . $kaal ) . '">';
     } else {
         $kaart = '<div class="sfp-deelkaart sfp-deelkaart--liggend" role="img" aria-label="' . esc_attr( $label . ': ' . $kaal ) . '"><span class="sfp-deelkaart__label">' . esc_html( $label ) . '</span><p class="sfp-deelkaart__tekst">' . $tekst . '</p>' . sfp_page_config_deelkaart_voet() . '</div>';
     }

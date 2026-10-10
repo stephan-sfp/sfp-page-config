@@ -4,6 +4,28 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.12.0-beta.2] - 2026-10-10
+
+Tweede proefversie (pre-release) van de artikelopmaak, met de opmerkingen van Stephan op de proef op SwS en de punten die de proef zelf opleverde.
+
+### Gewijzigd
+- **Affiliate-uitleg boven het vervolgblok.** Het uitlegblok (`#affiliate`) staat nu direct onder de tekst, boven de call-to-actions, en niet meer eronder.
+- **Hoofdstukbalk: alleen de titel met een pijltje.** De pijlen naar het vorige en volgende hoofdstuk zijn vervallen. Een tik op de balk opent de lijst met hoofdstukken. De teksten `vorig` en `volgend` en de iconen `links` en `rechts` zijn verwijderd.
+- **Een geopend paneel schuift in beeld.** Opent de lezer Delen, Bronnen, de warming-up of het deelbeeld van de samenvatting en valt het paneel deels buiten beeld, dan schuift de pagina net genoeg op tot het hele paneel te zien is. Nooit verder dan tot de rij met de knop bovenaan staat; de hoofdstukbalk telt mee. Past het paneel al, dan gebeurt er niets.
+- **Rustig ritme: minstens drie alinea's tussen twee UX-elementen.**
+  - De promokaart in de tekst (telefoon en tablet) houdt zich aan die regel: zo vroeg mogelijk na de eerste H2, met minstens drie alinea's sinds het vorige UX-element en minstens drie tot het volgende. Is er geen zulke plek, dan staat de kaart onder de tekst. Voorheen: altijd na de eerste alinea van het eerste hoofdstuk.
+  - De editor waarschuwt bij berichten als twee UX-elementen minder dan drie alinea's uit elkaar staan, met een knop naar het eerste blok dat te dicht staat. Publiceren blijft mogelijk. Een alinea is een gevulde paragraaf of een lijst; koppen tellen niet mee en onderbreken de telling niet.
+- Tooltips in een artikel hebben weer een stippellijn; op sites waar SFP Tooltip zelf geen lijn zet, was niet te zien waar een tooltip zat.
+- Kleinere profielfoto's in de kopkaart, de auteurskaart en het citaat (op maat van de weergave).
+- Het inzichtbeeld wordt ook als WebP van 800 px breed gemaakt en via `srcset` aangeboden.
+
+### Opgelost
+- `basis.css` stond op pagina's met een sectie twee keer in de head.
+- Bij een concept zonder publicatiedatum bleef de datum in de kopkaart leeg.
+
+### Terugdraaien
+- Terug naar 2.12.0-beta.1. De deelbeelden van ontwerp 2 blijven staan en worden bij opslaan opnieuw gemaakt.
+
 ## [2.12.0-beta.1] - 2026-10-10
 
 Proefversie (pre-release) voor de artikelopmaak. Bedoeld voor één site tegelijk; sites op het gewone updatekanaal krijgen deze versie niet aangeboden.

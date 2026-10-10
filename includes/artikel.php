@@ -483,9 +483,105 @@ function sfp_page_config_artikel_promokaart( $variant = 'zij' ) {
 }
 
 /**
- * Zet de promokaart in de tekst: na de eerste alinea van het eerste
- * hoofdstuk. Alleen zichtbaar op telefoon en tablet, waar de rechterkolom
- * ontbreekt.
+ * De bovenste laag van de getoonde inhoud, in volgorde: per onderdeel de
+ * soort (tekst, ux, kop of neutraal) en de plek waar het eindigt.
+ *
+ * Tekst is een gevulde alinea of een lijst. Een kop telt niet mee. Alles
+ * wat verder zichtbaar is (blok, kaart, beeld, tabel, citaat) is een
+ * UX-element.
+ *
+ * @since 2.12.0
+ *
+ * @param  string $html Getoonde inhoud.
+ * @return array<int, array{soort:string, niveau:int, eind:int}>
+ */
+function sfp_page_config_artikel_bovenlaag( $html ) {
+    $leeg   = array( 'br', 'hr', 'img', 'input', 'meta', 'link', 'source', 'wbr', 'col', 'area', 'embed', 'track' );
+    $delen  = array();
+    $diepte = 0;
+    $open   = null;
+    if ( ! preg_match_all( '#<!--.*?-->|<(script|style)\b[^>]*>.*?</\1\s*>|<(/?)([a-zA-Z][a-zA-Z0-9-]*)\b((?:[^>"\']|"[^"]*"|\'[^\']*\')*)>#s', $html, $treffers, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
+        return $delen;
+    }
+    foreach ( $treffers as $t ) {
+        $eind = $t[0][1] + strlen( $t[0][0] );
+        if ( ! isset( $t[3] ) || '' === $t[3][0] ) {
+            // Commentaar, script of stijl: telt niet mee.
+            continue;
+        }
+        $tag = strtolower( $t[3][0] );
+        if ( '/' === $t[2][0] ) {
+            if ( $diepte > 0 ) {
+                --$diepte;
+                if ( 0 === $diepte && $open ) {
+                    $open['html'] = substr( $html, $open['begin'], $eind - $open['begin'] );
+                    $delen[]      = sfp_page_config_artikel_bovenlaag_deel( $open, $eind );
+                    $open         = null;
+                }
+            }
+            continue;
+        }
+        $zelf = in_array( $tag, $leeg, true ) || '/' === substr( rtrim( $t[4][0] ), -1 );
+        if ( 0 === $diepte ) {
+            $open = array(
+                'tag'   => $tag,
+                'attr'  => $t[4][0],
+                'begin' => $t[0][1],
+                'html'  => '',
+            );
+            if ( $zelf ) {
+                $delen[] = sfp_page_config_artikel_bovenlaag_deel( $open, $eind );
+                $open    = null;
+            }
+        }
+        if ( ! $zelf ) {
+            ++$diepte;
+        }
+    }
+    return $delen;
+}
+
+/**
+ * Bepaal de soort van één onderdeel uit de bovenste laag.
+ *
+ * @since 2.12.0
+ *
+ * @param  array $deel Tag, attributen en HTML.
+ * @param  int   $eind Plek waar het onderdeel eindigt.
+ * @return array{soort:string, niveau:int, eind:int}
+ */
+function sfp_page_config_artikel_bovenlaag_deel( array $deel, $eind ) {
+    $tag    = $deel['tag'];
+    $soort  = 'ux';
+    $niveau = 0;
+    if ( preg_match( '/^h([1-6])$/', $tag, $m ) ) {
+        $soort  = 'kop';
+        $niveau = (int) $m[1];
+    } elseif ( 'p' === $tag ) {
+        $tekst = trim( str_replace( "\xc2\xa0", ' ', wp_strip_all_tags( $deel['html'] ) ) );
+        if ( '' !== $tekst ) {
+            $soort = 'tekst';
+        } elseif ( false === stripos( $deel['html'], '<img' ) ) {
+            $soort = 'neutraal';
+        }
+    } elseif ( 'ul' === $tag || 'ol' === $tag ) {
+        $soort = 'tekst';
+    } elseif ( in_array( $tag, array( 'br', 'hr', 'link', 'meta', 'input' ), true ) || false !== strpos( $deel['attr'], 'wp-block-spacer' ) ) {
+        $soort = 'neutraal';
+    }
+    return array(
+        'soort'  => $soort,
+        'niveau' => $niveau,
+        'eind'   => (int) $eind,
+    );
+}
+
+/**
+ * Zet de promokaart in de tekst, zo vroeg mogelijk na de eerste H2 en met
+ * rustig ritme: minstens drie alinea's sinds het vorige UX-element en
+ * minstens drie tot het volgende. Is er geen zulke plek, dan komt de kaart
+ * onder de tekst. Alleen zichtbaar op telefoon en tablet, waar de
+ * rechterkolom ontbreekt.
  *
  * @param  string $html  Getoonde inhoud.
  * @param  string $kaart HTML van de kaart.
@@ -495,11 +591,46 @@ function sfp_page_config_artikel_promo_in_tekst( $html, $kaart ) {
     if ( '' === $kaart ) {
         return $html;
     }
-    if ( preg_match( '#</h2>\s*<p\b[^>]*>.*?</p>#is', $html, $m, PREG_OFFSET_CAPTURE ) ) {
-        $pos = $m[0][1] + strlen( $m[0][0] );
-        return substr( $html, 0, $pos ) . $kaart . substr( $html, $pos );
+    $minimum = 3;
+    $delen   = sfp_page_config_artikel_bovenlaag( $html );
+    $aantal  = count( $delen );
+
+    // Per onderdeel: hoeveel alinea's volgen er tot het volgende UX-element.
+    $erna     = array_fill( 0, $aantal, 0 );
+    $ux_volgt = array_fill( 0, $aantal, false );
+    $teller   = 0;
+    $ux       = false;
+    for ( $i = $aantal - 1; $i >= 0; $i-- ) {
+        $erna[ $i ]     = $teller;
+        $ux_volgt[ $i ] = $ux;
+        if ( 'tekst' === $delen[ $i ]['soort'] ) {
+            ++$teller;
+        } elseif ( 'ux' === $delen[ $i ]['soort'] ) {
+            $teller = 0;
+            $ux     = true;
+        }
     }
-    return $html;
+
+    $ervoor = 0;
+    $h2     = false;
+    foreach ( $delen as $i => $deel ) {
+        if ( 'kop' === $deel['soort'] ) {
+            $h2 = $h2 || 2 === $deel['niveau'];
+            continue;
+        }
+        if ( 'ux' === $deel['soort'] ) {
+            $ervoor = 0;
+            continue;
+        }
+        if ( 'tekst' !== $deel['soort'] ) {
+            continue;
+        }
+        ++$ervoor;
+        if ( $h2 && $ervoor >= $minimum && ( $erna[ $i ] >= $minimum || ! $ux_volgt[ $i ] ) ) {
+            return substr( $html, 0, $deel['eind'] ) . $kaart . substr( $html, $deel['eind'] );
+        }
+    }
+    return $html . $kaart;
 }
 
 /**
@@ -577,13 +708,20 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     $foto = '';
     $wie  = '';
     if ( $auteur && '' !== (string) $naam ) {
-        $foto = get_avatar( $auteur, 88, '', $naam, array( 'class' => 'sfp-art-kop__foto', 'loading' => 'eager' ) );
+        $foto = get_avatar( $auteur, 44, '', $naam, array( 'class' => 'sfp-art-kop__foto', 'loading' => 'eager' ) );
         $wie  = '<div class="sfp-art-kop__naam">' . sprintf( esc_html( $t( 'door' ) ), '<a href="' . esc_url( sfp_page_config_artikel_auteur_url( $auteur ) ) . '">' . esc_html( $naam ) . '</a>' )
             . ( '' !== $rol ? '<span class="sfp-art-kop__rol">' . esc_html( $rol ) . '</span>' : '' ) . '</div>';
     }
 
-    $gepubliceerd = get_post_time( 'U', true, $post );
-    $bijgewerkt   = get_post_modified_time( 'U', true, $post );
+    // get_post_timestamp() werkt ook bij een concept, dat nog geen GMT-datum heeft.
+    $gepubliceerd = (int) get_post_timestamp( $post, 'date' );
+    $bijgewerkt   = (int) get_post_timestamp( $post, 'modified' );
+    if ( ! $gepubliceerd ) {
+        $gepubliceerd = time();
+    }
+    if ( ! $bijgewerkt ) {
+        $bijgewerkt = $gepubliceerd;
+    }
     $meta         = '<span><time datetime="' . esc_attr( wp_date( 'c', $gepubliceerd ) ) . '">' . esc_html( sprintf( $t( 'gepubliceerd' ), wp_date( 'j M Y', $gepubliceerd ) ) ) . '</time></span>';
     if ( wp_date( 'Ymd', $bijgewerkt ) > wp_date( 'Ymd', $gepubliceerd ) ) {
         $meta .= '<span><time datetime="' . esc_attr( wp_date( 'c', $bijgewerkt ) ) . '">' . esc_html( sprintf( $t( 'bijgewerkt' ), wp_date( 'j M Y', $bijgewerkt ) ) ) . '</time></span>';
@@ -689,7 +827,8 @@ function sfp_page_config_artikel_zijkolom( $post, array $hoofdstukken ) {
 }
 
 /**
- * De hoofdstukbalk voor telefoon en tablet: vorig, titel met lijst, volgend.
+ * De hoofdstukbalk voor telefoon en tablet: de titel van het hoofdstuk met
+ * een pijltje; een tik opent de lijst met hoofdstukken.
  *
  * @param  array $hoofdstukken Hoofdstukken.
  * @return string
@@ -706,9 +845,7 @@ function sfp_page_config_artikel_balk( array $hoofdstukken ) {
     return '<nav class="sfp-art-balk" id="sfp-art-balk" aria-label="' . esc_attr( $t( 'hoofdstukken' ) ) . '" hidden>'
         . '<ol class="sfp-art-balk__lijst" id="sfp-art-balk-lijst" hidden>' . $items . '</ol>'
         . '<div class="sfp-art-balk__rij">'
-        . '<button type="button" class="sfp-art-balk__pijl" data-sfp-stap="-1" aria-label="' . esc_attr( $t( 'vorig' ) ) . '">' . sfp_page_config_artikel_icoon( 'links' ) . '</button>'
         . '<button type="button" class="sfp-art-balk__titel" aria-expanded="false" aria-controls="sfp-art-balk-lijst"><span></span>' . sfp_page_config_artikel_icoon( 'omlaag' ) . '</button>'
-        . '<button type="button" class="sfp-art-balk__pijl" data-sfp-stap="1" aria-label="' . esc_attr( $t( 'volgend' ) ) . '">' . sfp_page_config_artikel_icoon( 'rechts' ) . '</button>'
         . '</div></nav>';
 }
 
@@ -761,7 +898,7 @@ function sfp_page_config_artikel_auteurskaart( $post ) {
     $tekst .= '<a class="sfp-pijl" href="' . esc_url( sfp_page_config_artikel_auteur_url( $auteur ) ) . '">' . esc_html( sprintf( $t( 'meer_over' ), '' !== $voornaam ? $voornaam : $naam ) ) . '</a>';
 
     return '<section class="sfp-art-auteur" aria-labelledby="sfp-art-auteur-kop">'
-        . get_avatar( $auteur, 144, '', $naam, array( 'loading' => 'lazy' ) )
+        . get_avatar( $auteur, 72, '', $naam, array( 'loading' => 'lazy' ) )
         . '<div class="sfp-art-auteur__kop"><span class="sfp-blok-label">' . esc_html( $t( 'auteur' ) ) . '</span><h3 id="sfp-art-auteur-kop">' . esc_html( $naam ) . '</h3></div>'
         . '<div class="sfp-art-auteur__tekst">' . $tekst . '</div></section>';
 }
@@ -843,8 +980,8 @@ function sfp_page_config_artikel_render( $post ) {
     $html .= '<h1 class="entry-title sfp-art-titel">' . get_the_title( $post ) . '</h1>';
     $html .= sfp_page_config_artikel_kopkaart( $post, $hoofdstukken );
     $html .= '<div class="entry-content clear sfp-art-inhoud">' . $inhoud . '</div>';
-    $html .= '' !== $vervolg ? '<div class="sfp-art-vervolg">' . $vervolg . '</div>' : '';
     $html .= $affiliate;
+    $html .= '' !== $vervolg ? '<div class="sfp-art-vervolg">' . $vervolg . '</div>' : '';
     $html .= sfp_page_config_artikel_auteurskaart( $post );
     $html .= sfp_page_config_artikel_voetregels( $post );
     $html .= '</div>' . $zij . '</div></article>';

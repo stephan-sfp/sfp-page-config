@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Versie van het ontwerp. Ophogen laat alle beelden opnieuw maken bij de
  * eerstvolgende keer opslaan.
  */
-define( 'SFP_PAGE_CONFIG_DEELBEELD_ONTWERP', 1 );
+define( 'SFP_PAGE_CONFIG_DEELBEELD_ONTWERP', 2 );
 
 /* =========================================================================
  * Wat de server kan
@@ -474,6 +474,7 @@ function sfp_page_config_deelbeeld_maak( $post_id, $forceer = false ) {
             'controle' => $slot['controle'],
             'breedte'  => $inzicht ? 1200 : 1080,
             'hoogte'   => $inzicht ? 627 : 1080,
+            'klein'    => is_file( sfp_page_config_deelbeeld_klein_pad( (string) get_attached_file( $id ) ) ),
             'actueel'  => true,
         );
         $verslag['gemaakt'][] = $sleutel;
@@ -509,6 +510,16 @@ function sfp_page_config_deelbeeld_voorwaarden() {
 }
 
 /**
+ * Pad of URL van de lichtere versie die bij een deelbeeld hoort.
+ *
+ * @param  string $pad Pad of URL van het JPG.
+ * @return string
+ */
+function sfp_page_config_deelbeeld_klein_pad( $pad ) {
+    return preg_replace( '/\.jpg$/', '-800.webp', (string) $pad );
+}
+
+/**
  * Teken één beeld en zet het in de mediabibliotheek. Bestaat het beeld al,
  * dan vervangt de plugin het bestand en blijft het mediabericht hetzelfde.
  *
@@ -538,6 +549,15 @@ function sfp_page_config_deelbeeld_schrijf( $post, $sleutel, array $gegevens, $h
     $gelukt = imagejpeg( $beeld, $pad, 88 );
     $b      = imagesx( $beeld );
     $h      = imagesy( $beeld );
+    // Voor in het artikel: een lichtere versie van het inzicht (800 px, WebP).
+    // Het JPG op volle maat blijft het beeld om te delen en te downloaden.
+    if ( $gelukt && 'inzicht' === $gegevens['soort'] && function_exists( 'imagewebp' ) ) {
+        $klein = imagescale( $beeld, 800, -1, IMG_BICUBIC );
+        if ( $klein ) {
+            imagewebp( $klein, sfp_page_config_deelbeeld_klein_pad( $pad ), 82 );
+            imagedestroy( $klein );
+        }
+    }
     imagedestroy( $beeld );
     if ( ! $gelukt || ! is_readable( $pad ) ) {
         return 0;
@@ -586,6 +606,9 @@ function sfp_page_config_deelbeeld_schrijf( $post, $sleutel, array $gegevens, $h
     // Het vorige bestand van dit beeld opruimen (alleen het eigen, door de plugin gemaakte bestand).
     if ( '' !== $oud_pad && $oud_pad !== $pad && 0 === strpos( basename( $oud_pad ), 'deelbeeld-' ) && is_file( $oud_pad ) ) {
         wp_delete_file( $oud_pad );
+        if ( is_file( sfp_page_config_deelbeeld_klein_pad( $oud_pad ) ) ) {
+            wp_delete_file( sfp_page_config_deelbeeld_klein_pad( $oud_pad ) );
+        }
     }
     return (int) $id;
 }
@@ -635,7 +658,7 @@ function sfp_page_config_deelbeeld_bij_opslaan( $post_id, $post ) {
  * @param  string $soort    inzicht of samenvatting.
  * @param  int    $nr       Volgnummer van het blok in het bericht.
  * @param  string $controle Controlewaarde van de tekst van het blok, of '' om niet te controleren.
- * @return array{url: string, breedte: int, hoogte: int}|null
+ * @return array{url: string, breedte: int, hoogte: int, klein: string}|null klein is de URL van de lichtere versie, of ''.
  */
 function sfp_page_config_deelbeeld_voor( $post_id, $soort, $nr, $controle = '' ) {
     $bewaard = get_post_meta( $post_id, '_sfp_deelbeeld', true );
@@ -655,6 +678,7 @@ function sfp_page_config_deelbeeld_voor( $post_id, $soort, $nr, $controle = '' )
         'url'     => $url,
         'breedte' => (int) $slot['breedte'],
         'hoogte'  => (int) $slot['hoogte'],
+        'klein'   => ! empty( $slot['klein'] ) ? sfp_page_config_deelbeeld_klein_pad( $url ) : '',
     );
 }
 
