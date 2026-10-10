@@ -96,7 +96,14 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-art-warm__opties button{font-size:15px;line-height:1.4;text-align:left;color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);padding:10px 12px;width:100%}
 :root .sfp-art-warm__opties button:is(:hover,:focus){color:var(--sfp-b-primair);background:var(--sfp-b-wit);border-color:var(--sfp-b-primair)}
 :root .sfp-art-warm__opties button[aria-pressed=true]{border-color:var(--sfp-b-secundair);box-shadow:inset 0 0 0 1px var(--sfp-b-secundair)}
-:root .sfp-art-warm__hint{margin:0;font-size:14px;color:var(--sfp-b-body)}
+:root .sfp-art-warm__uitslag{display:grid;gap:12px}
+:root .sfp-art-warm__uitslag .sfp-blok-label{display:block;outline:0}
+:root .sfp-art-warm__uitslag ol{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:sfp-warm}
+.sfp-art-warm__uitslag li{margin:0;display:grid;gap:3px;padding-left:26px;position:relative;counter-increment:sfp-warm}
+.sfp-art-warm__uitslag li::before{content:counter(sfp-warm);position:absolute;left:0;top:2px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;color:var(--sfp-b-secundair)}
+.sfp-art-warm__uitslag li>b{font-weight:700;font-size:15px;line-height:1.45}
+.sfp-art-warm__keuze,.sfp-art-warm__hint{font-size:14px;line-height:1.5;color:var(--sfp-b-body)}
+.sfp-art-warm__keuze i{font-style:normal;font-weight:700;color:var(--sfp-b-primair)}
 .sfp-art-warm__voet{display:flex;justify-content:flex-end}
 :root .sfp-art-warm .sfp-art-warm__volgende{font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);padding:6px 0}
 .sfp-art-warm__volgende::after{content:" \2192"}
@@ -131,7 +138,10 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 /* vervolg, affiliate-uitleg */
 .sfp-art-vervolg{margin:28px 0 0}
 :root .sfp-art-vervolg>:first-child{margin-top:0}
-:root .sfp-art-affiliate{margin:24px 0 0}
+:root .sfp-art-affiliate{margin:28px 0 0}
+/* gelijke ruimte onder de tekst: de laatste alinea brengt geen eigen marge mee */
+:root .sfp-art-inhoud>:last-child{margin-bottom:0}
+@media (min-width:1025px){:root .sfp-art-inhoud>:has(+.sfp-art-promo--inline:last-child){margin-bottom:0}}
 
 /* auteurskaart */
 .sfp-art-auteur{display:grid;grid-template-columns:72px minmax(0,1fr);column-gap:18px;row-gap:18px;align-items:center;background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:28px;margin:24px 0 0}
@@ -157,6 +167,14 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-art-voet a:is(:hover,:focus){color:var(--sfp-b-primair);border-bottom-color:var(--sfp-b-primair)}
 
 /* rechterkolom */
+.sfp-art-zijbron{border-top:1px solid var(--sfp-b-lijn);border-bottom:1px solid var(--sfp-b-lijn)}
+:root .sfp-art-zijbron .sfp-art-zijbron__knop{display:flex;align-items:center;gap:8px;width:100%;padding:14px 0;margin:0;text-align:left;cursor:pointer;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-primair)}
+:root .sfp-art-zijbron .sfp-art-zijbron__knop:is(:hover,:focus){color:var(--sfp-b-primair)}
+.sfp-art-zijbron__knop svg{width:16px;height:16px;flex:0 0 auto;color:var(--sfp-b-secundair)}
+.sfp-art-zijbron__knop span{flex:1 1 auto}
+.sfp-art-zijbron__knop::after{content:"+";flex:0 0 auto;font-family:var(--sfp-b-tekst);font-weight:400;font-size:20px;line-height:.8;color:var(--sfp-b-primair)}
+.sfp-art-zijbron__knop[aria-expanded=true]::after{content:"\2212"}
+:root .sfp-art-zijbron .sfp-art-bronnen{padding-bottom:16px}
 .sfp-artikel__zij{position:sticky;top:calc(var(--sfp-art-kop-offset,0px) + 24px);align-self:start;display:grid;gap:28px;max-height:calc(100vh - var(--sfp-art-kop-offset,0px) - 48px);overflow:auto;scrollbar-width:thin}
 :root .sfp-art-toc .sfp-art-toc__kop{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 14px}
 .sfp-art-toc__kop span{color:var(--sfp-b-body);font-family:var(--sfp-b-tekst);font-weight:400;font-size:12px;line-height:1;text-transform:none;letter-spacing:0}
@@ -183,11 +201,11 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
   :root .sfp-art-balk .sfp-art-balk__titel{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;width:100%;height:52px;padding:0 20px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1.2;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-art-balk-tekst)}
   :root .sfp-art-balk button:is(:hover,:focus,:active){color:var(--sfp-art-balk-tekst)}
   .sfp-art-balk__titel span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-  .sfp-art-balk__titel svg{transition:transform .15s;transform:rotate(180deg)}
-  .sfp-art-balk__titel[aria-expanded=true] svg{transform:none}
   .sfp-art-balk :focus-visible{outline:2px solid var(--sfp-art-balk-tekst);outline-offset:-4px}
   :root .sfp-art-balk__lijst{list-style:none;margin:0;padding:8px 0;max-height:min(60vh,420px);overflow:auto;overscroll-behavior:contain;background:var(--sfp-b-wit);border-top:1px solid var(--sfp-b-lijn-sterk);counter-reset:sfp-hfd}
   .sfp-art-balk__lijst li{margin:0;counter-increment:sfp-hfd}
+  .sfp-art-balk__lijst li.sfp-art-balk__top{counter-increment:none;border-bottom:1px solid var(--sfp-b-lijn)}
+  .sfp-art-balk__lijst li.sfp-art-balk__top a::before{content:"\2191";font-family:var(--sfp-b-tekst);font-weight:700;font-size:15px}
   :root .sfp-art-balk__lijst a{display:flex;gap:12px;align-items:baseline;padding:12px 20px;font-size:15px;line-height:1.4;color:var(--sfp-b-primair);text-decoration:none;max-width:740px;margin:0 auto}
   .sfp-art-balk__lijst a::before{content:counter(sfp-hfd);flex:0 0 18px;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;color:var(--sfp-b-secundair)}
   :root .sfp-art-balk__lijst a.sfp-actief{font-weight:700;background:var(--sfp-b-tint3)}

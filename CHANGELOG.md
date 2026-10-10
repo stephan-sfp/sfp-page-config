@@ -4,6 +4,24 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.12.0-beta.3] - 2026-10-10
+
+Derde proefversie (pre-release) van de artikelopmaak, na de proef met beta.2 op SwS.
+
+### Gewijzigd
+- **Hoofdstukbalk: lijst-icoon voor de titel, geen pijltje meer.** Het pijltje omhoog las als "naar boven". Het icoon `omlaag` is vervangen door `lijst`.
+- **Boekomslag in de promokaart op maat.** `sizes` is nu `60px`, zonder `auto`. Haalt een cacheplugin het uitgestelde laden van het beeld weg, dan leest de browser `auto` als de volle schermbreedte en kiest hij het grote bestand (gemeten met PSI op SwS: 600 x 900 geladen voor 60 x 89 px).
+- **Het lichte inzichtbeeld (WebP, 800 px) wordt gemaakt met de beeldbewerker van WordPress** (GD of Imagick) in plaats van rechtstreeks met GD. Op SwS maakte beta.2 het bestand niet, terwijl WordPress daar wel WebP-tussenmaten maakt. De deelbeelden worden bij het eerstvolgende opslaan opnieuw getekend (ontwerp 3).
+- **Warming-up: één klik per vraag.** Een klik op een antwoord gaat direct door naar de volgende vraag; de knop "Volgende vraag" is vervallen. Na de laatste vraag volgt een uitslag: per vraag het gekozen antwoord en het hoofdstuk waar het antwoord staat, met link, en de knop om te gaan lezen. Geen goed of fout. Nieuwe teksten `jouw_antwoorden` en `jouw_antwoord`; `volgende_vraag` is verwijderd.
+- **Bronnen in de rechterkolom.** Tussen de inhoudsopgave en de promokaart staat één regel "Bronnen (n)"; een klik klapt de lijst ter plekke open. De knop Bronnen in de kopkaart blijft.
+- **Terug naar boven in de hoofdstukkenlijst.** Bovenaan de lijst achter de hoofdstukbalk staat "Terug naar boven" (tekst `naar_boven`). De losse knop van het thema blijft verborgen zolang de balk in beeld is.
+- **Hoofdstukbalk voor het eerste hoofdstuk:** toont nu "Inhoud" (Engels: "Contents") in plaats van "Hoofdstukken" ("Chapters"). De tekst `hoofdstukken` is verwijderd.
+- **Minder wit onder de tekst.** De laatste alinea brengt geen eigen marge meer mee; de ruimte tot de affiliate-uitleg of het vervolgblok is nu gelijk aan die tussen de blokken eronder (was 44 px, nu 24 px).
+- `GET /sfp/v1/deelbeeld/<id>` meldt per beeld of de lichte versie bestaat (`klein`), en in `stand`: of GD zelf WebP kan (`webp_gd`), welke beeldbewerker WebP schrijft (`webp_bewerker`) en hoe de laatste poging afliep (`webp_laatste`).
+
+### Terugdraaien
+- Terug naar 2.12.0-beta.2.
+
 ## [2.12.0-beta.2] - 2026-10-10
 
 Tweede proefversie (pre-release) van de artikelopmaak, met de opmerkingen van Stephan op de proef op SwS en de punten die de proef zelf opleverde.

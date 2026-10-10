@@ -63,7 +63,8 @@
                 });
             }
             zet(knop, open);
-            var paneel = open ? el(knop.getAttribute('aria-controls')) : null;
+            /* De rechterkolom loopt mee en schuift zelf; daar hoeft de pagina niet op te schuiven. */
+            var paneel = open && !(knop.closest && knop.closest('.sfp-artikel__zij')) ? el(knop.getAttribute('aria-controls')) : null;
             if (paneel) { inBeeld(knop, paneel); }
         });
     });
@@ -98,46 +99,61 @@
         });
     });
 
-    /* Warming-up. */
+    /* Warming-up: een klik op een antwoord gaat door naar de volgende vraag; na de laatste vraag volgt de uitslag. */
     alle('.sfp-art-warm').forEach(function (warm) {
         var vragen = alle('.sfp-art-warm__vraag', warm);
-        var volgende = warm.querySelector('.sfp-art-warm__volgende');
+        var uitslag = warm.querySelector('.sfp-art-warm__uitslag');
+        var keuzes = uitslag ? alle('.sfp-art-warm__keuze i', uitslag) : [];
+        var start = warm.querySelector('.sfp-art-warm__volgende');
+        var kop = warm.querySelector('.sfp-art-warm__kop');
         var stippen = alle('.sfp-art-warm__stip i', warm);
         var nr = warm.querySelector('.sfp-art-warm__nr');
-        var nu = 0;
-        if (!vragen.length || !volgende) { return; }
-        vragen.forEach(function (vraag) {
-            var opties = alle('.sfp-art-warm__opties button', vraag);
-            opties.forEach(function (optie) {
-                optie.addEventListener('click', function () {
-                    opties.forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
-                    optie.setAttribute('aria-pressed', 'true');
-                    var hint = vraag.querySelector('.sfp-art-warm__hint');
-                    if (hint) { hint.hidden = false; }
-                    volgende.textContent = warm.getAttribute(nu < vragen.length - 1 ? 'data-sfp-volgende' : 'data-sfp-start');
-                    volgende.hidden = false;
-                });
-            });
+        var paneel = warm.closest('.sfp-art-paneel');
+        var actie = null;
+        knoppen.forEach(function (knop) {
+            if (paneel && knop.getAttribute('aria-controls') === paneel.id) { actie = knop; }
         });
-        volgende.addEventListener('click', function () {
-            if (nu < vragen.length - 1) {
-                vragen[nu].hidden = true;
-                nu++;
+        var nu = 0, bezig = false;
+        if (!vragen.length || !uitslag) { return; }
+        function verder() {
+            bezig = false;
+            vragen[nu].hidden = true;
+            nu++;
+            var doel;
+            if (nu < vragen.length) {
                 vragen[nu].hidden = false;
                 if (stippen[nu]) { stippen[nu].classList.add('aan'); }
                 if (nr) { nr.textContent = String(nu + 1); }
-                volgende.hidden = true;
-                var eerste = vragen[nu].querySelector('button');
-                if (eerste) { eerste.focus(); }
-                return;
+                doel = vragen[nu].querySelector('button');
+            } else {
+                if (kop) { kop.hidden = true; }
+                uitslag.hidden = false;
+                doel = uitslag.querySelector('[tabindex]');
             }
-            var paneel = warm.closest('.sfp-art-paneel');
-            knoppen.forEach(function (knop) {
-                if (paneel && knop.getAttribute('aria-controls') === paneel.id) { zet(knop, false); }
+            if (doel) { doel.focus({ preventScroll: true }); }
+            if (actie && paneel) { inBeeld(actie, paneel); }
+        }
+        vragen.forEach(function (vraag, i) {
+            var opties = alle('.sfp-art-warm__opties button', vraag);
+            opties.forEach(function (optie) {
+                optie.addEventListener('click', function () {
+                    if (bezig || i !== nu) { return; }
+                    bezig = true;
+                    opties.forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
+                    optie.setAttribute('aria-pressed', 'true');
+                    if (keuzes[i]) { keuzes[i].textContent = optie.textContent; }
+                    /* Kort laten zien wat er gekozen is, dan door. */
+                    setTimeout(verder, rustig ? 0 : 220);
+                });
             });
-            var begin = el(warm.getAttribute('data-sfp-begin'));
-            if (begin) { begin.scrollIntoView(); }
         });
+        if (start) {
+            start.addEventListener('click', function () {
+                if (actie) { zet(actie, false); }
+                var begin = el(warm.getAttribute('data-sfp-begin'));
+                if (begin) { begin.scrollIntoView(); }
+            });
+        }
     });
 
     /* Inhoudsopgave en hoofdstukbalk. */
@@ -164,7 +180,7 @@
         naSprong();
     }, true);
     var toc = alle('.sfp-art-toc a');
-    var bron = balk ? alle('.sfp-art-balk__lijst a', balk) : toc;
+    var bron = balk ? alle('.sfp-art-balk__lijst a:not([data-sfp-top])', balk) : toc;
     var koppen = [];
     bron.forEach(function (a) {
         var kop = el(decodeURIComponent((a.getAttribute('href') || '').slice(1)));
@@ -173,7 +189,8 @@
     if (koppen.length < 2) { return; }
 
     var lijst = balk ? el('sfp-art-balk-lijst') : null;
-    var lijstLinks = lijst ? alle('a', lijst) : [];
+    var lijstLinks = lijst ? alle('a:not([data-sfp-top])', lijst) : [];
+    var naarBoven = lijst ? lijst.querySelector('a[data-sfp-top]') : null;
     var titelKnop = balk ? balk.querySelector('.sfp-art-balk__titel') : null;
     var titel = titelKnop ? titelKnop.querySelector('span') : null;
     var kopkaart = artikel.querySelector('.sfp-art-kop') || artikel.querySelector('.sfp-art-titel');
@@ -226,6 +243,16 @@
     naSprong = function () { sluitLijst(false); plan(); };
 
     if (balk) {
+        if (naarBoven) {
+            naarBoven.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                sluitLijst(false);
+                window.scrollTo(0, 0);
+                if (window.history && history.replaceState) { history.replaceState(null, '', location.pathname + location.search); }
+                plan();
+            });
+        }
         titelKnop.addEventListener('click', function () {
             var open = lijst.hidden;
             lijst.hidden = !open;
