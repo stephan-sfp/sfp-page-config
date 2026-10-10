@@ -178,11 +178,9 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
   :root .sfp-art-promo--inline{display:grid;margin:24px 0}
 
   .sfp-art-balk{display:block;position:fixed;left:0;right:0;bottom:0;z-index:9990;background:var(--sfp-art-balk);color:var(--sfp-art-balk-tekst);padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 12px rgba(0,0,0,.12)}
-  .sfp-art-balk__rij{display:grid;grid-template-columns:52px minmax(0,1fr) 52px;align-items:stretch;height:52px;max-width:740px;margin:0 auto}
-  :root .sfp-art-balk .sfp-art-balk__pijl{display:grid;place-items:center;width:52px;height:52px;color:var(--sfp-art-balk-tekst)}
-  :root .sfp-art-balk .sfp-art-balk__pijl[disabled]{opacity:.35;cursor:default}
+  .sfp-art-balk__rij{height:52px;max-width:740px;margin:0 auto}
   .sfp-art-balk svg{width:16px;height:16px;flex:0 0 auto}
-  :root .sfp-art-balk .sfp-art-balk__titel{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;width:100%;height:52px;padding:0 4px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1.2;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-art-balk-tekst)}
+  :root .sfp-art-balk .sfp-art-balk__titel{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;width:100%;height:52px;padding:0 20px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1.2;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-art-balk-tekst)}
   :root .sfp-art-balk button:is(:hover,:focus,:active){color:var(--sfp-art-balk-tekst)}
   .sfp-art-balk__titel span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
   .sfp-art-balk__titel svg{transition:transform .15s;transform:rotate(180deg)}

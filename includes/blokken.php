@@ -287,7 +287,7 @@ function sfp_page_config_blokken_registreer() {
     wp_register_script(
         'sfp-blokken-editor',
         SFP_PAGE_CONFIG_URL . 'assets/blokken/editor.js',
-        array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-data' ),
+        array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-data', 'wp-notices' ),
         SFP_PAGE_CONFIG_VERSION,
         true
     );

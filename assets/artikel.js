@@ -4,6 +4,46 @@
     var doc = document, root = doc.documentElement;
     function alle(sel, ctx) { return [].slice.call((ctx || doc).querySelectorAll(sel)); }
     function el(id) { return id ? doc.getElementById(id) : null; }
+    var offset = -1;
+    var rustig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* Hoogte van een vaste header (en de beheerbalk), zodat ankers, panelen en de rechterkolom eronder uitkomen. */
+    function meetOffset() {
+        var hoogte = 0;
+        alle('#wpadminbar,#ast-fixed-header,.ast-sticky-active,.main-header-bar-wrap.ast-sticky-active,.site-header').forEach(function (h) {
+            var stijl = getComputedStyle(h);
+            if (stijl.position !== 'fixed' && stijl.position !== 'sticky') { return; }
+            if (stijl.display === 'none' || stijl.visibility === 'hidden') { return; }
+            var r = h.getBoundingClientRect();
+            if (r.height > 0 && r.top <= 1 && r.bottom > hoogte && r.bottom < window.innerHeight / 2) { hoogte = r.bottom; }
+        });
+        hoogte = Math.round(hoogte);
+        if (hoogte !== offset) {
+            offset = hoogte;
+            root.style.setProperty('--sfp-art-kop-offset', hoogte + 'px');
+        }
+    }
+
+    /* Een geopend paneel helemaal in beeld: de pagina schuift net genoeg op, en nooit verder dan tot de rij met de knop bovenaan staat. */
+    function inBeeld(knop, paneel) {
+        meetOffset();
+        var onder = window.innerHeight;
+        var teveel = paneel.getBoundingClientRect().bottom + 12 - onder;
+        /* De hoofdstukbalk telt mee als hij in beeld staat, of door het schuiven in beeld komt. */
+        var vast = el('sfp-art-balk');
+        if (vast && window.matchMedia && window.matchMedia('(max-width: 1024px)').matches) {
+            var kaart = doc.querySelector('.sfp-art-kop');
+            if (!vast.hidden || (kaart && kaart.getBoundingClientRect().bottom - Math.max(teveel, 0) < offset)) {
+                teveel += vast.hidden ? 52 : vast.getBoundingClientRect().height;
+            }
+        }
+        if (teveel <= 0) { return; }
+        var rij = (knop.closest && knop.closest('.sfp-art-acties')) || knop;
+        var ruimte = rij.getBoundingClientRect().top - offset - 8;
+        var stap = Math.min(teveel, ruimte);
+        if (stap < 1) { return; }
+        if (rustig) { window.scrollBy(0, stap); } else { window.scrollBy({ top: stap, behavior: 'smooth' }); }
+    }
 
     /* Panelen: een knop met data-sfp-paneel opent het paneel uit aria-controls; binnen een groep is er één tegelijk open. */
     var knoppen = alle('[data-sfp-paneel]');
@@ -23,6 +63,8 @@
                 });
             }
             zet(knop, open);
+            var paneel = open ? el(knop.getAttribute('aria-controls')) : null;
+            if (paneel) { inBeeld(knop, paneel); }
         });
     });
 
@@ -134,27 +176,9 @@
     var lijstLinks = lijst ? alle('a', lijst) : [];
     var titelKnop = balk ? balk.querySelector('.sfp-art-balk__titel') : null;
     var titel = titelKnop ? titelKnop.querySelector('span') : null;
-    var pijlen = balk ? alle('[data-sfp-stap]', balk) : [];
     var kopkaart = artikel.querySelector('.sfp-art-kop') || artikel.querySelector('.sfp-art-titel');
     var rustTitel = balk ? (balk.getAttribute('aria-label') || '') : '';
-    var actief = -2, zichtbaar = null, offset = -1, wacht = false;
-
-    /* Hoogte van een vaste header (en de beheerbalk), zodat ankers en de rechterkolom eronder uitkomen. */
-    function meetOffset() {
-        var hoogte = 0;
-        alle('#wpadminbar,#ast-fixed-header,.ast-sticky-active,.main-header-bar-wrap.ast-sticky-active,.site-header').forEach(function (h) {
-            var stijl = getComputedStyle(h);
-            if (stijl.position !== 'fixed' && stijl.position !== 'sticky') { return; }
-            if (stijl.display === 'none' || stijl.visibility === 'hidden') { return; }
-            var r = h.getBoundingClientRect();
-            if (r.height > 0 && r.top <= 1 && r.bottom > hoogte && r.bottom < window.innerHeight / 2) { hoogte = r.bottom; }
-        });
-        hoogte = Math.round(hoogte);
-        if (hoogte !== offset) {
-            offset = hoogte;
-            root.style.setProperty('--sfp-art-kop-offset', hoogte + 'px');
-        }
-    }
+    var actief = -2, zichtbaar = null, wacht = false;
 
     function markeer(links, i) {
         links.forEach(function (a, n) {
@@ -183,10 +207,6 @@
             markeer(toc, i < 0 ? 0 : i);
             markeer(lijstLinks, i);
             if (titel) { titel.textContent = i < 0 ? rustTitel : koppen[i].textContent; }
-            pijlen.forEach(function (p) {
-                var doel = i + parseInt(p.getAttribute('data-sfp-stap'), 10);
-                p.disabled = doel < 0 || doel >= koppen.length;
-            });
         }
         if (balk) {
             /* Zichtbaar zolang de lezer in het artikel is: voorbij de kopkaart, en tot het einde van het artikel in beeld komt (zo blijft alles eronder vrij). */
@@ -205,18 +225,7 @@
 
     naSprong = function () { sluitLijst(false); plan(); };
 
-    function ga(i) {
-        if (i < 0 || i >= koppen.length) { return; }
-        sluitLijst(false);
-        koppen[i].scrollIntoView();
-        if (window.history && history.replaceState) { history.replaceState(null, '', '#' + koppen[i].id); }
-        plan();
-    }
-
     if (balk) {
-        pijlen.forEach(function (p) {
-            p.addEventListener('click', function () { ga(actief + parseInt(p.getAttribute('data-sfp-stap'), 10)); });
-        });
         titelKnop.addEventListener('click', function () {
             var open = lijst.hidden;
             lijst.hidden = !open;
