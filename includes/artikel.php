@@ -577,13 +577,20 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     $foto = '';
     $wie  = '';
     if ( $auteur && '' !== (string) $naam ) {
-        $foto = get_avatar( $auteur, 88, '', $naam, array( 'class' => 'sfp-art-kop__foto', 'loading' => 'eager' ) );
+        $foto = get_avatar( $auteur, 44, '', $naam, array( 'class' => 'sfp-art-kop__foto', 'loading' => 'eager' ) );
         $wie  = '<div class="sfp-art-kop__naam">' . sprintf( esc_html( $t( 'door' ) ), '<a href="' . esc_url( sfp_page_config_artikel_auteur_url( $auteur ) ) . '">' . esc_html( $naam ) . '</a>' )
             . ( '' !== $rol ? '<span class="sfp-art-kop__rol">' . esc_html( $rol ) . '</span>' : '' ) . '</div>';
     }
 
-    $gepubliceerd = get_post_time( 'U', true, $post );
-    $bijgewerkt   = get_post_modified_time( 'U', true, $post );
+    // get_post_timestamp() werkt ook bij een concept, dat nog geen GMT-datum heeft.
+    $gepubliceerd = (int) get_post_timestamp( $post, 'date' );
+    $bijgewerkt   = (int) get_post_timestamp( $post, 'modified' );
+    if ( ! $gepubliceerd ) {
+        $gepubliceerd = time();
+    }
+    if ( ! $bijgewerkt ) {
+        $bijgewerkt = $gepubliceerd;
+    }
     $meta         = '<span><time datetime="' . esc_attr( wp_date( 'c', $gepubliceerd ) ) . '">' . esc_html( sprintf( $t( 'gepubliceerd' ), wp_date( 'j M Y', $gepubliceerd ) ) ) . '</time></span>';
     if ( wp_date( 'Ymd', $bijgewerkt ) > wp_date( 'Ymd', $gepubliceerd ) ) {
         $meta .= '<span><time datetime="' . esc_attr( wp_date( 'c', $bijgewerkt ) ) . '">' . esc_html( sprintf( $t( 'bijgewerkt' ), wp_date( 'j M Y', $bijgewerkt ) ) ) . '</time></span>';
@@ -761,7 +768,7 @@ function sfp_page_config_artikel_auteurskaart( $post ) {
     $tekst .= '<a class="sfp-pijl" href="' . esc_url( sfp_page_config_artikel_auteur_url( $auteur ) ) . '">' . esc_html( sprintf( $t( 'meer_over' ), '' !== $voornaam ? $voornaam : $naam ) ) . '</a>';
 
     return '<section class="sfp-art-auteur" aria-labelledby="sfp-art-auteur-kop">'
-        . get_avatar( $auteur, 144, '', $naam, array( 'loading' => 'lazy' ) )
+        . get_avatar( $auteur, 72, '', $naam, array( 'loading' => 'lazy' ) )
         . '<div class="sfp-art-auteur__kop"><span class="sfp-blok-label">' . esc_html( $t( 'auteur' ) ) . '</span><h3 id="sfp-art-auteur-kop">' . esc_html( $naam ) . '</h3></div>'
         . '<div class="sfp-art-auteur__tekst">' . $tekst . '</div></section>';
 }

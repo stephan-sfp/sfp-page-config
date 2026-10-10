@@ -433,6 +433,8 @@ function sfp_page_config_blokken_bestanden_voor( array $namen ) {
             }
         }
     }
+    // Basis staat hooguit één keer in de lijst, en dan vooraan.
+    unset( $bestanden['basis'] );
     $bestanden = array_keys( $bestanden );
     if ( $basis ) {
         array_unshift( $bestanden, 'basis' );

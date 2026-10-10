@@ -166,8 +166,8 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-art-toc li a:is(:hover,:focus){color:var(--sfp-b-primair)}
 :root .sfp-art-toc li a.sfp-actief{border-left-color:var(--sfp-b-secundair);color:var(--sfp-b-primair);font-weight:700}
 
-/* tooltips met een bron (SFP Tooltip levert de tooltip zelf) */
-.sfp-art-inhoud .tooltip{text-decoration:none}
+/* tooltips (SFP Tooltip levert het vlak; de stippellijn onder de tekst komt hier vandaan, zoals in de dummy) */
+.sfp-art-inhoud .tooltip{text-decoration:none;border-bottom:1px dotted var(--sfp-b-primair);cursor:help}
 
 /* hoofdstukbalk: alleen op telefoon en tablet */
 .sfp-art-balk{display:none}
