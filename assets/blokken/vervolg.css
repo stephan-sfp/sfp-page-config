@@ -1,0 +1,28 @@
+/*
+ * Bouwstenen: vervolg. Slotblok met een of twee vlakken: een rustige
+ * pijllink (tweede keus) en hoogstens één knop. De knop voert de rol links
+ * en knoppen, met de knoptekst van het merk.
+ */
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-vervolg{border:1px solid var(--sfp-b-lijn);border-top:4px solid var(--sfp-b-secundair);border-radius:var(--sfp-b-r-kaart);margin:28px 0 0;display:grid;grid-template-columns:minmax(0,1fr);background:var(--sfp-b-wit);box-sizing:border-box}
+:root .sfp-vervolg--twee{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.sfp-vervolg__vlak{padding:26px 28px;display:grid;gap:10px;align-content:start;min-width:0}
+.sfp-vervolg__vlak+.sfp-vervolg__vlak{border-left:1px solid var(--sfp-b-lijn)}
+:root .sfp-vervolg :is(h2,h3){margin:0;padding:0}
+:root .sfp-vervolg p{margin:0;font-size:16px;line-height:1.6}
+:root .sfp-vervolg .wp-block-buttons{margin:6px 0 0;align-self:end;justify-self:start;display:flex;gap:12px}
+:root .sfp-vervolg .wp-block-button{margin:0}
+:root .sfp-vervolg .wp-block-button__link{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:12px 20px;border-radius:var(--sfp-b-r-knop)!important;font-family:var(--sfp-b-kop);font-weight:900!important;font-size:14px;line-height:1;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;border:2px solid var(--sfp-b-links);background:var(--sfp-b-links);color:var(--sfp-b-knoptekst)}
+:root .sfp-vervolg .wp-block-button__link:is(:hover,:focus){background:var(--sfp-b-hover);border-color:var(--sfp-b-hover);color:var(--sfp-b-knoptekst)}
+:root .sfp-vervolg p.is-style-sfp-pijl{align-self:end;margin-top:6px;font-family:inherit;font-weight:900;font-size:15px;line-height:1.4;letter-spacing:0}
+:root .sfp-vervolg .is-style-sfp-pijl a{color:var(--sfp-b-links);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.sfp-vervolg .is-style-sfp-pijl a::after{content:"\00a0\2192";display:inline-block}
+:root .sfp-vervolg .is-style-sfp-pijl a:is(:hover,:focus){color:var(--sfp-b-links);text-decoration-thickness:3px}
+@media (max-width:600px){
+  :root .sfp-vervolg--twee{grid-template-columns:minmax(0,1fr)}
+  .sfp-vervolg__vlak{padding:22px}
+  .sfp-vervolg__vlak+.sfp-vervolg__vlak{border-left:0;border-top:1px solid var(--sfp-b-lijn)}
+  :root .sfp-vervolg .wp-block-buttons{justify-self:stretch}
+  :root .sfp-vervolg .wp-block-button{width:100%}
+  :root .sfp-vervolg .wp-block-button__link{width:100%;box-sizing:border-box}
+}

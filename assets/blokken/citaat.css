@@ -1,0 +1,13 @@
+/*
+ * Bouwstenen: citaat of anekdote. Gewone tekstletter, iets groter dan de
+ * lopende tekst, met een lijn links in de secundaire kleur. Het bijschrift
+ * met de foto van de auteur laat zien dat het uit eigen praktijk komt.
+ */
+:root .sfp-citaat{margin:24px 0;padding:4px 0 4px 24px;border-left:2px solid var(--sfp-b-secundair)}
+:root .sfp-citaat blockquote{margin:0;padding:0;border:0;background:none;font-style:normal;font-weight:400;font-size:clamp(19px,.5vw + 16px,22px);line-height:1.55;color:var(--sfp-b-primair);quotes:none}
+:root .sfp-citaat blockquote::before,:root .sfp-citaat blockquote::after{content:none}
+:root .sfp-citaat blockquote p{margin:0 0 12px;font-size:inherit;font-style:normal}
+:root .sfp-citaat blockquote p:last-child{margin-bottom:0}
+.sfp-citaat footer{display:flex;align-items:center;gap:10px;font-size:14px;line-height:1.4;color:var(--sfp-b-body);margin-top:12px}
+:root .sfp-citaat footer img{width:36px;height:36px;border-radius:50%;flex:0 0 auto}
+@media (max-width:600px){:root .sfp-citaat{padding-left:18px}}

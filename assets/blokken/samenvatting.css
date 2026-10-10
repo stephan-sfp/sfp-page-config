@@ -1,0 +1,27 @@
+/*
+ * Bouwstenen: samenvatting ("Wat je moet weten"). Witte kaart met dunne
+ * rand en bovenrand in de secundaire kleur; de punten zijn een gewone lijst.
+ * Het deelbeeld klapt open onder de punten.
+ */
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-samenvatting{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-top:4px solid var(--sfp-b-secundair);border-radius:var(--sfp-b-r-kaart);padding:20px 24px 22px;margin:24px 0 28px;box-sizing:border-box}
+.sfp-samenvatting [hidden]{display:none!important}
+.sfp-samenvatting__kop{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+:root .sfp-samenvatting__kop .sfp-blok-label{font-size:13px}
+:root .sfp-samenvatting .sfp-samenvatting__deel{appearance:none;-webkit-appearance:none;display:inline-flex;align-items:center;gap:6px;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);background:none;border:0;border-radius:0;box-shadow:none;padding:6px 0;margin:0;min-height:0;width:auto;cursor:pointer}
+:root .sfp-samenvatting .sfp-samenvatting__deel:is(:hover,:focus){background:none;color:var(--sfp-b-primair);box-shadow:none}
+.sfp-samenvatting__deel:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}
+.sfp-samenvatting__deel svg{width:15px;height:15px;color:var(--sfp-b-secundair)}
+.sfp-samenvatting__deel:hover span{text-decoration:underline;text-underline-offset:4px}
+/* .wp-block-list erbij: de Customizer-regel .entry-content ul.wp-block-list (16 px inspringing en ondermarge) is even zwaar en staat later */
+:root .sfp-samenvatting>:is(ul,ol),:root .sfp-samenvatting>.wp-block-list{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+:root .sfp-samenvatting>:is(ul,ol)>li{margin:0;color:var(--sfp-b-primair);line-height:1.5;padding-left:20px;position:relative}
+.sfp-samenvatting>:is(ul,ol)>li::before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;border-radius:2px;background:var(--sfp-b-secundair)}
+.sfp-samenvatting__paneel{margin-top:18px;padding-top:18px;border-top:1px solid var(--sfp-b-lijn);display:grid;gap:12px;justify-items:start}
+:root .sfp-samenvatting__beeld{display:block;width:min(100%,340px);height:auto;border-radius:12px}
+.sfp-samenvatting__knoppen{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair)}
+@media (max-width:600px){
+  :root .sfp-samenvatting{padding:18px 16px 20px}
+  :root .sfp-samenvatting>:is(ul,ol)>li{font-size:15px;padding-left:18px}
+  :root .sfp-samenvatting__beeld,.sfp-samenvatting .sfp-deelkaart--vierkant{width:100%}
+}

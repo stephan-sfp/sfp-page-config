@@ -1,0 +1,12 @@
+/*
+ * Blokstijl Huisstijl op de WordPress-tabel (is-style-sfp-tabel): lijnen
+ * uit de primaire kleur, kopregel met een lijn in de secundaire kleur.
+ * Op een smal scherm schuift de tabel horizontaal.
+ */
+:root .wp-block-table.is-style-sfp-tabel{margin:24px 0;overflow-x:auto}
+:root .is-style-sfp-tabel table{width:100%;border-collapse:collapse;border:0;margin:0;font-size:15px;line-height:1.5;table-layout:auto}
+:root .is-style-sfp-tabel :is(th,td){text-align:left;padding:10px 12px;border:0;border-bottom:1px solid var(--sfp-b-lijn);vertical-align:top;background:none;word-break:normal}
+:root .is-style-sfp-tabel thead{border:0;border-bottom:2px solid var(--sfp-b-secundair)}
+:root .is-style-sfp-tabel :is(thead th,tbody th){font-weight:700;color:var(--sfp-b-primair)}
+:root .is-style-sfp-tabel figcaption{margin-top:8px;font-size:13px;line-height:1.5;text-align:left;color:var(--sfp-b-body)}
+@media (max-width:600px){:root .is-style-sfp-tabel table{font-size:14px;min-width:480px}}

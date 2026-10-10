@@ -153,6 +153,11 @@ function sfp_page_config_sanitize_settings( $input ) {
         }
     }
 
+    // Artikelopmaak, affiliatemelding en updatekanaal (includes/artikel.php).
+    if ( function_exists( 'sfp_page_config_artikel_sanitize' ) ) {
+        $clean = array_merge( $clean, sfp_page_config_artikel_sanitize( $input ) );
+    }
+
     return $clean;
 }
 
@@ -1007,6 +1012,12 @@ function sfp_page_config_render_tab_settings() {
                 </td>
             </tr>
         </table>
+
+        <?php
+        if ( function_exists( 'sfp_page_config_artikel_instellingen_formulier' ) ) {
+            sfp_page_config_artikel_instellingen_formulier( is_array( $s ) ? $s : array() );
+        }
+        ?>
 
         <?php submit_button( 'Instellingen opslaan' ); ?>
     </form>

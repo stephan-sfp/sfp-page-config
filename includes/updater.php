@@ -6,6 +6,15 @@
  * WordPress plugin update mechanism. Modelled after the
  * SFP Tooltip updater.
  *
+ * Kanaal (sinds 2.12.0): standaard volgt een site de laatste gewone
+ * release. Staat de instelling update_kanaal op "proef", dan volgt de site
+ * ook pre-releases; zo kan één site een proefversie draaien terwijl de
+ * andere op de laatste gewone release blijven.
+ *
+ * REST (sinds 2.12.0): POST /sfp/v1/updater/ververs leegt de 12-uurscache
+ * van deze updater en laat WordPress opnieuw naar updates kijken. Alleen
+ * voor gebruikers die plugins mogen bijwerken.
+ *
  * @package SFP_Page_Config
  */
 
@@ -142,26 +151,51 @@ class SFP_Page_Config_Updater {
     }
 
     /**
+     * Het updatekanaal van deze site: '' (gewone releases) of 'proef'
+     * (ook pre-releases).
+     *
+     * @return string
+     */
+    public static function kanaal() {
+        $settings = get_option( 'sfp_settings', array() );
+        return is_array( $settings ) && isset( $settings['update_kanaal'] ) && 'proef' === $settings['update_kanaal'] ? 'proef' : '';
+    }
+
+    /**
+     * Leeg de cache van de updater, voor beide kanalen.
+     */
+    public static function wis_cache() {
+        delete_transient( 'sfp_page_config_github_release' );
+        delete_transient( 'sfp_page_config_github_release_proef' );
+    }
+
+    /**
      * Fetch the latest release from GitHub (cached for 12 hours).
      *
      * @return object|false Release object or false on failure.
      */
     private function get_latest_release() {
 
+        $proef = 'proef' === self::kanaal();
+        $key   = $proef ? $this->transient_key . '_proef' : $this->transient_key;
+
         // A forced check from Beheer > Updates must actually reach GitHub.
         // WordPress clears its own update transient there, but not ours, so
         // without this a fresh release stayed invisible for up to 12 hours.
         if ( $this->is_forced_check() ) {
-            delete_transient( $this->transient_key );
+            delete_transient( $key );
         }
 
-        $release = get_transient( $this->transient_key );
+        $release = get_transient( $key );
         if ( false !== $release ) {
             return $release;
         }
 
+        // Gewoon kanaal: de laatste release die geen pre-release is. Kanaal
+        // proef: de lijst met releases, waaruit hieronder de hoogste versie
+        // wordt gekozen, pre-releases meegeteld.
         $url = sprintf(
-            'https://api.github.com/repos/%s/%s/releases/latest',
+            $proef ? 'https://api.github.com/repos/%s/%s/releases?per_page=10' : 'https://api.github.com/repos/%s/%s/releases/latest',
             $this->github_user,
             $this->github_repo
         );
@@ -182,7 +216,19 @@ class SFP_Page_Config_Updater {
         }
 
         $body = json_decode( wp_remote_retrieve_body( $response ) );
-        if ( empty( $body->tag_name ) ) {
+        if ( $proef ) {
+            $beste = null;
+            foreach ( is_array( $body ) ? $body : array() as $kandidaat ) {
+                if ( empty( $kandidaat->tag_name ) || ! empty( $kandidaat->draft ) ) {
+                    continue;
+                }
+                if ( null === $beste || version_compare( ltrim( $kandidaat->tag_name, 'vV' ), ltrim( $beste->tag_name, 'vV' ), '>' ) ) {
+                    $beste = $kandidaat;
+                }
+            }
+            $body = $beste;
+        }
+        if ( ! is_object( $body ) || empty( $body->tag_name ) ) {
             return false;
         }
 
@@ -203,7 +249,7 @@ class SFP_Page_Config_Updater {
             $body->download_url = isset( $body->zipball_url ) ? $body->zipball_url : '';
         }
 
-        set_transient( $this->transient_key, $body, 12 * HOUR_IN_SECONDS );
+        set_transient( $key, $body, 12 * HOUR_IN_SECONDS );
 
         return $body;
     }
@@ -335,4 +381,46 @@ class SFP_Page_Config_Updater {
 
         return $result;
     }
+}
+
+add_action( 'rest_api_init', 'sfp_page_config_updater_rest' );
+
+/**
+ * REST: leeg de cache van de updater en laat WordPress opnieuw kijken.
+ *
+ *   POST /sfp/v1/updater/ververs
+ *
+ * Geeft terug welke versie draait, welke versie de updater aanbiedt en op
+ * welk kanaal de site staat. Installeert niets.
+ */
+function sfp_page_config_updater_rest() {
+    register_rest_route(
+        'sfp/v1',
+        '/updater/ververs',
+        array(
+            'methods'             => 'POST',
+            'permission_callback' => function () {
+                return current_user_can( 'update_plugins' );
+            },
+            'callback'            => function () {
+                SFP_Page_Config_Updater::wis_cache();
+                delete_site_transient( 'update_plugins' );
+                if ( ! function_exists( 'wp_update_plugins' ) ) {
+                    require_once ABSPATH . 'wp-includes/update.php';
+                }
+                wp_update_plugins();
+                $updates = get_site_transient( 'update_plugins' );
+                $slug    = plugin_basename( SFP_PAGE_CONFIG_FILE );
+                $aanbod  = is_object( $updates ) && isset( $updates->response[ $slug ] ) ? $updates->response[ $slug ] : null;
+                return rest_ensure_response(
+                    array(
+                        'kanaal'      => '' === SFP_Page_Config_Updater::kanaal() ? 'gewoon' : 'proef',
+                        'geinstalleerd' => SFP_PAGE_CONFIG_VERSION,
+                        'aangeboden'  => $aanbod ? $aanbod->new_version : '',
+                        'pakket'      => $aanbod ? $aanbod->package : '',
+                    )
+                );
+            },
+        )
+    );
 }

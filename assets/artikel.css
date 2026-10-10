@@ -1,0 +1,226 @@
+/*
+ * Artikelopmaak: indeling, pijlerregel, kopkaart met acties en panelen,
+ * rechterkolom met inhoudsopgave en promokaart, hoofdstukbalk voor telefoon
+ * en tablet, auteurskaart en voetregels. Volgens de goedgekeurde dummy
+ * "SwS artikelopmaak" (v35).
+ *
+ * Kleuren: alleen de variabelen --sfp-b-* (rolvariabelen met Astra als
+ * terugval) en --sfp-art-balk voor de hoofdstukbalk. Fonts: de kopfont via
+ * --sfp-b-kop, de rest erft van Astra. Koppen krijgen hier alleen ruimte en
+ * marges; font, gewicht, kleur, maat en regelafstand komen uit Astra en de
+ * netwerkregels voor koppen.
+ *
+ * De plugin zet dit bestand inline in de head (includes/artikel.php).
+ */
+
+/* indeling */
+/* De netwerkbrede Customizer-CSS zet html en body op overflow-x:hidden. Daarmee wordt body de scrollende laag en loopt de rechterkolom niet mee (position:sticky werkt dan niet). clip knipt hetzelfde af zonder scrollende laag. Alleen op artikelpagina's. */
+html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{overflow-x:clip!important}
+.sfp-artikel-primary{width:100%;margin:0;padding:0}
+.sfp-artikel{margin:0;padding:0;background:var(--sfp-b-wit)}
+.sfp-artikel *,.sfp-art-balk,.sfp-art-balk *{box-sizing:border-box}
+.sfp-artikel [hidden],.sfp-art-balk[hidden],.sfp-art-balk [hidden]{display:none!important}
+.sfp-artikel__raster{max-width:1180px;margin:0 auto;padding:40px 24px 72px;display:grid;grid-template-columns:minmax(0,680px) 300px;gap:72px;justify-content:space-between}
+.sfp-artikel--zonder-zij .sfp-artikel__raster{grid-template-columns:minmax(0,680px);justify-content:center}
+.sfp-artikel__kolom{min-width:0;font-size:17px;line-height:1.75;color:var(--sfp-b-body)}
+.sfp-artikel :focus-visible,.sfp-art-balk :focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}
+.sfp-artikel img{max-width:100%;height:auto}
+/* Astra geeft beelden in een bericht een schaduw (.ast-article-single figure, img); de artikelopmaak heeft die niet */
+:root .sfp-artikel figure,:root .sfp-artikel img{box-shadow:none}
+
+/* knoppen in de artikelopmaak: los van de themaknop */
+:root .sfp-artikel button,:root .sfp-art-balk button{appearance:none;-webkit-appearance:none;background:none;border:0;border-radius:0;box-shadow:none;margin:0;padding:0;min-height:0;font:inherit;letter-spacing:normal;text-transform:none;color:inherit;cursor:pointer;width:auto;line-height:inherit}
+:root .sfp-artikel button:is(:hover,:focus,:active),:root .sfp-art-balk button:is(:hover,:focus,:active){background:none;color:inherit;box-shadow:none;border-color:transparent}
+
+/* labels: het kleine opschrift boven een onderdeel */
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+
+/* pijllink: de tweede call-to-action (merkbron: bodyfont 900, gewone letters, onderstreept) */
+:root .sfp-pijl{font-weight:900;font-size:15px;line-height:1.4;color:var(--sfp-b-links);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+.sfp-pijl::after{content:"\00a0\2192";display:inline-block;text-decoration:none}
+:root .sfp-pijl:is(:hover,:focus){color:var(--sfp-b-links);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+
+/* pijlerregel en titel */
+:root .sfp-art-pijler{font-family:var(--sfp-b-kop);font-weight:900;font-size:11px;line-height:1.4;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-primair);margin:0 0 12px}
+:root .sfp-art-pijler a{color:var(--sfp-b-primair);text-decoration:none;border-bottom:2px solid var(--sfp-b-secundair)}
+:root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-primair);border-bottom-color:var(--sfp-b-primair)}
+:root .sfp-artikel .sfp-art-titel{margin:0 0 24px;padding:0;text-wrap:pretty}
+
+/* kopkaart */
+.sfp-art-kop{background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:18px 20px 6px;margin:0 0 24px}
+.sfp-art-kop__wie{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:14px;row-gap:6px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--sfp-b-lijn)}
+:root .sfp-art-kop__foto{width:44px;height:44px;border-radius:50%;grid-row:span 2;display:block}
+.sfp-art-kop__wie--zonder-foto{grid-template-columns:minmax(0,1fr)}
+:root .sfp-art-kop__wie--zonder-foto .sfp-art-kop__affiliate{grid-column:1}
+.sfp-art-kop__naam{font-size:15px;line-height:1.3;color:var(--sfp-b-body)}
+:root .sfp-art-kop__naam a{color:var(--sfp-b-primair);font-weight:700;text-decoration:none}
+:root .sfp-art-kop__naam a:is(:hover,:focus){text-decoration:underline}
+.sfp-art-kop__rol::before{content:",\20"}
+.sfp-art-kop__meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;font-size:13px;line-height:1.3;color:var(--sfp-b-body)}
+.sfp-art-kop__meta>*{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.sfp-art-kop__meta>.sfp-art-kop__breek{display:none}
+.sfp-art-kop__meta>:not(:first-child):not(.sfp-art-kop__breek)::before{content:"\2022";margin:0 4px 0 10px;font-weight:400;color:var(--sfp-b-body)}
+:root .sfp-art-kop__check{font-weight:700;color:var(--sfp-b-primair);text-decoration:none}
+.sfp-art-kop__check svg{width:14px;height:14px;color:var(--sfp-b-secundair);flex:0 0 auto}
+:root a.sfp-art-kop__check:is(:hover,:focus){color:var(--sfp-b-primair);text-decoration:underline}
+:root .sfp-art-kop__affiliate{grid-column:2;margin:0;font-size:13px;line-height:1.3}
+:root .sfp-art-kop__affiliate a{color:var(--sfp-b-body);text-decoration:underline;text-underline-offset:3px}
+:root .sfp-art-kop__affiliate a:is(:hover,:focus){color:var(--sfp-b-primair)}
+
+/* acties */
+.sfp-art-acties{display:flex;flex-wrap:wrap;gap:0 12px;justify-content:space-between;align-items:center;padding:4px 0}
+:root .sfp-art-kop .sfp-art-actie{display:inline-flex;align-items:center;justify-content:flex-start;gap:8px;min-height:44px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);text-decoration:none;text-align:left}
+:root .sfp-art-kop .sfp-art-actie:is(:hover,:focus){color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:4px}
+.sfp-art-actie svg{width:16px;height:16px;flex:0 0 auto;color:var(--sfp-b-secundair)}
+.sfp-art-actie .sfp-kort{display:none}
+
+/* panelen in de kopkaart */
+.sfp-art-paneel{border-top:1px solid var(--sfp-b-lijn);padding:14px 0 16px}
+.sfp-art-deel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+:root .sfp-art-deel :is(a,button){display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 12px;min-height:42px;width:100%;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);text-decoration:none}
+:root .sfp-art-deel :is(a,button):is(:hover,:focus){color:var(--sfp-b-primair);background:var(--sfp-b-wit);border-color:var(--sfp-b-primair)}
+.sfp-art-deel svg{width:20px;height:20px;flex:0 0 auto}
+:root .sfp-art-bronnen{margin:0;padding:0 0 0 18px;display:grid;gap:8px;font-size:13px;line-height:1.5;color:var(--sfp-b-body);list-style:decimal}
+.sfp-art-bronnen li{margin:0}
+.sfp-art-bronnen a{overflow-wrap:anywhere}
+
+/* warming-up */
+.sfp-art-warm{display:grid;gap:12px;color:var(--sfp-b-primair)}
+.sfp-art-warm__kop{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--sfp-b-body)}
+.sfp-art-warm__stip{display:flex;gap:6px}
+.sfp-art-warm__stip i{width:24px;height:4px;border-radius:2px;background:var(--sfp-b-tint1)}
+.sfp-art-warm__stip i.aan{background:var(--sfp-b-secundair)}
+.sfp-art-warm__vraag{display:grid;gap:10px}
+.sfp-art-warm__vraag>b{font-weight:700;font-size:16px;line-height:1.45}
+.sfp-art-warm__opties{display:grid;gap:8px}
+:root .sfp-art-warm__opties button{font-size:15px;line-height:1.4;text-align:left;color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);padding:10px 12px;width:100%}
+:root .sfp-art-warm__opties button:is(:hover,:focus){color:var(--sfp-b-primair);background:var(--sfp-b-wit);border-color:var(--sfp-b-primair)}
+:root .sfp-art-warm__opties button[aria-pressed=true]{border-color:var(--sfp-b-secundair);box-shadow:inset 0 0 0 1px var(--sfp-b-secundair)}
+:root .sfp-art-warm__hint{margin:0;font-size:14px;color:var(--sfp-b-body)}
+.sfp-art-warm__voet{display:flex;justify-content:flex-end}
+:root .sfp-art-warm .sfp-art-warm__volgende{font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);padding:6px 0}
+.sfp-art-warm__volgende::after{content:" \2192"}
+:root .sfp-art-warm .sfp-art-warm__volgende:is(:hover,:focus){color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:4px}
+
+/* inhoud */
+:root .sfp-art-inhoud{margin:0;padding:0}
+:root .sfp-art-inhoud>p{margin:0 0 20px}
+/* scroll-margin met !important: de Customizer-CSS van het netwerk zet [id]{scroll-margin-top:16px!important} */
+:root .sfp-art-inhoud :is(h2,h3,h4){scroll-margin-top:calc(var(--sfp-art-kop-offset,0px) + 24px)!important;padding:8px 0}
+:root .sfp-art-inhoud>h2{margin:32px 0 4px;text-wrap:balance}
+:root .sfp-art-inhoud>h3{margin:20px 0 0}
+:root .sfp-art-inhoud>h4{margin:16px 0 0}
+:root .sfp-art-inhoud>:is(ul,ol){margin:0 0 20px 1.2em;padding:0}
+:root .sfp-art-inhoud>:is(ul,ol) li+li{margin-top:6px}
+:root .sfp-art-inhoud>:is(figure,.wp-block-image){margin:24px 0}
+.sfp-art-inhoud>.wp-block-image img{border-radius:var(--sfp-b-r-kaart)}
+:root .sfp-art-inhoud>p.is-style-sfp-lead,:root .sfp-art-inhoud>p.sfp-lead{font-size:20px;line-height:1.6;color:var(--sfp-b-primair)}
+:root .sfp-artikel [id]{scroll-margin-top:calc(var(--sfp-art-kop-offset,0px) + 24px)!important}
+
+/* promokaart (boek): rechts, en op telefoon en tablet in de tekst */
+.sfp-art-promo{display:grid;grid-template-columns:60px minmax(0,1fr);gap:16px;align-items:center;background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:20px}
+.sfp-art-promo--zonder-beeld{grid-template-columns:minmax(0,1fr)}
+:root .sfp-art-promo img{width:60px;height:auto;border:1px solid var(--sfp-b-lijn);border-radius:0;box-shadow:0 2px 6px rgba(0,0,0,.08),0 10px 20px rgba(0,0,0,.12)}
+.sfp-art-promo>div{display:grid;gap:6px;justify-items:start}
+:root .sfp-art-promo .sfp-blok-label{font-size:11px}
+.sfp-art-promo b{font-family:var(--sfp-b-kop);font-weight:900;font-size:15px;line-height:1.25;text-transform:uppercase;color:var(--sfp-b-primair)}
+:root .sfp-art-promo p{margin:0;font-size:14px;line-height:1.5;color:var(--sfp-b-body)}
+:root .sfp-art-promo .sfp-pijl{font-size:13px;margin-top:2px}
+:root .sfp-art-promo--inline{display:none}
+
+/* vervolg, affiliate-uitleg */
+.sfp-art-vervolg{margin:28px 0 0}
+:root .sfp-art-vervolg>:first-child{margin-top:0}
+:root .sfp-art-affiliate{margin:24px 0 0}
+
+/* auteurskaart */
+.sfp-art-auteur{display:grid;grid-template-columns:72px minmax(0,1fr);column-gap:18px;row-gap:18px;align-items:center;background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:28px;margin:24px 0 0}
+:root .sfp-art-auteur>img{width:72px;height:72px;border-radius:50%;display:block}
+.sfp-art-auteur__kop{display:grid;gap:8px}
+:root .sfp-art-auteur :is(h2,h3){margin:0;padding:0}
+.sfp-art-auteur__tekst{grid-column:1/-1}
+:root .sfp-art-auteur p{margin:0 0 16px;font-size:16px;line-height:1.6}
+:root .sfp-art-auteur ul{margin:0 0 18px;padding:16px 0 0;list-style:none;border-top:1px solid var(--sfp-b-lijn);font-size:15px;line-height:1.5;display:grid;gap:8px;color:var(--sfp-b-primair)}
+.sfp-art-auteur li{margin:0;padding-left:20px;position:relative}
+.sfp-art-auteur li::before{content:"";position:absolute;left:0;top:.5em;width:8px;height:8px;border-radius:2px;background:var(--sfp-b-secundair)}
+
+/* voetregels */
+.sfp-art-voet{margin:48px 0 0;display:grid;grid-template-columns:1fr 1fr}
+.sfp-art-voet__rij{padding:0 28px 4px 0;display:grid;gap:8px;align-content:start;font-size:14px;line-height:1.6;color:var(--sfp-b-body)}
+.sfp-art-voet__rij:only-child{grid-column:1/-1}
+.sfp-art-voet__rij+.sfp-art-voet__rij{padding-left:28px;padding-right:0;border-left:1px solid var(--sfp-b-lijn)}
+:root .sfp-art-voet p{margin:0}
+:root .sfp-art-voet .sfp-blok-label{display:flex;align-items:center;gap:8px}
+.sfp-art-voet svg{width:16px;height:16px;color:var(--sfp-b-secundair);flex:0 0 auto}
+.sfp-art-voet__links{display:flex;flex-wrap:wrap;gap:6px 16px}
+:root .sfp-art-voet a{font-weight:700;color:var(--sfp-b-primair);text-decoration:none;border-bottom:2px solid var(--sfp-b-secundair)}
+:root .sfp-art-voet a:is(:hover,:focus){color:var(--sfp-b-primair);border-bottom-color:var(--sfp-b-primair)}
+
+/* rechterkolom */
+.sfp-artikel__zij{position:sticky;top:calc(var(--sfp-art-kop-offset,0px) + 24px);align-self:start;display:grid;gap:28px;max-height:calc(100vh - var(--sfp-art-kop-offset,0px) - 48px);overflow:auto;scrollbar-width:thin}
+:root .sfp-art-toc .sfp-art-toc__kop{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 14px}
+.sfp-art-toc__kop span{color:var(--sfp-b-body);font-family:var(--sfp-b-tekst);font-weight:400;font-size:12px;line-height:1;text-transform:none;letter-spacing:0}
+:root .sfp-art-toc ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--sfp-b-tint1)}
+.sfp-art-toc li{margin:0}
+:root .sfp-art-toc li a{display:block;padding:7px 0 7px 14px;margin-left:-2px;border-left:2px solid transparent;font-weight:400;font-size:14px;line-height:1.4;color:var(--sfp-b-body);text-decoration:none}
+:root .sfp-art-toc li a:is(:hover,:focus){color:var(--sfp-b-primair)}
+:root .sfp-art-toc li a.sfp-actief{border-left-color:var(--sfp-b-secundair);color:var(--sfp-b-primair);font-weight:700}
+
+/* tooltips met een bron (SFP Tooltip levert de tooltip zelf) */
+.sfp-art-inhoud .tooltip{text-decoration:none}
+
+/* hoofdstukbalk: alleen op telefoon en tablet */
+.sfp-art-balk{display:none}
+
+@media (max-width:1024px){
+  .sfp-artikel__raster{grid-template-columns:minmax(0,1fr);gap:0;max-width:740px}
+  .sfp-artikel__zij{display:none}
+  :root .sfp-art-promo--inline{display:grid;margin:24px 0}
+
+  .sfp-art-balk{display:block;position:fixed;left:0;right:0;bottom:0;z-index:9990;background:var(--sfp-art-balk);color:var(--sfp-art-balk-tekst);padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 12px rgba(0,0,0,.12)}
+  .sfp-art-balk__rij{display:grid;grid-template-columns:52px minmax(0,1fr) 52px;align-items:stretch;height:52px;max-width:740px;margin:0 auto}
+  :root .sfp-art-balk .sfp-art-balk__pijl{display:grid;place-items:center;width:52px;height:52px;color:var(--sfp-art-balk-tekst)}
+  :root .sfp-art-balk .sfp-art-balk__pijl[disabled]{opacity:.35;cursor:default}
+  .sfp-art-balk svg{width:16px;height:16px;flex:0 0 auto}
+  :root .sfp-art-balk .sfp-art-balk__titel{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;width:100%;height:52px;padding:0 4px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1.2;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-art-balk-tekst)}
+  :root .sfp-art-balk button:is(:hover,:focus,:active){color:var(--sfp-art-balk-tekst)}
+  .sfp-art-balk__titel span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .sfp-art-balk__titel svg{transition:transform .15s;transform:rotate(180deg)}
+  .sfp-art-balk__titel[aria-expanded=true] svg{transform:none}
+  .sfp-art-balk :focus-visible{outline:2px solid var(--sfp-art-balk-tekst);outline-offset:-4px}
+  :root .sfp-art-balk__lijst{list-style:none;margin:0;padding:8px 0;max-height:min(60vh,420px);overflow:auto;overscroll-behavior:contain;background:var(--sfp-b-wit);border-top:1px solid var(--sfp-b-lijn-sterk);counter-reset:sfp-hfd}
+  .sfp-art-balk__lijst li{margin:0;counter-increment:sfp-hfd}
+  :root .sfp-art-balk__lijst a{display:flex;gap:12px;align-items:baseline;padding:12px 20px;font-size:15px;line-height:1.4;color:var(--sfp-b-primair);text-decoration:none;max-width:740px;margin:0 auto}
+  .sfp-art-balk__lijst a::before{content:counter(sfp-hfd);flex:0 0 18px;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;color:var(--sfp-b-secundair)}
+  :root .sfp-art-balk__lijst a.sfp-actief{font-weight:700;background:var(--sfp-b-tint3)}
+
+  /* zwevende knoppen van thema en cookiemelding staan niet over de balk */
+  body.sfp-artikel-pagina.sfp-art-balk-aan :is(#ast-scroll-top,.cmplz-manage-consent){display:none!important}
+}
+@media (max-width:600px){
+  .sfp-artikel__kolom{font-size:16px}
+  .sfp-artikel__raster{padding:24px 16px 48px}
+  :root .sfp-art-inhoud>p.is-style-sfp-lead,:root .sfp-art-inhoud>p.sfp-lead{font-size:18px}
+  .sfp-art-kop{padding:16px 16px 4px}
+  .sfp-art-kop__wie{grid-template-columns:40px minmax(0,1fr);column-gap:12px;row-gap:12px}
+  :root .sfp-art-kop__foto{width:40px;height:40px;grid-row:auto}
+  .sfp-art-kop__rol{display:block}
+  .sfp-art-kop__rol::before{content:none}
+  .sfp-art-kop__meta{grid-column:1/-1;gap:3px 0}
+  .sfp-art-kop__meta>.sfp-art-kop__breek{display:block;flex:0 0 100%;height:0}
+  .sfp-art-kop__meta>.sfp-art-kop__breek+*::before{content:none!important}
+  :root .sfp-art-kop__affiliate{grid-column:1/-1}
+  .sfp-art-acties{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+  :root .sfp-art-kop .sfp-art-actie{font-size:12px}
+  .sfp-art-actie .sfp-lang{display:none}
+  .sfp-art-actie .sfp-kort{display:inline}
+  .sfp-art-deel{grid-template-columns:1fr 1fr}
+  .sfp-art-auteur{grid-template-columns:56px minmax(0,1fr);column-gap:14px;padding:20px}
+  :root .sfp-art-auteur>img{width:56px;height:56px}
+  .sfp-art-voet{grid-template-columns:1fr;margin-top:40px}
+  .sfp-art-voet__rij{padding:0 0 20px;gap:10px}
+  .sfp-art-voet__rij+.sfp-art-voet__rij{padding:20px 0 0;border-left:0;border-top:1px solid var(--sfp-b-lijn)}
+  .sfp-art-voet__links{gap:8px 20px}
+}
+@media (prefers-reduced-motion:reduce){.sfp-artikel *,.sfp-art-balk *{scroll-behavior:auto!important;transition:none!important}}
+@media print{.sfp-art-balk,.sfp-art-acties,.sfp-art-paneel,.sfp-artikel__zij{display:none!important}}
