@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Versie van het ontwerp. Ophogen laat alle beelden opnieuw maken bij de
  * eerstvolgende keer opslaan.
  */
-define( 'SFP_PAGE_CONFIG_DEELBEELD_ONTWERP', 2 );
+define( 'SFP_PAGE_CONFIG_DEELBEELD_ONTWERP', 3 );
 
 /* =========================================================================
  * Wat de server kan
@@ -551,14 +551,10 @@ function sfp_page_config_deelbeeld_schrijf( $post, $sleutel, array $gegevens, $h
     $h      = imagesy( $beeld );
     // Voor in het artikel: een lichtere versie van het inzicht (800 px, WebP).
     // Het JPG op volle maat blijft het beeld om te delen en te downloaden.
-    if ( $gelukt && 'inzicht' === $gegevens['soort'] && function_exists( 'imagewebp' ) ) {
-        $klein = imagescale( $beeld, 800, -1, IMG_BICUBIC );
-        if ( $klein ) {
-            imagewebp( $klein, sfp_page_config_deelbeeld_klein_pad( $pad ), 82 );
-            imagedestroy( $klein );
-        }
-    }
     imagedestroy( $beeld );
+    if ( $gelukt && 'inzicht' === $gegevens['soort'] ) {
+        sfp_page_config_deelbeeld_maak_klein( $pad );
+    }
     if ( ! $gelukt || ! is_readable( $pad ) ) {
         return 0;
     }
@@ -611,6 +607,42 @@ function sfp_page_config_deelbeeld_schrijf( $post, $sleutel, array $gegevens, $h
         }
     }
     return (int) $id;
+}
+
+/**
+ * Maak de lichtere versie van een deelbeeld: 800 px breed, WebP. Via de
+ * beeldbewerker van WordPress (GD of Imagick), dezelfde die de tussenmaten
+ * van de mediabibliotheek maakt. Lukt het niet, dan gebruikt het artikel
+ * het JPG op volle maat.
+ *
+ * @since 2.12.0
+ *
+ * @param  string $pad Pad van het JPG.
+ * @return bool        Of het bestand er staat.
+ */
+function sfp_page_config_deelbeeld_maak_klein( $pad ) {
+    $doel   = sfp_page_config_deelbeeld_klein_pad( $pad );
+    $editor = wp_get_image_editor( $pad, array( 'output_mime_type' => 'image/webp' ) );
+    if ( is_wp_error( $editor ) ) {
+        update_option( 'sfp_page_config_deelbeeld_webp', 'Geen beeldbewerker met WebP: ' . $editor->get_error_message(), false );
+        return false;
+    }
+    $editor->set_quality( 82 );
+    $stap = $editor->resize( 800, null, false );
+    if ( ! is_wp_error( $stap ) ) {
+        $stap = $editor->save( $doel, 'image/webp' );
+    }
+    if ( is_wp_error( $stap ) ) {
+        update_option( 'sfp_page_config_deelbeeld_webp', 'WebP maken mislukt: ' . $stap->get_error_message(), false );
+        return false;
+    }
+    // De bewerker kan een andere naam kiezen; dan klopt de vaste naam niet meer.
+    if ( is_array( $stap ) && ! empty( $stap['path'] ) && $stap['path'] !== $doel && is_file( $stap['path'] ) ) {
+        rename( $stap['path'], $doel ); // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- binnen de uploads-map.
+    }
+    $gelukt = is_file( $doel );
+    update_option( 'sfp_page_config_deelbeeld_webp', $gelukt ? 'ok' : 'WebP maken gaf geen bestand.', false );
+    return $gelukt;
 }
 
 add_action( 'wp_after_insert_post', 'sfp_page_config_deelbeeld_bij_opslaan', 20, 2 );
@@ -723,6 +755,15 @@ function sfp_page_config_deelbeeld_stand() {
         'kleurrollen'  => null !== sfp_page_config_deelbeeld_kleuren(),
         'fonts_aanwezig' => null !== $fonts,
         'laatste_fout' => sfp_page_config_deelbeeld_fout(),
+        // WebP: kan GD het zelf, en welke beeldbewerker van WordPress kan het.
+        'webp_gd'      => function_exists( 'imagewebp' ) && function_exists( 'gd_info' ) && ! empty( gd_info()['WebP Support'] ),
+        'webp_bewerker' => function_exists( '_wp_image_editor_choose' ) ? (string) _wp_image_editor_choose(
+            array(
+                'mime_type'        => 'image/jpeg',
+                'output_mime_type' => 'image/webp',
+            )
+        ) : '',
+        'webp_laatste' => (string) get_option( 'sfp_page_config_deelbeeld_webp', '' ),
     );
 }
 
@@ -747,6 +788,7 @@ function sfp_page_config_deelbeeld_rest() {
                 'id'      => (int) $slot['id'],
                 'url'     => (string) wp_get_attachment_url( (int) $slot['id'] ),
                 'actueel' => ! empty( $slot['actueel'] ),
+                'klein'   => ! empty( $slot['klein'] ),
             );
         }
         return rest_ensure_response(

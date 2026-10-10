@@ -471,7 +471,23 @@ function sfp_page_config_artikel_promokaart( $variant = 'zij' ) {
     $tekst     = (string) sfp_page_config_get_setting( 'artikel_promo_tekst', '' );
     $linktekst = (string) sfp_page_config_get_setting( 'artikel_promo_linktekst', '' );
     $beeld_id  = (int) sfp_page_config_get_setting( 'artikel_promo_beeld', 0 );
-    $beeld     = $beeld_id ? wp_get_attachment_image( $beeld_id, 'medium', false, array( 'loading' => 'lazy', 'sizes' => '72px' ) ) : '';
+    $beeld     = '';
+    if ( $beeld_id ) {
+        // Zonder "auto" in sizes: haalt een cacheplugin het uitgestelde laden
+        // weg, dan leest de browser "auto" als de volle schermbreedte en
+        // kiest hij het grote bestand voor een beeld van 60 px.
+        add_filter( 'wp_img_tag_add_auto_sizes', '__return_false', 99 );
+        $beeld = wp_get_attachment_image(
+            $beeld_id,
+            'medium',
+            false,
+            array(
+                'loading' => 'lazy',
+                'sizes'   => '60px',
+            )
+        );
+        remove_filter( 'wp_img_tag_add_auto_sizes', '__return_false', 99 );
+    }
 
     return '<aside class="sfp-art-promo sfp-art-promo--' . ( 'inline' === $variant ? 'inline' : 'zij' ) . ( '' === $beeld ? ' sfp-art-promo--zonder-beeld' : '' ) . '"' . ( '' !== $label ? ' aria-label="' . esc_attr( $label ) . '"' : '' ) . '>'
         . $beeld . '<div>'
@@ -771,8 +787,12 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
         }
         $aantal  = count( $vragen );
         $acties .= $knop( 'sfp-art-paneel-warm', 'vraag', esc_html( sprintf( $t( 'warm' ), $aantal ) ), esc_html( $t( 'warm_kort' ) ) );
+        // Een klik op een antwoord gaat door naar de volgende vraag. Na de
+        // laatste vraag volgt de uitslag: per vraag het gekozen antwoord en
+        // het hoofdstuk waar het antwoord staat.
         $stip    = '';
         $blokken = '';
+        $uitslag = '';
         foreach ( $vragen as $i => $vraag ) {
             $stip  .= '<i' . ( 0 === $i ? ' class="aan"' : '' ) . '></i>';
             $opties = '';
@@ -781,14 +801,18 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
             }
             $hint = '';
             if ( '' !== $vraag['anker'] && isset( $titels[ $vraag['anker'] ] ) ) {
-                $hint = '<p class="sfp-art-warm__hint" hidden>' . sprintf( esc_html( $t( 'antwoord_in' ) ), '<a href="#' . esc_attr( $vraag['anker'] ) . '">' . esc_html( $titels[ $vraag['anker'] ] ) . '</a>' ) . '</p>';
+                $hint = '<span class="sfp-art-warm__hint">' . sprintf( esc_html( $t( 'antwoord_in' ) ), '<a href="#' . esc_attr( $vraag['anker'] ) . '">' . esc_html( $titels[ $vraag['anker'] ] ) . '</a>' ) . '</span>';
             }
-            $blokken .= '<div class="sfp-art-warm__vraag"' . ( 0 === $i ? '' : ' hidden' ) . '><b>' . esc_html( $vraag['vraag'] ) . '</b><div class="sfp-art-warm__opties">' . $opties . '</div>' . $hint . '</div>';
+            $blokken .= '<div class="sfp-art-warm__vraag"' . ( 0 === $i ? '' : ' hidden' ) . '><b>' . esc_html( $vraag['vraag'] ) . '</b><div class="sfp-art-warm__opties">' . $opties . '</div></div>';
+            $uitslag .= '<li><b>' . esc_html( $vraag['vraag'] ) . '</b><span class="sfp-art-warm__keuze">' . sprintf( esc_html( $t( 'jouw_antwoord' ) ), '<i></i>' ) . '</span>' . $hint . '</li>';
         }
         $eerste   = $hoofdstukken ? $hoofdstukken[0]['id'] : '';
-        $panelen .= '<div class="sfp-art-paneel" id="sfp-art-paneel-warm" hidden><div class="sfp-art-warm" data-sfp-volgende="' . esc_attr( $t( 'volgende_vraag' ) ) . '" data-sfp-start="' . esc_attr( $t( 'start_lezen' ) ) . '" data-sfp-begin="' . esc_attr( $eerste ) . '">'
+        $panelen .= '<div class="sfp-art-paneel" id="sfp-art-paneel-warm" hidden><div class="sfp-art-warm" data-sfp-begin="' . esc_attr( $eerste ) . '">'
             . '<div class="sfp-art-warm__kop"><span>' . sprintf( esc_html( $t( 'vraag_van' ) ), '<b class="sfp-art-warm__nr">1</b>', $aantal ) . '</span><span class="sfp-art-warm__stip" aria-hidden="true">' . $stip . '</span></div>'
-            . $blokken . '<div class="sfp-art-warm__voet"><button type="button" class="sfp-art-warm__volgende" hidden></button></div></div></div>';
+            . $blokken
+            . '<div class="sfp-art-warm__uitslag" hidden><span class="sfp-blok-label" tabindex="-1">' . esc_html( $t( 'jouw_antwoorden' ) ) . '</span><ol>' . $uitslag . '</ol>'
+            . '<div class="sfp-art-warm__voet"><button type="button" class="sfp-art-warm__volgende">' . esc_html( $t( 'start_lezen' ) ) . '</button></div></div>'
+            . '</div></div>';
     }
 
     // Bronnen.
@@ -803,7 +827,7 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
 }
 
 /**
- * De rechterkolom: inhoudsopgave en promokaart.
+ * De rechterkolom: inhoudsopgave, bronnen en promokaart.
  *
  * @param  WP_Post $post         Bericht.
  * @param  array   $hoofdstukken Hoofdstukken.
@@ -819,16 +843,25 @@ function sfp_page_config_artikel_zijkolom( $post, array $hoofdstukken ) {
         }
         $toc = '<nav class="sfp-art-toc" aria-label="' . esc_attr( $t( 'inhoud' ) ) . '"><div class="sfp-blok-label sfp-art-toc__kop">' . esc_html( $t( 'inhoud' ) ) . ' <span>' . esc_html( sprintf( $t( 'minuten' ), sfp_page_config_artikel_leestijd( $post->post_content ) ) ) . '</span></div><ol>' . $items . '</ol></nav>';
     }
+    // Bronnen: één regel onder de inhoudsopgave, die de lijst ter plekke openklapt.
+    $bron    = '';
+    $bronnen = sfp_page_config_artikel_bronnen( $post->post_content );
+    if ( $bronnen ) {
+        $bron = '<div class="sfp-art-zijbron"><button type="button" class="sfp-art-zijbron__knop" aria-expanded="false" aria-controls="sfp-art-zijbron-lijst" data-sfp-paneel>'
+            . sfp_page_config_artikel_icoon( 'bron' ) . '<span>' . esc_html( sprintf( $t( 'bronnen' ), count( $bronnen ) ) ) . '</span></button>'
+            . '<ol class="sfp-art-bronnen" id="sfp-art-zijbron-lijst" hidden><li>' . implode( '</li><li>', $bronnen ) . '</li></ol></div>';
+    }
     $promo = sfp_page_config_artikel_promokaart( 'zij' );
-    if ( '' === $toc && '' === $promo ) {
+    if ( '' === $toc && '' === $bron && '' === $promo ) {
         return '';
     }
-    return '<aside class="sfp-artikel__zij" aria-label="' . esc_attr( $t( 'zij_label' ) ) . '">' . $toc . $promo . '</aside>';
+    return '<aside class="sfp-artikel__zij" aria-label="' . esc_attr( $t( 'zij_label' ) ) . '">' . $toc . $bron . $promo . '</aside>';
 }
 
 /**
- * De hoofdstukbalk voor telefoon en tablet: de titel van het hoofdstuk met
- * een pijltje; een tik opent de lijst met hoofdstukken.
+ * De hoofdstukbalk voor telefoon en tablet: een lijst-icoon met de titel van
+ * het hoofdstuk; een tik opent de lijst met hoofdstukken. Bovenaan de lijst
+ * staat "terug naar boven".
  *
  * @param  array $hoofdstukken Hoofdstukken.
  * @return string
@@ -838,14 +871,14 @@ function sfp_page_config_artikel_balk( array $hoofdstukken ) {
         return '';
     }
     $t     = 'sfp_page_config_artikel_tekst';
-    $items = '';
+    $items = '<li class="sfp-art-balk__top"><a href="#page" data-sfp-top>' . esc_html( $t( 'naar_boven' ) ) . '</a></li>';
     foreach ( $hoofdstukken as $h ) {
         $items .= '<li><a href="#' . esc_attr( $h['id'] ) . '">' . esc_html( $h['titel'] ) . '</a></li>';
     }
-    return '<nav class="sfp-art-balk" id="sfp-art-balk" aria-label="' . esc_attr( $t( 'hoofdstukken' ) ) . '" hidden>'
+    return '<nav class="sfp-art-balk" id="sfp-art-balk" aria-label="' . esc_attr( $t( 'inhoud' ) ) . '" hidden>'
         . '<ol class="sfp-art-balk__lijst" id="sfp-art-balk-lijst" hidden>' . $items . '</ol>'
         . '<div class="sfp-art-balk__rij">'
-        . '<button type="button" class="sfp-art-balk__titel" aria-expanded="false" aria-controls="sfp-art-balk-lijst"><span></span>' . sfp_page_config_artikel_icoon( 'omlaag' ) . '</button>'
+        . '<button type="button" class="sfp-art-balk__titel" aria-expanded="false" aria-controls="sfp-art-balk-lijst">' . sfp_page_config_artikel_icoon( 'lijst' ) . '<span></span></button>'
         . '</div></nav>';
 }
 
