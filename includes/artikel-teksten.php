@@ -83,7 +83,7 @@ function sfp_page_config_artikel_teksten() {
             'meer_over'        => 'More about %s',
             'onderbouwd'       => 'Fact-checked and sourced',
             'onderbouwd_zin'   => 'Every claim in this article is checked against its source.',
-            'redactiebeleid'   => 'Editorial policy',
+            'redactiebeleid'   => 'Editorial statement',
             'bibliografie'     => 'Bibliography',
             'onderwerpen'      => 'More about',
             'inhoud'           => 'Contents',

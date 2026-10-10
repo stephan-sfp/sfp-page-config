@@ -236,6 +236,9 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
   .sfp-art-voet{grid-template-columns:1fr;margin-top:40px}
   .sfp-art-voet__rij{padding:0 0 20px;gap:10px}
   .sfp-art-voet__rij+.sfp-art-voet__rij{padding:20px 0 0;border-left:0;border-top:1px solid var(--sfp-b-lijn)}
+  /* op de telefoon eerst de onderwerpen, dan de verantwoording */
+  .sfp-art-voet .sfp-art-voet__rij--onderwerpen{order:-1;padding:0 0 20px;border-top:0}
+  .sfp-art-voet .sfp-art-voet__rij--bron:not(:only-child){padding:20px 0 0;border-top:1px solid var(--sfp-b-lijn)}
   .sfp-art-voet__links{gap:8px 20px}
 }
 @media (prefers-reduced-motion:reduce){.sfp-artikel *,.sfp-art-balk *{scroll-behavior:auto!important;transition:none!important}}
