@@ -464,7 +464,7 @@
 	 */
 	( function () {
 		var data = wp.data;
-		if ( ! data || ! data.subscribe ) {
+		if ( ! data || ! data.subscribe || ! ( window.sfpBlokken && window.sfpBlokken.artikel ) ) {
 			return;
 		}
 		var MINIMUM = 3;
@@ -557,7 +557,7 @@
 	 */
 	( function () {
 		var data = wp.data;
-		if ( ! data || ! data.subscribe ) {
+		if ( ! data || ! data.subscribe || ! ( window.sfpBlokken && window.sfpBlokken.artikel ) ) {
 			return;
 		}
 		var MELDING = 'sfp-uitgelicht';
