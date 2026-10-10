@@ -4,6 +4,24 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.12.0] - 2026-10-10
+
+Artikelopmaak, artikelblokken, deelbeelden en de automatische affiliatemelding. Getest als proef op SwS in drie pre-releases (beta.1 tot en met beta.3, hieronder); dit is de eerste gewone release ervan en bereikt alle sites.
+
+**Op een site verandert er pas iets zichtbaars als de artikelopmaak wordt aangezet** onder Instellingen, Artikelopmaak. Standaard staat hij uit: berichten blijven zoals ze zijn.
+
+### Ten opzichte van 2.12.0-beta.3
+- "Terug naar boven" in de hoofdstukkenlijst liet `#page` in het adres achter: het thema hangt een eigen klik aan ankerlinks. De plugin handelt de klik nu af voordat het thema hem ziet.
+- De waarschuwingen in de editor (rustig ritme, ontbrekende uitgelichte afbeelding) verschijnen alleen op sites waar de artikelopmaak aan staat.
+
+### Wat er op elke site wel verandert, ook met de artikelopmaak uit
+- De nieuwe blokken zijn beschikbaar in de editor (samenvatting, kader, citaat, inzicht, lees ook, vervolg, warming-up).
+- `basis.css` van de paginablokken wordt alleen nog geladen als een blok op de pagina hem nodig heeft.
+- Nieuwe REST-routes voor beheerders (`/sfp/v1/artikel/instellingen`, `/sfp/v1/deelbeeld/<id>`, `/sfp/v1/voorbeeld/<id>`, `/sfp/v1/updater/ververs`) en de instelling `update_kanaal`.
+
+### Terugdraaien
+- Terug naar 2.11.2. De instellingen van de artikelopmaak blijven bewaard.
+
 ## [2.12.0-beta.3] - 2026-10-10
 
 Derde proefversie (pre-release) van de artikelopmaak, na de proef met beta.2 op SwS.
