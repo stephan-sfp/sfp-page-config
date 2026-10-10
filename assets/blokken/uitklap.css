@@ -1,6 +1,7 @@
 /*
- * Bouwstenen: uitklap. Groot (dienstpagina's), compact (Read more) en kaart
- * (vergelijkingstabel). Werkt zonder JavaScript.
+ * Bouwstenen: uitklap. Groot (dienstpagina's), compact (Read more), kaart
+ * (vergelijkingstabel) en verhaal (een lang voorbeeld in een artikel, met een
+ * label boven de titel). Werkt zonder JavaScript.
  */
 .sfp-uitklap summary{list-style:none;cursor:pointer}
 .sfp-uitklap summary::-webkit-details-marker{display:none}
@@ -36,6 +37,19 @@
 :root .sfp-uitklap--kaart thead th{color:var(--sfp-b-primair);font-weight:700}
 :root .sfp-uitklap--kaart tbody th{font-weight:700;color:var(--sfp-b-secundair)}
 :root .sfp-uitklap--kaart .sfp-uitklap__inhoud>p{padding:12px 22px 20px;font-size:14px;margin:0}
+
+/* verhaal: lang voorbeeld in een artikel */
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-uitklap--verhaal{margin:24px 0;border-top:1px solid var(--sfp-b-lijn-sterk)}
+.sfp-uitklap--verhaal .sfp-uitklap__regel{border-bottom:1px solid var(--sfp-b-lijn-sterk)}
+.sfp-uitklap--verhaal summary{padding:20px 0;display:flex;gap:16px;align-items:center;justify-content:space-between}
+.sfp-uitklap--verhaal .sfp-uitklap__titel{display:grid;gap:6px}
+.sfp-uitklap--verhaal summary b{font-family:var(--sfp-b-kop);font-weight:700;font-size:clamp(18px,.6vw + 15px,22px);line-height:1.3;color:var(--sfp-b-primair)}
+.sfp-uitklap--verhaal summary::after{content:"+";flex:0 0 34px;height:34px;border-radius:50%;border:1px solid var(--sfp-b-lijn-sterk);display:grid;place-items:center;color:var(--sfp-b-primair);font-weight:400;font-size:22px;line-height:1}
+.sfp-uitklap--verhaal .sfp-uitklap__regel[open] summary::after{content:"\2212";background:var(--sfp-b-secundair);border-color:var(--sfp-b-secundair);color:var(--sfp-b-wit)}
+:root .sfp-uitklap--verhaal .sfp-uitklap__inhoud{padding:0 0 12px}
+:root .sfp-uitklap--verhaal .sfp-uitklap__inhoud p{margin:0 0 20px}
+:root .sfp-uitklap--verhaal .sfp-uitklap__inhoud>:last-child{margin-bottom:8px}
 
 @media (max-width:600px){
   :root .sfp-uitklap--groot .sfp-uitklap__inhoud{padding-right:0}

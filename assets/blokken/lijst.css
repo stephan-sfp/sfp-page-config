@@ -1,7 +1,9 @@
 /*
  * Bouwstenen: lijst. De inhoud is een gewone WordPress-lijst.
  * Regels: grote kopregels tussen lijnen. Letters: elk item begint met een
- * vette letter, die in een rondje komt. Vink: groene vinkjes.
+ * vette letter, die in een rondje komt. Vink: groene vinkjes. Kruis: wat je
+ * niet moet doen, in de functionele kleur voor fout. Nummers: genummerde
+ * punten in een rondje.
  */
 :root .sfp-lijst :is(ul,ol),:root .sfp-lijst .wp-block-list{list-style:none;margin:0;padding:0}
 :root .sfp-lijst li{margin:0}
@@ -16,5 +18,18 @@
 :root .sfp-lijst--vink :is(ul,ol){display:grid;gap:12px}
 :root .sfp-lijst--vink li{position:relative;padding-left:32px;color:var(--sfp-b-primair);line-height:1.5}
 .sfp-lijst--vink li::before{content:"";position:absolute;left:0;top:.15em;width:20px;height:20px;border-radius:50%;background:var(--sfp-b-secundair) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.3 2.3 4.7-5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+
+:root .sfp-lijst--kruis :is(ul,ol){display:grid;gap:12px}
+:root .sfp-lijst--kruis li{position:relative;padding-left:32px;color:var(--sfp-b-primair);line-height:1.5}
+.sfp-lijst--kruis li::before{content:"";position:absolute;left:0;top:.15em;width:20px;height:20px;border-radius:50%;background:#A4262C url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 5l6 6M11 5l-6 6' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/14px no-repeat}
+
+:root .sfp-lijst--nummers :is(ul,ol){display:grid;gap:12px;counter-reset:sfp-nr}
+:root .sfp-lijst--nummers li{position:relative;padding-left:36px;counter-increment:sfp-nr;color:var(--sfp-b-primair);line-height:1.5}
+.sfp-lijst--nummers li::before{content:counter(sfp-nr);position:absolute;left:0;top:.05em;width:24px;height:24px;border-radius:50%;background:var(--sfp-b-secundair);color:var(--sfp-b-wit);font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:24px;text-align:center}
+
+/* patroon Niet en wel: het bovenschrift boven elke lijst, in de functionele kleuren voor fout en goed */
+:root :is(.sfp-niet,.sfp-wel).is-style-sfp-bovenschrift{font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.08em;margin:0 0 14px}
+:root .sfp-niet.is-style-sfp-bovenschrift{color:#A4262C}
+:root .sfp-wel.is-style-sfp-bovenschrift{color:#1E8B45}
 
 @media (max-width:600px){:root .sfp-lijst--regels li{padding:18px 0}}

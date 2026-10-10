@@ -72,6 +72,13 @@ function sfp_page_config_is_longread( $post_id = null ) {
         return false;
     }
 
+    // De artikelopmaak (sinds 2.12.0) heeft een eigen inhoudsopgave en
+    // hoofdstukbalk; op die berichten staat de longread-navigatie uit.
+    if ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan()
+        && in_array( $post_type, sfp_page_config_artikel_posttypes(), true ) ) {
+        return false;
+    }
+
     // Check meta toggles (new key first, legacy key as fallback).
     if ( '1' === get_post_meta( $post_id, 'sfp_longread', true ) ) {
         return true;

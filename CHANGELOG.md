@@ -4,6 +4,39 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.12.0-beta.1] - 2026-10-10
+
+Proefversie (pre-release) voor de artikelopmaak. Bedoeld voor één site tegelijk; sites op het gewone updatekanaal krijgen deze versie niet aangeboden.
+
+### Toegevoegd
+- **Artikelopmaak** (`includes/artikel.php`, `assets/artikel.css`, `assets/artikel.js`), volgens de goedgekeurde dummy "SwS artikelopmaak" (v35) en de besluiten van 10 oktober 2026. Per site aan te zetten onder Instellingen, Artikelopmaak (standaard uit: berichten blijven zoals ze zijn). De schrijver schrijft tekst en plaatst blokken; de plugin zet de rest neer:
+  - indeling met een tekstkolom van 680 px en een meelopende rechterkolom; onder 1025 px één kolom;
+  - pijlerregel boven de titel, uit de categorie van het bericht en haar ouder;
+  - kopkaart met foto, naam, rol (nieuw profielveld "Rol in de byline", usermeta `sfp_rol`), publicatiedatum, bijgewerkt, leestijd en Gefactcheckt;
+  - acties in de kopkaart: delen (LinkedIn, WhatsApp, X, Facebook, e-mail, link kopiëren), voorkeursbron bij Google (per site aan of uit), warming-up en bronnen. De bronnen komen uit de tooltips van SFP Tooltip (regel "Bron:", "Source:" of "Fonte:"); dubbele bronnen staan er één keer;
+  - inhoudsopgave rechts uit de H2's die los in de tekst staan, met het actieve hoofdstuk; elke H2 zonder anker krijgt er een;
+  - hoofdstukbalk onderaan op telefoon en tablet: titel van het huidige hoofdstuk, tik opent de lijst, pijlen naar het vorige en volgende hoofdstuk. Zichtbaar tussen de kopkaart en het einde van het artikel. De longread-navigatie staat uit op berichten met de artikelopmaak;
+  - promokaart uit de instellingen (beeld, label, titel, tekst, link): rechts, en op telefoon en tablet na de eerste alinea van het eerste hoofdstuk;
+  - vervolgblok via de actie `sfp_artikel_vervolg` (bedoeld voor een Astra-layout per pijler met het blok Vervolg);
+  - auteurskaart uit het gebruikersprofiel (regels die met √ beginnen worden de feitenlijst) en voetregels met verantwoording en onderwerpen (tags).
+  - Teksten in het Nederlands, Engels en Braziliaans-Portugees naar de taal van de site (`includes/artikel-teksten.php`); aanpasbaar met het filter `sfp_page_config_artikel_tekst`.
+  - Het artikelsjabloon vervangt het berichtsjabloon van Astra. Astra-layouts aan hooks binnen het bericht (`astra_entry_*`, `astra_primary_content_*`) en reacties worden daar niet getoond; header en footer blijven die van het thema.
+- **Zeven blokken voor artikelen** (`includes/blokken-artikel.php`): `sfp/samenvatting`, `sfp/kader` (wist je dat, kanttekening, grondslag, reflectievraag, checklist, vrij), `sfp/citaat`, `sfp/inzicht`, `sfp/lees-ook`, `sfp/vervolg` met `sfp/vervolg-vlak`, en `sfp/warming-up` met `sfp/warming-up-vraag`. CSS per blok, alleen geladen waar het blok staat. De blokken werken ook op sites waar de artikelopmaak uit staat.
+- Bestaande blokken: lijststijlen `kruis` en `nummers`, uitklapvariant `verhaal` met een label boven de titel, blokstijlen "Lead" (alinea) en "Huisstijl" (tabel), en het patroon "Niet en wel".
+- **Deelbeelden** (`includes/deelbeeld.php`, `includes/deelbeeld-tekenen.php`): bij opslaan maakt de server van elk blok Inzicht (1200 x 627) en Samenvatting (1080 x 1080) een JPG in de huisstijl en zet die in de mediabibliotheek, gekoppeld aan het bericht. Kleuren uit het Astra-palet via de rollen van het snippet "Kleuren: rollen van het palet"; fonts uit Astra, als TTF één keer opgehaald bij Google Fonts naar `uploads/sfp-deelbeeld/fonts`. Verandert de tekst, dan wordt het bestand vervangen en blijft het mediabericht hetzelfde. Het eerste inzicht is de og:image van het artikel als in SureRank geen eigen beeld is gekozen. Kan de server niet tekenen, dan toont het blok dezelfde kaart in HTML. REST: `GET` en `POST /sfp/v1/deelbeeld/<id>`.
+- **Affiliatemelding, automatisch** (roadmap eeat-06): op sites met de artikelopmaak herkent de plugin affiliatelinks aan de patronen uit de instellingen, ook in tooltips. Gevonden: een korte regel in de kopkaart, als link naar een uitlegblok onderaan met het anker `#affiliate`. De Nederlandse teksten zijn de vastgestelde; voor andere talen is er geen standaard en toont de site de melding pas als de teksten zijn ingevuld. Op sites zonder artikelopmaak blijft het vinkje met de Astra-layout werken.
+- **Voorbeeldlink voor een concept** (`includes/voorbeeld.php`): `POST /sfp/v1/voorbeeld/<id>` geeft een link met een sleutel waarmee het concept twee weken uitgelogd te bekijken is (noindex, niet in de cache van WP Rocket); `DELETE` trekt hem in. De status van het bericht verandert niet.
+- **Updatekanaal**: instelling `update_kanaal`. Op "proef" volgt een site ook pre-releases; standaard alleen gewone releases. `POST /sfp/v1/updater/ververs` leegt de cache van de updater en laat WordPress opnieuw kijken.
+- REST voor beheerders: `GET` en `POST /sfp/v1/artikel/instellingen` (instellingen van de artikelopmaak, de affiliatemelding en het updatekanaal, plus de stand van de deelbeelden).
+
+### Gewijzigd
+- De CSS van de paginablokken (`basis.css`) wordt alleen nog geladen als een blok op de pagina hem nodig heeft.
+- Variabelen: `--sfp-b-knoptekst` (knoptekst van het merk, uit Astra), `--sfp-b-tint1` en `--sfp-b-tekst` (bodyfont uit Astra).
+- Op artikelpagina's zet de plugin `overflow-x:clip` op `html` en `body`. De netwerkbrede Customizer-CSS zet daar `overflow-x:hidden`, waardoor een meelopende kolom niet werkt.
+
+### Terugdraaien
+- Artikelopmaak: de instelling uitzetten. Blokken, deelbeelden, voorbeeldlink: het bijbehorende bestand uit de lijst in `sfp-page-config.php` halen. Gemaakte deelbeelden blijven in de mediabibliotheek staan.
+
 ## [2.11.2] - 2026-10-10
 
 ### Toegevoegd

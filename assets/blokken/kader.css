@@ -1,0 +1,18 @@
+/*
+ * Bouwstenen: kader. Eén rustige vorm voor wist je dat, kanttekening,
+ * grondslag, reflectievraag, checklist en een vrij label; alleen het label
+ * verschilt. De checklist krijgt aankruisvakjes.
+ */
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-kader{background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:26px 28px;margin:24px 0;box-sizing:border-box}
+:root .sfp-kader>.sfp-blok-label{font-size:13px;margin:0 0 14px}
+:root .sfp-kader :is(h2,h3,h4){margin:0 0 8px;padding:0}
+:root .sfp-kader p{margin:0 0 12px}
+:root .sfp-kader :is(ul,ol),:root .sfp-kader .wp-block-list{margin:0 0 12px 1.2em;padding:0}
+:root .sfp-kader li{margin:0 0 6px}
+:root .sfp-kader>:last-child{margin-bottom:0}
+:root .sfp-kader--reflectievraag p{color:var(--sfp-b-primair)}
+:root .sfp-kader--checklist :is(ul,ol),:root .sfp-kader--checklist .wp-block-list{list-style:none;margin-left:0;display:grid;gap:10px}
+:root .sfp-kader--checklist li{margin:0;padding-left:30px;position:relative;color:var(--sfp-b-primair);line-height:1.5}
+.sfp-kader--checklist li::before{content:"";position:absolute;left:0;top:.2em;width:18px;height:18px;box-sizing:border-box;border:2px solid var(--sfp-b-secundair);border-radius:4px;background:var(--sfp-b-wit)}
+@media (max-width:600px){:root .sfp-kader{padding:20px}}

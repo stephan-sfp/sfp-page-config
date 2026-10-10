@@ -3,3 +3,10 @@
 .sfp-editor-label{display:block;font:600 11px/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#757575;margin:0 0 6px}
 .sfp-editor-regel{border:1px dashed #c3c4c7;border-radius:6px;padding:10px 12px;margin:0 0 8px}
 .sfp-editor-regel .rich-text,.sfp-editor-vraag .rich-text{font-weight:700}
+.sfp-editor-vlak{border:1px dashed #c3c4c7;border-radius:6px;padding:12px 14px;margin:0 0 8px}
+.sfp-editor-uitleg{font:400 12px/1.5 system-ui,sans-serif;color:#757575;margin:4px 0 0}
+.block-editor-block-list__layout .sfp-inzicht .sfp-deelkaart__tekst{min-height:1.2em}
+.block-editor-block-list__layout .sfp-vervolg--twee>.block-editor-inner-blocks>.block-editor-block-list__layout{display:grid;grid-template-columns:1fr 1fr}
+.block-editor-block-list__layout .sfp-samenvatting ul.wp-block-list{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+.block-editor-block-list__layout .sfp-samenvatting ul.wp-block-list>li{margin:0;color:var(--sfp-b-primair);line-height:1.5;padding-left:20px;position:relative}
+.block-editor-block-list__layout .sfp-samenvatting ul.wp-block-list>li::before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;border-radius:2px;background:var(--sfp-b-secundair)}
