@@ -32,6 +32,9 @@
 :root .sfp-sectie__binnen>h2.has-text-align-center:first-child{max-width:none;margin-left:auto;margin-right:auto}
 :root .sfp-sectie__binnen>h2:first-child+p.has-text-align-center{max-width:40em;margin:0 auto 32px}
 :root .sfp-sectie__binnen>.sfp-kolommen+.sfp-kaart{margin-top:32px}
+/* paginakop binnen een sectie (bedankpagina, contact): ruimte tot de tekst; knoppen na tekst los van de laatste alinea */
+:root .sfp-sectie__binnen>h1:not(.is-style-sfp-paginatitel){margin-bottom:16px}
+:root .sfp-sectie__binnen>p+.wp-block-buttons{margin-top:32px}
 @media (min-width:981px){:root .sfp-sectie__binnen>h2:first-child{max-width:none}}
 
 /* paginatitel over de volle breedte (boekpagina); deler 32 hoort bij de lengte van de huidige titel */
@@ -47,6 +50,11 @@
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-wit);color:var(--sfp-b-wit)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link{background:transparent;border-color:var(--sfp-b-lijn-sterk);color:var(--sfp-b-primair)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
+/* tekstlink: tweede keus naast een volle knop, zonder rand of vlak */
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link{background:transparent;border-color:transparent;color:var(--sfp-b-primair);padding-left:6px;padding-right:6px;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link:hover{background:transparent;border-color:transparent;color:var(--sfp-b-links)}
+:root .sfp-held .is-style-sfp-tekst .wp-block-button__link,:root .sfp-held .is-style-sfp-tekst .wp-block-button__link:hover{color:var(--sfp-b-wit)}
+:root .sfp-held .is-style-sfp-tekst .wp-block-button__link:hover{text-decoration-color:var(--sfp-b-secundair)}
 
 /* alinea-stijlen */
 :root .sfp-sectie .is-style-sfp-intro{font-size:19px;line-height:1.6;max-width:34em}

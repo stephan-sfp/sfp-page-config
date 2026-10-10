@@ -151,6 +151,7 @@ function sfp_page_config_blokken() {
             'attributes'  => array(
                 'titel' => $tekst,
                 'sub'   => $tekst,
+                'anker' => $tekst,
             ),
             'render'      => 'sfp_page_config_render_uitklap_regel',
         ),
@@ -235,6 +236,7 @@ function sfp_page_config_blokstijlen() {
         'core/button'    => array(
             'sfp-licht'  => 'Licht (op donker)',
             'sfp-tweede' => 'Tweede (op licht)',
+            'sfp-tekst'  => 'Tekstlink (tweede keus naast een volle knop)',
         ),
         'sfp/kolom'      => array(
             'sfp-wachtlijst' => 'Wachtlijst (veld en knop op één regel)',
@@ -534,6 +536,7 @@ function sfp_page_config_blokken_js() {
         . 't.forEach(function(x,i){x.addEventListener("click",function(){k(x);});x.addEventListener("keydown",function(e){var n=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(n)k(t[(i+n+t.length)%t.length],1);});});});'
         . 'function o(){var h=location.hash.slice(1);if(!h)return;var d=document.getElementById(decodeURIComponent(h));if(d&&d.tagName==="DETAILS")d.open=true;}'
         . 'o();window.addEventListener("hashchange",o);'
+        . 'document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href^=\\"#\\"]");if(a&&a.getAttribute("href")===location.hash)setTimeout(o,0);});'
         . '})();';
     echo '<script id="sfp-blokken-js" nowprocket>' . $js . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste JS uit dit bestand.
 }
@@ -749,8 +752,12 @@ function sfp_page_config_render_uitklap_regel( $attrs, $content ) {
     $titel = wp_kses( sfp_page_config_blok_attr( $attrs, 'titel' ), sfp_page_config_blok_titel_kses() );
     $sub   = wp_kses( sfp_page_config_blok_attr( $attrs, 'sub' ), sfp_page_config_blok_titel_kses() );
     $kop   = '' === $sub ? $titel : '<span class="sfp-uitklap__titel">' . $titel . '<span class="sfp-uitklap__sub">' . $sub . '</span></span>';
-    $extra = array( 'class' => 'sfp-uitklap__regel' );
-    return '<details ' . get_block_wrapper_attributes( $extra ) . '><summary>' . $kop . '</summary><div class="sfp-uitklap__inhoud">' . $content . '</div></details>';
+    $anker = sfp_page_config_blok_attr( $attrs, 'anker' );
+    if ( '' !== $anker ) {
+        // Een link naar #anker opent deze regel; dat doet het script.
+        sfp_page_config_blokken_js_nodig( true );
+    }
+    return '<details ' . sfp_page_config_blok_omhulling( array( 'sfp-uitklap__regel' ), $anker ) . '><summary>' . $kop . '</summary><div class="sfp-uitklap__inhoud">' . $content . '</div></details>';
 }
 
 /**

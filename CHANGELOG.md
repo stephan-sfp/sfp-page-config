@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [2.11.2] - 2026-10-10
+
+### Toegevoegd
+- Knopstijl "Tekstlink" (`is-style-sfp-tekst`): tweede keus naast een volle knop, zonder rand of vlak; wit in de held.
+- Uitklapregel: veld `anker`. Een link naar `#anker` opent de regel (ook bij een tweede klik op dezelfde link).
+
+### Gewijzigd
+- Paginakop in een sectie (bedankpagina's, contact): 16 px extra ruimte tot de tekst. Knoppen direct na een alinea: 32 px ruimte erboven.
+- Uitklapregel in een kaart (onder een formulier): 12 px extra ruimte boven de regel, regelafstand 1,3 als hij over twee regels loopt.
+
 ## [2.11.1] - 2026-10-09
 
 ### Gerepareerd
