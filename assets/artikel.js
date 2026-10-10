@@ -167,6 +167,16 @@
         if (e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) { return; }
         var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
         if (!a || !(artikel.contains(a) || (balk && balk.contains(a)))) { return; }
+        /* Terug naar boven. Hier afgehandeld en niet op de link zelf: het thema hangt een eigen klik aan ankerlinks en zet anders het anker in het adres. */
+        if (a.hasAttribute('data-sfp-top')) {
+            e.preventDefault();
+            e.stopPropagation();
+            naSprong();
+            window.scrollTo(0, 0);
+            if (window.history && history.replaceState) { history.replaceState(null, '', location.pathname + location.search); }
+            naSprong();
+            return;
+        }
         var id = a.getAttribute('href').slice(1);
         var doel = null;
         try { doel = el(decodeURIComponent(id)); } catch (fout) { doel = el(id); }
@@ -190,7 +200,6 @@
 
     var lijst = balk ? el('sfp-art-balk-lijst') : null;
     var lijstLinks = lijst ? alle('a:not([data-sfp-top])', lijst) : [];
-    var naarBoven = lijst ? lijst.querySelector('a[data-sfp-top]') : null;
     var titelKnop = balk ? balk.querySelector('.sfp-art-balk__titel') : null;
     var titel = titelKnop ? titelKnop.querySelector('span') : null;
     var kopkaart = artikel.querySelector('.sfp-art-kop') || artikel.querySelector('.sfp-art-titel');
@@ -244,16 +253,6 @@
     naSprong = function () { sluitLijst(false); plan(); };
 
     if (balk) {
-        if (naarBoven) {
-            naarBoven.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                sluitLijst(false);
-                window.scrollTo(0, 0);
-                if (window.history && history.replaceState) { history.replaceState(null, '', location.pathname + location.search); }
-                plan();
-            });
-        }
         titelKnop.addEventListener('click', function () {
             var open = lijst.hidden;
             lijst.hidden = !open;
