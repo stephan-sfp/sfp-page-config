@@ -15,8 +15,10 @@ Derde proefversie (pre-release) van de artikelopmaak, na de proef met beta.2 op 
 - **Warming-up: één klik per vraag.** Een klik op een antwoord gaat direct door naar de volgende vraag; de knop "Volgende vraag" is vervallen. Na de laatste vraag volgt een uitslag: per vraag het gekozen antwoord en het hoofdstuk waar het antwoord staat, met link, en de knop om te gaan lezen. Geen goed of fout. Nieuwe teksten `jouw_antwoorden` en `jouw_antwoord`; `volgende_vraag` is verwijderd.
 - **Bronnen in de rechterkolom.** Tussen de inhoudsopgave en de promokaart staat één regel "Bronnen (n)"; een klik klapt de lijst ter plekke open. De knop Bronnen in de kopkaart blijft.
 - **Terug naar boven in de hoofdstukkenlijst.** Bovenaan de lijst achter de hoofdstukbalk staat "Terug naar boven" (tekst `naar_boven`). De losse knop van het thema blijft verborgen zolang de balk in beeld is.
+- **Hoofdstukbalk verdwijnt aan het einde van de tekst.** Voorheen bleef hij staan tot het einde van het hele artikel in beeld kwam, en stond hij dus over de affiliate-uitleg, het vervolgblok en de auteurskaart.
 - **Hoofdstukbalk voor het eerste hoofdstuk:** toont nu "Inhoud" (Engels: "Contents") in plaats van "Hoofdstukken" ("Chapters"). De tekst `hoofdstukken` is verwijderd.
 - **Minder wit onder de tekst.** De laatste alinea brengt geen eigen marge meer mee; de ruimte tot de affiliate-uitleg of het vervolgblok is nu gelijk aan die tussen de blokken eronder (was 44 px, nu 24 px).
+- **Uitgelichte afbeelding verplicht, niet in het artikel.** De editor waarschuwt bij berichten zonder uitgelichte afbeelding (nodig voor Lees ook, de overzichten en het delen). Publiceren blijft mogelijk. Het artikel zelf toont de afbeelding niet, zoals de dummy.
 - `GET /sfp/v1/deelbeeld/<id>` meldt per beeld of de lichte versie bestaat (`klein`), en in `stand`: of GD zelf WebP kan (`webp_gd`), welke beeldbewerker WebP schrijft (`webp_bewerker`) en hoe de laatste poging afliep (`webp_laatste`).
 
 ### Terugdraaien

@@ -548,4 +548,48 @@
 			);
 		} );
 	}() );
+
+	/*
+	 * Elk artikel hoort een uitgelichte afbeelding te hebben: die is nodig
+	 * voor Lees ook, de overzichten en het delen. Het artikel zelf toont hem
+	 * niet. Ontbreekt hij, dan verschijnt een waarschuwing boven het bericht.
+	 * Publiceren blijft mogelijk.
+	 */
+	( function () {
+		var data = wp.data;
+		if ( ! data || ! data.subscribe ) {
+			return;
+		}
+		var MELDING = 'sfp-uitgelicht';
+		var laatste = null;
+		data.subscribe( function () {
+			var editor, ontbreekt;
+			try {
+				editor = data.select( 'core/editor' );
+				if ( ! editor || ! editor.getCurrentPostType || 'post' !== editor.getCurrentPostType() ) {
+					return;
+				}
+				// Pas melden als er aan het artikel geschreven wordt.
+				ontbreekt = ! editor.getEditedPostAttribute( 'featured_media' ) && data.select( 'core/block-editor' ).getBlockCount() >= 3;
+			} catch ( fout ) {
+				return;
+			}
+			if ( ontbreekt === laatste ) {
+				return;
+			}
+			laatste = ontbreekt;
+			var meldingen = data.dispatch( 'core/notices' );
+			if ( ! meldingen ) {
+				return;
+			}
+			if ( ! ontbreekt ) {
+				meldingen.removeNotice( MELDING );
+				return;
+			}
+			meldingen.createWarningNotice(
+				'Dit artikel heeft nog geen uitgelichte afbeelding. Die is nodig voor Lees ook, de overzichten en het delen.',
+				{ id: MELDING, isDismissible: true }
+			);
+		} );
+	}() );
 }( window.wp ) );

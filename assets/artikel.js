@@ -194,6 +194,7 @@
     var titelKnop = balk ? balk.querySelector('.sfp-art-balk__titel') : null;
     var titel = titelKnop ? titelKnop.querySelector('span') : null;
     var kopkaart = artikel.querySelector('.sfp-art-kop') || artikel.querySelector('.sfp-art-titel');
+    var tekst = artikel.querySelector('.sfp-art-inhoud') || artikel;
     var rustTitel = balk ? (balk.getAttribute('aria-label') || '') : '';
     var actief = -2, zichtbaar = null, wacht = false;
 
@@ -226,8 +227,8 @@
             if (titel) { titel.textContent = i < 0 ? rustTitel : koppen[i].textContent; }
         }
         if (balk) {
-            /* Zichtbaar zolang de lezer in het artikel is: voorbij de kopkaart, en tot het einde van het artikel in beeld komt (zo blijft alles eronder vrij). */
-            var toon = kopkaart.getBoundingClientRect().bottom < offset && artikel.getBoundingClientRect().bottom > window.innerHeight;
+            /* Zichtbaar zolang de lezer in de tekst is: voorbij de kopkaart, en tot het einde van de tekst in beeld komt. Affiliate-uitleg, vervolgblok, auteurskaart en alles eronder blijven vrij. */
+            var toon = kopkaart.getBoundingClientRect().bottom < offset && tekst.getBoundingClientRect().bottom > window.innerHeight;
             if (toon !== zichtbaar) {
                 zichtbaar = toon;
                 if (!toon) { sluitLijst(false); }
