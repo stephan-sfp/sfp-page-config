@@ -36,3 +36,7 @@
 .sfp-kaart--link:hover .is-style-sfp-pijl a{color:var(--sfp-b-hover)}
 
 @media (max-width:600px){:root .sfp-kaart{padding:22px}}
+
+/* uitklapregel onder een formulier in een kaart: los van de verzendknop */
+:root .sfp-kaart>.sfp-uitklap{margin-top:12px}
+:root .sfp-kaart .sfp-uitklap--compact summary{line-height:1.3}
