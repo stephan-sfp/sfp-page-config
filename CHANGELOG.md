@@ -16,6 +16,8 @@ Derde proefversie (pre-release) van de artikelopmaak, na de proef met beta.2 op 
 - **Bronnen in de rechterkolom.** Tussen de inhoudsopgave en de promokaart staat één regel "Bronnen (n)"; een klik klapt de lijst ter plekke open. De knop Bronnen in de kopkaart blijft.
 - **Terug naar boven in de hoofdstukkenlijst.** Bovenaan de lijst achter de hoofdstukbalk staat "Terug naar boven" (tekst `naar_boven`). De losse knop van het thema blijft verborgen zolang de balk in beeld is.
 - **Hoofdstukbalk verdwijnt aan het einde van de tekst.** Voorheen bleef hij staan tot het einde van het hele artikel in beeld kwam, en stond hij dus over de affiliate-uitleg, het vervolgblok en de auteurskaart.
+- **Voetregels op de telefoon omgedraaid:** eerst de onderwerpen, dan de verantwoording. Op bredere schermen blijven ze naast elkaar staan.
+- De link naar de redactionele verantwoording heet in het Engels nu "Editorial statement" (was "Editorial policy"). De link verschijnt als de URL is ingevuld bij Instellingen, Artikelopmaak.
 - **Hoofdstukbalk voor het eerste hoofdstuk:** toont nu "Inhoud" (Engels: "Contents") in plaats van "Hoofdstukken" ("Chapters"). De tekst `hoofdstukken` is verwijderd.
 - **Minder wit onder de tekst.** De laatste alinea brengt geen eigen marge meer mee; de ruimte tot de affiliate-uitleg of het vervolgblok is nu gelijk aan die tussen de blokken eronder (was 44 px, nu 24 px).
 - **Uitgelichte afbeelding verplicht, niet in het artikel.** De editor waarschuwt bij berichten zonder uitgelichte afbeelding (nodig voor Lees ook, de overzichten en het delen). Publiceren blijft mogelijk. Het artikel zelf toont de afbeelding niet, zoals de dummy.

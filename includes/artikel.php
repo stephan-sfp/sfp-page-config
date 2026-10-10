@@ -951,7 +951,7 @@ function sfp_page_config_artikel_voetregels( $post ) {
             $links .= '<a href="' . esc_url( $url ) . '">' . esc_html( $t( $tekst ) ) . '</a>';
         }
     }
-    $rijen = '<div class="sfp-art-voet__rij"><span class="sfp-blok-label">' . sfp_page_config_artikel_icoon( 'vink' ) . esc_html( $t( 'onderbouwd' ) ) . '</span><p>' . esc_html( $t( 'onderbouwd_zin' ) ) . '</p>'
+    $rijen = '<div class="sfp-art-voet__rij sfp-art-voet__rij--bron"><span class="sfp-blok-label">' . sfp_page_config_artikel_icoon( 'vink' ) . esc_html( $t( 'onderbouwd' ) ) . '</span><p>' . esc_html( $t( 'onderbouwd_zin' ) ) . '</p>'
         . ( '' !== $links ? '<p class="sfp-art-voet__links">' . $links . '</p>' : '' ) . '</div>';
 
     $tags = get_the_terms( $post, 'post_tag' );
@@ -964,7 +964,7 @@ function sfp_page_config_artikel_voetregels( $post ) {
             }
         }
         if ( '' !== $onderwerpen ) {
-            $rijen .= '<div class="sfp-art-voet__rij"><span class="sfp-blok-label">' . sfp_page_config_artikel_icoon( 'label' ) . esc_html( $t( 'onderwerpen' ) ) . '</span><p class="sfp-art-voet__links">' . $onderwerpen . '</p></div>';
+            $rijen .= '<div class="sfp-art-voet__rij sfp-art-voet__rij--onderwerpen"><span class="sfp-blok-label">' . sfp_page_config_artikel_icoon( 'label' ) . esc_html( $t( 'onderwerpen' ) ) . '</span><p class="sfp-art-voet__links">' . $onderwerpen . '</p></div>';
         }
     }
     return '<div class="sfp-art-voet">' . $rijen . '</div>';
