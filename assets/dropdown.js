@@ -1,11 +1,20 @@
 /**
  * SFP Page Config - Groep Dropdown Populator
- * Version: 1.9.5
  *
- * Populates any dropdown with CSS class `sfp-startmoment-select`
- * from window.sfpCourseData. Handles SureForms/Tom Select timing,
+ * Fills the startmoment dropdown of the sign-up form from
+ * window.sfpCourseData. Handles SureForms/Tom Select timing,
  * including WP Rocket delay-JS which defers script execution until
  * first user interaction.
+ *
+ * Which dropdown: a field with the class `sfp-startmoment-select` (the way
+ * it worked until 2.12.0), otherwise the SureForms dropdown whose field name
+ * is exactly Datum, Data, Startmoment, Startdatum, Startdata or its English
+ * or Portuguese counterpart (see SLUG below). The script marks that field
+ * itself, so such a form no longer needs the class. A field with another
+ * name, such as "Kies een groep", still needs the class: a looser match
+ * could fill a field that asks something else.
+ *
+ * Texts follow the language of the site (window.sfpDropdownConfig).
  *
  * Strategy:
  *   1. If no sfpCourseData: hide the dropdown and show a fallback message.
@@ -17,7 +26,30 @@
 (function () {
     'use strict';
 
-    var PLACEHOLDER = 'Kies een groep';
+    var CFG = window.sfpDropdownConfig || {};
+    var PLACEHOLDER = CFG.kiesGroep || 'Kies een groep';
+    var GEEN_DATA = CFG.geenData || 'Neem contact op voor de eerstvolgende startdata.';
+    var GROEP = CFG.groep || 'Groep %d';
+    var KLASSE = 'sfp-startmoment-select';
+    // Veldnamen van SureForms (srfm-slug-...) die over het startmoment gaan.
+    var SLUG = /(^|\s)srfm-slug-(datum|data|datas|startmoment|startmomenten|startdatum|startdata|startdate|startdates|date|dates|turma)(-\d+)?(\s|$)/;
+
+    /**
+     * Zet de klasse op het veld met de startmomenten als het formulier die
+     * nog niet heeft.
+     */
+    function markeer() {
+        if (document.querySelector('.' + KLASSE)) return;
+        // Hetzelfde formulier kan twee keer op de pagina staan: elk passend
+        // veld krijgt de klasse.
+        var velden = document.querySelectorAll('.srfm-dropdown-block, .srfm-block[class*="srfm-slug-"]');
+        for (var i = 0; i < velden.length; i++) {
+            if (SLUG.test(velden[i].className) && velden[i].querySelector('select')) {
+                velden[i].classList.add(KLASSE);
+            }
+        }
+    }
+
     var nativeOptionsFilled = false;  // True once native <option>s are set.
     var tomSelectPatched = false;
     var isPatching = false; // Guard flag: true during any DOM modification.
@@ -25,6 +57,7 @@
 
     function hideDropdowns() {
         if (dropdownsHidden) return;
+        markeer();
         var ctaColor = (window.sfpDropdownConfig && window.sfpDropdownConfig.ctaColor) || 'currentColor';
         var containers = document.querySelectorAll('.sfp-startmoment-select');
         containers.forEach(function (container) {
@@ -35,7 +68,7 @@
             var msg = document.createElement('p');
             msg.className = 'sfp-no-coursedata-notice';
             msg.style.cssText = 'font-style:italic;color:' + ctaColor + ';margin:1em 0;';
-            msg.textContent = 'Neem contact op voor de eerstvolgende startdata.';
+            msg.textContent = GEEN_DATA;
             target.parentNode.insertBefore(msg, target);
             target.style.display = 'none';
         });
@@ -48,7 +81,7 @@
             var sm = data[i];
             var label = sm.label;
             if (!label || typeof label === 'undefined') {
-                label = 'Groep ' + (sm.index || (i + 1));
+                label = GROEP.replace('%d', sm.index || (i + 1));
                 if (sm.dates && sm.dates.length) {
                     label += ': ' + sm.dates.join(' \u2022 ');
                 }
@@ -110,6 +143,7 @@
     }
 
     function run() {
+        markeer();
         var data = window.sfpCourseData;
         if (!data || !data.length) {
             hideDropdowns();

@@ -13,7 +13,7 @@
  *      shortcodes, plus runs of four or more dots).
  *   2. Warns (never blocks) in the block editor right after a publish/update,
  *      and via an admin notice on the edit screen.
- *   3. Offers a site-wide sweep on the SFP Page Config dashboard that lists
+ *   3. Feeds the site-wide check on the screen Pagina's in SFP Beheer, which lists
  *      published pages/posts still containing placeholders.
  *
  * Drafts, pending and private content are skipped on purpose, so the template
@@ -284,85 +284,4 @@ function sfp_page_config_scan_placeholders( $force = false ) {
     set_transient( $cache_key, $results, HOUR_IN_SECONDS );
 
     return $results;
-}
-
-/**
- * Render the "Invulplekken" dashboard tab: a counter plus a table of live
- * pages/posts that still contain placeholders, with view/edit links and a
- * rescan button. Registered from includes/dashboard.php.
- */
-function sfp_page_config_render_tab_controle() {
-
-    if ( ! current_user_can( 'edit_pages' ) ) {
-        wp_die( 'Geen toegang.' );
-    }
-
-    // Handle a rescan request.
-    $force = false;
-    if ( isset( $_POST['sfp_pc_rescan_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['sfp_pc_rescan_nonce'] ) ), 'sfp_pc_rescan' ) ) {
-        delete_transient( 'sfp_pc_sweep' );
-        $force = true;
-    }
-
-    $results = sfp_page_config_scan_placeholders( $force );
-    $count   = count( $results );
-
-    $rescan_url = admin_url( 'admin.php?page=sfp-page-config&tab=controle' );
-
-    ?>
-    <p>Deze controle scant alle <strong>gepubliceerde</strong> pagina's, posts en begrippen op mogelijk niet-vervangen invulplekken uit het sjabloon: teksten tussen vierkante haken die geen shortcode zijn (zoals <code>[Probleem]</code>, <code>[Naam]</code>), en reeksen van vier of meer puntjes. Concepten en priv&eacute;pagina's blijven buiten beschouwing.</p>
-
-    <form method="post" action="<?php echo esc_url( $rescan_url ); ?>" style="margin:15px 0;">
-        <?php wp_nonce_field( 'sfp_pc_rescan', 'sfp_pc_rescan_nonce' ); ?>
-        <?php if ( 0 === $count ) : ?>
-            <span class="sfp-pc-badge sfp-pc-badge-ok">Geen invulplekken gevonden op live pagina's.</span>
-        <?php else : ?>
-            <span class="sfp-pc-badge sfp-pc-badge-warn"><?php echo esc_html( (string) $count ); ?> live pagina<?php echo 1 === $count ? '' : "'s"; ?> met mogelijke invulplekken</span>
-        <?php endif; ?>
-        <button type="submit" class="button" style="margin-left:10px;">Opnieuw scannen</button>
-    </form>
-
-    <style>
-        .sfp-pc-badge{display:inline-block;padding:4px 12px;border-radius:12px;font-weight:600;font-size:13px}
-        .sfp-pc-badge-ok{background:#edfaef;color:#007a2a;border:1px solid #9ad3a8}
-        .sfp-pc-badge-warn{background:#fcf4e6;color:#8a5a00;border:1px solid #edc887}
-        .sfp-pc-table{width:100%;border-collapse:collapse;margin-top:12px;background:#fff;max-width:1000px}
-        .sfp-pc-table th,.sfp-pc-table td{padding:10px 14px;border:1px solid #e1e1e1;text-align:left;vertical-align:top}
-        .sfp-pc-table th{background:#f6f7f7;font-weight:600}
-        .sfp-pc-table code{background:#fcecec;color:#8a1f1f;padding:1px 5px;border-radius:3px}
-    </style>
-
-    <?php if ( $count > 0 ) : ?>
-    <table class="sfp-pc-table">
-        <thead>
-            <tr>
-                <th style="width:32%">Pagina</th>
-                <th style="width:12%">Type</th>
-                <th>Gevonden invulplekken</th>
-                <th style="width:130px">Acties</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ( $results as $pid => $found ) :
-                $tags = array();
-                foreach ( $found as $item ) {
-                    $tags[] = '<code>' . esc_html( $item ) . '</code>';
-                }
-                ?>
-                <tr>
-                    <td><strong><?php echo esc_html( get_the_title( $pid ) ); ?></strong></td>
-                    <td><?php echo esc_html( get_post_type( $pid ) ); ?></td>
-                    <td><?php echo implode( ' ', $tags ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above. ?></td>
-                    <td>
-                        <a href="<?php echo esc_url( get_permalink( $pid ) ); ?>" target="_blank">Bekijk</a>
-                        &nbsp;|&nbsp;
-                        <a href="<?php echo esc_url( (string) get_edit_post_link( $pid ) ); ?>" target="_blank">Bewerk</a>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <p style="color:#757575;font-size:12px;margin-top:8px;">De uitslag wordt maximaal een uur gecachet en ververst automatisch zodra je een pagina opslaat. Gebruik "Opnieuw scannen" om nu te verversen.</p>
-    <?php endif; ?>
-    <?php
 }

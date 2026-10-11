@@ -52,10 +52,15 @@ if ( ! has_action( 'sfp_page_config_daily_check' ) && ! has_action( 'sfp_daily_c
  *  - A training is notified AGAIN only when its signature changes. Adding
  *    new dates changes the signature, so the training becomes eligible
  *    for a future notification once it approaches expiry again.
- *  - The recipient address comes from the Instellingen tab (cron_email);
+ *  - The recipient address comes from SFP Beheer, Cursusdata (cron_email);
  *    falls back to admin_email.
  */
 function sfp_page_config_run_daily_check() {
+
+    // Staat het onderdeel Cursusdata uit, dan is er niets te melden.
+    if ( function_exists( 'sfp_page_config_onderdeel_aan' ) && ! sfp_page_config_onderdeel_aan( 'cursusdata' ) ) {
+        return;
+    }
 
     $site_name = get_bloginfo( 'name' );
     $today     = wp_date( 'Y-m-d' );
@@ -208,7 +213,7 @@ function sfp_page_config_run_daily_check() {
     if ( ! empty( $upcoming ) ) {
         $message .= "BIJNA VERLOPEN (binnen 14 dagen):\n" . implode( "\n", $upcoming ) . "\n\n";
     }
-    $message .= "Je ontvangt per training slechts één melding. Voer nieuwe data in via het dashboard om de teller te resetten.\n";
+    $message .= "Je ontvangt per training slechts één melding. Voer nieuwe data in via SFP Beheer, Cursusdata, om de teller te resetten.\n";
 
     wp_mail( $recipient, "[{$site_name}] Cursusdata update", $message );
 }

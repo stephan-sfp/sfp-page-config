@@ -4,6 +4,65 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.0.0-beta.1] - 2026-10-11
+
+Eerste proefversie (pre-release) van SFP Beheer: het nieuwe beheer volgens het goedgekeurde ontwerp, met de plugins SFP Tooltip en SFP Google Reviews als onderdeel erin. Bedoeld voor de proef op SwS via het updatekanaal "proef". Het werk in de editor (paneel Deze pagina, blokken volgens de regels, gegevens van de site als blok) volgt in beta.2.
+
+**Voor bezoekers verandert er op een site pas iets als een oude plugin wordt uitgezet of als er in SFP Beheer iets wordt opgeslagen.** Twee uitzonderingen: op CVD verandert het accent van de longread (zie Verwijderd), en op de Engelse en Portugese site staan de vaste teksten die tot nu toe Nederlands waren (leestijd, inhoudsopgave, WhatsApp-bericht) voortaan in de taal van de site.
+
+### Toegevoegd
+- **Menu SFP Beheer** met de schermen Overzicht, Pagina's, Onderdelen, Cursusdata, Teksten en Onderhoud. Vervangt de tabbladen van het oude instellingenscherm. De map en de naam in de pluginlijst blijven `sfp-page-config` en SFP Page Config.
+- **Overzicht**: wat aandacht vraagt, welke onderdelen aan staan en welke instellingen afwijken van de netwerknorm, met per afwijking de knop "Terug naar de norm".
+- **Pagina's**: per pagina de soort, de knop onderaan en de meldingen. De controle meldt een knop zonder formulier, een inhoudsopgave met te weinig tussenkoppen, een training zonder of met alleen verlopen startmomenten, niet ingevulde sjabloontekst en een artikel zonder uitgelichte afbeelding. Een melding die bewust zo is, kun je per pagina wegklikken.
+- **Onderdelen** aan en uit per site: knop onderaan, artikelen, reviews, tooltips, footerlinks, voortgangsbalk, WhatsApp-knop en cursusdata. Zonder keuze volgt een onderdeel het gebruik op de site, zodat er bij het bijwerken niets verandert.
+- **Netwerknorm in de code**: teksten, het telefoonnummer van WhatsApp, de leessnelheid en het updatekanaal hebben een standaard. Leeg betekent de norm; een eigen waarde staat als afwijking op het Overzicht.
+- **Teksten per taal**: alle vaste teksten voor bezoekers in het Nederlands, Engels en Portugees, per site aan te passen. Ook de teksten die tot nu toe alleen Nederlands waren: "Groep 1", "Kies een groep", de melding zonder startdata, de leestijd, de inhoudsopgave, reviews en tooltips. De Engelse en Portugese standaardteksten zijn een eerste versie.
+- **Reviews als onderdeel** (was de plugin SFP Google Reviews, op basis van 2.1.9). Zelfde code `[google_reviews]`, zelfde instellingen (`sfp_reviews_options`, `sfp_reviews_manual`), zelfde bewaarde gegevens van Google en zelfde class `SFP_Reviews_Fetcher`. Nieuw: de weergave "Alleen het cijfer", een datum bij een eigen review (de site toont hoe lang geleden), teksten per taal, en een leeg antwoord van Google wordt niet meer een dag bewaard.
+- **Tooltips als onderdeel** (was de plugin SFP Tooltip 1.4.0). Zelfde opmaak in de editor en zelfde HTML, dus bestaande tooltips blijven werken. De opmaak staat nu in de plugin en volgt de kleurrollen van de site.
+- **Vervolg per pijler in de plugin**: het vervolg onder een artikel is een eigen bericht per pijler (categorie), te bewerken in de editor met het blok Vervolg. Een artikel zonder eigen vervolg krijgt dat van de pijler erboven. Een vervolg dat nu in een Astra-layout staat, neem je met één knop over; de layout wordt dan een concept.
+- **Footerlinks als lijst**: groepen met pagina's van de site of losse links. De lijst komt op de plek van de widget in het vierde footervlak en houdt dezelfde opbouw. De links uit de bestaande widget zijn met één knop over te nemen. Een link naar een pagina volgt het adres van die pagina.
+- **Knop onderaan kiest een bestemming**: het formulier op de pagina, een pagina van de site of een andere link. Per soort pagina in te stellen, en per pagina anders te zetten.
+- **Cursusdata met lestijd en standaardtijd** op een eigen scherm, plus het adres waar de melding over ontbrekende of verlopen data heen gaat.
+- REST-routes voor beheerders onder `/sfp/v1/beheer`.
+- `tests/beheer.php`: 279 controles op de logica achter het beheer.
+
+### Gewijzigd
+- **De knop onderaan herkent ook pagina's zonder Spectra.** De bovenkant van de pagina is het blok Held, anders de eerste Spectra-container, anders de eerste sectie. Het formulier is een bekend anker (`inschrijven`, `aanvragen`), anders de boekkaart van LatePoint, anders het eerste formulier op de pagina. Het id `sticky-mobile-cta` en de opbouw van de knop zijn gelijk gebleven, zodat het snippet "LatePoint: boekkaart in merkrollen" blijft werken.
+- **Het veld met startmomenten in een aanmeldformulier wordt herkend aan zijn naam** (datum, startmoment, startdatum, date en verwante namen). De class `sfp-startmoment-select` hoeft niet meer met de hand op het veld te staan; staat hij er, dan gaat die voor.
+- De WhatsApp-knop schuift op een telefoon omhoog zolang de knop onderaan in beeld is.
+- Staat het onderdeel Knop onderaan uit, dan blijven de omlijnde knoppen in de tekst op een telefoon zichtbaar. Ze gaan alleen weg op pagina's waar de knop onderaan ze vervangt.
+- Links naar eigen pagina's (factcheck, redactionele verantwoording, bibliografie, promokaart) worden als pagina gekozen in plaats van als adres getypt. Een bewaard adres blijft werken tot er een pagina is gekozen.
+- De taal van de artikelteksten en van alle andere teksten komt nu uit één plek.
+- Het affiliatevinkje in de editor staat er alleen nog waar het iets doet.
+- Het scherm met resten van oude plugins staat niet meer als los menu-item in het menu; je bereikt het via Onderhoud.
+
+### Gerepareerd
+- De link "Beheer de data" in het vak van de pagina wees naar een scherm dat niet meer bestond.
+- **De knop onderaan verschijnt ook voor wie lager op de pagina binnenkomt** (een link met een anker, een herladen pagina). Tot nu toe moest de bovenkant eerst in beeld zijn geweest.
+- **Een tooltip toont alleen nog tekst, links en nadruk.** Andere HTML in de bewaarde tekst van een tooltip werd tot nu toe uitgevoerd, ook in het voorbeeld in de editor. Dat komt uit SFP Tooltip 1.4.0.
+- De rij met reviews kon dubbel zo snel gaan schuiven na een klik op een pijl (twee timers tegelijk). Dat komt uit SFP Google Reviews.
+- Een mislukte aanvraag bij Google wordt tien minuten onthouden, zodat een pagina met reviews niet bij elk bezoek op Google wacht.
+- De vaste teksten van het aanmeldformulier ("Kies een groep") kwamen met uitgesteld laden van scripts niet aan bij het script.
+- Een tooltip had op een site zonder ingevuld CSS-vak geen opmaak (gemeten op SwS). De opmaak komt nu uit de plugin.
+
+### Verwijderd
+- **De elf kleurvelden** (voortgangsbalk, leestijd, negen voor de longread) worden niet meer toegepast. Kleuren volgen Astra. Gemeten op alle sites: tien velden waren overal leeg. Alleen op CVD verandert er iets: het accent van de longread wordt de knopkleur van de site in plaats van #ff3c38 (besluit Stephan, 11-10). De bewaarde waarden blijven in de database staan.
+- **De CSS-vakken** van de plugin, van SFP Tooltip (`sfp_tooltip_css`) en van SFP Google Reviews (`sfp_reviews_custom_css`) worden niet meer gelezen. De opmaak die er netwerkbreed in stond, is de standaard van het onderdeel geworden.
+- De koppeling met Convert Pro (`assets/promo.js` en twee instellingen). Convert Pro staat op geen enkele site.
+- `assets/dashboard.js` en het oude instellingenscherm met tabbladen (`includes/dashboard.php`). Het opslaan van cursusdata via `sfp_save_cursusdata` blijft bestaan.
+
+### Overgang van de oude plugins
+- Zolang SFP Tooltip of SFP Google Reviews op een site actief is, doet het onderdeel in deze plugin niets en meldt SFP Beheer dat het onderdeel nog via de oude plugin draait. Per verzoek is er dus altijd precies één.
+- Staat de oude plugin uit, dan neemt het onderdeel het over bij het eerstvolgende verzoek. Uitzetten wist geen instellingen.
+- De oude plugin weer aanzetten kan altijd, ook terwijl deze versie actief is.
+
+### Nog niet in deze proef
+- Het werk in de editor: paneel Deze pagina in plaats van het vak onder de editor, ankers kiezen, blokken volgens de regels, voorbeelden bij blokken, tellers, gegevens van de site als blok, deelbeeld opnieuw maken, bron en link bij een tooltip. Volgt in beta.2.
+
+### Terugdraaien
+- De oude plugins weer aanzetten zet tooltips en reviews terug op de oude plugins.
+- Terug naar 2.12.0: de zip van 2.12.0 uploaden. De instellingen van 2.12.0 zijn niet gewijzigd of gewist; nieuwe instellingen (onderdelen, teksten, footerlinks, bestemming van de knop) worden door 2.12.0 genegeerd. Een vervolg dat uit een Astra-layout is overgenomen: zet de layout weer op gepubliceerd.
+
 ## [2.12.0] - 2026-10-10
 
 Artikelopmaak, artikelblokken, deelbeelden en de automatische affiliatemelding. Getest als proef op SwS in drie pre-releases (beta.1 tot en met beta.3, hieronder); dit is de eerste gewone release ervan en bereikt alle sites.

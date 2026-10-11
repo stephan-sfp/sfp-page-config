@@ -85,9 +85,9 @@ function sfp_page_config_calculate_reading_time( $content ) {
     $words = count( preg_split( '/\s+/', strip_tags( $text ), -1, PREG_SPLIT_NO_EMPTY ) );
     $mins  = max( 1, (int) ceil( $words / $words_per_minute ) );
 
-    $label = ( 1 === $mins ) ? 'minuut' : 'minuten';
+    $label = sfp_page_config_tekst( 1 === $mins ? 'minuut' : 'minuten' );
 
-    return 'LEESTIJD: <span class="tijd-getal">' . $mins . '</span> ' . $label;
+    return esc_html( sfp_page_config_tekst( 'leestijd_label' ) ) . ': <span class="tijd-getal">' . $mins . '</span> ' . esc_html( $label );
 }
 
 /* =========================================================================
@@ -124,35 +124,6 @@ function sfp_page_config_shortcode_reading_time() {
     return $result;
 }
 
-/* =========================================================================
- * 3. Scroll progress bar (HTML + JS)
- * ====================================================================== */
-
-add_action( 'wp_head', 'sfp_page_config_reading_progress_custom_css', 99 );
-
-/**
- * Emit the Aangepaste CSS from the Instellingen tab so editors can style
- * the reading-time meter and scroll progress bar without a code snippet.
- *
- * Runs sitewide on singular posts/pages. The value is sanitized on save
- * (wp_strip_all_tags) so no </style> can escape the block, but we still
- * print it inside a clearly-labeled <style id> so it is obvious in the
- * source where the rules came from.
- */
-function sfp_page_config_reading_progress_custom_css() {
-
-    if ( ! is_singular( sfp_page_config_post_types() ) ) {
-        return;
-    }
-
-    $css = sfp_page_config_get_setting( 'custom_css_rp', '' );
-    if ( '' === trim( (string) $css ) ) {
-        return;
-    }
-
-    echo "\n<style id=\"sfp-custom-css-rp\">\n" . $css . "\n</style>\n";
-}
-
 add_action( 'wp_enqueue_scripts', 'sfp_page_config_scroll_progress_enqueue' );
 
 /**
@@ -164,6 +135,8 @@ function sfp_page_config_scroll_progress_enqueue() {
         return;
     }
 
+    // Laadt ook met de voortgangsbalk uit: het bestand bevat de opmaak van
+    // de leestijd.
     wp_enqueue_style(
         'sfp-reading-time',
         SFP_PAGE_CONFIG_URL . 'assets/reading-time.css',
@@ -171,24 +144,13 @@ function sfp_page_config_scroll_progress_enqueue() {
         SFP_PAGE_CONFIG_VERSION
     );
 
-    // Resolve the colors: editor-setting wins, brand CTA color is the
-    // default fallback. Both sanitize_hex_color calls return null on
-    // invalid input so we keep a safe final fallback.
-    $brand        = sfp_page_config_get_brand();
-    $brand_cta    = $brand['cta_bg']; // Validated in sfp_page_config_get_brand().
-
-    $stored_bar   = sanitize_hex_color( (string) sfp_page_config_get_setting( 'progress_bar_color', '' ) );
-    $bar_color    = $stored_bar ? $stored_bar : $brand_cta;
-
-    $stored_rt    = sanitize_hex_color( (string) sfp_page_config_get_setting( 'reading_time_accent_color', '' ) );
-    // The reading-time accent intentionally has no PHP-level fallback so
-    // that an unset value lets the CSS fall back to the theme's
-    // --brand-accent variable via var(--sfp-rt-accent, var(--brand-accent)).
-    $rt_inline    = $stored_rt ? '--sfp-rt-accent:' . esc_attr( $stored_rt ) . ';' : '';
+    // De balk draagt de knopkleur van de site, uit Astra. Kleurvelden zijn
+    // er sinds 3.0.0 niet meer.
+    $brand = sfp_page_config_get_brand();
 
     wp_add_inline_style(
         'sfp-reading-time',
-        ':root{--sfp-bar-color:' . $bar_color . ';' . $rt_inline . '}'
+        ':root{--sfp-bar-color:' . $brand['cta_bg'] . ';}'
     );
 }
 
@@ -204,7 +166,7 @@ add_action( 'wp_footer', 'sfp_page_config_scroll_progress_bar', 25 );
  */
 function sfp_page_config_scroll_progress_bar() {
 
-    if ( ! is_singular( sfp_page_config_post_types() ) ) {
+    if ( ! is_singular( sfp_page_config_post_types() ) || ! sfp_page_config_onderdeel_aan( 'voortgang' ) ) {
         return;
     }
 

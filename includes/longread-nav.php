@@ -118,30 +118,34 @@ function sfp_page_config_longread_nav_output() {
         return;
     }
 
+    // Teksten in de taal van de site (includes/teksten.php).
+    $t_inhoud = sfp_page_config_tekst( 'inhoudsopgave' );
+    $t_boven  = sfp_page_config_tekst( 'naar_boven' );
+
     ?>
 
-<div id="sfp-lr-nav" aria-label="Artikelnavigatie">
+<div id="sfp-lr-nav">
     <!-- Desktop: sticky sidebar TOC -->
-    <nav id="sfp-lr-sidebar" class="sfp-lr-sidebar" aria-label="Inhoudsopgave">
+    <nav id="sfp-lr-sidebar" class="sfp-lr-sidebar" aria-label="<?php echo esc_attr( $t_inhoud ); ?>">
         <button id="sfp-lr-sidebar-toggle" class="sfp-lr-sidebar__title" aria-expanded="true">
-            Inhoudsopgave
+            <?php echo esc_html( $t_inhoud ); ?>
             <svg class="sfp-lr-sidebar__toggle-icon" width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </button>
         <div id="sfp-lr-toc-list" class="sfp-lr-sidebar__list"></div>
-        <button id="sfp-lr-sidebar-top" class="sfp-lr-sidebar__top" aria-label="Naar boven">
+        <button id="sfp-lr-sidebar-top" class="sfp-lr-sidebar__top" aria-label="<?php echo esc_attr( $t_boven ); ?>">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 10l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            Naar boven
+            <?php echo esc_html( $t_boven ); ?>
         </button>
     </nav>
 
     <!-- Mobiel: bottom chapter bar -->
-    <div id="sfp-lr-bar" class="sfp-lr-bar" role="navigation" aria-label="Hoofdstuknavigatie">
+    <div id="sfp-lr-bar" class="sfp-lr-bar" role="navigation" aria-label="<?php echo esc_attr( $t_inhoud ); ?>">
         <div id="sfp-lr-drawer" class="sfp-lr-drawer" aria-hidden="true"></div>
-        <button class="sfp-lr-bar__btn" id="sfp-lr-prev" aria-label="Vorig hoofdstuk">
+        <button class="sfp-lr-bar__btn" id="sfp-lr-prev" aria-label="<?php echo esc_attr( sfp_page_config_tekst( 'vorig_hoofdstuk' ) ); ?>">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -153,12 +157,12 @@ function sfp_page_config_longread_nav_output() {
                 <line class="sfp-lr-bar__toggle-v" x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
         </div>
-        <button class="sfp-lr-bar__btn" id="sfp-lr-next" aria-label="Volgend hoofdstuk">
+        <button class="sfp-lr-bar__btn" id="sfp-lr-next" aria-label="<?php echo esc_attr( sfp_page_config_tekst( 'volgend_hoofdstuk' ) ); ?>">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
         </button>
-        <button class="sfp-lr-bar__btn sfp-lr-bar__top" id="sfp-lr-top" aria-label="Naar boven">
+        <button class="sfp-lr-bar__btn sfp-lr-bar__top" id="sfp-lr-top" aria-label="<?php echo esc_attr( $t_boven ); ?>">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 10l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>

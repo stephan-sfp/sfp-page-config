@@ -7,6 +7,10 @@
  * - Injects `window.sfpStickyConfig` for the sticky CTA JavaScript.
  * - Enqueues the sticky CTA JS and sales-page CSS on matching pages.
  *
+ * Since 3.0.0 the button finds the top of the page and the form itself, also
+ * on pages built with the SFP blocks. The Convert Pro helper (promo.js) is
+ * gone: Convert Pro runs on none of the eight sites.
+ *
  * @package SFP_Page_Config
  */
 
@@ -36,6 +40,11 @@ function sfp_page_config_body_classes( $classes ) {
 
     if ( $type ) {
         $classes[] = 'is-sales-page';
+        // Alleen met de knop onderaan gaan de omlijnde knoppen in de tekst
+        // op een telefoon weg (assets/sales-page.css).
+        if ( sfp_page_config_onderdeel_aan( 'knop' ) ) {
+            $classes[] = 'sfp-knop-onderaan';
+        }
         $classes[] = 'is-sales-page--' . sanitize_html_class( $type );
     }
 
@@ -88,74 +97,96 @@ function sfp_page_config_enqueue_sales_assets() {
 
     wp_add_inline_style( 'sfp-page-config-sales', $inline_css );
 
-    // Sticky CTA config + JS.
-    $config = sfp_page_config_get_sticky_cta( $type );
+    // De knop onderaan.
+    if ( ! sfp_page_config_onderdeel_aan( 'knop' ) ) {
+        return;
+    }
+    $config = sfp_page_config_knop_voor_pagina( get_queried_object_id(), $type );
     if ( ! $config ) {
         return;
     }
 
-    // Allow per-page overrides for CTA text and href.
-    $post_id     = get_queried_object_id();
-    $custom_text = get_post_meta( $post_id, 'sfp_cta_text', true );
-    $custom_href = get_post_meta( $post_id, 'sfp_cta_href', true );
-
-    if ( $custom_text ) {
-        $config['text'] = $custom_text;
-    }
-    if ( $custom_href ) {
-        // The resolver sets the matching target: an on-page anchor stays
-        // in the same tab, an external URL opens in a new one.
-        $config['href'] = $custom_href;
-        $config         = sfp_page_config_resolve_sticky_cta_href( $config );
-    }
-
-    // No destination at all (no URL configured and no anchor set) means
-    // there is nothing to link to, so we skip the sticky CTA rather than
-    // rendering a dead button. Only this block is skipped: the promo
-    // script below is unrelated to the CTA and must still load.
-    if ( '' !== trim( (string) $config['href'] ) ) {
-
-        wp_enqueue_script(
-            'sfp-page-config-sticky-cta',
-            SFP_PAGE_CONFIG_URL . 'assets/sticky-cta.js',
-            array(),
-            SFP_PAGE_CONFIG_VERSION,
-            true
-        );
-
-        // Pass config to JS.
-        $inline_js = sprintf(
-            'window.sfpStickyConfig=%s;',
-            wp_json_encode( array(
-                'text'            => $config['text'],
-                'href'            => $config['href'],
-                'target'          => $config['target'],
-                'anchor'          => $config['anchor'],
-                'hero'            => $config['hero'],
-                'scrollThreshold' => 400,
-            ) )
-        );
-        wp_add_inline_script( 'sfp-page-config-sticky-cta', $inline_js, 'before' );
-    }
-
-    // Promo frequency/conflict resolution JS (loaded alongside sticky CTA).
     wp_enqueue_script(
-        'sfp-page-config-promo',
-        SFP_PAGE_CONFIG_URL . 'assets/promo.js',
+        'sfp-page-config-sticky-cta',
+        SFP_PAGE_CONFIG_URL . 'assets/sticky-cta.js',
         array(),
         SFP_PAGE_CONFIG_VERSION,
         true
     );
+    wp_add_inline_script( 'sfp-page-config-sticky-cta', 'window.sfpStickyConfig=' . wp_json_encode( $config ) . ';', 'before' );
+}
 
-    // Pass configurable thresholds to the promo script. Values come from
-    // the Instellingen tab; the sanitizer clamps them to sane ranges.
-    $promo_config = array(
-        'scrollGate'    => (int) sfp_page_config_get_setting( 'promo_scroll_gate', 30 ),
-        'cooldownHours' => (int) sfp_page_config_get_setting( 'promo_cooldown_hours', 24 ),
-    );
-    wp_add_inline_script(
-        'sfp-page-config-promo',
-        'window.sfpPromoConfig=' . wp_json_encode( $promo_config ) . ';',
-        'before'
-    );
+/**
+ * De knop onderaan voor één pagina: de instelling van de soort pagina, met
+ * daaroverheen wat bij de pagina zelf is gekozen.
+ *
+ * Het script zoekt bij het doel "form" zelf het formulier op de pagina: eerst
+ * een onderdeel met een van de bekende ankers (zoals op pagina's van voor
+ * 3.0.0), dan de boekkaart, dan het eerste formulier in de inhoud.
+ *
+ * @param  int    $post_id Pagina.
+ * @param  string $type    coaching, training of incompany.
+ * @return array|null      Gegevens voor assets/sticky-cta.js.
+ */
+function sfp_page_config_knop_voor_pagina( $post_id, $type ) {
+    $config = sfp_page_config_get_sticky_cta( $type );
+    if ( ! $config ) {
+        return null;
+    }
+
+    $eigen_tekst = trim( (string) get_post_meta( $post_id, 'sfp_cta_text', true ) );
+    if ( '' !== $eigen_tekst ) {
+        $config['text'] = $eigen_tekst;
+    }
+
+    // Ankers waaraan het formulier te herkennen is. Het oude veld per soort
+    // pagina telt nog mee voor sites die daar iets eigens hadden ingevuld.
+    $ankers = array( 'inschrijven', 'aanvragen' );
+    $alle   = sfp_page_config_instellingen();
+    $eigen  = isset( $alle['sticky_cta'][ $type ] ) && is_array( $alle['sticky_cta'][ $type ] ) ? $alle['sticky_cta'][ $type ] : array();
+    if ( ! empty( $eigen['anchor'] ) ) {
+        array_unshift( $ankers, sfp_page_config_anker_schoon( (string) $eigen['anchor'] ) );
+    }
+    // Tot en met 2.12.0 kon in het adresveld ook een anker staan. Hetzelfde
+    // geldt voor een anker dat in het veld "een andere link" is getypt.
+    foreach ( array( 'href', 'link' ) as $veld ) {
+        if ( ! empty( $eigen[ $veld ] ) && 0 === strpos( trim( (string) $eigen[ $veld ] ), '#' ) && 'form' === $config['doel'] ) {
+            array_unshift( $ankers, sfp_page_config_anker_schoon( (string) $eigen[ $veld ] ) );
+        }
+    }
+    // Een bovenkant die tot en met 2.12.0 met de hand was aangewezen.
+    $hero = ! empty( $eigen['hero'] ) ? sanitize_text_field( (string) $eigen['hero'] ) : '';
+
+    // Per pagina: een eigen bestemming. Een anker (#...) wijst naar een
+    // onderdeel van de pagina zelf, al het andere is een link.
+    $eigen_pagina = (int) get_post_meta( $post_id, 'sfp_cta_pagina', true );
+    $eigen_doel   = trim( (string) get_post_meta( $post_id, 'sfp_cta_href', true ) );
+    if ( $eigen_pagina && 'publish' === get_post_status( $eigen_pagina ) ) {
+        $config = sfp_page_config_sticky_cta_vorm( $config['text'], 'pagina', (string) get_permalink( $eigen_pagina ) );
+    } elseif ( '' !== $eigen_doel ) {
+        if ( 0 === strpos( $eigen_doel, '#' ) ) {
+            $config = sfp_page_config_sticky_cta_vorm( $config['text'], 'form', '' );
+            array_unshift( $ankers, sfp_page_config_anker_schoon( $eigen_doel ) );
+        } else {
+            $config = sfp_page_config_sticky_cta_vorm( $config['text'], 'link', $eigen_doel );
+        }
+    }
+
+    $config['hero']   = $hero;
+    $config['ankers'] = array_values( array_unique( array_filter( $ankers ) ) );
+    // Voor het geval de pagina geen herkenbare bovenkant heeft.
+    $config['scrollThreshold'] = 400;
+
+    return $config;
+}
+
+/**
+ * Maak van een anker (#naam of naam) een id zoals het in de pagina staat.
+ * Hoofdletters blijven: een id is hoofdlettergevoelig.
+ *
+ * @param  string $anker Anker, met of zonder hekje.
+ * @return string
+ */
+function sfp_page_config_anker_schoon( $anker ) {
+    return (string) preg_replace( '/[^A-Za-z0-9_\-:.]/', '', ltrim( trim( (string) $anker ), '#' ) );
 }

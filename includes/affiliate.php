@@ -210,21 +210,13 @@ function sfp_page_config_affiliate_heeft( $post ) {
  * @return array{regel: string, uitleg: string}
  */
 function sfp_page_config_affiliate_teksten() {
-    $regel  = trim( (string) sfp_page_config_get_setting( 'affiliate_regel', '' ) );
-    $uitleg = trim( (string) sfp_page_config_get_setting( 'affiliate_uitleg', '' ) );
-    // De Nederlandse teksten zijn vastgesteld door Stephan (8 oktober 2026).
-    // Voor andere talen is er geen standaard: zonder tekst geen melding.
-    if ( function_exists( 'sfp_page_config_artikel_taal' ) && 'nl' === sfp_page_config_artikel_taal() ) {
-        if ( '' === $regel ) {
-            $regel = 'Bevat affiliate links';
-        }
-        if ( '' === $uitleg ) {
-            $uitleg = 'In dit artikel verwijzen we soms naar boeken en hulpmiddelen via een affiliate link. Koop je via zo\'n link iets, dan ontvangen wij een kleine commissie. Jij betaalt niets extra. Zo kunnen we de kwaliteit van ons expertisecentrum waarborgen.';
-        }
-    }
+    // De eigen tekst van de site, anders de standaard in de taal van de site
+    // (includes/teksten.php). De Nederlandse teksten zijn vastgesteld door
+    // Stephan (8 oktober 2026). Voor andere talen is er geen standaard:
+    // zonder tekst geen melding.
     return array(
-        'regel'  => $regel,
-        'uitleg' => $uitleg,
+        'regel'  => sfp_page_config_tekst( 'affiliate_regel' ),
+        'uitleg' => sfp_page_config_tekst( 'affiliate_uitleg' ),
     );
 }
 

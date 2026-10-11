@@ -1,0 +1,609 @@
+/* Reviews, onderdeel van SFP Page Config sinds 3.0.0.
+   Overgenomen uit sfp-reviews.css van SFP Google Reviews v2.1.9, met de
+   netwerkopmaak (tot 3.0.0 per site geplakt in het vak Custom CSS) onderaan.
+   Alle selectors hebben dubbele klasse-specificiteit (.sfp-reviews .sfp-x)
+   zodat thema-stijlen structureel verliezen: geen !important nodig. */
+
+/* ─────────────────────────────────────────────
+   CSS-variabelen
+───────────────────────────────────────────── */
+.sfp-reviews,
+.sfp-reviews-summary {
+	/* Geen merkkleur in code (v2.1.9): de standaarden komen uit de rolvariabelen
+	   van het ASE-snippet "Kleuren: rollen van het palet" (--sfp-rol-*), met een
+	   neutrale terugval op de tekstkleur als dat snippet ontbreekt.
+	   Enige vaste kleur: #FBBC04, Google-geel voor de sterren (functionele kleur). */
+	--sfp-review-primary:       var(--sfp-rol-primair, currentColor);
+	--sfp-review-primary-light: var(--sfp-rol-tint-1, color-mix(in srgb, currentColor 20%, transparent));
+	--sfp-review-bg:            var(--sfp-rol-wit, Canvas);
+	--sfp-review-border:        var(--sfp-rol-tint-2, color-mix(in srgb, currentColor 12%, transparent));
+	--sfp-review-shadow:        0 2px 8px color-mix(in srgb, var(--sfp-review-primary) 8%, transparent);
+	--sfp-review-text:          var(--sfp-rol-body, currentColor);
+	--sfp-review-meta:          var(--sfp-rol-body, currentColor);
+	--sfp-review-on-primary:    var(--sfp-review-bg);
+	--sfp-review-more:          var(--sfp-review-meta);
+	--sfp-review-more-hover:    var(--sfp-review-primary);
+	--sfp-review-star-fill:     #FBBC04;
+	--sfp-review-star-empty:    var(--sfp-rol-tint-2, color-mix(in srgb, currentColor 20%, transparent));
+	--sfp-review-font-size:     16px;
+	--sfp-review-card-height:   auto;
+	--sfp-slider-cols:          1;
+	--sfp-arrow-color:          var(--sfp-rol-pijl, var(--sfp-review-primary));
+	--sfp-arrow-color-hover:    var(--sfp-review-primary);
+	--sfp-arrow-size:           32px;
+	--sfp-dot-size:             10px;
+	--sfp-dot-inactive:         var(--sfp-review-primary-light);
+	--sfp-dot-active:           var(--sfp-review-primary);
+	--sfp-dot-hover:            var(--sfp-arrow-color);
+	box-sizing: border-box;
+}
+
+/* ─────────────────────────────────────────────
+   SAMENVATTING
+───────────────────────────────────────────── */
+.sfp-reviews-summary {
+	display:        flex !important;
+	flex-direction: column !important;
+	align-items:    center !important;
+	text-align:     center !important;
+	gap:            6px;
+	margin-bottom:  24px;
+	width:          100%;
+}
+
+.sfp-reviews-summary .sfp-reviews-summary__label {
+	all:            unset;
+	display:        block;
+	font-size:      clamp(20px, 2.5vw, 28px);
+	font-weight:    700;
+	line-height:    1.2;
+	color:          inherit;
+	font-family:    inherit;
+	text-transform: uppercase;
+	letter-spacing: .06em;
+	text-align:     center;
+}
+
+.sfp-reviews-summary .sfp-reviews-summary__stars {
+	display:         flex !important;
+	flex-direction:  row !important;
+	justify-content: center;
+	gap:             3px;
+}
+
+.sfp-reviews-summary .sfp-reviews-summary__stars .sfp-review__star--filled path { fill: var(--sfp-review-star-fill); }
+.sfp-reviews-summary .sfp-reviews-summary__stars .sfp-review__star--empty  path { fill: var(--sfp-review-star-empty); }
+
+.sfp-reviews-summary .sfp-reviews-summary__total {
+	display:     block;
+	font-size:   13px;
+	color:       var(--sfp-review-meta);
+	font-weight: normal;
+	text-align:  center;
+}
+
+/* ─────────────────────────────────────────────
+   REVIEW CARD
+───────────────────────────────────────────── */
+.sfp-reviews .sfp-review {
+	all:            unset;
+	display:        flex !important;
+	flex-direction: column !important;
+	background:     var(--sfp-review-bg);
+	border:         1px solid var(--sfp-review-border);
+	box-shadow:     var(--sfp-review-shadow);
+	padding:        20px;
+	box-sizing:     border-box;
+	height:         var(--sfp-review-card-height);
+}
+
+.sfp-reviews .sfp-review__header {
+	display:        flex !important;
+	flex-direction: row !important;
+	align-items:    center !important;
+	gap:            12px;
+	margin-bottom:  10px;
+	flex-shrink:    0;
+}
+
+.sfp-reviews .sfp-review__photo {
+	all:           unset;
+	display:       block !important;
+	width:         40px !important;
+	height:        40px !important;
+	border-radius: 50% !important;
+	object-fit:    cover;
+	flex-shrink:   0;
+}
+
+.sfp-reviews .sfp-review__photo--fallback {
+	all:             unset;
+	display:         flex !important;
+	align-items:     center !important;
+	justify-content: center !important;
+	width:           40px !important;
+	height:          40px !important;
+	border-radius:   50% !important;
+	background:      var(--sfp-review-primary) !important;
+	color:           var(--sfp-review-on-primary) !important;
+	font-size:       17px !important;
+	font-weight:     700 !important;
+	flex-shrink:     0;
+}
+
+.sfp-reviews .sfp-review__meta {
+	display:        flex !important;
+	flex-direction: column !important;
+	gap:            2px;
+	min-width:      0;
+}
+
+.sfp-reviews .sfp-review__author {
+	all:           unset;
+	display:       block !important;
+	font-size:     var(--sfp-review-font-size) !important;
+	font-weight:   600 !important;
+	color:         var(--sfp-review-text) !important;
+	line-height:   1.3;
+	white-space:   nowrap;
+	overflow:      hidden;
+	text-overflow: ellipsis;
+}
+
+.sfp-reviews .sfp-review__time {
+	all:        unset;
+	display:    block !important;
+	font-size:  13px !important;
+	color:      var(--sfp-review-meta) !important;
+	line-height: 1.3;
+}
+
+.sfp-reviews .sfp-review__stars {
+	display:        flex !important;
+	flex-direction: row !important;
+	gap:            2px;
+	margin-bottom:  10px;
+	flex-shrink:    0;
+}
+
+.sfp-reviews .sfp-review__star         { display: block; flex-shrink: 0; }
+.sfp-reviews .sfp-review__star--filled path { fill: var(--sfp-review-star-fill) !important;  }
+.sfp-reviews .sfp-review__star--empty  path { fill: var(--sfp-review-star-empty) !important; }
+
+.sfp-reviews .sfp-review__body {
+	display:        flex !important;
+	flex-direction: column !important;
+	flex:           1 1 auto;
+	min-height:     0;
+}
+
+.sfp-reviews .sfp-review__text {
+	all:                unset;
+	display:            -webkit-box !important;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow:           hidden;
+	font-size:          var(--sfp-review-font-size) !important;
+	color:              var(--sfp-review-text) !important;
+	line-height:        1.6 !important;
+	flex:               1 1 auto;
+}
+
+/* Lees verder: hard reset met hoge specificiteit */
+.sfp-reviews .sfp-review .sfp-review__more,
+.sfp-reviews .sfp-review .sfp-review__more:link,
+.sfp-reviews .sfp-review .sfp-review__more:visited {
+	all:             unset !important;
+	display:         inline-block !important;
+	margin-top:      10px !important;
+	font-size:       13px !important;
+	color:           var(--sfp-review-more) !important;
+	background:      none !important;
+	border:          none !important;
+	padding:         0 !important;
+	text-transform:  none !important;
+	letter-spacing:  normal !important;
+	font-weight:     normal !important;
+	cursor:          pointer !important;
+	flex-shrink:     0;
+	line-height:     1.4 !important;
+	transition:      color .15s;
+	box-shadow:      none !important;
+	border-radius:   0 !important;
+	width:           auto !important;
+	height:          auto !important;
+}
+
+.sfp-reviews .sfp-review .sfp-review__more:hover {
+	color:       var(--sfp-review-more-hover) !important;
+	background:  none !important;
+	border:      none !important;
+	box-shadow:  none !important;
+}
+
+.sfp-reviews .sfp-review.sfp-review--expanded                { height: auto !important; }
+.sfp-reviews .sfp-review.sfp-review--expanded .sfp-review__text {
+	-webkit-line-clamp: unset !important;
+	display:            block !important;
+	overflow:           visible !important;
+}
+
+/* ─────────────────────────────────────────────
+   GRID
+───────────────────────────────────────────── */
+.sfp-reviews.sfp-reviews--grid {
+	display:               grid !important;
+	grid-template-columns: repeat( auto-fill, minmax(260px, 1fr) );
+	gap:                   20px;
+}
+
+/* ─────────────────────────────────────────────
+   SLIDER
+───────────────────────────────────────────── */
+.sfp-reviews.sfp-reviews--slider {
+	display:        flex !important;
+	flex-direction: column !important;
+	width:          100%;
+}
+
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__stage {
+	display:        flex !important;
+	flex-direction: row !important;    /* ALTIJD horizontaal */
+	align-items:    center !important;
+	gap:            8px;
+	width:          100%;
+}
+
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__viewport {
+	flex:      1 1 0 !important;
+	min-width: 0;
+	overflow:  hidden !important;
+}
+
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__track {
+	display:    flex !important;
+	flex-wrap:  nowrap !important;
+	gap:        16px;
+	transition: transform .4s ease;
+	will-change: transform;
+}
+
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__track .sfp-review {
+	flex:      0 0 var(--sfp-slide-width, 100%) !important;
+	width:     var(--sfp-slide-width, 100%) !important;
+	min-width: 0;
+}
+
+/* ─────────────────────────────────────────────
+   PIJLTJES
+───────────────────────────────────────────── */
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__btn,
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__btn:link,
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__btn:visited {
+	all:             unset !important;
+	display:         flex !important;
+	align-items:     center !important;
+	cursor:          pointer !important;
+	color:           var(--sfp-arrow-color) !important;
+	font-size:       var(--sfp-arrow-size) !important;
+	line-height:     1 !important;
+	flex-shrink:     0;
+	width:           fit-content !important;
+	height:          fit-content !important;
+	background:      none !important;
+	border:          none !important;
+	padding:         0 !important;
+	box-shadow:      none !important;
+	border-radius:   0 !important;
+	text-transform:  none !important;
+	transition:      color .15s, opacity .15s;
+	user-select:     none;
+}
+
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__btn:hover {
+	color:      var(--sfp-arrow-color-hover) !important;
+	opacity:    .7;
+	background: none !important;
+}
+
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__btn--prev {
+	transform: scaleX(-1) !important;
+}
+
+/* ─────────────────────────────────────────────
+   DOTS
+───────────────────────────────────────────── */
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__dots {
+	display:         flex !important;
+	flex-direction:  row !important;
+	justify-content: center !important;
+	gap:             8px;
+	margin-top:      14px;
+}
+
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__dot {
+	all:           unset !important;
+	display:       block !important;
+	width:         var(--sfp-dot-size) !important;
+	height:        var(--sfp-dot-size) !important;
+	border-radius: 50% !important;
+	background:    var(--sfp-dot-inactive) !important;
+	cursor:        pointer !important;
+	transition:    background .2s;
+	flex-shrink:   0;
+}
+
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__dot:hover   { background: var(--sfp-dot-hover)  !important; }
+.sfp-reviews.sfp-reviews--slider .sfp-reviews__dot--active  { background: var(--sfp-dot-active) !important; }
+
+/* ─────────────────────────────────────────────
+   BANNER
+───────────────────────────────────────────── */
+.sfp-reviews.sfp-reviews--banner {
+	display:        flex !important;
+	flex-direction: row !important;
+	flex-wrap:      wrap;
+	gap:            12px;
+	align-items:    center;
+}
+
+.sfp-reviews.sfp-reviews--banner .sfp-banner__item {
+	all:         unset;
+	display:     flex !important;
+	flex-direction: row !important;
+	align-items: center !important;
+	gap:         10px;
+	background:  var(--sfp-review-bg);
+	border:      1px solid var(--sfp-review-border);
+	box-shadow:  var(--sfp-review-shadow);
+	padding:     10px 14px;
+	box-sizing:  border-box;
+}
+
+.sfp-reviews.sfp-reviews--banner .sfp-banner__photo {
+	all:           unset;
+	display:       block !important;
+	width:         36px !important;
+	height:        36px !important;
+	border-radius: 50% !important;
+	object-fit:    cover;
+	flex-shrink:   0;
+}
+
+.sfp-reviews.sfp-reviews--banner .sfp-banner__photo--fallback,
+.sfp-reviews.sfp-reviews--banner-slider .sfp-banner__photo--fallback {
+	all:             unset;
+	display:         flex !important;
+	align-items:     center !important;
+	justify-content: center !important;
+	width:           36px !important;
+	height:          36px !important;
+	border-radius:   50% !important;
+	background:      var(--sfp-review-primary) !important;
+	color:           var(--sfp-review-on-primary) !important;
+	font-size:       15px !important;
+	font-weight:     700 !important;
+	flex-shrink:     0;
+}
+
+.sfp-reviews.sfp-reviews--banner .sfp-banner__meta {
+	display:        flex !important;
+	flex-direction: column !important;
+	gap:            3px;
+}
+
+.sfp-reviews.sfp-reviews--banner .sfp-banner__author {
+	all:         unset;
+	display:     block !important;
+	font-size:   13px !important;
+	font-weight: 600 !important;
+	color:       var(--sfp-review-text) !important;
+	line-height: 1.2;
+}
+
+.sfp-reviews.sfp-reviews--banner .sfp-banner__stars {
+	display:        flex !important;
+	flex-direction: row !important;
+	gap:            1px;
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
+@media (max-width: 600px) {
+	.sfp-reviews {
+		--sfp-arrow-size: 22px;
+	}
+
+	.sfp-reviews.sfp-reviews--slider .sfp-reviews__stage {
+		gap: 4px !important;
+	}
+
+	.sfp-reviews .sfp-review {
+		padding: 16px !important;
+	}
+}
+
+/* ─────────────────────────────────────────────
+   BANNER SLIDER
+───────────────────────────────────────────── */
+.sfp-reviews.sfp-reviews--banner-slider {
+	display:        flex !important;
+	flex-direction: column !important;
+	width:          100%;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__stage {
+	display:        flex !important;
+	flex-direction: row !important;
+	align-items:    center !important;
+	gap:            8px;
+	width:          100%;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__viewport {
+	flex:      1 1 0 !important;
+	min-width: 0;
+	overflow:  hidden !important;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__track {
+	display:     flex !important;
+	flex-wrap:   nowrap !important;
+	gap:         12px;
+	transition:  transform .4s ease;
+	will-change: transform;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__track .sfp-banner__item {
+	flex:           0 0 var(--sfp-slide-width, 100%) !important;
+	width:          var(--sfp-slide-width, 100%) !important;
+	min-width:      0 !important;
+	display:        flex !important;
+	flex-direction: row !important;
+	flex-wrap:      nowrap !important;
+	align-items:    center !important;
+	gap:            10px !important;
+	background:     var(--sfp-review-bg) !important;
+	border:         1px solid var(--sfp-review-border) !important;
+	box-shadow:     var(--sfp-review-shadow) !important;
+	padding:        10px 14px !important;
+	box-sizing:     border-box !important;
+	height:         auto !important;
+	width:          auto !important;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-banner__photo {
+	display:       block !important;
+	width:         40px !important;
+	height:        40px !important;
+	border-radius: 50% !important;
+	object-fit:    cover !important;
+	flex-shrink:   0 !important;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-banner__meta {
+	display:        flex !important;
+	flex-direction: column !important;
+	gap:            4px !important;
+	min-width:      0 !important;
+	flex:           1 1 auto !important;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-banner__author {
+	display:       block !important;
+	font-size:     13px !important;
+	font-weight:   600 !important;
+	color:         var(--sfp-review-text) !important;
+	line-height:   1.2 !important;
+	white-space:   nowrap !important;
+	overflow:      hidden !important;
+	text-overflow: ellipsis !important;
+	background:    none !important;
+	padding:       0 !important;
+	border:        none !important;
+	text-transform: none !important;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-banner__stars {
+	display:        flex !important;
+	flex-direction: row !important;
+	flex-wrap:      nowrap !important;
+	gap:            2px !important;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__dots {
+	display:         flex !important;
+	flex-direction:  row !important;
+	justify-content: center !important;
+	gap:             8px;
+	margin-top:      14px;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__dot {
+	all:           unset !important;
+	display:       block !important;
+	width:         var(--sfp-dot-size) !important;
+	height:        var(--sfp-dot-size) !important;
+	border-radius: 50% !important;
+	background:    var(--sfp-dot-inactive) !important;
+	cursor:        pointer !important;
+	transition:    background .2s;
+	flex-shrink:   0;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__dot:hover   { background: var(--sfp-dot-hover)  !important; }
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__dot--active  { background: var(--sfp-dot-active) !important; }
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__btn,
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__btn:link,
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__btn:visited,
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__btn:hover,
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__btn:focus,
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__btn:active {
+	all:             unset !important;
+	display:         flex !important;
+	align-items:     center !important;
+	cursor:          pointer !important;
+	color:           var(--sfp-arrow-color) !important;
+	font-size:       var(--sfp-arrow-size) !important;
+	line-height:     1 !important;
+	flex-shrink:     0 !important;
+	width:           fit-content !important;
+	height:          fit-content !important;
+	background:      none !important;
+	border:          none !important;
+	padding:         0 !important;
+	margin:          0 !important;
+	box-shadow:      none !important;
+	outline:         none !important;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__btn:hover {
+	opacity: .7 !important;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-reviews__btn--prev {
+	transform: scaleX(-1) !important;
+}
+
+.sfp-reviews.sfp-reviews--banner-slider .sfp-banner__photo--fallback {
+	display:         flex !important;
+	align-items:     center !important;
+	justify-content: center !important;
+	width:           40px !important;
+	height:          40px !important;
+	min-width:       40px !important;
+	min-height:      40px !important;
+	max-width:       40px !important;
+	max-height:      40px !important;
+	border-radius:   50% !important;
+	background:      var(--sfp-review-primary) !important;
+	color:           var(--sfp-review-on-primary) !important;
+	font-size:       16px !important;
+	font-weight:     700 !important;
+	flex-shrink:     0 !important;
+	line-height:     1 !important;
+	overflow:        hidden !important;
+	box-sizing:      border-box !important;
+	padding:         0 !important;
+	margin:          0 !important;
+	border:          none !important;
+	text-align:      center !important;
+}
+
+/* ─────────────────────────────────────────────
+   NETWERKOPMAAK
+   Tot 3.0.0 stond op elke site hetzelfde blok in het vak Custom CSS van SFP
+   Google Reviews (netwerkbreed gelijk sinds 30-09-2026). De variabelen
+   daaruit zijn gelijk aan de standaarden bovenaan dit bestand; wat overblijft
+   is de opmaak van het oordeel boven de reviews.
+───────────────────────────────────────────── */
+.sfp-reviews-summary .sfp-reviews-summary__label {
+	color:          var(--sfp-review-primary);
+	font-family:    var(--ux-heading-font, var(--sfp-kopfont, inherit));
+	font-size:      24px;
+	font-weight:    900;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}

@@ -27,14 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string
  */
 function sfp_page_config_artikel_taal() {
-    $locale = strtolower( (string) get_locale() );
-    if ( 0 === strpos( $locale, 'nl' ) ) {
-        return 'nl';
-    }
-    if ( 0 === strpos( $locale, 'pt' ) ) {
-        return 'pt';
-    }
-    return 'en';
+    return sfp_page_config_taal();
 }
 
 /**
