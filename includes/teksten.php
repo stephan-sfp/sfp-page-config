@@ -75,7 +75,9 @@ function sfp_page_config_teksten_register() {
         'knop_incompany'     => array(
             'groep'  => 'Knop onderaan',
             'label'  => 'Incompany',
-            'nl'     => 'Plan een kennismaking in',
+            // Netwerknorm sinds 3.0.0 (besluit 11-10-2026): gelijk aan wat de
+            // sites al toonden.
+            'nl'     => 'Plan je adviesgesprek',
             'en'     => 'Request a proposal',
             'pt'     => 'Peça uma proposta',
             'opslag' => 'sticky_cta.incompany.text',

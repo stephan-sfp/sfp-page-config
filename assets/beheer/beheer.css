@@ -171,6 +171,10 @@ body.toplevel_page_sfp-page-config #wpbody-content > .error { margin: 12px 24px;
 .sfpb-m .sfpb-donker { background: var(--sfp-b-primair); color: var(--sfp-b-wit); border-radius: 6px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
 .sfpb-m .sfpb-donker .sfpb-h3, .sfpb-m .sfpb-donker .sfpb-op { color: var(--sfp-b-wit); }
 .sfpb-m .sfpb-ster { color: #fbbc04; letter-spacing: 2px; }
+.sfpb-m .sfpb-promo { display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 16px; align-items: center; }
+.sfpb-m .sfpb-promo--zonder { grid-template-columns: minmax(0, 1fr); }
+.sfpb-m .sfpb-omslag { width: 60px; height: auto; border: 1px solid var(--sfp-b-lijn); box-shadow: 0 2px 6px rgba(0, 0, 0, .08), 0 10px 20px rgba(0, 0, 0, .12); }
+.sfpb-m .sfpb-promo-tekst { display: grid; gap: 6px; justify-items: start; }
 .sfpb-m .sfpb-beeld { aspect-ratio: 16/9; border-radius: 6px; background: linear-gradient(135deg, var(--sfp-b-tint1), var(--sfp-b-tint2)); position: relative; max-width: 100%; background-size: cover; background-position: center; }
 .sfpb-m .sfpb-schets { display: block; height: 10px; border-radius: 5px; background: var(--sfp-b-lijn-sterk); }
 .sfpb-m .sfpb-schets.sfpb-kort { width: 62%; }

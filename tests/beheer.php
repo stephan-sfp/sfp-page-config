@@ -201,6 +201,7 @@ $GLOBALS['posts'] = array(
 same( 'nl', sfp_page_config_taal(), 'nl_NL is Nederlands' );
 same( 'Boek je gratis proefsessie', sfp_page_config_tekst( 'knop_coaching' ), 'Nederlandse standaard gelijk aan 2.12.0' );
 same( 'Plan een kennismaking in', sfp_page_config_tekst( 'knop_training' ), 'Nederlandse standaard training gelijk aan 2.12.0' );
+same( 'Plan je adviesgesprek', sfp_page_config_tekst( 'knop_incompany' ), 'Netwerknorm incompany (besluit 11-10-2026)' );
 same( 'Groep 2', sfp_page_config_tekst_f( 'groep', 2 ), 'Groep met nummer' );
 $GLOBALS['locale'] = 'en_GB';
 same( 'en', sfp_page_config_taal(), 'en_GB is Engels' );
@@ -292,6 +293,16 @@ same( array(), sfp_page_config_afwijkingen(), 'Terug naar de norm' );
 same( 'blijft', instellingen()['iets_van_vroeger'], 'Terug naar de norm laat de rest staan' );
 sfp_page_config_instellingen_bewaar( array( 'update_kanaal' => 'nachtelijk' ) );
 same( '', (string) ( instellingen()['update_kanaal'] ?? '' ), 'Onbekend updatekanaal wordt gewoon' );
+
+// Een tekst zonder standaard heeft geen norm: een eigen affiliatemelding is geen afwijking.
+// In het Engels heeft de affiliatemelding geen standaard, in het Nederlands wel.
+$GLOBALS['locale'] = 'en_GB';
+sfp_page_config_instellingen_bewaar( array( 'teksten' => array( 'affiliate_regel' => 'Contains affiliate links' ) ) );
+same( 'Contains affiliate links', sfp_page_config_tekst( 'affiliate_regel' ), 'Eigen affiliatetekst wordt gebruikt' );
+same( array(), sfp_page_config_afwijkingen(), 'Een tekst zonder standaard telt niet als afwijking' );
+$GLOBALS['locale'] = 'nl_NL';
+same( array( 'affiliate_regel' ), array_column( sfp_page_config_afwijkingen(), 'pad' ), 'Met een standaard telt een eigen tekst wel als afwijking' );
+sfp_page_config_instellingen_bewaar( array( 'teksten' => array( 'affiliate_regel' => '' ) ) );
 
 /* ---------- Knop onderaan ---------- */
 
