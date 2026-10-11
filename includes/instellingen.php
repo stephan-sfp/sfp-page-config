@@ -329,6 +329,11 @@ function sfp_page_config_sticky_cta_vorm( $tekst, $doel, $href ) {
 function sfp_page_config_norm() {
     $norm = array();
     foreach ( sfp_page_config_teksten_register() as $sleutel => $tekst ) {
+        // Een tekst zonder standaard (de affiliatemelding) is per site eigen:
+        // er is geen norm om van af te wijken.
+        if ( '' === sfp_page_config_tekst_standaard( $sleutel ) ) {
+            continue;
+        }
         $norm[ sfp_page_config_tekst_pad( $sleutel ) ] = array(
             'label' => 'Tekst bij ' . $tekst['groep'] . ': ' . $tekst['label'],
             'norm'  => sfp_page_config_tekst_standaard( $sleutel ),

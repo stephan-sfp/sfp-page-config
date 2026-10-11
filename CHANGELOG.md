@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.0.0-beta.2] - 2026-10-11
+
+Tweede proefversie, na de proef met beta.1 op SwS. Daar is het beheer bekeken en akkoord bevonden, is het vervolg van Presence overgenomen uit de Astra-layout en zijn SFP Tooltip en SFP Google Reviews uitgezet. De nieuwe herkenning van de knop onderaan is op de veertien dienstpagina's van de vijf Nederlandse sites nagelopen: dezelfde bovenkant en dezelfde bestemming als in 2.12.0.
+
+### Gewijzigd
+- **De standaardtekst van de knop onderaan op incompany-pagina's is "Plan je adviesgesprek"** (was "Plan een kennismaking in"). Dat is de tekst die de Nederlandse sites al toonden; ze wijken daarmee niet meer af van de norm.
+
+### Gerepareerd
+- De teksten van de affiliatemelding stonden op het Overzicht als afwijking van de netwerknorm. Die teksten hebben geen norm: elke site schrijft ze zelf.
+- Het voorbeeld van de promokaart toonde de afbeelding over de volle breedte. Het toont nu, net als de site, een klein omslag met de tekst ernaast.
+
 ## [3.0.0-beta.1] - 2026-10-11
 
 Eerste proefversie (pre-release) van SFP Beheer: het nieuwe beheer volgens het goedgekeurde ontwerp, met de plugins SFP Tooltip en SFP Google Reviews als onderdeel erin. Bedoeld voor de proef op SwS via het updatekanaal "proef". Het werk in de editor (paneel Deze pagina, blokken volgens de regels, gegevens van de site als blok) volgt in beta.2.

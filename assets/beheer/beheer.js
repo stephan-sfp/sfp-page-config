@@ -613,12 +613,13 @@
 			var linktekst = tekstInvoer(p.linktekst);
 			var doel = paginaKeuze(p.pagina || ((!p.pagina && p.url) ? 'link' : ''), 'Geen bestemming', [['link', 'Een andere link']]);
 			var doelLink = tekstInvoer(p.url, 'Plak de link', 'url');
-			var vBeeld = el('div', { class: 'sfpb-beeld' });
+			var vBeeld = el('img', { class: 'sfpb-omslag', alt: '' });
+			var vKaart = el('div', { class: 'sfpb-mvak sfpb-promo' });
 			var vLabel = el('span', { class: 'sfpb-op' });
 			var vTitel = el('span', { class: 'sfpb-h3' });
 			var vTekst = el('span');
 			var vLink = el('span', { class: 'sfpb-pijl' });
-			var klein = el('div', { class: 'sfpb-beeld', style: 'width:120px' });
+			var klein = el('div', { class: 'sfpb-beeld', style: 'width:120px;background-size:contain;background-repeat:no-repeat' });
 			var kiesKnop = el('button', { class: 'sfpb-knop', type: 'button' });
 			var wegKnop = el('button', { class: 'sfpb-knop sfpb-tekst', type: 'button', text: 'Geen afbeelding', klik: function () { beeld.id = 0; beeld.url = ''; ververs(); } });
 			function ververs() {
@@ -626,8 +627,11 @@
 				vTitel.textContent = titel.value || 'Titel van de kaart';
 				vTekst.textContent = tekst.value; vTekst.hidden = !tekst.value;
 				vLink.textContent = (linktekst.value || titel.value || 'Tekst van de link') + ' →';
-				vBeeld.style.backgroundImage = klein.style.backgroundImage = beeld.url ? 'url("' + beeld.url + '")' : '';
+				klein.style.backgroundImage = beeld.url ? 'url("' + beeld.url + '")' : '';
+				if (beeld.url) vBeeld.src = beeld.url; else vBeeld.removeAttribute('src');
 				vBeeld.hidden = !beeld.url;
+				// Zelfde opbouw als de kaart op de site: een klein omslag met de tekst ernaast.
+				vKaart.classList.toggle('sfpb-promo--zonder', !beeld.url);
 				kiesKnop.textContent = beeld.url ? 'Kies een andere afbeelding' : 'Kies een afbeelding';
 				wegKnop.hidden = !beeld.url;
 				doelLink.hidden = doel.value !== 'link';
@@ -669,7 +673,7 @@
 						flitsPlek('art-promo')
 					])
 				]),
-				voorbeeld([el('div', { class: 'sfpb-m' }, [el('div', { class: 'sfpb-mvak' }, [vBeeld, vLabel, vTitel, vTekst, vLink])])])
+				voorbeeld([el('div', { class: 'sfpb-m' }, [(vKaart.appendChild(vBeeld), vKaart.appendChild(el('div', { class: 'sfpb-promo-tekst' }, [vLabel, vTitel, vTekst, vLink])), vKaart)])])
 			]);
 		} else if (ui.artTab === 'vervolg') {
 			paneel = paneelVervolg();
