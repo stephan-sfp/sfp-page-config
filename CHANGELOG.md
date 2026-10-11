@@ -4,6 +4,30 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.0.0] - 2026-10-11
+
+SFP Beheer: het nieuwe beheer van de plugin, met SFP Tooltip en SFP Google Reviews als onderdeel erin. Getest als proef op SwS in beta.1 (hieronder, met de volledige lijst); beta.2 is niet apart uitgebracht en zit hierin. Dit is de eerste gewone release en bereikt alle sites.
+
+Het werk in de editor (paneel Deze pagina, blokken volgens de regels, gegevens van de site als blok) hoort niet bij deze release. Dat volgt als 3.1.0.
+
+### Ten opzichte van 3.0.0-beta.1
+- De standaardtekst van de knop onderaan op incompany-pagina's is "Plan je adviesgesprek".
+- Teksten zonder standaard tellen niet meer als afwijking van de netwerknorm.
+- Het voorbeeld van de promokaart toont een klein omslag met de tekst ernaast.
+
+### Wat er op een site verandert bij het bijwerken
+- In wp-admin staat het menu SFP Beheer op de plek van SFP Page Config.
+- Voor bezoekers verandert er niets, met drie uitzonderingen: op CVD wordt het accent van de longread de knopkleur van de site; op de Engelstalige en de Portugese sites staan de vaste teksten (leestijd, inhoudsopgave, WhatsApp-bericht) in de taal van de site; en de knop onderaan verschijnt ook voor wie lager op de pagina binnenkomt.
+- Tooltips en reviews blijven via de oude plugins lopen tot die op de site uit staan. Daarna neemt deze plugin het over.
+
+### Gecontroleerd voor de release
+- Proef op SwS: bijgewerkt, het vervolg van Presence overgenomen uit de Astra-layout, SFP Tooltip en SFP Google Reviews uitgezet, uitgelogd nagelopen.
+- De nieuwe herkenning van de knop onderaan is nagelopen op de veertien dienstpagina's van SFP, DPS, DGA, CVD en DST: dezelfde bovenkant en dezelfde bestemming als in 2.12.0.
+
+### Terugdraaien
+- De oude plugins weer aanzetten zet tooltips en reviews terug op de oude plugins.
+- Terug naar 2.12.0: de zip van 2.12.0 uploaden. De instellingen van 2.12.0 zijn niet gewijzigd of gewist. Een vervolg dat uit een Astra-layout is overgenomen: zet de layout weer op gepubliceerd.
+
 ## [3.0.0-beta.2] - 2026-10-11
 
 Tweede proefversie, na de proef met beta.1 op SwS. Daar is het beheer bekeken en akkoord bevonden, is het vervolg van Presence overgenomen uit de Astra-layout en zijn SFP Tooltip en SFP Google Reviews uitgezet. De nieuwe herkenning van de knop onderaan is op de veertien dienstpagina's van de vijf Nederlandse sites nagelopen: dezelfde bovenkant en dezelfde bestemming als in 2.12.0.
