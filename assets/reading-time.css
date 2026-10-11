@@ -3,9 +3,9 @@
  * Extracted from includes/reading-time.php (v2.5.0)
  *
  * Dynamic values injected via wp_add_inline_style():
- *   --sfp-bar-color  = editor-override (Instellingen) or brand CTA color
- *   --sfp-rt-accent  = editor-override (Instellingen); if unset, the CSS
- *                      falls back to the theme's --brand-accent.
+ *   --sfp-bar-color  = the button colour of the site, from Astra.
+ * --sfp-rt-accent is no longer set by the plugin (colour fields were removed
+ * in 3.0.0); the meter falls back to the theme's --brand-accent.
  * Brand variables (--brand-font, --brand-main, --brand-accent) are
  * defined sitewide by the theme and used here for the read meter.
  */

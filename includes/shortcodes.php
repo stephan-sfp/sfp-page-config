@@ -131,7 +131,7 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
 
             $dates_html = array();
             foreach ( $dates_to_show as $d ) {
-                $formatted = sfp_page_config_format_date_nl( $d, $atts['format'] );
+                $formatted = sfp_page_config_format_datum( $d, $atts['format'] );
                 if ( $formatted ) {
                     $dates_html[] = '<span class="cursus-datum">' . esc_html( $formatted ) . '</span>';
                 }
@@ -150,7 +150,7 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
                     : intval( $i + 1 );
 
                 $output_parts[] = '<div class="cursus-datum-groep">'
-                    . '<span class="cursus-datum-label">Groep ' . $label_num . ':</span> '
+                    . '<span class="cursus-datum-label">' . esc_html( sfp_page_config_tekst_f( 'groep', $label_num ) ) . ':</span> '
                     . $dates_str
                     . '</div>';
             } else {
@@ -169,7 +169,7 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
         return '';
     }
 
-    $formatted = sfp_page_config_format_date_nl( $datum_raw, $atts['format'] );
+    $formatted = sfp_page_config_format_datum( $datum_raw, $atts['format'] );
     return $formatted
         ? '<span class="cursus-datum">' . esc_html( $formatted ) . '</span>'
         : '';
@@ -196,7 +196,8 @@ if ( ! shortcode_exists( 'cursus_tijd' ) ) {
  *   post_id   - Defaults to current queried object (works in SureForms).
  *   groep     - 1-based index to show a single groep's time only.
  *   separator - Between start and end time. Default: ' - '.
- *   suffix    - Trailing text after the time. Default: ' uur'. Use suffix=""
+ *   suffix    - Trailing text after the time. Default: the site's own text
+ *               (Dutch: ' uur', see includes/teksten.php). Use suffix=""
  *               to omit it.
  *   layout    - 'inline' (default) or 'list' (each groep on its own line with
  *               a "Groep 1:" label, useful when times differ).
@@ -219,7 +220,8 @@ function sfp_page_config_shortcode_cursus_tijd( $atts ) {
         'post_id'   => '',
         'groep'     => '',
         'separator' => ' - ',
-        'suffix'    => ' uur',
+        // Niet opgegeven: de tekst van de site (Nederlands: " uur").
+        'suffix'    => null,
         'layout'    => 'inline',
         'fallback'  => '',
     ), $atts, 'cursus_tijd' );
@@ -254,7 +256,7 @@ function sfp_page_config_shortcode_cursus_tijd( $atts ) {
         foreach ( $data as $i => $sm ) {
             $start     = isset( $sm['start'] ) ? $sm['start'] : '';
             $eind      = isset( $sm['eind'] ) ? $sm['eind'] : '';
-            $formatted = sfp_page_config_format_cursus_tijd( $start, $eind, $sep, $suffix );
+            $formatted = sfp_page_config_format_lestijd( $start, $eind, $sep, $suffix );
             if ( '' !== $formatted ) {
                 $times[ $i + 1 ] = $formatted;
             }
@@ -285,7 +287,7 @@ function sfp_page_config_shortcode_cursus_tijd( $atts ) {
             $parts = array();
             foreach ( $times as $num => $t ) {
                 $parts[] = '<div class="cursus-tijd-groep">'
-                    . '<span class="cursus-tijd-label">Groep ' . intval( $num ) . ':</span> '
+                    . '<span class="cursus-tijd-label">' . esc_html( sfp_page_config_tekst_f( 'groep', intval( $num ) ) ) . ':</span> '
                     . '<span class="cursus-tijd">' . esc_html( $t ) . '</span>'
                     . '</div>';
             }
@@ -307,7 +309,7 @@ function sfp_page_config_shortcode_cursus_tijd( $atts ) {
 
     $def_start = function_exists( 'sfp_page_config_get_setting' ) ? sfp_page_config_get_setting( 'cursus_tijd_default_start', '' ) : '';
     $def_eind  = function_exists( 'sfp_page_config_get_setting' ) ? sfp_page_config_get_setting( 'cursus_tijd_default_eind', '' ) : '';
-    $def       = sfp_page_config_format_cursus_tijd( $def_start, $def_eind, $sep, $suffix );
+    $def       = sfp_page_config_format_lestijd( $def_start, $def_eind, $sep, $suffix );
 
     return '' !== $def
         ? '<span class="cursus-tijd">' . esc_html( $def ) . '</span>'

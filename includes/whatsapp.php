@@ -20,6 +20,19 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+/**
+ * Toont deze pagina de WhatsApp-knop? Het onderdeel staat aan en de knop is
+ * bij de pagina aangezet.
+ *
+ * @return bool
+ */
+function sfp_page_config_whatsapp_op_pagina() {
+    if ( ! is_singular( sfp_page_config_post_types() ) || ! sfp_page_config_onderdeel_aan( 'whatsapp' ) ) {
+        return false;
+    }
+    return '1' === get_post_meta( get_queried_object_id(), 'sfp_whatsapp', true );
+}
+
 add_action( 'wp_enqueue_scripts', 'sfp_page_config_whatsapp_enqueue' );
 
 /**
@@ -27,12 +40,7 @@ add_action( 'wp_enqueue_scripts', 'sfp_page_config_whatsapp_enqueue' );
  */
 function sfp_page_config_whatsapp_enqueue() {
 
-    if ( ! is_singular( sfp_page_config_post_types() ) ) {
-        return;
-    }
-
-    $enabled = get_post_meta( get_queried_object_id(), 'sfp_whatsapp', true );
-    if ( '1' !== $enabled ) {
+    if ( ! sfp_page_config_whatsapp_op_pagina() ) {
         return;
     }
 
@@ -51,18 +59,14 @@ add_action( 'wp_footer', 'sfp_page_config_whatsapp_button', 30 );
  */
 function sfp_page_config_whatsapp_button() {
 
-    if ( ! is_singular( sfp_page_config_post_types() ) ) {
+    if ( ! sfp_page_config_whatsapp_op_pagina() ) {
         return;
     }
 
-    $enabled = get_post_meta( get_queried_object_id(), 'sfp_whatsapp', true );
-    if ( '1' !== $enabled ) {
-        return;
-    }
-
-    // Get WhatsApp number + message from settings with sensible fallbacks.
-    $whatsapp_number  = sfp_page_config_get_setting( 'whatsapp_number', '31850601355' );
-    $whatsapp_message = sfp_page_config_get_setting( 'whatsapp_message', 'Hoi, ik heb een vraag' );
+    // Nummer uit de instellingen, anders het nummer van het netwerk. Het
+    // eerste bericht volgt de taal van de site (includes/teksten.php).
+    $whatsapp_number  = sfp_page_config_get_setting( 'whatsapp_number', sfp_page_config_whatsapp_norm() );
+    $whatsapp_message = sfp_page_config_tekst( 'whatsapp_bericht' );
 
     // Only digits in the phone number for the URL.
     $whatsapp_number = preg_replace( '/[^0-9]/', '', $whatsapp_number );

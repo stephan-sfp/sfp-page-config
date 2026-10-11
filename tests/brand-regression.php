@@ -78,8 +78,9 @@ same( '900', sfp_page_config_get_brand()['weight'], 'Numeric Astra weight surviv
 $GLOBALS['options']['astra-settings']['button-bg-color'] = '#123456';
 same( '#123456', sfp_page_config_get_brand()['lr_bar_bg'], 'Astra changes apply without release' );
 $GLOBALS['options']['sfp_settings'] = array( 'lr_sidebar_text' => '#abcdef', 'lr_bar_bg' => 'red;}body{display:none' );
-same( '#abcdef', sfp_page_config_get_brand()['lr_sidebar_text'], 'Explicit overrides preserved' );
-same( '#123456', sfp_page_config_get_brand()['lr_bar_bg'], 'Unsafe override rejected' );
+// Sinds 3.0.0 zijn er geen kleurvelden meer: een bewaarde waarde telt niet mee.
+same( 'var(--ast-global-color-2)', sfp_page_config_get_brand()['lr_sidebar_text'], 'Stored colour field is ignored' );
+same( '#123456', sfp_page_config_get_brand()['lr_bar_bg'], 'Bar keeps the Astra button colour' );
 $GLOBALS['options']['astra-settings']['headings-font-weight'] = array( 'malformed' );
 same( 'inherit', sfp_page_config_get_brand()['weight'], 'Malformed weight does not become 700' );
 configure( 'other.example', '#345678' );

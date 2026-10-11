@@ -93,12 +93,12 @@
  * =================================================================== */
 
 @media (max-width: 1024px) {
-    body.is-sales-page .entry-content .ast-outline-button,
-    body.is-sales-page .entry-content .wp-block-button.is-style-outline {
+    body.is-sales-page.sfp-knop-onderaan .entry-content .ast-outline-button,
+    body.is-sales-page.sfp-knop-onderaan .entry-content .wp-block-button.is-style-outline {
         display: none !important;
     }
-    body.is-sales-page .entry-content .sfp-hero-section .ast-outline-button,
-    body.is-sales-page .entry-content .sfp-hero-section .wp-block-button.is-style-outline {
+    body.is-sales-page.sfp-knop-onderaan .entry-content .sfp-hero-section .ast-outline-button,
+    body.is-sales-page.sfp-knop-onderaan .entry-content .sfp-hero-section .wp-block-button.is-style-outline {
         display: flex !important;
     }
 }

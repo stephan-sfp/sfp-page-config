@@ -2,8 +2,8 @@
 /**
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
- * Description: Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.
- * Version:     2.12.0
+ * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata en de knop onderaan voor het School for Professionals netwerk.
+ * Version:     3.0.0-beta.1
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '2.12.0' );
+define( 'SFP_PAGE_CONFIG_VERSION', '3.0.0-beta.1' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -156,13 +156,11 @@ function sfp_page_config_color_alpha( $color, $percent ) {
 /**
  * Get the brand configuration for the current site.
  *
- * All values come from Astra. The nine longread keys can still be
- * overridden per site in the Instellingen tab; an override is a
- * deviation from the network norm and the tab says so.
+ * All values come from Astra. Since 3.0.0 there are no colour fields in the
+ * plugin any more: the nine longread keys always follow Astra, and a value
+ * left in sfp_settings from an older version is ignored.
  *
- * Not cached: astra_get_option() already reads a cached option, and a
- * static cache would show stale values on the Instellingen tab right
- * after saving.
+ * Not cached: astra_get_option() already reads a cached option.
  *
  * @return array{cta_bg: string, cta_hover: string, cta_text: string, font: string, weight: string, body_font: string, primary: string}
  */
@@ -248,26 +246,12 @@ function sfp_page_config_get_brand() {
         'lr_sidebar_h3'     => sfp_page_config_color_alpha( $primary, 75 ),
     );
 
-    // Stored overrides from the Instellingen tab. An empty or invalid
-    // value keeps the Astra-derived default, so a cleared field never
-    // produces a broken CSS variable.
-    $settings = get_option( 'sfp_settings', array() );
-    if ( is_array( $settings ) ) {
-        foreach ( sfp_page_config_longread_color_keys() as $key ) {
-            if ( ! empty( $settings[ $key ] ) ) {
-                $clean = sfp_page_config_sanitize_css_color( $settings[ $key ] );
-                if ( '' !== $clean ) {
-                    $resolved[ $key ] = $clean;
-                }
-            }
-        }
-    }
-
     return $resolved;
 }
 
 /**
- * The nine longread colour keys that can be overridden per site.
+ * The nine longread colour keys. Until 2.12.0 a site could override them;
+ * since 3.0.0 they always follow Astra.
  *
  * @return string[]
  */
@@ -283,131 +267,6 @@ function sfp_page_config_longread_color_keys() {
         'lr_sidebar_active',
         'lr_sidebar_h3',
     );
-}
-
-/* =========================================================================
- * Sticky CTA config per page type
- * ====================================================================== */
-
-/**
- * Get the default sticky CTA config per page type.
- *
- * These act as a fallback when the editor has not entered anything in
- * the Sticky CTA section of the Instellingen tab.
- *
- * The 'href' default is intentionally empty. A booking URL differs per
- * site and per page type and therefore belongs in the Instellingen tab,
- * not in this file. When no URL is configured the CTA falls back to the
- * on-page anchor (see sfp_page_config_get_sticky_cta()), which always
- * points at the section holding the real button.
- *
- * Hero detection is handled in sticky-cta.js with three layers:
- *   1. Manual override via the 'hero' field (CSS selector).
- *   2. Auto-detect: first Spectra container in .entry-content.
- *   3. Scroll-threshold fallback (default 400px).
- *
- * The 'hero' default is intentionally empty so that auto-detection
- * kicks in without requiring per-page configuration.
- *
- * @return array<string, array>
- */
-function sfp_page_config_get_sticky_cta_defaults() {
-
-    return array(
-        'coaching' => array(
-            'text'   => 'Boek je gratis proefsessie',
-            'href'   => '',
-            'target' => '_blank',
-            'anchor' => 'aanvragen',
-            'hero'   => '',
-        ),
-        'training' => array(
-            'text'   => 'Plan een kennismaking in',
-            'href'   => '',
-            'target' => '_blank',
-            'anchor' => 'inschrijven',
-            'hero'   => '',
-        ),
-        'incompany' => array(
-            'text'   => 'Plan een kennismaking in',
-            'href'   => '',
-            'target' => '_blank',
-            'anchor' => 'aanvragen',
-            'hero'   => '',
-        ),
-    );
-}
-
-/**
- * Get the sticky CTA configuration for a given page type, merging any
- * per-paginatype overrides from the Instellingen tab on top of the
- * hardcoded defaults.
- *
- * Overrides are stored under the `sticky_cta` key in the `sfp_settings`
- * option as a nested array: `sticky_cta[<type>][text|href|anchor|hero]`.
- * Empty strings mean "fall back to default" so an editor can clear a
- * field without breaking the CTA.
- *
- * @param  string $type  One of 'coaching', 'training', 'incompany'.
- * @return array|null    Merged config array or null when the type is unknown.
- */
-function sfp_page_config_get_sticky_cta( $type ) {
-
-    $defaults = sfp_page_config_get_sticky_cta_defaults();
-    if ( ! isset( $defaults[ $type ] ) ) {
-        return null;
-    }
-
-    $default = $defaults[ $type ];
-
-    if ( ! function_exists( 'sfp_page_config_get_setting' ) ) {
-        return sfp_page_config_resolve_sticky_cta_href( $default );
-    }
-
-    $overrides_all = sfp_page_config_get_setting( 'sticky_cta', array() );
-    if ( ! is_array( $overrides_all ) || empty( $overrides_all[ $type ] ) ) {
-        return sfp_page_config_resolve_sticky_cta_href( $default );
-    }
-
-    $override = $overrides_all[ $type ];
-    $merged   = $default;
-    foreach ( array( 'text', 'href', 'anchor', 'hero' ) as $key ) {
-        if ( isset( $override[ $key ] ) && '' !== trim( (string) $override[ $key ] ) ) {
-            $merged[ $key ] = (string) $override[ $key ];
-        }
-    }
-
-    return sfp_page_config_resolve_sticky_cta_href( $merged );
-}
-
-/**
- * Resolve the sticky CTA href and matching target.
- *
- * When no booking URL is configured for this page type, the CTA falls
- * back to the on-page anchor (e.g. "#inschrijven"). That section holds
- * the real button, so the visitor always lands somewhere useful instead
- * of on whatever URL happened to be hardcoded in the plugin.
- *
- * The target follows the resolved href: an on-page anchor stays in the
- * same tab, an external URL opens in a new one.
- *
- * @param  array $config Merged sticky CTA config.
- * @return array         Config with resolved 'href' and 'target'.
- */
-function sfp_page_config_resolve_sticky_cta_href( $config ) {
-
-    $href = isset( $config['href'] ) ? trim( (string) $config['href'] ) : '';
-
-    if ( '' === $href ) {
-        $anchor = isset( $config['anchor'] ) ? trim( (string) $config['anchor'] ) : '';
-        $anchor = ltrim( $anchor, '#' );
-        $href   = ( '' !== $anchor ) ? '#' . $anchor : '';
-    }
-
-    $config['href']   = $href;
-    $config['target'] = ( '' === $href || 0 === strpos( $href, '#' ) ) ? '_self' : '_blank';
-
-    return $config;
 }
 
 /* =========================================================================
@@ -624,7 +483,7 @@ function sfp_page_config_delay_js_exclusions( $exclusions ) {
     // when the main scripts execute.
     $exclusions[] = 'sfpStickyConfig';
     $exclusions[] = 'sfpCourseData';
-    $exclusions[] = 'sfpPromoConfig';
+    $exclusions[] = 'sfpDropdownConfig';
     return $exclusions;
 }
 
@@ -635,8 +494,10 @@ function sfp_page_config_delay_js_exclusions( $exclusions ) {
  * ====================================================================== */
 
 $sfp_includes = array(
+    'includes/instellingen.php',
+    'includes/teksten.php',
     'includes/metabox.php',
-    'includes/dashboard.php',
+    'includes/cursusdata.php',
     'includes/shortcodes.php',
     'includes/feiten-shortcodes.php',
     'includes/placeholder-guard.php',
@@ -660,6 +521,12 @@ $sfp_includes = array(
     'includes/voorbeeld.php',
     'includes/autoloaded-options.php',
     'includes/ajax-lean.php',
+    'includes/vervolg.php',
+    'includes/footer-links.php',
+    'includes/onderdeel-tooltips.php',
+    'includes/onderdeel-reviews.php',
+    'includes/beheer-paginas.php',
+    'includes/beheer.php',
     'includes/updater.php',
 );
 
@@ -685,14 +552,14 @@ if ( class_exists( 'SFP_Page_Config_Updater' ) ) {
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'sfp_page_config_action_links' );
 
 /**
- * Add a "Instellingen" link to the plugin row on the Plugins page.
+ * Add a link to SFP Beheer to the plugin row on the Plugins page.
  *
  * @param  string[] $links Existing action links.
  * @return string[]
  */
 function sfp_page_config_action_links( $links ) {
     $settings_link = sprintf(
-        '<a href="%s">Instellingen</a>',
+        '<a href="%s">SFP Beheer</a>',
         esc_url( admin_url( 'admin.php?page=sfp-page-config' ) )
     );
     array_unshift( $links, $settings_link );

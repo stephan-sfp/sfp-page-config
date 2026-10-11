@@ -1,31 +1,125 @@
 /**
- * SFP Page Config - Sitewide Sticky CTA
- * Version: 2.5.3
+ * SFP Page Config - De knop onderaan
+ * Sinds 3.0.0
  *
- * Builds a sticky CTA bar based on window.sfpStickyConfig.
+ * Bouwt de knop die op een telefoon of tablet onderaan een dienstpagina in
+ * beeld blijft, uit window.sfpStickyConfig:
  *
- * Hero detection (three layers, first match wins):
- *   1. Manual override: cfg.hero selector from admin settings.
- *   2. Auto-detect: first top-level Spectra container that contains an
- *      outline button; falls back to the very first container.
- *   3. Scroll fallback: show after cfg.scrollThreshold (default 400px).
+ *   text    tekst op de knop
+ *   doel    form (het formulier op de pagina), pagina of link
+ *   href    adres bij pagina of link
+ *   target  _self of _blank
+ *   ankers  ankers waaraan het formulier op oudere pagina's te herkennen is
  *
- * When a hero element is found, dual IntersectionObservers control
- * visibility:
- *   - Appears when the hero section scrolls out of view.
- *   - Disappears when the anchor/form section scrolls into view.
+ * De plugin vindt zelf waar de knop heen gaat en wanneer hij te zien is:
  *
- * Supports WP Rocket delay-JS by listening for both standard
- * DOMContentLoaded and rocket-DOMContentLoaded.
+ *   Het formulier (bij doel form), eerste treffer wint:
+ *     1. een onderdeel met een van de bekende ankers;
+ *     2. de boekkaart (.sfp-boek-sectie);
+ *     3. het eerste formulier in de inhoud, met de sectie eromheen.
+ *   Zonder formulier is er geen knop.
+ *
+ *   De bovenkant van de pagina, eerste treffer wint:
+ *     1. het blok Held (.sfp-held);
+ *     2. de eerste Spectra-container met een omlijnde knop, anders de
+ *        eerste Spectra-container;
+ *     3. de eerste sectie van de inhoud;
+ *     4. geen bovenkant gevonden: de knop verschijnt na 400 px scrollen.
+ *
+ * De knop verschijnt als de bovenkant uit beeld is en verdwijnt zolang het
+ * formulier in beeld is.
+ *
+ * Het id van de balk (sticky-mobile-cta) en de ene link erin zijn een
+ * afspraak: het snippet "LatePoint: boekkaart in merkrollen" zoekt ze op.
+ *
+ * Werkt ook als WP Rocket scripts uitstelt: luistert naar DOMContentLoaded
+ * en naar rocket-DOMContentLoaded.
  */
 (function () {
     'use strict';
 
     var initialized = false;
 
+    function inhoud() {
+        return document.querySelector('.entry-content') || document.querySelector('main') || document.body;
+    }
+
+    /**
+     * Zoek het formulier waar de knop heen springt.
+     *
+     * @param {Object} cfg Instelling.
+     * @return {Element|null}
+     */
+    function vindFormulier(cfg) {
+        var i, el;
+        var ankers = Array.isArray(cfg.ankers) ? cfg.ankers : [];
+        for (i = 0; i < ankers.length; i++) {
+            el = ankers[i] ? document.getElementById(ankers[i]) : null;
+            if (el) return el;
+        }
+
+        el = document.querySelector('.sfp-boek-sectie');
+        if (el) {
+            if (!el.id) el.id = 'plan-een-gesprek';
+            return el;
+        }
+
+        var bak = inhoud();
+        var form = bak.querySelector(
+            '.srfm-form-container, .latepoint-book-form-wrapper, form:not([role="search"]):not(.search-form)'
+        );
+        if (!form) return null;
+        el = form.closest('.sfp-sectie, .wp-block-uagb-container, section');
+        if (!el || !bak.contains(el) || el === bak) el = form;
+        if (!el.id) el.id = 'sfp-formulier';
+        return el;
+    }
+
+    /**
+     * Zoek de bovenkant van de pagina.
+     *
+     * @return {Element|null}
+     */
+    function inBeeldTeKrijgen(el) {
+        // Een onderdeel dat op dit scherm verborgen is, komt nooit in beeld.
+        return !!el && el.getClientRects().length > 0;
+    }
+
+    function vindBovenkant(cfg) {
+        var bak = inhoud();
+
+        // Een bovenkant die tot en met 2.12.0 met de hand was aangewezen.
+        if (cfg && cfg.hero) {
+            try {
+                var eigen = document.querySelector(cfg.hero);
+                if (inBeeldTeKrijgen(eigen)) return eigen;
+            } catch (e) { /* geen geldige selector: verder zoeken */ }
+        }
+
+        var held = bak.querySelector('.sfp-held');
+        if (inBeeldTeKrijgen(held)) return held;
+
+        var spectra = bak.querySelectorAll(':scope > .wp-block-uagb-container');
+        if (!spectra.length) spectra = document.querySelectorAll('.entry-content > .wp-block-uagb-container');
+        var i;
+        for (i = 0; i < spectra.length; i++) {
+            if (inBeeldTeKrijgen(spectra[i]) && spectra[i].querySelector('.ast-outline-button, .wp-block-button.is-style-outline')) {
+                return spectra[i];
+            }
+        }
+        for (i = 0; i < spectra.length; i++) {
+            if (inBeeldTeKrijgen(spectra[i])) return spectra[i];
+        }
+
+        var secties = bak.querySelectorAll(':scope > .sfp-sectie, :scope > section');
+        for (i = 0; i < secties.length; i++) {
+            if (inBeeldTeKrijgen(secties[i])) return secties[i];
+        }
+        return null;
+    }
+
     function init() {
         if (initialized) return;
-
         if (typeof IntersectionObserver === 'undefined') return;
 
         var cfg = window.sfpStickyConfig;
@@ -33,139 +127,93 @@
 
         initialized = true;
 
-        // Is there anywhere to send the visitor? An on-page anchor href is
-        // only useful when that section actually exists on this page.
-        // Without this check the bar could show a button that does nothing.
-        var hasDestination = true;
-        if (!cfg.href) {
-            hasDestination = false;
-        } else if (cfg.href.charAt(0) === '#' && !document.getElementById(cfg.href.slice(1))) {
-            hasDestination = false;
+        var formulier = null;
+        var href = '';
+
+        if (cfg.doel === 'form') {
+            formulier = vindFormulier(cfg);
+            href = formulier ? '#' + formulier.id : '';
+        } else {
+            href = cfg.href || '';
         }
 
-        // Build the sticky bar, but only when there is a destination.
-        // The hero detection further down keeps running either way: it adds
-        // the .sfp-hero-section class that sales-page.css needs to keep the
-        // hero outline button visible below 1024px. Skipping the whole
-        // function here would hide that button as well.
+        // De balk, alleen als de knop ergens heen kan. De bovenkant wordt
+        // hieronder hoe dan ook gezocht: de klasse .sfp-hero-section houdt
+        // de omlijnde knop in de bovenkant zichtbaar onder 1024 px.
         var bar = null;
-
-        if (hasDestination) {
+        if (href) {
             bar = document.createElement('div');
             bar.id = 'sticky-mobile-cta';
             bar.className = 'sticky-mobile-cta';
 
             var link = document.createElement('a');
-            // Astra owns button size, padding, border and radius.
+            // Astra bepaalt maat, ruimte, rand en ronding van .button.
             link.className = 'button';
-            link.href = cfg.href;
-            link.textContent = cfg.text;
-            if (cfg.target) link.target = cfg.target;
-
+            link.href = href;
+            link.textContent = cfg.text || '';
+            if (cfg.target && cfg.target !== '_self') {
+                link.target = cfg.target;
+                link.rel = 'noopener';
+            }
             link.setAttribute('role', 'button');
 
             bar.appendChild(link);
             document.body.appendChild(bar);
         }
 
-        // Visibility state.
-        var heroEverSeen = false;
-        var heroVisible = false;
-        var anchorVisible = false;
+        // De knop verschijnt zodra de bezoeker de bovenkant voorbij is. Dat
+        // geldt ook voor wie lager op de pagina binnenkomt (een link met een
+        // anker, of een herladen pagina).
+        var voorbijBovenkant = false;
+        var formulierVisible = false;
 
         function updateVisibility() {
             if (!bar) return;
-            var show = heroEverSeen && !heroVisible && !anchorVisible;
+            var show = voorbijBovenkant && !formulierVisible;
             bar.classList.toggle('visible', show);
+            document.documentElement.classList.toggle('sfp-knop-in-beeld', show);
         }
 
-        // --- Hero detection: three layers ---
-
-        var heroCTA = null;
-
-        // Layer 1: manual override from admin settings.
-        if (cfg.hero && cfg.hero.length > 0) {
-            try {
-                heroCTA = document.querySelector(cfg.hero);
-            } catch (e) {
-                // Invalid selector; fall through to auto-detect.
-                heroCTA = null;
-            }
-        }
-
-        // Layer 2: auto-detect first top-level Spectra container that
-        // contains an outline button. Falls back to the very first
-        // container if none has one.
-        if (!heroCTA) {
-            var topContainers = document.querySelectorAll(
-                '.entry-content > .wp-block-uagb-container'
-            );
-            for (var i = 0; i < topContainers.length; i++) {
-                if (topContainers[i].querySelector(
-                    '.ast-outline-button, .wp-block-button.is-style-outline'
-                )) {
-                    heroCTA = topContainers[i];
-                    break;
-                }
-            }
-            // Fallback: first container (original behaviour).
-            if (!heroCTA && topContainers.length) {
-                heroCTA = topContainers[0];
-            }
-        }
-
-        if (heroCTA) {
-            // Mark the hero for CSS targeting (outline-button visibility).
-            heroCTA.classList.add('sfp-hero-section');
-
+        var bovenkant = vindBovenkant(cfg);
+        if (bovenkant && bovenkant !== formulier) {
+            bovenkant.classList.add('sfp-hero-section');
+            if (!bar) return;
             new IntersectionObserver(function (entries) {
-                heroVisible = entries[0].isIntersecting;
-                if (heroVisible) heroEverSeen = true;
+                var laatste = entries[entries.length - 1];
+                voorbijBovenkant = !laatste.isIntersecting && laatste.boundingClientRect.bottom <= 0;
                 updateVisibility();
-            }, { threshold: 0 }).observe(heroCTA);
+            }, { threshold: 0 }).observe(bovenkant);
         } else {
-            // Layer 3: scroll-threshold fallback.
-            // No hero element found; show after scrolling past threshold.
+            if (!bar) return;
             var threshold = parseInt(cfg.scrollThreshold, 10) || 400;
             var ticking = false;
-
-            function onScroll() {
+            var onScroll = function () {
                 if (ticking) return;
                 ticking = true;
                 requestAnimationFrame(function () {
                     ticking = false;
                     var scrolled = window.pageYOffset || document.documentElement.scrollTop;
-                    var pastThreshold = scrolled >= threshold;
-                    if (pastThreshold && !heroEverSeen) {
-                        heroEverSeen = true;
-                    }
-                    heroVisible = !pastThreshold;
+                    voorbijBovenkant = scrolled >= threshold;
                     updateVisibility();
                 });
-            }
-
+            };
             window.addEventListener('scroll', onScroll, { passive: true });
-            // Run once to set initial state.
             onScroll();
         }
 
-        // Observe anchor (form section).
-        var anchor = cfg.anchor ? document.getElementById(cfg.anchor) : null;
-        if (anchor) {
+        if (formulier) {
             new IntersectionObserver(function (entries) {
-                anchorVisible = entries[0].isIntersecting;
+                formulierVisible = entries[entries.length - 1].isIntersecting;
                 updateVisibility();
-            }, { threshold: 0 }).observe(anchor);
+            }, { threshold: 0 }).observe(formulier);
         }
     }
 
-    // Run on standard DOMContentLoaded or immediately if already loaded.
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
 
-    // WP Rocket delay-JS dispatches its own event after deferred scripts run.
     window.addEventListener('rocket-DOMContentLoaded', init);
 })();

@@ -49,3 +49,11 @@
         bottom: 20px;
     }
 }
+
+/* Staat de knop onderaan in beeld (dienstpagina's, tot 1024 px), dan schuift
+   de WhatsApp-knop erboven. */
+@media screen and (max-width: 1024px) {
+    .sfp-knop-in-beeld .whatsapp-float {
+        bottom: 92px;
+    }
+}

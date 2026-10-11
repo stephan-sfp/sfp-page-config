@@ -361,10 +361,16 @@ function sfp_page_config_render_metabox( $post ) {
     /* =====================================================================
      * Affiliate toggle - posts only
      * =================================================================== */
-    if ( 'post' === $post->post_type ) :
+    // Alleen waar het vinkje iets doet: op een site met een affiliateblok en
+    // zonder de artikelopmaak (die herkent affiliatelinks zelf).
+    $affiliate_vinkje = 'post' === $post->post_type
+        && function_exists( 'sfp_page_config_get_affiliate_layout_id' ) && sfp_page_config_get_affiliate_layout_id()
+        && ! ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() );
+    if ( $affiliate_vinkje ) :
         $has_affiliate = get_post_meta( $post->ID, '_has_affiliate_links', true );
     ?>
     <div class="sfp-mb-field">
+        <input type="hidden" name="sfp_has_affiliate_veld" value="1" />
         <label>
             <input
                 type="checkbox"
@@ -406,7 +412,7 @@ function sfp_page_config_render_metabox( $post ) {
                     }
                 }
                 if ( ! empty( $dates_formatted ) ) {
-                    $sm_tijd = sfp_page_config_format_cursus_tijd(
+                    $sm_tijd = sfp_page_config_format_lestijd(
                         isset( $startmoment['start'] ) ? $startmoment['start'] : '',
                         isset( $startmoment['eind'] ) ? $startmoment['eind'] : ''
                     );
@@ -423,17 +429,16 @@ function sfp_page_config_render_metabox( $post ) {
             echo '<p style="color:#757575;font-size:12px;margin:0;">Geen cursusdata ingesteld.</p>';
         }
 
-        $dashboard_url = admin_url( 'admin.php?page=sfp-customizations' );
         printf(
-            '<p style="margin:6px 0 0;"><a href="%s">Beheer in SFP Customizations &rarr;</a></p>',
-            esc_url( $dashboard_url )
+            '<p style="margin:6px 0 0;"><a href="%s">Beheer de data in SFP Beheer &rarr;</a></p>',
+            esc_url( admin_url( 'admin.php?page=sfp-page-config#cursusdata' ) )
         );
         ?>
         <code class="sfp-mb-hint">[cursus_datum]</code>
         <span class="sfp-mb-note">Params: <code>format</code>, <code>groep</code>, <code>separator</code>, <code>show</code>, <code>layout</code></span>
         <br />
         <code class="sfp-mb-hint">[cursus_tijd]</code>
-        <span class="sfp-mb-note">Lestijd per startmoment. Beheer tijden in SFP Page Config &rarr; Cursusdata.</span>
+        <span class="sfp-mb-note">Lestijd per startmoment. Beheer tijden in SFP Beheer &rarr; Cursusdata.</span>
     </div>
     <?php endif; ?>
 
@@ -571,6 +576,11 @@ function sfp_page_config_save_metabox( $post_id, $post ) {
     if ( isset( $_POST['sfp_cta_href'] ) ) {
         $cta_href = esc_url_raw( wp_unslash( $_POST['sfp_cta_href'] ) );
         if ( '' !== $cta_href ) {
+            // Wie hier een bestemming invult, kiest die. Een pagina die eerder
+            // in SFP Beheer is gekozen, zou er anders stil overheen gaan.
+            if ( $cta_href !== (string) get_post_meta( $post_id, 'sfp_cta_href', true ) ) {
+                delete_post_meta( $post_id, 'sfp_cta_pagina' );
+            }
             update_post_meta( $post_id, 'sfp_cta_href', $cta_href );
         } else {
             delete_post_meta( $post_id, 'sfp_cta_href' );
@@ -591,8 +601,8 @@ function sfp_page_config_save_metabox( $post_id, $post ) {
         delete_post_meta( $post_id, 'sfp_whatsapp' );
     }
 
-    // --- Affiliate (posts only) ---
-    if ( 'post' === $post->post_type ) {
+    // --- Affiliate (alleen als het vinkje is getoond) ---
+    if ( 'post' === $post->post_type && ! empty( $_POST['sfp_has_affiliate_veld'] ) ) {
         if ( ! empty( $_POST['sfp_has_affiliate'] ) ) {
             update_post_meta( $post_id, '_has_affiliate_links', '1' );
         } else {
@@ -607,6 +617,6 @@ function sfp_page_config_save_metabox( $post_id, $post ) {
         }
     }
 
-    // Note: sfp_cursusdata is managed exclusively via the Cursusdata Dashboard
-    // (includes/dashboard.php) and is intentionally not editable here.
+    // Note: sfp_cursusdata is managed exclusively in SFP Beheer, Cursusdata
+    // (includes/cursusdata.php) and is intentionally not editable here.
 }

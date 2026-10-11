@@ -15,7 +15,7 @@
  *   - inhoudsopgave rechts, hoofdstukbalk onderaan op telefoon en tablet
  *   - promokaart (rechts; op telefoon en tablet na de eerste alinea van
  *     het eerste hoofdstuk)
- *   - vervolgblok via de actie sfp_artikel_vervolg (Astra-layout per pijler)
+ *   - vervolgblok per pijler, beheerd in SFP Beheer (includes/vervolg.php)
  *   - auteurskaart en voetregels
  *
  * Aan per site met de instelling "Artikelopmaak" (standaard uit). Uit
@@ -463,7 +463,7 @@ function sfp_page_config_artikel_hoofdstukken( $html, $alleen = null ) {
  */
 function sfp_page_config_artikel_promokaart( $variant = 'zij' ) {
     $titel = (string) sfp_page_config_get_setting( 'artikel_promo_titel', '' );
-    $url   = (string) sfp_page_config_get_setting( 'artikel_promo_url', '' );
+    $url   = sfp_page_config_link_instelling( 'artikel_promo' );
     if ( '' === $titel || '' === $url ) {
         return '';
     }
@@ -745,9 +745,9 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     $meta .= '<i class="sfp-art-kop__breek" aria-hidden="true"></i>';
     $meta .= '<span>' . esc_html( sprintf( $t( 'leestijd' ), sfp_page_config_artikel_leestijd( $post->post_content ) ) ) . '</span>';
 
-    $check_url = (string) sfp_page_config_get_setting( 'artikel_factcheck_url', '' );
+    $check_url = sfp_page_config_link_instelling( 'artikel_factcheck' );
     if ( '' === $check_url ) {
-        $check_url = (string) sfp_page_config_get_setting( 'artikel_redactie_url', '' );
+        $check_url = sfp_page_config_link_instelling( 'artikel_redactie' );
     }
     $check = sfp_page_config_artikel_icoon( 'vink' ) . esc_html( $t( 'gecheckt' ) );
     $meta .= '' !== $check_url ? '<a class="sfp-art-kop__check" href="' . esc_url( $check_url ) . '">' . $check . '</a>' : '<span class="sfp-art-kop__check">' . $check . '</span>';
@@ -945,8 +945,8 @@ function sfp_page_config_artikel_auteurskaart( $post ) {
 function sfp_page_config_artikel_voetregels( $post ) {
     $t     = 'sfp_page_config_artikel_tekst';
     $links = '';
-    foreach ( array( 'artikel_redactie_url' => 'redactiebeleid', 'artikel_bibliografie_url' => 'bibliografie' ) as $sleutel => $tekst ) {
-        $url = (string) sfp_page_config_get_setting( $sleutel, '' );
+    foreach ( array( 'artikel_redactie' => 'redactiebeleid', 'artikel_bibliografie' => 'bibliografie' ) as $sleutel => $tekst ) {
+        $url = sfp_page_config_link_instelling( $sleutel );
         if ( '' !== $url ) {
             $links .= '<a href="' . esc_url( $url ) . '">' . esc_html( $t( $tekst ) ) . '</a>';
         }
@@ -993,8 +993,8 @@ function sfp_page_config_artikel_render( $post ) {
     list( $inhoud, $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ) );
     $inhoud = sfp_page_config_artikel_promo_in_tekst( $inhoud, sfp_page_config_artikel_promokaart( 'inline' ) );
 
-    // Vervolgblok: een Astra-layout (of andere code) aan de actie
-    // sfp_artikel_vervolg, met weergaveregels per pijler.
+    // Vervolgblok: het vervolg van de pijler uit SFP Beheer
+    // (includes/vervolg.php). De actie blijft bestaan voor andere code.
     ob_start();
     /**
      * Plek voor het vervolgblok onder een artikel.
@@ -1174,93 +1174,4 @@ function sfp_page_config_artikel_rest_schrijf( WP_REST_Request $verzoek ) {
         SFP_Page_Config_Updater::wis_cache();
     }
     return sfp_page_config_artikel_rest_lees();
-}
-
-/**
- * De sectie Artikelopmaak op het tabblad Instellingen.
- *
- * @param array $s De bewaarde instellingen.
- */
-function sfp_page_config_artikel_instellingen_formulier( $s ) {
-    $w = function ( $sleutel ) use ( $s ) {
-        return isset( $s[ $sleutel ] ) ? (string) $s[ $sleutel ] : '';
-    };
-    $veld = function ( $sleutel, $label, $hulp = '', $soort = 'text' ) use ( $w ) {
-        echo '<tr><th><label for="sfp-' . esc_attr( $sleutel ) . '">' . esc_html( $label ) . '</label></th><td>';
-        if ( 'textarea' === $soort ) {
-            echo '<textarea id="sfp-' . esc_attr( $sleutel ) . '" name="sfp_settings[' . esc_attr( $sleutel ) . ']" rows="3" class="large-text">' . esc_textarea( $w( $sleutel ) ) . '</textarea>';
-        } elseif ( 'checkbox' === $soort ) {
-            echo '<label><input type="checkbox" id="sfp-' . esc_attr( $sleutel ) . '" name="sfp_settings[' . esc_attr( $sleutel ) . ']" value="1" ' . checked( '1' === $w( $sleutel ), true, false ) . ' /> ' . esc_html( $hulp ) . '</label>';
-            $hulp = '';
-        } else {
-            echo '<input type="' . esc_attr( $soort ) . '" id="sfp-' . esc_attr( $sleutel ) . '" name="sfp_settings[' . esc_attr( $sleutel ) . ']" value="' . esc_attr( $w( $sleutel ) ) . '" class="regular-text" />';
-        }
-        if ( '' !== $hulp ) {
-            echo '<p class="description">' . esc_html( $hulp ) . '</p>';
-        }
-        echo '</td></tr>';
-    };
-    $stand   = function_exists( 'sfp_page_config_deelbeeld_stand' ) ? sfp_page_config_deelbeeld_stand() : array();
-    $teksten = function_exists( 'sfp_page_config_affiliate_teksten' ) ? sfp_page_config_affiliate_teksten() : array( 'regel' => '', 'uitleg' => '' );
-    ?>
-    <h2>Artikelopmaak</h2>
-    <p style="color:#666;">De opmaak van berichten: kopkaart, inhoudsopgave, hoofdstukbalk, auteurskaart en voetregels. Uit betekent dat berichten blijven zoals ze zijn. De blokken voor artikelen werken ook als dit uit staat.</p>
-    <input type="hidden" name="sfp_settings[artikel_formulier]" value="1" />
-    <table class="form-table" role="presentation">
-        <?php
-        $veld( 'artikel_aan', 'Artikelopmaak', 'Berichten in de artikelopmaak tonen', 'checkbox' );
-        $veld( 'artikel_voorkeursbron', 'Voorkeursbron bij Google', 'De actie in de kopkaart tonen', 'checkbox' );
-        $veld( 'artikel_factcheck_url', 'Pagina over factchecken', 'Waar de regel Gefactcheckt naartoe linkt. Leeg: de redactionele verantwoording; ook leeg: geen link.', 'url' );
-        $veld( 'artikel_redactie_url', 'Redactionele verantwoording', 'Link in de voetregels. Leeg: geen link.', 'url' );
-        $veld( 'artikel_bibliografie_url', 'Bibliografie', 'Link in de voetregels. Leeg: geen link.', 'url' );
-        ?>
-    </table>
-    <h3>Promokaart</h3>
-    <p style="color:#666;">Eén kaart per site, rechts naast elk artikel en op telefoon en tablet na de eerste alinea van het eerste hoofdstuk. Zonder titel of link is er geen kaart.</p>
-    <table class="form-table" role="presentation">
-        <?php
-        $veld( 'artikel_promo_beeld', 'Afbeelding', 'Het nummer (ID) van de afbeelding in de mediabibliotheek.', 'number' );
-        $veld( 'artikel_promo_label', 'Label' );
-        $veld( 'artikel_promo_titel', 'Titel' );
-        $veld( 'artikel_promo_tekst', 'Tekst', '', 'textarea' );
-        $veld( 'artikel_promo_linktekst', 'Tekst van de link' );
-        $veld( 'artikel_promo_url', 'Link', '', 'url' );
-        ?>
-    </table>
-    <h3>Affiliatemelding</h3>
-    <p style="color:#666;">De plugin herkent affiliatelinks zelf, ook in tooltips. Bij een artikel met zo'n link staat een korte regel in de kopkaart en een uitlegblok onderaan. Zonder patronen of zonder teksten is er geen melding.</p>
-    <table class="form-table" role="presentation">
-        <?php
-        $veld( 'affiliate_patronen', 'Herkenningspatronen', 'Eén per regel: een stuk van de link, bijvoorbeeld een domein. Een sterretje staat voor een willekeurig stuk.', 'textarea' );
-        $veld( 'affiliate_regel', 'Regel in de kopkaart', 'Leeg op een Nederlandstalige site: de vastgestelde tekst. Nu getoond: ' . ( '' !== $teksten['regel'] ? $teksten['regel'] : '(geen)' ) );
-        $veld( 'affiliate_uitleg', 'Uitleg onderaan', 'Leeg op een Nederlandstalige site: de vastgestelde tekst.', 'textarea' );
-        ?>
-    </table>
-    <h3>Deelbeelden</h3>
-    <p style="color:#666;">
-        <?php
-        if ( $stand ) {
-            $klaar = ! empty( $stand['gd'] ) && ! empty( $stand['freetype'] ) && ! empty( $stand['jpeg'] ) && ! empty( $stand['kleurrollen'] );
-            echo esc_html( $klaar ? 'De server kan deelbeelden maken.' : 'De server kan nu geen deelbeelden maken; de blokken tonen dezelfde kaart in HTML.' );
-            echo ' ' . esc_html( empty( $stand['fonts_aanwezig'] ) ? 'De fonts worden opgehaald bij het eerste beeld.' : 'De fonts staan klaar.' );
-            if ( ! empty( $stand['laatste_fout'] ) ) {
-                echo '<br />Laatste melding: ' . esc_html( $stand['laatste_fout'] );
-            }
-        }
-        ?>
-    </p>
-    <h3>Updates</h3>
-    <table class="form-table" role="presentation">
-        <tr>
-            <th><label for="sfp-update-kanaal">Kanaal</label></th>
-            <td>
-                <select id="sfp-update-kanaal" name="sfp_settings[update_kanaal]">
-                    <option value="" <?php selected( $w( 'update_kanaal' ), '' ); ?>>Gewone releases</option>
-                    <option value="proef" <?php selected( $w( 'update_kanaal' ), 'proef' ); ?>>Ook proefversies (pre-releases)</option>
-                </select>
-                <p class="description">Proefversies zijn bedoeld voor één site tegelijk, om een nieuwe versie te beoordelen voordat het netwerk hem krijgt.</p>
-            </td>
-        </tr>
-    </table>
-    <?php
 }

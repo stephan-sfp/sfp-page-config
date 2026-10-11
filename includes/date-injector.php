@@ -9,8 +9,10 @@
  *   2. window.sfpCourseData   - All startmomenten with formatted dates for
  *      the current page (for SureForms dropdown population).
  *
- * Also enqueues a small script that auto-populates any <select> with class
- * `sfp-startmoment-select` from window.sfpCourseData.
+ * Also enqueues a small script that fills the dropdown with the startmomenten
+ * from window.sfpCourseData. Since 3.0.0 the script finds the dropdown itself;
+ * the class `sfp-startmoment-select` on the form field still works but is no
+ * longer needed.
  *
  * @package SFP_Page_Config
  */
@@ -35,7 +37,7 @@ if ( ! has_action( 'wp_footer', 'sfp_page_config_inject_course_data' ) && ! has_
 function sfp_page_config_inject_course_data() {
 
     // Only inject on training pages.
-    if ( ! is_singular( sfp_page_config_post_types() ) ) {
+    if ( ! is_singular( sfp_page_config_post_types() ) || ! sfp_page_config_onderdeel_aan( 'cursusdata' ) ) {
         return;
     }
 
@@ -69,7 +71,7 @@ function sfp_page_config_inject_course_data() {
 
             $dates_formatted = array();
             foreach ( $sm['data'] as $d ) {
-                $f = sfp_page_config_format_date_nl( $d, 'short' );
+                $f = sfp_page_config_format_datum( $d, 'short' );
                 if ( $f ) {
                     $dates_formatted[] = $f;
                 }
@@ -78,7 +80,7 @@ function sfp_page_config_inject_course_data() {
             if ( ! empty( $dates_formatted ) ) {
                 $startmomenten[] = array(
                     'index' => $index + 1,
-                    'label' => 'Groep ' . ( $index + 1 ) . ': ' . implode( ' • ', $dates_formatted ),
+                    'label' => sfp_page_config_tekst_f( 'groep', $index + 1 ) . ': ' . implode( ' • ', $dates_formatted ),
                     'value' => 'groep-' . ( $index + 1 ),
                     'dates' => $dates_formatted,
                 );
@@ -133,7 +135,7 @@ function sfp_page_config_inject_course_data() {
                     'title'         => get_the_title( $promo_post->ID ),
                     'url'           => get_permalink( $promo_post->ID ),
                     'dateRaw'       => $date_raw,
-                    'dateFormatted' => sfp_page_config_format_date_nl( $date_raw, 'short' ),
+                    'dateFormatted' => sfp_page_config_format_datum( $date_raw, 'short' ),
                     'postId'        => $promo_post->ID,
                 ) )
             );
@@ -161,7 +163,7 @@ function sfp_page_config_enqueue_dropdown_script() {
     }
 
     $type = get_post_meta( get_queried_object_id(), 'sfp_page_type', true );
-    if ( 'training' !== $type ) {
+    if ( 'training' !== $type || ! sfp_page_config_onderdeel_aan( 'cursusdata' ) ) {
         return;
     }
 
@@ -176,6 +178,10 @@ function sfp_page_config_enqueue_dropdown_script() {
     // Pass brand colour to JS for the no-data fallback message.
     $brand = sfp_page_config_get_brand();
     wp_localize_script( 'sfp-page-config-dropdown', 'sfpDropdownConfig', array(
-        'ctaColor' => $brand['cta_bg'],
+        'ctaColor'  => $brand['cta_bg'],
+        // Teksten in de taal van de site (includes/teksten.php).
+        'kiesGroep' => sfp_page_config_tekst( 'kies_groep' ),
+        'geenData'  => sfp_page_config_tekst( 'geen_data' ),
+        'groep'     => sfp_page_config_tekst( 'groep' ),
     ) );
 }
