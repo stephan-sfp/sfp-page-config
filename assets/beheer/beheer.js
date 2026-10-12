@@ -688,6 +688,9 @@
 				chips.appendChild(el('span', { class: 'sfpb-chip' }, [pt, el('button', { type: 'button', 'aria-label': pt + ' weghalen', text: '×', klik: function () { bewaarPatronen(this, patronen.filter(function (x) { return x !== pt; })); } })]));
 			});
 			if (!patronen.length) chips.appendChild(el('span', { class: 'sfpb-hulp', text: 'Nog geen herkenning ingesteld. Er komt dan nooit een melding.' }));
+			// Een stukje dat op geen enkel artikel een link vindt, is waarschijnlijk verkeerd getypt.
+			var treffers = a.treffers || {};
+			var zonder = patronen.filter(function (pt) { return treffers[pt] === 0; });
 			var voeg = function () {
 				var w = nieuw.value.trim();
 				if (!w) { nieuw.focus(); return; }
@@ -702,6 +705,7 @@
 						el('div', { class: 'sfpb-rij' }, [nieuw, el('button', { class: 'sfpb-knop', type: 'button', text: 'Toevoegen', klik: voeg }), flitsPlek('art-aff')]),
 						el('span', { class: 'sfpb-hulp', text: 'Staat zo\'n link in een artikel of een tooltip, dan komt er vanzelf een melding bij. De tekst van de melding staat bij Teksten.' })
 					]),
+					zonder.length ? el('div', { class: 'sfpb-let' }, [el('span', { text: (zonder.length === 1 ? zonder[0] + ' vindt' : zonder.join(', ') + ' vinden') + ' op geen enkel gepubliceerd artikel een link. Klopt het stukje? Een sterretje staat voor een willekeurig stuk van de link, bijvoorbeeld managementboek.nl*affiliate.' })]) : null,
 					(!a.affiliate.regel || !a.affiliate.uitleg) ? el('div', { class: 'sfpb-let' }, [el('span', { text: 'Voor de taal van deze site is nog geen tekst voor de melding ingevuld. Zonder tekst komt er geen melding.' }), el('div', { class: 'sfpb-rij' }, [el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Naar Teksten', klik: function () { ui.open['tk-Artikelen'] = true; ga('teksten'); } })])]) : null
 				]),
 				voorbeeld([el('div', { class: 'sfpb-m sfpb-stapel sfpb-krap' }, [el('span', { style: 'font-size:14px' }, [(a.voorbeeld.meta ? a.voorbeeld.meta + ' · ' : '') + a.voorbeeld.gecheckt + ' · ', el('b', { style: 'color:var(--sfp-b-primair)', text: a.affiliate.regel || '(geen tekst)' })])])])

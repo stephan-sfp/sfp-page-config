@@ -163,6 +163,81 @@ function sfp_page_config_affiliate_patronen() {
 }
 
 /**
+ * Het zoekpatroon bij een herkenningspatroon: een sterretje staat voor een
+ * willekeurig stuk van de link, al het andere telt letterlijk.
+ *
+ * @param  string $patroon Herkenningspatroon.
+ * @return string          Reguliere expressie.
+ */
+function sfp_page_config_affiliate_regex( $patroon ) {
+    $delen = array_map(
+        function ( $deel ) {
+            return preg_quote( $deel, '#' );
+        },
+        explode( '*', (string) $patroon )
+    );
+    return '#' . implode( '[^\\s"\'<>]*', $delen ) . '#i';
+}
+
+/**
+ * Per herkenningspatroon: op hoeveel gepubliceerde artikelen het een link
+ * vindt. Een patroon dat nergens iets vindt, is waarschijnlijk verkeerd
+ * getypt; SFP Beheer meldt dat bij Artikelen, Affiliatelinks.
+ *
+ * Wordt een dag bewaard en opnieuw geteld na het opslaan van een bericht of
+ * van de instellingen.
+ *
+ * @return array<string, int>
+ */
+function sfp_page_config_affiliate_treffers() {
+    $patronen = sfp_page_config_affiliate_patronen();
+    if ( ! $patronen ) {
+        return array();
+    }
+    $sleutel = 'sfp_pc_aff_treffers_' . md5( implode( "\n", $patronen ) );
+    $bewaard = get_transient( $sleutel );
+    if ( is_array( $bewaard ) ) {
+        return $bewaard;
+    }
+    $types    = function_exists( 'sfp_page_config_artikel_posttypes' ) ? sfp_page_config_artikel_posttypes() : array( 'post' );
+    $treffers = array_fill_keys( $patronen, 0 );
+    $ids      = get_posts(
+        array(
+            'post_type'      => $types,
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'no_found_rows'  => true,
+        )
+    );
+    foreach ( $ids as $id ) {
+        $inhoud = (string) get_post_field( 'post_content', $id );
+        $inhoud = $inhoud . "\n" . html_entity_decode( $inhoud, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+        foreach ( $patronen as $patroon ) {
+            if ( preg_match( sfp_page_config_affiliate_regex( $patroon ), $inhoud ) ) {
+                $treffers[ $patroon ]++;
+            }
+        }
+    }
+    set_transient( $sleutel, $treffers, DAY_IN_SECONDS );
+    update_option( 'sfp_pc_aff_treffers_sleutel', $sleutel, false );
+    return $treffers;
+}
+
+add_action( 'save_post', 'sfp_page_config_affiliate_treffers_wis' );
+add_action( 'update_option_sfp_settings', 'sfp_page_config_affiliate_treffers_wis' );
+
+/**
+ * Tel de treffers opnieuw bij de volgende keer.
+ */
+function sfp_page_config_affiliate_treffers_wis() {
+    $sleutel = get_option( 'sfp_pc_aff_treffers_sleutel' );
+    if ( $sleutel ) {
+        delete_transient( $sleutel );
+    }
+}
+
+/**
  * Bevat dit bericht een affiliatelink? Zoekt in de inhoud en in de
  * tooltips (waar de link als gecodeerde HTML in een attribuut staat).
  *
@@ -182,13 +257,7 @@ function sfp_page_config_affiliate_heeft( $post ) {
     if ( $patronen ) {
         $inhoud = $post->post_content . "\n" . html_entity_decode( $post->post_content, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
         foreach ( $patronen as $patroon ) {
-            $delen = array_map(
-                function ( $deel ) {
-                    return preg_quote( $deel, '#' );
-                },
-                explode( '*', $patroon )
-            );
-            if ( preg_match( '#' . implode( '[^\\s"\'<>]*', $delen ) . '#i', $inhoud ) ) {
+            if ( preg_match( sfp_page_config_affiliate_regex( $patroon ), $inhoud ) ) {
                 $heeft = true;
                 break;
             }

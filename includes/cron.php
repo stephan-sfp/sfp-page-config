@@ -99,6 +99,10 @@ function sfp_page_config_run_daily_check() {
 
         $seen_ids[] = $page->ID;
 
+        // De pagina zelf, zodat je hem vanuit de mail opent.
+        $link       = (string) get_permalink( $page );
+        $regel_link = '' !== $link ? "\n  " . $link : '';
+
         $json = get_post_meta( $page->ID, 'sfp_cursusdata', true );
         $data = $json ? json_decode( $json, true ) : array();
         if ( json_last_error() !== JSON_ERROR_NONE ) {
@@ -150,11 +154,11 @@ function sfp_page_config_run_daily_check() {
         if ( 'no-data' === $signature ) {
             $should_notify = true;
             $message_line  = sprintf( '- %s (geen cursusdata ingevoerd)', $page->post_title );
-            $needs_new_dates[] = $message_line;
+            $needs_new_dates[] = $message_line . $regel_link;
         } elseif ( 'invalid' === $signature ) {
             $should_notify = true;
             $message_line  = sprintf( '- %s (geen geldige cursusdata gevonden)', $page->post_title );
-            $needs_new_dates[] = $message_line;
+            $needs_new_dates[] = $message_line . $regel_link;
         } else {
             // We have a latest_date. Check where it sits relative to today.
             $days_left = (int) round(
@@ -170,7 +174,7 @@ function sfp_page_config_run_daily_check() {
                     sfp_page_config_format_date_nl( $latest_date, 'short' ) ?: $latest_date,
                     abs( $days_left )
                 );
-                $needs_new_dates[] = $message_line;
+                $needs_new_dates[] = $message_line . $regel_link;
             } elseif ( $days_left <= 14 ) {
                 // Approaching expiry within 14 days.
                 $should_notify = true;
@@ -180,7 +184,7 @@ function sfp_page_config_run_daily_check() {
                     sfp_page_config_format_date_nl( $latest_date, 'short' ) ?: $latest_date,
                     $days_left
                 );
-                $upcoming[] = $message_line;
+                $upcoming[] = $message_line . $regel_link;
             }
             // else: plenty of runway, no notification.
         }
@@ -213,7 +217,8 @@ function sfp_page_config_run_daily_check() {
     if ( ! empty( $upcoming ) ) {
         $message .= "BIJNA VERLOPEN (binnen 14 dagen):\n" . implode( "\n", $upcoming ) . "\n\n";
     }
-    $message .= "Je ontvangt per training slechts één melding. Voer nieuwe data in via SFP Beheer, Cursusdata, om de teller te resetten.\n";
+    $message .= "Je ontvangt per training slechts één melding. Voer nieuwe data in via SFP Beheer, Cursusdata, om de teller te resetten:\n";
+    $message .= admin_url( 'admin.php?page=sfp-page-config#cursusdata' ) . "\n";
 
     wp_mail( $recipient, "[{$site_name}] Cursusdata update", $message );
 }

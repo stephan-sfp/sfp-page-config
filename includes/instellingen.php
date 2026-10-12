@@ -587,11 +587,10 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 break;
 
             case 'ajax_lean_skip':
+                // Een lege lijst is een keuze: de versnelling slaat dan niets
+                // over. De standaardlijst geldt alleen zolang er niets is bewaard.
                 $alle[ $sleutel ] = function_exists( 'sfp_ajax_lean_sanitize_skip' ) ? sfp_ajax_lean_sanitize_skip( $ruw ) : array();
-                if ( empty( $alle[ $sleutel ] ) && function_exists( 'sfp_ajax_lean_default_skip' ) ) {
-                    $alle[ $sleutel ] = sfp_ajax_lean_default_skip();
-                }
-                $bewaard[] = $sleutel;
+                $bewaard[]        = $sleutel;
                 break;
 
             case 'cron_email':

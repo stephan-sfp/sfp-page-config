@@ -13,8 +13,23 @@
 			: parseInt(wrapper.getAttribute('data-cols-desktop'), 10) || 1;
 	}
 
+	// "Lees verder" alleen bij een tekst die echt is ingekort.
+	function toonLeesVerder() {
+		var btns = document.querySelectorAll('.sfp-review__more');
+		for (var i = 0; i < btns.length; i++) {
+			var card = btns[i].closest('.sfp-review');
+			var tekst = card ? card.querySelector('.sfp-review__text') : null;
+			if (!tekst || card.classList.contains('sfp-review--expanded')) { continue; }
+			if (!tekst.clientHeight) { continue; } // nog niet in beeld: niets beslissen
+			btns[i].hidden = tekst.scrollHeight <= tekst.clientHeight + 1;
+		}
+	}
+
 	function initReadMore() {
 		var btns = document.querySelectorAll('.sfp-review__more');
+		toonLeesVerder();
+		window.addEventListener('resize', toonLeesVerder);
+		if (document.fonts && document.fonts.ready) { document.fonts.ready.then(toonLeesVerder); }
 		for (var i = 0; i < btns.length; i++) {
 			btns[i].addEventListener('click', function () {
 				var card     = this.closest('.sfp-review');

@@ -113,6 +113,25 @@ function sfp_page_config_tooltips_editor() {
         SFP_PAGE_CONFIG_VERSION,
         true
     );
+    // De bron van een tooltip komt in de bronnenlijst van een artikel; dat
+    // vinkje staat alleen waar die lijst bestaat.
+    $talen = array(
+        'nl' => 'Bron',
+        'en' => 'Source',
+        'pt' => 'Fonte',
+    );
+    $taal  = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
+    wp_add_inline_script(
+        'sfp-tooltip-format',
+        'window.sfpTooltipEditor=' . wp_json_encode(
+            array(
+                'bron'    => isset( $talen[ $taal ] ) ? $talen[ $taal ] : 'Bron',
+                'bronnen' => function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan(),
+                'types'   => function_exists( 'sfp_page_config_artikel_posttypes' ) ? array_values( sfp_page_config_artikel_posttypes() ) : array( 'post' ),
+            )
+        ) . ';',
+        'before'
+    );
     wp_enqueue_style(
         'sfp-tooltip-editor',
         SFP_PAGE_CONFIG_URL . 'assets/tooltip/editor.css',

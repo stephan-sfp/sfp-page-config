@@ -1,0 +1,18 @@
+/* Het paneel Deze pagina in de rechterkolom van de blokeditor. Neutraal: de kleuren van WordPress zelf. */
+.sfp-deze-pagina .sfp-dp-deel{display:flex;flex-direction:column;gap:12px;padding:12px 0;border-top:1px solid #e0e0e0}
+.sfp-deze-pagina .sfp-dp-deel:first-child{border-top:0;padding-top:0}
+.sfp-deze-pagina .sfp-dp-kop{margin:0;font-size:13px;font-weight:600;color:#1e1e1e}
+.sfp-deze-pagina .sfp-dp-hulp{margin:0;font-size:12px;line-height:1.5;color:#757575}
+.sfp-deze-pagina .sfp-dp-melding{font-size:12.5px;line-height:1.5;padding:8px 10px;border-radius:4px;background:#f0f6fc;border-left:3px solid var(--wp-admin-theme-color,#3858e9)}
+.sfp-deze-pagina .sfp-dp-melding--let{background:#fcf0f1;border-left-color:#cc1818}
+.sfp-deze-pagina .sfp-dp-lijst{display:flex;flex-direction:column;gap:8px}
+.sfp-deze-pagina .sfp-dp-regel{display:flex;flex-direction:column;gap:1px;font-size:13px}
+.sfp-deze-pagina .sfp-dp-regel__label{font-size:11.5px;color:#757575}
+.sfp-deze-pagina .sfp-dp-fout{color:#cc1818}
+.sfp-deze-pagina .sfp-dp-beelden{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.sfp-deze-pagina .sfp-dp-beelden img{width:100%;height:auto;border-radius:3px;border:1px solid #e0e0e0}
+.sfp-deze-pagina .sfp-dp-foto{position:relative;line-height:0;cursor:crosshair;border-radius:4px;overflow:hidden;border:1px solid #e0e0e0}
+.sfp-deze-pagina .sfp-dp-foto img{width:100%;height:auto;display:block;user-select:none}
+.sfp-deze-pagina .sfp-dp-foto__punt{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--wp-admin-theme-color,#3858e9);border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.4);pointer-events:none}
+.sfp-deze-pagina .sfp-dp-link{margin:0;font-weight:600;font-size:12.5px;overflow-wrap:anywhere}
+.sfp-deze-pagina .sfp-dp-knoppen{display:flex;gap:8px;flex-wrap:wrap}

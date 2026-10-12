@@ -94,32 +94,35 @@ function sfp_page_config_calculate_reading_time( $content ) {
  * 2. Shortcode [mijn_leestijd]
  * ====================================================================== */
 
-add_shortcode( 'mijn_leestijd', 'sfp_page_config_shortcode_reading_time' );
+if ( ! shortcode_exists( 'mijn_leestijd' ) ) {
+    add_shortcode( 'mijn_leestijd', 'sfp_page_config_shortcode_reading_time' );
+}
 
 /**
  * Shortcode: [mijn_leestijd]
  *
- * Uses a remove/re-add pattern to prevent infinite recursion when
- * the shortcode appears inside the content it is measuring.
+ * Een vlag voorkomt dat de code zichzelf eindeloos aanroept als hij in de
+ * inhoud staat die hij meet. Een geneste aanroep geeft een lege tekst.
  *
  * @return string HTML output.
  */
 function sfp_page_config_shortcode_reading_time() {
 
+    static $bezig = false;
     global $post;
 
-    if ( empty( $post->post_content ) ) {
+    if ( $bezig || ! $post instanceof WP_Post || '' === (string) $post->post_content ) {
         return '';
     }
 
-    // Prevent infinite loop.
-    remove_shortcode( 'mijn_leestijd' );
-
-    $result = '<div class="custom-read-meter">'
-        . sfp_page_config_calculate_reading_time( $post->post_content )
-        . '</div>';
-
-    add_shortcode( 'mijn_leestijd', 'sfp_page_config_shortcode_reading_time' );
+    $bezig = true;
+    try {
+        $result = '<div class="custom-read-meter">'
+            . sfp_page_config_calculate_reading_time( $post->post_content )
+            . '</div>';
+    } finally {
+        $bezig = false;
+    }
 
     return $result;
 }

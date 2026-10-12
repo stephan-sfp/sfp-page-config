@@ -33,10 +33,15 @@ function sfp_page_config_hero_focal_css() {
 
     $post_id = get_the_ID();
 
-    // Only on posts/pages tagged "pijler".
-    $terms = wp_get_object_terms( $post_id, 'post_tag', array( 'fields' => 'slugs' ) );
-    if ( ! in_array( 'pijler', (array) $terms, true ) ) {
-        return;
+    // Sinds 3.1.0 hangt dit niet meer aan de tag pijler (ontwerpregel 16):
+    // een gekozen uitsnede geldt altijd. Pagina's met de tag pijler houden
+    // hun standaard (het midden), zoals tot nu toe.
+    $gekozen = metadata_exists( 'post', $post_id, 'sfp_hero_focal_x' ) || metadata_exists( 'post', $post_id, 'sfp_hero_focal_y' );
+    if ( ! $gekozen ) {
+        $terms = wp_get_object_terms( $post_id, 'post_tag', array( 'fields' => 'slugs' ) );
+        if ( ! in_array( 'pijler', (array) $terms, true ) ) {
+            return;
+        }
     }
 
     $x = (int) get_post_meta( $post_id, 'sfp_hero_focal_x', true );

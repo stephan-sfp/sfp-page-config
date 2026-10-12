@@ -141,7 +141,9 @@ function sfp_page_config_knop_voor_pagina( $post_id, $type ) {
 
     // Ankers waaraan het formulier te herkennen is. Het oude veld per soort
     // pagina telt nog mee voor sites die daar iets eigens hadden ingevuld.
-    $ankers = array( 'inschrijven', 'aanvragen' );
+    // Een training heeft een inschrijfformulier, coaching en incompany een
+    // aanvraagformulier: dat anker wordt eerst gezocht.
+    $ankers = 'training' === $type ? array( 'inschrijven', 'aanvragen' ) : array( 'aanvragen', 'inschrijven' );
     $alle   = sfp_page_config_instellingen();
     $eigen  = isset( $alle['sticky_cta'][ $type ] ) && is_array( $alle['sticky_cta'][ $type ] ) ? $alle['sticky_cta'][ $type ] : array();
     if ( ! empty( $eigen['anchor'] ) ) {
