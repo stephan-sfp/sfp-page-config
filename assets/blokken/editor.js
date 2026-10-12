@@ -76,7 +76,7 @@
 	}
 
 	function uitleg( tekst ) {
-		return el( 'p', { key: 'uitleg-' + tekst.length, className: 'components-base-control__help' }, tekst );
+		return el( 'p', { key: 'uitleg-' + tekst, className: 'components-base-control__help' }, tekst );
 	}
 
 	/**
@@ -618,7 +618,8 @@
 
 	blok( 'sfp/warming-up-vraag', function ( props ) {
 		var a = props.attributes;
-		var lijst = wp.data.useSelect( hoofdstukken, [] );
+		// Als tekst, zodat het blok alleen opnieuw tekent als de hoofdstukken veranderen.
+		var lijst = JSON.parse( wp.data.useSelect( function ( select ) { return JSON.stringify( hoofdstukken( select ) ); }, [] ) );
 		// Een opgeslagen verwijzing hoort bij een kop met dat anker, of (van
 		// voor 3.1.0) bij een kop zonder eigen anker met die tekst.
 		var gekozen = a.anker ? lijst.filter( function ( h ) { return h.anker === a.anker || ( ! h.anker && h.slug === a.anker ); } )[ 0 ] : null;

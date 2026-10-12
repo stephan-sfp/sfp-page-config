@@ -245,8 +245,8 @@
 			extra.push( el( c.ToggleControl, {
 				key: 'aff',
 				label: 'Bevat affiliatelinks',
-				checked: '1' === meta._has_affiliate_links,
-				onChange: function ( v ) { zetMeta( '_has_affiliate_links', v ? '1' : '' ); },
+				checked: !! meta._has_affiliate_links && '0' !== meta._has_affiliate_links,
+				onChange: function ( v ) { zetMeta( '_has_affiliate_links', !! v ); },
 				help: 'Zet de melding over affiliatelinks onder het bericht.',
 				__nextHasNoMarginBottom: true,
 			} ) );
@@ -457,8 +457,8 @@
 				'aria-label': 'Kies het onderwerp in de foto',
 				onClick: function ( e ) {
 					var r = e.currentTarget.getBoundingClientRect();
-					props.zetMeta( 'sfp_hero_focal_x', Math.round( Math.min( 100, Math.max( 0, ( e.clientX - r.left ) / r.width * 100 ) ) ) );
-					props.zetMeta( 'sfp_hero_focal_y', Math.round( Math.min( 100, Math.max( 0, ( e.clientY - r.top ) / r.height * 100 ) ) ) );
+					props.zetMeta( 'sfp_hero_focal_x', Math.round( Math.min( 100, Math.max( 1, ( e.clientX - r.left ) / r.width * 100 ) ) ) );
+					props.zetMeta( 'sfp_hero_focal_y', Math.round( Math.min( 100, Math.max( 1, ( e.clientY - r.top ) / r.height * 100 ) ) ) );
 				},
 			},
 				el( 'img', { src: url, alt: '', draggable: false } ),
@@ -533,7 +533,7 @@
 			if ( bestaand ) { bestaand.remove(); }
 			return null;
 		}
-		if ( bestaand && bestaand.getAttribute( 'data-html' ) === String( html.length ) + html.slice( 0, 64 ) ) {
+		if ( bestaand && bestaand.sfpHtml === html ) {
 			return bestaand;
 		}
 		var div = bestaand || doc.createElement( 'div' );
@@ -541,7 +541,7 @@
 		div.className = 'sfp-vanzelf sfp-artikel';
 		div.setAttribute( 'contenteditable', 'false' );
 		div.setAttribute( 'aria-hidden', 'true' );
-		div.setAttribute( 'data-html', String( html.length ) + html.slice( 0, 64 ) );
+		div.sfpHtml = html;
 		div.innerHTML = '<span class="sfp-vanzelf__label">' + label + '</span>' + html;
 		return div;
 	}
