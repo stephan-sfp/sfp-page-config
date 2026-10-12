@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.1.0] - 2026-10-12
+
+Het werk in de editor: het paneel Deze pagina, blokken volgens de ontwerpregels en gegevens van de site als blok. Getest als proef op DPS in beta.1 en beta.2 (hieronder, met de volledige lijst). Dit is de eerste gewone release van 3.1.0 en bereikt alle sites.
+
+### Wat er op een site verandert bij het bijwerken
+- In de blokeditor staat het paneel Deze pagina in plaats van het metavak SFP Page Config. De eigen blokken staan in de groep Bouwstenen.
+- **De scripts en stijlen van de plugin laden onverkleind, met het versienummer.** Op SFP, DGA, CVD en DST krijgen bezoekers daardoor voor het eerst de scripts van 3.0.0 en later; tot nu toe gaf WP Rocket een verkleinde kopie van 6 oktober. Daarmee werkt de knop onderaan zoals in 3.0.0 bedoeld.
+- Voor bezoekers verder alleen: de lestijd van een groep in de keuzelijst van het aanmeldformulier (waar die is ingevuld) en een gekozen uitsnede van de foto ook zonder de tag pijler.
+
+### Gecontroleerd voor de release
+- Proef op DPS: bijgewerkt via de proefversies, caches geleegd, uitgelogd nagelopen (knop onderaan, reviews, tooltips, geen scriptfouten). PageSpeed mobiel en desktop: home 94 en 100, presentatietraining 92 en 98, spreekangst 91 en 99. Editor bekeken en akkoord bevonden door Stephan.
+
+### Terugdraaien
+- Terug naar 3.0.0: de zip van 3.0.0 uploaden. Er is niets omgezet of gewist. Let op: dan komt ook de verkleinde kopie van WP Rocket weer in beeld; leeg daarna de verkleinde bestanden van WP Rocket.
+
 ## [3.1.0-beta.2] - 2026-10-12
 
 Tweede proefversie, na de eerste stap van de proef op DPS.
