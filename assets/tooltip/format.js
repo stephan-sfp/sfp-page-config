@@ -56,6 +56,40 @@
         return txt.value;
     }
 
+    // De bron van een tooltip komt in de bronnenlijst onder het artikel. Op
+    // de site herkent de plugin hem aan een regel die met Bron:, Source: of
+    // Fonte: begint; hier vink je hem aan.
+    var EDITOR      = window.sfpTooltipEditor || {};
+    var BRON_LABEL  = EDITOR.bron || 'Bron';
+    var BRON_REGEX  = /^\s*(?:Bron|Source|Fonte):\s*/i;
+
+    function splitsBron( tekst ) {
+        var regels = String( tekst || '' ).split( /\r?\n|<br\s*\/?>/i );
+        var bron = '';
+        var rest = [];
+        regels.forEach( function ( r ) {
+            if ( '' === bron && BRON_REGEX.test( r ) ) {
+                bron = r.replace( BRON_REGEX, '' ).trim();
+            } else {
+                rest.push( r );
+            }
+        } );
+        return { uitleg: rest.join( '\n' ).trim(), bron: bron };
+    }
+
+    function bronnenHier() {
+        if ( ! EDITOR.bronnen ) { return false; }
+        var editor = wp.data.select( 'core/editor' );
+        var type = editor && editor.getCurrentPostType ? editor.getCurrentPostType() : '';
+        return ( EDITOR.types || [] ).indexOf( type ) !== -1;
+    }
+
+    function linkHtml( url, tekst ) {
+        var veilig = String( url || '' ).trim();
+        if ( ! /^(https?:\/\/|mailto:|tel:|\/|#)/i.test( veilig ) ) { return ''; }
+        return '<a href="' + veilig.replace( /"/g, '&quot;' ) + '">' + ( tekst || veilig ).replace( /</g, '&lt;' ) + '</a>';
+    }
+
     function autoLink( str ) {
         // Externe links
         str = str.replace(
@@ -134,6 +168,18 @@
         var popoverAnchor    = _useState4[0];
         var setPopoverAnchor = _useState4[1];
 
+        var _useState5       = useState( '' );
+        var bronInput        = _useState5[0];
+        var setBronInput     = _useState5[1];
+
+        var _useState6       = useState( false );
+        var metBron          = _useState6[0];
+        var setMetBron       = _useState6[1];
+
+        var _useState7       = useState( null );
+        var linkVorm         = _useState7[0];
+        var setLinkVorm      = _useState7[1];
+
         var textareaRef = useRef( null );
 
         var currentFormat = getActiveFormat( value, FORMAT_NAME );
@@ -165,7 +211,11 @@
         }, [ isActive ] );
 
         function openModal() {
-            setTooltipInput( decodedValue );
+            var delen = splitsBron( decodedValue );
+            setTooltipInput( delen.uitleg );
+            setBronInput( delen.bron );
+            setMetBron( '' !== delen.bron );
+            setLinkVorm( null );
             setIsPopoverOpen( false );
             setIsModalOpen( true );
         }
@@ -183,6 +233,9 @@
                 }
             } else {
                 setTooltipInput( '' );
+                setBronInput( '' );
+                setMetBron( false );
+                setLinkVorm( null );
                 setIsModalOpen( true );
             }
         }
@@ -215,7 +268,11 @@
         }, [ isModalOpen ] );
 
         function applyTooltip() {
-            if ( tooltipInput.trim() === '' ) {
+            var tekst = tooltipInput.trim();
+            if ( tekst !== '' && metBron && bronInput.trim() !== '' ) {
+                tekst += '\n' + BRON_LABEL + ': ' + bronInput.trim();
+            }
+            if ( tekst === '' ) {
                 onChange( removeFormat( value, FORMAT_NAME ) );
             } else {
                 // Gebruik applyFormat (niet toggleFormat): toggleFormat verwijdert
@@ -226,7 +283,7 @@
                         type: FORMAT_NAME,
                         attributes: {
                             'class':        'tooltip',
-                            'data-tooltip': htmlEncode( tooltipInput.trim() ),
+                            'data-tooltip': htmlEncode( tekst ),
                         },
                     })
                 );
@@ -298,7 +355,7 @@
             },
                 createElement( 'p', {
                     style: { marginBottom: '8px', fontSize: '12px', color: '#757575' }
-                }, 'Typ of plak de tooltiptekst. Hyperlinks blijven automatisch bewaard.' ),
+                }, 'Typ of plak de uitleg. Een geplakte link blijft een link.' ),
 
                 createElement( 'textarea', {
                     ref:      textareaRef,
@@ -320,6 +377,61 @@
                         marginBottom: '12px',
                     },
                 }),
+
+                // Link toevoegen: selecteer eventueel eerst de woorden die de link worden.
+                linkVorm === null ? createElement( Button, {
+                    variant: 'secondary',
+                    onClick: function () {
+                        // Geselecteerde woorden worden de link; anders komt de link achteraan.
+                        var ta = textareaRef.current;
+                        var van = ta ? ta.selectionStart : tooltipInput.length;
+                        var tot = ta ? ta.selectionEnd : tooltipInput.length;
+                        if ( van === tot ) { van = tot = tooltipInput.length; }
+                        setLinkVorm( { url: '', tekst: tooltipInput.substring( van, tot ), van: van, tot: tot } );
+                    },
+                    style: { marginBottom: '12px' },
+                }, 'Link toevoegen' ) : createElement( 'div', { className: 'sfp-tooltip-link' },
+                    createElement( 'label', { style: { display: 'block', fontWeight: 600, fontSize: '12px', marginBottom: '4px' } }, linkVorm.tekst ? 'Link voor: ' + linkVorm.tekst : 'Link' ),
+                    createElement( wp.blockEditor.URLInput, {
+                        value: linkVorm.url,
+                        onChange: function ( v ) { setLinkVorm( Object.assign( {}, linkVorm, { url: v } ) ); },
+                        placeholder: 'Zoek een pagina of plak een link',
+                        __nextHasNoMarginBottom: true,
+                    } ),
+                    createElement( 'div', { style: { display: 'flex', gap: '8px', margin: '8px 0 12px' } },
+                        createElement( Button, {
+                            variant: 'primary',
+                            disabled: ! linkHtml( linkVorm.url ),
+                            onClick: function () {
+                                var html = linkHtml( linkVorm.url, linkVorm.tekst );
+                                var voor = tooltipInput.substring( 0, linkVorm.van );
+                                if ( linkVorm.van === linkVorm.tot && voor && ! /\s$/.test( voor ) ) { voor += ' '; }
+                                setTooltipInput( voor + html + tooltipInput.substring( linkVorm.tot ) );
+                                setLinkVorm( null );
+                            },
+                        }, 'Invoegen' ),
+                        createElement( Button, { variant: 'tertiary', onClick: function () { setLinkVorm( null ); } }, 'Annuleren' )
+                    )
+                ),
+
+                bronnenHier() && createElement( 'div', { style: { marginBottom: '12px' } },
+                    createElement( wp.components.CheckboxControl, {
+                        label: 'Dit is een bron: zet hem in de bronnenlijst onder het artikel',
+                        checked: metBron,
+                        onChange: setMetBron,
+                        __nextHasNoMarginBottom: true,
+                    } ),
+                    metBron && createElement( wp.components.TextControl, {
+                        label: 'Bron',
+                        value: bronInput,
+                        onChange: setBronInput,
+                        placeholder: 'Bijvoorbeeld: Gilovich, Medvec en Savitsky (2000)',
+                        __nextHasNoMarginBottom: true,
+                        __next40pxDefaultSize: true,
+                    } )
+                ),
+
+                ! bronnenHier() && bronInput && createElement( 'p', { style: { fontSize: '12px', color: '#757575' } }, 'Bron: ' + bronInput ),
 
                 tooltipInput.trim() && createElement( 'div', null,
                     createElement( 'p', {

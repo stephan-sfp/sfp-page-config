@@ -4,6 +4,45 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.1.0-beta.1] - 2026-10-12
+
+Proefversie (pre-release) van het werk in de editor: het paneel Deze pagina, blokken volgens de ontwerpregels en gegevens van de site als blok. Bedoeld voor de proef op DPS via het updatekanaal "Ook proefversies". Voor bezoekers verandert er niets, met twee kleine uitzonderingen (zie Gewijzigd).
+
+### Toegevoegd
+- **Paneel Deze pagina** in de rechterkolom van de blokeditor. Vervangt daar het metavak SFP Page Config (in de klassieke editor blijft het metavak). Toont alleen wat op deze pagina iets doet: de soort pagina met wat die verandert, de knop onderaan (tekst en bestemming: het formulier, een tussenkop of sectie, een pagina of een link), de startmomenten van een training, de WhatsApp-knop, de inhoudsopgave, bij een artikel de pijler, onderwerpen, warming-up, vervolg en uitgelichte afbeelding, het beeld om te delen, de uitsnede van de foto en de voorbeeldlink.
+- **Meldingen op de plek zelf**: een knop zonder formulier op de pagina, een bestemming die niet meer bestaat, een inhoudsopgave met te weinig tussenkoppen, een training zonder of met verlopen startmomenten, een warming-upvraag waarvan het hoofdstuk weg is of die te weinig antwoorden heeft.
+- **Beeld om te delen opnieuw maken** met een knop, met de reden als het niet lukt.
+- **Voorbeeldlink** met een knop: maken, kopiëren en intrekken.
+- **Wat er vanzelf bij een artikel komt staat in de editor** op de plek waar het op de site staat: de kopkaart boven de tekst; vervolg, auteurskaart en voetregels eronder.
+- **Gegevens van de site als blok**: Startmomenten, Lestijd, Leestijd en Reviews, met de echte waarde in de editor. De codes tussen haken blijven werken.
+- **Eigen groep Bouwstenen** in de blokkenlijst, met een voorbeeld per blok.
+- **Tellers** in Samenvatting (punten en tekens) en Inzicht (tekens), rood bij te veel.
+- **Tooltip**: een bron vink je aan (hij komt in de bronnenlijst), een link voeg je toe met een knop.
+- Alle gegevens per pagina zijn via de REST API te lezen en te zetten (backlog PC-11).
+- Een melding in SFP Beheer, Artikelen, Affiliatelinks, als een herkenningspatroon op geen enkel artikel een link vindt (backlog PC-28).
+- `uninstall.php`: bij verwijderen gaan de werkgegevens weg; instellingen en gegevens per pagina blijven (backlog PC-12).
+- `tests/editor-wp.php`: 46 controles in een echte WordPress.
+
+### Gewijzigd
+- **Ankers maakt de plugin zelf.** Geen veld meer om een anker te typen in Sectie, Held, Uitklapregel, Kader en Warming-upvraag. Een link naar een blok kopieer je met een knop; een warming-upvraag kiest zijn hoofdstuk uit een lijst. Bestaande ankers blijven werken, en een gekozen hoofdstuk blijft kloppen als je de kop hernoemt.
+- **Tekst die de lezer ziet, typ je in het blok**: de labels van Samenvatting, Inzicht en Kader, label en regel onder de titel van een Uitklapregel (alleen in de vorm die ze toont) en de eigen titel van Lees ook.
+- **Keuzes met een plaatje en een naam naar wat de lezer ziet** (Held, Kolommen, Kaart, Uitklap, Sectie). Geen pixelmaten of verhoudingen meer in labels en hulpteksten. Een link bij Kaart en Lees ook zoek en kies je.
+- Een warming-upvraag ziet er in de editor uit zoals op de site.
+- De uitsnede van de foto hangt niet meer aan de tag pijler: een gekozen uitsnede geldt altijd. Zichtbaar voor bezoekers alleen op een pagina met een eigen uitsnede zonder die tag.
+- De keuzelijst met groepen in een aanmeldformulier toont de lestijd van een groep als die bij de groep is ingevuld (backlog PC-16). Zichtbaar voor bezoekers alleen waar een groep een eigen lestijd heeft.
+- De knop onderaan zoekt op een trainingspagina eerst het anker inschrijven, op andere pagina's eerst aanvragen (backlog PC-29).
+- De dagelijkse mail over cursusdata heeft links naar de pagina's en naar Cursusdata (backlog PC-15).
+- [mijn_leestijd] beschermt zich met een vlag in plaats van zichzelf af en aan te melden (backlog PC-14).
+- Een lege waarde wordt niet meer als lege rij bij de pagina bewaard.
+
+### Gerepareerd
+- De klasse sfp-knop-in-beeld bleef staan als een ander script de knop onderaan verbergt; de WhatsApp-knop bleef dan opgeschoven (backlog PC-25).
+- "Lees verder" bij een review stond er ook bij een korte tekst (backlog PC-29).
+- Een lege lijst bij Boekformulier sneller zette bij opslaan de standaardlijst terug (backlog PC-29).
+
+### Terugdraaien
+- Terug naar 3.0.0: de zip van 3.0.0 uploaden. Er is niets omgezet of gewist; het metavak komt dan terug in de blokeditor.
+
 ## [3.0.0] - 2026-10-11
 
 SFP Beheer: het nieuwe beheer van de plugin, met SFP Tooltip en SFP Google Reviews als onderdeel erin. Getest als proef op SwS in beta.1 (hieronder, met de volledige lijst); beta.2 is niet apart uitgebracht en zit hierin. Dit is de eerste gewone release en bereikt alle sites.

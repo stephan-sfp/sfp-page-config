@@ -10,3 +10,32 @@
 .block-editor-block-list__layout .sfp-samenvatting ul.wp-block-list{margin:0;padding:0;list-style:none;display:grid;gap:12px}
 .block-editor-block-list__layout .sfp-samenvatting ul.wp-block-list>li{margin:0;color:var(--sfp-b-primair);line-height:1.5;padding-left:20px;position:relative}
 .block-editor-block-list__layout .sfp-samenvatting ul.wp-block-list>li::before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;border-radius:2px;background:var(--sfp-b-secundair)}
+/* Sinds 3.1.0: wat er vanzelf bij een artikel komt, op de plek waar het op de site staat. */
+.sfp-vanzelf{position:relative;box-sizing:border-box;border:1px dashed #c3c4c7;border-radius:8px;padding:12px 16px 14px;margin:16px auto;width:calc(100% - 32px);max-width:760px;align-self:center;pointer-events:none;user-select:none}
+.sfp-vanzelf .sfp-vanzelf__label{display:block;margin:0 0 10px;font:600 11px/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#757575}
+.sfp-vanzelf .sfp-art-paneel,.sfp-vanzelf [hidden]{display:none!important}
+/* Tellers en meldingen in een blok. */
+.sfp-teller{display:block;font:500 12px/1.4 system-ui,sans-serif;color:#757575;margin-top:8px}
+.sfp-teller--over{color:#cc1818;font-weight:600}
+.sfp-blokmelding{display:block;font:400 12.5px/1.5 system-ui,sans-serif;color:#1e1e1e;background:#fcf0f1;border-left:3px solid #cc1818;padding:8px 10px;margin:8px 0 0;border-radius:3px}
+/* Warming-up zoals de lezer hem ziet. */
+.sfp-editor-warm{display:flex;flex-direction:column;gap:10px}
+.sfp-editor-warm__vraag{font-weight:700}
+.sfp-editor-warm__opties{display:flex;flex-wrap:wrap;gap:8px}
+.sfp-editor-warm__optie{border:1px solid currentColor;border-radius:999px;padding:6px 14px;min-width:6em}
+/* Gegevens van de site: in de editor niet klikbaar. */
+.block-editor-block-list__layout .sfp-gegeven a,.block-editor-block-list__layout .sfp-gegeven button{pointer-events:none}
+.sfp-gegeven-leeg{font:400 13px/1.5 system-ui,sans-serif;color:#757575;border:1px dashed #c3c4c7;border-radius:6px;padding:10px 12px}
+/* Keuzes met een plaatje in de zijbalk (ontwerpregel 20). */
+.sfp-vormkeuze,.sfp-linkblok,.sfp-linkveld{display:flex;flex-direction:column;gap:8px;margin:0 0 16px}
+.sfp-vormkeuze__label{font:500 11px/1.4 system-ui,sans-serif;text-transform:uppercase;color:#1e1e1e}
+.sfp-vormkeuze__rij{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+.sfp-vormkeuze__optie{display:flex;flex-direction:column;gap:6px;align-items:stretch;text-align:left;padding:8px;border:1px solid #ddd;border-radius:4px;background:#fff;cursor:pointer;font:400 12px/1.3 system-ui,sans-serif;color:#1e1e1e}
+.sfp-vormkeuze__optie:hover{border-color:#1e1e1e}
+.sfp-vormkeuze__optie.is-gekozen{border-color:var(--wp-admin-theme-color,#3858e9);box-shadow:0 0 0 1px var(--wp-admin-theme-color,#3858e9)}
+.sfp-vormkeuze__mini{display:flex;gap:3px;height:26px}
+.sfp-vormkeuze__mini--o{flex-direction:column}
+.sfp-vormkeuze__mini i{flex-basis:0;background:#e7eefb;border:1px solid #c5d4f0;border-radius:2px;min-height:3px}
+.sfp-vormkeuze__mini--donker i{background:#3c434a;border-color:#3c434a}
+.sfp-vormkeuze__mini--rand i{border-top:3px solid var(--wp-admin-theme-color,#3858e9)}
+.sfp-linkveld .block-editor-url-input input{width:100%;min-height:36px}

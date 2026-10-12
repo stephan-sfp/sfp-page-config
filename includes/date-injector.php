@@ -78,9 +78,15 @@ function sfp_page_config_inject_course_data() {
             }
 
             if ( ! empty( $dates_formatted ) ) {
+                // De lestijd van dit startmoment, als die is ingevuld. De
+                // standaardtijd van de site komt hier niet: die staat al op de pagina.
+                $tijd = sfp_page_config_format_lestijd(
+                    isset( $sm['start'] ) ? $sm['start'] : '',
+                    isset( $sm['eind'] ) ? $sm['eind'] : ''
+                );
                 $startmomenten[] = array(
                     'index' => $index + 1,
-                    'label' => sfp_page_config_tekst_f( 'groep', $index + 1 ) . ': ' . implode( ' • ', $dates_formatted ),
+                    'label' => sfp_page_config_tekst_f( 'groep', $index + 1 ) . ': ' . implode( ' • ', $dates_formatted ) . ( '' !== $tijd ? ' (' . $tijd . ')' : '' ),
                     'value' => 'groep-' . ( $index + 1 ),
                     'dates' => $dates_formatted,
                 );

@@ -37,7 +37,10 @@ function sfp_page_config_register_metabox() {
             'sfp_page_config_render_metabox',
             $post_type,
             'side',
-            'high'
+            'high',
+            // In de blokeditor staat het paneel Deze pagina (includes/editor.php);
+            // daar blijft dit metavak weg. In de klassieke editor blijft het.
+            array( '__back_compat_meta_box' => true )
         );
 
         // Hide the default Custom Fields meta box.
@@ -137,6 +140,12 @@ function sfp_page_config_sanitize_cta_href( $value ) {
 
     if ( '' === $value ) {
         return '';
+    }
+
+    // Alleen een hekje: de knop gaat naar het formulier op deze pagina,
+    // ook als de soort pagina standaard ergens anders heen gaat.
+    if ( '#' === $value ) {
+        return '#';
     }
 
     return esc_url_raw( $value );

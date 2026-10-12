@@ -214,6 +214,10 @@
 	height:          auto !important;
 }
 
+.sfp-reviews .sfp-review .sfp-review__more[hidden] {
+	display: none !important;
+}
+
 .sfp-reviews .sfp-review .sfp-review__more:hover {
 	color:       var(--sfp-review-more-hover) !important;
 	background:  none !important;

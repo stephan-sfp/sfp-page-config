@@ -285,6 +285,7 @@ function sfp_page_config_beheer_stand() {
             'url'       => isset( $alle['artikel_promo_url'] ) ? (string) $alle['artikel_promo_url'] : '',
         ),
         'patronen'      => array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', isset( $alle['affiliate_patronen'] ) ? (string) $alle['affiliate_patronen'] : '' ) ), 'strlen' ) ),
+        'treffers'      => function_exists( 'sfp_page_config_affiliate_treffers' ) ? (object) sfp_page_config_affiliate_treffers() : (object) array(),
         'affiliate'     => function_exists( 'sfp_page_config_affiliate_teksten' ) ? sfp_page_config_affiliate_teksten() : array(
             'regel'  => '',
             'uitleg' => '',

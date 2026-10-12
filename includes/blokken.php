@@ -81,7 +81,7 @@ function sfp_page_config_blokken() {
         ),
         'sfp/held'          => array(
             'title'       => 'Held',
-            'description' => 'Hero met H1, intro, beeld en knoppen.',
+            'description' => 'Bovenkant van een pagina: titel, intro, beeld en knoppen.',
             'icon'        => 'cover-image',
             'css'         => 'held',
             'attributes'  => array(
@@ -92,7 +92,7 @@ function sfp_page_config_blokken() {
         ),
         'sfp/kolommen'      => array(
             'title'       => 'Kolommen',
-            'description' => 'Twee of drie kolommen, of een vaste verhouding. Onder 981 px één kolom.',
+            'description' => 'Twee of drie kolommen naast elkaar. Op een telefoon onder elkaar.',
             'icon'        => 'columns',
             'css'         => 'kolommen',
             'attributes'  => array(
@@ -111,7 +111,7 @@ function sfp_page_config_blokken() {
         ),
         'sfp/kaart'         => array(
             'title'       => 'Kaart',
-            'description' => 'Kaart met rand. Standaard met groene bovenrand, vlak of donker.',
+            'description' => 'Kaart met rand: met accentrand, vlak of donker.',
             'icon'        => 'id-alt',
             'css'         => 'kaart',
             'attributes'  => array(
@@ -141,7 +141,7 @@ function sfp_page_config_blokken() {
         ),
         'sfp/uitklap'       => array(
             'title'       => 'Uitklap',
-            'description' => 'Uitklapregels. Groot, compact (Read more), als kaart of als verhaal in een artikel.',
+            'description' => 'Regels die openklappen: groot, lees meer, als kaart of als verhaal in een artikel.',
             'icon'        => 'arrow-down-alt2',
             'css'         => 'uitklap',
             'attributes'  => array(
@@ -166,7 +166,7 @@ function sfp_page_config_blokken() {
         ),
         'sfp/tabs'          => array(
             'title'       => 'Tabs',
-            'description' => 'Tabbladen. Zonder JavaScript staan alle panelen onder elkaar.',
+            'description' => 'Tabbladen naast elkaar, elk met een eigen inhoud.',
             'icon'        => 'index-card',
             'css'         => 'tabs',
             'attributes'  => array(
@@ -197,7 +197,7 @@ function sfp_page_config_blokken() {
         ),
         'sfp/faq'           => array(
             'title'       => 'FAQ',
-            'description' => 'Vragen en antwoorden met FAQPage-schema.',
+            'description' => 'Vragen en antwoorden, met de gegevens voor Google erbij.',
             'icon'        => 'editor-help',
             'css'         => 'faq',
             'attributes'  => array(),
@@ -225,6 +225,11 @@ function sfp_page_config_blokken() {
     // De artikelblokken (includes/blokken-artikel.php, sinds 2.12.0).
     if ( function_exists( 'sfp_page_config_blokken_artikel' ) ) {
         $alle = array_merge( $alle, sfp_page_config_blokken_artikel() );
+    }
+
+    // Gegevens van de site als blok (includes/blokken-gegevens.php, sinds 3.1.0).
+    if ( function_exists( 'sfp_page_config_blokken_gegevens' ) ) {
+        $alle = array_merge( $alle, sfp_page_config_blokken_gegevens() );
     }
 
     return $alle;
@@ -287,7 +292,7 @@ function sfp_page_config_blokken_registreer() {
     wp_register_script(
         'sfp-blokken-editor',
         SFP_PAGE_CONFIG_URL . 'assets/blokken/editor.js',
-        array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-data', 'wp-notices' ),
+        array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-data', 'wp-notices', 'wp-url', 'wp-html-entities', 'wp-server-side-render' ),
         SFP_PAGE_CONFIG_VERSION,
         true
     );
@@ -316,17 +321,27 @@ function sfp_page_config_blokken_registreer() {
             'api_version'     => 3,
             'title'           => $def['title'],
             'description'     => $def['description'],
-            'category'        => 'design',
+            // Alle eigen blokken in één groep in de blokkenlijst (ontwerpregel 11).
+            'category'        => 'sfp-bouwstenen',
             'icon'            => $def['icon'],
             'attributes'      => $def['attributes'],
             'supports'        => array(
                 'html'            => false,
                 'className'       => true,
                 'customClassName' => true,
+                'inserter'        => ! isset( $def['inserter'] ) || $def['inserter'],
             ),
             'editor_script'   => 'sfp-blokken-editor',
             'render_callback' => $def['render'],
         );
+        if ( isset( $def['context'] ) ) {
+            $args['uses_context'] = $def['context'];
+        }
+        // Een voorbeeld als je het blok aanwijst in de blokkenlijst (ontwerpregel 23).
+        $voorbeeld = sfp_page_config_blok_voorbeeld( $naam );
+        if ( null !== $voorbeeld ) {
+            $args['example'] = $voorbeeld;
+        }
         if ( isset( $def['parent'] ) ) {
             $args['parent'] = $def['parent'];
         }
@@ -343,6 +358,145 @@ function sfp_page_config_blokken_registreer() {
             }
         }
     }
+}
+
+add_filter( 'block_categories_all', 'sfp_page_config_blokken_groep', 10, 2 );
+
+/**
+ * De eigen groep in de blokkenlijst, bovenaan.
+ *
+ * @param  array $groepen Groepen.
+ * @return array
+ */
+function sfp_page_config_blokken_groep( $groepen ) {
+    foreach ( (array) $groepen as $groep ) {
+        if ( isset( $groep['slug'] ) && 'sfp-bouwstenen' === $groep['slug'] ) {
+            return $groepen;
+        }
+    }
+    array_unshift(
+        $groepen,
+        array(
+            'slug'  => 'sfp-bouwstenen',
+            'title' => 'Bouwstenen',
+            'icon'  => null,
+        )
+    );
+    return $groepen;
+}
+
+/**
+ * Het voorbeeld van een blok in de blokkenlijst. Binnenblokken (zoals Stap
+ * of Kolom) hebben geen eigen voorbeeld: ze staan niet los in de lijst.
+ *
+ * @param  string $naam Bloknaam.
+ * @return array|null
+ */
+function sfp_page_config_blok_voorbeeld( $naam ) {
+    $alinea = function ( $tekst, $klasse = '' ) {
+        $a = array( 'content' => $tekst );
+        if ( '' !== $klasse ) {
+            $a['className'] = $klasse;
+        }
+        return array( 'name' => 'core/paragraph', 'attributes' => $a );
+    };
+    $kop = function ( $tekst, $niveau = 2 ) {
+        return array( 'name' => 'core/heading', 'attributes' => array( 'content' => $tekst, 'level' => $niveau ) );
+    };
+    $lijst = function ( array $items ) {
+        return array(
+            'name'        => 'core/list',
+            'innerBlocks' => array_map(
+                function ( $item ) {
+                    return array( 'name' => 'core/list-item', 'attributes' => array( 'content' => $item ) );
+                },
+                $items
+            ),
+        );
+    };
+
+    $voorbeelden = array(
+        'sfp/sectie'       => array( 'innerBlocks' => array( $kop( 'Wat je leert' ), $alinea( 'Een band over de volle breedte van de pagina, met een eigen onderwerp.' ) ) ),
+        'sfp/held'         => array( 'innerBlocks' => array( $kop( 'Presenteren met impact', 1 ), $alinea( 'Je kent je onderwerp. Samen zorgen we dat je publiek het onthoudt.', 'is-style-sfp-intro' ) ) ),
+        'sfp/kolommen'     => array(
+            'innerBlocks' => array(
+                array( 'name' => 'sfp/kolom', 'innerBlocks' => array( $alinea( 'Eerste kolom met tekst.' ) ) ),
+                array( 'name' => 'sfp/kolom', 'innerBlocks' => array( $alinea( 'Tweede kolom met tekst.' ) ) ),
+            ),
+        ),
+        'sfp/kaart'        => array( 'innerBlocks' => array( $kop( 'Persoonlijke coaching', 3 ), $alinea( 'Eén op één, rond je volgende presentatie.' ) ) ),
+        'sfp/stappen'      => array(
+            'innerBlocks' => array(
+                array( 'name' => 'sfp/stap', 'innerBlocks' => array( $kop( 'Kennismaken', 3 ), $alinea( 'We bespreken je doel.' ) ) ),
+                array( 'name' => 'sfp/stap', 'innerBlocks' => array( $kop( 'Oefenen', 3 ), $alinea( 'Met je eigen materiaal.' ) ) ),
+            ),
+        ),
+        'sfp/uitklap'      => array(
+            'innerBlocks' => array(
+                array( 'name' => 'sfp/uitklap-regel', 'attributes' => array( 'titel' => 'Hoe lang duurt de training?' ), 'innerBlocks' => array( $alinea( 'Twee dagen.' ) ) ),
+                array( 'name' => 'sfp/uitklap-regel', 'attributes' => array( 'titel' => 'Waar vindt hij plaats?' ), 'innerBlocks' => array( $alinea( 'In Utrecht.' ) ) ),
+            ),
+        ),
+        'sfp/tabs'         => array(
+            'innerBlocks' => array(
+                array( 'name' => 'sfp/tab', 'attributes' => array( 'titel' => 'Inhoud' ), 'innerBlocks' => array( $alinea( 'Wat je leert.' ) ) ),
+                array( 'name' => 'sfp/tab', 'attributes' => array( 'titel' => 'Vorm' ), 'innerBlocks' => array( $alinea( 'Hoe het gaat.' ) ) ),
+            ),
+        ),
+        'sfp/lijst'        => array( 'innerBlocks' => array( $lijst( array( 'Je oefent met je eigen materiaal', 'Je krijgt direct feedback' ) ) ) ),
+        'sfp/faq'          => array(
+            'innerBlocks' => array(
+                array( 'name' => 'sfp/faq-vraag', 'attributes' => array( 'vraag' => 'Voor wie is deze training?' ), 'innerBlocks' => array( $alinea( 'Voor iedereen die vaker presenteert.' ) ) ),
+            ),
+        ),
+        'sfp/samenvatting' => array( 'innerBlocks' => array( $lijst( array( 'Je publiek ziet minder dan je denkt.', 'Een pauze klinkt als nadruk.', 'Richt je op één luisteraar.' ) ) ) ),
+        'sfp/kader'        => array( 'attributes' => array( 'soort' => 'wist-je-dat' ), 'innerBlocks' => array( $alinea( 'De meeste luisteraars onthouden vooral het begin en het einde.' ) ) ),
+        'sfp/citaat'       => array( 'attributes' => array( 'bijschrift' => 'Een deelnemer over de eerste sessie', 'portret' => false ), 'innerBlocks' => array( $alinea( 'Na twee sessies stond ik anders op het podium.' ) ) ),
+        'sfp/inzicht'      => array( 'attributes' => array( 'tekst' => 'Je publiek ziet je fouten <em>minder</em> dan je denkt.' ) ),
+        'sfp/lees-ook'     => array( 'attributes' => array( 'titel' => 'Zo begin je een presentatie' ) ),
+        'sfp/vervolg'      => array(
+            'innerBlocks' => array(
+                array( 'name' => 'sfp/vervolg-vlak', 'attributes' => array( 'label' => 'Coaching' ), 'innerBlocks' => array( $kop( 'Klaar voor je volgende presentatie?', 3 ), $alinea( 'Werk er een op een aan.' ) ) ),
+            ),
+        ),
+        'sfp/warming-up'   => array(
+            'innerBlocks' => array(
+                array( 'name' => 'sfp/warming-up-vraag', 'attributes' => array( 'vraag' => 'Hoeveel mensen zien een kleine fout?', 'optie1' => 'Bijna iedereen', 'optie2' => 'De helft', 'optie3' => 'Heel weinig' ) ),
+            ),
+        ),
+        'sfp/cursusdatum'  => array(),
+        'sfp/lestijd'      => array(),
+        'sfp/leestijd'     => array(),
+        'sfp/reviews'      => array( 'attributes' => array( 'weergave' => 'cijfer' ) ),
+    );
+    if ( ! isset( $voorbeelden[ $naam ] ) ) {
+        return null;
+    }
+    $voorbeeld = $voorbeelden[ $naam ];
+    // Een leeg object, geen lege lijst: de editor verwacht attributen als object.
+    if ( empty( $voorbeeld['attributes'] ) ) {
+        $voorbeeld['attributes'] = new stdClass();
+    }
+    if ( isset( $voorbeeld['innerBlocks'] ) ) {
+        $voorbeeld['innerBlocks'] = sfp_page_config_blok_voorbeeld_binnen( $voorbeeld['innerBlocks'] );
+    }
+    return $voorbeeld;
+}
+
+/**
+ * Zorg dat elk binnenblok in een voorbeeld attributen en binnenblokken heeft.
+ *
+ * @param  array $blokken Binnenblokken.
+ * @return array
+ */
+function sfp_page_config_blok_voorbeeld_binnen( array $blokken ) {
+    foreach ( $blokken as $i => $blok ) {
+        if ( empty( $blok['attributes'] ) ) {
+            $blokken[ $i ]['attributes'] = new stdClass();
+        }
+        $blokken[ $i ]['innerBlocks'] = isset( $blok['innerBlocks'] ) ? sfp_page_config_blok_voorbeeld_binnen( $blok['innerBlocks'] ) : array();
+    }
+    return $blokken;
 }
 
 /* =========================================================================

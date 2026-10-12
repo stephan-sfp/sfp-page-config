@@ -26,3 +26,11 @@ php tests/beheer.php
 ```
 
 Checks the logic behind SFP Beheer with small WordPress stubs: texts per language (every text has a default in nl, en and pt with the same placeholders), saving settings without losing unknown stored keys, the network norm and resetting to it, the sticky button for stored data from 2.12.0 and for the new destinations, course dates clean-up, footer links (clean-up, output and taking over the existing widget), the page checks, own reviews, and the guard that lets an old plugin be re-activated. It does not replace a run in a real WordPress with a browser.
+
+# Editor tests (3.1.0)
+
+```sh
+wp eval-file wp-content/plugins/sfp-page-config/tests/editor-wp.php
+```
+
+Runs inside a real WordPress (a local test install, never a live site). Checks the page data over REST (sanitizing, rights, no empty rows), the panel state endpoint, the data blocks, the sticky button anchors, affiliate pattern matches, the reading-time guard, the focal point without the pijler tag, the course-date dropdown with lesson time, the daily mail links, and the block group and examples. Creates its own posts and a user and removes them at the end.

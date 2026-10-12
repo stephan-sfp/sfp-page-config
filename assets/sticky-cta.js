@@ -167,11 +167,31 @@
         var voorbijBovenkant = false;
         var formulierVisible = false;
 
+        // Is de balk echt te zien? Een ander script (zoals het LatePoint-
+        // snippet bij de boekkaart) kan hem verbergen.
+        function balkTeZien() {
+            if (!bar || !bar.classList.contains('visible') || !bar.isConnected) return false;
+            var stijl = window.getComputedStyle(bar);
+            return stijl.display !== 'none' && stijl.visibility !== 'hidden' && parseFloat(stijl.opacity || '1') > 0;
+        }
+
+        function zetKlasse() {
+            document.documentElement.classList.toggle('sfp-knop-in-beeld', balkTeZien());
+        }
+
         function updateVisibility() {
             if (!bar) return;
             var show = voorbijBovenkant && !formulierVisible;
             bar.classList.toggle('visible', show);
-            document.documentElement.classList.toggle('sfp-knop-in-beeld', show);
+            zetKlasse();
+        }
+
+        // Verbergt of verwijdert een ander script de balk, dan gaat de klasse
+        // sfp-knop-in-beeld mee weg en schuift de WhatsApp-knop terug.
+        if (bar && typeof MutationObserver !== 'undefined') {
+            new MutationObserver(zetKlasse).observe(bar, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
+            new MutationObserver(zetKlasse).observe(document.body, { childList: true });
+            bar.addEventListener('transitionend', zetKlasse);
         }
 
         var bovenkant = vindBovenkant(cfg);
