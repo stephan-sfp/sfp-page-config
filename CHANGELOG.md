@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.1.0-beta.2] - 2026-10-12
+
+Tweede proefversie, na de eerste stap van de proef op DPS.
+
+### Gerepareerd
+- **Bezoekers kregen nog de scripts van een oudere versie.** WP Rocket bewaart een verkleinde kopie van elk script en ververst die niet als de plugin wordt bijgewerkt. Gemeten op SFP, DPS, DGA, CVD en DST: de verkleinde knop onderaan (sticky-cta.js) is van 6 oktober, van voor 3.0.0. Op DPS verschijnt de knop onderaan daardoor niet op de trainingspagina; met verse scripts wel. De bestanden van de plugin gaan voortaan niet meer door de verkleining en laden met het versienummer, zodat elke cachelaag de nieuwe versie ziet. De stijlbestanden van de plugin blijven staan naast de gebruikte CSS van WP Rocket, om dezelfde reden.
+- "Lees verder" bij een review: opnieuw gemeten als de tekst van maat verandert, zodat de knop klopt als de opmaak later laadt.
+
 ## [3.1.0-beta.1] - 2026-10-12
 
 Proefversie (pre-release) van het werk in de editor: het paneel Deze pagina, blokken volgens de ontwerpregels en gegevens van de site als blok. Bedoeld voor de proef op DPS via het updatekanaal "Ook proefversies". Voor bezoekers verandert er niets, met twee kleine uitzonderingen (zie Gewijzigd).

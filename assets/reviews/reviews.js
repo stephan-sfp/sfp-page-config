@@ -13,23 +13,43 @@
 			: parseInt(wrapper.getAttribute('data-cols-desktop'), 10) || 1;
 	}
 
-	// "Lees verder" alleen bij een tekst die echt is ingekort.
+	// "Lees verder" alleen bij een tekst die echt is ingekort. Opnieuw
+	// gemeten als de tekst van maat verandert (late CSS, fonts, schermbreedte).
+	// Verbergen met een inline stijl: die werkt ook als de verkleinde CSS van
+	// de site een regel voor [hidden] mist.
+	function meetLeesVerder(btn) {
+		var card = btn.closest('.sfp-review');
+		var tekst = card ? card.querySelector('.sfp-review__text') : null;
+		if (!tekst || card.classList.contains('sfp-review--expanded') || !tekst.clientHeight) { return; }
+		if (tekst.scrollHeight <= tekst.clientHeight + 1) {
+			btn.style.setProperty('display', 'none', 'important');
+		} else {
+			btn.style.removeProperty('display');
+		}
+	}
+
 	function toonLeesVerder() {
 		var btns = document.querySelectorAll('.sfp-review__more');
-		for (var i = 0; i < btns.length; i++) {
-			var card = btns[i].closest('.sfp-review');
-			var tekst = card ? card.querySelector('.sfp-review__text') : null;
-			if (!tekst || card.classList.contains('sfp-review--expanded')) { continue; }
-			if (!tekst.clientHeight) { continue; } // nog niet in beeld: niets beslissen
-			btns[i].hidden = tekst.scrollHeight <= tekst.clientHeight + 1;
-		}
+		for (var i = 0; i < btns.length; i++) { meetLeesVerder(btns[i]); }
+	}
+
+	function volgLeesVerder() {
+		if (typeof ResizeObserver === 'undefined') { return; }
+		var ro = new ResizeObserver(function (items) {
+			items.forEach(function (it) {
+				var btn = it.target.closest('.sfp-review') && it.target.closest('.sfp-review').querySelector('.sfp-review__more');
+				if (btn) { meetLeesVerder(btn); }
+			});
+		});
+		var teksten = document.querySelectorAll('.sfp-review__text');
+		for (var i = 0; i < teksten.length; i++) { ro.observe(teksten[i]); }
 	}
 
 	function initReadMore() {
 		var btns = document.querySelectorAll('.sfp-review__more');
 		toonLeesVerder();
-		window.addEventListener('resize', toonLeesVerder);
-		if (document.fonts && document.fonts.ready) { document.fonts.ready.then(toonLeesVerder); }
+		volgLeesVerder();
+		window.addEventListener('load', toonLeesVerder);
 		for (var i = 0; i < btns.length; i++) {
 			btns[i].addEventListener('click', function () {
 				var card     = this.closest('.sfp-review');
