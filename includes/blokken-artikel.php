@@ -359,10 +359,18 @@ function sfp_page_config_render_inzicht( $attrs, $content ) {
     } else {
         $kaart = '<div class="sfp-deelkaart sfp-deelkaart--liggend" role="img" aria-label="' . esc_attr( $label . ': ' . $kaal ) . '"><span class="sfp-deelkaart__label">' . esc_html( $label ) . '</span><p class="sfp-deelkaart__tekst">' . $tekst . '</p>' . sfp_page_config_deelkaart_voet() . '</div>';
     }
+    // Sinds 3.1.0: de deelknoppen achter een knop Delen, zoals bij de
+    // samenvatting. Het beeld zelf blijft rustig; wie wil delen, klikt.
+    $id = wp_unique_id( 'sfp-inzicht-' );
+    if ( function_exists( 'sfp_page_config_artikel_js_nodig' ) ) {
+        sfp_page_config_artikel_js_nodig( true );
+    }
     return sfp_page_config_blokken_css_vangnet( 'sfp/inzicht' )
         . '<figure ' . sfp_page_config_blok_omhulling( array( 'sfp-inzicht' ) ) . '>' . $kaart
-        . '<figcaption class="sfp-inzicht__deel"><span>' . esc_html( sfp_page_config_artikel_tekst( 'deel_inzicht' ) ) . '</span>'
-        . sfp_page_config_deelknoppen( get_permalink( $post_id ), $kaal, $beeld ? $beeld['url'] : '' ) . '</figcaption></figure>';
+        . '<figcaption class="sfp-inzicht__deel">'
+        . '<button type="button" class="sfp-inzicht__knop" aria-expanded="false" aria-controls="' . esc_attr( $id ) . '" data-sfp-paneel>' . sfp_page_config_artikel_icoon( 'delen' ) . '<span>' . esc_html( sfp_page_config_artikel_tekst( 'delen' ) ) . '</span></button>'
+        . '<span class="sfp-inzicht__paneel" id="' . esc_attr( $id ) . '" hidden><span>' . esc_html( sfp_page_config_artikel_tekst( 'deel_inzicht' ) ) . '</span>'
+        . sfp_page_config_deelknoppen( get_permalink( $post_id ), $kaal, $beeld ? $beeld['url'] : '' ) . '</span></figcaption></figure>';
 }
 
 /**

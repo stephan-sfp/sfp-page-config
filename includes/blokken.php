@@ -707,13 +707,47 @@ function sfp_page_config_blokken_editor_css() {
     if ( ! is_admin() ) {
         return;
     }
-    $css = sfp_page_config_blokken_css_variabelen();
+    $css = sfp_page_config_editor_merk_css() . sfp_page_config_blokken_css_variabelen();
     foreach ( array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'editor' ) as $bestand ) {
         $css .= sfp_page_config_blokken_css_bestand( $bestand );
     }
     wp_register_style( 'sfp-blokken-editor', false, array(), SFP_PAGE_CONFIG_VERSION );
     wp_enqueue_style( 'sfp-blokken-editor' );
     wp_add_inline_style( 'sfp-blokken-editor', $css );
+}
+
+/**
+ * Het merk van de site in de editor, zodat blokken er daar uitzien zoals op
+ * de site (ontwerpregel 19). Op de site zetten twee bronnen dit in de head,
+ * alleen voor bezoekers:
+ *   - het koplettertype (includes/kopfont.php);
+ *   - de kleurrollen --sfp-rol-* uit het snippet "Kleuren: rollen van het
+ *     palet". De editor leest hetzelfde snippet mee (sfp_kleurrollen_slots),
+ *     zodat er één bron blijft. Zonder dat snippet vallen de blokken terug
+ *     op de Astra-kleuren, zoals op de site.
+ *
+ * @since 3.1.0
+ * @return string
+ */
+function sfp_page_config_editor_merk_css() {
+    $css = '';
+    if ( function_exists( 'sfp_page_config_get_brand' ) ) {
+        $brand  = sfp_page_config_get_brand();
+        $font   = isset( $brand['font'] ) ? wp_strip_all_tags( (string) $brand['font'] ) : '';
+        $weight = isset( $brand['weight'] ) ? wp_strip_all_tags( (string) $brand['weight'] ) : '';
+        if ( '' !== $font ) {
+            $css .= '--sfp-kopfont:' . $font . ';';
+        }
+        if ( '' !== $weight ) {
+            $css .= '--sfp-kopfont-gewicht:' . $weight . ';';
+        }
+    }
+    if ( function_exists( 'sfp_kleurrollen_slots' ) ) {
+        foreach ( (array) sfp_kleurrollen_slots() as $rol => $slot ) {
+            $css .= '--sfp-rol-' . sanitize_key( (string) $rol ) . ':var(--ast-global-color-' . (int) $slot . ');';
+        }
+    }
+    return '' === $css ? '' : ':root{' . $css . '}';
 }
 
 add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_blokken_rucss' );
