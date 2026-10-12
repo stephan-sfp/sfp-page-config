@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.1.1] - 2026-10-12
+
+Twee wensen van Stephan na de proef van 3.1.0 op DPS.
+
+### Gewijzigd
+- **De editor toont het merk van de site**: het koplettertype en de kleurrollen. Die kwamen alleen op de site; de editor leest nu hetzelfde snippet "Kleuren: rollen van het palet" mee. Raakt alleen de editor.
+- **Inzicht: de deelknoppen staan achter een knop Delen**, net als bij de samenvatting. Zichtbaar voor bezoekers: onder een inzicht staat nu alleen de knop Delen; een klik toont LinkedIn, WhatsApp, X en downloaden.
+
+### Terugdraaien
+- Terug naar 3.1.0: de zip van 3.1.0 uploaden. Er is niets omgezet of gewist.
+
 ## [3.1.0] - 2026-10-12
 
 Het werk in de editor: het paneel Deze pagina, blokken volgens de ontwerpregels en gegevens van de site als blok. Getest als proef op DPS in beta.1 en beta.2 (hieronder, met de volledige lijst). Dit is de eerste gewone release van 3.1.0 en bereikt alle sites.
@@ -12,10 +23,6 @@ Het werk in de editor: het paneel Deze pagina, blokken volgens de ontwerpregels 
 - In de blokeditor staat het paneel Deze pagina in plaats van het metavak SFP Page Config. De eigen blokken staan in de groep Bouwstenen.
 - **De scripts en stijlen van de plugin laden onverkleind, met het versienummer.** Op SFP, DGA, CVD en DST krijgen bezoekers daardoor voor het eerst de scripts van 3.0.0 en later; tot nu toe gaf WP Rocket een verkleinde kopie van 6 oktober. Daarmee werkt de knop onderaan zoals in 3.0.0 bedoeld.
 - Voor bezoekers verder alleen: de lestijd van een groep in de keuzelijst van het aanmeldformulier (waar die is ingevuld) en een gekozen uitsnede van de foto ook zonder de tag pijler.
-
-### Na de proef toegevoegd (besluit Stephan 12-10)
-- **De editor toont het merk van de site**: het koplettertype en de kleurrollen. Die kwamen alleen op de site; de editor leest nu hetzelfde snippet "Kleuren: rollen van het palet" mee. Raakt alleen de editor.
-- **Inzicht: de deelknoppen staan achter een knop Delen**, net als bij de samenvatting. Zichtbaar voor bezoekers: onder een inzicht staat nu alleen de knop Delen; een klik toont LinkedIn, WhatsApp, X en downloaden.
 
 ### Gecontroleerd voor de release
 - Proef op DPS: bijgewerkt via de proefversies, caches geleegd, uitgelogd nagelopen (knop onderaan, reviews, tooltips, geen scriptfouten). PageSpeed mobiel en desktop: home 94 en 100, presentatietraining 92 en 98, spreekangst 91 en 99. Editor bekeken en akkoord bevonden door Stephan.
