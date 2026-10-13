@@ -34,3 +34,12 @@ wp eval-file wp-content/plugins/sfp-page-config/tests/editor-wp.php
 ```
 
 Runs inside a real WordPress (a local test install, never a live site). Checks the page data over REST (sanitizing, rights, no empty rows), the panel state endpoint, the data blocks, the sticky button anchors, affiliate pattern matches, the reading-time guard, the focal point without the pijler tag, the course-date dropdown with lesson time, the daily mail links, and the block group and examples. Creates its own posts and a user and removes them at the end.
+
+# Sjabloontekst (3.1.2)
+
+```sh
+php tests/sjabloon.php
+php tests/sjabloon.php <map> [shortcode,shortcode,...]
+```
+
+Checks the page check "Sjabloontekst niet ingevuld": only the text a visitor reads counts (no scripts, styles, HTML comments, block attributes, tag attributes or blocks hidden with "Blok verbergen"), shortcodes that only exist for visitors are learned at a front-end visit, and a shortcode that exists nowhere is still reported. With a folder, it lists what the check still reports for each `.html` file of raw post content.

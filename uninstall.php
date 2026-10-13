@@ -30,6 +30,7 @@ foreach ( array(
     'sfp_ajax_lean_error',
     'sfp_page_config_version',
     'sfp_pc_aff_treffers_sleutel',
+    'sfp_pc_shortcodes_voorkant',
 ) as $sfp_optie ) {
     delete_option( $sfp_optie );
 }
