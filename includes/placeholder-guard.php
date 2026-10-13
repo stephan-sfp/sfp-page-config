@@ -9,8 +9,10 @@
  * [Naam], [Organisatie] and runs of dots ("....."). When an editor forgets
  * to replace one, it can end up on a published page. This module:
  *
- *   1. Detects likely placeholders (bracketed tokens that are not registered
- *      shortcodes, plus runs of four or more dots).
+ *   1. Detects likely placeholders in the text a visitor reads (bracketed
+ *      tokens that are not known shortcodes, plus runs of four or more
+ *      dots). Scripts, styles, HTML comments, block attributes and tag
+ *      attributes are skipped since 3.1.2.
  *   2. Warns (never blocks) in the block editor right after a publish/update,
  *      and via an admin notice on the edit screen.
  *   3. Feeds the site-wide check on the screen Pagina's in SFP Beheer, which lists
@@ -32,15 +34,168 @@ if ( ! defined( 'ABSPATH' ) ) {
  * ====================================================================== */
 
 /**
+ * Alleen de tekst die een bezoeker kan lezen.
+ *
+ * Haalt weg wat nooit sjabloontekst is maar wel blokhaken of puntjes bevat:
+ * scripts (JavaScript-indexen zoals [i] en CSS-selectors zoals
+ * [name="robots"]), stijlen, HTML-opmerkingen (daarmee ook de blokattributen
+ * van Gutenberg en Spectra) en alles binnen een HTML-tag (attributen).
+ *
+ * @param  string $content Ruwe inhoud.
+ * @return string
+ */
+function sfp_page_config_placeholder_leestekst( $content ) {
+    $tekst = sfp_page_config_zonder_verborgen_blokken( (string) $content );
+    $tekst = preg_replace( '#<script\b.*?</script\s*>#is', ' ', (string) $tekst );
+    $tekst = preg_replace( '#<style\b.*?</style\s*>#is', ' ', (string) $tekst );
+    $tekst = preg_replace( '#<!--.*?-->#s', ' ', (string) $tekst );
+    // Een opmerking of script zonder einde: de rest is geen leestekst.
+    $tekst = preg_replace( '#<(?:!--|script\b|style\b).*$#is', ' ', (string) $tekst );
+    $tekst = preg_replace( '#<[A-Za-z/!][^<>]*>#s', ' ', (string) $tekst );
+    return is_string( $tekst ) ? $tekst : '';
+}
+
+/**
+ * Haal blokken weg die met "Blok verbergen" voor iedereen verborgen zijn
+ * (`metadata.blockVisibility` is false), met alles wat erin staat.
+ *
+ * Herkent blokgrenzen met hetzelfde patroon als WP_Block_Parser, zodat
+ * geneste blokken van dezelfde soort goed sluiten. Een blok dat alleen per
+ * schermbreedte verborgen is, blijft staan: andere bezoekers zien het wel.
+ *
+ * @param  string $content Ruwe inhoud.
+ * @return string
+ */
+function sfp_page_config_zonder_verborgen_blokken( $content ) {
+    if ( false === strpos( $content, '"blockVisibility":false' ) ) {
+        return $content;
+    }
+    $patroon = '/<!--\s+(?P<sluit>\/)?wp:(?P<naam>[a-z][a-z0-9_-]*(?:\/[a-z][a-z0-9_-]*)?)\s+(?P<attr>{(?:(?:[^}]+|}+(?=})|(?!}\s+\/?-->).)*+)?}\s+)?(?P<leeg>\/)?-->/s';
+    if ( ! preg_match_all( $patroon, $content, $grenzen, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ) {
+        return $content;
+    }
+    $weg    = array(); // Paren begin => eind om weg te halen.
+    $stapel = array(); // Open blokken: array( naam, begin, verborgen ).
+    foreach ( $grenzen as $grens ) {
+        $begin = $grens[0][1];
+        $eind  = $begin + strlen( $grens[0][0] );
+        $naam  = $grens['naam'][0];
+        if ( '' !== $grens['sluit'][0] ) {
+            // Sluit het laatst geopende blok met deze naam.
+            for ( $i = count( $stapel ) - 1; $i >= 0; $i-- ) {
+                if ( $stapel[ $i ][0] === $naam ) {
+                    if ( $stapel[ $i ][2] ) {
+                        $weg[ $stapel[ $i ][1] ] = $eind;
+                    }
+                    $stapel = array_slice( $stapel, 0, $i );
+                    break;
+                }
+            }
+            continue;
+        }
+        $verborgen = false;
+        if ( isset( $grens['attr'] ) && '' !== $grens['attr'][0] && false !== strpos( $grens['attr'][0], '"blockVisibility":false' ) ) {
+            $attr      = json_decode( trim( $grens['attr'][0] ), true );
+            $verborgen = is_array( $attr ) && isset( $attr['metadata'] ) && is_array( $attr['metadata'] )
+                && array_key_exists( 'blockVisibility', $attr['metadata'] ) && false === $attr['metadata']['blockVisibility'];
+        }
+        if ( isset( $grens['leeg'] ) && '' !== $grens['leeg'][0] ) {
+            if ( $verborgen ) {
+                $weg[ $begin ] = $eind;
+            }
+            continue;
+        }
+        $stapel[] = array( $naam, $begin, $verborgen );
+    }
+    // Een verborgen blok zonder einde: de rest van de inhoud valt weg.
+    foreach ( $stapel as $open ) {
+        if ( $open[2] ) {
+            $weg[ $open[1] ] = strlen( $content );
+            break;
+        }
+    }
+    if ( ! $weg ) {
+        return $content;
+    }
+    ksort( $weg );
+    $uit   = '';
+    $vanaf = 0;
+    foreach ( $weg as $begin => $eind ) {
+        if ( $begin < $vanaf ) {
+            continue; // Ligt binnen een blok dat al weg is.
+        }
+        $uit  .= substr( $content, $vanaf, $begin - $vanaf ) . ' ';
+        $vanaf = $eind;
+    }
+    return $uit . substr( $content, $vanaf );
+}
+
+/**
+ * Shortcodes die de site kent: wat nu geregistreerd is, plus wat de voorkant
+ * bij het laatste bezoek kende.
+ *
+ * Snippets (ASE Pro) registreren sommige shortcodes alleen voor bezoekers,
+ * zoals [dynamische_cta]. In het beheer bestaan ze dan niet, terwijl ze op
+ * de pagina gewoon werken.
+ *
+ * @return string[]
+ */
+function sfp_page_config_bekende_shortcodes() {
+    $tags     = sfp_page_config_registered_shortcodes();
+    $voorkant = get_option( 'sfp_pc_shortcodes_voorkant', array() );
+    if ( is_array( $voorkant ) && isset( $voorkant['tags'] ) && is_array( $voorkant['tags'] ) ) {
+        $tags = array_merge( $tags, array_map( 'strval', $voorkant['tags'] ) );
+    }
+    return array_values( array_unique( $tags ) );
+}
+
+if ( ! has_action( 'template_redirect', 'sfp_page_config_onthoud_shortcodes_voorkant' ) ) {
+    add_action( 'template_redirect', 'sfp_page_config_onthoud_shortcodes_voorkant', 99 );
+}
+
+/**
+ * Onthoud welke shortcodes een bezoeker van de site krijgt.
+ *
+ * Schrijft alleen als de set is veranderd, niet bij elke paginalading. Laadt
+ * niet automatisch mee.
+ */
+function sfp_page_config_onthoud_shortcodes_voorkant() {
+    if ( is_admin() || wp_doing_ajax() || wp_doing_cron() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+        return;
+    }
+    $tags = sfp_page_config_registered_shortcodes();
+    sort( $tags );
+    $hash = md5( implode( ',', $tags ) );
+    $nu   = get_option( 'sfp_pc_shortcodes_voorkant', array() );
+    if ( is_array( $nu ) && isset( $nu['hash'] ) && $nu['hash'] === $hash ) {
+        return;
+    }
+    update_option(
+        'sfp_pc_shortcodes_voorkant',
+        array(
+            'hash' => $hash,
+            'tags' => $tags,
+            'tijd' => time(),
+        ),
+        false
+    );
+    // De bewaarde controles rekenden met de oude set.
+    delete_transient( 'sfp_pc_sweep' );
+    delete_transient( 'sfp_pc_paginas' );
+}
+
+/**
  * Find likely-unreplaced template placeholders in a content string.
  *
+ * Alleen de leestekst telt (zie sfp_page_config_placeholder_leestekst()).
+ *
  * Detection rules:
- *   1. Any [bracketed] token whose tag is NOT a registered shortcode. The
- *      tag must start with a letter, so numeric footnote markers like [1]
- *      and JSON arrays in block comments (["a","b"], [1,2,3]) are ignored.
- *      Registered shortcodes ([cursus_datum], [training_naam], [cursus_tijd],
- *      [google_reviews], ...) are skipped automatically via shortcode_exists(),
- *      so the detector grows with the shortcode set without maintenance.
+ *   1. Any [bracketed] token whose tag is NOT a known shortcode. The tag must
+ *      start with a letter, so numeric footnote markers like [1] are ignored.
+ *      Known: registered now, or registered for visitors at their last visit
+ *      (sfp_page_config_bekende_shortcodes()). A shortcode that exists
+ *      nowhere, like an old [tooltip ...], is still reported: visitors see it
+ *      as plain text.
  *   2. Runs of four or more literal dots ("....."), used as fill-in blanks.
  *      Three-dot ellipses and the Unicode ellipsis are left alone.
  *
@@ -55,16 +210,19 @@ function sfp_page_config_find_placeholders( $content ) {
         return $found;
     }
 
-    // 1. Bracketed tokens that are not registered shortcodes.
+    $content = sfp_page_config_placeholder_leestekst( $content );
+    $bekend  = array_flip( sfp_page_config_bekende_shortcodes() );
+
+    // 1. Bracketed tokens that are not known shortcodes.
     if ( preg_match_all( '/\[([A-Za-z][A-Za-z0-9_-]*)[^\]\[]*\]/', $content, $matches, PREG_SET_ORDER ) ) {
         foreach ( $matches as $match ) {
             $tag = $match[1];
             // Case-sensitive on purpose: [Cursus_datum] would not render as a
             // shortcode either, so flagging it is correct.
-            if ( shortcode_exists( $tag ) ) {
+            if ( isset( $bekend[ $tag ] ) ) {
                 continue;
             }
-            $found[] = trim( $match[0] );
+            $found[] = trim( preg_replace( '/\s+/', ' ', $match[0] ) );
         }
     }
 
@@ -229,7 +387,7 @@ function sfp_page_config_placeholder_editor_assets() {
         'sfp-page-config-placeholder',
         'sfpPlaceholderConfig',
         array(
-            'shortcodes' => sfp_page_config_registered_shortcodes(),
+            'shortcodes' => sfp_page_config_bekende_shortcodes(),
         )
     );
 }

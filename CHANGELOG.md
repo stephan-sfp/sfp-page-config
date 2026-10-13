@@ -4,6 +4,22 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.1.2] - 2026-10-13
+
+De controle "Sjabloontekst niet ingevuld" in SFP Beheer gaf vals alarm: op SFP 12 en op DPS 39 pagina's.
+
+### Gerepareerd
+- **De controle kijkt alleen nog naar tekst die een bezoeker leest.** Scripts, stijlen, HTML-opmerkingen, blokattributen (ook die van Spectra), HTML-attributen en blokken die met Blok verbergen voor iedereen verborgen zijn, tellen niet meer mee. Daar stonden JavaScript-indexen zoals `[i]`, CSS-selectors zoals `[name="robots"]` en ingevulde Spectra-velden die de controle voor sjabloontekst hield.
+- **Shortcodes die alleen voor bezoekers bestaan, gelden als bekend.** Snippets registreren sommige shortcodes, zoals `[dynamische_cta]`, alleen aan de voorkant; in het beheer bestonden ze daardoor niet. De plugin onthoudt bij een bezoek aan de site welke shortcodes daar bestaan. Een shortcode die ook daar niet bestaat, zoals een oude `[tooltip ...]`, blijft gemeld: bezoekers zien die als gewone tekst.
+- De waarschuwing in de editor na opslaan volgt dezelfde regels.
+- Gemeten op de echte inhoud: SFP van 12 naar 0 meldingen, DPS van 39 naar 5, DGA van 24 naar 1, CVD van 36 naar 0, DST van 21 naar 5, FL blijft 1. Wat overblijft is echte tekst voor de lezer: invulformules of resttekst die bezoekers zien.
+
+### Gewijzigd
+- Bewuste invulformules voor de lezer blijven gemeld en zijn per pagina weg te klikken, zoals voorheen.
+
+### Terugdraaien
+- Terug naar 3.1.1: de zip van 3.1.1 uploaden. Er is niets omgezet of gewist. De nieuwe optie `sfp_pc_shortcodes_voorkant` blijft dan ongebruikt staan.
+
 ## [3.1.1] - 2026-10-12
 
 Twee wensen van Stephan na de proef van 3.1.0 op DPS.
