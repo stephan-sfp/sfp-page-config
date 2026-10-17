@@ -107,6 +107,7 @@ function sfp_ao_enqueue( $hook_suffix ) {
         .sfp-ao-status-transient { background: #fff4e5; color: #8a5a00; }
         .sfp-ao-status-core { background: #e5f0fb; color: #0b4f8a; }
         .sfp-ao-status-unknown { background: #f0f0f1; color: #50575e; }
+        .sfp-ao-status-eigen { background: #f3e8fd; color: #5b2a86; }
         .sfp-ao-protected { color: #646970; font-style: italic; }
         .sfp-ao-reminder { background: #f0f6fc; border-left: 4px solid #2271b1; padding: 10px 14px; margin: 12px 0 20px; }
         .sfp-ao-option-name { font-family: Consolas, Monaco, monospace; word-break: break-all; }
@@ -255,6 +256,25 @@ function sfp_ao_known_prefixes() {
         'swift_performance_'         => 'Swift Performance',
         '_wpforms_'                  => 'WPForms',
         'wpforms'                    => 'WPForms',
+        // v3.2.1: actieve plugins met afwijkende optienamen.
+        'suretrigger'                => 'Ottokit (SureTriggers)',
+        'fsmtp_'                     => 'FluentSMTP',
+        'zip_ai_'                    => 'Brainstorm Force',
+        'wpmedia_mcp'                => 'WP Rocket',
+        'mcp_jwt_secret'             => 'WP Rocket',
+        'latepoint_'                 => 'LatePoint',
+        // v3.2.1: nog meer plugins die niet meer op het netwerk staan.
+        'rsssl_'                     => 'Really Simple SSL',
+        'perfmatters'                => 'Perfmatters',
+        'trustindex'                 => 'Trustindex',
+        'rankability'                => 'Rankability',
+        'wpmdb_'                     => 'WP Migrate',
+        'monsterinsights'            => 'MonsterInsights',
+        'eae_'                       => 'Elementor Addon Elements',
+        'hello-elementor'            => 'Hello Elementor',
+        'convertpro_'                => 'Convert Pro',
+        'wpsurfer_'                  => 'Surfer SEO',
+        'matomo'                     => 'Matomo',
         // v3.2.0: plugins die niet meer op het netwerk staan (opruiming 16-10-2026).
         'tagging_settings_'          => 'Stape Conversion Tracking',
         'suremails'                  => 'SureMails',
@@ -339,6 +359,15 @@ function sfp_ao_source_to_active_slugs() {
         'Bit Form'               => array( 'bit-form', 'bit-form-pro' ),
         'Automatic Translations for Polylang' => array( 'automatic-translations-for-polylang' ),
         'Polylang'               => array( 'polylang', 'polylang-pro' ),
+        'Really Simple SSL'      => array( 'really-simple-ssl', 'really-simple-ssl-pro' ),
+        'Perfmatters'            => array( 'perfmatters' ),
+        'Trustindex'             => array( 'wp-reviews-plugin-for-google', 'trustindex' ),
+        'Rankability'            => array( 'rankability' ),
+        'WP Migrate'             => array( 'wp-migrate-db', 'wp-migrate-db-pro' ),
+        'MonsterInsights'        => array( 'google-analytics-for-wordpress', 'google-analytics-premium' ),
+        'Elementor Addon Elements' => array( 'addon-elements-for-elementor-page-builder' ),
+        'Hello Elementor'        => array( 'hello-elementor' ),
+        'Matomo'                 => array( 'matomo' ),
         'Brainstorm Force'       => array( 'astra','spectra-pro', 'ultimate-addons-for-gutenberg', 'surerank', 'surerank-pro', 'surecart', 'sureforms', 'sureforms-pro', 'surecontact', 'convert-pro', 'convert-pro-addon', 'presto-player-pro', 'sfp-page-config' ),
     );
 }
@@ -666,13 +695,106 @@ function sfp_ao_detect_source( $name ) {
         return 'WordPress Core';
     }
 
-    foreach ( $sorted_keys as $prefix ) {
-        if ( 0 === strpos( $name, $prefix ) ) {
-            return $prefixes[ $prefix ];
+    foreach ( sfp_ao_name_variants( $name ) as $variant ) {
+        foreach ( $sorted_keys as $prefix ) {
+            if ( 0 === strpos( $variant, $prefix ) ) {
+                return $prefixes[ $prefix ];
+            }
         }
     }
 
+    $eigen = sfp_ao_own_source( $name );
+    if ( '' !== $eigen ) {
+        return $eigen;
+    }
+
     return 'Onbekend';
+}
+
+/**
+ * De naam zelf en, als die met liggende streepjes begint, de naam zonder.
+ * Plugins zetten vaak een '_' voor interne opties ('_fluentsmtp_...').
+ *
+ * @param string $name Option name.
+ * @return string[]
+ * @since 3.2.1
+ */
+function sfp_ao_name_variants( $name ) {
+    $kaal = ltrim( (string) $name, '_' );
+    return ( '' !== $kaal && $kaal !== $name ) ? array( (string) $name, $kaal ) : array( (string) $name );
+}
+
+/**
+ * Opties die bij geen enkele losse plugin horen maar door actieve plugins
+ * gedeeld worden: licentiegegevens, updatecontroles, Action Scheduler.
+ * Die gelden altijd als actief.
+ *
+ * @return array<string, string> prefix => bron
+ * @since 3.2.1
+ */
+function sfp_ao_shared_prefixes() {
+    return array(
+        'edd_sl_'           => 'Licentiegegevens (gedeeld)',
+        'edd_api_request_'  => 'Licentiegegevens (gedeeld)',
+        'external_updates-' => 'Updatecontrole (gedeeld)',
+        'as_has_'           => 'Action Scheduler (gedeeld)',
+    );
+}
+
+/**
+ * Sitecodes van het netwerk. Opties die daarmee beginnen zijn gegevens
+ * van eigen snippets.
+ *
+ * @return string[]
+ * @since 3.2.1
+ */
+function sfp_ao_site_codes() {
+    return array( 'dps', 'dga', 'cvd', 'dst', 'slb', 'sws', 'fl' );
+}
+
+/**
+ * Alle code van ASE-snippets op deze site, eenmaal per verzoek gelezen.
+ *
+ * @return string
+ * @since 3.2.1
+ */
+function sfp_ao_snippet_code( $vernieuw = false ) {
+    static $code = null;
+    if ( null !== $code && ! $vernieuw ) {
+        return $code;
+    }
+    global $wpdb;
+    $rows = $wpdb->get_col(
+        $wpdb->prepare(
+            "SELECT post_content FROM {$wpdb->posts} WHERE post_type = %s AND post_status IN ( 'publish', 'draft', 'private', 'pending', 'future' )",
+            'asenha_code_snippet'
+        )
+    );
+    $code = implode( "\n", array_map( 'strval', (array) $rows ) );
+    return $code;
+}
+
+/**
+ * Is dit een optie van een eigen snippet? Ja als de naam met een sitecode
+ * begint, of als de naam tussen aanhalingstekens in de code van een
+ * ASE-snippet staat.
+ *
+ * @param string $name Option name.
+ * @return string Bron, of '' als het geen eigen optie is.
+ * @since 3.2.1
+ */
+function sfp_ao_own_source( $name ) {
+    $name = (string) $name;
+    foreach ( sfp_ao_site_codes() as $code ) {
+        if ( 0 === strpos( $name, $code . '_' ) || 0 === strpos( $name, $code . '-' ) ) {
+            return 'Eigen gegevens (sitecode)';
+        }
+    }
+    $snippets = sfp_ao_snippet_code();
+    if ( '' !== $snippets && ( false !== strpos( $snippets, "'" . $name . "'" ) || false !== strpos( $snippets, '"' . $name . '"' ) ) ) {
+        return 'Eigen gegevens (snippet)';
+    }
+    return '';
 }
 
 /**
@@ -719,10 +841,26 @@ function sfp_ao_detect_status( $name, array $active_prefixes ) {
         return 'active';
     }
 
+    // v3.2.1: gedeelde opties van actieve plugins (licenties, updates).
+    foreach ( sfp_ao_name_variants( $name ) as $variant ) {
+        foreach ( sfp_ao_shared_prefixes() as $prefix => $_ ) {
+            if ( 0 === strpos( $variant, $prefix ) ) {
+                return 'active';
+            }
+        }
+    }
+
+    // v3.2.1: gegevens van eigen snippets. Nooit verwijderbaar.
+    if ( '' !== sfp_ao_own_source( $name ) ) {
+        return 'eigen';
+    }
+
     // Known-deactivated plugin prefixes.
     foreach ( sfp_ao_known_orphan_prefixes() as $orphan ) {
-        if ( 0 === strpos( $name, $orphan ) ) {
-            return 'orphan';
+        foreach ( sfp_ao_name_variants( $name ) as $variant ) {
+            if ( 0 === strpos( $variant, $orphan ) ) {
+                return 'orphan';
+            }
         }
     }
 
@@ -792,6 +930,7 @@ function sfp_ao_core_option_names() {
         'template_root', 'theme_switch_menu_locations', 'theme_switched_via_customizer',
         'auto_update_plugins', 'auto_update_themes', 'dismissed_update_core',
         'core_updater.lock', 'auto_updater.lock', 'active_sitewide_plugins',
+        'using_application_passwords',
     );
 }
 
@@ -911,12 +1050,14 @@ function sfp_ao_active_prefixes() {
  * @return bool
  */
 function sfp_ao_matches_active_plugin( $name, array $active ) {
-    foreach ( $active as $prefix => $_ ) {
-        if ( '' === $prefix ) {
-            continue;
-        }
-        if ( 0 === strpos( $name, $prefix ) ) {
-            return true;
+    foreach ( sfp_ao_name_variants( $name ) as $variant ) {
+        foreach ( $active as $prefix => $_ ) {
+            if ( '' === $prefix ) {
+                continue;
+            }
+            if ( 0 === strpos( $variant, $prefix ) ) {
+                return true;
+            }
         }
     }
     return false;
@@ -1085,8 +1226,14 @@ function sfp_ao_analyse() {
     $rows = $verrijk( sfp_ao_fetch_rows() );
 
     // Restanten met autoload uit: alleen verweesd en onbekend.
-    $uit = array_values( array_filter( $verrijk( sfp_ao_fetch_rows_off() ), function ( $r ) {
+    $off = $verrijk( sfp_ao_fetch_rows_off() );
+    $uit = array_values( array_filter( $off, function ( $r ) {
         return in_array( $r->status, array( 'orphan', 'unknown' ), true );
+    } ) );
+
+    // v3.2.1: gegevens van eigen snippets, met autoload aan en uit.
+    $eigen = array_values( array_filter( array_merge( $rows, $off ), function ( $r ) {
+        return 'eigen' === $r->status;
     } ) );
 
     $tellingen = array(
@@ -1096,12 +1243,13 @@ function sfp_ao_analyse() {
         'unknown'   => 0,
         'transient' => 0,
         'uit'       => count( $uit ),
+        'eigen'     => count( $eigen ),
     );
     foreach ( $rows as $r ) {
         if ( $r->size > 1024 ) {
             $tellingen['large']++;
         }
-        if ( isset( $tellingen[ $r->status ] ) && 'all' !== $r->status ) {
+        if ( isset( $tellingen[ $r->status ] ) && ! in_array( $r->status, array( 'all', 'eigen' ), true ) ) {
             $tellingen[ $r->status ]++;
         }
     }
@@ -1110,6 +1258,7 @@ function sfp_ao_analyse() {
         'totals'    => $totals,
         'rows'      => $rows,
         'uit'       => $uit,
+        'eigen'     => $eigen,
         'groot'     => sfp_ao_collect_large_forced( $rows ),
         'tellingen' => $tellingen,
         'active'    => $active,
@@ -1245,6 +1394,7 @@ function sfp_ao_rest_data() {
         'groot_geforceerd' => array_map( 'sfp_ao_row_export', $a['groot'] ),
         'opties'    => array_map( 'sfp_ao_row_export', $a['rows'] ),
         'restanten_autoload_uit' => array_map( 'sfp_ao_row_export', $a['uit'] ),
+        'eigen_gegevens' => array_map( 'sfp_ao_row_export', $a['eigen'] ),
     );
 }
 
@@ -1578,14 +1728,15 @@ function sfp_ao_render_page() {
     $count_unknown   = $analyse['tellingen']['unknown'];
     $count_transient = $analyse['tellingen']['transient'];
     $count_uit       = $analyse['tellingen']['uit'];
+    $count_eigen     = $analyse['tellingen']['eigen'];
 
     $filter = isset( $_GET['filter'] ) ? sanitize_key( wp_unslash( $_GET['filter'] ) ) : 'all';
-    if ( ! in_array( $filter, array( 'all', 'large', 'orphan', 'unknown', 'transient', 'uit' ), true ) ) {
+    if ( ! in_array( $filter, array( 'all', 'large', 'orphan', 'unknown', 'transient', 'uit', 'eigen' ), true ) ) {
         $filter = 'all';
     }
 
     // Apply the filter.
-    $filtered = 'uit' === $filter ? $analyse['uit'] : array_values( array_filter( $rows, function ( $r ) use ( $filter ) {
+    $filtered = in_array( $filter, array( 'uit', 'eigen' ), true ) ? $analyse[ $filter ] : array_values( array_filter( $rows, function ( $r ) use ( $filter ) {
         switch ( $filter ) {
             case 'large':     return $r->size > 1024;
             case 'orphan':    return 'orphan' === $r->status;
@@ -1781,6 +1932,7 @@ function sfp_ao_render_page() {
                 'unknown'   => array( 'Onbekend',    $count_unknown ),
                 'transient' => array( 'Transients',  $count_transient ),
                 'uit'       => array( 'Restanten, autoload uit', $count_uit ),
+                'eigen'     => array( 'Eigen gegevens', $count_eigen ),
             );
             $last_key = array_key_last( $tabs );
             foreach ( $tabs as $key => $meta ) :
@@ -1888,6 +2040,7 @@ function sfp_ao_render_page() {
                             'transient' => array( 'Transient', 'sfp-ao-status-transient' ),
                             'core'      => array( 'WP Core',   'sfp-ao-status-core' ),
                             'unknown'   => array( 'Onbekend',  'sfp-ao-status-unknown' ),
+                            'eigen'     => array( 'Eigen',     'sfp-ao-status-eigen' ),
                         );
                         $label = $status_label[ $r->status ] ?? $status_label['active'];
                         ?>
@@ -1901,7 +2054,7 @@ function sfp_ao_render_page() {
                             <td class="sfp-ao-option-name">
                                 <?php echo esc_html( $r->option_name ); ?>
                                 <?php if ( $is_protected ) : ?>
-                                    <br><span class="sfp-ao-protected"><?php echo esc_html( in_array( $r->status, array( 'active', 'core', 'transient' ), true ) && ! in_array( $r->option_name, sfp_ao_protected_options(), true ) && ! sfp_ao_is_structural_widget_option( $r->option_name ) ? 'In gebruik (alleen autoload uitzetten kan)' : 'Beschermd (kan niet verwijderd worden)' ); ?></span>
+                                    <br><span class="sfp-ao-protected"><?php echo esc_html( in_array( $r->status, array( 'active', 'core', 'transient', 'eigen' ), true ) && ! in_array( $r->option_name, sfp_ao_protected_options(), true ) && ! sfp_ao_is_structural_widget_option( $r->option_name ) ? 'In gebruik (alleen autoload uitzetten kan)' : 'Beschermd (kan niet verwijderd worden)' ); ?></span>
                                 <?php endif; ?>
                             </td>
                             <td class="sfp-ao-size"><?php echo esc_html( sfp_ao_format_size( $r->size ) ); ?></td>
@@ -1951,6 +2104,11 @@ function sfp_ao_render_page() {
         <p>
             <strong>Restanten, autoload uit</strong> toont verweesde en onbekende opties die niet automatisch
             laden. Ze kosten geen laadtijd, maar staan nog in de database.
+        </p>
+        <p>
+            <strong>Eigen gegevens</strong> zijn opties van eigen snippets: de naam begint met een sitecode
+            (<code>dps_</code>, <code>sws_</code>, <code>fl_</code> enzovoort) of staat in de code van een
+            ASE-snippet. Ze zijn zichtbaar maar niet te verwijderen vanuit deze pagina.
         </p>
         <p>
             Dezelfde tabel staat alleen-lezen op <code>/wp-json/sfp/v1/autoload</code> (alleen voor beheerders).
@@ -2030,6 +2188,7 @@ function sfp_ao_render_confirm() {
         'transient' => 'Transient',
         'core'      => 'WP Core',
         'unknown'   => 'Onbekend',
+        'eigen'     => 'Eigen',
     );
     ?>
     <div class="wrap sfp-ao-wrap">

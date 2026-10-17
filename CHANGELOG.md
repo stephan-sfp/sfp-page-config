@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.2.1] - 2026-10-17
+
+De nameting van 3.2.0 op de acht sites liet zien dat de lijst Onbekend ook opties bevatte die in gebruik zijn. Die waren na bevestiging te verwijderen. Er is niets verwijderd.
+
+### Gerepareerd
+- **Opties van actieve plugins met een afwijkende naam gelden als Actief** en zijn niet te verwijderen: OttoKit (`suretrigger_options`), FluentSMTP (`_fluentsmtp_`, `_fluent_smtp_`, `_fsmtp_`), SureRank (`_surerank_`), de MCP-koppeling van WP Rocket (`mcp_jwt_secret`, `wpmedia_mcp_`) en de AI-instellingen van Astra en Spectra (`zip_ai_`). Een liggend streepje vooraan telt niet meer mee bij het herkennen van de bron.
+- **Gedeelde opties gelden als Actief:** licentiegegevens (`edd_sl_`, `edd_api_request_`), updatecontroles (`external_updates-`) en Action Scheduler (`as_has_`). `using_application_passwords` hoort bij WP Core.
+
+### Toegevoegd
+- **Eigen gegevens:** opties waarvan de naam met een sitecode begint (`dps_`, `dga_`, `cvd_`, `dst_`, `slb_`, `sws_`, `fl_`) of die in de code van een ASE-snippet staan. Zichtbaar in het tabblad Eigen gegevens en in de REST-route (`eigen_gegevens`), nooit verwijderbaar vanuit de analyzer. Op DPS gaat het om ruim 300 opties (`dps_bvfix`, `dps_ctatail`).
+- Bronherkenning voor nog meer plugins die niet meer op het netwerk staan: Really Simple SSL, Perfmatters, Trustindex, Rankability, WP Migrate, MonsterInsights, Elementor Addon Elements, Hello Elementor, Convert Pro (`convertpro_`), Surfer SEO (`wpsurfer_`) en Matomo.
+
+### Terugdraaien
+- Terug naar 3.2.0: de zip van 3.2.0 uploaden. Er wordt niets omgezet of opgeslagen.
+
 ## [3.2.0] - 2026-10-17
 
 De analyzer van automatisch geladen opties (SFP Beheer, Onderhoud) herkent, bewaart en verwijdert restanten van verwijderde plugins zonder losse snippets of browserwerk (NET-01). Bij de opruiming van 16-10 weigerde hij 270 van de 391 restanten, omdat hij alleen opties op een vaste lijst als verweesd zag.

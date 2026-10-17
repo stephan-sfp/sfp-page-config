@@ -65,6 +65,10 @@ class Nep_WPDB {
     public function prepare( $sql, $args ) {
         return array( $sql, $args );
     }
+    public $posts = 'wp_posts';
+    public function get_col( $q ) {
+        return $GLOBALS['snippets'] ?? array();
+    }
     public function get_row( $q ) {
         $on = array( 'on', 'auto', 'yes' );
         $n  = 0;
@@ -166,6 +170,45 @@ foreach ( array( 'siteurl', 'rewrite_rules', 'widget_block', 'xrk_user_roles', '
     zelfde( 'core', sfp_ao_detect_status( $naam, $actief ), "core: $naam" );
 }
 zelfde( 'unknown', sfp_ao_detect_status( 'iets_onherkenbaars', $actief ), 'onherkend blijft onbekend' );
+
+/* ---------- 3.2.1: actieve plugins met afwijkende namen ---------- */
+
+foreach ( array(
+    'suretrigger_options'           => 'Ottokit (SureTriggers)',
+    '_fluentsmtp_connection_health' => 'FluentSMTP',
+    '_fluent_smtp_notify_settings'  => 'FluentSMTP',
+    '_fsmtp_last_notification_sent' => 'FluentSMTP',
+    '_surerank_seo_last_updated'    => 'SureRank SEO',
+    'zip_ai_settings'               => 'Brainstorm Force',
+    'mcp_jwt_secret'                => 'WP Rocket',
+    'wpmedia_mcp_oauth_rewrite_version' => 'WP Rocket',
+) as $naam => $bron ) {
+    zelfde( $bron, sfp_ao_detect_source( $naam ), "bron van $naam" );
+    zelfde( 'active', sfp_ao_detect_status( $naam, $actief ), "actief: $naam" );
+    zelfde( false, sfp_ao_is_deletable( $naam, sfp_ao_detect_status( $naam, $actief ) ), "niet verwijderbaar: $naam" );
+}
+foreach ( array( 'edd_sl_1f42911b731d42f47d569f23cf2d5abb', 'edd_api_request_a1d5', 'external_updates-siteground-wizard', 'as_has_wp_comment_logs' ) as $naam ) {
+    zelfde( 'active', sfp_ao_detect_status( $naam, $actief ), "gedeeld blijft actief: $naam" );
+}
+zelfde( 'core', sfp_ao_detect_status( 'using_application_passwords', $actief ), 'core: using_application_passwords' );
+// Een verweesde plugin met streepje vooraan blijft verweesd.
+zelfde( 'orphan', sfp_ao_detect_status( '_elementor_pro_license_data', $actief ), 'verweesd met streepje vooraan' );
+zelfde( 'orphan', sfp_ao_detect_status( '_cp_v2_template_styles', $actief ), 'Convert Pro met streepje vooraan' );
+
+/* ---------- 3.2.1: eigen gegevens ---------- */
+
+foreach ( array( 'dps_bvfix_backup_5562', 'dps_ctatail_x', 'sws_cpt_rewrite_versie', 'fl_parity_20260710_done', 'cvd_tool_feedback_log', 'dga-x', 'dst_x', 'slb_x' ) as $naam ) {
+    zelfde( 'eigen', sfp_ao_detect_status( $naam, $actief ), "eigen: $naam" );
+    zelfde( false, sfp_ao_is_deletable( $naam, 'eigen' ), "eigen niet verwijderbaar: $naam" );
+}
+zelfde( 'Eigen gegevens (sitecode)', sfp_ao_detect_source( 'dps_bvfix_backup_5562' ), 'bron eigen via sitecode' );
+zelfde( 'unknown', sfp_ao_detect_status( 'fluentx', $actief ), 'fl zonder scheidingsteken is geen sitecode' );
+$GLOBALS['snippets'] = array( "<?php update_option( 'fix_wa_done', 1 ); get_option(\"mijn_snippet_optie\");" );
+sfp_ao_snippet_code( true );
+zelfde( 'eigen', sfp_ao_detect_status( 'fix_wa_done', $actief ), 'eigen via snippetcode (enkele quotes)' );
+zelfde( 'eigen', sfp_ao_detect_status( 'mijn_snippet_optie', $actief ), 'eigen via snippetcode (dubbele quotes)' );
+zelfde( 'Eigen gegevens (snippet)', sfp_ao_detect_source( 'fix_wa_done' ), 'bron eigen via snippet' );
+zelfde( 'unknown', sfp_ao_detect_status( 'fix_wa', $actief ), 'deel van een naam telt niet' );
 zelfde( 'transient', sfp_ao_detect_status( '_transient_x', $actief ), 'transient' );
 
 /* ---------- b. Wat mag weg ---------- */
@@ -193,11 +236,19 @@ $GLOBALS['db'] = array(
     'acf_version'             => array( '6.0', 'off' ),
     'pll_x'                   => array( 'z', 'auto-off' ),
     'surerank_uit'            => array( 'z', 'off' ),
+    'dps_bvfix_backup_1'      => array( 'b', 'off' ),
+    'sws_x'                   => array( 'b', 'on' ),
     '_transient_oud'          => array( 'z', 'off' ),
 );
 $a = sfp_ao_analyse();
-zelfde( 6, $a['totals']->total_count, 'totaal aantal' );
-zelfde( 6, $a['tellingen']['all'], 'telling alles gelijk aan totaal' );
+zelfde( 7, $a['totals']->total_count, 'totaal aantal' );
+zelfde( 7, $a['tellingen']['all'], 'telling alles gelijk aan totaal' );
+$eigen_namen = array_map( function ( $r ) {
+    return $r->option_name;
+}, $a['eigen'] );
+sort( $eigen_namen );
+zelfde( array( 'dps_bvfix_backup_1', 'sws_x' ), $eigen_namen, 'eigen gegevens: aan en uit' );
+zelfde( 2, $a['tellingen']['eigen'], 'telling eigen gegevens' );
 zelfde( 1, $a['tellingen']['orphan'], 'een verweesde met autoload aan' );
 zelfde( 2, $a['tellingen']['unknown'], 'twee onbekende met autoload aan' );
 zelfde( array( 'acf_version', 'pll_x' ), array_map( function ( $r ) {
@@ -213,6 +264,7 @@ zelfde( count( $a['rows'] ), count( $rest['opties'] ), 'REST zelfde aantal rijen
 zelfde( array( 'naam', 'grootte', 'autoload', 'bron', 'status', 'verwijderbaar' ), array_keys( $rest['opties'][0] ), 'REST-velden' );
 zelfde( 2, count( $rest['groot_geforceerd'] ), 'REST toont grote opties' );
 zelfde( 2, count( $rest['restanten_autoload_uit'] ), 'REST toont restanten met autoload uit' );
+zelfde( 2, count( $rest['eigen_gegevens'] ), 'REST toont eigen gegevens' );
 
 /* ---------- c. Back-up ---------- */
 
