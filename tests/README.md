@@ -51,3 +51,11 @@ php tests/autoload.php
 ```
 
 Checks the analyzer with small WordPress stubs and a fake database: source recognition for removed and inactive plugins, what may be deleted (orphan and unknown) and what never (protected, core, transients, active plugins, WordPress keys), leftovers with autoload off, large options forced to autoload on, the REST data matching the page, the JSON backup and the confirmation list.
+
+# Snippetbeheer (3.3.0)
+
+```sh
+SFP_TEST_URL=http://127.0.0.1:8899 wp eval-file wp-content/plugins/sfp-page-config/tests/snippets-wp.php
+```
+
+Runs inside a real WordPress (a local test install, never a live site) with ASE Pro and its Code Snippets Manager on, an administrator `claude-api` and a second administrator. Checks access (component off, other administrator, logged out), the checks before saving (syntax, existing functions, own functions on update), create, update, draft, on and off against the file and the active list of ASE, kses leaving the code intact, and reading. With `SFP_TEST_URL` pointing at the same install served over HTTP, it also checks on the front end that the code really runs, changes and stops. Creates its own snippets and removes them at the end.

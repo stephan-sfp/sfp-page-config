@@ -115,6 +115,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Startmomenten van trainingen, op de pagina en in het aanmeldformulier.',
             'detail' => true,
         ),
+        'snippets'   => array(
+            'naam'   => 'Snippetbeheer via REST',
+            'uitleg' => 'Het serviceaccount claude-api leest, maakt, bewerkt en schakelt PHP-snippets van ASE Pro zonder browser.',
+            'detail' => false,
+        ),
     );
 }
 
@@ -197,6 +202,9 @@ function sfp_page_config_onderdeel_standaard( $id ) {
             }
             $eigen = json_decode( (string) get_option( 'sfp_reviews_manual', '[]' ), true );
             return is_array( $eigen ) && ! empty( $eigen );
+        case 'snippets':
+            // Schrijft code die de site uitvoert: alleen aan als iemand dat kiest.
+            return false;
         default:
             return true;
     }
