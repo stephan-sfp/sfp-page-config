@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.4.0-beta.2] - 2026-10-18
+
+### Gewijzigd
+- Het pdf-blad krijgt de teksten van het pakket mee (`inhoud`), zodat het in de korte versie de regel "eerste lezing" kan tonen.
+
 ## [3.4.0-beta.1] - 2026-10-17
 
 Proefversie. Een generieke zelftest voor bezoekers, met de presentatietest van De Presenteerschool als eerste invulling. De techniek zit in de plugin; de inhoud per label is een testpakket dat in SFP Beheer of via REST wordt ingelezen.

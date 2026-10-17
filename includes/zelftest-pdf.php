@@ -176,6 +176,7 @@ function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
         'deelcode'   => (string) $gegevens['deelcode'],
         'deelbasis'  => sfp_zelftest_adres( $pakket['test'], 'deel' ),
         'taal'       => sfp_zelftest_taal( $pakket ),
+        'inhoud'     => $pakket['inhoud'],
     );
     $kop_html = '<style id="sfp-zt-fonts">' . $fonts . '</style>'
         . '<script>window.sfpZelftestBlad=' . wp_json_encode( $data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT ) . ';</script>'
