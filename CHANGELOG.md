@@ -4,6 +4,26 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.3.0] - 2026-10-17
+
+Snippets van ASE Pro beheren zonder browser. ASE zelf kan dat niet via REST: het posttype staat buiten REST en de opslag van ASE draait alleen in het beheer. Daardoor liet een verwijdering via REST de code doordraaien en draaide een concept soms wel en soms niet.
+
+### Toegevoegd
+- **Onderdeel Snippetbeheer via REST**, standaard uit. Aan te zetten per site in SFP Beheer, Onderdelen. Alleen het serviceaccount `claude-api` met beheerrechten mag de routes gebruiken; andere beheerders krijgen 403, uitgelogd 401.
+- `GET /wp-json/sfp/v1/snippets`: alle snippets met status, aan of uit, of ze echt draaien en of het bestand gelijk is aan de database. Zonder code.
+- `GET /wp-json/sfp/v1/snippets/<id>`: een snippet met code.
+- `POST /wp-json/sfp/v1/snippets`: een PHP-snippet aanmaken (titel, code, hook, waar, prioriteit, beschrijving, status, actief). Een nieuw snippet staat uit tot het wordt aangezet.
+- `POST /wp-json/sfp/v1/snippets/<id>`: een PHP-snippet bijwerken; alleen de meegestuurde velden veranderen.
+- `POST /wp-json/sfp/v1/snippets/<id>/actief` met `aan: true` of `false`.
+- Een opslag doet wat een opslag in de snippet-editor van ASE Pro 9.2.1 doet: code met `<?php`, de opties, het bestand dat ASE uitvoert, de controle van ASE en de lijst actieve snippets. Code met een fout of een functie die al bestaat wordt geweigerd voordat er iets is opgeslagen. Ontbreekt na een update van ASE een onderdeel dat hiervoor nodig is, dan weigeren de routes (503) in plaats van half op te slaan.
+- Test `tests/snippets-wp.php` voor een proefinstallatie met ASE Pro.
+
+### Niet in deze versie
+- Verwijderen, en CSS-, JS- en HTML-snippets bewerken (die zijn wel te lezen).
+
+### Terugdraaien
+- Terug naar 3.2.1: de zip van 3.2.1 uploaden. Snippets die via de routes zijn gemaakt blijven gewone ASE-snippets en blijven werken.
+
 ## [3.2.1] - 2026-10-17
 
 De nameting van 3.2.0 op de acht sites liet zien dat de lijst Onbekend ook opties bevatte die in gebruik zijn. Die waren na bevestiging te verwijderen. Er is niets verwijderd.
