@@ -43,3 +43,11 @@ php tests/sjabloon.php <map> [shortcode,shortcode,...]
 ```
 
 Checks the page check "Sjabloontekst niet ingevuld": only the text a visitor reads counts (no scripts, styles, HTML comments, block attributes, tag attributes or blocks hidden with "Blok verbergen"), shortcodes that only exist for visitors are learned at a front-end visit, and a shortcode that exists nowhere is still reported. With a folder, it lists what the check still reports for each `.html` file of raw post content.
+
+# Autoloaded Options tests (3.2.0)
+
+```sh
+php tests/autoload.php
+```
+
+Checks the analyzer with small WordPress stubs and a fake database: source recognition for removed and inactive plugins, what may be deleted (orphan and unknown) and what never (protected, core, transients, active plugins, WordPress keys), leftovers with autoload off, large options forced to autoload on, the REST data matching the page, the JSON backup and the confirmation list.

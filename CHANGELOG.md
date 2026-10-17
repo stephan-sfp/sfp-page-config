@@ -4,6 +4,28 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.2.0] - 2026-10-17
+
+De analyzer van automatisch geladen opties (SFP Beheer, Onderhoud) herkent, bewaart en verwijdert restanten van verwijderde plugins zonder losse snippets of browserwerk (NET-01). Bij de opruiming van 16-10 weigerde hij 270 van de 391 restanten, omdat hij alleen opties op een vaste lijst als verweesd zag.
+
+### Toegevoegd
+- **Bronherkenning voor plugins die niet meer op het netwerk staan:** Stape (`gtm_server_side_`, `tagging_settings_`), SureMails, WPForms, Convert Pro (`cp_`, `cpro-`), Shortcodes Ultimate (`su_option_`), Google Reviews Widget (`grw_`, `rplg_`), Temporary Login Without Password (`tlwp_`), WooCommerce, Real-Time Find and Replace (`rtafar_`), ACF, VWO, Bit Form, Polylang (`polylang`, `pll_`) en Automatic Translations for Polylang (`atfp`).
+- **Verweesd ook als de plugin nog geinstalleerd is maar niet actief**, zoals Spectra op SwS. Een herkende bron waarvan geen enkele eigenaar actief is, telt als verweesd.
+- **Opties met status Onbekend zijn te verwijderen** na een bevestigingsscherm met de exacte lijst. Beschermde opties, core, transients en opties van actieve plugins blijven geblokkeerd. Verandert de lijst tussen tonen en bevestigen, dan wordt niets verwijderd.
+- **Back-up vooraf:** op het bevestigingsscherm een JSON-download met naam, autoload en de ruwe waarde van elke optie. Safe Cleanup loopt nu ook via dit scherm.
+- **Tabblad Restanten, autoload uit:** verweesde en onbekende opties die niet automatisch laden. Die waren onzichtbaar en dus niet te verwijderen.
+- **Waarschuwing bij opties boven 150 kB die verplicht automatisch laden** (`on` of `yes`), met de knop "Zoals WordPress: auto-off". Dat was de oorzaak van de hoge stand op CVD, DGA en SFP (`astra-settings`).
+- **REST, alleen lezen, alleen voor beheerders:** `GET /wp-json/sfp/v1/autoload` geeft dezelfde tabel als de pagina (totaal, tellingen, per optie naam, grootte, autoload, bron, status, verwijderbaar), plus de grote opties en de restanten met autoload uit. `GET /wp-json/sfp/v1/autoload/export?namen=a,b` geeft de back-up van die opties.
+
+### Gerepareerd
+- Sleutels van WordPress in de database (`nonce_key`, `auth_salt` en verwante), `default_term_*`, `*_children`, `recovery_mode_*` en andere opties die core zelf aanmaakt, gelden als WP Core. Zonder die herkenning zouden ze als Onbekend verwijderbaar zijn.
+
+### Verwijderd
+- De directe Safe Cleanup zonder bevestigingsscherm en back-up.
+
+### Terugdraaien
+- Terug naar 3.1.2: de zip van 3.1.2 uploaden. Er wordt niets omgezet of opgeslagen; de nieuwe REST-routes verdwijnen dan weer.
+
 ## [3.1.2] - 2026-10-13
 
 De controle "Sjabloontekst niet ingevuld" in SFP Beheer gaf vals alarm: op SFP 12 en op DPS 39 pagina's.
