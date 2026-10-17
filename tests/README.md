@@ -59,3 +59,12 @@ SFP_TEST_URL=http://127.0.0.1:8899 wp eval-file wp-content/plugins/sfp-page-conf
 ```
 
 Runs inside a real WordPress (a local test install, never a live site) with ASE Pro and its Code Snippets Manager on, an administrator `claude-api` and a second administrator. Checks access (component off, other administrator, logged out), the checks before saving (syntax, existing functions, own functions on update), create, update, draft, on and off against the file and the active list of ASE, kses leaving the code intact, and reading. With `SFP_TEST_URL` pointing at the same install served over HTTP, it also checks on the front end that the code really runs, changes and stops. Creates its own snippets and removes them at the end.
+
+# Zelftest (3.4.0)
+
+```sh
+SFP_ZT_PAKKET=/pad/naar/pakket wp eval-file wp-content/plugins/sfp-page-config/tests/zelftest-wp.php
+```
+
+Runs inside a real WordPress (a local test install, never a live site) with a test package folder (manifest.json, inhoud.json, motor.js, label.js, blad.html). Reads the package in as test "proeftest" and checks: refusing broken packages and keeping the old version, the previous version, the closed work folder, settings (paths, https webhooks, secrets never returned), rights on the admin routes, the public routes (validation of answers and CRM values, honeypot, session, the same code on a double submit, a new code on a retake, the short version, the limit per e-mail address), the two CRM payloads in test mode with exactly the fields from the build note, resending to a corrected address, the prepared PDF sheet (data, no Google Fonts, colours replaced), retention (PDF removed after the link expires, anonymised after two years) and erasing by e-mail address. Removes its own rows and files at the end. Cloudflare and SureContact are not called.
+
