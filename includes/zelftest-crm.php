@@ -44,7 +44,11 @@ function sfp_zelftest_payload_start( array $rij ) {
         'first_name'      => (string) $rij['voornaam'],
         'test_length'     => (string) $rij['lengte'],
         'lead_source_url' => (string) $rij['lead_source_url'],
-        'newsletter'      => (bool) $rij['nieuwsbrief'],
+        // Als tekst "true" of "false" (Nina 18-10-2026): SureContact maakt van een
+        // boolean "1" of leeg, terwijl het selectveld en A23 de tekst verwachten.
+        // De payload wordt bij elke poging opnieuw gemaakt, dus ook wachtende
+        // verzendingen gaan zo de deur uit.
+        'newsletter'      => ! empty( $rij['nieuwsbrief'] ) ? 'true' : 'false',
     );
 }
 

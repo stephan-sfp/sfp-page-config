@@ -226,6 +226,9 @@ zt_is( isset( $send2['note'], $send2['result_url'], $send2['weakest_pillar'] ) &
 zt_is( array( 'email', 'first_name', 'result_url', 'weakest_pillar', 'tried_before', 'urgency', 'note' ) === array_keys( $send2 ), 'send 2 heeft precies de velden uit sectie 6.2' );
 $send1 = isset( $log[1]['gegevens'] ) ? $log[1]['gegevens'] : array();
 zt_is( array( 'email', 'first_name', 'test_length', 'lead_source_url', 'newsletter' ) === array_keys( $send1 ), 'send 1 heeft precies de velden uit sectie 6.2' );
+zt_is( in_array( $send1['newsletter'], array( 'true', 'false' ), true ), 'send 1: newsletter als tekst true of false' );
+zt_is( 'true' === sfp_zelftest_payload_start( array( 'email' => 'a@b.nl', 'voornaam' => 'A', 'lengte' => 'long', 'lead_source_url' => '', 'nieuwsbrief' => '1' ) )['newsletter'] && 'false' === sfp_zelftest_payload_start( array( 'email' => 'a@b.nl', 'voornaam' => 'A', 'lengte' => 'long', 'lead_source_url' => '', 'nieuwsbrief' => '0' ) )['newsletter'], 'newsletter aangevinkt true, niet aangevinkt false' );
+zt_is( count( array_filter( $send2, function ( $w ) { return ! is_string( $w ); } ) ) === 0 && count( array_filter( sfp_zelftest_payload_afgerond( $rij, sfp_zelftest_pakket( 'proeftest' ) ), function ( $w ) { return ! is_string( $w ); } ) ) === 0, 'send 2: alle waarden zijn tekst' );
 zt_is( false !== strpos( (string) $send2['note'], '39. ' ) && false !== strpos( (string) $send2['note'], $code ), 'notitie met antwoorden en link' );
 
 /* ---------- Opnieuw sturen ---------- */
@@ -287,7 +290,10 @@ $GLOBALS['wp_the_query'] = $GLOBALS['wp_query']; // phpcs:ignore WordPress.WP.Gl
 zt_is( 'proeftest' === sfp_zelftest_pagina_test(), 'testpagina herkend' );
 zt_is( false !== strpos( sfp_zelftest_pagina_sjabloon( 'thema.php' ), 'templates/zelftest-pagina.php' ), 'testpagina krijgt het eigen sjabloon' );
 zt_is( in_array( 'sfp-zt-testpagina', sfp_zelftest_pagina_body_class( array() ), true ), 'klasse op body' );
-zt_is( '' !== sfp_page_config_tekst( 'zelftest_stop' ) && '' !== sfp_page_config_tekst( 'zelftest_sluiten' ), 'teksten van het kruisje' );
+if ( ! did_action( 'wp' ) ) {
+    do_action( 'wp' );
+}
+zt_is( 0 === apply_filters( 'pre_get_rocket_option_remove_unused_css', null ), 'testpagina: geen Remove Unused CSS van WP Rocket' );zt_is( '' !== sfp_page_config_tekst( 'zelftest_stop' ) && '' !== sfp_page_config_tekst( 'zelftest_sluiten' ), 'teksten van het kruisje' );
 wp_delete_post( $zt_pagina, true );
 sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'testpagina' => 0 ) );
 
@@ -335,6 +341,13 @@ zt_is( '' === $anon['email'] && '' === $anon['voornaam'] && null === $anon['code
 zt_is( '01 00:00:00' === substr( (string) $anon['gestart_op'], 8 ) && '1' === (string) $anon['geanonimiseerd'], 'na 2 jaar: tijden naar de maand, rij gemarkeerd' );
 zt_is( '' !== (string) $anon['antwoorden'] && '' !== (string) $anon['uitkomst'], 'na 2 jaar: antwoorden en uitkomst blijven' );
 zt_is( ! isset( sfp_zelftest_json( $anon, 'uitkomst' )['notitie'] ) && isset( sfp_zelftest_json( $anon, 'uitkomst' )['crm'] ), 'na 2 jaar: notitie weg, CRM-velden blijven' );
+
+/* ---------- Bestandsnaam van de pdf (3.5.2) ---------- */
+$bn = sfp_zelftest_pdf_bestandsnaam( array( 'test' => 'dps', 'manifest' => array( 'code_voorvoegsel' => 'DPS', 'naam' => 'Presentatietest' ) ), 'DPS-8H02-ZW6N-Y9R7' );
+zt_is( "DPS \u{2022} Presentatietest \u{2022} 8H02-ZW6N-Y9R7.pdf" === $bn['utf8'], 'pdf-naam met punten en code zonder voorvoegsel' );
+zt_is( 'DPS - Presentatietest - 8H02-ZW6N-Y9R7.pdf' === $bn['ascii'], 'gewone reservenaam' );
+$bn2 = sfp_zelftest_pdf_bestandsnaam( array( 'test' => 'x', 'manifest' => array( 'code_voorvoegsel' => 'X', 'naam' => 'Teste "a"; b/c' ) ), 'X-AAAA-BBBB-CCCC' );
+zt_is( false === strpbrk( $bn2['utf8'] . $bn2['ascii'], "\";/\\\r\n" ), 'geen tekens die de kop of de naam breken' );
 
 /* ---------- Wissen ---------- */
 zt_is( sfp_zelftest_wis_email( 'proef@example.com' ) >= 1, 'wissen op e-mailadres' );

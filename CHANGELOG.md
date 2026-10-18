@@ -42,6 +42,63 @@ Eerste deel van de vormen pijler, begrip en tool (SwS als voorbeeldsite): wat de
 
 ### Gewijzigd
 - **Scheidingsbolletjes in de kopkaart (K32):** elk onderdeel heeft een bolletje en de strook links is weggeknipt, zodat een regel nooit met een bolletje begint, ook als de regel ergens anders breekt. Vervangt het vaste breekpunt.
+## [3.5.10] - 2026-10-18
+
+### Gewijzigd
+- Zelftest: het overzicht van de antwoorden is ingeklapt, zodat het scherm op één scherm past. "Bekijk je antwoorden (n)" klapt de lijst open; na het wijzigen van een antwoord blijft hij open. Tekst voor de knop uit het testpakket (`module.overzicht_open`).
+
+## [3.5.9] - 2026-10-18
+
+### Gerepareerd
+- Zelftest, verzending 1 naar SureContact: `newsletter` gaat als tekst "true" of "false" mee in plaats van als boolean. SureContact maakte van true een "1", waardoor A23 de nieuwsbrieftag nooit zette (melding Nina). Ook wachtende verzendingen gaan zo de deur uit; verzending 2 had al alleen tekst.
+
+### Toegevoegd
+- Zelftest: na de laatste vraag een overzicht van alle vragen met je antwoord. Tik op een vraag om hem te wijzigen; daarna terug naar het overzicht, en dan "Naar mijn resultaat". Teksten uit het testpakket (`module.overzicht_*`); zonder die teksten gaat de test zoals eerder direct naar het resultaat.
+- Zelftest: de terugknop van de browser gaat tijdens de test naar het vorige scherm (vraag, uitleg, start) in plaats van de pagina te verlaten. Op het eindscherm blijft hij op het eindscherm, omdat het resultaat dan al verstuurd is.
+
+### Gewijzigd
+- Zelftest op de telefoon: meer witruimte op het startscherm en het uitlegscherm, ruimere binnenmarge in het blok "Zo werkt de test". De ruimte onder de kop van de uitleg werkte niet door een algemene regel; gerepareerd.
+
+## [3.5.8] - 2026-10-18
+
+### Gerepareerd
+- Zelftest op de telefoon: de ruimte tussen de startknop en de duur eronder werkt nu echt. In 3.5.5 en 3.5.6 zette een algemene regel de marge op nul.
+
+## [3.5.7] - 2026-10-18
+
+### Gewijzigd
+- Zelftest op een liggende telefoon: het startscherm in twee kolommen (tekst links, formulier met één knop rechts), zonder de drie punten, met een lagere balk die niet meeschuift. Past op een iPhone Pro Max liggend in één scherm.
+
+## [3.5.6] - 2026-10-18
+
+### Gewijzigd
+- Zelftest op de telefoon: meer ruimte tussen de startknop en de duur eronder.
+
+## [3.5.5] - 2026-10-18
+
+### Gewijzigd
+- Zelftest, startscherm op de telefoon: geen keuzekaarten meer maar één knop met de duur eronder en een tekstlink naar de andere versie (teksten uit het testpakket, `start.mobiel`). Meer witruimte, geen lijn tussen tekst en formulier, kleinere privacyregel. Op de computer blijven de kaarten.
+
+## [3.5.4] - 2026-10-18
+
+### Gewijzigd
+- Testpagina zelftest: WP Rocket maakt er geen eigen kopie van de gebruikte opmaak meer (Remove Unused CSS uit voor alleen deze pagina). Een nieuwe opmaak van de test is daardoor na een release direct zichtbaar, zonder die kopie te legen.
+
+## [3.5.3] - 2026-10-18
+
+### Gewijzigd
+- Testpagina: geen lijn meer onder de balk met logo en kruisje.
+
+## [3.5.2] - 2026-10-18
+
+### Toegevoegd
+- Zelftest: een uitlegscherm tussen het startscherm en vraag 1 ("Zo werkt de test"), met de voornaam in de kop. Teksten uit het testpakket (`start.uitleg`); zonder die teksten blijft de uitleg boven vraag 1 zoals eerder.
+- Zelftest: een overgang naar het resultaat met stappen die na elkaar oplichten (`module.laden` in het testpakket), samen ongeveer vier seconden. Bij minder beweging (systeeminstelling) korter en zonder draaiend icoon.
+- Testpagina: het logo mag een SVG zijn (scherp op elke grootte).
+
+### Gewijzigd
+- Zelftest: na de knop op het startscherm staat het volgende scherm er meteen. De start gaat op de achtergrond naar de site; het afronden wacht daarop. Mislukt de start, dan terug naar het startscherm met de melding.
+- Zelftest: de pdf heet "DPS • Presentatietest • 8H02-ZW6N-Y9R7.pdf" (voorvoegsel en naam uit het manifest, de code zonder voorvoegsel), met een gewone reservenaam voor oudere programma's.
 
 ## [3.5.1] - 2026-10-18
 

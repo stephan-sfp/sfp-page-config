@@ -63,6 +63,16 @@
 .sfp-zt-avg{font-size:14px;line-height:1.55;color:var(--sfp-b-body)}
 .sfp-zt-foutmelding{color:var(--zt-fout);font-size:14.5px}
 @media (max-width:640px){.sfp-zt-keuzes{grid-template-columns:1fr}}
+/* Telefoon: één knop, de duur eronder en een tekstlink naar de andere versie (sinds 3.5.5). */
+.sfp-zt-mob{display:none}
+.sfp-zt .sfp-zt-mob-tijd{margin:14px 0 0;text-align:center;font-size:14px;color:var(--sfp-b-body)}
+.sfp-zt .sfp-zt-mob-ander{align-self:center;margin:18px 0 0;padding:6px 4px;background:none;border:0;box-shadow:none;min-height:0;font:400 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-transform:none;letter-spacing:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.sfp-zt .sfp-zt-mob-ander::after{content:" \2192";display:inline-block;margin-left:6px;text-decoration:none}
+.sfp-zt .sfp-zt-mob-ander:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+@media (max-width:640px){
+.sfp-zt-keuzes.heeft-mob{display:none}
+.sfp-zt-mob{display:flex;flex-direction:column;margin-top:14px}
+}
 
 /* Vragen */
 .sfp-zt-vraagkop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
@@ -88,6 +98,23 @@
 .sfp-zt .sfp-zt-terug::before{content:"\2190";display:inline-block;margin-right:6px;text-decoration:none}
 .sfp-zt .sfp-zt-terug:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 @media (prefers-reduced-motion:reduce){.sfp-zt-voortgang b{transition:none}}
+
+/* Uitleg voor vraag 1 (sinds 3.5.2) */
+.sfp-zt .sfp-zt-uitleg-sub{margin:12px 0 0;font-size:19px;line-height:1.5;color:var(--sfp-b-primair)}
+.sfp-zt-uitleg-blok{display:flex;flex-direction:column;gap:12px;padding:22px 24px;background:var(--sfp-b-tint3);border-left:5px solid var(--sfp-b-secundair);border-radius:0 var(--sfp-b-r-knop) var(--sfp-b-r-knop) 0}
+.sfp-zt-uitleg-blok p{margin:0;font-size:17px;line-height:1.6;color:var(--sfp-b-primair)}
+.sfp-zt .sfp-zt-uitleg-blok .sfp-zt-uitleg-titel{font:900 15px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.05em}
+
+/* Overgang naar het resultaat (sinds 3.5.2) */
+.sfp-zt .sfp-zt-stappen{list-style:none;margin:0 auto;padding:0;display:flex;flex-direction:column;gap:16px;width:max-content;max-width:100%}
+.sfp-zt-stappen li{display:flex;align-items:center;gap:14px;margin:0;font:400 19px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);opacity:.35;transition:opacity .3s}
+.sfp-zt-stappen li.bezig,.sfp-zt-stappen li.klaar{opacity:1}
+.sfp-zt-stapicoon{flex:none;position:relative;width:26px;height:26px;border-radius:50%;border:2.5px solid var(--sfp-b-tint1);box-sizing:border-box}
+.sfp-zt-stappen li.bezig .sfp-zt-stapicoon{border-color:var(--sfp-b-tint1);border-top-color:var(--sfp-b-secundair);animation:sfp-zt-draai .8s linear infinite}
+.sfp-zt-stappen li.klaar .sfp-zt-stapicoon{border-color:var(--sfp-b-secundair);background:var(--sfp-b-secundair)}
+.sfp-zt-stappen li.klaar .sfp-zt-stapicoon::after{content:"";position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid var(--sfp-b-wit);border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+@keyframes sfp-zt-draai{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sfp-zt-stappen li.bezig .sfp-zt-stapicoon{animation:none;border-color:var(--sfp-b-secundair)}.sfp-zt-stappen li{transition:none}}
 
 /* Eindscherm (opbouw van het label: balken, regels, punten, profiel) */
 .sfp-zt-res{gap:26px}
@@ -148,9 +175,11 @@
 body.sfp-zt-testpagina{margin:0;min-height:100vh;background:var(--sfp-b-wit,#fff)}
 /* Een site kan html een merkkleur geven (DPS: --brand-main); onder een korte testpagina blijft het wit. */
 html:has(body.sfp-zt-testpagina){background:var(--sfp-b-wit,#fff)}
-.sfp-zt-top{position:sticky;top:0;z-index:50;background:var(--sfp-b-wit,#fff);border-bottom:1px solid color-mix(in srgb,var(--sfp-b-primair) 14%,transparent)}
+.sfp-zt-top{position:sticky;top:0;z-index:50;background:var(--sfp-b-wit,#fff)}
 .sfp-zt-top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1248px;margin:0 auto;padding:10px 24px;min-height:64px}
 .sfp-zt-top-logo{display:block;height:auto;max-height:44px;width:auto;max-width:60vw}
+.sfp-zt-top-logo-svg{height:44px}
+@media (max-width:640px){.sfp-zt-top-logo-svg{height:38px}}
 .sfp-zt-top-naam{font:900 16px/1.2 var(--sfp-b-kop);color:var(--sfp-b-primair);text-transform:uppercase;letter-spacing:.04em}
 .sfp-zt-sluit{display:inline-flex;align-items:center;justify-content:center;flex:none;width:48px;height:48px;margin:0 -8px 0 0;padding:0;border:0;border-radius:50%;background:transparent;color:var(--sfp-b-primair);cursor:pointer;box-shadow:none}
 .sfp-zt-sluit:hover{background:var(--sfp-b-tint3);color:var(--sfp-b-primair)}
@@ -200,13 +229,18 @@ body.sfp-zt-testpagina .sfp-zt-scherm{gap:14px}
 body.sfp-zt-testpagina .sfp-zt-opties{gap:8px}
 body.sfp-zt-testpagina .sfp-zt-optie{padding:10px 12px}
 .sfp-zt-top-in{min-height:56px;padding:8px 16px}
+/* Meer lucht op de telefoon (18-10-2026, sinds 3.5.5): geen lijn tussen tekst en formulier, ruimere afstanden, privacyregel kleiner. */
+body.sfp-zt-testpagina .sfp-zt-start{gap:28px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{border-top:0;padding-top:0;gap:14px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-avg{font-size:13px;margin-top:10px}
 .sfp-zt-top-logo{max-height:38px}
 }
 /* Keuzekaarten op de testpagina: gelijke tekst en gelijke knoppen. */
 body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2,body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2 b{font-size:15px;line-height:1.5;font-weight:400;color:var(--sfp-b-body)}
 body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-knop{min-height:52px;padding:10px 14px;font-size:15px;letter-spacing:.02em;white-space:nowrap}
 /* Vraagschermen op de testpagina (besluit 18-10-2026): een kolom van 760 px, midden op het scherm. */
-body.sfp-zt-testpagina .sfp-zt[data-scherm="vraag"] .sfp-zt-wrap{max-width:760px}
+body.sfp-zt-testpagina .sfp-zt[data-scherm="vraag"] .sfp-zt-wrap,body.sfp-zt-testpagina .sfp-zt[data-scherm="uitleg"] .sfp-zt-wrap,body.sfp-zt-testpagina .sfp-zt[data-scherm="laden"] .sfp-zt-wrap{max-width:760px}
+@media (max-width:640px){.sfp-zt-uitleg-blok{padding:16px 16px}.sfp-zt-uitleg-blok p{font-size:16px}.sfp-zt-uitleg-sub{font-size:17px}.sfp-zt-stappen li{font-size:17px}}
 body.sfp-zt-testpagina .sfp-zt[data-scherm="vraag"] .sfp-zt-vraag{font-size:clamp(20px,1.2vw + 14px,26px);line-height:1.35}
 /* Elk scherm staat verticaal in het midden van wat onder de balk overblijft (besluit 18-10-2026). */
 body.sfp-zt-testpagina{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
@@ -218,3 +252,59 @@ body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud>.sfp-zt{width:100%}
 .sfp-zt-kaartje.hoofd{border-width:2.5px}
 body.sfp-zt-testpagina .sfp-zt-kaartje.hoofd{padding:15px}
 @media (max-width:640px){body.sfp-zt-testpagina .sfp-zt-kaartje.hoofd{padding:11px 13px}}
+/* Telefoon liggend (18-10-2026, sinds 3.5.7): weinig hoogte. De rustige telefoonopbouw (één knop, geen punten), in twee kolommen: tekst links, formulier rechts. */
+@media (orientation:landscape) and (max-height:520px){
+.sfp-zt-top{position:static}
+.sfp-zt-top-in{min-height:48px;padding:6px 24px}
+.sfp-zt-top-logo{max-height:34px}
+.sfp-zt-top-logo-svg{height:34px}
+body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud{padding:12px 24px 24px}
+body.sfp-zt-testpagina .sfp-zt-scherm{gap:14px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-lijstkop,body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-lijst,body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2{display:none}
+body.sfp-zt-testpagina .sfp-zt-start{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 40px;align-items:center}
+body.sfp-zt-testpagina .sfp-zt-start>.sfp-zt-foutmelding{grid-column:1/-1}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-h1{font-size:clamp(24px,3.2vw,32px)}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-intro p{font-size:17px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{border-top:0;padding-top:0;gap:10px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-avg{font-size:13px;margin-top:4px}
+.sfp-zt-keuzes.heeft-mob{display:none}
+.sfp-zt-mob{display:flex;flex-direction:column;margin-top:6px}
+.sfp-zt .sfp-zt-mob-ander{margin-top:10px}
+body.sfp-zt-testpagina .sfp-zt-opties{gap:8px}
+body.sfp-zt-testpagina .sfp-zt-optie{padding:10px 12px}
+}
+/* Overzicht van de antwoorden voor het versturen (sinds 3.5.9). */
+.sfp-zt .sfp-zt-ov-lijst{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;max-height:min(56vh,520px);overflow-y:auto;padding-right:4px}
+.sfp-zt-ov-lijst li{margin:0}
+.sfp-zt .sfp-zt-ov-rij{display:flex;gap:14px;align-items:flex-start;width:100%;margin:0;padding:12px 14px;text-align:left;background:var(--sfp-b-wit);border:1.5px solid var(--zt-lijn);border-radius:var(--sfp-b-r-knop);color:var(--sfp-b-primair);font:400 15px/1.45 var(--sfp-b-tekst);text-transform:none;letter-spacing:0;min-height:0;box-shadow:none;cursor:pointer}
+.sfp-zt .sfp-zt-ov-rij:hover{background:var(--sfp-b-tint3);border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
+.sfp-zt-ov-nr{flex:none;min-width:24px;font:900 14px/1.45 var(--sfp-b-kop);color:var(--sfp-b-secundair);font-variant-numeric:tabular-nums}
+.sfp-zt-ov-tekst{display:flex;flex-direction:column;gap:4px;min-width:0}
+.sfp-zt-ov-vraag{font-size:14px;color:var(--sfp-b-body)}
+.sfp-zt-ov-antw{font-size:15.5px;color:var(--sfp-b-primair)}
+body.sfp-zt-testpagina .sfp-zt[data-scherm="overzicht"] .sfp-zt-wrap{max-width:760px}
+#sfp-zt-ovkop:focus{outline:none}
+/* Meer witruimte op de telefoon (18-10-2026, sinds 3.5.9): startscherm en uitleg ademen meer, het uitlegblok krijgt ruimere binnenmarge. */
+@media (max-width:640px){
+body.sfp-zt-testpagina .sfp-zt-start{gap:40px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-start-tekst{gap:20px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{gap:16px}
+.sfp-zt-mob{margin-top:22px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-avg{margin-top:22px}
+body.sfp-zt-testpagina .sfp-zt-uitleg{gap:28px}
+.sfp-zt .sfp-zt-uitleg-sub{margin-top:14px;line-height:1.5}
+.sfp-zt-uitleg-blok{padding:24px 22px 26px;gap:16px}
+.sfp-zt-uitleg-blok p{line-height:1.7}
+body.sfp-zt-testpagina .sfp-zt-uitleg .sfp-zt-vraagvoet{margin-top:10px}
+body.sfp-zt-testpagina .sfp-zt-overzicht{gap:22px}
+.sfp-zt .sfp-zt-ov-lijst{max-height:none;overflow:visible}
+}
+/* Overzicht ingeklapt (sinds 3.5.10). */
+.sfp-zt-ov{border-top:1px solid var(--zt-lijn);border-bottom:1px solid var(--zt-lijn)}
+.sfp-zt-ov summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 2px;cursor:pointer;list-style:none;font:400 17px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair)}
+.sfp-zt-ov summary::-webkit-details-marker{display:none}
+.sfp-zt-ov summary::after{content:"";flex:none;width:10px;height:10px;border:solid var(--sfp-b-primair);border-width:0 2px 2px 0;transform:rotate(45deg);margin:-4px 6px 0 0;transition:transform .2s}
+.sfp-zt-ov[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.sfp-zt-ov summary:focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:2px}
+.sfp-zt-ov .sfp-zt-ov-lijst{margin:0 0 16px}
+@media (prefers-reduced-motion:reduce){.sfp-zt-ov summary::after{transition:none}}
