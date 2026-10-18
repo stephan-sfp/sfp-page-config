@@ -827,7 +827,8 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     $pijler = function_exists( 'sfp_page_config_vorm' ) && 'pijler' === sfp_page_config_vorm( $post );
     $thermo = $pijler && function_exists( 'sfp_page_config_thermometer' ) ? sfp_page_config_thermometer() : null;
     if ( $thermo ) {
-        $acties  .= $knop( 'sfp-art-paneel-thermo', 'thermo', esc_html( sprintf( $t( 'thermo_n' ), count( $thermo['stellingen'] ) ) ), esc_html( $t( 'thermo' ) ) );
+        // Vooraan in de rij, links van Delen (wens Stephan 19-10-2026).
+        $acties   = $knop( 'sfp-art-paneel-thermo', 'thermo', esc_html( sprintf( $t( 'thermo_n' ), count( $thermo['stellingen'] ) ) ), esc_html( $t( 'thermo' ) ) ) . $acties;
         $panelen .= sfp_page_config_thermometer_paneel( $thermo, $hoofdstukken );
     }
 
