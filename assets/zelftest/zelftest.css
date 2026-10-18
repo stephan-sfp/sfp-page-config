@@ -100,7 +100,7 @@
 @media (prefers-reduced-motion:reduce){.sfp-zt-voortgang b{transition:none}}
 
 /* Uitleg voor vraag 1 (sinds 3.5.2) */
-.sfp-zt-uitleg-sub{margin:10px 0 0;font-size:19px;line-height:1.5;color:var(--sfp-b-primair)}
+.sfp-zt .sfp-zt-uitleg-sub{margin:12px 0 0;font-size:19px;line-height:1.5;color:var(--sfp-b-primair)}
 .sfp-zt-uitleg-blok{display:flex;flex-direction:column;gap:12px;padding:22px 24px;background:var(--sfp-b-tint3);border-left:5px solid var(--sfp-b-secundair);border-radius:0 var(--sfp-b-r-knop) var(--sfp-b-r-knop) 0}
 .sfp-zt-uitleg-blok p{margin:0;font-size:17px;line-height:1.6;color:var(--sfp-b-primair)}
 .sfp-zt .sfp-zt-uitleg-blok .sfp-zt-uitleg-titel{font:900 15px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.05em}
@@ -272,4 +272,30 @@ body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-avg{font-size:13px;margin-top:4px}
 .sfp-zt .sfp-zt-mob-ander{margin-top:10px}
 body.sfp-zt-testpagina .sfp-zt-opties{gap:8px}
 body.sfp-zt-testpagina .sfp-zt-optie{padding:10px 12px}
+}
+/* Overzicht van de antwoorden voor het versturen (sinds 3.5.9). */
+.sfp-zt .sfp-zt-ov-lijst{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;max-height:min(56vh,520px);overflow-y:auto;padding-right:4px}
+.sfp-zt-ov-lijst li{margin:0}
+.sfp-zt .sfp-zt-ov-rij{display:flex;gap:14px;align-items:flex-start;width:100%;margin:0;padding:12px 14px;text-align:left;background:var(--sfp-b-wit);border:1.5px solid var(--zt-lijn);border-radius:var(--sfp-b-r-knop);color:var(--sfp-b-primair);font:400 15px/1.45 var(--sfp-b-tekst);text-transform:none;letter-spacing:0;min-height:0;box-shadow:none;cursor:pointer}
+.sfp-zt .sfp-zt-ov-rij:hover{background:var(--sfp-b-tint3);border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
+.sfp-zt-ov-nr{flex:none;min-width:24px;font:900 14px/1.45 var(--sfp-b-kop);color:var(--sfp-b-secundair);font-variant-numeric:tabular-nums}
+.sfp-zt-ov-tekst{display:flex;flex-direction:column;gap:4px;min-width:0}
+.sfp-zt-ov-vraag{font-size:14px;color:var(--sfp-b-body)}
+.sfp-zt-ov-antw{font-size:15.5px;color:var(--sfp-b-primair)}
+body.sfp-zt-testpagina .sfp-zt[data-scherm="overzicht"] .sfp-zt-wrap{max-width:760px}
+#sfp-zt-ovkop:focus{outline:none}
+/* Meer witruimte op de telefoon (18-10-2026, sinds 3.5.9): startscherm en uitleg ademen meer, het uitlegblok krijgt ruimere binnenmarge. */
+@media (max-width:640px){
+body.sfp-zt-testpagina .sfp-zt-start{gap:40px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-start-tekst{gap:20px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{gap:16px}
+.sfp-zt-mob{margin-top:22px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-avg{margin-top:22px}
+body.sfp-zt-testpagina .sfp-zt-uitleg{gap:28px}
+.sfp-zt .sfp-zt-uitleg-sub{margin-top:14px;line-height:1.5}
+.sfp-zt-uitleg-blok{padding:24px 22px 26px;gap:16px}
+.sfp-zt-uitleg-blok p{line-height:1.7}
+body.sfp-zt-testpagina .sfp-zt-uitleg .sfp-zt-vraagvoet{margin-top:10px}
+body.sfp-zt-testpagina .sfp-zt-overzicht{gap:22px}
+.sfp-zt .sfp-zt-ov-lijst{max-height:none;overflow:visible}
 }

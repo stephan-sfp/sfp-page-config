@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.9] - 2026-10-18
+
+### Gerepareerd
+- Zelftest, verzending 1 naar SureContact: `newsletter` gaat als tekst "true" of "false" mee in plaats van als boolean. SureContact maakte van true een "1", waardoor A23 de nieuwsbrieftag nooit zette (melding Nina). Ook wachtende verzendingen gaan zo de deur uit; verzending 2 had al alleen tekst.
+
+### Toegevoegd
+- Zelftest: na de laatste vraag een overzicht van alle vragen met je antwoord. Tik op een vraag om hem te wijzigen; daarna terug naar het overzicht, en dan "Naar mijn resultaat". Teksten uit het testpakket (`module.overzicht_*`); zonder die teksten gaat de test zoals eerder direct naar het resultaat.
+- Zelftest: de terugknop van de browser gaat tijdens de test naar het vorige scherm (vraag, uitleg, start) in plaats van de pagina te verlaten. Op het eindscherm blijft hij op het eindscherm, omdat het resultaat dan al verstuurd is.
+
+### Gewijzigd
+- Zelftest op de telefoon: meer witruimte op het startscherm en het uitlegscherm, ruimere binnenmarge in het blok "Zo werkt de test". De ruimte onder de kop van de uitleg werkte niet door een algemene regel; gerepareerd.
+
 ## [3.5.8] - 2026-10-18
 
 ### Gerepareerd

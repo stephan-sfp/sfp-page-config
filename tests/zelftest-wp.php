@@ -226,6 +226,9 @@ zt_is( isset( $send2['note'], $send2['result_url'], $send2['weakest_pillar'] ) &
 zt_is( array( 'email', 'first_name', 'result_url', 'weakest_pillar', 'tried_before', 'urgency', 'note' ) === array_keys( $send2 ), 'send 2 heeft precies de velden uit sectie 6.2' );
 $send1 = isset( $log[1]['gegevens'] ) ? $log[1]['gegevens'] : array();
 zt_is( array( 'email', 'first_name', 'test_length', 'lead_source_url', 'newsletter' ) === array_keys( $send1 ), 'send 1 heeft precies de velden uit sectie 6.2' );
+zt_is( in_array( $send1['newsletter'], array( 'true', 'false' ), true ), 'send 1: newsletter als tekst true of false' );
+zt_is( 'true' === sfp_zelftest_payload_start( array( 'email' => 'a@b.nl', 'voornaam' => 'A', 'lengte' => 'long', 'lead_source_url' => '', 'nieuwsbrief' => '1' ) )['newsletter'] && 'false' === sfp_zelftest_payload_start( array( 'email' => 'a@b.nl', 'voornaam' => 'A', 'lengte' => 'long', 'lead_source_url' => '', 'nieuwsbrief' => '0' ) )['newsletter'], 'newsletter aangevinkt true, niet aangevinkt false' );
+zt_is( count( array_filter( $send2, function ( $w ) { return ! is_string( $w ); } ) ) === 0 && count( array_filter( sfp_zelftest_payload_afgerond( $rij, sfp_zelftest_pakket( 'proeftest' ) ), function ( $w ) { return ! is_string( $w ); } ) ) === 0, 'send 2: alle waarden zijn tekst' );
 zt_is( false !== strpos( (string) $send2['note'], '39. ' ) && false !== strpos( (string) $send2['note'], $code ), 'notitie met antwoorden en link' );
 
 /* ---------- Opnieuw sturen ---------- */
