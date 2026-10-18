@@ -253,7 +253,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-gids__pijlen button:is(:hover,:focus):not(:disabled){border-color:var(--sfp-b-primair)}
 :root .sfp-gids__pijlen button:disabled{opacity:.35;cursor:default}
 .sfp-gids__pijlen svg{width:16px;height:16px}
-:root .sfp-gids__knop{display:none;align-items:center;gap:6px;margin-left:auto;min-height:44px;font-weight:700;font-size:14px;color:var(--sfp-b-primair)}
+:root .sfp-artikel .sfp-gids__knop{display:none;align-items:center;gap:6px;margin-left:auto;min-height:44px;font-weight:700;font-size:14px;color:var(--sfp-b-primair)}
 .sfp-gids__knop svg{width:14px;height:14px;transition:transform .15s}
 .sfp-gids__knop[aria-expanded=true] svg{transform:rotate(180deg)}
 @media (max-width:600px){
@@ -263,7 +263,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
   .sfp-gids__kop{align-items:center;flex-wrap:nowrap}
   .sfp-gids__kop small{white-space:nowrap}
   .sfp-gids__kop .sfp-blok-label{white-space:nowrap}
-  :root .sfp-gids__knop{display:inline-flex}
+  :root .sfp-artikel .sfp-gids__knop{display:inline-flex}
   .sfp-gids:not(.is-open) .sfp-gids__inhoud{display:none}
   .sfp-gids__teller,.sfp-gids__pijlen{display:none}
   .sfp-gids__lijst{grid-template-columns:1fr;gap:0}
