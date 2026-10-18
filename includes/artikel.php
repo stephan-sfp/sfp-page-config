@@ -1062,21 +1062,28 @@ function sfp_page_config_artikel_render( $post ) {
     $vervolg = trim( (string) ob_get_clean() );
 
     $affiliate = function_exists( 'sfp_page_config_affiliate_uitleg' ) ? sfp_page_config_affiliate_uitleg( $post ) : '';
-    $zij       = sfp_page_config_artikel_zijkolom( $post, $hoofdstukken );
+    // Een begrip is geen artikel: geen kopkaart, inhoudsopgave, hoofdstukbalk
+    // of auteurskaart; de maker staat in de definitie (vorm Begrip, 3.7.0).
+    $begrip    = function_exists( 'sfp_page_config_is_begrip' ) && sfp_page_config_is_begrip( $post );
+    $zij       = $begrip ? sfp_page_config_artikel_promokaart( 'zij', $post ) : sfp_page_config_artikel_zijkolom( $post, $hoofdstukken );
+    if ( $begrip && '' !== $zij ) {
+        $zij = '<aside class="sfp-artikel__zij" aria-label="' . esc_attr( sfp_page_config_artikel_tekst( 'zij_label' ) ) . '">' . $zij . '</aside>';
+    }
 
-    $html  = '<article id="post-' . (int) $post->ID . '" class="' . esc_attr( implode( ' ', get_post_class( 'sfp-artikel' . ( '' === $zij ? ' sfp-artikel--zonder-zij' : '' ), $post ) ) ) . '">';
+    $html  = '<article id="post-' . (int) $post->ID . '" class="' . esc_attr( implode( ' ', get_post_class( 'sfp-artikel' . ( $begrip ? ' sfp-artikel--begrip' : '' ) . ( '' === $zij ? ' sfp-artikel--zonder-zij' : '' ), $post ) ) ) . '">';
     $html .= '<div class="sfp-artikel__raster"><div class="sfp-artikel__kolom">';
-    $html .= sfp_page_config_artikel_pijlerregel( $post );
+    $html .= $begrip ? sfp_page_config_begrip_pijlerregel( $post ) : sfp_page_config_artikel_pijlerregel( $post );
     $titel = get_the_title( $post );
     $html .= '<h1 class="entry-title sfp-art-titel">' . ( function_exists( 'sfp_page_config_leestekens' ) ? sfp_page_config_leestekens( $titel, true ) : $titel ) . '</h1>';
-    $html .= sfp_page_config_artikel_kopkaart( $post, $hoofdstukken );
+    $html .= $begrip ? '' : sfp_page_config_artikel_kopkaart( $post, $hoofdstukken );
     $html .= '<div class="entry-content clear sfp-art-inhoud">' . $inhoud . '</div>';
     $html .= $affiliate;
+    $html .= $begrip ? sfp_page_config_begrip_leesverder( $post ) : '';
     $html .= '' !== $vervolg ? '<div class="sfp-art-vervolg">' . $vervolg . '</div>' : '';
-    $html .= sfp_page_config_artikel_auteurskaart( $post );
+    $html .= $begrip ? '' : sfp_page_config_artikel_auteurskaart( $post );
     $html .= sfp_page_config_artikel_voetregels( $post );
     $html .= '</div>' . $zij . '</div></article>';
-    $html .= sfp_page_config_artikel_balk( $hoofdstukken );
+    $html .= $begrip ? '' : sfp_page_config_artikel_balk( $hoofdstukken );
 
     return $html;
 }

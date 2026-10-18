@@ -528,6 +528,76 @@
 		);
 	} );
 
+	/* sfp/definitie en sfp/in-een-talk: alleen bij een begrip in de blokkenlijst (ontwerpregel 4). */
+	var bijBegrip = 'begrippen' === window.typenow;
+	function blokBegrip( naam, edit ) {
+		var bestaand = wp.blocks.getBlockType( naam );
+		if ( bestaand ) {
+			wp.blocks.unregisterBlockType( naam );
+		}
+		wp.blocks.registerBlockType( naam, {
+			apiVersion: 3,
+			edit: edit,
+			save: function () { return null; },
+			supports: { html: false, className: true, customClassName: true, inserter: bijBegrip },
+		} );
+	}
+	var DEFINITIE_TEKENS = 160;
+	function woorden( html ) {
+		var d = document.createElement( 'div' );
+		d.innerHTML = html && html.toString ? html.toString() : String( html || '' );
+		var t = ( d.textContent || '' ).trim();
+		return t ? t.split( /\s+/ ).length : 0;
+	}
+	blokBegrip( 'sfp/definitie', function ( props ) {
+		var a = props.attributes;
+		var zet = function ( sleutel ) { return function ( v ) { var n = {}; n[ sleutel ] = v; props.setAttributes( n ); }; };
+		var n = tekens( a.zin );
+		var w = woorden( a.zin );
+		var teLang = n > DEFINITIE_TEKENS || w > 30;
+		var titel = wp.data.select( 'core/editor' ) ? ( wp.data.select( 'core/editor' ).getEditedPostAttribute( 'title' ) || '' ) : '';
+		var begin = titel && a.zin ? ( function () { var d = document.createElement( 'div' ); d.innerHTML = a.zin; return ( d.textContent || '' ).trim().toLowerCase().replace( /^(the|a|an|de|het|een)\s+/, '' ).indexOf( titel.trim().toLowerCase() ) === 0; } )() : true;
+		var blockProps = useBlockProps( { className: 'sfp-definitie' } );
+		var vak = function ( sleutel, label, hint ) {
+			return el( 'div', { key: sleutel },
+				el( 'dt', null, label ),
+				el( 'dd', null,
+					el( RichText, { tagName: 'span', value: a[ sleutel ], placeholder: hint, allowedFormats: [ 'core/italic', 'core/bold' ], onChange: zet( sleutel ) } ),
+					el( RichText, { tagName: 'small', value: a[ sleutel + '2' ], placeholder: 'Tweede regel (mag leeg)', allowedFormats: [ 'core/italic' ], onChange: zet( sleutel + '2' ) } )
+				)
+			);
+		};
+		return el( Fragment, null,
+			paneel( 'Definitie', [
+				uitleg( 'Eén zin die met de term begint, 15 tot 30 woorden en hoogstens 160 tekens. Deze zin staat ook in de begrippenlijst, als tooltip in artikelen en in de gegevens voor Google. Een leeg feitenvak verschijnt niet.' ),
+			] ),
+			el( 'div', blockProps,
+				el( 'span', { className: 'sfp-blok-label' }, t( 'definitie', 'Definition' ) ),
+				el( RichText, { tagName: 'p', className: 'sfp-definitie__zin', value: a.zin, placeholder: ( titel || 'De term' ) + ' is ...', allowedFormats: [ 'core/italic', 'core/bold' ], onChange: zet( 'zin' ) } ),
+				teller( w + ' woorden · ' + n + ' van ' + DEFINITIE_TEKENS + ' tekens' + ( teLang ? ' · te lang' : '' ) + ( ! begin ? ' · begint niet met de term' : '' ), teLang || ! begin ),
+				el( RichText, { tagName: 'p', className: 'sfp-definitie__uitleg', value: a.uitleg, placeholder: 'Uitleg in hoogstens twee zinnen', allowedFormats: [ 'core/italic', 'core/bold', 'core/link' ], onChange: zet( 'uitleg' ) } ),
+				el( 'dl', { className: 'sfp-definitie__feiten' },
+					vak( 'ook', t( 'ook_wel', 'Also called' ), 'Andere naam' ),
+					vak( 'herkomst', t( 'herkomst', 'Origin' ), 'Herkomst van het woord' ),
+					vak( 'eerst', t( 'eerst_beschreven', 'First described' ), 'Wie, waar' ),
+					vak( 'deel', t( 'deel_van', 'Part of' ), 'Waar het bij hoort' )
+				)
+			)
+		);
+	} );
+	blokBegrip( 'sfp/in-een-talk', function ( props ) {
+		var a = props.attributes;
+		var blockProps = useBlockProps( { className: 'sfp-in-talk' } );
+		return el( Fragment, null,
+			paneel( 'In a talk', [ uitleg( 'Eén voorbeeldzin uit een echte presentatie en één regel uitleg. Hoogstens één per begrip.' ) ] ),
+			el( 'aside', blockProps,
+				el( 'span', { className: 'sfp-blok-label' }, t( 'in_een_talk', 'In a talk' ) ),
+				el( RichText, { tagName: 'p', className: 'sfp-in-talk__zin', value: a.zin, placeholder: 'De voorbeeldzin', allowedFormats: [ 'core/italic' ], onChange: function ( v ) { props.setAttributes( { zin: v } ); } } ),
+				el( RichText, { tagName: 'p', value: a.uitleg, placeholder: 'Eén regel uitleg', allowedFormats: [ 'core/italic' ], onChange: function ( v ) { props.setAttributes( { uitleg: v } ); } } )
+			)
+		);
+	} );
+
 	/* sfp/lees-ook */
 	blok( 'sfp/lees-ook', function ( props ) {
 		var a = props.attributes;

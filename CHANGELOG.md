@@ -4,6 +4,22 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.7.0] - 2026-10-19
+
+Tweede deel van de vormen: begrip (SwS als voorbeeldsite). Het onderdeel Begrip staat standaard uit; zonder die instelling verandert er niets.
+
+### Toegevoegd
+- **Onderdeel Begrip** (SFP Beheer, Onderdelen, standaard uit): een begrip krijgt de artikelopmaak in de vorm van een woordenlijstpagina. Werkt met de artikelopmaak aan.
+- **Blok Definitie:** de definitie in één zin, een korte uitleg en tot vier vakjes (ook wel, herkomst, eerst beschreven, deel van). Met een teller voor woorden en tekens en een melding als de zin niet met de term begint.
+- **Blok In a talk:** een zin zoals je hem op het podium zegt, met uitleg, op een donker vlak.
+- **Knop Begrip in de editor:** koppel een woord in een artikel aan een begrip. Het woord krijgt de definitie en Read more als tooltip; zonder definitie of als het begrip niet gepubliceerd is, blijft alleen het woord.
+- **Onder een begrip:** verwante begrippen (gekozen in het paneel, anders uit dezelfde pijler, hoogstens drie), de artikelen die het begrip gebruiken, vorige en volgende term en de link naar alle termen. Zonder verwante begrippen of artikelen geen lege lijn.
+- Regel boven de titel: Glossary term in, met de pijler.
+- Gegevens voor Google: DefinedTerm in de woordenlijst, met de maker.
+- Controle op een begrip: geen definitie, definitie die niet met de term begint, lengte buiten 15 tot 30 woorden of boven 160 tekens, FAQ met één vraag, meer dan één In a talk.
+- Paneel Deze pagina bij een begrip: Hoort bij de pijler, Verwant, waar het begrip gebruikt wordt en de meldingen.
+- De definitie staat als samenvatting in de begrippenlijst als er geen eigen samenvatting is.
+
 ## [3.6.0] - 2026-10-19
 
 Eerste deel van de vormen (SwS als voorbeeldsite): wat de vormen delen, de pijler met de Thermometer, de promokaart per vorm, de Zelftest-oproep, K28 en K32. Begrip volgt in 3.7.0, tool in 3.8.0. Pijler en K28 staan standaard uit; zonder instellingen blijft elke site zoals hij was, op de scheidingsbolletjes (K32) na.

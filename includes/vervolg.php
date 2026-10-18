@@ -109,6 +109,13 @@ function sfp_page_config_vervolg_van_pijler( $term_id ) {
  * @return WP_Term|null
  */
 function sfp_page_config_vervolg_pijler( $post ) {
+    // Een begrip of tool heeft geen categorie: de pijler staat in sfp_pijler.
+    $post = get_post( $post );
+    if ( $post && in_array( $post->post_type, array( 'begrippen', 'tool' ), true ) ) {
+        $id   = (int) get_post_meta( $post->ID, 'sfp_pijler', true );
+        $term = $id ? get_term( $id, 'category' ) : null;
+        return ( $term && ! is_wp_error( $term ) ) ? $term : null;
+    }
     $termen = get_the_terms( $post, 'category' );
     if ( ! is_array( $termen ) || ! $termen ) {
         return null;

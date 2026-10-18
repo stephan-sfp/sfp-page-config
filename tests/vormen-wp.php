@@ -31,6 +31,7 @@ $s       = is_array( $bewaard ) ? $bewaard : array();
 $s['artikel_aan']                 = '1';
 $s['onderdelen']                  = isset( $s['onderdelen'] ) && is_array( $s['onderdelen'] ) ? $s['onderdelen'] : array();
 $s['onderdelen']['pijler']        = '1';
+$s['onderdelen']['begrip']        = '1';
 $s['kop_leestekens']              = '1';
 update_option( 'sfp_settings', $s );
 if ( function_exists( 'sfp_page_config_instellingen_vergeet' ) ) {
@@ -238,6 +239,70 @@ $check( 'leestekens', 'Presence<span class="sfp-lt">:</span> self<span class="sf
 $check( 'entiteit blijft heel', 'A &amp; B&#8217;s' === sfp_page_config_leestekens( 'A &amp; B&#8217;s', true ) );
 $check( 'alleen in h1', '<h2>a: b</h2>' === sfp_page_config_leestekens( '<h2>a: b</h2>' ) );
 $check( 'attribuut blijft heel', '<h1 class="a-b">x<span class="sfp-lt">.</span></h1>' === sfp_page_config_leestekens( '<h1 class="a-b">x.</h1>' ) );
+
+// Begrip (3.7.0).
+if ( post_type_exists( 'begrippen' ) && function_exists( 'sfp_page_config_begrip_aan' ) ) {
+    $check( 'begrip aan', sfp_page_config_begrip_aan() );
+    $zin  = 'Testterm is the credibility an audience grants a speaker: the sense that this person knows the subject and can be trusted.';
+    $def  = '<!-- wp:sfp/definitie ' . wp_json_encode( array( 'zin' => $zin, 'uitleg' => 'Uitleg.' ) ) . ' /-->';
+    $talk = '<!-- wp:sfp/in-een-talk {"zin":"Zin.","uitleg":"Uitleg."} /-->';
+    $b1   = wp_insert_post( array( 'post_type' => 'begrippen', 'post_status' => 'publish', 'post_title' => 'Testterm', 'post_content' => $def . $talk ) );
+    $b2   = wp_insert_post( array( 'post_type' => 'begrippen', 'post_status' => 'publish', 'post_title' => 'Testterm zonder', 'post_content' => '<!-- wp:paragraph --><p>Los.</p><!-- /wp:paragraph -->' ) );
+    $b3   = wp_insert_post( array( 'post_type' => 'begrippen', 'post_status' => 'draft', 'post_title' => 'Testterm concept', 'post_content' => $def ) );
+    $opruimen = array_merge( $opruimen, array( $b1, $b2, $b3 ) );
+    update_post_meta( $b1, 'sfp_pijler', $pijler['term_id'] );
+    update_post_meta( $b2, 'sfp_pijler', $pijler['term_id'] );
+
+    $check( 'begrip vorm', 'begrip' === sfp_page_config_vorm( get_post( $b1 ) ) );
+    $check( 'definitie gelezen', $zin === sfp_page_config_begrip_definitie( $b1 ) );
+    $check( 'geen definitie', '' === sfp_page_config_begrip_definitie( $b2 ) );
+    $check( 'definitie als samenvatting', $zin === get_the_excerpt( $b1 ) );
+
+    // Tooltip in een artikel.
+    $html = sfp_page_config_begrip_tooltips( '<p>Met <span class="sfp-begrip" data-sfp-begrip="' . $b1 . '">ethos</span> en <span class="sfp-begrip" data-sfp-begrip="' . $b2 . '">los</span> en <span class="sfp-begrip" data-sfp-begrip="' . $b3 . '">concept</span>.</p>' );
+    $check( 'tooltip met definitie', 1 === substr_count( $html, 'data-tooltip=' ) && false !== strpos( $html, esc_attr( get_permalink( $b1 ) ) ) );
+    $check( 'tooltip class', false !== strpos( $html, 'class="tooltip sfp-begrip"' ) );
+    $check( 'zonder definitie of concept: alleen woord', 2 === substr_count( $html, 'class="sfp-begrip-woord"' ) );
+
+    // Controle.
+    $codes = function ( $id ) {
+        return wp_list_pluck( sfp_page_config_begrip_controle( get_post( $id ) ), 'code' );
+    };
+    $check( 'controle schoon', array() === $codes( $b1 ) );
+    $check( 'controle geen definitie', array( 'begrip-definitie' ) === $codes( $b2 ) );
+    $kort = wp_insert_post( array( 'post_type' => 'begrippen', 'post_status' => 'publish', 'post_title' => 'Anders', 'post_content' => '<!-- wp:sfp/definitie {"zin":"Te kort."} /-->' . $talk . $talk . '<!-- wp:sfp/faq-vraag /-->' ) );
+    $opruimen[] = $kort;
+    $c = $codes( $kort );
+    $check( 'controle begin', in_array( 'begrip-begin', $c, true ) );
+    $check( 'controle lengte', in_array( 'begrip-lengte', $c, true ) );
+    $check( 'controle faq', in_array( 'begrip-faq', $c, true ) );
+    $check( 'controle talk', in_array( 'begrip-talk', $c, true ) );
+
+    // Verwant, gebruikt in, buren.
+    $verwant = wp_list_pluck( sfp_page_config_begrip_verwant( get_post( $b1 ) ), 'ID' );
+    $check( 'verwant via pijler', 3 === count( $verwant ) && ! in_array( $b1, $verwant, true ) );
+    update_post_meta( $b1, 'sfp_verwant', array( $kort, $b3 ) );
+    $check( 'verwant gekozen, concept niet', array( $kort ) === wp_list_pluck( sfp_page_config_begrip_verwant( get_post( $b1 ) ), 'ID' ) );
+    $noemer = wp_insert_post( array( 'post_title' => 'Noemt testterm', 'post_status' => 'publish', 'post_content' => '<!-- wp:paragraph --><p><span class="sfp-begrip" data-sfp-begrip="' . $b1 . '">x</span></p><!-- /wp:paragraph -->' ) );
+    $opruimen[] = $noemer;
+    $check( 'gebruikt in', in_array( $noemer, wp_list_pluck( sfp_page_config_begrip_gebruikt_in( get_post( $b1 ) ), 'ID' ), true ) );
+    list( $vorige, $volgende ) = sfp_page_config_begrip_buren( get_post( $b1 ) );
+    $check( 'volgende term', $volgende && (int) $b2 === (int) $volgende->ID );
+
+    // Weergave en gegevens voor Google.
+    $lv = sfp_page_config_begrip_leesverder( get_post( $b1 ) );
+    $check( 'lees verder met verwant en gebruikt in', false !== strpos( $lv, 'sfp-verwant' ) && false !== strpos( $lv, 'sfp-gebruikt' ) );
+    $blokken = sfp_page_config_blokken();
+    $check( 'blokken definitie en talk', isset( $blokken['sfp/definitie'], $blokken['sfp/in-een-talk'] ) );
+    $check( 'definitie rendert', false !== strpos( render_block( parse_blocks( $def )[0] ), $zin ) );
+    $GLOBALS['wp_query'] = new WP_Query( array( 'p' => $b1, 'post_type' => 'begrippen' ) );
+    $GLOBALS['wp_the_query'] = $GLOBALS['wp_query'];
+    ob_start();
+    sfp_page_config_begrip_schema();
+    $ld = json_decode( preg_replace( '#^<script[^>]*>|</script>\s*$#', '', trim( ob_get_clean() ) ), true );
+    $check( 'DefinedTerm', is_array( $ld ) && 'DefinedTerm' === $ld['@type'] && $zin === $ld['description'] && isset( $ld['inDefinedTermSet'] ) );
+    wp_reset_query();
+}
 
 // Uit: geen gids, gewoon adres.
 $s = get_option( 'sfp_settings' );

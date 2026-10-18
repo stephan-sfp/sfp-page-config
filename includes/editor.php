@@ -241,6 +241,7 @@ function sfp_page_config_editor_gegevens( $post_type ) {
         'longread'       => in_array( $post_type, array( 'post', 'page' ), true ) && ! $artikel,
         'affiliate'      => 'post' === $post_type && function_exists( 'sfp_page_config_get_affiliate_layout_id' ) && sfp_page_config_get_affiliate_layout_id() && ! ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() ),
         'pijler'         => function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan(),
+        'begrip'         => function_exists( 'sfp_page_config_begrip_aan' ) && sfp_page_config_begrip_aan(),
         'beheer'         => admin_url( 'admin.php?page=sfp-page-config' ),
         'home'           => home_url( '/' ),
     );
@@ -294,6 +295,14 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
         'promo'      => false,
         'vorm'       => null,
     );
+
+    // Begrip: gebruikt in en de controle.
+    if ( function_exists( 'sfp_page_config_is_begrip' ) && sfp_page_config_is_begrip( $post ) ) {
+        $stand['begrip'] = array(
+            'gebruikt'  => count( sfp_page_config_begrip_gebruikt_in( $post ) ),
+            'meldingen' => sfp_page_config_begrip_controle( $post ),
+        );
+    }
 
     // Vorm en pijler.
     if ( 'post' === $post->post_type && function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan() ) {
@@ -450,15 +459,17 @@ function sfp_page_config_editor_omlijsting( WP_Post $post ) {
         $inhoud = do_blocks( (string) $post->post_content );
         list( , $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ) );
 
-        $kop = sfp_page_config_artikel_pijlerregel( $post ) . sfp_page_config_artikel_kopkaart( $post, $hoofdstukken );
+        $begrip = function_exists( 'sfp_page_config_is_begrip' ) && sfp_page_config_is_begrip( $post );
+        $kop    = $begrip ? sfp_page_config_begrip_pijlerregel( $post ) : sfp_page_config_artikel_pijlerregel( $post ) . sfp_page_config_artikel_kopkaart( $post, $hoofdstukken );
 
         ob_start();
         do_action( 'sfp_artikel_vervolg', $post ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- eigen actie, zie artikel.php.
         $vervolg = trim( (string) ob_get_clean() );
 
         $voet  = function_exists( 'sfp_page_config_affiliate_uitleg' ) ? sfp_page_config_affiliate_uitleg( $post ) : '';
+        $voet .= $begrip ? sfp_page_config_begrip_leesverder( $post ) : '';
         $voet .= '' !== $vervolg ? '<div class="sfp-art-vervolg">' . $vervolg . '</div>' : '';
-        $voet .= sfp_page_config_artikel_auteurskaart( $post );
+        $voet .= $begrip ? '' : sfp_page_config_artikel_auteurskaart( $post );
         $voet .= sfp_page_config_artikel_voetregels( $post );
     } catch ( Throwable $e ) {
         $kop  = '';

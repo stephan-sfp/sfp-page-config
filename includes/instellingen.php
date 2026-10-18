@@ -125,6 +125,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Een bericht kan de gids van een categorie zijn: op het adres van de categorie, met de kaart van alle artikelen en begrippen erin.',
             'detail' => false,
         ),
+        'begrip'     => array(
+            'naam'   => 'Begrip',
+            'uitleg' => 'Begrippen krijgen de vorm van de woordenlijst: een definitie bovenaan, verwante begrippen eronder en de definitie als tooltip in artikelen.',
+            'detail' => false,
+        ),
         'snippets'   => array(
             'naam'   => 'Snippetbeheer via REST',
             'uitleg' => 'Het serviceaccount claude-api leest, maakt, bewerkt en schakelt PHP-snippets van ASE Pro zonder browser.',
@@ -218,6 +223,7 @@ function sfp_page_config_onderdeel_standaard( $id ) {
         case 'zelftest':
             // Verzamelt gegevens van bezoekers: alleen aan als iemand dat kiest.
             return false;
+        case 'begrip':
         case 'pijler':
             // Verandert adressen en de opmaak van berichten: alleen aan als iemand dat kiest.
             return false;
