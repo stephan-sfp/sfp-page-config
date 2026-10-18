@@ -180,7 +180,7 @@ function sfp_page_config_controleer_pagina( $post ) {
     }
 
     // Artikel zonder uitgelichte afbeelding.
-    if ( $artikel && ! has_post_thumbnail( $post ) ) {
+    if ( $artikel && 'begrippen' !== $post->post_type && ! has_post_thumbnail( $post ) ) {
         $meldingen[] = array(
             'code'  => 'beeld',
             'kort'  => 'Geen uitgelichte afbeelding',
@@ -192,6 +192,9 @@ function sfp_page_config_controleer_pagina( $post ) {
     // Pijler: categorie, lead en artikelen.
     if ( function_exists( 'sfp_page_config_pijler_controle' ) ) {
         $meldingen = array_merge( $meldingen, sfp_page_config_pijler_controle( $post ) );
+    }
+    if ( function_exists( 'sfp_page_config_begrip_controle' ) ) {
+        $meldingen = array_merge( $meldingen, sfp_page_config_begrip_controle( $post ) );
     }
 
     // Wat bewust zo is, telt niet mee.

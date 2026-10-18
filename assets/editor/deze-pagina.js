@@ -187,7 +187,7 @@
 		}
 
 		/* ---------- Vorm en pijler ---------- */
-		if ( S.pijler && ( 'post' === editor.type || 'begrippen' === editor.type || 'tool' === editor.type ) ) {
+		if ( ( S.pijler && 'post' === editor.type ) || ( ( S.pijler || S.begrip ) && ( 'begrippen' === editor.type || 'tool' === editor.type ) ) ) {
 			delen.push( el( Vorm, { key: 'vorm', meta: meta, zetMeta: zetMeta, editor: editor, stand: stand } ) );
 		}
 
@@ -308,11 +308,22 @@
 
 		// Begrip en tool: bij welke pijler hoort dit?
 		if ( 'post' !== editor.type ) {
-			return el( 'div', { className: 'sfp-dp-deel' },
-				kop( 'Pijler' ),
+			var stukken = [
+				kop( 'begrippen' === editor.type ? 'Begrip' : 'Pijler' ),
 				stuk( 'Hoort bij de pijler', 'Bepaalt de regel boven de titel, de kaart van de pijler en het vervolg. Leeg: bij geen pijler.', 'sfp_pijler',
 					[ { value: '0', label: 'Geen pijler' } ].concat( catOpties ), true )
-			);
+			];
+			if ( 'begrippen' === editor.type && S.begrip ) {
+				stukken.push( el( Verwant, { key: 'verwant', meta: meta, zetMeta: props.zetMeta, id: editor.id } ) );
+				stukken.push( el( 'div', { key: 'verwant-hulp' }, hulp( 'Hoogstens drie. Leeg: de andere begrippen van dezelfde pijler.' ) ) );
+				if ( stand.begrip ) {
+					stukken.push( regel( 'Gebruikt in', stand.begrip.gebruikt + ( 1 === stand.begrip.gebruikt ? ' artikel' : ' artikelen' ) + ', komen vanzelf' ) );
+					( stand.begrip.meldingen || [] ).forEach( function ( m, i ) {
+						stukken.push( el( 'div', { key: 'bm' + i }, melding( m.tekst, 'let' ) ) );
+					} );
+				}
+			}
+			return el( 'div', { className: 'sfp-dp-deel' }, stukken );
 		}
 
 		var pijler = 'pijler' === meta.sfp_vorm;
@@ -360,6 +371,36 @@
 			} );
 		}
 		return el( 'div', { className: 'sfp-dp-deel' }, delen );
+	}
+
+	/* ---------- Verwante begrippen ---------- */
+
+	function Verwant( props ) {
+		var ids = ( props.meta.sfp_verwant || [] ).map( function ( x ) { return parseInt( x, 10 ); } ).filter( Boolean );
+		var lijst = data.useSelect( function ( select ) {
+			return select( 'core' ).getEntityRecords( 'postType', 'begrippen', { per_page: 100, status: 'publish', orderby: 'title', order: 'asc', _fields: 'id,title' } ) || [];
+		}, [] );
+		var naam = {};
+		var id = {};
+		lijst.forEach( function ( b ) {
+			if ( b.id === props.id ) { return; }
+			var t = tekstVan( b.title && b.title.rendered ) || ( 'Begrip ' + b.id );
+			naam[ b.id ] = t;
+			id[ t ] = b.id;
+		} );
+		return el( c.FormTokenField, {
+			label: 'Verwante begrippen',
+			value: ids.map( function ( i ) { return naam[ i ] || ( 'Begrip ' + i ); } ),
+			suggestions: Object.keys( id ),
+			maxLength: 3,
+			onChange: function ( namen ) {
+				props.zetMeta( 'sfp_verwant', namen.map( function ( n ) { return id[ n ]; } ).filter( Boolean ) );
+			},
+			__experimentalExpandOnFocus: true,
+			__experimentalShowHowTo: false,
+			__nextHasNoMarginBottom: true,
+			__next40pxDefaultSize: true,
+		} );
 	}
 
 	/* ---------- Knop onderaan ---------- */

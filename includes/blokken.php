@@ -232,6 +232,12 @@ function sfp_page_config_blokken() {
         $alle = array_merge( $alle, sfp_page_config_blokken_gegevens() );
     }
 
+    /**
+     * Blokken van de vormen (begrip, tool), sinds 3.7.0.
+     *
+     * @param array $alle Blokken.
+     */
+    $alle = (array) apply_filters( 'sfp_page_config_blokken_extra', $alle );
     return $alle;
 }
 
@@ -300,7 +306,7 @@ function sfp_page_config_blokken_registreer() {
     // De vaste labels van de artikelblokken, in de taal van de site.
     if ( function_exists( 'sfp_page_config_artikel_tekst' ) ) {
         $labels = array();
-        foreach ( array( 'samenvatting', 'inzicht', 'lees_ook', 'kader_wist-je-dat', 'kader_kanttekening', 'kader_grondslag', 'kader_reflectievraag', 'kader_checklist' ) as $sleutel ) {
+        foreach ( array( 'samenvatting', 'inzicht', 'lees_ook', 'kader_wist-je-dat', 'kader_kanttekening', 'kader_grondslag', 'kader_reflectievraag', 'kader_checklist', 'definitie', 'ook_wel', 'herkomst', 'eerst_beschreven', 'deel_van', 'in_een_talk' ) as $sleutel ) {
             $labels[ $sleutel ] = sfp_page_config_artikel_tekst( $sleutel );
         }
         wp_add_inline_script(
