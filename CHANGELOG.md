@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.6.0-beta.2] - 2026-10-18
+
+### Toegevoegd
+- Een pijler die nog niet gepubliceerd is, toont via de voorbeeldlink al de kaart In this guide en de regel boven de titel. Het adres van de categorie geldt pas na publiceren.
+
 ## [3.6.0-beta.1] - 2026-10-18
 
 Eerste deel van de vormen pijler, begrip en tool (SwS als voorbeeldsite): wat de vormen delen, de pijler, de promokaart per vorm, K28 en K32. Begrip volgt in 3.7.0, tool in 3.8.0.

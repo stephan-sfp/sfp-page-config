@@ -141,6 +141,20 @@ $check( 'link alle in pijler', false !== strpos( $kaart, 'sfp-gids__alle' ) );
 $check( 'pijlerregel hoofdpijler', false !== strpos( sfp_page_config_artikel_pijlerregel( get_post( $hoofdgids ) ), '>Guide<' ) || false !== strpos( sfp_page_config_artikel_pijlerregel( get_post( $hoofdgids ) ), '>Gids<' ) );
 $check( 'pijlerregel pijler in', 1 === preg_match( '#(Guide in|Gids in|Guia em) <a#', sfp_page_config_artikel_pijlerregel( get_post( $gids ) ) ) );
 
+// Een concept-pijler toont zijn kaart (voorbeeldlink), maar houdt zijn eigen adres.
+$concept = wp_insert_post(
+    array(
+        'post_title'    => 'Concept pijler',
+        'post_status'   => 'draft',
+        'post_content'  => '<!-- wp:paragraph --><p>Lead</p><!-- /wp:paragraph -->',
+        'post_category' => array( $pijler['term_id'] ),
+    )
+);
+$opruimen[] = $concept;
+update_post_meta( $concept, 'sfp_vorm', 'pijler' );
+$check( 'concept: kaart', '' !== sfp_page_config_gids_kaart( get_post( $concept ) ) );
+$check( 'concept: telt niet als gids', $gids === sfp_page_config_gids_van_term( $pijler['term_id'] ) );
+
 // Kaart na de lead.
 $html = sfp_page_config_gids_na_lead( '<p>Lead</p><h2>Kop</h2><p>Meer</p>', '<nav>K</nav>' );
 $check( 'kaart na de lead', '<p>Lead</p><nav>K</nav><h2>Kop</h2><p>Meer</p>' === $html );

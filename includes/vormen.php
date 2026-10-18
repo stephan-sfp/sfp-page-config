@@ -225,6 +225,12 @@ function sfp_page_config_is_gids( $post ) {
     if ( ! $post || 'post' !== $post->post_type ) {
         return null;
     }
+    // Een pijler die nog niet gepubliceerd is (concept, voorbeeldlink): toon
+    // hem zoals hij wordt, met de kaart van zijn categorie. Het adres en de
+    // verwijzingen gelden pas na publiceren.
+    if ( 'publish' !== $post->post_status ) {
+        return 'pijler' === sfp_page_config_vorm( $post ) ? sfp_page_config_gids_term( $post ) : null;
+    }
     $term_id = array_search( (int) $post->ID, sfp_page_config_gidsen(), true );
     if ( false === $term_id ) {
         return null;
