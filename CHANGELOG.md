@@ -4,6 +4,10 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.7.0-beta.6] - 2026-10-19
+
+Knop Thermometer vooraan in de kopkaart van de pijler.
+
 ## [3.7.0-beta.5] - 2026-10-19
 
 Thermometer: eigen naam per uitslag, schaal met twee uiteinden, knop Opnieuw doen (feedback Stephan).
