@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.0-beta.3] - 2026-10-18
+
+### Gerepareerd
+- Testpagina: onder de inhoud bleef de achtergrond van de site zichtbaar (DPS zet een merkkleur op html). De testpagina is nu tot onderaan wit.
+
 ## [3.5.0-beta.2] - 2026-10-18
 
 ### Gewijzigd

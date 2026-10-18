@@ -145,7 +145,9 @@
 .sfp-zt-route .sfp-zt-melding p{margin:0}
 
 /* De testpagina (sinds 3.5.0): geen kop en voet van het thema, een smalle balk met logo en kruisje. */
-body.sfp-zt-testpagina{margin:0;background:var(--sfp-b-wit,#fff)}
+body.sfp-zt-testpagina{margin:0;min-height:100vh;background:var(--sfp-b-wit,#fff)}
+/* Een site kan html een merkkleur geven (DPS: --brand-main); onder een korte testpagina blijft het wit. */
+html:has(body.sfp-zt-testpagina){background:var(--sfp-b-wit,#fff)}
 .sfp-zt-top{position:sticky;top:0;z-index:50;background:var(--sfp-b-wit,#fff);border-bottom:1px solid color-mix(in srgb,var(--sfp-b-primair) 14%,transparent)}
 .sfp-zt-top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1248px;margin:0 auto;padding:10px 24px;min-height:64px}
 .sfp-zt-top-logo{display:block;height:auto;max-height:44px;width:auto;max-width:60vw}
