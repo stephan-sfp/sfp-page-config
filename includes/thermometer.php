@@ -13,7 +13,10 @@
  * Net als de warming-up bij een artikel staat de Thermometer niet in de
  * tekst: hij klapt uit de kopkaart van de pijler. De uitslag rekent in de
  * browser: Klopt 2, Soms 1, Klopt niet 0; onder een derde laag, onder twee
- * derde gemiddeld, anders hoog.
+ * derde gemiddeld, anders hoog. De uitslag toont geen algemeen woord als
+ * "hoog": de schrijver geeft elke uitslag een eigen naam en de schaal twee
+ * einden in de woorden van de vraag (feedback Stephan 18-10-2026). De schaal
+ * heeft een neutrale kleur: hij oordeelt niet zelf.
  *
  * Kleuren: alleen via de variabelen --sfp-b-*. Geen merkwaarden in code.
  *
@@ -50,6 +53,11 @@ function sfp_page_config_thermometer_blokken( $blokken ) {
         'zonder_basis' => true,
         'attributes'   => array(
             'kop'          => $tekst,
+            'links'        => $tekst,
+            'rechts'       => $tekst,
+            'laag_label'   => $tekst,
+            'midden_label' => $tekst,
+            'hoog_label'   => $tekst,
             'laag'         => $tekst,
             'laag_anker'   => $tekst,
             'midden'       => $tekst,
@@ -142,6 +150,7 @@ function sfp_page_config_render_thermometer( $attrs ) {
     $uitslagen = array();
     foreach ( array( 'laag', 'midden', 'hoog' ) as $band ) {
         $uitslagen[ $band ] = array(
+            'label' => trim( wp_strip_all_tags( sfp_page_config_blok_attr( $attrs, $band . '_label' ) ) ),
             'tekst' => trim( wp_strip_all_tags( sfp_page_config_blok_attr( $attrs, $band ) ) ),
             'anker' => sanitize_title( sfp_page_config_blok_attr( $attrs, $band . '_anker' ) ),
         );
@@ -151,6 +160,8 @@ function sfp_page_config_render_thermometer( $attrs ) {
         sfp_page_config_thermometer(
             array(
                 'kop'        => $kop,
+                'links'      => trim( wp_strip_all_tags( sfp_page_config_blok_attr( $attrs, 'links' ) ) ),
+                'rechts'     => trim( wp_strip_all_tags( sfp_page_config_blok_attr( $attrs, 'rechts' ) ) ),
                 'stellingen' => $stellingen,
                 'uitslagen'  => $uitslagen,
             )
@@ -190,7 +201,7 @@ function sfp_page_config_thermometer_paneel( array $thermo, array $hoofdstukken 
             $link = '<a class="sfp-pijl" href="#' . esc_attr( $u['anker'] ) . '">' . sprintf( esc_html( $t( 'thermo_lees' ) ), esc_html( $titels[ $u['anker'] ] ) ) . '</a>';
         }
         $uitslagen .= '<div class="sfp-art-thermo__band" data-band="' . esc_attr( $band ) . '" hidden>'
-            . '<b class="sfp-art-thermo__stand">' . esc_html( $t( 'thermo_' . $band ) ) . '</b>'
+            . ( '' !== $u['label'] ? '<b class="sfp-art-thermo__stand">' . esc_html( $u['label'] ) . '</b>' : '' )
             . ( '' !== $u['tekst'] ? '<p>' . esc_html( $u['tekst'] ) . '</p>' : '' )
             . $link
             . '</div>';
@@ -201,7 +212,9 @@ function sfp_page_config_thermometer_paneel( array $thermo, array $hoofdstukken 
         . $blokken
         . '<div class="sfp-art-thermo__uitslag" hidden>'
         . '<span class="sfp-blok-label" tabindex="-1">' . esc_html( $t( 'thermo_uitslag' ) ) . '</span>'
-        . '<div class="sfp-art-thermo__meter" aria-hidden="true"><i></i></div>'
+        . '<div class="sfp-art-thermo__schaal" aria-hidden="true"><div class="sfp-art-thermo__baan"><i></i></div>'
+        . ( '' !== $thermo['links'] || '' !== $thermo['rechts'] ? '<div class="sfp-art-thermo__einden"><span>' . esc_html( $thermo['links'] ) . '</span><span>' . esc_html( $thermo['rechts'] ) . '</span></div>' : '' )
+        . '</div>'
         . $uitslagen
         . '<div class="sfp-art-warm__voet"><button type="button" class="sfp-art-thermo__opnieuw">' . esc_html( $t( 'thermo_opnieuw' ) ) . '</button></div>'
         . '</div></div></div>';

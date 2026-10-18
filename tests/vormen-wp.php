@@ -210,7 +210,7 @@ $check( 'tool: standaard geen kaart', 'geen' === sfp_page_config_promo_keuze( 't
 $stel  = function ( $t ) {
     return '<!-- wp:sfp/thermometer-stelling ' . wp_json_encode( array( 'tekst' => $t ) ) . ' /-->';
 };
-$thermo = '<!-- wp:sfp/thermometer ' . wp_json_encode( array( 'kop' => 'How nervous are you?', 'laag' => 'Calm.', 'midden' => 'Some nerves.', 'hoog' => 'Nerves rule.', 'hoog_anker' => 'nerves' ) ) . ' -->'
+$thermo = '<!-- wp:sfp/thermometer ' . wp_json_encode( array( 'kop' => 'How nervous are you?', 'links' => 'Calm', 'rechts' => 'Nervous', 'hoog_label' => 'Nerves lead', 'laag' => 'Calm.', 'midden' => 'Some nerves.', 'hoog' => 'Nerves rule.', 'hoog_anker' => 'nerves' ) ) . ' -->'
     . $stel( 'I sleep badly before a talk.' ) . $stel( 'My hands shake.' ) . $stel( 'I avoid speaking.' ) . $stel( 'My mind goes blank.' )
     . '<!-- /wp:sfp/thermometer -->';
 $check( 'pijler zonder thermometer: melding', in_array( 'pijler-thermometer', wp_list_pluck( sfp_page_config_pijler_controle( get_post( $gids ) ), 'code' ), true ) );
@@ -222,6 +222,7 @@ $th = sfp_page_config_thermometer();
 $check( 'thermometer verzameld', is_array( $th ) && 4 === count( $th['stellingen'] ) && 'How nervous are you?' === $th['kop'] );
 $paneel = sfp_page_config_thermometer_paneel( $th, array( array( 'id' => 'nerves', 'titel' => 'Start with your nerves' ) ) );
 $check( 'paneel: vier stellingen, drie knoppen elk', 4 === substr_count( $paneel, 'sfp-art-thermo__stelling' ) && 12 === substr_count( $paneel, 'data-punt=' ) );
+$check( 'paneel: eigen naam en schaaleinden, geen algemeen woord', false !== strpos( $paneel, 'Nerves lead' ) && false !== strpos( $paneel, '<span>Calm</span><span>Nervous</span>' ) && 1 === substr_count( $paneel, 'sfp-art-thermo__stand' ) );
 $check( 'paneel: drie uitslagen, link bij hoog', 3 === substr_count( $paneel, 'data-band=' ) && false !== strpos( $paneel, 'href="#nerves"' ) );
 $kop = sfp_page_config_artikel_kopkaart( get_post( $gids ), array( array( 'id' => 'nerves', 'titel' => 'Start with your nerves' ) ) );
 $check( 'kopkaart pijler: thermometer', false !== strpos( $kop, 'sfp-art-paneel-thermo' ) );

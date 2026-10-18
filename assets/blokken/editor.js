@@ -765,9 +765,10 @@
 		var opties = [ { value: '', label: lijst.length ? 'Geen hoofdstuk' : 'De pijler heeft nog geen tussenkoppen' } ].concat( lijst.map( function ( h ) {
 			var d = document.createElement( 'div' ); d.innerHTML = h.titel; return { value: h.id, label: d.textContent };
 		} ) );
-		function band( sleutel, naam, hulp ) {
+		function band( sleutel, naam, hulp, voorbeeld ) {
 			var gekozen = a[ sleutel + '_anker' ] ? lijst.filter( function ( h ) { return h.anker === a[ sleutel + '_anker' ] || ( ! h.anker && h.slug === a[ sleutel + '_anker' ] ); } )[ 0 ] : null;
 			return [
+				tekstveld( 'Naam van de uitslag ' + naam, a[ sleutel + '_label' ], function ( v ) { var n = {}; n[ sleutel + '_label' ] = v; props.setAttributes( n ); }, 'In de woorden van de vraag, bijvoorbeeld: ' + voorbeeld + '.' ),
 				el( c.TextareaControl, {
 					key: 'tekst-' + sleutel,
 					label: 'Uitslag ' + naam,
@@ -782,15 +783,18 @@
 		}
 		return el( Fragment, null,
 			paneel( 'Thermometer', [
-				uitleg( 'Drie tot acht stellingen. De lezer kiest per stelling Klopt, Soms of Klopt niet. Daarna volgt de stand: laag, gemiddeld of hoog, met jouw tekst en een link naar het hoofdstuk dat erbij past. Niets wordt bewaard.' ),
-			].concat( band( 'laag', 'laag', 'Bij weinig herkenning.' ), band( 'midden', 'gemiddeld', null ), band( 'hoog', 'hoog', 'Bij veel herkenning.' ) ) ),
+				uitleg( 'Drie tot acht stellingen. De lezer kiest per stelling Klopt, Soms of Klopt niet. Daarna volgt de uitslag op een schaal met twee uiteinden, met de naam en tekst die jij per uitslag geeft en een link naar het hoofdstuk dat erbij past. Schrijf alle stellingen in dezelfde richting: Klopt telt naar het rechteruiteinde. Niets wordt bewaard.' ),
+				tekstveld( 'Schaal: linkeruiteinde', a.links, function ( v ) { props.setAttributes( { links: v } ); }, 'Weinig herkenning, bijvoorbeeld: Rustig.' ),
+				tekstveld( 'Schaal: rechteruiteinde', a.rechts, function ( v ) { props.setAttributes( { rechts: v } ); }, 'Veel herkenning, bijvoorbeeld: Zenuwen nemen het over.' ),
+			].concat( band( 'laag', 'bij weinig herkenning', 'Bij weinig herkenning.', 'Je aanwezigheid draagt je' ), band( 'midden', 'in het midden', null, 'Je aanwezigheid wisselt' ), band( 'hoog', 'bij veel herkenning', 'Bij veel herkenning.', 'Je zenuwen gaan voor' ) ) ),
 			el( 'div', blockProps,
 				el( 'span', { className: 'sfp-editor-label' }, 'Thermometer · staat op de site als knop in de kopkaart van de pijler, niet op deze plek' ),
 				el( RichText, { tagName: 'div', className: 'sfp-editor-warm__vraag', value: a.kop, placeholder: 'De vraag boven de stellingen, bijvoorbeeld: Hoe groot is jouw spreekangst?', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { kop: v } ); } } ),
 				el( 'div', inner ),
 				aantal < 3 ? el( 'span', { className: 'sfp-blokmelding' }, 'Een Thermometer heeft minstens drie stellingen. Zonder die verschijnt hij niet op de site.' ) : null,
 				aantal > 8 ? el( 'span', { className: 'sfp-blokmelding' }, 'Hoogstens acht stellingen; de rest valt weg.' ) : null,
-				! a.laag || ! a.midden || ! a.hoog ? el( 'span', { className: 'sfp-blokmelding' }, 'Vul rechts de drie uitslagen in.' ) : null
+				! a.laag || ! a.midden || ! a.hoog || ! a.laag_label || ! a.midden_label || ! a.hoog_label ? el( 'span', { className: 'sfp-blokmelding' }, 'Vul rechts de drie uitslagen in, elk met een naam en een tekst.' ) : null,
+				! a.links || ! a.rechts ? el( 'span', { className: 'sfp-blokmelding' }, 'Geef de schaal rechts twee uiteinden, zodat de lezer ziet waar hij staat.' ) : null
 			)
 		);
 	} );

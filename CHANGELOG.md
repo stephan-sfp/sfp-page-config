@@ -39,7 +39,7 @@ Tweede deel van de vormen: begrip (SwS als voorbeeldsite). Bevat ook alles uit 3
 ## [Thermometer] - nog niet uitgebracht
 
 ### Toegevoegd
-- **Thermometer in een pijler** (besluit Stephan 18-10): blok Thermometer met drie tot acht stellingen en drie uitslagen (laag, gemiddeld, hoog), elk met een tekst en het hoofdstuk om verder te lezen. Klapt uit de kopkaart van de pijler, zoals de warming-up bij een artikel; rekent in de browser (Klopt 2, Soms 1, Klopt niet 0) en bewaart niets. Teksten in het Engels, Nederlands en Portugees.
+- **Thermometer in een pijler** (besluit Stephan 18-10): blok Thermometer met drie tot acht stellingen en drie uitslagen, elk met een eigen naam, een tekst en het hoofdstuk om verder te lezen. De uitslag staat op een neutrale schaal met twee uiteinden in de woorden van de vraag (geen algemeen "hoog" of "laag", geen kleur die oordeelt). Knop "Opnieuw doen". Klapt uit de kopkaart van de pijler, zoals de warming-up bij een artikel; rekent in de browser (Klopt 2, Soms 1, Klopt niet 0) en bewaart niets. Teksten in het Engels, Nederlands en Portugees.
 - Controle op een pijler: geen Thermometer met minstens drie stellingen.
 
 ### Gewijzigd
