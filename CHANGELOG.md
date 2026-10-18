@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.4] - 2026-10-18
+
+### Gewijzigd
+- Testpagina zelftest: WP Rocket maakt er geen eigen kopie van de gebruikte opmaak meer (Remove Unused CSS uit voor alleen deze pagina). Een nieuwe opmaak van de test is daardoor na een release direct zichtbaar, zonder die kopie te legen.
+
 ## [3.5.3] - 2026-10-18
 
 ### Gewijzigd

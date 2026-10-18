@@ -287,7 +287,10 @@ $GLOBALS['wp_the_query'] = $GLOBALS['wp_query']; // phpcs:ignore WordPress.WP.Gl
 zt_is( 'proeftest' === sfp_zelftest_pagina_test(), 'testpagina herkend' );
 zt_is( false !== strpos( sfp_zelftest_pagina_sjabloon( 'thema.php' ), 'templates/zelftest-pagina.php' ), 'testpagina krijgt het eigen sjabloon' );
 zt_is( in_array( 'sfp-zt-testpagina', sfp_zelftest_pagina_body_class( array() ), true ), 'klasse op body' );
-zt_is( '' !== sfp_page_config_tekst( 'zelftest_stop' ) && '' !== sfp_page_config_tekst( 'zelftest_sluiten' ), 'teksten van het kruisje' );
+if ( ! did_action( 'wp' ) ) {
+    do_action( 'wp' );
+}
+zt_is( 0 === apply_filters( 'pre_get_rocket_option_remove_unused_css', null ), 'testpagina: geen Remove Unused CSS van WP Rocket' );zt_is( '' !== sfp_page_config_tekst( 'zelftest_stop' ) && '' !== sfp_page_config_tekst( 'zelftest_sluiten' ), 'teksten van het kruisje' );
 wp_delete_post( $zt_pagina, true );
 sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'testpagina' => 0 ) );
 
