@@ -55,6 +55,7 @@
 		};
 		/* Uitlegscherm tussen start en vraag 1, als het pakket het levert. */
 		var heeftUitleg = function () { var U = I.start && I.start.uitleg; return !!(U && T(U.knop)); };
+		var heeftOverzicht = function () { return !!(I.module && T(I.module.overzicht_knop) && T(I.module.overzicht_kop)); };
 		var laadstappen = function () { return (I.module && Array.isArray(I.module.laden) ? I.module.laden : []).map(T).filter(Boolean); };
 		var meta = { utm: {}, dienst: '', bron: '' };
 		if (params) {
@@ -209,7 +210,7 @@
 				+ '<div class="sfp-zt-opties">' + opties + '</div>'
 				+ '<p class="sfp-zt-foutmelding" id="sfp-zt-vraagfout" hidden role="alert">' + esc(T(V.kiesEen)) + '</p>'
 				+ '<div class="sfp-zt-vraagvoet"><button type="button" class="sfp-zt-terug" id="sfp-zt-vorige">' + esc(T(V.vorige)) + '</button>'
-				+ (meer || laatste ? '<button type="button" class="sfp-zt-knop" id="sfp-zt-verder">' + esc(laatste ? T(V.naarResultaat) : T(V.volgende)) + '</button>' : '') + '</div>'
+				+ (meer || laatste ? '<button type="button" class="sfp-zt-knop" id="sfp-zt-verder">' + esc(laatste && !heeftOverzicht() && !S.terugOverzicht ? T(V.naarResultaat) : T(V.volgende)) + '</button>' : '') + '</div>'
 				+ '</div>';
 			$('#sfp-zt-vorige').addEventListener('click', function () {
 				if (S.i > 0) { S.i--; teken(); } else { S.scherm = heeftUitleg() ? 'uitleg' : 'start'; teken(); }
@@ -243,8 +244,34 @@
 		}
 
 		function verder() {
+			/* Gewijzigd vanuit het overzicht: terug naar het overzicht. */
+			if (S.terugOverzicht) { S.terugOverzicht = false; S.scherm = 'overzicht'; teken(); return; }
 			if (S.i < S.volgorde.length - 1) { S.i++; teken(); return; }
+			if (heeftOverzicht()) { S.scherm = 'overzicht'; teken(); return; }
 			afronden();
+		}
+
+		/* ---------- Overzicht van de antwoorden, voor het versturen (sinds 3.5.9) ---------- */
+		function schermOverzicht() {
+			var Mo = I.module, V = I.vragenscherm;
+			var rijen = S.volgorde.map(function (nr, k) {
+				var v = vraag(nr), tx = v[C.taal] || {}, a = S.A[nr], o = tx.o || [];
+				var tekst = (Array.isArray(a) ? a : (a ? [a] : [])).map(function (l) { return o['abcdefghi'.indexOf(l)] || ''; }).filter(Boolean).join(' \u00b7 ');
+				return '<li><button type="button" class="sfp-zt-ov-rij" data-k="' + k + '"><span class="sfp-zt-ov-nr">' + (k + 1) + '</span><span class="sfp-zt-ov-tekst"><span class="sfp-zt-ov-vraag">' + esc(tx.v) + '</span><span class="sfp-zt-ov-antw">' + esc(tekst) + '</span></span></button></li>';
+			}).join('');
+			binnen.innerHTML = '<div class="sfp-zt-scherm sfp-zt-overzicht">'
+				+ '<div><h2 class="sfp-zt-h1" id="sfp-zt-ovkop" tabindex="-1">' + esc(T(Mo.overzicht_kop)) + '</h2>' + (T(Mo.overzicht_uitleg) ? '<p class="sfp-zt-uitleg-sub">' + esc(T(Mo.overzicht_uitleg)) + '</p>' : '') + '</div>'
+				+ '<ol class="sfp-zt-ov-lijst">' + rijen + '</ol>'
+				+ '<div class="sfp-zt-vraagvoet"><button type="button" class="sfp-zt-terug" id="sfp-zt-vorige">' + esc(T(V.vorige)) + '</button>'
+				+ '<button type="button" class="sfp-zt-knop" id="sfp-zt-naar-resultaat">' + esc(T(Mo.overzicht_knop)) + '</button></div>'
+				+ '</div>';
+			Array.prototype.forEach.call(binnen.querySelectorAll('.sfp-zt-ov-rij'), function (b) {
+				b.addEventListener('click', function () { S.i = +b.getAttribute('data-k'); S.terugOverzicht = true; S.scherm = 'vraag'; teken(); });
+			});
+			$('#sfp-zt-vorige').addEventListener('click', function () { S.i = S.volgorde.length - 1; S.scherm = 'vraag'; teken(); });
+			$('#sfp-zt-naar-resultaat').addEventListener('click', function () { afronden(); });
+			naarBoven();
+			$('#sfp-zt-ovkop').focus({ preventScroll: true });
 		}
 
 		/* ---------- Afronden ---------- */
@@ -256,6 +283,7 @@
 
 		function afronden() {
 			if (S.scherm === 'einde' || S.scherm === 'laden') return;
+			S.terugOverzicht = false;
 			S.R = M.bereken(S.A, S.lengte);
 			S.fout = '';
 			verstuurAfgerond();
@@ -366,10 +394,50 @@
 			/* Het scherm staat op de wortel, zodat het kruisje van de testpagina weet of iemand midden in de test zit. */
 			wortel.setAttribute('data-scherm', S.scherm);
 			if (S.scherm === 'vraag') schermVraag();
+			else if (S.scherm === 'overzicht') schermOverzicht();
 			else if (S.scherm === 'uitleg') schermUitleg();
 			else if (S.scherm === 'laden') schermLaden();
 			else if (S.scherm === 'einde') schermEinde();
 			else schermStart();
+			bewaarInHistorie();
+		}
+
+		/*
+		 * Terugknop van de browser (sinds 3.5.9): elk scherm van de test is een
+		 * stap in de geschiedenis, dus terug gaat naar de vorige vraag in plaats
+		 * van de pagina te verlaten. Na het versturen (laden, eindscherm) blijft
+		 * de bezoeker op het eindscherm: het resultaat is al onderweg.
+		 */
+		var hist = !!(window.history && history.pushState), vorigeSleutel = '', uitHistorie = false;
+		function sleutel() { return S.scherm + (S.scherm === 'vraag' ? ':' + S.i : ''); }
+		function bewaarInHistorie() {
+			if (!hist) return;
+			var k = sleutel(), st = { zt: k, s: S.scherm, i: S.i };
+			if (uitHistorie) { uitHistorie = false; vorigeSleutel = k; return; }
+			if (k === vorigeSleutel) return;
+			try {
+				if (!vorigeSleutel || S.scherm === 'laden' || S.scherm === 'einde') history.replaceState(st, '');
+				else history.pushState(st, '');
+			} catch (e) { /* geschiedenis niet beschikbaar: geen probleem */ }
+			vorigeSleutel = k;
+		}
+		if (hist) {
+			window.addEventListener('popstate', function (e) {
+				if (S.scherm === 'einde' || S.scherm === 'laden') {
+					try { history.pushState({ zt: sleutel(), s: S.scherm, i: S.i }, ''); } catch (x) { /* niets */ }
+					return;
+				}
+				var st = e.state;
+				if (st && st.zt && st.s) {
+					S.scherm = (st.s === 'vraag' || st.s === 'overzicht') && !S.volgorde.length ? 'start' : st.s;
+					S.i = st.i || 0;
+				} else {
+					S.scherm = 'start';
+				}
+				S.terugOverzicht = false;
+				uitHistorie = true;
+				teken();
+			});
 		}
 
 		teken();
