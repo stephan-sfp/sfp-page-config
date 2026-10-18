@@ -532,5 +532,5 @@ function sfp_page_config_vervolg_blokken( $toegestaan, $context ) {
     if ( empty( $context->post ) || 'sfp_vervolg' !== $context->post->post_type ) {
         return $toegestaan;
     }
-    return array( 'sfp/vervolg', 'sfp/vervolg-vlak', 'core/heading', 'core/paragraph', 'core/buttons', 'core/button', 'core/list', 'core/list-item' );
+    return array( 'sfp/vervolg', 'sfp/vervolg-vlak', 'core/heading', 'core/paragraph', 'core/buttons', 'core/button', 'core/list', 'core/list-item', 'sfp/zelftest-cta' );
 }

@@ -66,13 +66,18 @@ function sfp_zelftest_stand() {
                 'webhook_start'    => '' !== $inst['webhook_start'],
                 'webhook_afgerond' => '' !== $inst['webhook_afgerond'],
                 'proefmodus'       => '1' === (string) $inst['proefmodus'],
+                'cta_kop'          => $inst['cta_kop'],
+                'cta_zin'          => $inst['cta_zin'],
+                'cta_knop'         => $inst['cta_knop'],
             ),
+            'cta'          => function_exists( 'sfp_zelftest_cta_gegevens' ) ? sfp_zelftest_cta_gegevens( $test ) : null,
             'tellingen'    => sfp_zelftest_tellingen( $test ),
         );
     }
     $log = get_option( 'sfp_zelftest_log', array() );
     return array(
         'aan'        => sfp_page_config_onderdeel_aan( 'zelftest' ),
+        'site_test'  => function_exists( 'sfp_zelftest_site_test' ) ? sfp_zelftest_site_test() : '',
         'tests'      => $tests,
         'cloudflare' => array(
             'account' => '' !== $cf['account'],

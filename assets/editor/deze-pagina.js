@@ -288,9 +288,8 @@
 			var kern = select( 'core' );
 			return {
 				categorieen: kern.getEntityRecords( 'taxonomy', 'category', { per_page: 100, orderby: 'name', order: 'asc', _fields: 'id,name,parent' } ) || [],
-				tools: 'post' === editor.type && 'pijler' === meta.sfp_vorm ? ( kern.getEntityRecords( 'postType', 'tool', { per_page: 100, status: 'publish', orderby: 'title', order: 'asc', _fields: 'id,title' } ) || [] ) : [],
 			};
-		}, [ editor.type, meta.sfp_vorm ] );
+		}, [ editor.type ] );
 		var catOpties = lijsten.categorieen.map( function ( t ) {
 			return { value: String( t.id ), label: ( t.parent ? '\u00a0\u00a0' : '' ) + tekstVan( t.name ) };
 		} );
@@ -341,10 +340,13 @@
 				__nextHasNoMarginBottom: true,
 				__next40pxDefaultSize: true,
 			} ) );
-			var toolOpties = [ { value: '0', label: 'Geen zelftest' } ].concat( lijsten.tools.map( function ( t ) {
-				return { value: String( t.id ), label: tekstVan( t.title && ( t.title.rendered || t.title.raw ) ) || ( 'Tool ' + t.id ) };
-			} ) );
-			delen.push( stuk( 'Zelftest van de pijler', 'Komt in de kopkaart en als promokaart. Leeg: de promokaart die bij een pijler hoort.', 'sfp_zelftest_tool', toolOpties, true ) );
+			var zt = stand.vorm && stand.vorm.zelftests ? stand.vorm.zelftests : { tests: [], site: '' };
+			var siteNaam = '';
+			zt.tests.forEach( function ( t ) { if ( t.test === zt.site ) { siteNaam = t.naam; } } );
+			var testOpties = [ { value: '', label: siteNaam ? 'De test van de site: ' + siteNaam : 'De test van de site (nog geen)' } ]
+				.concat( zt.tests.filter( function ( t ) { return t.test !== zt.site; } ).map( function ( t ) { return { value: t.test, label: t.naam }; } ) )
+				.concat( [ { value: '-', label: 'Geen zelftest' } ] );
+			delen.push( stuk( 'Zelftest van de pijler', 'Uit het onderdeel Zelftest. Komt in de kopkaart en als promokaart op de plek van het boek. Bij geen zelftest: het boek.', 'sfp_zelftest', testOpties, false ) );
 			if ( stand.vorm ) {
 				delen.push( regel( 'Hoort onder', stand.vorm.onder ? stand.vorm.onder : 'geen pijler erboven' ) );
 				if ( typeof stand.vorm.artikelen === 'number' ) {

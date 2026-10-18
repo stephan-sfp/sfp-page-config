@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.6.0-beta.5] - 2026-10-18
+
+Bevat ook alles uit 3.5.2 tot en met 3.5.10 (zelftest).
+
+### Toegevoegd
+- **Blok Zelftest-oproep en code `[sfp_zelftest_cta]`** (onderdeel Zelftest): de test van de site met kop, één zin en knop, voor de leadmagnetplek op trainings- en coachpagina's en in het vervolg onder artikelen. Elke plaatsing zet een bronlabel in de link (`?bron=`) voor GA4; leeg is het soort pagina en het adres. Niet op toolpagina's of het overzicht van de tools: de zelftest is geen tool.
+- SFP Beheer, Zelftest: per test de tekst van de oproep (kop, zin, knoptekst). Leeg: de naam van de test en de vaste knoptekst. Eén bron voor het blok, de code en de pijler.
+
+### Gewijzigd
+- **Zelftest op de pijler uit het onderdeel Zelftest** (besluit Stephan 18-10): de promokaart van een pijler toont de zelftest op de plek van het boek, en de kopkaart de actie Zelftest, met de tekst en link van de oproep. Standaard de test van de site; in het paneel Deze pagina een andere test of geen. Zonder zelftest: de kaart die bij een pijler hoort. Vervangt de koppeling met een bericht van het type tool (`sfp_zelftest_tool`, alleen in proefversies gebruikt).
+
 ## [3.6.0-beta.4] - 2026-10-18
 
 ### Toegevoegd
