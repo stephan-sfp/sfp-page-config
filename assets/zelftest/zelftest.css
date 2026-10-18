@@ -299,3 +299,12 @@ body.sfp-zt-testpagina .sfp-zt-uitleg .sfp-zt-vraagvoet{margin-top:10px}
 body.sfp-zt-testpagina .sfp-zt-overzicht{gap:22px}
 .sfp-zt .sfp-zt-ov-lijst{max-height:none;overflow:visible}
 }
+/* Overzicht ingeklapt (sinds 3.5.10). */
+.sfp-zt-ov{border-top:1px solid var(--zt-lijn);border-bottom:1px solid var(--zt-lijn)}
+.sfp-zt-ov summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 2px;cursor:pointer;list-style:none;font:400 17px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair)}
+.sfp-zt-ov summary::-webkit-details-marker{display:none}
+.sfp-zt-ov summary::after{content:"";flex:none;width:10px;height:10px;border:solid var(--sfp-b-primair);border-width:0 2px 2px 0;transform:rotate(45deg);margin:-4px 6px 0 0;transition:transform .2s}
+.sfp-zt-ov[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.sfp-zt-ov summary:focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:2px}
+.sfp-zt-ov .sfp-zt-ov-lijst{margin:0 0 16px}
+@media (prefers-reduced-motion:reduce){.sfp-zt-ov summary::after{transition:none}}
