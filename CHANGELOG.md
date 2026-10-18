@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.3] - 2026-10-18
+
+### Gewijzigd
+- Testpagina: geen lijn meer onder de balk met logo en kruisje.
+
 ## [3.5.2] - 2026-10-18
 
 ### Toegevoegd
