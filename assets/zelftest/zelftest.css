@@ -214,3 +214,7 @@ body.admin-bar.sfp-zt-testpagina{min-height:calc(100vh - 32px);min-height:calc(1
 body.sfp-zt-testpagina .sfp-zt-top{flex:none}
 body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center}
 body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud>.sfp-zt{width:100%}
+/* De gekozen kaart (complete zelftest) iets steviger omrand (18-10-2026); de binnenruimte schuift mee, zodat de kaarten even groot blijven. */
+.sfp-zt-kaartje.hoofd{border-width:2.5px}
+body.sfp-zt-testpagina .sfp-zt-kaartje.hoofd{padding:15px}
+@media (max-width:640px){body.sfp-zt-testpagina .sfp-zt-kaartje.hoofd{padding:11px 13px}}
