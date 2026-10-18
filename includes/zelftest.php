@@ -207,7 +207,7 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
     if ( array_key_exists( 'logo', $wijzigingen ) ) {
         // Het logo op de testpagina: een afbeelding uit de mediabibliotheek.
         $logo       = absint( $wijzigingen['logo'] );
-        // Een afbeelding of een SVG (scherp op elke grootte, sinds 3.6.0).
+        // Een afbeelding of een SVG (scherp op elke grootte, sinds 3.5.2).
         $nu['logo'] = ( $logo > 0 && ( wp_attachment_is_image( $logo ) || 'image/svg+xml' === get_post_mime_type( $logo ) ) ) ? $logo : 0;
     }
     if ( array_key_exists( 'pdf_pad', $wijzigingen ) ) {

@@ -4,7 +4,7 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.6.0-beta.1] - 2026-10-18
+## [3.5.2] - 2026-10-18
 
 ### Toegevoegd
 - Zelftest: een uitlegscherm tussen het startscherm en vraag 1 ("Zo werkt de test"), met de voornaam in de kop. Teksten uit het testpakket (`start.uitleg`); zonder die teksten blijft de uitleg boven vraag 1 zoals eerder.

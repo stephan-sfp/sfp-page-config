@@ -89,13 +89,13 @@
 .sfp-zt .sfp-zt-terug:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 @media (prefers-reduced-motion:reduce){.sfp-zt-voortgang b{transition:none}}
 
-/* Uitleg voor vraag 1 (sinds 3.6.0) */
+/* Uitleg voor vraag 1 (sinds 3.5.2) */
 .sfp-zt-uitleg-sub{margin:10px 0 0;font-size:19px;line-height:1.5;color:var(--sfp-b-primair)}
 .sfp-zt-uitleg-blok{display:flex;flex-direction:column;gap:12px;padding:22px 24px;background:var(--sfp-b-tint3);border-left:5px solid var(--sfp-b-secundair);border-radius:0 var(--sfp-b-r-knop) var(--sfp-b-r-knop) 0}
 .sfp-zt-uitleg-blok p{margin:0;font-size:17px;line-height:1.6;color:var(--sfp-b-primair)}
 .sfp-zt .sfp-zt-uitleg-blok .sfp-zt-uitleg-titel{font:900 15px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.05em}
 
-/* Overgang naar het resultaat (sinds 3.6.0) */
+/* Overgang naar het resultaat (sinds 3.5.2) */
 .sfp-zt .sfp-zt-stappen{list-style:none;margin:0 auto;padding:0;display:flex;flex-direction:column;gap:16px;width:max-content;max-width:100%}
 .sfp-zt-stappen li{display:flex;align-items:center;gap:14px;margin:0;font:400 19px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);opacity:.35;transition:opacity .3s}
 .sfp-zt-stappen li.bezig,.sfp-zt-stappen li.klaar{opacity:1}
