@@ -822,12 +822,13 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
         $acties .= '<a class="sfp-art-actie" href="' . esc_url( 'https://www.google.com/preferences/source?q=' . rawurlencode( $host ) ) . '" target="_blank" rel="noopener">' . sfp_page_config_artikel_icoon( 'ster' ) . '<span class="sfp-lang">' . esc_html( $t( 'favoriet' ) ) . '</span><span class="sfp-kort">' . esc_html( $t( 'favoriet_kort' ) ) . '</span></a>';
     }
 
-    // Pijler: de zelftest van de pijler staat op de plek van de warming-up.
+    // Pijler: de Thermometer staat op de plek van de warming-up (besluit
+    // Stephan 18-10-2026). De zelftest staat op een pijler alleen in de promokaart.
     $pijler = function_exists( 'sfp_page_config_vorm' ) && 'pijler' === sfp_page_config_vorm( $post );
-    $test   = $pijler ? sfp_page_config_pijler_zelftest( $post, 'pijler-kop' ) : null;
-    if ( $test ) {
-        $aantal  = (int) $test['vragen'];
-        $acties .= '<a class="sfp-art-actie" href="' . esc_url( $test['url'] ) . '">' . sfp_page_config_artikel_icoon( 'vraag' ) . '<span class="sfp-lang">' . esc_html( $aantal ? sprintf( $t( 'zelftest_n' ), $aantal ) : $t( 'zelftest' ) ) . '</span><span class="sfp-kort">' . esc_html( $t( 'zelftest' ) ) . '</span></a>';
+    $thermo = $pijler && function_exists( 'sfp_page_config_thermometer' ) ? sfp_page_config_thermometer() : null;
+    if ( $thermo ) {
+        $acties  .= $knop( 'sfp-art-paneel-thermo', 'thermo', esc_html( sprintf( $t( 'thermo_n' ), count( $thermo['stellingen'] ) ) ), esc_html( $t( 'thermo' ) ) );
+        $panelen .= sfp_page_config_thermometer_paneel( $thermo, $hoofdstukken );
     }
 
     // Warming-up (niet op een pijler).

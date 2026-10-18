@@ -978,6 +978,14 @@ function sfp_page_config_pijler_controle( $post ) {
             );
         }
     }
+    if ( function_exists( 'sfp_page_config_heeft_thermometer' ) && ! sfp_page_config_heeft_thermometer( $post ) ) {
+        $meldingen[] = array(
+            'code'  => 'pijler-thermometer',
+            'kort'  => 'Geen Thermometer',
+            'tekst' => 'Deze pijler heeft nog geen blok Thermometer met minstens drie stellingen. De Thermometer klapt uit de kopkaart en betrekt de lezer bij het probleem van de pijler.',
+            'actie' => 'editor',
+        );
+    }
     if ( ! sfp_page_config_pijler_artikelen( $term, null, true ) ) {
         $meldingen[] = array(
             'code'  => 'pijler-leeg',
