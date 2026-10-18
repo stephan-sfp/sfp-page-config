@@ -65,7 +65,7 @@
 @media (max-width:640px){.sfp-zt-keuzes{grid-template-columns:1fr}}
 /* Telefoon: één knop, de duur eronder en een tekstlink naar de andere versie (sinds 3.5.5). */
 .sfp-zt-mob{display:none}
-.sfp-zt-mob-tijd{margin:8px 0 0;text-align:center;font-size:14px;color:var(--sfp-b-body)}
+.sfp-zt-mob-tijd{margin:14px 0 0;text-align:center;font-size:14px;color:var(--sfp-b-body)}
 .sfp-zt .sfp-zt-mob-ander{align-self:center;margin:18px 0 0;padding:6px 4px;background:none;border:0;box-shadow:none;min-height:0;font:400 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-transform:none;letter-spacing:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .sfp-zt .sfp-zt-mob-ander::after{content:" \2192";display:inline-block;margin-left:6px;text-decoration:none}
 .sfp-zt .sfp-zt-mob-ander:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
