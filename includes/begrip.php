@@ -296,8 +296,8 @@ function sfp_page_config_render_begrip_check( $attrs, $content ) {
     }
     $id = wp_unique_id( 'sfp-check-' );
     return sfp_page_config_blokken_css_vangnet( 'sfp/begrip-check' )
-        . '<aside ' . sfp_page_config_blok_omhulling( array( 'sfp-check' ) ) . ' aria-labelledby="' . esc_attr( $id ) . '">'
-        . '<span class="sfp-blok-label" id="' . esc_attr( $id ) . '">' . esc_html( sfp_page_config_artikel_tekst( 'check' ) ) . '</span>'
+        . '<aside ' . sfp_page_config_blok_omhulling( array( 'sfp-check' ) ) . ' aria-labelledby="' . esc_attr( $id ) . '" data-volgende="' . esc_attr( sfp_page_config_artikel_tekst( 'check_volgende' ) ) . '" data-teller="' . esc_attr( sfp_page_config_artikel_tekst( 'vraag_van' ) ) . '">'
+        . '<div class="sfp-check__kop"><span class="sfp-blok-label" id="' . esc_attr( $id ) . '">' . esc_html( sfp_page_config_artikel_tekst( 'check' ) ) . '</span></div>'
         . $content
         . '</aside>';
 }

@@ -4,10 +4,10 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.7.1-beta.2] - 2026-10-19
+## [3.7.1-beta.3] - 2026-10-19
 
 ### Gewijzigd
-- Check your understanding compacter: antwoorden als knoppen naast elkaar, kleinere letters en minder witruimte (feedback Stephan).
+- Check your understanding toont één vraag tegelijk, met een teller (Vraag 1 van 2) en na het antwoord de knop Volgende vraag. Weer op het oorspronkelijke formaat; de compacte opmaak van beta.2 is teruggedraaid (feedback Stephan). Zonder script staan alle vragen onder elkaar.
 
 ## [3.7.1-beta.1] - 2026-10-19
 
