@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.0-beta.4] - 2026-10-18
+
+### Gewijzigd
+- Testpagina: elk scherm staat verticaal in het midden van de ruimte onder de balk, zodat er geen lege strook onder het startscherm valt.
+- Vraagschermen: een kolom van 760 px in het midden, opties onder elkaar, grotere vraagtekst.
+
 ## [3.5.0-beta.3] - 2026-10-18
 
 ### Gerepareerd
