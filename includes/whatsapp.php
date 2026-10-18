@@ -30,6 +30,10 @@ function sfp_page_config_whatsapp_op_pagina() {
     if ( ! is_singular( sfp_page_config_post_types() ) || ! sfp_page_config_onderdeel_aan( 'whatsapp' ) ) {
         return false;
     }
+    // De testpagina van de zelftest heeft geen WhatsApp-knop: alleen het kruisje leidt weg.
+    if ( function_exists( 'sfp_zelftest_pagina_test' ) && '' !== sfp_zelftest_pagina_test() ) {
+        return false;
+    }
     return '1' === get_post_meta( get_queried_object_id(), 'sfp_whatsapp', true );
 }
 

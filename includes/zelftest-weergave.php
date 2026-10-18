@@ -75,6 +75,21 @@ function sfp_zelftest_merk_css() {
 }
 
 /**
+ * De stijl van de test, met de variabelen van de site. Eén keer per pagina.
+ *
+ * @return void
+ */
+function sfp_zelftest_stijl() {
+    static $klaar = false;
+    if ( $klaar ) {
+        return;
+    }
+    $klaar = true;
+    wp_enqueue_style( 'sfp-zelftest', SFP_PAGE_CONFIG_URL . 'assets/zelftest/zelftest.css', array(), SFP_PAGE_CONFIG_VERSION );
+    wp_add_inline_style( 'sfp-zelftest', sfp_zelftest_merk_css() );
+}
+
+/**
  * De test op de pagina.
  *
  * @param  array|string $atts Attributen.
@@ -107,8 +122,7 @@ function sfp_zelftest_shortcode( $atts ) {
         'privacy' => (string) get_privacy_policy_url(),
     );
 
-    wp_enqueue_style( 'sfp-zelftest', SFP_PAGE_CONFIG_URL . 'assets/zelftest/zelftest.css', array(), SFP_PAGE_CONFIG_VERSION );
-    wp_add_inline_style( 'sfp-zelftest', sfp_zelftest_merk_css() );
+    sfp_zelftest_stijl();
     wp_enqueue_script( 'sfp-zelftest', SFP_PAGE_CONFIG_URL . 'assets/zelftest/zelftest.js', array(), SFP_PAGE_CONFIG_VERSION, true );
     $veilig = function ( $js ) {
         return str_ireplace( '</script', '<\/script', (string) $js );
@@ -137,5 +151,6 @@ function sfp_zelftest_rocket_delay( $uitsluitingen ) {
     $uitsluitingen   = (array) $uitsluitingen;
     $uitsluitingen[] = 'sfp-zelftest';
     $uitsluitingen[] = 'sfpZelftest';
+    $uitsluitingen[] = 'assets/zelftest/';
     return $uitsluitingen;
 }

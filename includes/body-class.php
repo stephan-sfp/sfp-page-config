@@ -70,6 +70,10 @@ function sfp_page_config_enqueue_sales_assets() {
     if ( ! $type ) {
         return;
     }
+    // De testpagina van de zelftest heeft geen knop onderaan: alleen het kruisje leidt weg.
+    if ( function_exists( 'sfp_zelftest_pagina_test' ) && '' !== sfp_zelftest_pagina_test() ) {
+        return;
+    }
 
     // Sales page CSS (always loaded on sales pages).
     wp_enqueue_style(

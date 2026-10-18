@@ -90,9 +90,9 @@
 			var kort = C.lengtes.short ? '<div class="sfp-zt-kaartje' + (S.kortEerst ? ' hoofd' : '') + '"><span class="sfp-zt-lab">' + esc(T(St.p4_kop)) + '</span><p class="sfp-zt-uitleg2"><b>' + ph(T(St.p4_tekst)) + '</b></p>' + (T(St.p4_uitleg) ? '<p class="sfp-zt-uitleg2">' + esc(T(St.p4_uitleg)) + '</p>' : '') + '<button type="button" class="sfp-zt-knop' + (S.kortEerst ? '' : ' stil') + '" data-lengte="short">' + esc(T(St.p4_knop)) + '</button></div>' : '';
 			var privacy = St.p9_url || C.privacy;
 			binnen.innerHTML = '<div class="sfp-zt-scherm sfp-zt-start">'
-				+ '<div><span class="sfp-zt-lab licht">' + esc(T(I.algemeen.testnaam)) + '</span><h2 class="sfp-zt-h1">' + esc(T(St.kop)) + '</h2></div>'
+				+ '<div class="sfp-zt-start-tekst"><div><span class="sfp-zt-lab licht">' + esc(T(I.algemeen.testnaam)) + '</span><h2 class="sfp-zt-h1">' + esc(T(St.kop)) + '</h2></div>'
 				+ (T(St.intro) ? '<div class="sfp-zt-intro"><p>' + esc(T(St.intro)) + '</p>' + (T(St.introLijstkop) ? '<p class="sfp-zt-lijstkop">' + ph(T(St.introLijstkop)) + '</p>' : '') + (St.introPunten && St.introPunten.length ? '<ul class="sfp-zt-lijst">' + St.introPunten.map(function (a) { return '<li>' + esc(T(a)) + '</li>'; }).join('') + '</ul>' : '') + '</div>' : '')
-				+ (T(St.instructie) ? '<p class="sfp-zt-instructie">' + esc(T(St.instructie)) + '</p>' : '')
+				+ '</div>'
 				+ '<div class="sfp-zt-formulier">'
 				+ '<div class="sfp-zt-veld" data-veld="naam"><label for="sfp-zt-voornaam">' + esc(T(St.p6_voornaam)) + '</label><input type="text" id="sfp-zt-voornaam" placeholder="' + esc(T(St.p6_voornaam)) + '" autocomplete="given-name" maxlength="100" value="' + esc(S.voornaam) + '"><span class="sfp-zt-fout">' + esc(T(St.fout_naam)) + '</span></div>'
 				+ '<div class="sfp-zt-veld" data-veld="email"><label for="sfp-zt-email">' + esc(T(St.p6_email)) + '</label><input type="email" id="sfp-zt-email" placeholder="' + esc(T(St.p6_email)) + '" autocomplete="email" inputmode="email" maxlength="190" value="' + esc(S.email) + '"><span class="sfp-zt-fout">' + esc(T(St.fout_email)) + '</span></div>'
@@ -155,6 +155,7 @@
 			binnen.innerHTML = '<div class="sfp-zt-scherm">'
 				+ '<div class="sfp-zt-vraagkop"><span class="sfp-zt-lab">' + esc(blok) + '</span><span class="sfp-zt-tel">' + esc(T(V.voortgang).replace('{n}', n).replace('{t}', t)) + '</span></div>'
 				+ '<div class="sfp-zt-voortgang" role="progressbar" aria-valuemin="0" aria-valuemax="' + t + '" aria-valuenow="' + n + '"><b style="width:' + Math.round(n / t * 100) + '%"></b></div>'
+				+ (S.i === 0 && T(I.start.instructie) ? '<p class="sfp-zt-instructie">' + esc(T(I.start.instructie)) + '</p>' : '')
 				+ '<p class="sfp-zt-vraag" id="sfp-zt-vraagtekst" tabindex="-1">' + esc(tx.v) + (meer ? '<small>' + esc(T(V.meerdere)) + '</small>' : '') + '</p>'
 				+ '<div class="sfp-zt-opties">' + opties + '</div>'
 				+ '<p class="sfp-zt-foutmelding" id="sfp-zt-vraagfout" hidden role="alert">' + esc(T(V.kiesEen)) + '</p>'
@@ -289,6 +290,8 @@
 		}
 
 		function teken() {
+			/* Het scherm staat op de wortel, zodat het kruisje van de testpagina weet of iemand midden in de test zit. */
+			wortel.setAttribute('data-scherm', S.scherm);
 			if (S.scherm === 'vraag') schermVraag();
 			else if (S.scherm === 'einde') schermEinde();
 			else schermStart();

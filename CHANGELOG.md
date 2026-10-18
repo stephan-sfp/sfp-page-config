@@ -4,6 +4,63 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.0] - 2026-10-18
+
+Een eigen testpagina voor de zelftest, en releases voortaan via een GitHub Action. Proefversies: 3.5.0-beta.1 tot en met beta.4 (op DPS).
+
+### Toegevoegd
+- **Testpagina van de zelftest:** de pagina die in SFP Beheer, Zelftest, als testpagina staat, krijgt een eigen weergave zonder kop, menu en voet van het thema. Bovenaan een smalle balk met het logo (niet klikbaar) en een kruisje. Statistiek, conversiemeting, cookiemelding en A/B-test laden zoals op elke pagina.
+- **Kruisje:** terug naar de pagina op de site waar de bezoeker vandaan kwam, anders naar de homepage. Midden in de test eerst de vraag "Weet je zeker dat je stopt? Je antwoorden worden niet bewaard." Teksten in `includes/teksten.php` (nl, en, pt).
+- **Instelling "Logo op de testpagina"** (media-ID) in SFP Beheer, Zelftest: het logo voor een witte achtergrond. Leeg: het logo van de site.
+- **Release-workflow** (`.github/workflows/release.yml`): GitHub maakt zelf de release zodra er een nieuwe versie in de repo staat; een versie met een streepje wordt een pre-release.
+
+### Gewijzigd
+- Testpagina op volle breedte, elk scherm verticaal in het midden: het startscherm in twee kolommen (tekst links, formulier rechts), de vragen in een kolom van 760 px. Startscherm en vragen passen op desktop, tablet en een telefoon van 390 x 844 op één scherm; het eindscherm mag scrollen.
+- Telefoon: de drie punten op het startscherm en de uitleg in de keuzekaarten vallen weg.
+- De uitleg "De vragen in deze test dwingen je…" staat boven vraag 1 in plaats van op het startscherm.
+- Keuzekaarten met gelijke tekst en even hoge knoppen; de pijl bij "Vorige" valt buiten de onderstreping.
+- Op de testpagina geen knop onderaan, geen WhatsApp-knop en geen scrollbalk.
+
+### Gerepareerd
+- Onder een korte testpagina bleef de achtergrondkleur van de site zichtbaar (DPS zet een merkkleur op html); de testpagina is nu tot onderaan wit.
+
+## [3.5.0-beta.4] - 2026-10-18
+
+### Gewijzigd
+- Testpagina: elk scherm staat verticaal in het midden van de ruimte onder de balk, zodat er geen lege strook onder het startscherm valt.
+- Vraagschermen: een kolom van 760 px in het midden, opties onder elkaar, grotere vraagtekst.
+
+## [3.5.0-beta.3] - 2026-10-18
+
+### Gerepareerd
+- Testpagina: onder de inhoud bleef de achtergrond van de site zichtbaar (DPS zet een merkkleur op html). De testpagina is nu tot onderaan wit.
+
+## [3.5.0-beta.2] - 2026-10-18
+
+### Gewijzigd
+- Testpagina gebruikt de volle breedte (tot 1200 px): het startscherm staat op desktop in twee kolommen (tekst links, formulier rechts, bovenkanten gelijk), de antwoordopties in twee kolommen. Startscherm en vragen passen op desktop en tablet op één scherm.
+- Telefoon: compacter; de drie punten op het startscherm en de uitleg in de keuzekaarten vallen weg.
+- De uitleg "De vragen in deze test dwingen je…" staat niet meer op het startscherm maar boven vraag 1.
+- Keuzekaarten: gelijke tekst en even hoge knoppen.
+
+### Toegevoegd
+- Instelling "Logo op de testpagina" (media-ID) in SFP Beheer, Zelftest: het logo voor een witte achtergrond. Leeg: het logo van de site.
+
+## [3.5.0-beta.1] - 2026-10-18
+
+### Toegevoegd
+- **Testpagina van de zelftest:** de pagina die in SFP Beheer, Zelftest, als testpagina staat, krijgt een eigen weergave zonder kop, menu en voet van het thema. Bovenaan alleen een smalle balk met het logo van de site (niet klikbaar) en een kruisje rechtsboven. Statistiek, conversiemeting, cookiemelding en A/B-test laden zoals op elke pagina.
+- **Kruisje:** gaat terug naar de pagina op deze site waar de bezoeker vandaan kwam, anders naar de homepage. Midden in de test eerst de vraag "Weet je zeker dat je stopt? Je antwoorden worden niet bewaard." met Stoppen en Verder met de test. Teksten in `includes/teksten.php` (nl, en, pt).
+- Release-workflow (`.github/workflows/release.yml`), getest met 3.4.1-beta.1; gaat met deze versie mee naar main.
+
+### Gewijzigd
+- Op de testpagina geen knop onderaan en geen WhatsApp-knop: alleen het kruisje leidt weg.
+
+## [3.4.1-beta.1] - 2026-10-18
+
+### Toegevoegd
+- Release-workflow (`.github/workflows/release.yml`): GitHub maakt zelf de release zodra er een nieuwe versie in de repo staat. Een versie met een streepje wordt een pre-release. Deze proefversie test de workflow; de plugin zelf is niet veranderd.
+
 ## [3.4.0] - 2026-10-18
 
 Een generieke zelftest voor bezoekers, met de presentatietest van De Presenteerschool als eerste invulling. De techniek zit in de plugin; de inhoud per label is een testpakket dat in SFP Beheer of via REST wordt ingelezen. Het onderdeel staat standaard uit. Proefversies: 3.4.0-beta.1 tot en met beta.5.

@@ -61,6 +61,7 @@ function sfp_zelftest_stand() {
             'instellingen' => array(
                 'testpagina'       => (int) $inst['testpagina'],
                 'testpagina_url'   => sfp_zelftest_testpagina_url( $test ),
+                'logo'             => (int) $inst['logo'],
                 'pdf_pad'          => $inst['pdf_pad'],
                 'webhook_start'    => '' !== $inst['webhook_start'],
                 'webhook_afgerond' => '' !== $inst['webhook_afgerond'],
