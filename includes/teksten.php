@@ -333,6 +333,36 @@ function sfp_page_config_teksten_register() {
             'en'    => 'Hi, I have a question',
             'pt'    => 'Olá, tenho uma dúvida',
         ),
+
+        // Zelftest: de testpagina (sinds 3.5.0).
+        'zelftest_sluiten'   => array(
+            'groep' => 'Zelftest',
+            'label' => 'Kruisje op de testpagina (voor schermlezers)',
+            'nl'    => 'Sluiten',
+            'en'    => 'Close',
+            'pt'    => 'Fechar',
+        ),
+        'zelftest_stop'      => array(
+            'groep' => 'Zelftest',
+            'label' => 'Vraag bij het kruisje tijdens de test',
+            'nl'    => 'Weet je zeker dat je stopt? Je antwoorden worden niet bewaard.',
+            'en'    => 'Are you sure you want to stop? Your answers will not be saved.',
+            'pt'    => 'Tem certeza de que quer parar? Suas respostas não serão salvas.',
+        ),
+        'zelftest_stop_ja'   => array(
+            'groep' => 'Zelftest',
+            'label' => 'Knop: stoppen',
+            'nl'    => 'Stoppen',
+            'en'    => 'Stop',
+            'pt'    => 'Parar',
+        ),
+        'zelftest_stop_nee'  => array(
+            'groep' => 'Zelftest',
+            'label' => 'Knop: verder met de test',
+            'nl'    => 'Verder met de test',
+            'en'    => 'Continue the test',
+            'pt'    => 'Continuar o teste',
+        ),
     );
 
     return $register;

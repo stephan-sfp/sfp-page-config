@@ -279,6 +279,18 @@ if ( ! empty( $manifest['blad']['voet'] ) ) {
 zt_is( ! function_exists( 'sfp_zelftest_maak_deelbeeld' ) && ! function_exists( 'sfp_zelftest_link_deel' ), 'geen deelfunctie meer' );
 zt_is( ! array_key_exists( 'deel_pad', sfp_zelftest_instellingen( 'proeftest' ) ), 'geen instelling voor een deelpagina' );
 
+/* ---------- Testpagina (3.5.0) ---------- */
+$zt_pagina = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Proeftest pagina', 'post_content' => '<!-- wp:sfp/zelftest {"test":"proeftest"} /-->' ) );
+sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'testpagina' => $zt_pagina ) );
+$GLOBALS['wp_query'] = new WP_Query( array( 'page_id' => $zt_pagina ) ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+$GLOBALS['wp_the_query'] = $GLOBALS['wp_query']; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+zt_is( 'proeftest' === sfp_zelftest_pagina_test(), 'testpagina herkend' );
+zt_is( false !== strpos( sfp_zelftest_pagina_sjabloon( 'thema.php' ), 'templates/zelftest-pagina.php' ), 'testpagina krijgt het eigen sjabloon' );
+zt_is( in_array( 'sfp-zt-testpagina', sfp_zelftest_pagina_body_class( array() ), true ), 'klasse op body' );
+zt_is( '' !== sfp_page_config_tekst( 'zelftest_stop' ) && '' !== sfp_page_config_tekst( 'zelftest_sluiten' ), 'teksten van het kruisje' );
+wp_delete_post( $zt_pagina, true );
+sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'testpagina' => 0 ) );
+
 /* ---------- IP-adres ---------- */
 zt_is( sfp_zelftest_is_cloudflare( '162.158.1.1' ) && sfp_zelftest_is_cloudflare( '2606:4700::1' ), 'adressen van Cloudflare herkend' );
 zt_is( ! sfp_zelftest_is_cloudflare( '8.8.8.8' ) && ! sfp_zelftest_is_cloudflare( 'rommel' ), 'andere adressen niet' );

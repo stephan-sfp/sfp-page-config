@@ -172,6 +172,10 @@ function sfp_page_config_scroll_progress_bar() {
     if ( ! is_singular( sfp_page_config_post_types() ) || ! sfp_page_config_onderdeel_aan( 'voortgang' ) ) {
         return;
     }
+    // De testpagina van de zelftest heeft een eigen voortgang per vraag.
+    if ( function_exists( 'sfp_zelftest_pagina_test' ) && '' !== sfp_zelftest_pagina_test() ) {
+        return;
+    }
 
     ?>
     <div id="sfp-scroll-container" aria-hidden="true"><div id="sfp-scroll-bar"></div></div>

@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.0-beta.1] - 2026-10-18
+
+### Toegevoegd
+- **Testpagina van de zelftest:** de pagina die in SFP Beheer, Zelftest, als testpagina staat, krijgt een eigen weergave zonder kop, menu en voet van het thema. Bovenaan alleen een smalle balk met het logo van de site (niet klikbaar) en een kruisje rechtsboven. Statistiek, conversiemeting, cookiemelding en A/B-test laden zoals op elke pagina.
+- **Kruisje:** gaat terug naar de pagina op deze site waar de bezoeker vandaan kwam, anders naar de homepage. Midden in de test eerst de vraag "Weet je zeker dat je stopt? Je antwoorden worden niet bewaard." met Stoppen en Verder met de test. Teksten in `includes/teksten.php` (nl, en, pt).
+- Release-workflow (`.github/workflows/release.yml`), getest met 3.4.1-beta.1; gaat met deze versie mee naar main.
+
+### Gewijzigd
+- Op de testpagina geen knop onderaan en geen WhatsApp-knop: alleen het kruisje leidt weg.
+
 ## [3.4.1-beta.1] - 2026-10-18
 
 ### Toegevoegd

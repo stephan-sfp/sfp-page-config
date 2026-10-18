@@ -289,6 +289,8 @@
 		}
 
 		function teken() {
+			/* Het scherm staat op de wortel, zodat het kruisje van de testpagina weet of iemand midden in de test zit. */
+			wortel.setAttribute('data-scherm', S.scherm);
 			if (S.scherm === 'vraag') schermVraag();
 			else if (S.scherm === 'einde') schermEinde();
 			else schermStart();
