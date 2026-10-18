@@ -526,6 +526,7 @@ $sfp_includes = array(
     'includes/ajax-lean.php',
     'includes/vervolg.php',
     'includes/vormen.php',
+    'includes/thermometer.php',
     'includes/kop-leestekens.php',
     'includes/footer-links.php',
     'includes/onderdeel-tooltips.php',

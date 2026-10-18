@@ -346,7 +346,7 @@
 			var testOpties = [ { value: '', label: siteNaam ? 'De test van de site: ' + siteNaam : 'De test van de site (nog geen)' } ]
 				.concat( zt.tests.filter( function ( t ) { return t.test !== zt.site; } ).map( function ( t ) { return { value: t.test, label: t.naam }; } ) )
 				.concat( [ { value: '-', label: 'Geen zelftest' } ] );
-			delen.push( stuk( 'Zelftest van de pijler', 'Uit het onderdeel Zelftest. Komt in de kopkaart en als promokaart op de plek van het boek. Bij geen zelftest: het boek.', 'sfp_zelftest', testOpties, false ) );
+			delen.push( stuk( 'Zelftest van de pijler', 'Uit het onderdeel Zelftest. Komt als promokaart op de plek van het boek. Bij geen zelftest: het boek.', 'sfp_zelftest', testOpties, false ) );
 			if ( stand.vorm ) {
 				delen.push( regel( 'Hoort onder', stand.vorm.onder ? stand.vorm.onder : 'geen pijler erboven' ) );
 				if ( typeof stand.vorm.artikelen === 'number' ) {

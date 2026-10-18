@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [Thermometer] - nog niet uitgebracht
+
+### Toegevoegd
+- **Thermometer in een pijler** (besluit Stephan 18-10): blok Thermometer met drie tot acht stellingen en drie uitslagen (laag, gemiddeld, hoog), elk met een tekst en het hoofdstuk om verder te lezen. Klapt uit de kopkaart van de pijler, zoals de warming-up bij een artikel; rekent in de browser (Klopt 2, Soms 1, Klopt niet 0) en bewaart niets. Teksten in het Engels, Nederlands en Portugees.
+- Controle op een pijler: geen Thermometer met minstens drie stellingen.
+
+### Gewijzigd
+- De kopkaart van een pijler toont de Thermometer in plaats van de zelftest. De zelftest staat op een pijler alleen nog in de promokaart.
+
 ## [3.6.0-beta.5] - 2026-10-18
 
 Bevat ook alles uit 3.5.2 tot en met 3.5.10 (zelftest).

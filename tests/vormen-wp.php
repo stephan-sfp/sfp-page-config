@@ -205,6 +205,33 @@ $check( 'pijler zonder zelftest: tweede kaart', false !== strpos( $kaart, 'Disco
 $check( 'tool: standaard geen kaart', 'geen' === sfp_page_config_promo_keuze( 'tool' ) );
 // De zelftest op de pijlerkaart: zie tests/zelftest-cta-wp.php.
 
+// Thermometer (pijler).
+$stel  = function ( $t ) {
+    return '<!-- wp:sfp/thermometer-stelling ' . wp_json_encode( array( 'tekst' => $t ) ) . ' /-->';
+};
+$thermo = '<!-- wp:sfp/thermometer ' . wp_json_encode( array( 'kop' => 'How nervous are you?', 'laag' => 'Calm.', 'midden' => 'Some nerves.', 'hoog' => 'Nerves rule.', 'hoog_anker' => 'nerves' ) ) . ' -->'
+    . $stel( 'I sleep badly before a talk.' ) . $stel( 'My hands shake.' ) . $stel( 'I avoid speaking.' ) . $stel( 'My mind goes blank.' )
+    . '<!-- /wp:sfp/thermometer -->';
+$check( 'pijler zonder thermometer: melding', in_array( 'pijler-thermometer', wp_list_pluck( sfp_page_config_pijler_controle( get_post( $gids ) ), 'code' ), true ) );
+wp_update_post( array( 'ID' => $gids, 'post_content' => get_post( $gids )->post_content . $thermo ) );
+$check( 'pijler met thermometer: geen melding', ! in_array( 'pijler-thermometer', wp_list_pluck( sfp_page_config_pijler_controle( get_post( $gids ) ), 'code' ), true ) );
+sfp_page_config_thermometer( false );
+$check( 'thermometer niet in de tekst', '' === trim( do_blocks( $thermo ) ) );
+$th = sfp_page_config_thermometer();
+$check( 'thermometer verzameld', is_array( $th ) && 4 === count( $th['stellingen'] ) && 'How nervous are you?' === $th['kop'] );
+$paneel = sfp_page_config_thermometer_paneel( $th, array( array( 'id' => 'nerves', 'titel' => 'Start with your nerves' ) ) );
+$check( 'paneel: vier stellingen, drie knoppen elk', 4 === substr_count( $paneel, 'sfp-art-thermo__stelling' ) && 12 === substr_count( $paneel, 'data-punt=' ) );
+$check( 'paneel: drie uitslagen, link bij hoog', 3 === substr_count( $paneel, 'data-band=' ) && false !== strpos( $paneel, 'href="#nerves"' ) );
+$kop = sfp_page_config_artikel_kopkaart( get_post( $gids ), array( array( 'id' => 'nerves', 'titel' => 'Start with your nerves' ) ) );
+$check( 'kopkaart pijler: thermometer', false !== strpos( $kop, 'sfp-art-paneel-thermo' ) );
+$check( 'kopkaart pijler: geen zelftest', false === strpos( $kop, 'zelftest' ) && false === strpos( $kop, 'sfp-art-paneel-warm' ) );
+sfp_page_config_thermometer( false );
+$twee = '<!-- wp:sfp/thermometer -->' . $stel( 'a' ) . $stel( 'b' ) . '<!-- /wp:sfp/thermometer -->';
+do_blocks( $twee );
+$check( 'twee stellingen: geen thermometer', null === sfp_page_config_thermometer() );
+$artikel_kop = sfp_page_config_artikel_kopkaart( get_post( $artikelen[0] ), array() );
+$check( 'artikel: geen thermometer in de kopkaart', false === strpos( $artikel_kop, 'sfp-art-paneel-thermo' ) );
+
 // Leestekens in de H1.
 $check( 'leestekens', 'Presence<span class="sfp-lt">:</span> self<span class="sfp-lt-k">-</span>test' === sfp_page_config_leestekens( 'Presence: self-test', true ) );
 $check( 'entiteit blijft heel', 'A &amp; B&#8217;s' === sfp_page_config_leestekens( 'A &amp; B&#8217;s', true ) );
