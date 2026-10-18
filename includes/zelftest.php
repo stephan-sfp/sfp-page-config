@@ -184,6 +184,11 @@ function sfp_zelftest_instellingen( $test ) {
         'webhook_start'    => '',
         'webhook_afgerond' => '',
         'proefmodus'       => '1',
+        // Sinds 3.6.0: de tekst van de oproep (blok Zelftest-oproep en de
+        // promokaart van een pijler). Leeg: de naam van de test en de vaste knoptekst.
+        'cta_kop'          => '',
+        'cta_zin'          => '',
+        'cta_knop'         => '',
     );
     // Alleen bekende sleutels: een oude sleutel (deel_pad tot 3.4.0-beta.4) valt weg.
     return array_merge( $standaard, array_intersect_key( $eigen, $standaard ) );
@@ -234,6 +239,12 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
             return new WP_Error( 'sfp_zelftest_webhook', 'Een webhookadres begint met https://.', array( 'status' => 400 ) );
         }
         $nu[ $sleutel ] = $url;
+    }
+    foreach ( array( 'cta_kop' => 90, 'cta_zin' => 220, 'cta_knop' => 40 ) as $sleutel => $max ) {
+        if ( array_key_exists( $sleutel, $wijzigingen ) ) {
+            $tekst          = trim( sanitize_text_field( (string) $wijzigingen[ $sleutel ] ) );
+            $nu[ $sleutel ] = function_exists( 'mb_substr' ) ? mb_substr( $tekst, 0, $max ) : substr( $tekst, 0, $max );
+        }
     }
     if ( array_key_exists( 'proefmodus', $wijzigingen ) ) {
         $w                = $wijzigingen['proefmodus'];

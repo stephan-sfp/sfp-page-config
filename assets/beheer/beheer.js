@@ -641,7 +641,7 @@
 	/** Welke kaart elke vorm toont. Een pijler met een zelftest toont eerst die test. */
 	function promoPerVorm(a) {
 		var keuzes = [['site', 'De kaart van de site'], ['tweede', 'De tweede kaart'], ['geen', 'Geen kaart']];
-		var rijen = [['artikel', 'Artikel', null], ['pijler', 'Pijler', 'Heeft de pijler een zelftest, dan toont de kaart eerst die test.'], ['begrip', 'Begrip', null], ['tool', 'Tool', 'Een tool heeft standaard geen kaart.']];
+		var rijen = [['artikel', 'Artikel', null], ['pijler', 'Pijler', 'Een pijler toont de zelftest van de site (onderdeel Zelftest) op de plek van het boek. Deze keuze geldt alleen als er geen zelftest is of de pijler er geen wil.'], ['begrip', 'Begrip', null], ['tool', 'Tool', 'Een tool heeft standaard geen kaart.']];
 		var lijsten = rijen.map(function (r) {
 			var s = el('select', { id: 'sfpb-promo-per-' + r[0] });
 			keuzes.forEach(function (k) { s.appendChild(el('option', { value: k[0], text: k[1] })); });
@@ -1030,6 +1030,9 @@
 			var whAf = tekstInvoer('', I.webhook_afgerond ? 'Ingesteld; laat leeg om te houden' : 'https://...', 'password');
 			[whStart, whAf].forEach(function (w) { w.setAttribute('autocomplete', 'off'); });
 			var proef = { aan: I.proefmodus };
+			var ctaKop = tekstInvoer(I.cta_kop || '', t.naam || 'Naam van de test');
+			var ctaZin = tekstInvoer(I.cta_zin || '', 'Eén zin: wat levert de test op?');
+			var ctaKnop = tekstInvoer(I.cta_knop || '', 'Vaste tekst: Doe de zelftest');
 			var c = t.tellingen;
 			var waarschuwing = [];
 			if (!t.blad) waarschuwing.push('Dit pakket heeft geen pdf-blad: er komt geen pdf.');
@@ -1050,9 +1053,14 @@
 				veld('Webhook bij de start (SureContact)', whStart, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-whs-' + t.test),
 				veld('Webhook bij het afronden (SureContact)', whAf, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-wha-' + t.test),
 				schakel(I.proefmodus, 'Proefmodus: niets naar het CRM, de gegevens komen in het logboek', function (nu) { proef.aan = nu; }),
+				el('h3', { text: 'Oproep om de test te doen' }),
+				el('p', { class: 'sfpb-hulp', text: 'Eén tekst voor het blok Zelftest-oproep, de code [sfp_zelftest_cta] en de promokaart en kopkaart van een pijler.' + (Z.site_test === t.test ? ' Dit is de test van de site.' : (Z.site_test ? '' : ' Er is nog geen test van de site: die heeft een gepubliceerde testpagina nodig.')) }),
+				veld('Kop', ctaKop, 'Leeg: de naam van de test.', 'sfpb-zt-ctak-' + t.test),
+				veld('Zin', ctaZin, 'Hoogstens 220 tekens. Leeg: geen zin.', 'sfpb-zt-ctaz-' + t.test),
+				veld('Knoptekst', ctaKnop, 'Leeg: de vaste tekst in de taal van de site.', 'sfpb-zt-ctab-' + t.test),
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.value, pdf_pad: pdfPad.value, webhook_start: whStart.value, webhook_afgerond: whAf.value, proefmodus: proef.aan });
+						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.value, pdf_pad: pdfPad.value, webhook_start: whStart.value, webhook_afgerond: whAf.value, proefmodus: proef.aan, cta_kop: ctaKop.value, cta_zin: ctaZin.value, cta_knop: ctaKnop.value });
 					} }),
 					t.vorige ? el('button', { class: 'sfpb-knop', type: 'button', text: 'Vorige pakketversie terugzetten', klik: function () {
 						if (window.confirm('De vorige versie van het pakket terugzetten?')) zt(this, 'zt-' + t.test, '/' + t.test + '/pakket/terug', {}, 'Teruggezet');

@@ -204,18 +204,7 @@ $check( 'artikel: kaart van de site', false !== strpos( sfp_page_config_artikel_
 $kaart = sfp_page_config_artikel_promokaart( 'zij', $gids );
 $check( 'pijler zonder zelftest: tweede kaart', false !== strpos( $kaart, 'Discovery call' ) && false !== strpos( $kaart, 'sfp-art-promo--rond' ) );
 $check( 'tool: standaard geen kaart', 'geen' === sfp_page_config_promo_keuze( 'tool' ) );
-if ( post_type_exists( 'tool' ) ) {
-    $tool = wp_insert_post(
-        array(
-            'post_type'   => 'tool',
-            'post_title'  => 'Testzelftest',
-            'post_status' => 'publish',
-        )
-    );
-    $opruimen[] = $tool;
-    update_post_meta( $gids, 'sfp_zelftest_tool', $tool );
-    $check( 'pijler met zelftest', false !== strpos( sfp_page_config_artikel_promokaart( 'zij', $gids ), 'sfp-art-promo--test' ) );
-}
+// De zelftest op de pijlerkaart: zie tests/zelftest-cta-wp.php.
 
 // Leestekens in de H1.
 $check( 'leestekens', 'Presence<span class="sfp-lt">:</span> self<span class="sfp-lt-k">-</span>test' === sfp_page_config_leestekens( 'Presence: self-test', true ) );

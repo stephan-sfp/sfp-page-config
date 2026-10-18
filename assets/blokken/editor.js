@@ -736,6 +736,26 @@
 	} );
 
 	/* =====================================================================
+	 * Zelftest-oproep (sinds 3.6.0)
+	 * ================================================================== */
+
+	blok( 'sfp/zelftest-cta', function ( props ) {
+		var a = props.attributes;
+		var zt = window.sfpZelftestTests || { tests: [], aan: false };
+		var opties = [ { value: '', label: 'De test van de site' } ].concat( ( zt.tests || [] ).map( function ( t ) { return { value: t.test, label: t.naam || t.test }; } ) );
+		var leeg = ! zt.aan ? 'Het onderdeel Zelftest staat uit (SFP Beheer, Onderdelen).'
+			: 'Geen zelftest om te tonen: de testpagina is nog niet gepubliceerd of er is geen pakket. Bezoekers zien hier niets.';
+		return el( Fragment, null,
+			paneel( 'Zelftest-oproep', [
+				keuze( 'Test', a.test || '', opties, function ( v ) { props.setAttributes( { test: v } ); } ),
+				tekstveld( 'Bronlabel', a.bron, function ( v ) { props.setAttributes( { bron: v } ); }, 'Komt als ?bron= in de link, voor GA4. Leeg: het soort pagina en het adres, bijvoorbeeld pagina-presenteren-training.' ),
+				uitleg( 'Kop, zin en knoptekst staan in SFP Beheer, Zelftest, en gelden voor elke oproep en de promokaart van een pijler. Niet voor toolpagina\'s: de zelftest is geen tool.' ),
+			] ),
+			gegeven( 'sfp/zelftest-cta', null, props, leeg )
+		);
+	} );
+
+	/* =====================================================================
 	 * Gegevens van de site (sinds 3.1.0)
 	 * ================================================================== */
 

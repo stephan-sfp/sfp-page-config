@@ -322,6 +322,19 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
                 $vorm['artikelen']  = count( sfp_page_config_pijler_artikelen( $term, null, true ) );
                 $vorm['begrippen']  = count( sfp_page_config_pijler_begrippen( $term->term_id ) );
             }
+            $vorm['zelftests'] = array(
+                'site'  => function_exists( 'sfp_zelftest_site_test' ) ? sfp_zelftest_site_test() : '',
+                'tests' => array(),
+            );
+            if ( function_exists( 'sfp_zelftest_tests' ) && sfp_page_config_onderdeel_aan( 'zelftest' ) ) {
+                foreach ( sfp_zelftest_tests() as $zt ) {
+                    $pakket                       = sfp_zelftest_pakket( $zt );
+                    $vorm['zelftests']['tests'][] = array(
+                        'test' => $zt,
+                        'naam' => $pakket ? (string) sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' ) : $zt,
+                    );
+                }
+            }
             if ( 'publish' === $post->post_status && sfp_page_config_is_gids( $post ) ) {
                 $vorm['adres'] = get_permalink( $post );
             }

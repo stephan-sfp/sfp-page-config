@@ -89,7 +89,23 @@ function sfp_page_config_vormen_meta() {
             'revisions_enabled' => true,
         )
     );
-    foreach ( array( 'sfp_gids_van', 'sfp_zelftest_tool' ) as $sleutel ) {
+    // De zelftest van een pijler (sinds 3.6.0-beta.5): een test uit het
+    // onderdeel Zelftest. Leeg: de test van de site; '-': geen zelftest.
+    register_post_meta(
+        'post',
+        'sfp_zelftest',
+        array(
+            'type'              => 'string',
+            'single'            => true,
+            'show_in_rest'      => true,
+            'sanitize_callback' => function ( $waarde ) {
+                $waarde = (string) $waarde;
+                return '-' === $waarde ? '-' : ( function_exists( 'sfp_zelftest_naam' ) ? sfp_zelftest_naam( $waarde ) : '' );
+            },
+            'auth_callback'     => $mag,
+        )
+    );
+    foreach ( array( 'sfp_gids_van' ) as $sleutel ) {
         register_post_meta(
             'post',
             $sleutel,
@@ -555,36 +571,23 @@ function sfp_page_config_woordenlijst_filter( $query ) {
 }
 
 /**
- * De zelftest van een pijler: een gepubliceerde tool.
+ * De zelftest van een pijler: de oproep uit het onderdeel Zelftest (dezelfde
+ * bron als het blok Zelftest-oproep). De zelftest is geen tool.
  *
  * @param  WP_Post|int $post Gids.
- * @return WP_Post|null
+ * @param  string      $bron Bronlabel voor de link.
+ * @return array|null        Gegevens van sfp_zelftest_cta_gegevens(), of null.
  */
-function sfp_page_config_pijler_zelftest( $post ) {
+function sfp_page_config_pijler_zelftest( $post, $bron = 'pijler' ) {
     $post = get_post( $post );
-    if ( ! $post ) {
+    if ( ! $post || ! function_exists( 'sfp_zelftest_cta_gegevens' ) ) {
         return null;
     }
-    $tool = (int) get_post_meta( $post->ID, 'sfp_zelftest_tool', true );
-    if ( ! $tool ) {
+    $keuze = (string) get_post_meta( $post->ID, 'sfp_zelftest', true );
+    if ( '-' === $keuze ) {
         return null;
     }
-    $tool = get_post( $tool );
-    return ( $tool && 'publish' === $tool->post_status ) ? $tool : null;
-}
-
-/**
- * Het aantal vragen van een zelftest, als de tool dat zegt.
- *
- * @param  WP_Post $tool Tool.
- * @return int 0 als onbekend.
- */
-function sfp_page_config_tool_aantal_vragen( $tool ) {
-    $beschrijving = json_decode( (string) get_post_meta( $tool->ID, 'sfp_tool', true ), true );
-    if ( is_array( $beschrijving ) && isset( $beschrijving['stellingen'] ) && is_array( $beschrijving['stellingen'] ) ) {
-        return count( $beschrijving['stellingen'] );
-    }
-    return 0;
+    return sfp_zelftest_cta_gegevens( $keuze, $bron );
 }
 
 /* =========================================================================
@@ -807,21 +810,20 @@ function sfp_page_config_promo_keuze( $vorm ) {
 }
 
 /**
- * De kaart Zelftest van een pijler.
+ * De kaart Zelftest van een pijler, op de plek van het boek.
  *
- * @param  WP_Post $tool    De tool.
- * @param  string  $variant zij of inline.
+ * @param  array  $g       Gegevens van de oproep.
+ * @param  string $variant zij of inline.
  * @return string
  */
-function sfp_page_config_promo_zelftest( $tool, $variant ) {
-    $t      = 'sfp_page_config_artikel_tekst';
-    $tekst  = has_excerpt( $tool ) ? get_the_excerpt( $tool ) : '';
-    return '<aside class="sfp-art-promo sfp-art-promo--' . ( 'inline' === $variant ? 'inline' : 'zij' ) . ' sfp-art-promo--test" aria-label="' . esc_attr( $t( 'zelftest' ) ) . '">'
+function sfp_page_config_promo_zelftest( array $g, $variant ) {
+    $t = 'sfp_page_config_artikel_tekst';
+    return '<aside class="sfp-art-promo sfp-art-promo--' . ( 'inline' === $variant ? 'inline' : 'zij' ) . ' sfp-art-promo--test" aria-label="' . esc_attr( $t( 'zelftest' ) ) . '" data-sfp-zelftest="' . esc_attr( $g['test'] ) . '">'
         . '<span class="sfp-art-promo__test" aria-hidden="true">' . sfp_page_config_artikel_icoon( 'test' ) . '</span><div>'
         . '<span class="sfp-blok-label">' . esc_html( $t( 'zelftest' ) ) . '</span>'
-        . '<b>' . esc_html( wp_strip_all_tags( get_the_title( $tool ) ) ) . '</b>'
-        . ( '' !== $tekst ? '<p>' . esc_html( wp_strip_all_tags( $tekst ) ) . '</p>' : '' )
-        . '<a class="sfp-pijl" href="' . esc_url( get_permalink( $tool ) ) . '">' . esc_html( $t( 'doe_zelftest' ) ) . '</a>'
+        . '<b>' . esc_html( $g['kop'] ) . '</b>'
+        . ( '' !== $g['zin'] ? '<p>' . esc_html( $g['zin'] ) . '</p>' : '' )
+        . '<a class="sfp-pijl" href="' . esc_url( $g['url'] ) . '">' . esc_html( $g['knop'] ) . '</a>'
         . '</div></aside>';
 }
 
