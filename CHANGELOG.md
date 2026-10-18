@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.8] - 2026-10-18
+
+### Gerepareerd
+- Zelftest op de telefoon: de ruimte tussen de startknop en de duur eronder werkt nu echt. In 3.5.5 en 3.5.6 zette een algemene regel de marge op nul.
+
 ## [3.5.7] - 2026-10-18
 
 ### Gewijzigd
