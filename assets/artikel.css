@@ -258,6 +258,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 .sfp-gids__knop[aria-expanded=true] svg{transform:rotate(180deg)}
 /* begrip: onder de tekst verwante begrippen, Used in, vorige en volgende */
 .sfp-leesverder{border-top:1px solid var(--sfp-b-lijn-sterk);margin:48px 0 0;padding:32px 0 0;display:grid;gap:28px}
+.sfp-leesverder--kaal{border-top:0;padding-top:0}
 .sfp-leesverder__deel{display:grid;gap:14px}
 .sfp-verwant{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 :root a.sfp-verwant__item{display:grid;gap:6px;align-content:start;padding:16px 18px;background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-kaart);text-decoration:none;color:inherit;min-width:0}

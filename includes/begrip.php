@@ -464,7 +464,9 @@ function sfp_page_config_begrip_leesverder( $post ) {
             . ( $volgende ? '<a class="sfp-termnav__volgende" href="' . esc_url( get_permalink( $volgende ) ) . '"><small>' . esc_html( $t( 'volgende_term' ) ) . '</small>' . esc_html( wp_strip_all_tags( get_the_title( $volgende ) ) ) . ' &rarr;</a>' : '<span></span>' )
             . '</nav>';
     }
-    return '' === $html ? '' : '<section class="sfp-leesverder" aria-label="' . esc_attr( $t( 'lees_verder' ) ) . '">' . $html . '</section>';
+    // Alleen de termnavigatie: geen extra lijn erboven.
+    $kaal = ! $verwant && ! $gebruikt;
+    return '' === $html ? '' : '<section class="sfp-leesverder' . ( $kaal ? ' sfp-leesverder--kaal' : '' ) . '" aria-label="' . esc_attr( $t( 'lees_verder' ) ) . '">' . $html . '</section>';
 }
 
 /**

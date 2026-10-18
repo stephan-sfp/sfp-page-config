@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.7.0-beta.2] - 2026-10-18
+
+### Gerepareerd
+- Onder een begrip zonder verwante begrippen of artikelen staat geen lege lijn meer boven All terms A to Z.
+
 ## [3.7.0-beta.1] - 2026-10-18
 
 Tweede deel van de vormen: begrip (SwS als voorbeeldsite). Bevat ook alles uit 3.6.0-beta.4.
