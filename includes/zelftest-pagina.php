@@ -83,6 +83,29 @@ function sfp_zelftest_pagina_bestanden() {
     wp_enqueue_script( 'sfp-zelftest-pagina', SFP_PAGE_CONFIG_URL . 'assets/zelftest/pagina.js', array(), SFP_PAGE_CONFIG_VERSION, true );
 }
 
+add_filter( 'pre_get_rocket_option_remove_unused_css', 'sfp_zelftest_pagina_geen_usedcss' );
+
+/**
+ * Geen "Remove Unused CSS" van WP Rocket op de testpagina (sinds 3.5.4).
+ *
+ * WP Rocket zet anders per pagina een eigen kopie van de gebruikte opmaak
+ * inline (wpr-usedcss). Na een release met nieuwe opmaak bleef die kopie de
+ * oude opmaak tonen tot iemand hem leegde (backlog PC-40). De schermen van de
+ * test worden door het script getekend, dus de kopie mist ze ook makkelijk.
+ *
+ * Pas na het bepalen van de pagina (actie wp): eerder is niet bekend welke
+ * pagina het is, en sfp_zelftest_pagina_test() onthoudt zijn uitkomst.
+ *
+ * @param  mixed $waarde null (geen voorkeur) of de waarde van een ander filter.
+ * @return mixed 0 op de testpagina, anders ongewijzigd.
+ */
+function sfp_zelftest_pagina_geen_usedcss( $waarde ) {
+    if ( is_admin() || ! did_action( 'wp' ) ) {
+        return $waarde;
+    }
+    return '' !== sfp_zelftest_pagina_test() ? 0 : $waarde;
+}
+
 add_filter( 'body_class', 'sfp_zelftest_pagina_body_class' );
 
 /**
