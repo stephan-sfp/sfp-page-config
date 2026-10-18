@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.4.0-beta.4] - 2026-10-18
+
+### Gerepareerd
+- Kopiëren en zoeken in de pdf gaf nog een gat bij koppen met "fl" en bij de Nederlandse "IJ" (zoals in "WIJ" en "MIJN"). Een font-shorthand in het blad zette de ligaturen weer aan, en de IJ komt uit een aparte fontfunctie (locl). Beide staan in de pdf nu vast uit.
+
 ## [3.4.0-beta.3] - 2026-10-18
 
 ### Gerepareerd

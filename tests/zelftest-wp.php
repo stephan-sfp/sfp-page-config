@@ -261,7 +261,7 @@ foreach ( $hex as $h ) {
 $pk   = sfp_zelftest_pakket( 'proeftest' );
 $geg  = sfp_zelftest_blad_gegevens( sfp_zelftest_rij_op( 'code', $code ) );
 $voet = sfp_zelftest_blad_voet( $pk, $geg );
-zt_is( is_string( $html ) && false !== strpos( $html, 'font-variant-ligatures:none' ), 'pdf-blad zet ligaturen uit' );
+zt_is( is_string( $html ) && false !== strpos( $html, 'font-variant-ligatures:none!important' ) && false !== strpos( $html, '"locl" 0' ), 'pdf-blad zet ligaturen en locl uit' );
 if ( ! empty( $manifest['blad']['voet'] ) ) {
     zt_is( false !== strpos( $voet, 'class="pageNumber"' ) && false !== strpos( $voet, 'class="totalPages"' ), 'voettekst met paginanummers' );
     zt_is( false !== strpos( $voet, esc_html( $geg['naam'] ) ), 'voettekst met de naam' );

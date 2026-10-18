@@ -209,7 +209,7 @@ function sfp_zelftest_blad_voet( array $pakket, array $gegevens ) {
     $css  = isset( $voet['css'] ) ? wp_strip_all_tags( (string) $voet['css'] ) : '';
     $merk = sfp_zelftest_merk( $pakket, $css );
     return '<style>' . sfp_zelftest_fonts_css( $merk['families'] )
-        . 'html,body{margin:0;padding:0}*{font-variant-ligatures:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+        . 'html,body{margin:0;padding:0}*{font-variant-ligatures:none!important;font-feature-settings:"locl" 0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
         . $merk['tekst'] . '</style>'
         . '<div class="sfp-zt-voet"><span class="links">' . $vak( 'links' ) . '</span><span class="midden">' . $vak( 'midden' ) . '</span><span class="rechts">' . $vak( 'rechts' ) . '</span></div>';
 }
@@ -259,13 +259,15 @@ function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
         $html = $kop_html . $html;
     }
 
-    // Alleen in de pdf. Ligaturen uit: de Chrome van Cloudflare zet "fl" en
-    // "IJ" als één teken zonder tekst eronder, zodat kopiëren en zoeken in de
-    // pdf een gat geven. Met een voettekst uit het pakket tekent Cloudflare
-    // de voettekst; de margevakken van het blad gaan dan uit, zodat een
-    // nieuwere Chrome hem niet dubbel zet.
+    // Alleen in de pdf. De Chrome van Cloudflare zet ligaturen ("fl") en de
+    // Nederlandse IJ (OpenType locl) als één teken zonder tekst eronder, zodat
+    // kopiëren en zoeken in de pdf een gat geven. Beide uit, met !important,
+    // want een font-shorthand in het blad zet de ligaturen anders weer aan.
+    // Met een voettekst uit het pakket tekent Cloudflare de voettekst; de
+    // margevakken van het blad gaan dan uit, zodat een nieuwere Chrome hem
+    // niet dubbel zet.
     if ( 'pdf' === $data['modus'] ) {
-        $stijl = '*{font-variant-ligatures:none}';
+        $stijl = '*{font-variant-ligatures:none!important;font-feature-settings:"locl" 0!important}';
         if ( '' !== sfp_zelftest_blad_voet( $pakket, $gegevens ) ) {
             $vakken = array( 'top-left-corner', 'top-left', 'top-center', 'top-right', 'top-right-corner', 'right-top', 'right-middle', 'right-bottom', 'bottom-right-corner', 'bottom-right', 'bottom-center', 'bottom-left', 'bottom-left-corner', 'left-bottom', 'left-middle', 'left-top' );
             $stijl .= '@page{' . implode( '', array_map( function ( $v ) { return '@' . $v . '{content:none}'; }, $vakken ) ) . '}';
