@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.1] - 2026-10-18
+
+### Gewijzigd
+- Zelftest: de rand om de keuzekaart van de complete zelftest is iets dikker (2,5 px). Proefversie: 3.5.1-beta.1 op DPS.
+
 ## [3.5.1-beta.1] - 2026-10-18
 
 ### Gewijzigd
