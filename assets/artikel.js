@@ -238,6 +238,25 @@
         }
     });
 
+    /* Check your understanding (begrip): één klik per vraag; daarna het juiste antwoord en de uitleg. Niets wordt bewaard. */
+    alle('.sfp-check__vraag').forEach(function (vraag) {
+        var opties = alle('.sfp-check__opties button', vraag);
+        var uitslag = vraag.querySelector('.sfp-check__uitslag');
+        opties.forEach(function (optie) {
+            optie.addEventListener('click', function () {
+                if (vraag.hasAttribute('data-uitkomst')) { return; }
+                var goed = optie.hasAttribute('data-juist');
+                optie.setAttribute('aria-pressed', 'true');
+                vraag.setAttribute('data-uitkomst', goed ? 'goed' : 'fout');
+                opties.forEach(function (o) { o.disabled = true; });
+                if (uitslag) {
+                    uitslag.querySelector(goed ? '.sfp-check__goed' : '.sfp-check__fout').hidden = false;
+                    uitslag.hidden = false;
+                }
+            });
+        });
+    });
+
     /* Inhoudsopgave en hoofdstukbalk. */
     var artikel = doc.querySelector('.sfp-artikel');
     if (!artikel) { return; }

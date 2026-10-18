@@ -44,3 +44,23 @@
   .sfp-definitie__feiten>div:nth-child(even){padding-left:14px;border-left:2px solid var(--sfp-b-tint2)}
   :root .sfp-in-talk{padding:20px}
 }
+/* Check your understanding (sinds 3.7.1) */
+:root .sfp-check{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);padding:22px 24px;margin:28px 0;display:grid;gap:22px;box-sizing:border-box}
+.sfp-check__vraag{display:grid;gap:10px}
+.sfp-check__vraag+.sfp-check__vraag{padding-top:20px;border-top:1px solid var(--sfp-b-lijn)}
+:root .sfp-check__tekst{margin:0;font-weight:700;font-size:17px;line-height:1.45;color:var(--sfp-b-primair)}
+.sfp-check__opties{display:grid;gap:8px}
+:root .sfp-check__opties button{font-size:15px;line-height:1.4;text-align:left;color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);padding:10px 12px 10px 38px;width:100%;position:relative;cursor:pointer}
+:root .sfp-check__opties button:not(:disabled):is(:hover,:focus){color:var(--sfp-b-primair);background:var(--sfp-b-wit);border-color:var(--sfp-b-primair)}
+:root .sfp-check__opties button:disabled{cursor:default;opacity:1;color:var(--sfp-b-body)}
+.sfp-check__opties button::before{content:"";position:absolute;left:12px;top:50%;width:16px;height:16px;margin-top:-8px;border-radius:50%;border:1px solid var(--sfp-b-lijn-sterk);box-sizing:border-box}
+/* Na het antwoord: het juiste antwoord groen met een vinkje, een fout gekozen antwoord rood met een kruis. Vaste signaalkleuren, geen merkkleuren. */
+.sfp-check__vraag[data-uitkomst] button[data-juist]{border-color:#2f9e5b;color:var(--sfp-b-primair);box-shadow:inset 0 0 0 1px #2f9e5b}
+.sfp-check__vraag[data-uitkomst] button[data-juist]::before{content:"\2713";border:0;background:#2f9e5b;color:#fff;font-size:11px;line-height:16px;text-align:center}
+.sfp-check__vraag[data-uitkomst=fout] button[aria-pressed=true]{border-color:#d64541;box-shadow:inset 0 0 0 1px #d64541}
+.sfp-check__vraag[data-uitkomst=fout] button[aria-pressed=true]::before{content:"\2715";border:0;background:#d64541;color:#fff;font-size:10px;line-height:16px;text-align:center}
+:root .sfp-check__uitslag{margin:0;font-size:15px;line-height:1.55;color:var(--sfp-b-body)}
+.sfp-check__goed{color:#2f9e5b}
+.sfp-check__fout{color:#d64541}
+@media (max-width:600px){:root .sfp-check{padding:18px}}
+
