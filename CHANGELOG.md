@@ -4,6 +4,10 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.7.0-beta.8] - 2026-10-19
+
+Thermometer: de wijzer schuift weer naar de stand; geen vaste bol links.
+
 ## [3.7.0-beta.7] - 2026-10-19
 
 Thermometer ziet eruit als een thermometer: bol en buis van groen naar rood.
