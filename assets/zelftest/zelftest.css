@@ -89,6 +89,23 @@
 .sfp-zt .sfp-zt-terug:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 @media (prefers-reduced-motion:reduce){.sfp-zt-voortgang b{transition:none}}
 
+/* Uitleg voor vraag 1 (sinds 3.6.0) */
+.sfp-zt-uitleg-sub{margin:10px 0 0;font-size:19px;line-height:1.5;color:var(--sfp-b-primair)}
+.sfp-zt-uitleg-blok{display:flex;flex-direction:column;gap:12px;padding:22px 24px;background:var(--sfp-b-tint3);border-left:5px solid var(--sfp-b-secundair);border-radius:0 var(--sfp-b-r-knop) var(--sfp-b-r-knop) 0}
+.sfp-zt-uitleg-blok p{margin:0;font-size:17px;line-height:1.6;color:var(--sfp-b-primair)}
+.sfp-zt .sfp-zt-uitleg-blok .sfp-zt-uitleg-titel{font:900 15px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.05em}
+
+/* Overgang naar het resultaat (sinds 3.6.0) */
+.sfp-zt .sfp-zt-stappen{list-style:none;margin:0 auto;padding:0;display:flex;flex-direction:column;gap:16px;width:max-content;max-width:100%}
+.sfp-zt-stappen li{display:flex;align-items:center;gap:14px;margin:0;font:400 19px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);opacity:.35;transition:opacity .3s}
+.sfp-zt-stappen li.bezig,.sfp-zt-stappen li.klaar{opacity:1}
+.sfp-zt-stapicoon{flex:none;position:relative;width:26px;height:26px;border-radius:50%;border:2.5px solid var(--sfp-b-tint1);box-sizing:border-box}
+.sfp-zt-stappen li.bezig .sfp-zt-stapicoon{border-color:var(--sfp-b-tint1);border-top-color:var(--sfp-b-secundair);animation:sfp-zt-draai .8s linear infinite}
+.sfp-zt-stappen li.klaar .sfp-zt-stapicoon{border-color:var(--sfp-b-secundair);background:var(--sfp-b-secundair)}
+.sfp-zt-stappen li.klaar .sfp-zt-stapicoon::after{content:"";position:absolute;left:7px;top:3px;width:6px;height:11px;border:solid var(--sfp-b-wit);border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+@keyframes sfp-zt-draai{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sfp-zt-stappen li.bezig .sfp-zt-stapicoon{animation:none;border-color:var(--sfp-b-secundair)}.sfp-zt-stappen li{transition:none}}
+
 /* Eindscherm (opbouw van het label: balken, regels, punten, profiel) */
 .sfp-zt-res{gap:26px}
 .sfp-zt-aanhef{display:block;margin-bottom:4px}
@@ -151,6 +168,8 @@ html:has(body.sfp-zt-testpagina){background:var(--sfp-b-wit,#fff)}
 .sfp-zt-top{position:sticky;top:0;z-index:50;background:var(--sfp-b-wit,#fff);border-bottom:1px solid color-mix(in srgb,var(--sfp-b-primair) 14%,transparent)}
 .sfp-zt-top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1248px;margin:0 auto;padding:10px 24px;min-height:64px}
 .sfp-zt-top-logo{display:block;height:auto;max-height:44px;width:auto;max-width:60vw}
+.sfp-zt-top-logo-svg{height:44px}
+@media (max-width:640px){.sfp-zt-top-logo-svg{height:38px}}
 .sfp-zt-top-naam{font:900 16px/1.2 var(--sfp-b-kop);color:var(--sfp-b-primair);text-transform:uppercase;letter-spacing:.04em}
 .sfp-zt-sluit{display:inline-flex;align-items:center;justify-content:center;flex:none;width:48px;height:48px;margin:0 -8px 0 0;padding:0;border:0;border-radius:50%;background:transparent;color:var(--sfp-b-primair);cursor:pointer;box-shadow:none}
 .sfp-zt-sluit:hover{background:var(--sfp-b-tint3);color:var(--sfp-b-primair)}
@@ -206,7 +225,8 @@ body.sfp-zt-testpagina .sfp-zt-optie{padding:10px 12px}
 body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2,body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2 b{font-size:15px;line-height:1.5;font-weight:400;color:var(--sfp-b-body)}
 body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-knop{min-height:52px;padding:10px 14px;font-size:15px;letter-spacing:.02em;white-space:nowrap}
 /* Vraagschermen op de testpagina (besluit 18-10-2026): een kolom van 760 px, midden op het scherm. */
-body.sfp-zt-testpagina .sfp-zt[data-scherm="vraag"] .sfp-zt-wrap{max-width:760px}
+body.sfp-zt-testpagina .sfp-zt[data-scherm="vraag"] .sfp-zt-wrap,body.sfp-zt-testpagina .sfp-zt[data-scherm="uitleg"] .sfp-zt-wrap,body.sfp-zt-testpagina .sfp-zt[data-scherm="laden"] .sfp-zt-wrap{max-width:760px}
+@media (max-width:640px){.sfp-zt-uitleg-blok{padding:16px 16px}.sfp-zt-uitleg-blok p{font-size:16px}.sfp-zt-uitleg-sub{font-size:17px}.sfp-zt-stappen li{font-size:17px}}
 body.sfp-zt-testpagina .sfp-zt[data-scherm="vraag"] .sfp-zt-vraag{font-size:clamp(20px,1.2vw + 14px,26px);line-height:1.35}
 /* Elk scherm staat verticaal in het midden van wat onder de balk overblijft (besluit 18-10-2026). */
 body.sfp-zt-testpagina{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}

@@ -336,6 +336,13 @@ zt_is( '01 00:00:00' === substr( (string) $anon['gestart_op'], 8 ) && '1' === (s
 zt_is( '' !== (string) $anon['antwoorden'] && '' !== (string) $anon['uitkomst'], 'na 2 jaar: antwoorden en uitkomst blijven' );
 zt_is( ! isset( sfp_zelftest_json( $anon, 'uitkomst' )['notitie'] ) && isset( sfp_zelftest_json( $anon, 'uitkomst' )['crm'] ), 'na 2 jaar: notitie weg, CRM-velden blijven' );
 
+/* ---------- Bestandsnaam van de pdf (3.6.0) ---------- */
+$bn = sfp_zelftest_pdf_bestandsnaam( array( 'test' => 'dps', 'manifest' => array( 'code_voorvoegsel' => 'DPS', 'naam' => 'Presentatietest' ) ), 'DPS-8H02-ZW6N-Y9R7' );
+zt_is( "DPS \u{2022} Presentatietest \u{2022} 8H02-ZW6N-Y9R7.pdf" === $bn['utf8'], 'pdf-naam met punten en code zonder voorvoegsel' );
+zt_is( 'DPS - Presentatietest - 8H02-ZW6N-Y9R7.pdf' === $bn['ascii'], 'gewone reservenaam' );
+$bn2 = sfp_zelftest_pdf_bestandsnaam( array( 'test' => 'x', 'manifest' => array( 'code_voorvoegsel' => 'X', 'naam' => 'Teste "a"; b/c' ) ), 'X-AAAA-BBBB-CCCC' );
+zt_is( false === strpbrk( $bn2['utf8'] . $bn2['ascii'], "\";/\\\r\n" ), 'geen tekens die de kop of de naam breken' );
+
 /* ---------- Wissen ---------- */
 zt_is( sfp_zelftest_wis_email( 'proef@example.com' ) >= 1, 'wissen op e-mailadres' );
 zt_is( null === sfp_zelftest_rij_op( 'sessie', $s2 ), 'gewiste rij is weg' );

@@ -132,14 +132,43 @@ function sfp_zelftest_link_pdf( array $pakket ) {
         return;
     }
 
-    $naam = sanitize_file_name( $pakket['test'] . '-' . strtolower( $rij['code'] ) . '.pdf' );
+    $namen = sfp_zelftest_pdf_bestandsnaam( $pakket, (string) $rij['code'] );
     status_header( 200 );
     header( 'Content-Type: application/pdf' );
-    header( 'Content-Disposition: inline; filename="' . $naam . '"' );
+    // Twee namen: een gewone voor oudere programma's, en de echte met punten (RFC 5987).
+    header( 'Content-Disposition: inline; filename="' . $namen['ascii'] . '"; filename*=UTF-8\'\'' . rawurlencode( $namen['utf8'] ) );
     header( 'Content-Length: ' . filesize( $pad ) );
     header( 'X-Content-Type-Options: nosniff' );
     // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- de pdf zelf.
     readfile( $pad );
+}
+
+/**
+ * Bestandsnaam van de pdf: "DPS • Presentatietest • 8H02-ZW6N-Y9R7.pdf"
+ * (besluit 18-10-2026). Voorvoegsel en naam komen uit het manifest; het
+ * voorvoegsel staat al vooraan, dus de code zonder voorvoegsel.
+ *
+ * @param  array  $pakket Pakket.
+ * @param  string $code   Resultaatcode.
+ * @return array{utf8:string,ascii:string}
+ */
+function sfp_zelftest_pdf_bestandsnaam( array $pakket, $code ) {
+    $m     = isset( $pakket['manifest'] ) ? $pakket['manifest'] : array();
+    $voor  = isset( $m['code_voorvoegsel'] ) ? strtoupper( (string) $m['code_voorvoegsel'] ) : strtoupper( (string) $pakket['test'] );
+    $naam  = isset( $m['naam'] ) && '' !== trim( (string) $m['naam'] ) ? trim( (string) $m['naam'] ) : (string) $pakket['test'];
+    $code  = strtoupper( $code );
+    if ( '' !== $voor && 0 === strpos( $code, $voor . '-' ) ) {
+        $code = substr( $code, strlen( $voor ) + 1 );
+    }
+    // Alleen letters, cijfers, spatie, streepje en punt: geen tekens die een bestandsnaam of de kop breken.
+    $schoon = function ( $s ) {
+        return trim( preg_replace( '/[^\p{L}\p{N} .\-]+/u', '', (string) $s ) );
+    };
+    $delen = array_values( array_filter( array( $schoon( $voor ), $schoon( $naam ), $schoon( $code ) ), 'strlen' ) );
+    $utf8  = implode( " \u{2022} ", $delen ) . '.pdf';
+    $ascii = function_exists( 'remove_accents' ) ? remove_accents( implode( ' - ', $delen ) ) : implode( ' - ', $delen );
+    $ascii = preg_replace( '/[^A-Za-z0-9 .\-]+/', '', $ascii ) . '.pdf';
+    return array( 'utf8' => $utf8, 'ascii' => $ascii );
 }
 
 /**
