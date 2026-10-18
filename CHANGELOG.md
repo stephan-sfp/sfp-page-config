@@ -4,64 +4,31 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [Thermometer] - nog niet uitgebracht
+## [3.6.0] - 2026-10-19
 
-### Toegevoegd
-- **Thermometer in een pijler** (besluit Stephan 18-10): blok Thermometer met drie tot acht stellingen en drie uitslagen, elk met een eigen naam, een tekst en het hoofdstuk om verder te lezen. De uitslag staat op een thermometer: een buis met streepjes die van groen naar rood volloopt, met een wijzer in de kleur van de stand die naar de stand schuift, met twee uiteinden in de woorden van de vraag (geen algemeen "hoog" of "laag"). Groen, oranje en rood zijn vaste signaalkleuren, per site te overschrijven. Knop "Opnieuw doen". De knop Thermometer staat vooraan in de kopkaart, links van Delen. Klapt uit de kopkaart van de pijler, zoals de warming-up bij een artikel; rekent in de browser (Klopt 2, Soms 1, Klopt niet 0) en bewaart niets. Teksten in het Engels, Nederlands en Portugees.
-- Controle op een pijler: geen Thermometer met minstens drie stellingen.
-
-### Gewijzigd
-- De kopkaart van een pijler toont de Thermometer in plaats van de zelftest. De zelftest staat op een pijler alleen nog in de promokaart.
-
-## [3.6.0-beta.5] - 2026-10-18
-
-Bevat ook alles uit 3.5.2 tot en met 3.5.10 (zelftest).
-
-### Toegevoegd
-- **Blok Zelftest-oproep en code `[sfp_zelftest_cta]`** (onderdeel Zelftest): de test van de site met kop, één zin en knop, voor de leadmagnetplek op trainings- en coachpagina's en in het vervolg onder artikelen. Elke plaatsing zet een bronlabel in de link (`?bron=`) voor GA4; leeg is het soort pagina en het adres. Niet op toolpagina's of het overzicht van de tools: de zelftest is geen tool.
-- SFP Beheer, Zelftest: per test de tekst van de oproep (kop, zin, knoptekst). Leeg: de naam van de test en de vaste knoptekst. Eén bron voor het blok, de code en de pijler.
-
-### Gewijzigd
-- **Zelftest op de pijler uit het onderdeel Zelftest** (besluit Stephan 18-10): de promokaart van een pijler toont de zelftest op de plek van het boek, en de kopkaart de actie Zelftest, met de tekst en link van de oproep. Standaard de test van de site; in het paneel Deze pagina een andere test of geen. Zonder zelftest: de kaart die bij een pijler hoort. Vervangt de koppeling met een bericht van het type tool (`sfp_zelftest_tool`, alleen in proefversies gebruikt).
-
-## [3.6.0-beta.4] - 2026-10-18
-
-### Toegevoegd
-- Controle op een pijler: een artikel van de pijler waar de tekst nog niet naar verwijst (link of Lees ook). Niet op een hoofdpijler.
-- Paneel Deze pagina bij een pijler: Hoort onder, en het aantal artikelen en begrippen in de pijler.
-
-## [3.6.0-beta.3] - 2026-10-18
-
-### Gerepareerd
-- Knop Show van de kaart In this guide op een telefoon weer vet, zoals in het ontwerp.
-
-## [3.6.0-beta.2] - 2026-10-18
-
-### Toegevoegd
-- Een pijler die nog niet gepubliceerd is, toont via de voorbeeldlink al de kaart In this guide en de regel boven de titel. Het adres van de categorie geldt pas na publiceren.
-
-## [3.6.0-beta.1] - 2026-10-18
-
-Eerste deel van de vormen pijler, begrip en tool (SwS als voorbeeldsite): wat de vormen delen, de pijler, de promokaart per vorm, K28 en K32. Begrip volgt in 3.7.0, tool in 3.8.0.
+Eerste deel van de vormen (SwS als voorbeeldsite): wat de vormen delen, de pijler met de Thermometer, de promokaart per vorm, de Zelftest-oproep, K28 en K32. Begrip volgt in 3.7.0, tool in 3.8.0. Pijler en K28 staan standaard uit; zonder instellingen blijft elke site zoals hij was, op de scheidingsbolletjes (K32) na.
 
 ### Toegevoegd
 - **Onderdeel Pijler** (SFP Beheer, Onderdelen, standaard uit): een bericht kan de gids van een categorie zijn. Werkt met de artikelopmaak aan.
-- **Paneel Deze pagina, Vorm:** een bericht is een artikel of een pijler. Bij een pijler: van welke categorie dit de gids is (leeg: de eigen categorie), het adres en de zelftest van de pijler. Bij begrippen: Hoort bij de pijler.
-- **Adres van de pijler:** de gids staat op het adres van zijn categorie; zijn eigen adres verwijst daarheen. Met "het eigen adres van dit bericht" verwijst de categorie naar de gids (voor een bestaande pijlerpagina). Feeds van de categorie blijven gewoon.
-- **Kaart In this guide** direct na de lead: de artikelen van de pijler met beeld, titel en leestijd. Tot vier een raster, vanaf vijf een slider per vier (twee bij twee) met pijlen en paginanummer. Volgorde: eerst wat de gids zelf noemt, dan nieuwste eerst. Begrippen: hoogstens acht, dan een link naar de woordenlijst van de pijler. Op een telefoon ingeklapt tot één regel met Show. Een hoofdpijler toont de artikelen per pijler, hoogstens vier per pijler.
-- **Regel boven de titel** van een pijler: Guide, of Guide in <hoofdpijler>.
-- **Kopkaart van een pijler:** de zelftest van de pijler op de plek van de warming-up, met het aantal vragen als de tool dat kent.
-- **Lees ook op een pijler:** een artikel van deze pijler krijgt het label Go deeper en de leestijd.
+- **Paneel Deze pagina, Vorm:** een bericht is een artikel of een pijler. Bij een pijler: van welke categorie dit de gids is, het adres, de zelftest, waar de pijler onder hoort en het aantal artikelen en begrippen. Bij begrippen en tools: Hoort bij de pijler.
+- **Adres van de pijler:** de gids staat op het adres van zijn categorie; zijn eigen adres verwijst daarheen. Met "het eigen adres van dit bericht" verwijst de categorie naar de gids (voor een bestaande pijlerpagina). Feeds van de categorie blijven gewoon. Een concept toont via de voorbeeldlink al de kaart en de regel boven de titel.
+- **Kaart In this guide** direct na de lead: de artikelen van de pijler met beeld, titel en leestijd; vanaf vijf een slider per vier. Eerst wat de gids zelf noemt, dan nieuwste eerst. Begrippen: hoogstens acht, dan een link naar de woordenlijst van de pijler. Op een telefoon ingeklapt met Show. Een hoofdpijler toont de artikelen per pijler.
+- **Thermometer** (besluit Stephan 18-10): blok met drie tot acht stellingen en drie uitslagen, elk met een eigen naam, een tekst en het hoofdstuk om verder te lezen. Klapt uit de kopkaart van de pijler, vooraan in de rij, zoals de warming-up bij een artikel. De uitslag staat op een buis die van groen naar rood volloopt, met een wijzer in de kleur van de stand en twee uiteinden in de woorden van de vraag. Rekent in de browser en bewaart niets. Groen, oranje en rood zijn vaste signaalkleuren, per site te overschrijven.
+- **Zelftest-oproep:** blok en code `[sfp_zelftest_cta]` in het onderdeel Zelftest, met de test van de site, kop, één zin en knop. Elke plaatsing zet een bronlabel in de link (`?bron=`) voor GA4. Tekst per test in SFP Beheer, Zelftest; één bron voor het blok, de code en de promokaart van de pijler. Niet op toolpagina's: de zelftest is geen tool.
+- **Promokaart per vorm** (SFP Beheer, Artikelen, Promokaart): een tweede kaart, met een omslag of een ronde foto, en per vorm een keuze: de kaart van de site, de tweede kaart of geen. Een pijler toont de zelftest van de site op de plek van het boek; een tool heeft standaard geen kaart.
+- **Regel boven de titel** van een pijler: Guide, of Guide in <hoofdpijler>. **Lees ook** naar een artikel van de pijler: label Go deeper met de leestijd.
 - **Gegevens voor Google:** de Article van SureRank op een pijler krijgt onder dezelfde @id de artikelen (hasPart), de begrippen (mentions), de bronnen (citation) en de wijzigingsdatum.
-- **Woordenlijst per pijler:** het archief van de begrippen met `?pijler=<categorie>` toont alleen de begrippen van die pijler.
-- **Promokaart per vorm** (SFP Beheer, Artikelen, Promokaart): een tweede kaart, met een omslag of een ronde foto, en per vorm een keuze: de kaart van de site, de tweede kaart of geen. Een pijler met een zelftest toont eerst die test. Een tool heeft standaard geen kaart. Zonder keuze blijft alles zoals het was.
-- **Leestekens in de titel (K28)**, instelling in SFP Beheer, Artikelen, Kopkaart: dubbele punt, puntkomma, uitroepteken, komma, punt en koppelteken in de H1 naar het woord ernaast. Voor sites met een titelletter waarin elk teken even breed is. Standaard uit.
-- **Controle voor een pijler** in het paneel en in SFP Beheer: geen categorie, een tweede gids voor dezelfde categorie, een lead buiten 50 tot 80 woorden, nog geen artikelen.
-- Teksten voor bezoekers in het Engels, Nederlands en Portugees (Portugees concept).
-- Test `tests/vormen-wp.php` (39 controles).
+- **Woordenlijst per pijler:** het archief van de begrippen met `?pijler=<categorie>`.
+- **Leestekens in de titel (K28)**, SFP Beheer, Artikelen, Kopkaart: leestekens in de H1 naar het woord ernaast, voor titelletters waarin elk teken even breed is. Standaard uit.
+- **Controle voor een pijler** in het paneel en in SFP Beheer: geen categorie, een tweede gids, een lead buiten 50 tot 80 woorden, een artikel waar de tekst niet naar verwijst, geen Thermometer, nog geen artikelen.
+- Teksten voor bezoekers in het Engels, Nederlands en Portugees.
+- Tests `tests/vormen-wp.php` en `tests/zelftest-cta-wp.php`.
 
 ### Gewijzigd
-- **Scheidingsbolletjes in de kopkaart (K32):** elk onderdeel heeft een bolletje en de strook links is weggeknipt, zodat een regel nooit met een bolletje begint, ook als de regel ergens anders breekt. Vervangt het vaste breekpunt.
+- **Scheidingsbolletjes in de kopkaart (K32):** elk onderdeel heeft een bolletje en de strook links is weggeknipt, zodat een regel nooit met een bolletje begint.
+
+### Gerepareerd
+- Bouwstenen die via een filter worden toegevoegd, laden hun CSS.
 
 ## [3.5.10] - 2026-10-18
 
