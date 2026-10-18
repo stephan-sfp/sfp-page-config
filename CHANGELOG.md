@@ -42,6 +42,7 @@ Eerste deel van de vormen pijler, begrip en tool (SwS als voorbeeldsite): wat de
 
 ### Gewijzigd
 - **Scheidingsbolletjes in de kopkaart (K32):** elk onderdeel heeft een bolletje en de strook links is weggeknipt, zodat een regel nooit met een bolletje begint, ook als de regel ergens anders breekt. Vervangt het vaste breekpunt.
+
 ## [3.5.10] - 2026-10-18
 
 ### Gewijzigd
