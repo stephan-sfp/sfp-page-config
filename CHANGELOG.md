@@ -4,15 +4,10 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.7.1-beta.3] - 2026-10-19
-
-### Gewijzigd
-- Check your understanding toont één vraag tegelijk, met een teller (Vraag 1 van 2) en na het antwoord de knop Volgende vraag. Weer op het oorspronkelijke formaat; de compacte opmaak van beta.2 is teruggedraaid (feedback Stephan). Zonder script staan alle vragen onder elkaar.
-
-## [3.7.1-beta.1] - 2026-10-19
+## [3.7.1] - 2026-10-19
 
 ### Toegevoegd
-- **Check your understanding** bij een begrip (besluit Stephan 19-10): optioneel blok met één tot drie meerkeuzevragen, elk met drie antwoorden, het juiste antwoord en een zin uitleg. De lezer kiest een antwoord en ziet direct of het klopt: het juiste antwoord groen met een vinkje, een fout gekozen antwoord rood met een kruis, daaronder de uitleg. Niets wordt bewaard; geen melding als het blok ontbreekt. Teksten in het Engels, Nederlands en Portugees.
+- **Check your understanding** bij een begrip (besluit Stephan 19-10): optioneel blok met één tot drie meerkeuzevragen, elk met drie antwoorden, het juiste antwoord en een zin uitleg. Eén vraag tegelijk met een teller (Vraag 1 van 2); na een antwoord het juiste antwoord groen met een vinkje, een fout gekozen antwoord rood met een kruis, de uitleg en de knop Volgende vraag. Niets wordt bewaard; geen melding als het blok ontbreekt. Zonder script staan alle vragen onder elkaar. Teksten in het Engels, Nederlands en Portugees.
 
 ### Gerepareerd
 - De vaste labels van de begripblokken (Definitie, In a talk en de vakjes) staan in de editor weer in de taal van de site; ze vielen weg bij het samenvoegen voor 3.7.0.
