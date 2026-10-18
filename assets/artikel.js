@@ -163,7 +163,7 @@
         var kop = thermo.querySelector('.sfp-art-thermo__kop');
         var stippen = alle('.sfp-art-warm__stip i', thermo);
         var nr = thermo.querySelector('.sfp-art-thermo__nr');
-        var meter = thermo.querySelector('.sfp-art-thermo__meter i');
+        var meter = thermo.querySelector('.sfp-art-thermo__baan i');
         var banden = alle('.sfp-art-thermo__band', thermo);
         var opnieuw = thermo.querySelector('.sfp-art-thermo__opnieuw');
         var paneel = thermo.closest('.sfp-art-paneel');
@@ -176,7 +176,7 @@
         function toonStand() {
             var deel = punten / (stellingen.length * 2);
             var band = deel < 1 / 3 ? 'laag' : (deel < 2 / 3 ? 'midden' : 'hoog');
-            if (meter) { meter.style.width = Math.max(4, Math.round(deel * 100)) + '%'; }
+            if (meter) { meter.style.left = Math.round(deel * 100) + '%'; }
             uitslag.setAttribute('data-band', band);
             banden.forEach(function (b) { b.hidden = b.getAttribute('data-band') !== band; });
         }
@@ -225,6 +225,7 @@
                 stippen.forEach(function (st, i) { st.classList.toggle('aan', i === 0); });
                 if (nr) { nr.textContent = '1'; }
                 if (kop) { kop.hidden = false; }
+                if (meter) { meter.style.left = '0%'; }
                 uitslag.hidden = true;
                 var eerste = stellingen[0].querySelector('button');
                 if (eerste) { eerste.focus({ preventScroll: true }); }

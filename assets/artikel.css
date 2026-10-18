@@ -115,14 +115,17 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-art-thermo__opties button{text-align:center}
 :root .sfp-art-thermo__uitslag{display:grid;gap:12px}
 :root .sfp-art-thermo__uitslag .sfp-blok-label{display:block;outline:0}
-.sfp-art-thermo__meter{height:12px;border-radius:6px;background:var(--sfp-b-tint1);overflow:hidden}
-.sfp-art-thermo__meter i{display:block;height:100%;width:4%;border-radius:6px;background:var(--sfp-b-secundair);transition:width .6s ease}
+.sfp-art-thermo__schaal{display:grid;gap:6px;padding:4px 0}
+.sfp-art-thermo__baan{position:relative;height:6px;border-radius:3px;background:var(--sfp-b-lijn-sterk);margin:7px 10px}
+.sfp-art-thermo__baan i{position:absolute;top:50%;left:0;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:var(--sfp-b-primair);box-shadow:0 0 0 4px var(--sfp-b-wit);transition:left .6s ease}
+.sfp-art-thermo__einden{display:flex;justify-content:space-between;gap:16px;font-size:13px;line-height:1.3;color:var(--sfp-b-body)}
+.sfp-art-thermo__einden span:last-child{text-align:right}
 .sfp-art-thermo__band{display:grid;gap:8px}
-:root .sfp-art-thermo__stand{font-family:var(--sfp-b-kop);font-weight:900;font-size:20px;line-height:1.2;text-transform:uppercase;color:var(--sfp-b-primair)}
+:root .sfp-art-thermo__stand{font-family:var(--sfp-b-kop);font-weight:900;font-size:20px;line-height:1.25;color:var(--sfp-b-primair)}
 :root .sfp-art-thermo__band p{margin:0;font-size:15px;line-height:1.55;color:var(--sfp-b-body)}
-:root .sfp-art-thermo .sfp-art-thermo__opnieuw{font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);background:none;border:0;padding:6px 0}
-:root .sfp-art-thermo .sfp-art-thermo__opnieuw:is(:hover,:focus){color:var(--sfp-b-primair);background:none;text-decoration:underline;text-underline-offset:4px}
-@media (prefers-reduced-motion:reduce){.sfp-art-thermo__meter i{transition:none}}
+:root .sfp-art-thermo .sfp-art-thermo__opnieuw{font-size:14px;font-weight:700;line-height:1.2;color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);padding:9px 14px;text-transform:none;letter-spacing:0}
+:root .sfp-art-thermo .sfp-art-thermo__opnieuw:is(:hover,:focus){color:var(--sfp-b-primair);background:var(--sfp-b-wit);border-color:var(--sfp-b-primair)}
+@media (prefers-reduced-motion:reduce){.sfp-art-thermo__baan i{transition:none}}
 @media (max-width:600px){.sfp-art-thermo__opties{grid-template-columns:minmax(0,1fr)}}
 :root .sfp-art-warm .sfp-art-warm__volgende{font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);padding:6px 0}
 .sfp-art-warm__volgende::after{content:" \2192"}
