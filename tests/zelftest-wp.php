@@ -257,6 +257,28 @@ foreach ( $hex as $h ) {
     }
 }
 
+// Pdf: ligaturen uit; met een voettekst in het pakket de margevakken uit en een sjabloon voor Cloudflare.
+$pk   = sfp_zelftest_pakket( 'proeftest' );
+$geg  = sfp_zelftest_blad_gegevens( sfp_zelftest_rij_op( 'code', $code ) );
+$voet = sfp_zelftest_blad_voet( $pk, $geg );
+zt_is( is_string( $html ) && false !== strpos( $html, 'font-variant-ligatures:none' ), 'pdf-blad zet ligaturen uit' );
+if ( ! empty( $manifest['blad']['voet'] ) ) {
+    zt_is( false !== strpos( $voet, 'class="pageNumber"' ) && false !== strpos( $voet, 'class="totalPages"' ), 'voettekst met paginanummers' );
+    zt_is( false !== strpos( $voet, esc_html( $geg['naam'] ) ), 'voettekst met de naam' );
+    zt_is( false !== strpos( $html, '@bottom-left{content:none}' ), 'margevakken van het blad uit' );
+    foreach ( $hex as $h ) {
+        $rol = $manifest['blad']['kleuren'][ $h ];
+        if ( '' !== sfp_zelftest_rol_hex( $rol ) && strtoupper( sfp_zelftest_rol_hex( $rol ) ) !== strtoupper( $h ) ) {
+            zt_is( false === stripos( $voet, $h ), 'voettekst: oude kleur ' . $h . ' vervangen' );
+        }
+    }
+    $zonder = $pk;
+    unset( $zonder['manifest']['blad']['voet'] );
+    zt_is( '' === sfp_zelftest_blad_voet( $zonder, $geg ), 'zonder voet in het pakket geen sjabloon' );
+}
+$deelhtml = sfp_zelftest_blad_html( $pk, sfp_zelftest_blad_gegevens( sfp_zelftest_rij_op( 'code', $code ), 'deel', 'heel' ) );
+zt_is( is_string( $deelhtml ) && false === strpos( $deelhtml, 'sfp-zt-pdf' ), 'deelmodus zonder pdf-stijl' );
+
 // Deelafbeelding: openbaar, dus zonder de code die de pdf opent.
 $deel = sfp_zelftest_blad_gegevens( sfp_zelftest_rij_op( 'code', $code ), 'deel', 'heel' );
 zt_is( '' === $deel['code'] && '' !== $deel['deelcode'], 'deelmodus geeft geen resultaatcode mee' );

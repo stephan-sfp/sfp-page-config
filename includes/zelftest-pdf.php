@@ -108,21 +108,21 @@ function sfp_zelftest_fonts_css( array $families ) {
 }
 
 /**
- * Maak het blad klaar voor één persoon.
+ * Kleuren en fonts van het blad naar die van deze site.
  *
- * @param  array $pakket   Pakket.
- * @param  array $gegevens naam, antwoorden, lengte, code, datum, deelcode, modus, variant.
- * @return string|WP_Error HTML.
+ * Elke hexwaarde uit manifest.blad.kleuren wordt de waarde van die rol op
+ * deze site, in één doorgang, zodat een nieuwe waarde nooit nog eens wordt
+ * vervangen. Familienamen uit manifest.blad.fonts worden die van de site.
+ * Geldt voor het blad en voor de voettekst.
+ *
+ * @param  array  $pakket Pakket.
+ * @param  string $tekst  HTML of CSS.
+ * @param  bool   $log    Ontbrekende kleurrollen in het logboek zetten.
+ * @return array          tekst, families (de families die de site moet leveren).
  */
-function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
-    $html = (string) $pakket['blad'];
-    if ( '' === $html ) {
-        return new WP_Error( 'sfp_zelftest_blad', 'Het pakket heeft geen blad.html.' );
-    }
+function sfp_zelftest_merk( array $pakket, $tekst, $log = false ) {
     $blad = isset( $pakket['manifest']['blad'] ) && is_array( $pakket['manifest']['blad'] ) ? $pakket['manifest']['blad'] : array();
 
-    // Kleuren.
-    // In één doorgang, zodat een nieuwe waarde nooit nog eens wordt vervangen.
     $ontbreekt = array();
     $kaart     = array();
     foreach ( ( isset( $blad['kleuren'] ) ? (array) $blad['kleuren'] : array() ) as $hex => $rol ) {
@@ -134,21 +134,19 @@ function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
         $kaart[ strtoupper( (string) $hex ) ] = $nieuw;
     }
     if ( $kaart ) {
-        $html = preg_replace_callback(
+        $tekst = preg_replace_callback(
             '/#[0-9a-f]{6}(?![0-9a-f])/i',
             function ( $m ) use ( $kaart ) {
                 $sleutel = strtoupper( $m[0] );
                 return isset( $kaart[ $sleutel ] ) ? $kaart[ $sleutel ] : $m[0];
             },
-            $html
+            $tekst
         );
     }
-    if ( $ontbreekt ) {
+    if ( $ontbreekt && $log ) {
         sfp_zelftest_log( $pakket['test'], 'fout', 'Kleurrol(len) niet gevonden op deze site, oorspronkelijke kleur gebruikt: ' . implode( ', ', array_unique( $ontbreekt ) ) . '.' );
     }
 
-    // Fonts: geen Google Fonts; familienamen van het blad naar die van de site.
-    $html     = preg_replace( '#<link[^>]+fonts\.(googleapis|gstatic)\.com[^>]*>#i', '', $html );
     $families = array();
     $kop      = function_exists( 'sfp_page_config_deelbeeld_familie' ) ? sfp_page_config_deelbeeld_familie( sfp_page_config_astra_option( 'headings-font-family' ) ) : '';
     $body     = function_exists( 'sfp_page_config_deelbeeld_familie' ) ? sfp_page_config_deelbeeld_familie( sfp_page_config_astra_option( 'body-font-family' ) ) : '';
@@ -160,10 +158,78 @@ function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
         }
         $families[] = $doel;
         if ( 0 !== strcasecmp( (string) $familie, $doel ) ) {
-            $html = preg_replace( '/(?<![A-Za-z])' . preg_quote( (string) $familie, '/' ) . '(?![A-Za-z])/', $doel, $html );
+            $tekst = preg_replace( '/(?<![A-Za-z])' . preg_quote( (string) $familie, '/' ) . '(?![A-Za-z])/', $doel, $tekst );
         }
     }
-    $fonts = sfp_zelftest_fonts_css( array_unique( $families ) );
+    return array(
+        'tekst'    => $tekst,
+        'families' => array_values( array_unique( $families ) ),
+    );
+}
+
+/**
+ * De voettekst van de pdf, als sjabloon voor Cloudflare.
+ *
+ * De Chrome van Cloudflare tekent de voettekst van het blad niet (CSS
+ * @page-margevakken, 18-10-2026). Daarom zet Cloudflare hem zelf onder elke
+ * pagina, uit manifest.blad.voet:
+ *
+ *   "voet": {
+ *     "css":   "...",   opmaak voor .sfp-zt-voet, .links, .midden, .rechts
+ *     "tekst": { "nl": { "links": "...", "midden": "{naam}", "rechts": "PAGINA {pagina} VAN {paginas}" }, ... }
+ *   }
+ *
+ * Kleuren en fonts gaan door dezelfde vertaling als het blad.
+ *
+ * @param  array $pakket   Pakket.
+ * @param  array $gegevens Gegevens van de persoon (naam).
+ * @return string          HTML, of '' zonder voettekst.
+ */
+function sfp_zelftest_blad_voet( array $pakket, array $gegevens ) {
+    $voet = isset( $pakket['manifest']['blad']['voet'] ) && is_array( $pakket['manifest']['blad']['voet'] ) ? $pakket['manifest']['blad']['voet'] : array();
+    if ( empty( $voet['tekst'] ) || ! is_array( $voet['tekst'] ) ) {
+        return '';
+    }
+    $taal  = sfp_zelftest_taal( $pakket );
+    $tekst = isset( $voet['tekst'][ $taal ] ) && is_array( $voet['tekst'][ $taal ] ) ? $voet['tekst'][ $taal ] : reset( $voet['tekst'] );
+    if ( ! is_array( $tekst ) ) {
+        return '';
+    }
+    $vak = function ( $sleutel ) use ( $tekst, $gegevens ) {
+        $t = isset( $tekst[ $sleutel ] ) ? esc_html( (string) $tekst[ $sleutel ] ) : '';
+        return strtr(
+            $t,
+            array(
+                '{naam}'    => esc_html( isset( $gegevens['naam'] ) ? (string) $gegevens['naam'] : '' ),
+                '{pagina}'  => '<span class="pageNumber"></span>',
+                '{paginas}' => '<span class="totalPages"></span>',
+            )
+        );
+    };
+    $css  = isset( $voet['css'] ) ? wp_strip_all_tags( (string) $voet['css'] ) : '';
+    $merk = sfp_zelftest_merk( $pakket, $css );
+    return '<style>' . sfp_zelftest_fonts_css( $merk['families'] )
+        . 'html,body{margin:0;padding:0}*{font-variant-ligatures:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+        . $merk['tekst'] . '</style>'
+        . '<div class="sfp-zt-voet"><span class="links">' . $vak( 'links' ) . '</span><span class="midden">' . $vak( 'midden' ) . '</span><span class="rechts">' . $vak( 'rechts' ) . '</span></div>';
+}
+
+/**
+ * Maak het blad klaar voor één persoon.
+ *
+ * @param  array $pakket   Pakket.
+ * @param  array $gegevens naam, antwoorden, lengte, code, datum, deelcode, modus, variant.
+ * @return string|WP_Error HTML.
+ */
+function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
+    $html = (string) $pakket['blad'];
+    if ( '' === $html ) {
+        return new WP_Error( 'sfp_zelftest_blad', 'Het pakket heeft geen blad.html.' );
+    }
+    $html = preg_replace( '#<link[^>]+fonts\.(googleapis|gstatic)\.com[^>]*>#i', '', $html );
+    $merk = sfp_zelftest_merk( $pakket, $html, true );
+    $html = $merk['tekst'];
+    $fonts = sfp_zelftest_fonts_css( $merk['families'] );
 
     $data = array(
         'modus'      => isset( $gegevens['modus'] ) ? (string) $gegevens['modus'] : 'pdf',
@@ -191,6 +257,22 @@ function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
         $html = substr( $html, 0, $plek ) . $kop_html . substr( $html, $plek );
     } else {
         $html = $kop_html . $html;
+    }
+
+    // Alleen in de pdf. Ligaturen uit: de Chrome van Cloudflare zet "fl" en
+    // "IJ" als één teken zonder tekst eronder, zodat kopiëren en zoeken in de
+    // pdf een gat geven. Met een voettekst uit het pakket tekent Cloudflare
+    // de voettekst; de margevakken van het blad gaan dan uit, zodat een
+    // nieuwere Chrome hem niet dubbel zet.
+    if ( 'pdf' === $data['modus'] ) {
+        $stijl = '*{font-variant-ligatures:none}';
+        if ( '' !== sfp_zelftest_blad_voet( $pakket, $gegevens ) ) {
+            $vakken = array( 'top-left-corner', 'top-left', 'top-center', 'top-right', 'top-right-corner', 'right-top', 'right-middle', 'right-bottom', 'bottom-right-corner', 'bottom-right', 'bottom-center', 'bottom-left', 'bottom-left-corner', 'left-bottom', 'left-middle', 'left-top' );
+            $stijl .= '@page{' . implode( '', array_map( function ( $v ) { return '@' . $v . '{content:none}'; }, $vakken ) ) . '}';
+        }
+        $stijl = '<style id="sfp-zt-pdf">' . $stijl . '</style>';
+        $plek  = strripos( $html, '</body>' );
+        $html  = false === $plek ? $html . $stijl : substr( $html, 0, $plek ) . $stijl . substr( $html, $plek );
     }
     return $html;
 }
@@ -296,21 +378,28 @@ function sfp_zelftest_cloudflare_vraag( $soort, array $body, $mag_wachten = true
  * @param  array  $pakket      Pakket.
  * @param  string $html        Blad.
  * @param  bool   $mag_wachten Zie sfp_zelftest_cloudflare_vraag().
+ * @param  string $voet        Voettekst (sfp_zelftest_blad_voet()), of ''.
  * @return string|WP_Error     Pdf.
  */
-function sfp_zelftest_maak_pdf( array $pakket, $html, $mag_wachten = true ) {
+function sfp_zelftest_maak_pdf( array $pakket, $html, $mag_wachten = true, $voet = '' ) {
     $schaal = isset( $pakket['manifest']['blad']['schaal'] ) ? (float) $pakket['manifest']['blad']['schaal'] : 0.8;
+    $opties = array(
+        'format'            => 'a4',
+        'printBackground'   => true,
+        'preferCSSPageSize' => true,
+        'scale'             => ( $schaal >= 0.1 && $schaal <= 2 ) ? $schaal : 0.8,
+        'timeout'           => 30000,
+    );
+    if ( '' !== $voet ) {
+        $opties['displayHeaderFooter'] = true;
+        $opties['headerTemplate']      = '<span></span>';
+        $opties['footerTemplate']      = $voet;
+    }
     return sfp_zelftest_cloudflare_vraag(
         'pdf',
         array(
             'html'        => $html,
-            'pdfOptions'  => array(
-                'format'            => 'a4',
-                'printBackground'   => true,
-                'preferCSSPageSize' => true,
-                'scale'             => ( $schaal >= 0.1 && $schaal <= 2 ) ? $schaal : 0.8,
-                'timeout'           => 30000,
-            ),
+            'pdfOptions'  => $opties,
             'gotoOptions' => array(
                 'waitUntil' => 'networkidle0',
                 'timeout'   => 45000,
@@ -398,8 +487,9 @@ function sfp_zelftest_pdf_verwerk( $id, $forceer = false, $mag_wachten = true ) 
         return null;
     }
 
-    $html = sfp_zelftest_blad_html( $pakket, sfp_zelftest_blad_gegevens( $rij ) );
-    $pdf  = is_wp_error( $html ) ? $html : sfp_zelftest_maak_pdf( $pakket, $html, $mag_wachten );
+    $gegevens = sfp_zelftest_blad_gegevens( $rij );
+    $html     = sfp_zelftest_blad_html( $pakket, $gegevens );
+    $pdf      = is_wp_error( $html ) ? $html : sfp_zelftest_maak_pdf( $pakket, $html, $mag_wachten, sfp_zelftest_blad_voet( $pakket, $gegevens ) );
     if ( ! is_wp_error( $pdf ) ) {
         $map   = sfp_zelftest_map( 'pdf' );
         $naam  = bin2hex( random_bytes( 16 ) ) . '.pdf';

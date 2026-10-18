@@ -259,30 +259,31 @@ function sfp_zelftest_rest_proef( WP_REST_Request $verzoek ) {
     if ( null === $antwoorden ) {
         return new WP_Error( 'sfp_zelftest_antwoorden', 'De antwoorden passen niet bij deze lengte van de test.', array( 'status' => 400 ) );
     }
-    $modus   = isset( $g['modus'] ) && 'deel' === $g['modus'] ? 'deel' : 'pdf';
-    $variant = isset( $g['variant'] ) && 'sterk' === $g['variant'] ? 'sterk' : 'heel';
-    $html    = sfp_zelftest_blad_html(
-        $pakket,
-        array(
-            'modus'      => $modus,
-            'variant'    => $variant,
-            'naam'       => isset( $g['naam'] ) ? sanitize_text_field( (string) $g['naam'] ) : 'Proef',
-            'antwoorden' => $antwoorden,
-            'lengte'     => $lengte,
-            'code'       => isset( $g['code'] ) ? sanitize_text_field( (string) $g['code'] ) : $pakket['manifest']['code_voorvoegsel'] . '-PROE-F000-0000',
-            'datum'      => wp_date( 'j F Y' ),
-            'deelcode'   => 'PROEF000000000',
-        )
+    $modus    = isset( $g['modus'] ) && 'deel' === $g['modus'] ? 'deel' : 'pdf';
+    $variant  = isset( $g['variant'] ) && 'sterk' === $g['variant'] ? 'sterk' : 'heel';
+    $gegevens = array(
+        'modus'      => $modus,
+        'variant'    => $variant,
+        'naam'       => isset( $g['naam'] ) ? sanitize_text_field( (string) $g['naam'] ) : 'Proef',
+        'antwoorden' => $antwoorden,
+        'lengte'     => $lengte,
+        'code'       => isset( $g['code'] ) ? sanitize_text_field( (string) $g['code'] ) : $pakket['manifest']['code_voorvoegsel'] . '-PROE-F000-0000',
+        'datum'      => wp_date( 'j F Y' ),
+        'deelcode'   => 'PROEF000000000',
     );
+    $html     = sfp_zelftest_blad_html( $pakket, $gegevens );
+    $voet     = 'pdf' === $modus ? sfp_zelftest_blad_voet( $pakket, $gegevens ) : '';
     if ( is_wp_error( $html ) ) {
         return $html;
     }
     if ( ! empty( $g['alleen_html'] ) ) {
-        return rest_ensure_response( array( 'html' => $html ) );
+        return rest_ensure_response( array( 'html' => $html, 'voet' => $voet ) );
     }
-    $inhoud = 'deel' === $modus ? sfp_zelftest_maak_deelbeeld( $html ) : sfp_zelftest_maak_pdf( $pakket, $html );
+    $inhoud = 'deel' === $modus ? sfp_zelftest_maak_deelbeeld( $html ) : sfp_zelftest_maak_pdf( $pakket, $html, true, $voet );
     if ( is_wp_error( $inhoud ) ) {
-        $inhoud->add_data( array( 'status' => 502 ) );
+        // Geen 502: Cloudflare vervangt een 502 van de site door een eigen
+        // foutpagina, en dan is de reden weg.
+        $inhoud->add_data( array( 'status' => 424 ) );
         return $inhoud;
     }
     return rest_ensure_response(

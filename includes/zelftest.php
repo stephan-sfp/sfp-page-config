@@ -561,6 +561,20 @@ function sfp_zelftest_pakket_controle( array $bestanden ) {
         if ( $los ) {
             $let_op[] = 'blad.html: kleuren zonder rol blijven zoals ze zijn: ' . implode( ', ', $los ) . '.';
         }
+        // De voettekst: de Chrome van Cloudflare tekent de margevakken van het blad niet.
+        $voet = isset( $manifest['blad']['voet'] ) ? $manifest['blad']['voet'] : null;
+        if ( null === $voet ) {
+            if ( preg_match( '/@(top|bottom|left|right)-[a-z-]+\s*\{/i', (string) $bestanden['blad.html'] ) ) {
+                $let_op[] = 'blad.html heeft een kop- of voettekst in de paginamarge; die tekent Cloudflare niet. Zet hem in manifest.blad.voet.';
+            }
+        } elseif ( ! is_array( $voet ) || empty( $voet['tekst'] ) || ! is_array( $voet['tekst'] ) ) {
+            $fouten[] = 'manifest.blad.voet heeft geen tekst per taal.';
+        } else {
+            $zonder = array_diff( $talen, array_keys( $voet['tekst'] ) );
+            if ( $zonder ) {
+                $let_op[] = 'manifest.blad.voet: geen tekst voor ' . implode( ', ', $zonder ) . '; de eerste taal wordt gebruikt.';
+            }
+        }
     }
 
     return array( 'fouten' => array_values( array_unique( $fouten ) ), 'let_op' => $let_op, 'manifest' => $fouten ? null : $manifest );

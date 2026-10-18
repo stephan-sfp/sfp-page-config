@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.4.0-beta.3] - 2026-10-18
+
+### Gerepareerd
+- De pdf van Cloudflare had geen voettekst: de Chrome van Cloudflare tekent de voettekst van het blad (CSS-margevakken) niet. Cloudflare zet hem nu zelf onder elke pagina, uit `manifest.blad.voet` in het testpakket (teksten per taal, kleuren en fonts via dezelfde vertaling als het blad). De margevakken van het blad gaan in de pdf uit, zodat een nieuwere Chrome de voettekst niet dubbel zet.
+- Kopiëren en zoeken in de pdf gaf een gat bij "fl" en "IJ": ligaturen staan in de pdf uit.
+- Een mislukte proef-pdf in SFP Beheer gaf code 502, die Cloudflare verving door een eigen foutpagina zonder de reden. Nu code 424, met de melding van Cloudflare.
+
+### Toegevoegd
+- Inlezen waarschuwt als het blad een kop- of voettekst in de paginamarge heeft zonder `manifest.blad.voet`.
+
 ## [3.4.0-beta.2] - 2026-10-18
 
 ### Gewijzigd
