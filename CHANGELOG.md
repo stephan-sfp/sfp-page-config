@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.7] - 2026-10-18
+
+### Gewijzigd
+- Zelftest op een liggende telefoon: het startscherm in twee kolommen (tekst links, formulier met één knop rechts), zonder de drie punten, met een lagere balk die niet meeschuift. Past op een iPhone Pro Max liggend in één scherm.
+
 ## [3.5.6] - 2026-10-18
 
 ### Gewijzigd
