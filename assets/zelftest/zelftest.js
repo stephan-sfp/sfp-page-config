@@ -95,6 +95,21 @@
 			var lang = '<div class="sfp-zt-kaartje' + (S.kortEerst ? '' : ' hoofd') + '"><span class="sfp-zt-lab">' + esc(T(St.p3_kop)) + '</span><p class="sfp-zt-uitleg2">' + esc(T(St.p3_uitleg)) + ' ' + ph(T(St.p3_tijd)) + '</p><button type="button" class="sfp-zt-knop' + (S.kortEerst ? ' stil' : '') + '" data-lengte="long">' + esc(T(St.p3_knop)) + '</button></div>';
 			var kort = C.lengtes.short ? '<div class="sfp-zt-kaartje' + (S.kortEerst ? ' hoofd' : '') + '"><span class="sfp-zt-lab">' + esc(T(St.p4_kop)) + '</span><p class="sfp-zt-uitleg2"><b>' + ph(T(St.p4_tekst)) + '</b></p>' + (T(St.p4_uitleg) ? '<p class="sfp-zt-uitleg2">' + esc(T(St.p4_uitleg)) + '</p>' : '') + '<button type="button" class="sfp-zt-knop' + (S.kortEerst ? '' : ' stil') + '" data-lengte="short">' + esc(T(St.p4_knop)) + '</button></div>' : '';
 			var privacy = St.p9_url || C.privacy;
+			/*
+			 * Telefoon (besluit 18-10-2026, sinds 3.5.5): geen keuzekaarten maar
+			 * één knop met de duur eronder en een tekstlink naar de andere versie.
+			 * Alleen als het pakket de teksten levert (start.mobiel); de CSS
+			 * toont dit blok onder 640 px en verbergt dan de kaarten.
+			 */
+			var Mo = St.mobiel || {}, mob = '';
+			if (C.lengtes.short && T(Mo.naar_kort) && T(Mo.naar_lang)) {
+				var hoofdL = S.kortEerst ? 'short' : 'long';
+				mob = '<div class="sfp-zt-mob">'
+					+ '<button type="button" class="sfp-zt-knop" data-lengte="' + hoofdL + '">' + esc(T(S.kortEerst ? St.p4_knop : St.p3_knop)) + '</button>'
+					+ (T(S.kortEerst ? Mo.tijd_kort : Mo.tijd_lang) ? '<p class="sfp-zt-mob-tijd">' + esc(T(S.kortEerst ? Mo.tijd_kort : Mo.tijd_lang)) + '</p>' : '')
+					+ '<button type="button" class="sfp-zt-mob-ander" data-lengte="' + (S.kortEerst ? 'long' : 'short') + '">' + esc(T(S.kortEerst ? Mo.naar_lang : Mo.naar_kort)) + '</button>'
+					+ '</div>';
+			}
 			binnen.innerHTML = '<div class="sfp-zt-scherm sfp-zt-start">'
 				+ '<div class="sfp-zt-start-tekst"><div><span class="sfp-zt-lab licht">' + esc(T(I.algemeen.testnaam)) + '</span><h2 class="sfp-zt-h1">' + esc(T(St.kop)) + '</h2></div>'
 				+ (T(St.intro) ? '<div class="sfp-zt-intro"><p>' + esc(T(St.intro)) + '</p>' + (T(St.introLijstkop) ? '<p class="sfp-zt-lijstkop">' + ph(T(St.introLijstkop)) + '</p>' : '') + (St.introPunten && St.introPunten.length ? '<ul class="sfp-zt-lijst">' + St.introPunten.map(function (a) { return '<li>' + esc(T(a)) + '</li>'; }).join('') + '</ul>' : '') + '</div>' : '')
@@ -104,7 +119,8 @@
 				+ '<div class="sfp-zt-veld" data-veld="email"><label for="sfp-zt-email">' + esc(T(St.p6_email)) + '</label><input type="email" id="sfp-zt-email" placeholder="' + esc(T(St.p6_email)) + '" autocomplete="email" inputmode="email" maxlength="190" value="' + esc(S.email) + '"><span class="sfp-zt-fout">' + esc(T(St.fout_email)) + '</span></div>'
 				+ '<div class="sfp-zt-lok" aria-hidden="true"><label for="sfp-zt-website">Website</label><input type="text" id="sfp-zt-website" tabindex="-1" autocomplete="off"></div>'
 				+ '<label class="sfp-zt-vink"><input type="checkbox" id="sfp-zt-nieuwsbrief"' + (S.nieuwsbrief ? ' checked' : '') + '><span>' + ph(T(St.p8_nieuwsbrief)) + '</span></label>'
-				+ '<div class="sfp-zt-keuzes">' + (S.kortEerst ? kort + lang : lang + kort) + '</div>'
+				+ '<div class="sfp-zt-keuzes' + (mob ? ' heeft-mob' : '') + '">' + (S.kortEerst ? kort + lang : lang + kort) + '</div>'
+				+ mob
 				+ '<p class="sfp-zt-foutmelding" id="sfp-zt-startfout"' + (S.fout ? '' : ' hidden') + ' role="alert">' + esc(S.fout) + '</p>'
 				+ '<p class="sfp-zt-avg">' + esc(T(St.p9_avg)) + (privacy ? ' <a href="' + esc(privacy) + '" target="_blank" rel="noopener">' + esc(T(St.p9_link)) + '</a>.' : '') + '</p>'
 				+ '</div></div>';

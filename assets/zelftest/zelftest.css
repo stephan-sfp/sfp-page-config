@@ -63,6 +63,16 @@
 .sfp-zt-avg{font-size:14px;line-height:1.55;color:var(--sfp-b-body)}
 .sfp-zt-foutmelding{color:var(--zt-fout);font-size:14.5px}
 @media (max-width:640px){.sfp-zt-keuzes{grid-template-columns:1fr}}
+/* Telefoon: één knop, de duur eronder en een tekstlink naar de andere versie (sinds 3.5.5). */
+.sfp-zt-mob{display:none}
+.sfp-zt-mob-tijd{margin:8px 0 0;text-align:center;font-size:14px;color:var(--sfp-b-body)}
+.sfp-zt .sfp-zt-mob-ander{align-self:center;margin:18px 0 0;padding:6px 4px;background:none;border:0;box-shadow:none;min-height:0;font:400 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-transform:none;letter-spacing:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.sfp-zt .sfp-zt-mob-ander::after{content:" \2192";display:inline-block;margin-left:6px;text-decoration:none}
+.sfp-zt .sfp-zt-mob-ander:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+@media (max-width:640px){
+.sfp-zt-keuzes.heeft-mob{display:none}
+.sfp-zt-mob{display:flex;flex-direction:column;margin-top:14px}
+}
 
 /* Vragen */
 .sfp-zt-vraagkop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
@@ -219,6 +229,10 @@ body.sfp-zt-testpagina .sfp-zt-scherm{gap:14px}
 body.sfp-zt-testpagina .sfp-zt-opties{gap:8px}
 body.sfp-zt-testpagina .sfp-zt-optie{padding:10px 12px}
 .sfp-zt-top-in{min-height:56px;padding:8px 16px}
+/* Meer lucht op de telefoon (18-10-2026, sinds 3.5.5): geen lijn tussen tekst en formulier, ruimere afstanden, privacyregel kleiner. */
+body.sfp-zt-testpagina .sfp-zt-start{gap:28px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{border-top:0;padding-top:0;gap:14px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-avg{font-size:13px;margin-top:10px}
 .sfp-zt-top-logo{max-height:38px}
 }
 /* Keuzekaarten op de testpagina: gelijke tekst en gelijke knoppen. */
