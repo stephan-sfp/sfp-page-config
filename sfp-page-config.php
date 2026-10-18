@@ -2,8 +2,8 @@
 /**
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
- * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata en de knop onderaan voor het School for Professionals netwerk.
- * Version:     3.3.0
+ * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata, zelftest en de knop onderaan voor het School for Professionals netwerk.
+ * Version:     3.4.0
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '3.3.0' );
+define( 'SFP_PAGE_CONFIG_VERSION', '3.4.0' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -531,6 +531,15 @@ $sfp_includes = array(
     'includes/beheer-paginas.php',
     'includes/beheer.php',
     'includes/snippets.php',
+    'includes/zelftest.php',
+    'includes/zelftest-opslag.php',
+    'includes/zelftest-rest.php',
+    'includes/zelftest-crm.php',
+    'includes/zelftest-pdf.php',
+    'includes/zelftest-link.php',
+    'includes/zelftest-weergave.php',
+    'includes/zelftest-privacy.php',
+    'includes/zelftest-beheer.php',
     'includes/updater.php',
 );
 
@@ -595,5 +604,7 @@ function sfp_page_config_deactivate() {
     if ( function_exists( 'sfp_ajax_lean_remove' ) ) {
         sfp_ajax_lean_remove();
     }
+    wp_clear_scheduled_hook( 'sfp_zelftest_wachtrij' );
+    wp_clear_scheduled_hook( 'sfp_zelftest_dagelijks' );
 }
 register_deactivation_hook( __FILE__, 'sfp_page_config_deactivate' );

@@ -1,0 +1,145 @@
+/*
+ * SFP Page Config - Zelftest
+ *
+ * Kleuren en fonts uit de variabelen van de bouwstenen (--sfp-b-*), die
+ * terugvallen op de kleurrollen en Astra. Geen merkkleur en geen fontnaam.
+ * Alles staat onder .sfp-zt; knoppen van de test zetten alle eigenschappen
+ * zelf, zodat de knopstijl van het thema de opties niet overneemt.
+ */
+.sfp-zt{--zt-lijn:color-mix(in srgb,var(--sfp-b-primair) 18%,transparent);--zt-veld:color-mix(in srgb,var(--sfp-b-primair) 35%,transparent);--zt-fout:#A4262C;color:var(--sfp-b-body);font-family:var(--sfp-b-tekst);font-size:16px;line-height:1.6}
+.sfp-zt *,.sfp-zt *::before,.sfp-zt *::after{box-sizing:border-box}
+.sfp-zt [hidden]{display:none!important}
+.sfp-zt-wrap{max-width:720px;margin:0 auto}
+.sfp-zt p{margin:0}
+.sfp-zt a{color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px}
+.sfp-zt a:hover{text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.sfp-zt :focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
+.sfp-zt-laden{min-height:420px}
+.sfp-zt-scherm{display:flex;flex-direction:column;gap:24px}
+.sfp-zt .sfp-zt-h1,.sfp-zt .sfp-zt-titel,.sfp-zt-route h1{font-family:var(--sfp-b-kop);font-weight:900;color:var(--sfp-b-primair);text-transform:uppercase;text-wrap:balance;margin:8px 0 0;line-height:1.15;letter-spacing:.01em;font-size:clamp(24px,2.5vw + 14px,34px)}
+.sfp-zt-lab{display:block;font:900 12px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.06em;color:var(--sfp-b-primair)}
+.sfp-zt-lab.licht{color:var(--sfp-b-secundair)}
+.sfp-zt-ph{display:inline;font:400 13px/1.3 var(--sfp-b-tekst);color:var(--sfp-b-primair);background:var(--sfp-b-tint2);border:1px dashed var(--sfp-b-primair);border-radius:4px;padding:1px 6px}
+
+/* Knoppen en velden */
+.sfp-zt .sfp-zt-knop,.sfp-zt-route .sfp-zt-knop{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:10px 28px;border:0;border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-links);color:var(--sfp-b-knoptekst);font:900 16px/1.2 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.03em;text-decoration:none;text-align:center;cursor:pointer;width:100%;box-shadow:none}
+.sfp-zt .sfp-zt-knop:hover,.sfp-zt-route .sfp-zt-knop:hover{background:var(--sfp-b-hover);color:var(--sfp-b-knoptekst);text-decoration:none}
+.sfp-zt-route .sfp-zt-knop{width:auto}
+.sfp-zt .sfp-zt-knop.stil{background:var(--sfp-b-wit);color:var(--sfp-b-primair);border:2px solid var(--sfp-b-primair)}
+.sfp-zt .sfp-zt-knop.stil:hover{background:var(--sfp-b-tint3)}
+.sfp-zt .sfp-zt-knop[aria-busy="true"]{opacity:.7;cursor:progress}
+.sfp-zt .sfp-zt-cta2{display:inline;font:900 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:0;margin:0;text-align:left;text-transform:none;letter-spacing:0;min-height:0;box-shadow:none}
+.sfp-zt .sfp-zt-cta2::after{content:" \2192"}
+.sfp-zt .sfp-zt-cta2:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.sfp-zt .sfp-zt-cta2.klein{font-size:14px}
+.sfp-zt .sfp-zt-cta2[aria-disabled="true"]{opacity:.5;cursor:default}
+.sfp-zt input[type=text],.sfp-zt input[type=email]{width:100%;font:400 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1.5px solid var(--zt-veld);border-radius:var(--sfp-b-r-knop);padding:12px 14px;min-height:50px;margin:0}
+.sfp-zt input::placeholder{color:var(--sfp-b-body);opacity:1}
+.sfp-zt input[type=checkbox]{width:20px;height:20px;accent-color:var(--sfp-b-primair);margin:3px 0 0;flex:none}
+
+/* Start */
+.sfp-zt-start{gap:28px}
+.sfp-zt-intro{display:flex;flex-direction:column;gap:12px;max-width:62ch}
+.sfp-zt-intro p{font-size:18px;line-height:1.6;color:var(--sfp-b-primair)}
+.sfp-zt .sfp-zt-lijst{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.sfp-zt-lijst li{position:relative;padding-left:22px;color:var(--sfp-b-primair);font-size:16px;line-height:1.5;margin:0}
+.sfp-zt-lijst li::before{content:"";position:absolute;left:0;top:9px;width:9px;height:9px;background:var(--sfp-b-secundair);border-radius:2px}
+.sfp-zt-instructie{font-size:16px;line-height:1.6;max-width:62ch;color:var(--sfp-b-body);padding:14px 18px;background:var(--sfp-b-tint3);border-left:4px solid var(--sfp-b-secundair)}
+.sfp-zt-formulier{display:flex;flex-direction:column;gap:16px}
+.sfp-zt-start .sfp-zt-formulier{padding-top:24px;border-top:1px solid var(--zt-lijn)}
+.sfp-zt-veld{display:flex;flex-direction:column;gap:6px}
+.sfp-zt-veld label,.sfp-zt-lok{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.sfp-zt-veld .sfp-zt-fout{display:none;color:var(--zt-fout);font-size:14px}
+.sfp-zt-veld.mis .sfp-zt-fout{display:block}
+.sfp-zt-veld.mis input{border-color:var(--zt-fout)}
+.sfp-zt-vink{display:flex;gap:12px;align-items:flex-start;font-size:15px;line-height:1.5;color:var(--sfp-b-primair);cursor:pointer}
+.sfp-zt-keuzes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
+.sfp-zt-kaartje{display:flex;flex-direction:column;gap:12px;padding:20px;border:1.5px solid var(--zt-lijn);border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-wit);min-width:0}
+.sfp-zt-kaartje.hoofd{border-color:var(--sfp-b-primair);background:var(--sfp-b-tint3)}
+.sfp-zt-kaartje .sfp-zt-lab{font-size:13px}
+.sfp-zt-uitleg2{font-size:15.5px;line-height:1.5;color:var(--sfp-b-body)}
+.sfp-zt-uitleg2 b{font-weight:400;color:var(--sfp-b-primair);font-size:17px}
+.sfp-zt-kaartje .sfp-zt-knop{margin-top:auto}
+.sfp-zt-avg{font-size:14px;line-height:1.55;color:var(--sfp-b-body)}
+.sfp-zt-foutmelding{color:var(--zt-fout);font-size:14.5px}
+@media (max-width:640px){.sfp-zt-keuzes{grid-template-columns:1fr}}
+
+/* Vragen */
+.sfp-zt-vraagkop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sfp-zt-vraagkop .sfp-zt-lab{font-size:13px}
+.sfp-zt-tel{font:400 14px/1.3 var(--sfp-b-tekst);color:var(--sfp-b-body);font-variant-numeric:tabular-nums}
+.sfp-zt-voortgang{height:6px;background:var(--sfp-b-tint2);border-radius:3px;overflow:hidden}
+.sfp-zt-voortgang b{display:block;height:100%;background:var(--sfp-b-secundair);transition:width .25s}
+.sfp-zt-vraag{font:400 clamp(19px,1.2vw + 15px,23px)/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);max-width:62ch}
+.sfp-zt-vraag:focus{outline:none}
+.sfp-zt-vraag small{display:block;font-size:15px;color:var(--sfp-b-body);margin-top:6px}
+.sfp-zt-opties{display:flex;flex-direction:column;gap:10px}
+.sfp-zt .sfp-zt-optie{display:flex;align-items:flex-start;gap:14px;text-align:left;width:100%;margin:0;padding:16px 18px;background:var(--sfp-b-wit);border:1.5px solid var(--zt-veld);border-radius:var(--sfp-b-r-knop);color:var(--sfp-b-primair);font:400 16px/1.5 var(--sfp-b-tekst);text-transform:none;letter-spacing:0;cursor:pointer;min-height:0;box-shadow:none}
+.sfp-zt .sfp-zt-optie:hover{background:var(--sfp-b-tint3);border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
+.sfp-zt .sfp-zt-optie.aan{border-color:var(--sfp-b-secundair);background:var(--sfp-b-tint2);box-shadow:inset 0 0 0 1px var(--sfp-b-secundair)}
+.sfp-zt-bol{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--sfp-b-primair);margin-top:2px;position:relative;background:var(--sfp-b-wit)}
+.sfp-zt-optie.aan .sfp-zt-bol::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--sfp-b-primair)}
+.sfp-zt-optie.vink .sfp-zt-bol{border-radius:5px}
+.sfp-zt-optie.vink.aan .sfp-zt-bol::after{border-radius:2px}
+.sfp-zt-optie span{min-width:0}
+.sfp-zt-vraagvoet{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:6px}
+.sfp-zt-vraagvoet .sfp-zt-knop{width:auto;min-width:220px}
+.sfp-zt .sfp-zt-terug{font:400 15px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);background:none;border:0;padding:0;margin:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-transform:none;letter-spacing:0;min-height:0;box-shadow:none}
+.sfp-zt .sfp-zt-terug::before{content:"\2190  "}
+.sfp-zt .sfp-zt-terug:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+@media (prefers-reduced-motion:reduce){.sfp-zt-voortgang b{transition:none}}
+
+/* Eindscherm (opbouw van het label: balken, regels, punten, profiel) */
+.sfp-zt-res{gap:26px}
+.sfp-zt-aanhef{display:block;margin-bottom:4px}
+.sfp-zt-uitslag{font:400 clamp(20px,1.3vw + 15px,26px)/1.35 var(--sfp-b-tekst);color:var(--sfp-b-primair);padding-left:18px;border-left:6px solid var(--sfp-b-secundair);text-wrap:balance}
+.sfp-zt-balken{display:flex;flex-direction:column;border:1px solid var(--zt-lijn);border-radius:var(--sfp-b-r-knop);overflow:hidden;background:var(--sfp-b-wit)}
+.sfp-zt-balk{padding:18px 20px 20px;color:var(--sfp-b-primair)}
+.sfp-zt-balk+.sfp-zt-balk{border-top:1px solid var(--zt-lijn)}
+.sfp-zt-bkop{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center}
+.sfp-zt-bkop .sfp-zt-btag{justify-self:start;grid-column:1/-1;margin-top:2px}
+.sfp-zt-bnaam{font:900 15px/1.2 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.03em}
+.sfp-zt-bgetal{font:900 22px/1 var(--sfp-b-kop);font-variant-numeric:tabular-nums;text-align:right}
+.sfp-zt-bwat{grid-column:1/-1;font:400 14px/1.3 var(--sfp-b-tekst);color:var(--sfp-b-body)}
+.sfp-zt-btag{font:900 11px/1 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.05em;padding:5px 7px;border-radius:3px;color:var(--sfp-b-wit);background:var(--sfp-b-primair)}
+.sfp-zt-btag.st{background:var(--sfp-b-secundair);color:var(--sfp-b-primair)}
+.sfp-zt-btag.zw{background:var(--sfp-b-links);color:var(--sfp-b-primair)}
+.sfp-zt-balk i{display:block;height:12px;background:var(--sfp-b-tint2);border-radius:6px;margin-top:12px;overflow:hidden}
+.sfp-zt-balk i b{display:block;height:100%;background:var(--sfp-b-primair);border-radius:6px}
+.sfp-zt-balk.st i b{background:var(--sfp-b-secundair)}
+.sfp-zt-balk.zw i b{background:var(--sfp-b-links)}
+.sfp-zt-regel{font-size:15.5px;line-height:1.55;color:var(--sfp-b-primair);padding:12px 16px;background:var(--sfp-b-tint3);border-left:4px solid var(--sfp-b-secundair)}
+.sfp-zt .sfp-zt-kpunten{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.sfp-zt-kpunten li{display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin:0}
+.sfp-zt-kpunten b{font:400 17px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair)}
+.sfp-zt-portret{margin:0;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
+.sfp-zt-portret svg{width:100%;max-width:250px;height:auto;display:block}
+.sfp-zt-portret figcaption b{display:block;font:900 12px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.05em;color:var(--sfp-b-primair)}
+.sfp-zt-leeg{fill:var(--sfp-b-tint2)}
+.sfp-zt-pr{fill:var(--sfp-b-primair)}
+.sfp-zt-st{fill:var(--sfp-b-secundair)}
+.sfp-zt-zw{fill:var(--sfp-b-links)}
+.sfp-zt-pmono{font:900 44px var(--sfp-b-kop);fill:var(--sfp-b-wit)}
+.sfp-zt-plabel{font:900 12.5px var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.08em;fill:var(--sfp-b-primair)}
+
+/* Melding dat het resultaat in de mailbox staat, boven de wazige rest */
+.sfp-zt-teaser{position:relative;min-height:420px}
+.sfp-zt-wazig{filter:blur(7px);opacity:.55;pointer-events:none;user-select:none;display:flex;flex-direction:column;gap:22px}
+.sfp-zt-overlay{position:absolute;left:0;right:0;top:28px;box-shadow:0 10px 30px color-mix(in srgb,var(--sfp-b-primair) 18%,transparent)}
+.sfp-zt-t3blok{background:var(--sfp-b-tint2);border-radius:var(--sfp-b-r-knop);padding:24px 24px 26px;display:flex;flex-direction:column;gap:14px}
+.sfp-zt-p10{color:var(--sfp-b-primair);font-size:17px;line-height:1.55}
+.sfp-zt-mail{font-family:var(--sfp-b-kop);font-weight:900;overflow-wrap:anywhere}
+.sfp-zt-inmail{font-family:var(--sfp-b-kop);font-weight:900;color:var(--sfp-b-primair);font-size:20px;line-height:1.3;text-transform:uppercase}
+.sfp-zt-mailkop{display:flex;align-items:center;gap:14px}
+.sfp-zt-mailicoon{flex:none;width:48px;height:48px;border-radius:50%;background:var(--sfp-b-wit);color:var(--sfp-b-primair);display:grid;place-items:center}
+.sfp-zt-spamregel{color:var(--sfp-b-body);font-size:15px;line-height:1.5;margin-top:-6px}
+.sfp-zt-hulp{display:flex;flex-direction:column;gap:10px;margin-top:6px;padding-top:16px;border-top:1px solid var(--zt-lijn)}
+.sfp-zt-hulpregel{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font-size:14px;line-height:1.5;color:var(--sfp-b-body)}
+.sfp-zt-hulpregel .sfp-zt-cta2{white-space:nowrap}
+.sfp-zt-t3blok .sfp-zt-formulier{padding:16px 18px;background:var(--sfp-b-wit);border-radius:var(--sfp-b-r-knop);border:1px solid var(--zt-lijn)}
+@media (max-width:480px){.sfp-zt-t3blok{padding:22px 18px 24px}.sfp-zt-balk{padding:16px 16px 18px}.sfp-zt-teaser{min-height:520px}}
+
+/* Pagina's van de plugin: verlopen, onbekend, wachten */
+.sfp-zt-route{padding:56px 20px 72px}
+.sfp-zt-route .sfp-zt-melding{display:flex;flex-direction:column;gap:20px;max-width:720px;margin:0 auto}
+.sfp-zt-route .sfp-zt-melding p{margin:0}

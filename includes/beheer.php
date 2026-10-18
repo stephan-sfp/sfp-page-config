@@ -362,6 +362,7 @@ function sfp_page_config_beheer_stand() {
             'home' => home_url( '/' ),
         ),
         'onderdelen'   => $onderdelen,
+        'zelftest'     => function_exists( 'sfp_zelftest_stand' ) ? sfp_zelftest_stand() : null,
         'afwijkingen'  => sfp_page_config_afwijkingen(),
         'knop'         => $knop,
         'teksten'      => $teksten,

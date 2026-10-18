@@ -115,6 +115,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Startmomenten van trainingen, op de pagina en in het aanmeldformulier.',
             'detail' => true,
         ),
+        'zelftest'   => array(
+            'naam'   => 'Zelftest',
+            'uitleg' => 'Een zelftest voor bezoekers, met het resultaat als pdf per e-mail via het CRM.',
+            'detail' => true,
+        ),
         'snippets'   => array(
             'naam'   => 'Snippetbeheer via REST',
             'uitleg' => 'Het serviceaccount claude-api leest, maakt, bewerkt en schakelt PHP-snippets van ASE Pro zonder browser.',
@@ -204,6 +209,9 @@ function sfp_page_config_onderdeel_standaard( $id ) {
             return is_array( $eigen ) && ! empty( $eigen );
         case 'snippets':
             // Schrijft code die de site uitvoert: alleen aan als iemand dat kiest.
+            return false;
+        case 'zelftest':
+            // Verzamelt gegevens van bezoekers: alleen aan als iemand dat kiest.
             return false;
         default:
             return true;

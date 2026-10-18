@@ -4,6 +4,80 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.4.0] - 2026-10-18
+
+Een generieke zelftest voor bezoekers, met de presentatietest van De Presenteerschool als eerste invulling. De techniek zit in de plugin; de inhoud per label is een testpakket dat in SFP Beheer of via REST wordt ingelezen. Het onderdeel staat standaard uit. Proefversies: 3.4.0-beta.1 tot en met beta.5.
+
+### Toegevoegd
+- **Onderdeel Zelftest**, standaard uit, per site aan te zetten in SFP Beheer, Onderdelen.
+- **Testpakket per label:** manifest.json (structuur, scoretabel, lengtes, toegestane CRM-waarden, geldigheid, kleurrollen, fonts en voettekst van het blad), inhoud.json (teksten per taal), motor.js (rekenregel), label.js (CRM-velden, notitie, resultaat op het eindscherm) en blad.html (pdf-blad). Inlezen controleert alles eerst; bij een fout blijft de oude versie staan. De vorige versie is terug te zetten.
+- **Blok Zelftest en code `[sfp_zelftest test="..."]`:** startscherm (voornaam, e-mail, nieuwsbrief, lang of kort), de vragen en het eindscherm. Knoppen werken op klik en Enter, zonder formulierverzending. `?lengte=kort` zet de korte versie voorop.
+- **Eigen tabel** `{prefix}sfp_zelftest` met code, e-mail, voornaam, lengte, antwoorden, nieuwsbrief, herkomstpagina, UTM's, gclid, tijden, duur, eerste klik op de pdf-link en het pdf-bestand.
+- **Openbare routes** `POST /wp-json/sfp/v1/zelftest/<test>/start`, `/afgerond` en `/opnieuw-sturen`. De server controleert de antwoorden tegen het manifest en de CRM-velden tegen de toegestane lijst; limiet per IP-adres en per e-mailadres, en een verborgen lokveld.
+- **Resultaatcode** `VOORVOEGSEL-XXXX-XXXX-XXXX`, willekeurig (60 bits), nooit afgeleid van e-mail of antwoorden. Opnieuw doen geeft een nieuwe code.
+- **Doorsturen naar SureContact** server-side, via een wachtrij: send 1 bij de start en send 2 bij afronden, met een notitie die de site opbouwt. Opnieuw na 1, 5, 30 en 120 minuten. Proefmodus: niets naar het CRM, de gegevens komen in het logboek.
+- **Pdf via Cloudflare Browser Run**, op de achtergrond direct na afronden, met wachtrij (per site een aanvraag tegelijk, minstens 10 seconden ertussen, Retry-After bij 429). Kleuren uit de kleurrollen van de site, fonts van de site inline, voettekst via Cloudflare. Ligaturen en de Nederlandse IJ staan in de pdf uit, zodat kopiëren en zoeken werken. Lukt het niet, dan bij de eerste klik op de link.
+- **Pdf-link** met de meldingen "verlopen" (410) en "niet gevonden" (404), noindex, geen cache, uitgesloten van WP Rocket. Op Cloudflare is een eigen uitzondering nodig (regel van WordPress Toolkit).
+- **Bewaartermijn:** dagelijks gaan pdf's weg na de geldigheid van de link; rijen worden na 2 jaar geanonimiseerd (antwoorden en uitkomst blijven, tijden per maand). Verwijderverzoek in SFP Beheer, via REST en via Gereedschap, Persoonlijke gegevens wissen of exporteren.
+- **Beheer** in SFP Beheer, Onderdelen, Zelftest: pakket inlezen, adres van de pdf-link, webhooks en het Cloudflare-token (alleen te schrijven, nooit te lezen), proefmodus, tellingen en logboek. REST voor beheerders onder `/wp-json/sfp/v1/zelftest`, met een proefroute die een pdf maakt zonder iets op te slaan.
+- Test `tests/zelftest-wp.php` voor een lokale proefinstallatie.
+
+### Gewijzigd
+- `uninstall.php` wist ook de zelftest: tabel, pdf's, pakket en instellingen, omdat de bewaartermijn zonder de plugin niet meer wordt bewaakt.
+
+### Terugdraaien
+- Onderdeel Zelftest uitzetten in SFP Beheer, of de zip van 3.3.0 uploaden. De tabel blijft dan staan maar wordt niet gebruikt.
+
+## [3.4.0-beta.5] - 2026-10-18
+
+### Verwijderd
+- **De deelfunctie van de zelftest is geschrapt** (besluit 18-10-2026): geen deelpagina, geen deelafbeelding via Cloudflare, geen deelcode en geen instelling "Adres van de deelpagina" meer. De kolommen `deelcode` en `deelbeelden` gaan bij het bijwerken uit de tabel (tabelversie 2). Het testpakket heeft geen deelteksten meer en het label geeft geen varianten meer door.
+
+## [3.4.0-beta.4] - 2026-10-18
+
+### Gerepareerd
+- Kopiëren en zoeken in de pdf gaf nog een gat bij koppen met "fl" en bij de Nederlandse "IJ" (zoals in "WIJ" en "MIJN"). Een font-shorthand in het blad zette de ligaturen weer aan, en de IJ komt uit een aparte fontfunctie (locl). Beide staan in de pdf nu vast uit.
+
+## [3.4.0-beta.3] - 2026-10-18
+
+### Gerepareerd
+- De pdf van Cloudflare had geen voettekst: de Chrome van Cloudflare tekent de voettekst van het blad (CSS-margevakken) niet. Cloudflare zet hem nu zelf onder elke pagina, uit `manifest.blad.voet` in het testpakket (teksten per taal, kleuren en fonts via dezelfde vertaling als het blad). De margevakken van het blad gaan in de pdf uit, zodat een nieuwere Chrome de voettekst niet dubbel zet.
+- Kopiëren en zoeken in de pdf gaf een gat bij "fl" en "IJ": ligaturen staan in de pdf uit.
+- Een mislukte proef-pdf in SFP Beheer gaf code 502, die Cloudflare verving door een eigen foutpagina zonder de reden. Nu code 424, met de melding van Cloudflare.
+
+### Toegevoegd
+- Inlezen waarschuwt als het blad een kop- of voettekst in de paginamarge heeft zonder `manifest.blad.voet`.
+
+## [3.4.0-beta.2] - 2026-10-18
+
+### Gewijzigd
+- Het pdf-blad krijgt de teksten van het pakket mee (`inhoud`), zodat het in de korte versie de regel "eerste lezing" kan tonen.
+
+## [3.4.0-beta.1] - 2026-10-17
+
+Proefversie. Een generieke zelftest voor bezoekers, met de presentatietest van De Presenteerschool als eerste invulling. De techniek zit in de plugin; de inhoud per label is een testpakket dat in SFP Beheer of via REST wordt ingelezen.
+
+### Toegevoegd
+- **Onderdeel Zelftest**, standaard uit, per site aan te zetten in SFP Beheer, Onderdelen.
+- **Testpakket per label:** manifest.json (structuur, scoretabel, lengtes, toegestane CRM-waarden, geldigheid, kleurrollen en fonts van het blad), inhoud.json (teksten per taal), motor.js (rekenregel), label.js (CRM-velden, notitie, resultaat op het eindscherm) en blad.html (pdf-blad). Inlezen controleert alles eerst; bij een fout blijft de oude versie staan. De vorige versie is terug te zetten.
+- **Blok Zelftest en code `[sfp_zelftest test="..."]`:** startscherm (voornaam, e-mail, nieuwsbrief, lang of kort), de vragen en het eindscherm. Knoppen werken op klik en Enter, zonder formulierverzending. `?lengte=kort` zet de korte versie voorop.
+- **Eigen tabel** `{prefix}sfp_zelftest` met code, e-mail, voornaam, lengte, antwoorden, nieuwsbrief, herkomstpagina, UTM's, gclid, tijden, duur, eerste klik op de pdf-link en het pdf-bestand.
+- **Openbare routes** `POST /wp-json/sfp/v1/zelftest/<test>/start`, `/afgerond` en `/opnieuw-sturen`. De server controleert de antwoorden tegen het manifest en de CRM-velden tegen de toegestane lijst; limiet per IP-adres en per e-mailadres, en een verborgen lokveld.
+- **Resultaatcode** `VOORVOEGSEL-XXXX-XXXX-XXXX`, willekeurig (60 bits), nooit afgeleid van e-mail of antwoorden. Opnieuw doen geeft een nieuwe code. Een aparte deelcode voor de deelpagina, die nooit de pdf opent.
+- **Doorsturen naar SureContact** server-side, via een wachtrij: send 1 bij de start en send 2 bij afronden, met de velden uit de bouwnotitie (sectie 6.2) en een notitie die de site opbouwt. Opnieuw na 1, 5, 30 en 120 minuten. Proefmodus: niets naar het CRM, de gegevens komen in het logboek.
+- **Pdf via Cloudflare Browser Run**, op de achtergrond direct na afronden, met wachtrij (per site een aanvraag tegelijk, minstens 10 seconden ertussen, Retry-After bij 429). Kleuren uit de kleurrollen van de site, fonts van de site inline. Lukt het niet, dan bij de eerste klik op de link.
+- **Pdf-link** met de meldingen "verlopen" (410) en "niet gevonden" (404), noindex, geen cache, uitgesloten van WP Rocket.
+- **Deelpagina** met een deelafbeelding van 1200 bij 627 als voorbeeld voor LinkedIn en WhatsApp, en "Afbeelding opslaan". De afbeelding maakt Cloudflare bij de eerste opvraag. Een nieuwe pakketversie gooit de gemaakte afbeeldingen weg.
+- **Bewaartermijn:** dagelijks gaan pdf's weg na de geldigheid van de link; rijen worden na 2 jaar geanonimiseerd (antwoorden en uitkomst blijven, tijden per maand). Verwijderverzoek in SFP Beheer, via REST en via Gereedschap, Persoonlijke gegevens wissen of exporteren.
+- **Beheer** in SFP Beheer, Onderdelen, Zelftest: pakket inlezen, adressen, webhooks en het Cloudflare-token (alleen te schrijven, nooit te lezen), proefmodus, tellingen en logboek. REST voor beheerders onder `/wp-json/sfp/v1/zelftest`, met een proefroute die een pdf of deelafbeelding maakt zonder iets op te slaan.
+- Test `tests/zelftest-wp.php` voor een lokale proefinstallatie.
+
+### Gewijzigd
+- `uninstall.php` wist ook de zelftest: tabel, pdf's, deelafbeeldingen, pakket en instellingen, omdat de bewaartermijn zonder de plugin niet meer wordt bewaakt.
+
+### Terugdraaien
+- Onderdeel Zelftest uitzetten in SFP Beheer, of de zip van 3.3.0 uploaden. De tabel blijft dan staan maar wordt niet gebruikt.
+
 ## [3.3.0] - 2026-10-17
 
 Snippets van ASE Pro beheren zonder browser. ASE zelf kan dat niet via REST: het posttype staat buiten REST en de opslag van ASE draait alleen in het beheer. Daardoor liet een verwijdering via REST de code doordraaien en draaide een concept soms wel en soms niet.
