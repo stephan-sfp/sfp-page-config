@@ -120,6 +120,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Een zelftest voor bezoekers, met het resultaat als pdf per e-mail via het CRM.',
             'detail' => true,
         ),
+        'pijler'     => array(
+            'naam'   => 'Pijler',
+            'uitleg' => 'Een bericht kan de gids van een categorie zijn: op het adres van de categorie, met de kaart van alle artikelen en begrippen erin.',
+            'detail' => false,
+        ),
         'snippets'   => array(
             'naam'   => 'Snippetbeheer via REST',
             'uitleg' => 'Het serviceaccount claude-api leest, maakt, bewerkt en schakelt PHP-snippets van ASE Pro zonder browser.',
@@ -212,6 +217,9 @@ function sfp_page_config_onderdeel_standaard( $id ) {
             return false;
         case 'zelftest':
             // Verzamelt gegevens van bezoekers: alleen aan als iemand dat kiest.
+            return false;
+        case 'pijler':
+            // Verandert adressen en de opmaak van berichten: alleen aan als iemand dat kiest.
             return false;
         default:
             return true;
@@ -539,11 +547,15 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
             case 'artikel_promo_label':
             case 'artikel_promo_titel':
             case 'artikel_promo_linktekst':
+            case 'artikel_promo2_label':
+            case 'artikel_promo2_titel':
+            case 'artikel_promo2_linktekst':
                 $alle[ $sleutel ] = sanitize_text_field( (string) $ruw );
                 $bewaard[]        = $sleutel;
                 break;
 
             case 'artikel_promo_tekst':
+            case 'artikel_promo2_tekst':
             case 'affiliate_uitleg':
                 $alle[ $sleutel ] = sanitize_textarea_field( (string) $ruw );
                 $bewaard[]        = $sleutel;
@@ -561,6 +573,7 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 break;
 
             case 'artikel_voorkeursbron':
+            case 'kop_leestekens':
             case 'ajax_lean_enabled':
                 $alle[ $sleutel ] = ( true === $ruw || '1' === (string) $ruw || 'true' === $ruw ) ? '1' : '';
                 $bewaard[]        = $sleutel;
@@ -570,11 +583,13 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
             case 'artikel_redactie_pagina':
             case 'artikel_bibliografie_pagina':
             case 'artikel_promo_pagina':
+            case 'artikel_promo2_pagina':
                 $alle[ $sleutel ] = absint( $ruw ) ? (string) absint( $ruw ) : '';
                 $bewaard[]        = $sleutel;
                 break;
 
             case 'artikel_promo_beeld':
+            case 'artikel_promo2_beeld':
                 $alle[ $sleutel ] = absint( $ruw ) ? (string) absint( $ruw ) : '';
                 $bewaard[]        = $sleutel;
                 break;
@@ -583,7 +598,22 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
             case 'artikel_redactie_url':
             case 'artikel_bibliografie_url':
             case 'artikel_promo_url':
+            case 'artikel_promo2_url':
                 $alle[ $sleutel ] = esc_url_raw( trim( (string) $ruw ) );
+                $bewaard[]        = $sleutel;
+                break;
+
+            case 'artikel_promo_vorm':
+            case 'artikel_promo2_vorm':
+                $alle[ $sleutel ] = 'rond' === $ruw ? 'rond' : '';
+                $bewaard[]        = $sleutel;
+                break;
+
+            case 'promo_vorm_artikel':
+            case 'promo_vorm_pijler':
+            case 'promo_vorm_begrip':
+            case 'promo_vorm_tool':
+                $alle[ $sleutel ] = in_array( $ruw, array( 'site', 'tweede', 'geen' ), true ) ? $ruw : '';
                 $bewaard[]        = $sleutel;
                 break;
 

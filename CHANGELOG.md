@@ -4,6 +4,29 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.6.0-beta.1] - 2026-10-18
+
+Eerste deel van de vormen pijler, begrip en tool (SwS als voorbeeldsite): wat de vormen delen, de pijler, de promokaart per vorm, K28 en K32. Begrip volgt in 3.7.0, tool in 3.8.0.
+
+### Toegevoegd
+- **Onderdeel Pijler** (SFP Beheer, Onderdelen, standaard uit): een bericht kan de gids van een categorie zijn. Werkt met de artikelopmaak aan.
+- **Paneel Deze pagina, Vorm:** een bericht is een artikel of een pijler. Bij een pijler: van welke categorie dit de gids is (leeg: de eigen categorie), het adres en de zelftest van de pijler. Bij begrippen: Hoort bij de pijler.
+- **Adres van de pijler:** de gids staat op het adres van zijn categorie; zijn eigen adres verwijst daarheen. Met "het eigen adres van dit bericht" verwijst de categorie naar de gids (voor een bestaande pijlerpagina). Feeds van de categorie blijven gewoon.
+- **Kaart In this guide** direct na de lead: de artikelen van de pijler met beeld, titel en leestijd. Tot vier een raster, vanaf vijf een slider per vier (twee bij twee) met pijlen en paginanummer. Volgorde: eerst wat de gids zelf noemt, dan nieuwste eerst. Begrippen: hoogstens acht, dan een link naar de woordenlijst van de pijler. Op een telefoon ingeklapt tot één regel met Show. Een hoofdpijler toont de artikelen per pijler, hoogstens vier per pijler.
+- **Regel boven de titel** van een pijler: Guide, of Guide in <hoofdpijler>.
+- **Kopkaart van een pijler:** de zelftest van de pijler op de plek van de warming-up, met het aantal vragen als de tool dat kent.
+- **Lees ook op een pijler:** een artikel van deze pijler krijgt het label Go deeper en de leestijd.
+- **Gegevens voor Google:** de Article van SureRank op een pijler krijgt onder dezelfde @id de artikelen (hasPart), de begrippen (mentions), de bronnen (citation) en de wijzigingsdatum.
+- **Woordenlijst per pijler:** het archief van de begrippen met `?pijler=<categorie>` toont alleen de begrippen van die pijler.
+- **Promokaart per vorm** (SFP Beheer, Artikelen, Promokaart): een tweede kaart, met een omslag of een ronde foto, en per vorm een keuze: de kaart van de site, de tweede kaart of geen. Een pijler met een zelftest toont eerst die test. Een tool heeft standaard geen kaart. Zonder keuze blijft alles zoals het was.
+- **Leestekens in de titel (K28)**, instelling in SFP Beheer, Artikelen, Kopkaart: dubbele punt, puntkomma, uitroepteken, komma, punt en koppelteken in de H1 naar het woord ernaast. Voor sites met een titelletter waarin elk teken even breed is. Standaard uit.
+- **Controle voor een pijler** in het paneel en in SFP Beheer: geen categorie, een tweede gids voor dezelfde categorie, een lead buiten 50 tot 80 woorden, nog geen artikelen.
+- Teksten voor bezoekers in het Engels, Nederlands en Portugees (Portugees concept).
+- Test `tests/vormen-wp.php` (39 controles).
+
+### Gewijzigd
+- **Scheidingsbolletjes in de kopkaart (K32):** elk onderdeel heeft een bolletje en de strook links is weggeknipt, zodat een regel nooit met een bolletje begint, ook als de regel ergens anders breekt. Vervangt het vaste breekpunt.
+
 ## [3.5.1] - 2026-10-18
 
 ### Gewijzigd

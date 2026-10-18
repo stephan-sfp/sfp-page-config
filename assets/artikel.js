@@ -280,3 +280,54 @@
     });
     bij();
 })();
+
+/* Pijler: de kaart In this guide. Op een telefoon ingeklapt met Toon; vanaf vijf artikelen een slider die per vier schuift, met pijlen en de pagina in de kop. */
+(function () {
+    'use strict';
+    var kaarten = [].slice.call(document.querySelectorAll('[data-sfp-gids]'));
+    kaarten.forEach(function (kaart) {
+        var knop = kaart.querySelector('.sfp-gids__knop');
+        if (knop) {
+            knop.addEventListener('click', function () {
+                var open = !kaart.classList.contains('is-open');
+                kaart.classList.toggle('is-open', open);
+                knop.setAttribute('aria-expanded', open ? 'true' : 'false');
+                var label = knop.querySelector('span');
+                if (label) { label.textContent = open ? knop.getAttribute('data-sfp-verberg') : knop.getAttribute('data-sfp-toon'); }
+                kaart.dispatchEvent(new CustomEvent('sfp-gids-open'));
+            });
+        }
+        var strook = kaart.querySelector('.sfp-gids__lijst--slider');
+        if (!strook) { return; }
+        var paginas = [].slice.call(strook.querySelectorAll('.sfp-gids__pagina'));
+        var vorige = kaart.querySelector('.sfp-gids__vorige');
+        var volgende = kaart.querySelector('.sfp-gids__volgende');
+        var teller = kaart.querySelector('.sfp-gids__teller');
+        var huidig = 0;
+        function stand() {
+            if (!strook.clientWidth) { return; }
+            var links = strook.scrollLeft, beste = 0, afstand = Infinity;
+            paginas.forEach(function (p, i) {
+                var d = Math.abs(p.offsetLeft - strook.offsetLeft - links);
+                if (d < afstand) { afstand = d; beste = i; }
+            });
+            if (strook.scrollLeft + strook.clientWidth >= strook.scrollWidth - 2) { beste = paginas.length - 1; }
+            huidig = beste;
+            if (vorige) { vorige.disabled = huidig === 0; }
+            if (volgende) { volgende.disabled = huidig >= paginas.length - 1; }
+            if (teller) { teller.textContent = (huidig + 1) + ' / ' + paginas.length; }
+        }
+        function naar(i) {
+            var p = paginas[Math.max(0, Math.min(paginas.length - 1, i))];
+            if (!p) { return; }
+            strook.scrollTo({ left: p.offsetLeft - strook.offsetLeft, behavior: 'smooth' });
+        }
+        if (vorige) { vorige.addEventListener('click', function () { naar(huidig - 1); }); }
+        if (volgende) { volgende.addEventListener('click', function () { naar(huidig + 1); }); }
+        var wacht;
+        strook.addEventListener('scroll', function () { clearTimeout(wacht); wacht = setTimeout(stand, 60); }, { passive: true });
+        window.addEventListener('resize', stand);
+        kaart.addEventListener('sfp-gids-open', stand);
+        stand();
+    });
+})();

@@ -389,6 +389,8 @@ function sfp_page_config_render_lees_ook( $attrs, $content ) {
     $titel   = sfp_page_config_blok_attr( $attrs, 'titel' );
     $url     = esc_url( sfp_page_config_blok_attr( $attrs, 'url' ) );
     $beeld   = '';
+    $label    = sfp_page_config_artikel_tekst( 'lees_ook' );
+    $leestijd = '';
 
     if ( $post_id ) {
         $doel = get_post( $post_id );
@@ -400,13 +402,26 @@ function sfp_page_config_render_lees_ook( $attrs, $content ) {
         }
         $url   = get_permalink( $doel );
         $beeld = get_the_post_thumbnail( $doel, 'medium', array( 'loading' => 'lazy', 'alt' => '' ) );
+        // Op een pijler: een artikel van deze pijler krijgt Go deeper en de leestijd.
+        $hier = get_post();
+        if ( $hier && function_exists( 'sfp_page_config_vorm' ) && 'pijler' === sfp_page_config_vorm( $hier ) ) {
+            $term = sfp_page_config_gids_term( $hier );
+            if ( $term ) {
+                $kinderen = get_term_children( $term->term_id, 'category' );
+                $termen   = array_merge( array( (int) $term->term_id ), is_array( $kinderen ) ? array_map( 'intval', $kinderen ) : array() );
+                if ( has_term( $termen, 'category', $doel ) ) {
+                    $label    = sfp_page_config_artikel_tekst( 'verder_lezen' );
+                    $leestijd = sprintf( sfp_page_config_artikel_tekst( 'leestijd' ), sfp_page_config_artikel_leestijd( $doel->post_content ) );
+                }
+            }
+        }
     }
     if ( '' === $titel || ! $url ) {
         return '';
     }
     return sfp_page_config_blokken_css_vangnet( 'sfp/lees-ook' )
         . '<a ' . sfp_page_config_blok_omhulling( array( 'sfp-lees-ook' ) ) . ' href="' . esc_url( $url ) . '"><span class="sfp-lees-ook__beeld' . ( '' === $beeld ? ' sfp-lees-ook__beeld--leeg' : '' ) . '" aria-hidden="true">' . $beeld . '</span>'
-        . '<span class="sfp-lees-ook__tekst"><small class="sfp-blok-label">' . esc_html( sfp_page_config_artikel_tekst( 'lees_ook' ) ) . '</small><b>' . esc_html( $titel ) . '</b></span>'
+        . '<span class="sfp-lees-ook__tekst"><small class="sfp-blok-label">' . esc_html( $label ) . '</small><b>' . esc_html( $titel ) . '</b>' . ( '' !== $leestijd ? '<em>' . esc_html( $leestijd ) . '</em>' : '' ) . '</span>'
         . '<span class="sfp-lees-ook__pijl" aria-hidden="true">&rarr;</span></a>';
 }
 
