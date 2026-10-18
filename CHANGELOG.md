@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.10] - 2026-10-18
+
+### Gewijzigd
+- Zelftest: het overzicht van de antwoorden is ingeklapt, zodat het scherm op één scherm past. "Bekijk je antwoorden (n)" klapt de lijst open; na het wijzigen van een antwoord blijft hij open. Tekst voor de knop uit het testpakket (`module.overzicht_open`).
+
 ## [3.5.9] - 2026-10-18
 
 ### Gerepareerd

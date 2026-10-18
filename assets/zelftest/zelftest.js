@@ -259,14 +259,17 @@
 				var tekst = (Array.isArray(a) ? a : (a ? [a] : [])).map(function (l) { return o['abcdefghi'.indexOf(l)] || ''; }).filter(Boolean).join(' \u00b7 ');
 				return '<li><button type="button" class="sfp-zt-ov-rij" data-k="' + k + '"><span class="sfp-zt-ov-nr">' + (k + 1) + '</span><span class="sfp-zt-ov-tekst"><span class="sfp-zt-ov-vraag">' + esc(tx.v) + '</span><span class="sfp-zt-ov-antw">' + esc(tekst) + '</span></span></button></li>';
 			}).join('');
+			/* Ingeklapt (besluit 18-10-2026): het scherm past op één scherm; wie wil, klapt de lijst open. */
+			var open = S.overzichtOpen ? ' open' : '';
 			binnen.innerHTML = '<div class="sfp-zt-scherm sfp-zt-overzicht">'
 				+ '<div><h2 class="sfp-zt-h1" id="sfp-zt-ovkop" tabindex="-1">' + esc(T(Mo.overzicht_kop)) + '</h2>' + (T(Mo.overzicht_uitleg) ? '<p class="sfp-zt-uitleg-sub">' + esc(T(Mo.overzicht_uitleg)) + '</p>' : '') + '</div>'
-				+ '<ol class="sfp-zt-ov-lijst">' + rijen + '</ol>'
+				+ '<details class="sfp-zt-ov"' + open + '><summary>' + esc(T(Mo.overzicht_open) || T(Mo.overzicht_kop)) + ' (' + S.volgorde.length + ')</summary>'
+				+ '<ol class="sfp-zt-ov-lijst">' + rijen + '</ol></details>'
 				+ '<div class="sfp-zt-vraagvoet"><button type="button" class="sfp-zt-terug" id="sfp-zt-vorige">' + esc(T(V.vorige)) + '</button>'
 				+ '<button type="button" class="sfp-zt-knop" id="sfp-zt-naar-resultaat">' + esc(T(Mo.overzicht_knop)) + '</button></div>'
 				+ '</div>';
 			Array.prototype.forEach.call(binnen.querySelectorAll('.sfp-zt-ov-rij'), function (b) {
-				b.addEventListener('click', function () { S.i = +b.getAttribute('data-k'); S.terugOverzicht = true; S.scherm = 'vraag'; teken(); });
+				b.addEventListener('click', function () { S.i = +b.getAttribute('data-k'); S.terugOverzicht = true; S.overzichtOpen = true; S.scherm = 'vraag'; teken(); });
 			});
 			$('#sfp-zt-vorige').addEventListener('click', function () { S.i = S.volgorde.length - 1; S.scherm = 'vraag'; teken(); });
 			$('#sfp-zt-naar-resultaat').addEventListener('click', function () { afronden(); });
