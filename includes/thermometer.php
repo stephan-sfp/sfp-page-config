@@ -15,8 +15,11 @@
  * browser: Klopt 2, Soms 1, Klopt niet 0; onder een derde laag, onder twee
  * derde gemiddeld, anders hoog. De uitslag toont geen algemeen woord als
  * "hoog": de schrijver geeft elke uitslag een eigen naam en de schaal twee
- * einden in de woorden van de vraag (feedback Stephan 18-10-2026). De schaal
- * heeft een neutrale kleur: hij oordeelt niet zelf.
+ * einden in de woorden van de vraag (feedback Stephan 18-10-2026). De meter
+ * ziet eruit als een thermometer (wens Stephan 19-10-2026): een bol en een
+ * buis die van groen naar rood volloopt. Groen, oranje en rood zijn vaste
+ * signaalkleuren, geen merkkleuren; een site kan ze overschrijven met
+ * --sfp-thermo-koel, --sfp-thermo-warm en --sfp-thermo-heet.
  *
  * Kleuren: alleen via de variabelen --sfp-b-*. Geen merkwaarden in code.
  *
@@ -212,7 +215,7 @@ function sfp_page_config_thermometer_paneel( array $thermo, array $hoofdstukken 
         . $blokken
         . '<div class="sfp-art-thermo__uitslag" hidden>'
         . '<span class="sfp-blok-label" tabindex="-1">' . esc_html( $t( 'thermo_uitslag' ) ) . '</span>'
-        . '<div class="sfp-art-thermo__schaal" aria-hidden="true"><div class="sfp-art-thermo__baan"><i></i></div>'
+        . '<div class="sfp-art-thermo__schaal" aria-hidden="true"><div class="sfp-art-thermo__meter"><span class="sfp-art-thermo__bol"></span><span class="sfp-art-thermo__buis"><span class="sfp-art-thermo__dek"></span></span></div>'
         . ( '' !== $thermo['links'] || '' !== $thermo['rechts'] ? '<div class="sfp-art-thermo__einden"><span>' . esc_html( $thermo['links'] ) . '</span><span>' . esc_html( $thermo['rechts'] ) . '</span></div>' : '' )
         . '</div>'
         . $uitslagen

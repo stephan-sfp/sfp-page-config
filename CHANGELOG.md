@@ -7,7 +7,7 @@ Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies 
 ## [Thermometer] - nog niet uitgebracht
 
 ### Toegevoegd
-- **Thermometer in een pijler** (besluit Stephan 18-10): blok Thermometer met drie tot acht stellingen en drie uitslagen, elk met een eigen naam, een tekst en het hoofdstuk om verder te lezen. De uitslag staat op een neutrale schaal met twee uiteinden in de woorden van de vraag (geen algemeen "hoog" of "laag", geen kleur die oordeelt). Knop "Opnieuw doen". De knop Thermometer staat vooraan in de kopkaart, links van Delen. Klapt uit de kopkaart van de pijler, zoals de warming-up bij een artikel; rekent in de browser (Klopt 2, Soms 1, Klopt niet 0) en bewaart niets. Teksten in het Engels, Nederlands en Portugees.
+- **Thermometer in een pijler** (besluit Stephan 18-10): blok Thermometer met drie tot acht stellingen en drie uitslagen, elk met een eigen naam, een tekst en het hoofdstuk om verder te lezen. De uitslag staat op een thermometer: een bol en een buis met streepjes die van groen naar rood volloopt, met twee uiteinden in de woorden van de vraag (geen algemeen "hoog" of "laag"). Groen, oranje en rood zijn vaste signaalkleuren, per site te overschrijven. Knop "Opnieuw doen". De knop Thermometer staat vooraan in de kopkaart, links van Delen. Klapt uit de kopkaart van de pijler, zoals de warming-up bij een artikel; rekent in de browser (Klopt 2, Soms 1, Klopt niet 0) en bewaart niets. Teksten in het Engels, Nederlands en Portugees.
 - Controle op een pijler: geen Thermometer met minstens drie stellingen.
 
 ### Gewijzigd
