@@ -252,3 +252,24 @@ body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud>.sfp-zt{width:100%}
 .sfp-zt-kaartje.hoofd{border-width:2.5px}
 body.sfp-zt-testpagina .sfp-zt-kaartje.hoofd{padding:15px}
 @media (max-width:640px){body.sfp-zt-testpagina .sfp-zt-kaartje.hoofd{padding:11px 13px}}
+/* Telefoon liggend (18-10-2026, sinds 3.5.7): weinig hoogte. De rustige telefoonopbouw (één knop, geen punten), in twee kolommen: tekst links, formulier rechts. */
+@media (orientation:landscape) and (max-height:520px){
+.sfp-zt-top{position:static}
+.sfp-zt-top-in{min-height:48px;padding:6px 24px}
+.sfp-zt-top-logo{max-height:34px}
+.sfp-zt-top-logo-svg{height:34px}
+body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud{padding:12px 24px 24px}
+body.sfp-zt-testpagina .sfp-zt-scherm{gap:14px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-lijstkop,body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-lijst,body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2{display:none}
+body.sfp-zt-testpagina .sfp-zt-start{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 40px;align-items:center}
+body.sfp-zt-testpagina .sfp-zt-start>.sfp-zt-foutmelding{grid-column:1/-1}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-h1{font-size:clamp(24px,3.2vw,32px)}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-intro p{font-size:17px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{border-top:0;padding-top:0;gap:10px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-avg{font-size:13px;margin-top:4px}
+.sfp-zt-keuzes.heeft-mob{display:none}
+.sfp-zt-mob{display:flex;flex-direction:column;margin-top:6px}
+.sfp-zt .sfp-zt-mob-ander{margin-top:10px}
+body.sfp-zt-testpagina .sfp-zt-opties{gap:8px}
+body.sfp-zt-testpagina .sfp-zt-optie{padding:10px 12px}
+}
