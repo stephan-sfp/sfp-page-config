@@ -345,8 +345,15 @@
 				return { value: String( t.id ), label: tekstVan( t.title && ( t.title.rendered || t.title.raw ) ) || ( 'Tool ' + t.id ) };
 			} ) );
 			delen.push( stuk( 'Zelftest van de pijler', 'Komt in de kopkaart en als promokaart. Leeg: de promokaart die bij een pijler hoort.', 'sfp_zelftest_tool', toolOpties, true ) );
-			if ( stand.vorm && stand.vorm.adres ) {
-				delen.push( regel( 'Staat op', stand.vorm.adres ) );
+			if ( stand.vorm ) {
+				delen.push( regel( 'Hoort onder', stand.vorm.onder ? stand.vorm.onder : 'geen pijler erboven' ) );
+				if ( typeof stand.vorm.artikelen === 'number' ) {
+					delen.push( regel( 'Artikelen in deze pijler', stand.vorm.artikelen + ', staan vanzelf in de kaart bovenaan' ) );
+					delen.push( regel( 'Begrippen in deze pijler', stand.vorm.begrippen + ', staan vanzelf in de kaart bovenaan' ) );
+				}
+				if ( stand.vorm.adres ) {
+					delen.push( regel( 'Staat op', stand.vorm.adres ) );
+				}
 			}
 			( stand.vorm && stand.vorm.meldingen ? stand.vorm.meldingen : [] ).forEach( function ( m, i ) {
 				delen.push( el( 'div', { key: 'm' + i }, melding( m.tekst, 'let' ) ) );

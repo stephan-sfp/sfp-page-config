@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.6.0-beta.4] - 2026-10-18
+
+### Toegevoegd
+- Controle op een pijler: een artikel van de pijler waar de tekst nog niet naar verwijst (link of Lees ook). Niet op een hoofdpijler.
+- Paneel Deze pagina bij een pijler: Hoort onder, en het aantal artikelen en begrippen in de pijler.
+
 ## [3.6.0-beta.3] - 2026-10-18
 
 ### Gerepareerd

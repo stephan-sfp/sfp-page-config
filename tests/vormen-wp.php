@@ -178,6 +178,9 @@ $check( 'controle dubbel', in_array( 'pijler-dubbel', $codes, true ) );
 $check( 'controle korte lead', in_array( 'pijler-lead', $codes, true ) );
 $codes = wp_list_pluck( sfp_page_config_pijler_controle( get_post( $gids ) ), 'code' );
 $check( 'lead van 60 woorden is goed', ! in_array( 'pijler-lead', $codes, true ) );
+$check( 'artikelen zonder verwijzing gemeld', in_array( 'pijler-verwijzing', $codes, true ) );
+$codes = wp_list_pluck( sfp_page_config_pijler_controle( get_post( $hoofdgids ) ), 'code' );
+$check( 'hoofdpijler: geen melding verwijzing', ! in_array( 'pijler-verwijzing', $codes, true ) );
 
 // Gekozen categorie gaat voor de eigen categorie.
 update_post_meta( $tweede, 'sfp_gids_van', $ander['term_id'] );

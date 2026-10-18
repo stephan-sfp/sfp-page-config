@@ -306,6 +306,13 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
         );
         if ( 'pijler' === $vorm['vorm'] ) {
             $vorm['meldingen'] = sfp_page_config_pijler_controle( $post );
+            $term              = sfp_page_config_gids_term( $post );
+            if ( $term ) {
+                $ouder              = $term->parent ? get_term( $term->parent, 'category' ) : null;
+                $vorm['onder']      = ( $ouder && ! is_wp_error( $ouder ) ) ? html_entity_decode( $ouder->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '';
+                $vorm['artikelen']  = count( sfp_page_config_pijler_artikelen( $term, null, true ) );
+                $vorm['begrippen']  = count( sfp_page_config_pijler_begrippen( $term->term_id ) );
+            }
             if ( 'publish' === $post->post_status && sfp_page_config_is_gids( $post ) ) {
                 $vorm['adres'] = get_permalink( $post );
             }

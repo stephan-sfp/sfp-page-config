@@ -953,6 +953,29 @@ function sfp_page_config_pijler_controle( $post ) {
             'actie' => 'editor',
         );
     }
+    // Elk artikel van de pijler heeft een verwijzing in de tekst (niet op een
+    // hoofdpijler: die verwijst naar zijn pijlers).
+    $kinderen = get_term_children( $term->term_id, 'category' );
+    if ( ! ( is_array( $kinderen ) && $kinderen ) ) {
+        $genoemd = array();
+        foreach ( parse_blocks( (string) $post->post_content ) as $blok ) {
+            sfp_page_config_pijler_lees_ook_ids( $blok, $genoemd );
+        }
+        $missen = array();
+        foreach ( sfp_page_config_pijler_artikelen( $term ) as $p ) {
+            if ( ! in_array( (int) $p->ID, $genoemd, true ) ) {
+                $missen[] = wp_strip_all_tags( get_the_title( $p ) );
+            }
+        }
+        if ( $missen ) {
+            $meldingen[] = array(
+                'code'  => 'pijler-verwijzing',
+                'kort'  => 1 === count( $missen ) ? 'Eén artikel zonder verwijzing' : count( $missen ) . ' artikelen zonder verwijzing',
+                'tekst' => ( 1 === count( $missen ) ? 'Het artikel ' . $missen[0] . ' hoort bij deze pijler, maar de tekst verwijst er nog niet naar.' : 'Deze artikelen horen bij de pijler, maar de tekst verwijst er nog niet naar: ' . implode( ', ', array_slice( $missen, 0, 5 ) ) . ( count( $missen ) > 5 ? ' en nog ' . ( count( $missen ) - 5 ) : '' ) . '.' ) . ' Een link of een blok Lees ook is genoeg.',
+                'actie' => 'negeer',
+            );
+        }
+    }
     if ( ! sfp_page_config_pijler_artikelen( $term, null, true ) ) {
         $meldingen[] = array(
             'code'  => 'pijler-leeg',
