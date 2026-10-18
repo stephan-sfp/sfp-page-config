@@ -4,6 +4,26 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.0] - 2026-10-18
+
+Een eigen testpagina voor de zelftest, en releases voortaan via een GitHub Action. Proefversies: 3.5.0-beta.1 tot en met beta.4 (op DPS).
+
+### Toegevoegd
+- **Testpagina van de zelftest:** de pagina die in SFP Beheer, Zelftest, als testpagina staat, krijgt een eigen weergave zonder kop, menu en voet van het thema. Bovenaan een smalle balk met het logo (niet klikbaar) en een kruisje. Statistiek, conversiemeting, cookiemelding en A/B-test laden zoals op elke pagina.
+- **Kruisje:** terug naar de pagina op de site waar de bezoeker vandaan kwam, anders naar de homepage. Midden in de test eerst de vraag "Weet je zeker dat je stopt? Je antwoorden worden niet bewaard." Teksten in `includes/teksten.php` (nl, en, pt).
+- **Instelling "Logo op de testpagina"** (media-ID) in SFP Beheer, Zelftest: het logo voor een witte achtergrond. Leeg: het logo van de site.
+- **Release-workflow** (`.github/workflows/release.yml`): GitHub maakt zelf de release zodra er een nieuwe versie in de repo staat; een versie met een streepje wordt een pre-release.
+
+### Gewijzigd
+- Testpagina op volle breedte, elk scherm verticaal in het midden: het startscherm in twee kolommen (tekst links, formulier rechts), de vragen in een kolom van 760 px. Startscherm en vragen passen op desktop, tablet en een telefoon van 390 x 844 op één scherm; het eindscherm mag scrollen.
+- Telefoon: de drie punten op het startscherm en de uitleg in de keuzekaarten vallen weg.
+- De uitleg "De vragen in deze test dwingen je…" staat boven vraag 1 in plaats van op het startscherm.
+- Keuzekaarten met gelijke tekst en even hoge knoppen; de pijl bij "Vorige" valt buiten de onderstreping.
+- Op de testpagina geen knop onderaan, geen WhatsApp-knop en geen scrollbalk.
+
+### Gerepareerd
+- Onder een korte testpagina bleef de achtergrondkleur van de site zichtbaar (DPS zet een merkkleur op html); de testpagina is nu tot onderaan wit.
+
 ## [3.5.0-beta.4] - 2026-10-18
 
 ### Gewijzigd
