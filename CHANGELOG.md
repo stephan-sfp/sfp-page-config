@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.5] - 2026-10-18
+
+### Gewijzigd
+- Zelftest, startscherm op de telefoon: geen keuzekaarten meer maar één knop met de duur eronder en een tekstlink naar de andere versie (teksten uit het testpakket, `start.mobiel`). Meer witruimte, geen lijn tussen tekst en formulier, kleinere privacyregel. Op de computer blijven de kaarten.
+
 ## [3.5.4] - 2026-10-18
 
 ### Gewijzigd
