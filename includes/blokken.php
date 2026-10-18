@@ -232,6 +232,12 @@ function sfp_page_config_blokken() {
         $alle = array_merge( $alle, sfp_page_config_blokken_gegevens() );
     }
 
+    /**
+     * Blokken van andere onderdelen (zelftest-oproep, begrip, tool), sinds 3.6.0.
+     *
+     * @param array $alle Blokken.
+     */
+    $alle = (array) apply_filters( 'sfp_page_config_blokken_extra', $alle );
     return $alle;
 }
 

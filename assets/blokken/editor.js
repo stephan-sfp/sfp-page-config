@@ -666,6 +666,97 @@
 	} );
 
 	/* =====================================================================
+	 * Thermometer in een pijler (sinds 3.6.0)
+	 * ================================================================== */
+
+	/** Kies een hoofdstuk en geef de kop zo nodig een vast anker. */
+	function ankerVan( lijst, id ) {
+		var h = lijst.filter( function ( x ) { return x.id === id; } )[ 0 ];
+		if ( ! h ) { return ''; }
+		var anker = h.anker;
+		if ( ! anker ) {
+			var gebruikt = gebruikteAnkers();
+			anker = h.slug;
+			var nr = 2;
+			while ( gebruikt[ anker ] ) { anker = h.slug + '-' + nr++; }
+			wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( h.id, { anchor: anker } );
+		}
+		return anker;
+	}
+
+	blok( 'sfp/thermometer', function ( props ) {
+		var a = props.attributes;
+		var lijst = JSON.parse( wp.data.useSelect( function ( select ) { return JSON.stringify( hoofdstukken( select ) ); }, [] ) );
+		var aantal = wp.data.useSelect( function ( select ) {
+			return select( 'core/block-editor' ).getBlocks( props.clientId ).filter( function ( b ) { return tekens( b.attributes.tekst ) > 0; } ).length;
+		}, [ props.clientId ] );
+		var blockProps = useBlockProps( { className: 'sfp-editor-regel sfp-editor-thermo' } );
+		var inner = useInnerBlocksProps( {}, { allowedBlocks: [ 'sfp/thermometer-stelling' ], template: [ [ 'sfp/thermometer-stelling' ], [ 'sfp/thermometer-stelling' ], [ 'sfp/thermometer-stelling' ], [ 'sfp/thermometer-stelling' ] ] } );
+		var opties = [ { value: '', label: lijst.length ? 'Geen hoofdstuk' : 'De pijler heeft nog geen tussenkoppen' } ].concat( lijst.map( function ( h ) {
+			var d = document.createElement( 'div' ); d.innerHTML = h.titel; return { value: h.id, label: d.textContent };
+		} ) );
+		function band( sleutel, naam, hulp, voorbeeld ) {
+			var gekozen = a[ sleutel + '_anker' ] ? lijst.filter( function ( h ) { return h.anker === a[ sleutel + '_anker' ] || ( ! h.anker && h.slug === a[ sleutel + '_anker' ] ); } )[ 0 ] : null;
+			return [
+				tekstveld( 'Naam van de uitslag ' + naam, a[ sleutel + '_label' ], function ( v ) { var n = {}; n[ sleutel + '_label' ] = v; props.setAttributes( n ); }, 'In de woorden van de vraag, bijvoorbeeld: ' + voorbeeld + '.' ),
+				el( c.TextareaControl, {
+					key: 'tekst-' + sleutel,
+					label: 'Uitslag ' + naam,
+					help: hulp,
+					value: a[ sleutel ] || '',
+					rows: 3,
+					onChange: function ( v ) { var n = {}; n[ sleutel ] = v; props.setAttributes( n ); },
+					__nextHasNoMarginBottom: true,
+				} ),
+				keuze( 'Lees verder bij ' + naam, gekozen ? gekozen.id : '', opties, function ( id ) { var n = {}; n[ sleutel + '_anker' ] = ankerVan( lijst, id ); props.setAttributes( n ); } ),
+			];
+		}
+		return el( Fragment, null,
+			paneel( 'Thermometer', [
+				uitleg( 'Drie tot acht stellingen. De lezer kiest per stelling Klopt, Soms of Klopt niet. Daarna volgt de uitslag op een schaal met twee uiteinden, met de naam en tekst die jij per uitslag geeft en een link naar het hoofdstuk dat erbij past. Schrijf alle stellingen in dezelfde richting: Klopt telt naar het rechteruiteinde. Niets wordt bewaard.' ),
+				tekstveld( 'Schaal: linkeruiteinde', a.links, function ( v ) { props.setAttributes( { links: v } ); }, 'Weinig herkenning, bijvoorbeeld: Rustig.' ),
+				tekstveld( 'Schaal: rechteruiteinde', a.rechts, function ( v ) { props.setAttributes( { rechts: v } ); }, 'Veel herkenning, bijvoorbeeld: Zenuwen nemen het over.' ),
+			].concat( band( 'laag', 'bij weinig herkenning', 'Bij weinig herkenning.', 'Je aanwezigheid draagt je' ), band( 'midden', 'in het midden', null, 'Je aanwezigheid wisselt' ), band( 'hoog', 'bij veel herkenning', 'Bij veel herkenning.', 'Je zenuwen gaan voor' ) ) ),
+			el( 'div', blockProps,
+				el( 'span', { className: 'sfp-editor-label' }, 'Thermometer · staat op de site als knop in de kopkaart van de pijler, niet op deze plek' ),
+				el( RichText, { tagName: 'div', className: 'sfp-editor-warm__vraag', value: a.kop, placeholder: 'De vraag boven de stellingen, bijvoorbeeld: Hoe groot is jouw spreekangst?', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { kop: v } ); } } ),
+				el( 'div', inner ),
+				aantal < 3 ? el( 'span', { className: 'sfp-blokmelding' }, 'Een Thermometer heeft minstens drie stellingen. Zonder die verschijnt hij niet op de site.' ) : null,
+				aantal > 8 ? el( 'span', { className: 'sfp-blokmelding' }, 'Hoogstens acht stellingen; de rest valt weg.' ) : null,
+				! a.laag || ! a.midden || ! a.hoog || ! a.laag_label || ! a.midden_label || ! a.hoog_label ? el( 'span', { className: 'sfp-blokmelding' }, 'Vul rechts de drie uitslagen in, elk met een naam en een tekst.' ) : null,
+				! a.links || ! a.rechts ? el( 'span', { className: 'sfp-blokmelding' }, 'Geef de schaal rechts twee uiteinden, zodat de lezer ziet waar hij staat.' ) : null
+			)
+		);
+	} );
+
+	blok( 'sfp/thermometer-stelling', function ( props ) {
+		var blockProps = useBlockProps( { className: 'sfp-editor-vlak sfp-editor-thermo__stelling' } );
+		return el( 'div', blockProps,
+			el( RichText, { tagName: 'div', value: props.attributes.tekst, placeholder: 'Stelling, bijvoorbeeld: Ik slaap slecht de nacht voor een presentatie.', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { tekst: v } ); } } )
+		);
+	} );
+
+	/* =====================================================================
+	 * Zelftest-oproep (sinds 3.6.0)
+	 * ================================================================== */
+
+	blok( 'sfp/zelftest-cta', function ( props ) {
+		var a = props.attributes;
+		var zt = window.sfpZelftestTests || { tests: [], aan: false };
+		var opties = [ { value: '', label: 'De test van de site' } ].concat( ( zt.tests || [] ).map( function ( t ) { return { value: t.test, label: t.naam || t.test }; } ) );
+		var leeg = ! zt.aan ? 'Het onderdeel Zelftest staat uit (SFP Beheer, Onderdelen).'
+			: 'Geen zelftest om te tonen: de testpagina is nog niet gepubliceerd of er is geen pakket. Bezoekers zien hier niets.';
+		return el( Fragment, null,
+			paneel( 'Zelftest-oproep', [
+				keuze( 'Test', a.test || '', opties, function ( v ) { props.setAttributes( { test: v } ); } ),
+				tekstveld( 'Bronlabel', a.bron, function ( v ) { props.setAttributes( { bron: v } ); }, 'Komt als ?bron= in de link, voor GA4. Leeg: het soort pagina en het adres, bijvoorbeeld pagina-presenteren-training.' ),
+				uitleg( 'Kop, zin en knoptekst staan in SFP Beheer, Zelftest, en gelden voor elke oproep en de promokaart van een pijler. Niet voor toolpagina\'s: de zelftest is geen tool.' ),
+			] ),
+			gegeven( 'sfp/zelftest-cta', null, props, leeg )
+		);
+	} );
+
+	/* =====================================================================
 	 * Gegevens van de site (sinds 3.1.0)
 	 * ================================================================== */
 
@@ -756,7 +847,7 @@
 		var MINIMUM = 3;
 		var MELDING = 'sfp-ux-ritme';
 		var TEKST = { 'core/list': 1, 'sfp/lijst': 1 };
-		var NEUTRAAL = { 'sfp/warming-up': 1, 'sfp/leestijd': 1, 'sfp/cursusdatum': 1, 'sfp/lestijd': 1 };
+		var NEUTRAAL = { 'sfp/warming-up': 1, 'sfp/thermometer': 1, 'sfp/leestijd': 1, 'sfp/cursusdatum': 1, 'sfp/lestijd': 1 };
 		var KERN_UX = { 'core/image': 1, 'core/gallery': 1, 'core/table': 1, 'core/quote': 1, 'core/pullquote': 1, 'core/video': 1, 'core/embed': 1, 'core/media-text': 1, 'core/cover': 1 };
 
 		function soort( blok ) {

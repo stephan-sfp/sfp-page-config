@@ -17,3 +17,5 @@
   .sfp-lees-ook b{font-size:16px}
 }
 @media (prefers-reduced-motion:reduce){:root a.sfp-lees-ook{transition:none}}
+
+.sfp-lees-ook__tekst em{display:block;font-style:normal;font-size:13px;line-height:1.4;color:var(--sfp-b-body);margin-top:4px}

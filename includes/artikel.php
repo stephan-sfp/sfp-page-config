@@ -456,21 +456,54 @@ function sfp_page_config_artikel_hoofdstukken( $html, $alleen = null ) {
 }
 
 /**
- * De promokaart van de site (bijvoorbeeld het boek), uit de instellingen.
+ * De promokaart bij een bericht. Welke kaart een vorm toont, staat per vorm
+ * in de instellingen (promo_vorm_<vorm>): de kaart van de site, de tweede
+ * kaart of geen. Een pijler met een zelftest toont eerst die test.
  *
- * @param  string $variant zij (rechterkolom) of inline (in de tekst).
- * @return string          HTML, of '' als er geen kaart is ingesteld.
+ * @param  string           $variant zij (rechterkolom) of inline (in de tekst).
+ * @param  WP_Post|int|null $post    Bericht; leeg is het huidige bericht.
+ * @return string                    HTML, of '' als er geen kaart is.
  */
-function sfp_page_config_artikel_promokaart( $variant = 'zij' ) {
-    $titel = (string) sfp_page_config_get_setting( 'artikel_promo_titel', '' );
-    $url   = sfp_page_config_link_instelling( 'artikel_promo' );
+function sfp_page_config_artikel_promokaart( $variant = 'zij', $post = null ) {
+    $post = get_post( $post );
+    $vorm = ( $post && function_exists( 'sfp_page_config_vorm' ) ) ? sfp_page_config_vorm( $post ) : 'artikel';
+    $vorm = '' === $vorm ? 'artikel' : $vorm;
+    if ( 'pijler' === $vorm && function_exists( 'sfp_page_config_pijler_zelftest' ) ) {
+        $test = sfp_page_config_pijler_zelftest( $post, 'pijler-promo' );
+        if ( $test ) {
+            return sfp_page_config_promo_zelftest( $test, $variant );
+        }
+    }
+    $keuze = function_exists( 'sfp_page_config_promo_keuze' ) ? sfp_page_config_promo_keuze( $vorm ) : '';
+    if ( 'geen' === $keuze ) {
+        return '';
+    }
+    $kaart = sfp_page_config_promokaart_html( 'tweede' === $keuze ? 'artikel_promo2' : 'artikel_promo', $variant );
+    // Een tweede kaart die (nog) niet is ingevuld, valt terug op de kaart van de site.
+    if ( '' === $kaart && 'tweede' === $keuze ) {
+        $kaart = sfp_page_config_promokaart_html( 'artikel_promo', $variant );
+    }
+    return $kaart;
+}
+
+/**
+ * Eén promokaart uit de instellingen.
+ *
+ * @param  string $basis   artikel_promo (kaart van de site) of artikel_promo2.
+ * @param  string $variant zij of inline.
+ * @return string
+ */
+function sfp_page_config_promokaart_html( $basis, $variant ) {
+    $titel = (string) sfp_page_config_get_setting( $basis . '_titel', '' );
+    $url   = sfp_page_config_link_instelling( $basis );
     if ( '' === $titel || '' === $url ) {
         return '';
     }
-    $label     = (string) sfp_page_config_get_setting( 'artikel_promo_label', '' );
-    $tekst     = (string) sfp_page_config_get_setting( 'artikel_promo_tekst', '' );
-    $linktekst = (string) sfp_page_config_get_setting( 'artikel_promo_linktekst', '' );
-    $beeld_id  = (int) sfp_page_config_get_setting( 'artikel_promo_beeld', 0 );
+    $label     = (string) sfp_page_config_get_setting( $basis . '_label', '' );
+    $tekst     = (string) sfp_page_config_get_setting( $basis . '_tekst', '' );
+    $linktekst = (string) sfp_page_config_get_setting( $basis . '_linktekst', '' );
+    $rond      = 'rond' === (string) sfp_page_config_get_setting( $basis . '_vorm', '' );
+    $beeld_id  = (int) sfp_page_config_get_setting( $basis . '_beeld', 0 );
     $beeld     = '';
     if ( $beeld_id ) {
         // Zonder "auto" in sizes: haalt een cacheplugin het uitgestelde laden
@@ -479,7 +512,7 @@ function sfp_page_config_artikel_promokaart( $variant = 'zij' ) {
         add_filter( 'wp_img_tag_add_auto_sizes', '__return_false', 99 );
         $beeld = wp_get_attachment_image(
             $beeld_id,
-            'medium',
+            $rond ? 'thumbnail' : 'medium',
             false,
             array(
                 'loading' => 'lazy',
@@ -489,7 +522,7 @@ function sfp_page_config_artikel_promokaart( $variant = 'zij' ) {
         remove_filter( 'wp_img_tag_add_auto_sizes', '__return_false', 99 );
     }
 
-    return '<aside class="sfp-art-promo sfp-art-promo--' . ( 'inline' === $variant ? 'inline' : 'zij' ) . ( '' === $beeld ? ' sfp-art-promo--zonder-beeld' : '' ) . '"' . ( '' !== $label ? ' aria-label="' . esc_attr( $label ) . '"' : '' ) . '>'
+    return '<aside class="sfp-art-promo sfp-art-promo--' . ( 'inline' === $variant ? 'inline' : 'zij' ) . ( '' === $beeld ? ' sfp-art-promo--zonder-beeld' : '' ) . ( $rond ? ' sfp-art-promo--rond' : '' ) . '"' . ( '' !== $label ? ' aria-label="' . esc_attr( $label ) . '"' : '' ) . '>'
         . $beeld . '<div>'
         . ( '' !== $label ? '<span class="sfp-blok-label">' . esc_html( $label ) . '</span>' : '' )
         . '<b>' . esc_html( $titel ) . '</b>'
@@ -657,6 +690,17 @@ function sfp_page_config_artikel_promo_in_tekst( $html, $kaart ) {
  * @return string        HTML, of '' zonder bruikbare categorie.
  */
 function sfp_page_config_artikel_pijlerregel( $post ) {
+    // Een pijler: Guide, of Guide in <hoofdpijler>.
+    $gids_term = function_exists( 'sfp_page_config_is_gids' ) && 'pijler' === sfp_page_config_vorm( $post ) ? sfp_page_config_is_gids( $post ) : null;
+    if ( $gids_term ) {
+        $ouder = $gids_term->parent ? get_term( $gids_term->parent, 'category' ) : null;
+        if ( $ouder && ! is_wp_error( $ouder ) ) {
+            $url  = get_term_link( $ouder );
+            $naam = is_wp_error( $url ) ? esc_html( $ouder->name ) : '<a href="' . esc_url( $url ) . '">' . esc_html( $ouder->name ) . '</a>';
+            return '<p class="sfp-art-pijler">' . sprintf( esc_html( sfp_page_config_artikel_tekst( 'gids_in' ) ), $naam ) . '</p>';
+        }
+        return '<p class="sfp-art-pijler">' . esc_html( sfp_page_config_artikel_tekst( 'gids' ) ) . '</p>';
+    }
     $termen = get_the_terms( $post, 'category' );
     if ( ! is_array( $termen ) ) {
         return '';
@@ -778,8 +822,18 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
         $acties .= '<a class="sfp-art-actie" href="' . esc_url( 'https://www.google.com/preferences/source?q=' . rawurlencode( $host ) ) . '" target="_blank" rel="noopener">' . sfp_page_config_artikel_icoon( 'ster' ) . '<span class="sfp-lang">' . esc_html( $t( 'favoriet' ) ) . '</span><span class="sfp-kort">' . esc_html( $t( 'favoriet_kort' ) ) . '</span></a>';
     }
 
-    // Warming-up.
-    $vragen = function_exists( 'sfp_page_config_warming_up_verzamel' ) ? sfp_page_config_warming_up_verzamel() : array();
+    // Pijler: de Thermometer staat op de plek van de warming-up (besluit
+    // Stephan 18-10-2026). De zelftest staat op een pijler alleen in de promokaart.
+    $pijler = function_exists( 'sfp_page_config_vorm' ) && 'pijler' === sfp_page_config_vorm( $post );
+    $thermo = $pijler && function_exists( 'sfp_page_config_thermometer' ) ? sfp_page_config_thermometer() : null;
+    if ( $thermo ) {
+        // Vooraan in de rij, links van Delen (wens Stephan 19-10-2026).
+        $acties   = $knop( 'sfp-art-paneel-thermo', 'thermo', esc_html( sprintf( $t( 'thermo_n' ), count( $thermo['stellingen'] ) ) ), esc_html( $t( 'thermo' ) ) ) . $acties;
+        $panelen .= sfp_page_config_thermometer_paneel( $thermo, $hoofdstukken );
+    }
+
+    // Warming-up (niet op een pijler).
+    $vragen = ! $pijler && function_exists( 'sfp_page_config_warming_up_verzamel' ) ? sfp_page_config_warming_up_verzamel() : array();
     if ( $vragen ) {
         $titels = array();
         foreach ( $hoofdstukken as $h ) {
@@ -851,7 +905,7 @@ function sfp_page_config_artikel_zijkolom( $post, array $hoofdstukken ) {
             . sfp_page_config_artikel_icoon( 'bron' ) . '<span>' . esc_html( sprintf( $t( 'bronnen' ), count( $bronnen ) ) ) . '</span></button>'
             . '<ol class="sfp-art-bronnen" id="sfp-art-zijbron-lijst" hidden><li>' . implode( '</li><li>', $bronnen ) . '</li></ol></div>';
     }
-    $promo = sfp_page_config_artikel_promokaart( 'zij' );
+    $promo = sfp_page_config_artikel_promokaart( 'zij', $post );
     if ( '' === $toc && '' === $bron && '' === $promo ) {
         return '';
     }
@@ -991,7 +1045,10 @@ function sfp_page_config_artikel_render( $post ) {
     }
 
     list( $inhoud, $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ) );
-    $inhoud = sfp_page_config_artikel_promo_in_tekst( $inhoud, sfp_page_config_artikel_promokaart( 'inline' ) );
+    $inhoud = sfp_page_config_artikel_promo_in_tekst( $inhoud, sfp_page_config_artikel_promokaart( 'inline', $post ) );
+    if ( function_exists( 'sfp_page_config_vorm' ) && 'pijler' === sfp_page_config_vorm( $post ) ) {
+        $inhoud = sfp_page_config_gids_na_lead( $inhoud, sfp_page_config_gids_kaart( $post ) );
+    }
 
     // Vervolgblok: het vervolg van de pijler uit SFP Beheer
     // (includes/vervolg.php). De actie blijft bestaan voor andere code.
@@ -1010,7 +1067,8 @@ function sfp_page_config_artikel_render( $post ) {
     $html  = '<article id="post-' . (int) $post->ID . '" class="' . esc_attr( implode( ' ', get_post_class( 'sfp-artikel' . ( '' === $zij ? ' sfp-artikel--zonder-zij' : '' ), $post ) ) ) . '">';
     $html .= '<div class="sfp-artikel__raster"><div class="sfp-artikel__kolom">';
     $html .= sfp_page_config_artikel_pijlerregel( $post );
-    $html .= '<h1 class="entry-title sfp-art-titel">' . get_the_title( $post ) . '</h1>';
+    $titel = get_the_title( $post );
+    $html .= '<h1 class="entry-title sfp-art-titel">' . ( function_exists( 'sfp_page_config_leestekens' ) ? sfp_page_config_leestekens( $titel, true ) : $titel ) . '</h1>';
     $html .= sfp_page_config_artikel_kopkaart( $post, $hoofdstukken );
     $html .= '<div class="entry-content clear sfp-art-inhoud">' . $inhoud . '</div>';
     $html .= $affiliate;
@@ -1045,6 +1103,20 @@ function sfp_page_config_artikel_instellingen() {
         'artikel_promo_tekst'      => 'lang',
         'artikel_promo_linktekst'  => 'tekst',
         'artikel_promo_url'        => 'url',
+        'artikel_promo_vorm'       => 'promovorm',
+        'artikel_promo2_beeld'     => 'getal',
+        'artikel_promo2_label'     => 'tekst',
+        'artikel_promo2_titel'     => 'tekst',
+        'artikel_promo2_tekst'     => 'lang',
+        'artikel_promo2_linktekst' => 'tekst',
+        'artikel_promo2_url'       => 'url',
+        'artikel_promo2_pagina'    => 'getal',
+        'artikel_promo2_vorm'      => 'promovorm',
+        'promo_vorm_artikel'       => 'promokeuze',
+        'promo_vorm_pijler'        => 'promokeuze',
+        'promo_vorm_begrip'        => 'promokeuze',
+        'promo_vorm_tool'          => 'promokeuze',
+        'kop_leestekens'           => 'vink',
         'affiliate_patronen'       => 'regels',
         'affiliate_regel'          => 'tekst',
         'affiliate_uitleg'         => 'lang',
@@ -1093,6 +1165,12 @@ function sfp_page_config_artikel_sanitize( $input ) {
                 break;
             case 'kanaal':
                 $schoon[ $sleutel ] = 'proef' === $ruw ? 'proef' : '';
+                break;
+            case 'promovorm':
+                $schoon[ $sleutel ] = 'rond' === $ruw ? 'rond' : '';
+                break;
+            case 'promokeuze':
+                $schoon[ $sleutel ] = in_array( $ruw, array( 'site', 'tweede', 'geen' ), true ) ? $ruw : '';
                 break;
             default:
                 $schoon[ $sleutel ] = sanitize_text_field( (string) $ruw );

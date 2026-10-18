@@ -283,7 +283,16 @@ function sfp_page_config_beheer_stand() {
             'linktekst' => isset( $alle['artikel_promo_linktekst'] ) ? (string) $alle['artikel_promo_linktekst'] : '',
             'pagina'    => isset( $alle['artikel_promo_pagina'] ) ? (int) $alle['artikel_promo_pagina'] : 0,
             'url'       => isset( $alle['artikel_promo_url'] ) ? (string) $alle['artikel_promo_url'] : '',
+            'vorm'      => isset( $alle['artikel_promo_vorm'] ) ? (string) $alle['artikel_promo_vorm'] : '',
         ),
+        'promo2'        => sfp_page_config_beheer_promo( $alle, 'artikel_promo2' ),
+        'promoVorm'     => array(
+            'artikel' => isset( $alle['promo_vorm_artikel'] ) && '' !== $alle['promo_vorm_artikel'] ? (string) $alle['promo_vorm_artikel'] : 'site',
+            'pijler'  => isset( $alle['promo_vorm_pijler'] ) && '' !== $alle['promo_vorm_pijler'] ? (string) $alle['promo_vorm_pijler'] : 'site',
+            'begrip'  => isset( $alle['promo_vorm_begrip'] ) && '' !== $alle['promo_vorm_begrip'] ? (string) $alle['promo_vorm_begrip'] : 'site',
+            'tool'    => isset( $alle['promo_vorm_tool'] ) && '' !== $alle['promo_vorm_tool'] ? (string) $alle['promo_vorm_tool'] : 'geen',
+        ),
+        'leestekens'    => isset( $alle['kop_leestekens'] ) && '1' === (string) $alle['kop_leestekens'],
         'patronen'      => array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', isset( $alle['affiliate_patronen'] ) ? (string) $alle['affiliate_patronen'] : '' ) ), 'strlen' ) ),
         'treffers'      => function_exists( 'sfp_page_config_affiliate_treffers' ) ? (object) sfp_page_config_affiliate_treffers() : (object) array(),
         'affiliate'     => function_exists( 'sfp_page_config_affiliate_teksten' ) ? sfp_page_config_affiliate_teksten() : array(
@@ -723,5 +732,31 @@ function sfp_page_config_beheer_rest() {
             SFP_Reviews_Manual::delete( isset( $gegevens['id'] ) ? (string) $gegevens['id'] : '' );
             return rest_ensure_response( sfp_page_config_beheer_stand() );
         }
+    );
+}
+
+/**
+ * De gegevens van één promokaart voor het beheer.
+ *
+ * @param  array  $alle  Instellingen.
+ * @param  string $basis artikel_promo of artikel_promo2.
+ * @return array
+ */
+function sfp_page_config_beheer_promo( array $alle, $basis ) {
+    $beeld_id = isset( $alle[ $basis . '_beeld' ] ) ? (int) $alle[ $basis . '_beeld' ] : 0;
+    $beeld    = $beeld_id ? wp_get_attachment_image_url( $beeld_id, 'medium' ) : '';
+    $lees     = function ( $sleutel ) use ( $alle, $basis ) {
+        return isset( $alle[ $basis . '_' . $sleutel ] ) ? (string) $alle[ $basis . '_' . $sleutel ] : '';
+    };
+    return array(
+        'beeld'     => $beeld_id,
+        'beeld_url' => $beeld ? (string) $beeld : '',
+        'label'     => $lees( 'label' ),
+        'titel'     => $lees( 'titel' ),
+        'tekst'     => $lees( 'tekst' ),
+        'linktekst' => $lees( 'linktekst' ),
+        'pagina'    => (int) $lees( 'pagina' ),
+        'url'       => $lees( 'url' ),
+        'vorm'      => $lees( 'vorm' ),
     );
 }

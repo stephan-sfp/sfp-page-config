@@ -189,6 +189,11 @@ function sfp_page_config_controleer_pagina( $post ) {
         );
     }
 
+    // Pijler: categorie, lead en artikelen.
+    if ( function_exists( 'sfp_page_config_pijler_controle' ) ) {
+        $meldingen = array_merge( $meldingen, sfp_page_config_pijler_controle( $post ) );
+    }
+
     // Wat bewust zo is, telt niet mee.
     $negeer = sfp_page_config_controle_genegeerd( $post->ID );
     if ( $negeer ) {

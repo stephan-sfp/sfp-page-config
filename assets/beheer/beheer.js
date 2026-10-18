@@ -558,13 +558,117 @@
 
 	/* ---------- Onderdeel: artikelen ---------- */
 
+	/** Eén promokaart: de kaart van de site (artikel_promo) of de tweede kaart (artikel_promo2). */
+	function promoKaart(p, basis) {
+			var beeld = { id: p.beeld, url: p.beeld_url };
+			var titel = tekstInvoer(p.titel);
+			var label = tekstInvoer(p.label);
+			var tekst = el('textarea', { value: p.tekst });
+			var linktekst = tekstInvoer(p.linktekst);
+			var doel = paginaKeuze(p.pagina || ((!p.pagina && p.url) ? 'link' : ''), 'Geen bestemming', [['link', 'Een andere link']]);
+			var doelLink = tekstInvoer(p.url, 'Plak de link', 'url');
+			var vorm = el('select', { id: 'sfpb-promo-vorm-' + basis });
+			[['', 'Omslag (zoals een boek)'], ['rond', 'Ronde foto']].forEach(function (o) { vorm.appendChild(el('option', { value: o[0], text: o[1] })); });
+			vorm.value = p.vorm || '';
+			var vBeeld = el('img', { class: 'sfpb-omslag', alt: '' });
+			var vKaart = el('div', { class: 'sfpb-mvak sfpb-promo' });
+			var vLabel = el('span', { class: 'sfpb-op' });
+			var vTitel = el('span', { class: 'sfpb-h3' });
+			var vTekst = el('span');
+			var vLink = el('span', { class: 'sfpb-pijl' });
+			var klein = el('div', { class: 'sfpb-beeld', style: 'width:120px;background-size:contain;background-repeat:no-repeat' });
+			var kiesKnop = el('button', { class: 'sfpb-knop', type: 'button' });
+			var wegKnop = el('button', { class: 'sfpb-knop sfpb-tekst', type: 'button', text: 'Geen afbeelding', klik: function () { beeld.id = 0; beeld.url = ''; ververs(); } });
+			function ververs() {
+				vLabel.textContent = label.value; vLabel.hidden = !label.value;
+				vTitel.textContent = titel.value || 'Titel van de kaart';
+				vTekst.textContent = tekst.value; vTekst.hidden = !tekst.value;
+				vLink.textContent = (linktekst.value || titel.value || 'Tekst van de link') + ' →';
+				klein.style.backgroundImage = beeld.url ? 'url("' + beeld.url + '")' : '';
+				if (beeld.url) vBeeld.src = beeld.url; else vBeeld.removeAttribute('src');
+				vBeeld.hidden = !beeld.url;
+				// Zelfde opbouw als de kaart op de site: een klein omslag met de tekst ernaast.
+				vKaart.classList.toggle('sfpb-promo--zonder', !beeld.url);
+				vKaart.classList.toggle('sfpb-promo--rond', vorm.value === 'rond');
+				kiesKnop.textContent = beeld.url ? 'Kies een andere afbeelding' : 'Kies een afbeelding';
+				wegKnop.hidden = !beeld.url;
+				doelLink.hidden = doel.value !== 'link';
+			}
+			[titel, label, tekst, linktekst].forEach(function (n) { n.addEventListener('input', ververs); });
+			doel.addEventListener('change', ververs);
+			vorm.addEventListener('change', ververs);
+			kiesKnop.addEventListener('click', function () {
+				if (!wp.media) return;
+				var kader = wp.media({ title: 'Kies een afbeelding', library: { type: 'image' }, multiple: false, button: { text: 'Gebruik deze afbeelding' } });
+				kader.on('select', function () {
+					var keuze = kader.state().get('selection').first().toJSON();
+					beeld.id = keuze.id;
+					beeld.url = (keuze.sizes && keuze.sizes.medium ? keuze.sizes.medium.url : keuze.url);
+					ververs();
+				});
+				kader.open();
+			});
+			ververs();
+			return el('div', { class: 'sfpb-twee' }, [
+				el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+					el('div', { class: 'sfpb-rij' }, [el('div', { class: 'sfpb-m' }, [klein]), kiesKnop, wegKnop]),
+					veld('Vorm van de afbeelding', vorm, null, 'sfpb-promo-vorm-' + basis),
+					veld('Label boven de titel', label, 'Leeg: geen label.', 'sfpb-promo-label'),
+					veld('Titel', titel, null, 'sfpb-promo-titel'),
+					veld('Tekst', tekst, null, 'sfpb-promo-tekst'),
+					veld('Tekst van de link', linktekst, 'Leeg: de titel.', 'sfpb-promo-linktekst'),
+					el('div', { class: 'sfpb-veld' }, [el('label', { for: 'sfpb-promo-doel', text: 'De kaart gaat naar' }), (doel.id = 'sfpb-promo-doel', doel), doelLink, el('span', { class: 'sfpb-hulp', text: 'Zonder titel of bestemming is er geen kaart.' })]),
+					el('div', { class: 'sfpb-rij' }, [
+						el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+							var w = {};
+							w[basis + '_beeld'] = beeld.id;
+							w[basis + '_label'] = label.value;
+							w[basis + '_titel'] = titel.value;
+							w[basis + '_tekst'] = tekst.value;
+							w[basis + '_linktekst'] = linktekst.value;
+							w[basis + '_pagina'] = doel.value === 'link' ? '' : doel.value;
+							w[basis + '_url'] = doel.value === 'link' ? doelLink.value : '';
+							w[basis + '_vorm'] = vorm.value;
+							bewaarInstellingen(this, 'art-promo', w);
+						} }),
+						flitsPlek('art-promo')
+					])
+				]),
+				voorbeeld([el('div', { class: 'sfpb-m' }, [(vKaart.appendChild(vBeeld), vKaart.appendChild(el('div', { class: 'sfpb-promo-tekst' }, [vLabel, vTitel, vTekst, vLink])), vKaart)])])
+			]);
+	}
+
+	/** Welke kaart elke vorm toont. Een pijler met een zelftest toont eerst die test. */
+	function promoPerVorm(a) {
+		var keuzes = [['site', 'De kaart van de site'], ['tweede', 'De tweede kaart'], ['geen', 'Geen kaart']];
+		var rijen = [['artikel', 'Artikel', null], ['pijler', 'Pijler', 'Een pijler toont de zelftest van de site (onderdeel Zelftest) op de plek van het boek. Deze keuze geldt alleen als er geen zelftest is of de pijler er geen wil.'], ['begrip', 'Begrip', null], ['tool', 'Tool', 'Een tool heeft standaard geen kaart.']];
+		var lijsten = rijen.map(function (r) {
+			var s = el('select', { id: 'sfpb-promo-per-' + r[0] });
+			keuzes.forEach(function (k) { s.appendChild(el('option', { value: k[0], text: k[1] })); });
+			var nu = a.promoVorm && a.promoVorm[r[0]] ? a.promoVorm[r[0]] : (r[0] === 'tool' ? 'geen' : 'site');
+			s.value = nu;
+			s.dataset.vorm = r[0];
+			return veld(r[1], s, r[2], 'sfpb-promo-per-' + r[0]);
+		});
+		return el('div', { class: 'sfpb-stapel sfpb-ruim' }, lijsten.concat([
+			el('div', { class: 'sfpb-rij' }, [
+				el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+					var w = {};
+					lijsten.forEach(function (vd) { var s = vd.querySelector('select'); w['promo_vorm_' + s.dataset.vorm] = s.value; });
+					bewaarInstellingen(this, 'art-promo-vorm', w);
+				} }),
+				flitsPlek('art-promo-vorm')
+			])
+		]));
+	}
+
 	function detailArtikel() {
 		var a = S.artikel;
 		var tabs = pillen([['kop', 'Kopkaart'], ['promo', 'Promokaart'], ['vervolg', 'Vervolg per pijler'], ['aff', 'Affiliatelinks']], ui.artTab, function (t) { ui.artTab = t; teken(); }, 'Onderwerp');
 		var paneel;
 
 		if (ui.artTab === 'kop') {
-			var bron = { aan: a.voorkeursbron };
+			var bron = { aan: a.voorkeursbron, leestekens: a.leestekens };
 			var linkVeld = function (sleutel, label, hulp) {
 				var huidig = a.links[sleutel];
 				var extra = (!huidig.pagina && huidig.url) ? [['url', 'Huidige link: ' + huidig.url]] : [];
@@ -580,11 +684,13 @@
 			var v = a.voorbeeld;
 			paneel = el('div', { class: 'sfpb-twee' }, [
 				el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
-					schakel(a.voorkeursbron, 'Toon de actie Voorkeursbron bij Google', function (nu) { bron.aan = nu; })
+					schakel(a.voorkeursbron, 'Toon de actie Voorkeursbron bij Google', function (nu) { bron.aan = nu; }),
+					schakel(a.leestekens, 'Trek leestekens in de titel naar het woord ernaast', function (nu) { bron.leestekens = nu; }),
+					el('span', { class: 'sfpb-hulp', text: 'Voor een titelletter waarin elk teken even breed is, zoals op DGA, DST, SLB, SwS en FL. Dubbele punt, komma, punt en koppelteken staan dan niet meer los.' })
 				].concat(velden, [
 					el('div', { class: 'sfpb-rij' }, [
 						el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-							var w = { artikel_voorkeursbron: bron.aan };
+							var w = { artikel_voorkeursbron: bron.aan, kop_leestekens: bron.leestekens };
 							velden.forEach(function (vd) {
 								var s = vd.querySelector('select');
 								if (s.value === 'url') return;
@@ -605,75 +711,10 @@
 				] : [el('span', { class: 'sfpb-hulp', text: 'Nog geen artikel om te tonen.' })].concat(schets(3)))])
 			]);
 		} else if (ui.artTab === 'promo') {
-			var p = a.promo;
-			var beeld = { id: p.beeld, url: p.beeld_url };
-			var titel = tekstInvoer(p.titel);
-			var label = tekstInvoer(p.label);
-			var tekst = el('textarea', { value: p.tekst });
-			var linktekst = tekstInvoer(p.linktekst);
-			var doel = paginaKeuze(p.pagina || ((!p.pagina && p.url) ? 'link' : ''), 'Geen bestemming', [['link', 'Een andere link']]);
-			var doelLink = tekstInvoer(p.url, 'Plak de link', 'url');
-			var vBeeld = el('img', { class: 'sfpb-omslag', alt: '' });
-			var vKaart = el('div', { class: 'sfpb-mvak sfpb-promo' });
-			var vLabel = el('span', { class: 'sfpb-op' });
-			var vTitel = el('span', { class: 'sfpb-h3' });
-			var vTekst = el('span');
-			var vLink = el('span', { class: 'sfpb-pijl' });
-			var klein = el('div', { class: 'sfpb-beeld', style: 'width:120px;background-size:contain;background-repeat:no-repeat' });
-			var kiesKnop = el('button', { class: 'sfpb-knop', type: 'button' });
-			var wegKnop = el('button', { class: 'sfpb-knop sfpb-tekst', type: 'button', text: 'Geen afbeelding', klik: function () { beeld.id = 0; beeld.url = ''; ververs(); } });
-			function ververs() {
-				vLabel.textContent = label.value; vLabel.hidden = !label.value;
-				vTitel.textContent = titel.value || 'Titel van de kaart';
-				vTekst.textContent = tekst.value; vTekst.hidden = !tekst.value;
-				vLink.textContent = (linktekst.value || titel.value || 'Tekst van de link') + ' →';
-				klein.style.backgroundImage = beeld.url ? 'url("' + beeld.url + '")' : '';
-				if (beeld.url) vBeeld.src = beeld.url; else vBeeld.removeAttribute('src');
-				vBeeld.hidden = !beeld.url;
-				// Zelfde opbouw als de kaart op de site: een klein omslag met de tekst ernaast.
-				vKaart.classList.toggle('sfpb-promo--zonder', !beeld.url);
-				kiesKnop.textContent = beeld.url ? 'Kies een andere afbeelding' : 'Kies een afbeelding';
-				wegKnop.hidden = !beeld.url;
-				doelLink.hidden = doel.value !== 'link';
-			}
-			[titel, label, tekst, linktekst].forEach(function (n) { n.addEventListener('input', ververs); });
-			doel.addEventListener('change', ververs);
-			kiesKnop.addEventListener('click', function () {
-				if (!wp.media) return;
-				var kader = wp.media({ title: 'Kies een afbeelding', library: { type: 'image' }, multiple: false, button: { text: 'Gebruik deze afbeelding' } });
-				kader.on('select', function () {
-					var keuze = kader.state().get('selection').first().toJSON();
-					beeld.id = keuze.id;
-					beeld.url = (keuze.sizes && keuze.sizes.medium ? keuze.sizes.medium.url : keuze.url);
-					ververs();
-				});
-				kader.open();
-			});
-			ververs();
-			paneel = el('div', { class: 'sfpb-twee' }, [
-				el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
-					el('div', { class: 'sfpb-rij' }, [el('div', { class: 'sfpb-m' }, [klein]), kiesKnop, wegKnop]),
-					veld('Label boven de titel', label, 'Leeg: geen label.', 'sfpb-promo-label'),
-					veld('Titel', titel, null, 'sfpb-promo-titel'),
-					veld('Tekst', tekst, null, 'sfpb-promo-tekst'),
-					veld('Tekst van de link', linktekst, 'Leeg: de titel.', 'sfpb-promo-linktekst'),
-					el('div', { class: 'sfpb-veld' }, [el('label', { for: 'sfpb-promo-doel', text: 'De kaart gaat naar' }), (doel.id = 'sfpb-promo-doel', doel), doelLink, el('span', { class: 'sfpb-hulp', text: 'Zonder titel of bestemming is er geen kaart.' })]),
-					el('div', { class: 'sfpb-rij' }, [
-						el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-							bewaarInstellingen(this, 'art-promo', {
-								artikel_promo_beeld: beeld.id,
-								artikel_promo_label: label.value,
-								artikel_promo_titel: titel.value,
-								artikel_promo_tekst: tekst.value,
-								artikel_promo_linktekst: linktekst.value,
-								artikel_promo_pagina: doel.value === 'link' ? '' : doel.value,
-								artikel_promo_url: doel.value === 'link' ? doelLink.value : ''
-							});
-						} }),
-						flitsPlek('art-promo')
-					])
-				]),
-				voorbeeld([el('div', { class: 'sfpb-m' }, [(vKaart.appendChild(vBeeld), vKaart.appendChild(el('div', { class: 'sfpb-promo-tekst' }, [vLabel, vTitel, vTekst, vLink])), vKaart)])])
+			var promoTab = ui.promoTab || 'site';
+			paneel = el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				pillen([['site', 'Kaart van de site'], ['tweede', 'Tweede kaart'], ['vorm', 'Per vorm']], promoTab, function (t) { ui.promoTab = t; teken(); }, 'Kaart'),
+				promoTab === 'vorm' ? promoPerVorm(a) : promoKaart(promoTab === 'tweede' ? a.promo2 : a.promo, promoTab === 'tweede' ? 'artikel_promo2' : 'artikel_promo')
 			]);
 		} else if (ui.artTab === 'vervolg') {
 			paneel = paneelVervolg();
@@ -989,6 +1030,9 @@
 			var whAf = tekstInvoer('', I.webhook_afgerond ? 'Ingesteld; laat leeg om te houden' : 'https://...', 'password');
 			[whStart, whAf].forEach(function (w) { w.setAttribute('autocomplete', 'off'); });
 			var proef = { aan: I.proefmodus };
+			var ctaKop = tekstInvoer(I.cta_kop || '', t.naam || 'Naam van de test');
+			var ctaZin = tekstInvoer(I.cta_zin || '', 'Eén zin: wat levert de test op?');
+			var ctaKnop = tekstInvoer(I.cta_knop || '', 'Vaste tekst: Doe de zelftest');
 			var c = t.tellingen;
 			var waarschuwing = [];
 			if (!t.blad) waarschuwing.push('Dit pakket heeft geen pdf-blad: er komt geen pdf.');
@@ -1009,9 +1053,14 @@
 				veld('Webhook bij de start (SureContact)', whStart, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-whs-' + t.test),
 				veld('Webhook bij het afronden (SureContact)', whAf, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-wha-' + t.test),
 				schakel(I.proefmodus, 'Proefmodus: niets naar het CRM, de gegevens komen in het logboek', function (nu) { proef.aan = nu; }),
+				el('h3', { text: 'Oproep om de test te doen' }),
+				el('p', { class: 'sfpb-hulp', text: 'Eén tekst voor het blok Zelftest-oproep, de code [sfp_zelftest_cta] en de promokaart en kopkaart van een pijler.' + (Z.site_test === t.test ? ' Dit is de test van de site.' : (Z.site_test ? '' : ' Er is nog geen test van de site: die heeft een gepubliceerde testpagina nodig.')) }),
+				veld('Kop', ctaKop, 'Leeg: de naam van de test.', 'sfpb-zt-ctak-' + t.test),
+				veld('Zin', ctaZin, 'Hoogstens 220 tekens. Leeg: geen zin.', 'sfpb-zt-ctaz-' + t.test),
+				veld('Knoptekst', ctaKnop, 'Leeg: de vaste tekst in de taal van de site.', 'sfpb-zt-ctab-' + t.test),
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.value, pdf_pad: pdfPad.value, webhook_start: whStart.value, webhook_afgerond: whAf.value, proefmodus: proef.aan });
+						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.value, pdf_pad: pdfPad.value, webhook_start: whStart.value, webhook_afgerond: whAf.value, proefmodus: proef.aan, cta_kop: ctaKop.value, cta_zin: ctaZin.value, cta_knop: ctaKnop.value });
 					} }),
 					t.vorige ? el('button', { class: 'sfpb-knop', type: 'button', text: 'Vorige pakketversie terugzetten', klik: function () {
 						if (window.confirm('De vorige versie van het pakket terugzetten?')) zt(this, 'zt-' + t.test, '/' + t.test + '/pakket/terug', {}, 'Teruggezet');

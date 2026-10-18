@@ -68,3 +68,11 @@ SFP_ZT_PAKKET=/pad/naar/pakket wp eval-file wp-content/plugins/sfp-page-config/t
 
 Runs inside a real WordPress (a local test install, never a live site) with a test package folder (manifest.json, inhoud.json, motor.js, label.js, blad.html). Reads the package in as test "proeftest" and checks: refusing broken packages and keeping the old version, the previous version, the closed work folder, settings (paths, https webhooks, secrets never returned), rights on the admin routes, the public routes (validation of answers and CRM values, honeypot, session, the same code on a double submit, a new code on a retake, the short version, the limit per e-mail address), the two CRM payloads in test mode with exactly the fields from the build note, resending to a corrected address, the prepared PDF sheet (data, no Google Fonts, colours replaced), retention (PDF removed after the link expires, anonymised after two years) and erasing by e-mail address. Removes its own rows and files at the end. Cloudflare and SureContact are not called.
 
+
+# Vormen (3.6.0)
+
+```sh
+wp eval-file wp-content/plugins/sfp-page-config/tests/vormen-wp.php
+```
+
+Runs inside a real WordPress (a local test install, never a live site). Needs the post types `begrippen` and `tool` for the glossary and self-test checks. Checks the pillar: form per post, which category has which guide (oldest wins), the address (category or own), the request on the category address, the order in the card In this guide (links in the guide first, then newest), slider pages, terms with the link to the glossary, the grouped main pillar, the card after the lead, the line above the title, the page checks, the promo card per form, the punctuation in the H1 and the switched-off state. Creates its own categories and posts and removes them at the end.

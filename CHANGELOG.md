@@ -4,6 +4,32 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.6.0] - 2026-10-19
+
+Eerste deel van de vormen (SwS als voorbeeldsite): wat de vormen delen, de pijler met de Thermometer, de promokaart per vorm, de Zelftest-oproep, K28 en K32. Begrip volgt in 3.7.0, tool in 3.8.0. Pijler en K28 staan standaard uit; zonder instellingen blijft elke site zoals hij was, op de scheidingsbolletjes (K32) na.
+
+### Toegevoegd
+- **Onderdeel Pijler** (SFP Beheer, Onderdelen, standaard uit): een bericht kan de gids van een categorie zijn. Werkt met de artikelopmaak aan.
+- **Paneel Deze pagina, Vorm:** een bericht is een artikel of een pijler. Bij een pijler: van welke categorie dit de gids is, het adres, de zelftest, waar de pijler onder hoort en het aantal artikelen en begrippen. Bij begrippen en tools: Hoort bij de pijler.
+- **Adres van de pijler:** de gids staat op het adres van zijn categorie; zijn eigen adres verwijst daarheen. Met "het eigen adres van dit bericht" verwijst de categorie naar de gids (voor een bestaande pijlerpagina). Feeds van de categorie blijven gewoon. Een concept toont via de voorbeeldlink al de kaart en de regel boven de titel.
+- **Kaart In this guide** direct na de lead: de artikelen van de pijler met beeld, titel en leestijd; vanaf vijf een slider per vier. Eerst wat de gids zelf noemt, dan nieuwste eerst. Begrippen: hoogstens acht, dan een link naar de woordenlijst van de pijler. Op een telefoon ingeklapt met Show. Een hoofdpijler toont de artikelen per pijler.
+- **Thermometer** (besluit Stephan 18-10): blok met drie tot acht stellingen en drie uitslagen, elk met een eigen naam, een tekst en het hoofdstuk om verder te lezen. Klapt uit de kopkaart van de pijler, vooraan in de rij, zoals de warming-up bij een artikel. De uitslag staat op een buis die van groen naar rood volloopt, met een wijzer in de kleur van de stand en twee uiteinden in de woorden van de vraag. Rekent in de browser en bewaart niets. Groen, oranje en rood zijn vaste signaalkleuren, per site te overschrijven.
+- **Zelftest-oproep:** blok en code `[sfp_zelftest_cta]` in het onderdeel Zelftest, met de test van de site, kop, één zin en knop. Elke plaatsing zet een bronlabel in de link (`?bron=`) voor GA4. Tekst per test in SFP Beheer, Zelftest; één bron voor het blok, de code en de promokaart van de pijler. Niet op toolpagina's: de zelftest is geen tool.
+- **Promokaart per vorm** (SFP Beheer, Artikelen, Promokaart): een tweede kaart, met een omslag of een ronde foto, en per vorm een keuze: de kaart van de site, de tweede kaart of geen. Een pijler toont de zelftest van de site op de plek van het boek; een tool heeft standaard geen kaart.
+- **Regel boven de titel** van een pijler: Guide, of Guide in <hoofdpijler>. **Lees ook** naar een artikel van de pijler: label Go deeper met de leestijd.
+- **Gegevens voor Google:** de Article van SureRank op een pijler krijgt onder dezelfde @id de artikelen (hasPart), de begrippen (mentions), de bronnen (citation) en de wijzigingsdatum.
+- **Woordenlijst per pijler:** het archief van de begrippen met `?pijler=<categorie>`.
+- **Leestekens in de titel (K28)**, SFP Beheer, Artikelen, Kopkaart: leestekens in de H1 naar het woord ernaast, voor titelletters waarin elk teken even breed is. Standaard uit.
+- **Controle voor een pijler** in het paneel en in SFP Beheer: geen categorie, een tweede gids, een lead buiten 50 tot 80 woorden, een artikel waar de tekst niet naar verwijst, geen Thermometer, nog geen artikelen.
+- Teksten voor bezoekers in het Engels, Nederlands en Portugees.
+- Tests `tests/vormen-wp.php` en `tests/zelftest-cta-wp.php`.
+
+### Gewijzigd
+- **Scheidingsbolletjes in de kopkaart (K32):** elk onderdeel heeft een bolletje en de strook links is weggeknipt, zodat een regel nooit met een bolletje begint.
+
+### Gerepareerd
+- Bouwstenen die via een filter worden toegevoegd, laden hun CSS.
+
 ## [3.5.10] - 2026-10-18
 
 ### Gewijzigd

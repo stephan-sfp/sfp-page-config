@@ -240,6 +240,7 @@ function sfp_page_config_editor_gegevens( $post_type ) {
         'cursusdata'     => sfp_page_config_onderdeel_aan( 'cursusdata' ),
         'longread'       => in_array( $post_type, array( 'post', 'page' ), true ) && ! $artikel,
         'affiliate'      => 'post' === $post_type && function_exists( 'sfp_page_config_get_affiliate_layout_id' ) && sfp_page_config_get_affiliate_layout_id() && ! ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() ),
+        'pijler'         => function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan(),
         'beheer'         => admin_url( 'admin.php?page=sfp-page-config' ),
         'home'           => home_url( '/' ),
     );
@@ -291,7 +292,46 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
         'kop'        => '',
         'voet'       => '',
         'promo'      => false,
+        'vorm'       => null,
     );
+
+    // Vorm en pijler.
+    if ( 'post' === $post->post_type && function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan() ) {
+        $eigen = function_exists( 'sfp_page_config_vervolg_pijler' ) ? sfp_page_config_vervolg_pijler( $post ) : null;
+        $vorm  = array(
+            'vorm'        => sfp_page_config_vorm( $post ),
+            'automatisch' => $eigen ? html_entity_decode( $eigen->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '',
+            'adres'       => '',
+            'meldingen'   => array(),
+        );
+        if ( 'pijler' === $vorm['vorm'] ) {
+            $vorm['meldingen'] = sfp_page_config_pijler_controle( $post );
+            $term              = sfp_page_config_gids_term( $post );
+            if ( $term ) {
+                $ouder              = $term->parent ? get_term( $term->parent, 'category' ) : null;
+                $vorm['onder']      = ( $ouder && ! is_wp_error( $ouder ) ) ? html_entity_decode( $ouder->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '';
+                $vorm['artikelen']  = count( sfp_page_config_pijler_artikelen( $term, null, true ) );
+                $vorm['begrippen']  = count( sfp_page_config_pijler_begrippen( $term->term_id ) );
+            }
+            $vorm['zelftests'] = array(
+                'site'  => function_exists( 'sfp_zelftest_site_test' ) ? sfp_zelftest_site_test() : '',
+                'tests' => array(),
+            );
+            if ( function_exists( 'sfp_zelftest_tests' ) && sfp_page_config_onderdeel_aan( 'zelftest' ) ) {
+                foreach ( sfp_zelftest_tests() as $zt ) {
+                    $pakket                       = sfp_zelftest_pakket( $zt );
+                    $vorm['zelftests']['tests'][] = array(
+                        'test' => $zt,
+                        'naam' => $pakket ? (string) sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' ) : $zt,
+                    );
+                }
+            }
+            if ( 'publish' === $post->post_status && sfp_page_config_is_gids( $post ) ) {
+                $vorm['adres'] = get_permalink( $post );
+            }
+        }
+        $stand['vorm'] = $vorm;
+    }
 
     // Uitsnede van de foto: alleen waar een held met die foto staat.
     $tags           = wp_get_object_terms( $post->ID, 'post_tag', array( 'fields' => 'slugs' ) );

@@ -156,6 +156,88 @@
         }
     });
 
+    /* Thermometer (pijler): per stelling Klopt 2, Soms 1, Klopt niet 0. Na de laatste stelling de stand: onder een derde laag, onder twee derde gemiddeld, anders hoog. Niets wordt bewaard. */
+    alle('.sfp-art-thermo').forEach(function (thermo) {
+        var stellingen = alle('.sfp-art-thermo__stelling', thermo);
+        var uitslag = thermo.querySelector('.sfp-art-thermo__uitslag');
+        var kop = thermo.querySelector('.sfp-art-thermo__kop');
+        var stippen = alle('.sfp-art-warm__stip i', thermo);
+        var nr = thermo.querySelector('.sfp-art-thermo__nr');
+        var meter = thermo.querySelector('.sfp-art-thermo__dek');
+        var wijzer = thermo.querySelector('.sfp-art-thermo__bol');
+        var banden = alle('.sfp-art-thermo__band', thermo);
+        var opnieuw = thermo.querySelector('.sfp-art-thermo__opnieuw');
+        var paneel = thermo.closest('.sfp-art-paneel');
+        var actie = null;
+        knoppen.forEach(function (knop) {
+            if (paneel && knop.getAttribute('aria-controls') === paneel.id) { actie = knop; }
+        });
+        var nu = 0, punten = 0, bezig = false;
+        if (!stellingen.length || !uitslag) { return; }
+        function toonStand() {
+            var deel = punten / (stellingen.length * 2);
+            var band = deel < 1 / 3 ? 'laag' : (deel < 2 / 3 ? 'midden' : 'hoog');
+            var stand = Math.max(3, Math.min(97, Math.round(deel * 100)));
+            if (meter) { meter.style.width = (100 - stand) + '%'; }
+            if (wijzer) { wijzer.style.left = stand + '%'; }
+            uitslag.setAttribute('data-band', band);
+            banden.forEach(function (b) { b.hidden = b.getAttribute('data-band') !== band; });
+        }
+        function verder() {
+            bezig = false;
+            stellingen[nu].hidden = true;
+            nu++;
+            var doel;
+            if (nu < stellingen.length) {
+                stellingen[nu].hidden = false;
+                if (stippen[nu]) { stippen[nu].classList.add('aan'); }
+                if (nr) { nr.textContent = String(nu + 1); }
+                doel = stellingen[nu].querySelector('button');
+            } else {
+                if (kop) { kop.hidden = true; }
+                uitslag.hidden = false;
+                /* Eerst tonen, dan de stand zetten: zo schuift de wijzer zichtbaar naar zijn plek. */
+                window.requestAnimationFrame(function () { window.requestAnimationFrame(toonStand); });
+                doel = uitslag.querySelector('[tabindex]');
+            }
+            if (doel) { doel.focus({ preventScroll: true }); }
+            if (actie && paneel) { inBeeld(actie, paneel); }
+        }
+        stellingen.forEach(function (stelling, i) {
+            var opties = alle('button', stelling);
+            opties.forEach(function (optie) {
+                optie.addEventListener('click', function () {
+                    if (bezig || i !== nu) { return; }
+                    bezig = true;
+                    opties.forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
+                    optie.setAttribute('aria-pressed', 'true');
+                    punten += parseInt(optie.getAttribute('data-punt'), 10) || 0;
+                    setTimeout(verder, rustig ? 0 : 220);
+                });
+            });
+        });
+        alle('.sfp-art-thermo__band a', thermo).forEach(function (link) {
+            link.addEventListener('click', function () { if (actie) { zet(actie, false); } });
+        });
+        if (opnieuw) {
+            opnieuw.addEventListener('click', function () {
+                nu = 0; punten = 0; bezig = false;
+                stellingen.forEach(function (s, i) {
+                    s.hidden = i !== 0;
+                    alle('button', s).forEach(function (o) { o.setAttribute('aria-pressed', 'false'); });
+                });
+                stippen.forEach(function (st, i) { st.classList.toggle('aan', i === 0); });
+                if (nr) { nr.textContent = '1'; }
+                if (kop) { kop.hidden = false; }
+                if (meter) { meter.style.width = '100%'; }
+                if (wijzer) { wijzer.style.left = '0'; }
+                uitslag.hidden = true;
+                var eerste = stellingen[0].querySelector('button');
+                if (eerste) { eerste.focus({ preventScroll: true }); }
+            });
+        }
+    });
+
     /* Inhoudsopgave en hoofdstukbalk. */
     var artikel = doc.querySelector('.sfp-artikel');
     if (!artikel) { return; }
@@ -279,4 +361,55 @@
         if (doel && artikel.contains(doel) && offset > 0) { doel.scrollIntoView(); }
     });
     bij();
+})();
+
+/* Pijler: de kaart In this guide. Op een telefoon ingeklapt met Toon; vanaf vijf artikelen een slider die per vier schuift, met pijlen en de pagina in de kop. */
+(function () {
+    'use strict';
+    var kaarten = [].slice.call(document.querySelectorAll('[data-sfp-gids]'));
+    kaarten.forEach(function (kaart) {
+        var knop = kaart.querySelector('.sfp-gids__knop');
+        if (knop) {
+            knop.addEventListener('click', function () {
+                var open = !kaart.classList.contains('is-open');
+                kaart.classList.toggle('is-open', open);
+                knop.setAttribute('aria-expanded', open ? 'true' : 'false');
+                var label = knop.querySelector('span');
+                if (label) { label.textContent = open ? knop.getAttribute('data-sfp-verberg') : knop.getAttribute('data-sfp-toon'); }
+                kaart.dispatchEvent(new CustomEvent('sfp-gids-open'));
+            });
+        }
+        var strook = kaart.querySelector('.sfp-gids__lijst--slider');
+        if (!strook) { return; }
+        var paginas = [].slice.call(strook.querySelectorAll('.sfp-gids__pagina'));
+        var vorige = kaart.querySelector('.sfp-gids__vorige');
+        var volgende = kaart.querySelector('.sfp-gids__volgende');
+        var teller = kaart.querySelector('.sfp-gids__teller');
+        var huidig = 0;
+        function stand() {
+            if (!strook.clientWidth) { return; }
+            var links = strook.scrollLeft, beste = 0, afstand = Infinity;
+            paginas.forEach(function (p, i) {
+                var d = Math.abs(p.offsetLeft - strook.offsetLeft - links);
+                if (d < afstand) { afstand = d; beste = i; }
+            });
+            if (strook.scrollLeft + strook.clientWidth >= strook.scrollWidth - 2) { beste = paginas.length - 1; }
+            huidig = beste;
+            if (vorige) { vorige.disabled = huidig === 0; }
+            if (volgende) { volgende.disabled = huidig >= paginas.length - 1; }
+            if (teller) { teller.textContent = (huidig + 1) + ' / ' + paginas.length; }
+        }
+        function naar(i) {
+            var p = paginas[Math.max(0, Math.min(paginas.length - 1, i))];
+            if (!p) { return; }
+            strook.scrollTo({ left: p.offsetLeft - strook.offsetLeft, behavior: 'smooth' });
+        }
+        if (vorige) { vorige.addEventListener('click', function () { naar(huidig - 1); }); }
+        if (volgende) { volgende.addEventListener('click', function () { naar(huidig + 1); }); }
+        var wacht;
+        strook.addEventListener('scroll', function () { clearTimeout(wacht); wacht = setTimeout(stand, 60); }, { passive: true });
+        window.addEventListener('resize', stand);
+        kaart.addEventListener('sfp-gids-open', stand);
+        stand();
+    });
 })();

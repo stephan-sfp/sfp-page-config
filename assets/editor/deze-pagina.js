@@ -186,6 +186,11 @@
 			) );
 		}
 
+		/* ---------- Vorm en pijler ---------- */
+		if ( S.pijler && ( 'post' === editor.type || 'begrippen' === editor.type || 'tool' === editor.type ) ) {
+			delen.push( el( Vorm, { key: 'vorm', meta: meta, zetMeta: zetMeta, editor: editor, stand: stand } ) );
+		}
+
 		/* ---------- Knop onderaan ---------- */
 		if ( soortId && S.knop ) {
 			delen.push( el( KnopOnderaan, { key: 'knop', meta: meta, zetMeta: zetMeta, soort: soort, editor: editor } ) );
@@ -271,6 +276,92 @@
 		}
 
 		return el( Paneel, { name: 'sfp-deze-pagina', title: 'Deze pagina', className: 'sfp-deze-pagina' }, delen );
+	}
+
+	/* ---------- Vorm en pijler ---------- */
+
+	function Vorm( props ) {
+		var meta = props.meta;
+		var editor = props.editor;
+		var stand = props.stand || {};
+		var lijsten = data.useSelect( function ( select ) {
+			var kern = select( 'core' );
+			return {
+				categorieen: kern.getEntityRecords( 'taxonomy', 'category', { per_page: 100, orderby: 'name', order: 'asc', _fields: 'id,name,parent' } ) || [],
+			};
+		}, [ editor.type ] );
+		var catOpties = lijsten.categorieen.map( function ( t ) {
+			return { value: String( t.id ), label: ( t.parent ? '\u00a0\u00a0' : '' ) + tekstVan( t.name ) };
+		} );
+		var stuk = function ( label, help, sleutel, opties, getal ) {
+			return el( c.SelectControl, {
+				label: label,
+				help: help,
+				value: String( meta[ sleutel ] || ( getal ? '0' : '' ) ),
+				options: opties,
+				onChange: function ( v ) { props.zetMeta( sleutel, getal ? ( parseInt( v, 10 ) || 0 ) : v ); },
+				__nextHasNoMarginBottom: true,
+				__next40pxDefaultSize: true,
+			} );
+		};
+
+		// Begrip en tool: bij welke pijler hoort dit?
+		if ( 'post' !== editor.type ) {
+			return el( 'div', { className: 'sfp-dp-deel' },
+				kop( 'Pijler' ),
+				stuk( 'Hoort bij de pijler', 'Bepaalt de regel boven de titel, de kaart van de pijler en het vervolg. Leeg: bij geen pijler.', 'sfp_pijler',
+					[ { value: '0', label: 'Geen pijler' } ].concat( catOpties ), true )
+			);
+		}
+
+		var pijler = 'pijler' === meta.sfp_vorm;
+		var delen = [
+			kop( 'Vorm' ),
+			el( c.SelectControl, {
+				label: 'Dit bericht is',
+				value: pijler ? 'pijler' : '',
+				options: [ { value: '', label: 'Een artikel' }, { value: 'pijler', label: 'Een pijler (de gids van een categorie)' } ],
+				onChange: function ( v ) { props.zetMeta( 'sfp_vorm', v ); },
+				help: pijler ? 'Krijgt de kaart In this guide met alle artikelen en begrippen van de categorie.' : 'Een gewoon artikel in de artikelopmaak.',
+				__nextHasNoMarginBottom: true,
+				__next40pxDefaultSize: true,
+			} ),
+		];
+		if ( pijler ) {
+			var auto = stand.vorm && stand.vorm.automatisch ? stand.vorm.automatisch : '';
+			delen.push( stuk( 'Dit is de gids van', 'Leeg: de categorie van dit bericht' + ( auto ? ' (' + auto + ')' : '' ) + '.', 'sfp_gids_van',
+				[ { value: '0', label: auto ? 'Automatisch: ' + auto : 'Automatisch' } ].concat( catOpties ), true ) );
+			delen.push( el( c.SelectControl, {
+				label: 'Adres',
+				value: '1' === meta.sfp_eigen_adres ? '1' : '',
+				options: [ { value: '', label: 'Het adres van de categorie' }, { value: '1', label: 'Het eigen adres van dit bericht' } ],
+				onChange: function ( v ) { props.zetMeta( 'sfp_eigen_adres', v ); },
+				help: '1' === meta.sfp_eigen_adres ? 'De categorie verwijst naar dit bericht.' : 'Het eigen adres van dit bericht verwijst naar de categorie.',
+				__nextHasNoMarginBottom: true,
+				__next40pxDefaultSize: true,
+			} ) );
+			var zt = stand.vorm && stand.vorm.zelftests ? stand.vorm.zelftests : { tests: [], site: '' };
+			var siteNaam = '';
+			zt.tests.forEach( function ( t ) { if ( t.test === zt.site ) { siteNaam = t.naam; } } );
+			var testOpties = [ { value: '', label: siteNaam ? 'De test van de site: ' + siteNaam : 'De test van de site (nog geen)' } ]
+				.concat( zt.tests.filter( function ( t ) { return t.test !== zt.site; } ).map( function ( t ) { return { value: t.test, label: t.naam }; } ) )
+				.concat( [ { value: '-', label: 'Geen zelftest' } ] );
+			delen.push( stuk( 'Zelftest van de pijler', 'Uit het onderdeel Zelftest. Komt als promokaart op de plek van het boek. Bij geen zelftest: het boek.', 'sfp_zelftest', testOpties, false ) );
+			if ( stand.vorm ) {
+				delen.push( regel( 'Hoort onder', stand.vorm.onder ? stand.vorm.onder : 'geen pijler erboven' ) );
+				if ( typeof stand.vorm.artikelen === 'number' ) {
+					delen.push( regel( 'Artikelen in deze pijler', stand.vorm.artikelen + ', staan vanzelf in de kaart bovenaan' ) );
+					delen.push( regel( 'Begrippen in deze pijler', stand.vorm.begrippen + ', staan vanzelf in de kaart bovenaan' ) );
+				}
+				if ( stand.vorm.adres ) {
+					delen.push( regel( 'Staat op', stand.vorm.adres ) );
+				}
+			}
+			( stand.vorm && stand.vorm.meldingen ? stand.vorm.meldingen : [] ).forEach( function ( m, i ) {
+				delen.push( el( 'div', { key: 'm' + i }, melding( m.tekst, 'let' ) ) );
+			} );
+		}
+		return el( 'div', { className: 'sfp-dp-deel' }, delen );
 	}
 
 	/* ---------- Knop onderaan ---------- */
