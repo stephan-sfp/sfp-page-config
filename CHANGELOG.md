@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.0-beta.2] - 2026-10-18
+
+### Gewijzigd
+- Testpagina gebruikt de volle breedte (tot 1200 px): het startscherm staat op desktop in twee kolommen (tekst links, formulier rechts, bovenkanten gelijk), de antwoordopties in twee kolommen. Startscherm en vragen passen op desktop en tablet op één scherm.
+- Telefoon: compacter; de drie punten op het startscherm en de uitleg in de keuzekaarten vallen weg.
+- De uitleg "De vragen in deze test dwingen je…" staat niet meer op het startscherm maar boven vraag 1.
+- Keuzekaarten: gelijke tekst en even hoge knoppen.
+
+### Toegevoegd
+- Instelling "Logo op de testpagina" (media-ID) in SFP Beheer, Zelftest: het logo voor een witte achtergrond. Leeg: het logo van de site.
+
 ## [3.5.0-beta.1] - 2026-10-18
 
 ### Toegevoegd

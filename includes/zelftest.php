@@ -179,6 +179,7 @@ function sfp_zelftest_instellingen( $test ) {
     $eigen = isset( $alle['tests'][ $test ] ) && is_array( $alle['tests'][ $test ] ) ? $alle['tests'][ $test ] : array();
     $standaard = array(
         'testpagina'       => 0,
+        'logo'             => 0,
         'pdf_pad'          => '',
         'webhook_start'    => '',
         'webhook_afgerond' => '',
@@ -202,6 +203,11 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
 
     if ( array_key_exists( 'testpagina', $wijzigingen ) ) {
         $nu['testpagina'] = absint( $wijzigingen['testpagina'] );
+    }
+    if ( array_key_exists( 'logo', $wijzigingen ) ) {
+        // Het logo op de testpagina: een afbeelding uit de mediabibliotheek.
+        $logo       = absint( $wijzigingen['logo'] );
+        $nu['logo'] = ( $logo > 0 && wp_attachment_is_image( $logo ) ) ? $logo : 0;
     }
     if ( array_key_exists( 'pdf_pad', $wijzigingen ) ) {
         $pad = sfp_zelftest_pad_schoon( $wijzigingen['pdf_pad'] );

@@ -147,7 +147,7 @@
 /* De testpagina (sinds 3.5.0): geen kop en voet van het thema, een smalle balk met logo en kruisje. */
 body.sfp-zt-testpagina{margin:0;background:var(--sfp-b-wit,#fff)}
 .sfp-zt-top{position:sticky;top:0;z-index:50;background:var(--sfp-b-wit,#fff);border-bottom:1px solid color-mix(in srgb,var(--sfp-b-primair) 14%,transparent)}
-.sfp-zt-top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:960px;margin:0 auto;padding:10px 20px;min-height:64px}
+.sfp-zt-top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1248px;margin:0 auto;padding:10px 24px;min-height:64px}
 .sfp-zt-top-logo{display:block;height:auto;max-height:44px;width:auto;max-width:60vw}
 .sfp-zt-top-naam{font:900 16px/1.2 var(--sfp-b-kop);color:var(--sfp-b-primair);text-transform:uppercase;letter-spacing:.04em}
 .sfp-zt-sluit{display:inline-flex;align-items:center;justify-content:center;flex:none;width:48px;height:48px;margin:0 -8px 0 0;padding:0;border:0;border-radius:50%;background:transparent;color:var(--sfp-b-primair);cursor:pointer;box-shadow:none}
@@ -165,3 +165,42 @@ body.sfp-zt-testpagina{margin:0;background:var(--sfp-b-wit,#fff)}
 .sfp-zt-stop-ja{border:2px solid var(--sfp-b-primair);background:var(--sfp-b-wit,#fff);color:var(--sfp-b-primair)}
 .sfp-zt-stop-ja:hover{background:var(--sfp-b-tint3)}
 .sfp-zt-stop-knoppen button:focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:2px}
+/* De testpagina gebruikt de volle breedte; elk scherm moet op een scherm passen. */
+body.sfp-zt-testpagina .sfp-zt-wrap{max-width:1200px}
+body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud{padding:24px 24px 40px}
+body.sfp-zt-testpagina .sfp-zt-start{gap:20px}
+body.sfp-zt-testpagina .sfp-zt-start-tekst{display:flex;flex-direction:column;gap:16px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-intro{gap:8px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{gap:12px;padding-top:20px}
+body.sfp-zt-testpagina .sfp-zt-keuzes{margin-top:4px;gap:12px}
+body.sfp-zt-testpagina .sfp-zt-kaartje{padding:16px;gap:8px}
+body.sfp-zt-testpagina .sfp-zt-scherm{gap:18px}
+body.sfp-zt-testpagina .sfp-zt-instructie{max-width:none;font-size:15px;padding:10px 14px}
+@media (min-width:960px){
+body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud{padding:40px 40px 48px}
+.sfp-zt-top-in{max-width:1280px;padding:10px 40px}
+body.sfp-zt-testpagina .sfp-zt-start{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 72px;align-items:start}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-start-tekst>div:first-child .sfp-zt-lab{line-height:20px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{padding-top:0}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-h1{font-size:clamp(34px,2.6vw + 12px,46px)}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{border-top:0}
+body.sfp-zt-testpagina .sfp-zt-start>.sfp-zt-foutmelding{grid-column:1/-1}
+body.sfp-zt-testpagina .sfp-zt-opties{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+}
+/* Telefoon (besluit 18-10-2026): compacter; de drie punten en de uitleg in de keuzekaarten vallen weg. */
+@media (max-width:640px){
+body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud{padding:16px 16px 32px}
+body.sfp-zt-testpagina .sfp-zt-start{gap:14px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-lijstkop,body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-lijst,body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2{display:none}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-intro p{font-size:17px}
+body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{padding-top:14px;gap:10px}
+body.sfp-zt-testpagina .sfp-zt-kaartje{padding:12px 14px;gap:8px}
+body.sfp-zt-testpagina .sfp-zt-scherm{gap:14px}
+body.sfp-zt-testpagina .sfp-zt-opties{gap:8px}
+body.sfp-zt-testpagina .sfp-zt-optie{padding:10px 12px}
+.sfp-zt-top-in{min-height:56px;padding:8px 16px}
+.sfp-zt-top-logo{max-height:38px}
+}
+/* Keuzekaarten op de testpagina: gelijke tekst en gelijke knoppen. */
+body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2,body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2 b{font-size:15px;line-height:1.5;font-weight:400;color:var(--sfp-b-body)}
+body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-knop{min-height:52px;padding:10px 14px;font-size:15px;letter-spacing:.02em;white-space:nowrap}

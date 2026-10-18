@@ -4,7 +4,9 @@
  *
  * De pagina die in SFP Beheer, Zelftest, als testpagina staat, krijgt een
  * eigen weergave: geen kop, menu en voet van het thema, alleen een smalle
- * balk met het logo van de site (niet klikbaar) en een kruisje rechtsboven.
+ * balk met het logo (niet klikbaar) en een kruisje rechtsboven. Het logo is
+ * per test in te stellen (versie voor een witte achtergrond), anders dat van
+ * de site.
  *
  * Het kruisje gaat terug naar de pagina op deze site waar de bezoeker
  * vandaan kwam, en anders (direct binnengekomen, via een advertentie of een
@@ -102,7 +104,13 @@ function sfp_zelftest_pagina_body_class( $klassen ) {
  * @return string HTML.
  */
 function sfp_zelftest_pagina_logo() {
-    $id = (int) get_theme_mod( 'custom_logo' );
+    // Eerst het logo dat in SFP Beheer, Zelftest, voor de testpagina staat
+    // (versie origineel, voor een witte achtergrond), anders het logo van de site.
+    $test = sfp_zelftest_pagina_test();
+    $id   = '' !== $test ? (int) sfp_zelftest_instellingen( $test )['logo'] : 0;
+    if ( $id <= 0 ) {
+        $id = (int) get_theme_mod( 'custom_logo' );
+    }
     if ( $id > 0 ) {
         $img = wp_get_attachment_image(
             $id,
