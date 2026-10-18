@@ -289,6 +289,24 @@ if ( post_type_exists( 'begrippen' ) && function_exists( 'sfp_page_config_begrip
     list( $vorige, $volgende ) = sfp_page_config_begrip_buren( get_post( $b1 ) );
     $check( 'volgende term', $volgende && (int) $b2 === (int) $volgende->ID );
 
+    // Check your understanding (3.7.1).
+    $vr = function ( $a ) {
+        return '<!-- wp:sfp/begrip-vraag ' . wp_json_encode( $a ) . ' /-->';
+    };
+    $goed1 = array( 'vraag' => 'What is ethos?', 'optie1' => 'Credibility.', 'optie2' => 'Emotion', 'optie3' => 'Logic', 'juist' => 1, 'uitleg' => 'Ethos is about the speaker.' );
+    $zonder_stijl = function ( $html ) {
+        return preg_replace( '#<style[^>]*>.*?</style>#s', '', $html );
+    };
+    $check_html = $zonder_stijl( do_blocks( '<!-- wp:sfp/begrip-check -->' . $vr( $goed1 ) . '<!-- /wp:sfp/begrip-check -->' ) );
+    $check( 'check: kaart met label', false !== strpos( $check_html, 'class="sfp-check' ) && false !== strpos( $check_html, sfp_page_config_artikel_tekst( 'check' ) ) );
+    $check( 'check: juiste antwoord gemarkeerd', 1 === substr_count( $check_html, 'data-juist' ) && 3 === substr_count( $check_html, 'aria-pressed' ) );
+    $check( 'check: fout-tekst noemt het juiste antwoord zonder dubbele punt', false !== strpos( $check_html, 'Credibility.' ) && false === strpos( $check_html, 'Credibility..' ) );
+    $check( 'check: zonder juist antwoord niets', '' === trim( do_blocks( '<!-- wp:sfp/begrip-check -->' . $vr( array( 'vraag' => 'Q', 'optie1' => 'a', 'optie2' => 'b', 'juist' => 0 ) ) . '<!-- /wp:sfp/begrip-check -->' ) ) );
+    $check( 'check: juist antwoord leeg telt niet', '' === trim( do_blocks( '<!-- wp:sfp/begrip-check -->' . $vr( array( 'vraag' => 'Q', 'optie1' => 'a', 'optie2' => 'b', 'juist' => 3 ) ) . '<!-- /wp:sfp/begrip-check -->' ) ) );
+    $vier = do_blocks( '<!-- wp:sfp/begrip-check -->' . $vr( $goed1 ) . $vr( $goed1 ) . $vr( $goed1 ) . $vr( $goed1 ) . '<!-- /wp:sfp/begrip-check -->' );
+    $check( 'check: hoogstens drie vragen', 3 === substr_count( $vier, 'class="sfp-check__vraag"' ) );
+    $check( 'check: blok bekend', isset( sfp_page_config_blokken()['sfp/begrip-check'], sfp_page_config_blokken()['sfp/begrip-vraag'] ) );
+
     // Weergave en gegevens voor Google.
     $lv = sfp_page_config_begrip_leesverder( get_post( $b1 ) );
     $check( 'lees verder met verwant en gebruikt in', false !== strpos( $lv, 'sfp-verwant' ) && false !== strpos( $lv, 'sfp-gebruikt' ) );

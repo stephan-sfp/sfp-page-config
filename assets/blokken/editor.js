@@ -598,6 +598,57 @@
 		);
 	} );
 
+	/* sfp/begrip-check en sfp/begrip-vraag (sinds 3.7.1) */
+	( function () {
+		[ 'sfp/begrip-check', 'sfp/begrip-vraag' ].forEach( function ( naam ) {
+			if ( wp.blocks.getBlockType( naam ) ) { wp.blocks.unregisterBlockType( naam ); }
+		} );
+		wp.blocks.registerBlockType( 'sfp/begrip-check', {
+			apiVersion: 3,
+			supports: { html: false, className: true, customClassName: true, inserter: bijBegrip },
+			edit: function ( props ) {
+				var aantal = wp.data.useSelect( function ( select ) { return select( 'core/block-editor' ).getBlockCount( props.clientId ); }, [ props.clientId ] );
+				var blockProps = useBlockProps( { className: 'sfp-check' } );
+				var inner = useInnerBlocksProps( {}, { allowedBlocks: [ 'sfp/begrip-vraag' ], template: [ [ 'sfp/begrip-vraag' ] ], renderAppender: aantal < 3 ? InnerBlocks.ButtonBlockAppender : false } );
+				return el( Fragment, null,
+					paneel( 'Check your understanding', [ uitleg( 'Eén tot drie vragen over dit begrip. De lezer kiest een antwoord en ziet direct of het klopt, met jouw uitleg. Gebruik het bij termen die vaak verkeerd begrepen worden. Niets wordt bewaard.' ) ] ),
+					el( 'aside', blockProps,
+						el( 'span', { className: 'sfp-blok-label' }, t( 'check', 'Check your understanding' ) ),
+						el( 'div', inner ),
+						aantal > 3 ? el( 'span', { className: 'sfp-blokmelding' }, 'Hoogstens drie vragen; de rest verschijnt niet.' ) : null
+					)
+				);
+			},
+			save: opslaan,
+		} );
+		wp.blocks.registerBlockType( 'sfp/begrip-vraag', {
+			apiVersion: 3,
+			parent: [ 'sfp/begrip-check' ],
+			supports: { html: false },
+			edit: function ( props ) {
+				var a = props.attributes;
+				var blockProps = useBlockProps( { className: 'sfp-editor-vlak sfp-check__vraag' } );
+				function optie( nr ) {
+					var sleutel = 'optie' + nr;
+					return el( 'div', { key: sleutel, className: 'sfp-editor-check__optie', style: { display: 'flex', gap: '8px', alignItems: 'center' } },
+						el( 'input', { type: 'radio', checked: a.juist === nr, title: 'Dit is het juiste antwoord', onChange: function () { props.setAttributes( { juist: nr } ); } } ),
+						el( RichText, { tagName: 'span', value: a[ sleutel ], placeholder: 'Antwoord ' + nr, allowedFormats: [], onChange: function ( v ) { var n = {}; n[ sleutel ] = v; props.setAttributes( n ); }, style: { flex: '1' } } )
+					);
+				}
+				var ingevuld = [ a.optie1, a.optie2, a.optie3 ].filter( function ( o ) { return tekens( o ) > 0; } ).length;
+				var juistLeeg = ! a.juist || tekens( a[ 'optie' + a.juist ] ) === 0;
+				return el( 'div', blockProps,
+					el( RichText, { tagName: 'p', className: 'sfp-check__tekst', value: a.vraag, placeholder: 'De vraag', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { vraag: v } ); } } ),
+					el( 'div', { className: 'sfp-check__opties' }, [ optie( 1 ), optie( 2 ), optie( 3 ) ] ),
+					el( RichText, { tagName: 'p', className: 'sfp-check__uitslag', value: a.uitleg, placeholder: 'Eén zin uitleg: waarom is dit het juiste antwoord?', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { uitleg: v } ); } } ),
+					( a.vraag || a.optie1 ) && ingevuld < 2 ? el( 'span', { className: 'sfp-blokmelding' }, 'Een vraag heeft minstens twee antwoorden. Zonder die verschijnt hij niet op de site.' ) : null,
+					( a.vraag || a.optie1 ) && juistLeeg ? el( 'span', { className: 'sfp-blokmelding' }, 'Kies met het rondje welk antwoord juist is. Zonder die keuze verschijnt de vraag niet op de site.' ) : null
+				);
+			},
+			save: function () { return null; },
+		} );
+	}() );
+
 	/* sfp/lees-ook */
 	blok( 'sfp/lees-ook', function ( props ) {
 		var a = props.attributes;

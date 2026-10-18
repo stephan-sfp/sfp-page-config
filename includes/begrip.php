@@ -208,7 +208,98 @@ function sfp_page_config_begrip_blokken( $blokken ) {
         ),
         'render'       => 'sfp_page_config_render_in_een_talk',
     );
+    // Check your understanding (sinds 3.7.1, besluit Stephan 19-10-2026):
+    // één tot drie meerkeuzevragen met directe uitleg. Optioneel.
+    $blokken['sfp/begrip-check'] = array(
+        'title'        => 'Check your understanding',
+        'description'  => 'Eén tot drie meerkeuzevragen over het begrip, met directe uitleg na elk antwoord. Optioneel; niets wordt bewaard.',
+        'icon'         => 'welcome-learn-more',
+        'css'          => 'definitie',
+        'zonder_basis' => true,
+        'attributes'   => array(),
+        'render'       => 'sfp_page_config_render_begrip_check',
+    );
+    $blokken['sfp/begrip-vraag'] = array(
+        'title'        => 'Vraag',
+        'description'  => 'Een vraag met drie antwoorden, het juiste antwoord en een zin uitleg.',
+        'icon'         => 'welcome-learn-more',
+        'css'          => '',
+        'zonder_basis' => true,
+        'parent'       => array( 'sfp/begrip-check' ),
+        'attributes'   => array(
+            'vraag'  => $tekst,
+            'optie1' => $tekst,
+            'optie2' => $tekst,
+            'optie3' => $tekst,
+            'juist'  => array(
+                'type'    => 'integer',
+                'default' => 0,
+            ),
+            'uitleg' => $tekst,
+        ),
+        'render'       => 'sfp_page_config_render_begrip_vraag',
+    );
     return $blokken;
+}
+
+/**
+ * sfp/begrip-vraag: één vraag. Zonder vraag, minstens twee antwoorden of een
+ * gekozen juist antwoord verschijnt hij niet.
+ *
+ * @param  array $attrs Attributen.
+ * @return string
+ */
+function sfp_page_config_render_begrip_vraag( $attrs ) {
+    $t      = 'sfp_page_config_artikel_tekst';
+    $vraag  = trim( wp_strip_all_tags( sfp_page_config_blok_attr( $attrs, 'vraag' ) ) );
+    $juist  = isset( $attrs['juist'] ) ? (int) $attrs['juist'] : 0;
+    $opties = array();
+    foreach ( array( 1, 2, 3 ) as $nr ) {
+        $optie = trim( wp_strip_all_tags( sfp_page_config_blok_attr( $attrs, 'optie' . $nr ) ) );
+        if ( '' !== $optie ) {
+            $opties[ $nr ] = $optie;
+        }
+    }
+    if ( '' === $vraag || count( $opties ) < 2 || ! isset( $opties[ $juist ] ) ) {
+        return '';
+    }
+    $uitleg  = trim( wp_strip_all_tags( sfp_page_config_blok_attr( $attrs, 'uitleg' ) ) );
+    $knoppen = '';
+    foreach ( $opties as $nr => $optie ) {
+        $knoppen .= '<button type="button" aria-pressed="false"' . ( $nr === $juist ? ' data-juist' : '' ) . '>' . esc_html( $optie ) . '</button>';
+    }
+    return '<div class="sfp-check__vraag">'
+        . '<p class="sfp-check__tekst">' . esc_html( $vraag ) . '</p>'
+        . '<div class="sfp-check__opties">' . $knoppen . '</div>'
+        . '<p class="sfp-check__uitslag" aria-live="polite" hidden>'
+        . '<b class="sfp-check__goed" hidden>' . esc_html( $t( 'check_goed' ) ) . '</b>'
+        . '<b class="sfp-check__fout" hidden>' . esc_html( sprintf( $t( 'check_fout' ), rtrim( $opties[ $juist ], '.!?' ) ) ) . '</b>'
+        . ( '' !== $uitleg ? ' <span>' . esc_html( $uitleg ) . '</span>' : '' )
+        . '</p></div>';
+}
+
+/**
+ * sfp/begrip-check: de kaart om de vragen heen, hoogstens drie.
+ *
+ * @param  array  $attrs   Attributen.
+ * @param  string $content Getekende vragen.
+ * @return string
+ */
+function sfp_page_config_render_begrip_check( $attrs, $content ) {
+    $vragen = substr_count( (string) $content, 'class="sfp-check__vraag"' );
+    if ( 0 === $vragen ) {
+        return '';
+    }
+    if ( $vragen > 3 ) {
+        $delen   = explode( '<div class="sfp-check__vraag">', (string) $content );
+        $content = $delen[0] . '<div class="sfp-check__vraag">' . implode( '<div class="sfp-check__vraag">', array_slice( $delen, 1, 3 ) );
+    }
+    $id = wp_unique_id( 'sfp-check-' );
+    return sfp_page_config_blokken_css_vangnet( 'sfp/begrip-check' )
+        . '<aside ' . sfp_page_config_blok_omhulling( array( 'sfp-check' ) ) . ' aria-labelledby="' . esc_attr( $id ) . '" data-volgende="' . esc_attr( sfp_page_config_artikel_tekst( 'check_volgende' ) ) . '" data-teller="' . esc_attr( sfp_page_config_artikel_tekst( 'vraag_van' ) ) . '">'
+        . '<div class="sfp-check__kop"><span class="sfp-blok-label" id="' . esc_attr( $id ) . '">' . esc_html( sfp_page_config_artikel_tekst( 'check' ) ) . '</span></div>'
+        . $content
+        . '</aside>';
 }
 
 /**

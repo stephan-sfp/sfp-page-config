@@ -238,6 +238,55 @@
         }
     });
 
+    /* Check your understanding (begrip): één vraag tegelijk. Na een antwoord het juiste antwoord en de uitleg, dan de knop naar de volgende vraag. Niets wordt bewaard. Zonder script staan alle vragen onder elkaar. */
+    alle('.sfp-check').forEach(function (kaart) {
+        var vragen = alle('.sfp-check__vraag', kaart);
+        var teller = null;
+        if (vragen.length > 1) {
+            kaart.classList.add('is-stap');
+            var kop = kaart.querySelector('.sfp-check__kop');
+            teller = doc.createElement('span');
+            teller.className = 'sfp-check__teller';
+            if (kop) { kop.appendChild(teller); }
+            vragen.forEach(function (v, i) { v.hidden = i !== 0; });
+        }
+        function zetTeller(i) {
+            if (teller) { teller.textContent = (kaart.getAttribute('data-teller') || '%1$s / %2$d').replace('%1$s', String(i + 1)).replace('%2$d', String(vragen.length)); }
+        }
+        zetTeller(0);
+        vragen.forEach(function (vraag, i) {
+            var opties = alle('.sfp-check__opties button', vraag);
+            var uitslag = vraag.querySelector('.sfp-check__uitslag');
+            opties.forEach(function (optie) {
+                optie.addEventListener('click', function () {
+                    if (vraag.hasAttribute('data-uitkomst')) { return; }
+                    var goed = optie.hasAttribute('data-juist');
+                    optie.setAttribute('aria-pressed', 'true');
+                    vraag.setAttribute('data-uitkomst', goed ? 'goed' : 'fout');
+                    opties.forEach(function (o) { o.disabled = true; });
+                    if (uitslag) {
+                        uitslag.querySelector(goed ? '.sfp-check__goed' : '.sfp-check__fout').hidden = false;
+                        uitslag.hidden = false;
+                    }
+                    if (teller && i < vragen.length - 1) {
+                        var knop = doc.createElement('button');
+                        knop.type = 'button';
+                        knop.className = 'sfp-check__volgende';
+                        knop.textContent = (kaart.getAttribute('data-volgende') || '') + ' →';
+                        knop.addEventListener('click', function () {
+                            vraag.hidden = true;
+                            vragen[i + 1].hidden = false;
+                            zetTeller(i + 1);
+                            var eerste = vragen[i + 1].querySelector('button');
+                            if (eerste) { eerste.focus({ preventScroll: true }); }
+                        });
+                        vraag.appendChild(knop);
+                    }
+                });
+            });
+        });
+    });
+
     /* Inhoudsopgave en hoofdstukbalk. */
     var artikel = doc.querySelector('.sfp-artikel');
     if (!artikel) { return; }
