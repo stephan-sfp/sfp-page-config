@@ -1,0 +1,107 @@
+name: Release
+
+# Maakt automatisch een GitHub-release zodra er een nieuwe versie in de repo staat.
+# - Push naar main: release v<versie> (pre-release als de versie een streepje heeft, zoals 3.4.0-beta.1).
+# - Push naar een claude/-branch: alleen een pre-release, en alleen als de versie een streepje heeft.
+# - Bestaat de tag al, dan gebeurt er niets.
+# De tekst van de release is het blok "## [<versie>]" uit CHANGELOG.md; ontbreekt dat blok, dan faalt de run.
+
+on:
+  push:
+    branches:
+      - main
+      - 'claude/**'
+    paths:
+      - '*.php'
+      - 'CHANGELOG.md'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Versie lezen en controleren
+        id: versie
+        shell: bash
+        run: |
+          set -euo pipefail
+          hoofd=$(grep -lE '^[[:space:]]*\*?[[:space:]]*Plugin Name:' ./*.php | head -n1 || true)
+          if [ -z "$hoofd" ]; then echo "::error::Geen hoofdbestand met 'Plugin Name:' gevonden"; exit 1; fi
+          kop=$(grep -m1 -E '^[[:space:]]*\*?[[:space:]]*Version:' "$hoofd" | sed -E 's/.*Version:[[:space:]]*//; s/[[:space:]]*$//')
+          const=$(grep -m1 -E "define\([[:space:]]*'[A-Z_]+_VERSION'" "$hoofd" | sed -E "s/.*_VERSION'[[:space:]]*,[[:space:]]*'([^']+)'.*/\1/" || true)
+          if [ -z "$kop" ]; then echo "::error::Geen Version: in $hoofd"; exit 1; fi
+          if [ -n "$const" ] && [ "$kop" != "$const" ]; then
+            echo "::error::Versie in de kop ($kop) wijkt af van de constante ($const) in $hoofd"; exit 1
+          fi
+          if ! printf '%s' "$kop" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$'; then
+            echo "::error::Ongeldig versienummer: $kop"; exit 1
+          fi
+          proef=false
+          case "$kop" in *-*) proef=true ;; esac
+          echo "versie=$kop" >> "$GITHUB_OUTPUT"
+          echo "proef=$proef" >> "$GITHUB_OUTPUT"
+          echo "Hoofdbestand $hoofd, versie $kop, proefversie $proef"
+
+      - name: Bepalen of er een release moet komen
+        id: besluit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSIE: ${{ steps.versie.outputs.versie }}
+          PROEF: ${{ steps.versie.outputs.proef }}
+        run: |
+          set -euo pipefail
+          maken=true
+          if [ "$GITHUB_REF_NAME" != "main" ] && [ "$PROEF" != "true" ]; then
+            echo "Branch $GITHUB_REF_NAME met definitieve versie $VERSIE: geen release (die komt pas bij main)."
+            maken=false
+          elif gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSIE" >/dev/null 2>&1; then
+            echo "Tag v$VERSIE bestaat al: niets te doen."
+            maken=false
+          fi
+          echo "maken=$maken" >> "$GITHUB_OUTPUT"
+
+      - name: Releasetekst uit CHANGELOG.md
+        if: steps.besluit.outputs.maken == 'true'
+        shell: bash
+        env:
+          VERSIE: ${{ steps.versie.outputs.versie }}
+        run: |
+          set -euo pipefail
+          awk -v v="$VERSIE" '
+            index($0, "## [" v "]") == 1 { bezig = 1; next }
+            bezig && /^## \[/ { exit }
+            bezig { print }
+          ' CHANGELOG.md | sed -e '/./,$!d' > notes.md
+          if [ ! -s notes.md ]; then
+            echo "::error::Geen blok '## [$VERSIE]' met tekst in CHANGELOG.md"; exit 1
+          fi
+          cat notes.md
+
+      - name: Release publiceren
+        if: steps.besluit.outputs.maken == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSIE: ${{ steps.versie.outputs.versie }}
+          PROEF: ${{ steps.versie.outputs.proef }}
+        run: |
+          set -euo pipefail
+          extra=()
+          if [ "$PROEF" = "true" ]; then extra+=(--prerelease --latest=false); fi
+          gh release create "v$VERSIE" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "v$VERSIE" \
+            --notes-file notes.md \
+            "${extra[@]}"
+          echo "Gepubliceerd: https://github.com/$GITHUB_REPOSITORY/releases/tag/v$VERSIE"
