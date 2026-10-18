@@ -1,9 +1,10 @@
 /**
  * SFP Page Config - Zelftest (de test op de pagina)
  *
- * Schermen: start (voornaam, e-mail, nieuwsbrief, lang of kort) -> vragen ->
- * eindscherm (het resultaat van het label, de rest wazig, de melding dat het
- * volledige resultaat in de mailbox staat).
+ * Schermen: start (voornaam, e-mail, nieuwsbrief, lang of kort) -> uitleg
+ * (als het pakket die levert) -> vragen -> laden (de stappen uit het pakket)
+ * -> eindscherm (het resultaat van het label, de rest wazig, de melding dat
+ * het volledige resultaat in de mailbox staat).
  *
  * Alle teksten komen uit het pakket (window.sfpZelftestConfig.inhoud). De
  * rekenregel is window.sfpZelftestMotor (motor.js van het label), het label
@@ -48,8 +49,14 @@
 			sessie: '', code: '', resultUrl: '',
 			R: null,
 			bezig: false,
-			fout: ''
+			fout: '',
+			startBelofte: null,
+			startBeurt: 0
 		};
+		/* Uitlegscherm tussen start en vraag 1, als het pakket het levert. */
+		var heeftUitleg = function () { var U = I.start && I.start.uitleg; return !!(U && T(U.knop)); };
+		var heeftOverzicht = function () { return !!(I.module && T(I.module.overzicht_knop) && T(I.module.overzicht_kop)); };
+		var laadstappen = function () { return (I.module && Array.isArray(I.module.laden) ? I.module.laden : []).map(T).filter(Boolean); };
 		var meta = { utm: {}, dienst: '', bron: '' };
 		if (params) {
 			['utm_source', 'utm_medium', 'utm_campaign', 'gclid'].forEach(function (k) { var v = params.get(k); if (v) meta.utm[k] = v.slice(0, 200); });
@@ -89,6 +96,21 @@
 			var lang = '<div class="sfp-zt-kaartje' + (S.kortEerst ? '' : ' hoofd') + '"><span class="sfp-zt-lab">' + esc(T(St.p3_kop)) + '</span><p class="sfp-zt-uitleg2">' + esc(T(St.p3_uitleg)) + ' ' + ph(T(St.p3_tijd)) + '</p><button type="button" class="sfp-zt-knop' + (S.kortEerst ? ' stil' : '') + '" data-lengte="long">' + esc(T(St.p3_knop)) + '</button></div>';
 			var kort = C.lengtes.short ? '<div class="sfp-zt-kaartje' + (S.kortEerst ? ' hoofd' : '') + '"><span class="sfp-zt-lab">' + esc(T(St.p4_kop)) + '</span><p class="sfp-zt-uitleg2"><b>' + ph(T(St.p4_tekst)) + '</b></p>' + (T(St.p4_uitleg) ? '<p class="sfp-zt-uitleg2">' + esc(T(St.p4_uitleg)) + '</p>' : '') + '<button type="button" class="sfp-zt-knop' + (S.kortEerst ? '' : ' stil') + '" data-lengte="short">' + esc(T(St.p4_knop)) + '</button></div>' : '';
 			var privacy = St.p9_url || C.privacy;
+			/*
+			 * Telefoon (besluit 18-10-2026, sinds 3.5.5): geen keuzekaarten maar
+			 * één knop met de duur eronder en een tekstlink naar de andere versie.
+			 * Alleen als het pakket de teksten levert (start.mobiel); de CSS
+			 * toont dit blok onder 640 px en verbergt dan de kaarten.
+			 */
+			var Mo = St.mobiel || {}, mob = '';
+			if (C.lengtes.short && T(Mo.naar_kort) && T(Mo.naar_lang)) {
+				var hoofdL = S.kortEerst ? 'short' : 'long';
+				mob = '<div class="sfp-zt-mob">'
+					+ '<button type="button" class="sfp-zt-knop" data-lengte="' + hoofdL + '">' + esc(T(S.kortEerst ? St.p4_knop : St.p3_knop)) + '</button>'
+					+ (T(S.kortEerst ? Mo.tijd_kort : Mo.tijd_lang) ? '<p class="sfp-zt-mob-tijd">' + esc(T(S.kortEerst ? Mo.tijd_kort : Mo.tijd_lang)) + '</p>' : '')
+					+ '<button type="button" class="sfp-zt-mob-ander" data-lengte="' + (S.kortEerst ? 'long' : 'short') + '">' + esc(T(S.kortEerst ? Mo.naar_lang : Mo.naar_kort)) + '</button>'
+					+ '</div>';
+			}
 			binnen.innerHTML = '<div class="sfp-zt-scherm sfp-zt-start">'
 				+ '<div class="sfp-zt-start-tekst"><div><span class="sfp-zt-lab licht">' + esc(T(I.algemeen.testnaam)) + '</span><h2 class="sfp-zt-h1">' + esc(T(St.kop)) + '</h2></div>'
 				+ (T(St.intro) ? '<div class="sfp-zt-intro"><p>' + esc(T(St.intro)) + '</p>' + (T(St.introLijstkop) ? '<p class="sfp-zt-lijstkop">' + ph(T(St.introLijstkop)) + '</p>' : '') + (St.introPunten && St.introPunten.length ? '<ul class="sfp-zt-lijst">' + St.introPunten.map(function (a) { return '<li>' + esc(T(a)) + '</li>'; }).join('') + '</ul>' : '') + '</div>' : '')
@@ -98,7 +120,8 @@
 				+ '<div class="sfp-zt-veld" data-veld="email"><label for="sfp-zt-email">' + esc(T(St.p6_email)) + '</label><input type="email" id="sfp-zt-email" placeholder="' + esc(T(St.p6_email)) + '" autocomplete="email" inputmode="email" maxlength="190" value="' + esc(S.email) + '"><span class="sfp-zt-fout">' + esc(T(St.fout_email)) + '</span></div>'
 				+ '<div class="sfp-zt-lok" aria-hidden="true"><label for="sfp-zt-website">Website</label><input type="text" id="sfp-zt-website" tabindex="-1" autocomplete="off"></div>'
 				+ '<label class="sfp-zt-vink"><input type="checkbox" id="sfp-zt-nieuwsbrief"' + (S.nieuwsbrief ? ' checked' : '') + '><span>' + ph(T(St.p8_nieuwsbrief)) + '</span></label>'
-				+ '<div class="sfp-zt-keuzes">' + (S.kortEerst ? kort + lang : lang + kort) + '</div>'
+				+ '<div class="sfp-zt-keuzes' + (mob ? ' heeft-mob' : '') + '">' + (S.kortEerst ? kort + lang : lang + kort) + '</div>'
+				+ mob
 				+ '<p class="sfp-zt-foutmelding" id="sfp-zt-startfout"' + (S.fout ? '' : ' hidden') + ' role="alert">' + esc(S.fout) + '</p>'
 				+ '<p class="sfp-zt-avg">' + esc(T(St.p9_avg)) + (privacy ? ' <a href="' + esc(privacy) + '" target="_blank" rel="noopener">' + esc(T(St.p9_link)) + '</a>.' : '') + '</p>'
 				+ '</div></div>';
@@ -109,30 +132,40 @@
 				$('[data-veld="naam"]').classList.toggle('mis', !naam);
 				$('[data-veld="email"]').classList.toggle('mis', !okMail(mail));
 				if (!naam || !okMail(mail)) { (!naam ? $('#sfp-zt-voornaam') : $('#sfp-zt-email')).focus(); return; }
-				var zelfde = S.sessie && S.lengte === lengte && S.voornaam === naam && S.email === mail && S.nieuwsbrief === $('#sfp-zt-nieuwsbrief').checked;
+				var zelfde = (S.sessie || S.startBelofte) && S.lengte === lengte && S.voornaam === naam && S.email === mail && S.nieuwsbrief === $('#sfp-zt-nieuwsbrief').checked;
 				S.voornaam = naam; S.email = mail; S.nieuwsbrief = $('#sfp-zt-nieuwsbrief').checked; S.fout = '';
 				if (zelfde) {
 					/* Terug naar het begin en dezelfde keuze: verder met dezelfde rij. */
-					S.i = 0; S.scherm = 'vraag'; teken();
+					S.i = 0; S.scherm = heeftUitleg() ? 'uitleg' : 'vraag'; teken();
 					return;
 				}
-				S.bezig = true;
-				if (knop) knop.setAttribute('aria-busy', 'true');
-				post('start', {
+				/*
+				 * Het volgende scherm staat er meteen; de start gaat op de
+				 * achtergrond naar de site. Het afronden wacht daarop. Mislukt de
+				 * start, dan terug naar het startscherm met de melding.
+				 */
+				var beurt = ++S.startBeurt;
+				S.sessie = '';
+				S.lengte = lengte;
+				S.volgorde = (C.lengtes[lengte] && C.lengtes[lengte].vragen ? C.lengtes[lengte].vragen : []).slice().sort(function (a, b) { return a - b; });
+				S.A = {}; S.i = 0; S.scherm = heeftUitleg() ? 'uitleg' : 'vraag';
+				S.startBelofte = post('start', {
 					voornaam: naam, email: mail, lengte: lengte, nieuwsbrief: S.nieuwsbrief,
 					lead_source_url: meta.bron, utm_source: meta.utm.utm_source || '', utm_medium: meta.utm.utm_medium || '',
 					utm_campaign: meta.utm.utm_campaign || '', gclid: meta.utm.gclid || '', dienst: meta.dienst,
 					website: $('#sfp-zt-website').value
 				}).then(function (j) {
-					S.bezig = false; S.sessie = j.sessie || '';
-					S.lengte = lengte;
-					S.volgorde = (C.lengtes[lengte] && C.lengtes[lengte].vragen ? C.lengtes[lengte].vragen : []).slice().sort(function (a, b) { return a - b; });
-					S.A = {}; S.i = 0; S.scherm = 'vraag';
-					teken();
+					if (beurt === S.startBeurt) S.sessie = j.sessie || '';
 				}, function (e) {
-					S.bezig = false; S.fout = e.message || T(I.module.fout_versturen);
+					if (beurt !== S.startBeurt) return;
+					S.startBelofte = null; S.sessie = '';
+					S.fout = e.message || T(I.module.fout_versturen);
+					S.scherm = 'start';
 					teken();
+					throw e;
 				});
+				S.startBelofte.catch(function () {});
+				teken();
 			};
 			Array.prototype.forEach.call(binnen.querySelectorAll('[data-lengte]'), function (b) {
 				b.addEventListener('click', function () { ga(b.getAttribute('data-lengte'), b); });
@@ -141,6 +174,23 @@
 				$(id).addEventListener('input', function () { $(id === '#sfp-zt-voornaam' ? '[data-veld="naam"]' : '[data-veld="email"]').classList.remove('mis'); });
 				$(id).addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); ga(S.kortEerst ? 'short' : 'long'); } });
 			});
+		}
+
+		/* ---------- Uitleg ---------- */
+		function schermUitleg() {
+			var U = I.start.uitleg, naam = function (s) { return esc(s).replace(/\[(Naam|Voornaam)\]/g, esc(S.voornaam)); };
+			var alineas = (Array.isArray(U.alineas) ? U.alineas : []).map(T).filter(Boolean);
+			binnen.innerHTML = '<div class="sfp-zt-scherm sfp-zt-uitleg">'
+				+ (T(U.kop) ? '<div><h2 class="sfp-zt-h1">' + naam(T(U.kop)) + '</h2>' + (T(U.sub) ? '<p class="sfp-zt-uitleg-sub">' + naam(T(U.sub)) + '</p>' : '') + '</div>' : '')
+				+ '<div class="sfp-zt-uitleg-blok">' + (T(U.titel) ? '<p class="sfp-zt-uitleg-titel">' + naam(T(U.titel)) + '</p>' : '')
+				+ alineas.map(function (a) { return '<p>' + naam(a) + '</p>'; }).join('') + '</div>'
+				+ '<div class="sfp-zt-vraagvoet"><button type="button" class="sfp-zt-terug" id="sfp-zt-vorige">' + esc(T(I.vragenscherm.vorige)) + '</button>'
+				+ '<button type="button" class="sfp-zt-knop" id="sfp-zt-begin">' + naam(T(U.knop)) + '</button></div>'
+				+ '</div>';
+			$('#sfp-zt-vorige').addEventListener('click', function () { S.scherm = 'start'; teken(); });
+			$('#sfp-zt-begin').addEventListener('click', function () { S.i = 0; S.scherm = 'vraag'; teken(); });
+			naarBoven();
+			$('#sfp-zt-begin').focus({ preventScroll: true });
 		}
 
 		/* ---------- Vragen ---------- */
@@ -155,15 +205,15 @@
 			binnen.innerHTML = '<div class="sfp-zt-scherm">'
 				+ '<div class="sfp-zt-vraagkop"><span class="sfp-zt-lab">' + esc(blok) + '</span><span class="sfp-zt-tel">' + esc(T(V.voortgang).replace('{n}', n).replace('{t}', t)) + '</span></div>'
 				+ '<div class="sfp-zt-voortgang" role="progressbar" aria-valuemin="0" aria-valuemax="' + t + '" aria-valuenow="' + n + '"><b style="width:' + Math.round(n / t * 100) + '%"></b></div>'
-				+ (S.i === 0 && T(I.start.instructie) ? '<p class="sfp-zt-instructie">' + esc(T(I.start.instructie)) + '</p>' : '')
+				+ (S.i === 0 && !heeftUitleg() && T(I.start.instructie) ?'<p class="sfp-zt-instructie">' + esc(T(I.start.instructie)) + '</p>' : '')
 				+ '<p class="sfp-zt-vraag" id="sfp-zt-vraagtekst" tabindex="-1">' + esc(tx.v) + (meer ? '<small>' + esc(T(V.meerdere)) + '</small>' : '') + '</p>'
 				+ '<div class="sfp-zt-opties">' + opties + '</div>'
 				+ '<p class="sfp-zt-foutmelding" id="sfp-zt-vraagfout" hidden role="alert">' + esc(T(V.kiesEen)) + '</p>'
 				+ '<div class="sfp-zt-vraagvoet"><button type="button" class="sfp-zt-terug" id="sfp-zt-vorige">' + esc(T(V.vorige)) + '</button>'
-				+ (meer || laatste ? '<button type="button" class="sfp-zt-knop" id="sfp-zt-verder">' + esc(laatste ? T(V.naarResultaat) : T(V.volgende)) + '</button>' : '') + '</div>'
+				+ (meer || laatste ? '<button type="button" class="sfp-zt-knop" id="sfp-zt-verder">' + esc(laatste && !heeftOverzicht() && !S.terugOverzicht ? T(V.naarResultaat) : T(V.volgende)) + '</button>' : '') + '</div>'
 				+ '</div>';
 			$('#sfp-zt-vorige').addEventListener('click', function () {
-				if (S.i > 0) { S.i--; teken(); } else { S.scherm = 'start'; teken(); }
+				if (S.i > 0) { S.i--; teken(); } else { S.scherm = heeftUitleg() ? 'uitleg' : 'start'; teken(); }
 			});
 			Array.prototype.forEach.call(binnen.querySelectorAll('.sfp-zt-optie'), function (b) {
 				b.addEventListener('click', function () {
@@ -194,8 +244,37 @@
 		}
 
 		function verder() {
+			/* Gewijzigd vanuit het overzicht: terug naar het overzicht. */
+			if (S.terugOverzicht) { S.terugOverzicht = false; S.scherm = 'overzicht'; teken(); return; }
 			if (S.i < S.volgorde.length - 1) { S.i++; teken(); return; }
+			if (heeftOverzicht()) { S.scherm = 'overzicht'; teken(); return; }
 			afronden();
+		}
+
+		/* ---------- Overzicht van de antwoorden, voor het versturen (sinds 3.5.9) ---------- */
+		function schermOverzicht() {
+			var Mo = I.module, V = I.vragenscherm;
+			var rijen = S.volgorde.map(function (nr, k) {
+				var v = vraag(nr), tx = v[C.taal] || {}, a = S.A[nr], o = tx.o || [];
+				var tekst = (Array.isArray(a) ? a : (a ? [a] : [])).map(function (l) { return o['abcdefghi'.indexOf(l)] || ''; }).filter(Boolean).join(' \u00b7 ');
+				return '<li><button type="button" class="sfp-zt-ov-rij" data-k="' + k + '"><span class="sfp-zt-ov-nr">' + (k + 1) + '</span><span class="sfp-zt-ov-tekst"><span class="sfp-zt-ov-vraag">' + esc(tx.v) + '</span><span class="sfp-zt-ov-antw">' + esc(tekst) + '</span></span></button></li>';
+			}).join('');
+			/* Ingeklapt (besluit 18-10-2026): het scherm past op één scherm; wie wil, klapt de lijst open. */
+			var open = S.overzichtOpen ? ' open' : '';
+			binnen.innerHTML = '<div class="sfp-zt-scherm sfp-zt-overzicht">'
+				+ '<div><h2 class="sfp-zt-h1" id="sfp-zt-ovkop" tabindex="-1">' + esc(T(Mo.overzicht_kop)) + '</h2>' + (T(Mo.overzicht_uitleg) ? '<p class="sfp-zt-uitleg-sub">' + esc(T(Mo.overzicht_uitleg)) + '</p>' : '') + '</div>'
+				+ '<details class="sfp-zt-ov"' + open + '><summary>' + esc(T(Mo.overzicht_open) || T(Mo.overzicht_kop)) + ' (' + S.volgorde.length + ')</summary>'
+				+ '<ol class="sfp-zt-ov-lijst">' + rijen + '</ol></details>'
+				+ '<div class="sfp-zt-vraagvoet"><button type="button" class="sfp-zt-terug" id="sfp-zt-vorige">' + esc(T(V.vorige)) + '</button>'
+				+ '<button type="button" class="sfp-zt-knop" id="sfp-zt-naar-resultaat">' + esc(T(Mo.overzicht_knop)) + '</button></div>'
+				+ '</div>';
+			Array.prototype.forEach.call(binnen.querySelectorAll('.sfp-zt-ov-rij'), function (b) {
+				b.addEventListener('click', function () { S.i = +b.getAttribute('data-k'); S.terugOverzicht = true; S.overzichtOpen = true; S.scherm = 'vraag'; teken(); });
+			});
+			$('#sfp-zt-vorige').addEventListener('click', function () { S.i = S.volgorde.length - 1; S.scherm = 'vraag'; teken(); });
+			$('#sfp-zt-naar-resultaat').addEventListener('click', function () { afronden(); });
+			naarBoven();
+			$('#sfp-zt-ovkop').focus({ preventScroll: true });
 		}
 
 		/* ---------- Afronden ---------- */
@@ -206,22 +285,47 @@
 		}
 
 		function afronden() {
-			if (S.scherm === 'einde') return;
+			if (S.scherm === 'einde' || S.scherm === 'laden') return;
+			S.terugOverzicht = false;
 			S.R = M.bereken(S.A, S.lengte);
-			S.scherm = 'einde'; S.fout = '';
-			teken();
+			S.fout = '';
 			verstuurAfgerond();
+			var stappen = laadstappen();
+			if (!stappen.length) { S.scherm = 'einde'; teken(); return; }
+			S.scherm = 'laden';
+			teken();
+		}
+
+		/* Overgang naar het resultaat: de stappen lichten na elkaar op, daarna het eindscherm. */
+		function schermLaden() {
+			var stappen = laadstappen(), stil = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			binnen.innerHTML = '<div class="sfp-zt-scherm sfp-zt-laden" role="status" aria-live="polite"><ul class="sfp-zt-stappen">'
+				+ stappen.map(function (s) { return '<li><span class="sfp-zt-stapicoon" aria-hidden="true"></span><span>' + esc(s) + '</span></li>'; }).join('')
+				+ '</ul></div>';
+			var li = binnen.querySelectorAll('.sfp-zt-stappen li'), k = 0, duur = stil ? 450 : 750;
+			var stap = function () {
+				if (S.scherm !== 'laden') return;
+				if (k > 0) { li[k - 1].classList.remove('bezig'); li[k - 1].classList.add('klaar'); }
+				if (k < li.length) { li[k].classList.add('bezig'); k++; setTimeout(stap, duur); return; }
+				setTimeout(function () { if (S.scherm === 'laden') { S.scherm = 'einde'; teken(); } }, 350);
+			};
+			naarBoven();
+			stap();
 		}
 
 		function verstuurAfgerond() {
 			var R = S.R;
-			post('afgerond', {
-				sessie: S.sessie,
-				antwoorden: antwoorden(),
-				uitkomst: {
-					crm: L.crm(S.A, R),
-					notitie: L.notitie(S.A, R, T, I)
-				}
+			/* Wacht op de start als die nog onderweg is. */
+			(S.startBelofte || Promise.resolve()).then(function () {
+				if (!S.sessie) { var e0 = new Error(T(I.module.fout_versturen)); throw e0; }
+				return post('afgerond', {
+					sessie: S.sessie,
+					antwoorden: antwoorden(),
+					uitkomst: {
+						crm: L.crm(S.A, R),
+						notitie: L.notitie(S.A, R, T, I)
+					}
+				});
 			}).then(function (j) {
 				S.code = j.code || ''; S.resultUrl = j.result_url || '';
 				var knop = $('#sfp-zt-open-pdf');
@@ -293,8 +397,50 @@
 			/* Het scherm staat op de wortel, zodat het kruisje van de testpagina weet of iemand midden in de test zit. */
 			wortel.setAttribute('data-scherm', S.scherm);
 			if (S.scherm === 'vraag') schermVraag();
+			else if (S.scherm === 'overzicht') schermOverzicht();
+			else if (S.scherm === 'uitleg') schermUitleg();
+			else if (S.scherm === 'laden') schermLaden();
 			else if (S.scherm === 'einde') schermEinde();
 			else schermStart();
+			bewaarInHistorie();
+		}
+
+		/*
+		 * Terugknop van de browser (sinds 3.5.9): elk scherm van de test is een
+		 * stap in de geschiedenis, dus terug gaat naar de vorige vraag in plaats
+		 * van de pagina te verlaten. Na het versturen (laden, eindscherm) blijft
+		 * de bezoeker op het eindscherm: het resultaat is al onderweg.
+		 */
+		var hist = !!(window.history && history.pushState), vorigeSleutel = '', uitHistorie = false;
+		function sleutel() { return S.scherm + (S.scherm === 'vraag' ? ':' + S.i : ''); }
+		function bewaarInHistorie() {
+			if (!hist) return;
+			var k = sleutel(), st = { zt: k, s: S.scherm, i: S.i };
+			if (uitHistorie) { uitHistorie = false; vorigeSleutel = k; return; }
+			if (k === vorigeSleutel) return;
+			try {
+				if (!vorigeSleutel || S.scherm === 'laden' || S.scherm === 'einde') history.replaceState(st, '');
+				else history.pushState(st, '');
+			} catch (e) { /* geschiedenis niet beschikbaar: geen probleem */ }
+			vorigeSleutel = k;
+		}
+		if (hist) {
+			window.addEventListener('popstate', function (e) {
+				if (S.scherm === 'einde' || S.scherm === 'laden') {
+					try { history.pushState({ zt: sleutel(), s: S.scherm, i: S.i }, ''); } catch (x) { /* niets */ }
+					return;
+				}
+				var st = e.state;
+				if (st && st.zt && st.s) {
+					S.scherm = (st.s === 'vraag' || st.s === 'overzicht') && !S.volgorde.length ? 'start' : st.s;
+					S.i = st.i || 0;
+				} else {
+					S.scherm = 'start';
+				}
+				S.terugOverzicht = false;
+				uitHistorie = true;
+				teken();
+			});
 		}
 
 		teken();

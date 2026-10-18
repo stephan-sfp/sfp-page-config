@@ -31,7 +31,7 @@
 		var weg = function () { window.location.href = doel; };
 		var bezig = function () {
 			var test = document.getElementById('sfp-zelftest');
-			return !!(test && test.getAttribute('data-scherm') === 'vraag');
+			return !!(test && (test.getAttribute('data-scherm') === 'vraag' || test.getAttribute('data-scherm') === 'overzicht'));
 		};
 
 		knop.addEventListener('click', function () {
