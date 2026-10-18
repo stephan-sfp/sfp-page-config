@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.5.2] - 2026-10-18
+
+### Toegevoegd
+- Zelftest: een uitlegscherm tussen het startscherm en vraag 1 ("Zo werkt de test"), met de voornaam in de kop. Teksten uit het testpakket (`start.uitleg`); zonder die teksten blijft de uitleg boven vraag 1 zoals eerder.
+- Zelftest: een overgang naar het resultaat met stappen die na elkaar oplichten (`module.laden` in het testpakket), samen ongeveer vier seconden. Bij minder beweging (systeeminstelling) korter en zonder draaiend icoon.
+- Testpagina: het logo mag een SVG zijn (scherp op elke grootte).
+
+### Gewijzigd
+- Zelftest: na de knop op het startscherm staat het volgende scherm er meteen. De start gaat op de achtergrond naar de site; het afronden wacht daarop. Mislukt de start, dan terug naar het startscherm met de melding.
+- Zelftest: de pdf heet "DPS • Presentatietest • 8H02-ZW6N-Y9R7.pdf" (voorvoegsel en naam uit het manifest, de code zonder voorvoegsel), met een gewone reservenaam voor oudere programma's.
+
 ## [3.5.1] - 2026-10-18
 
 ### Gewijzigd

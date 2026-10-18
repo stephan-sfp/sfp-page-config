@@ -111,6 +111,13 @@ function sfp_zelftest_pagina_logo() {
     if ( $id <= 0 ) {
         $id = (int) get_theme_mod( 'custom_logo' );
     }
+    if ( $id > 0 && 'image/svg+xml' === get_post_mime_type( $id ) ) {
+        // SVG heeft geen formaten in WordPress: rechtstreeks, scherp op elke grootte.
+        $url = wp_get_attachment_url( $id );
+        if ( $url ) {
+            return '<img src="' . esc_url( $url ) . '" class="sfp-zt-top-logo sfp-zt-top-logo-svg" alt="' . esc_attr( get_bloginfo( 'name' ) ) . '" loading="eager" decoding="async">';
+        }
+    }
     if ( $id > 0 ) {
         $img = wp_get_attachment_image(
             $id,
