@@ -254,12 +254,7 @@ function sfp_zelftest_uitkomst_schoon( array $pakket, $ruw ) {
             $notitie[] = array( mb_substr( sanitize_text_field( (string) $regel[0] ), 0, 60 ), mb_substr( sanitize_text_field( (string) $regel[1] ), 0, 300 ) );
         }
     }
-    // Welke deelafbeeldingen bestaan (het label bepaalt het; heel bestaat altijd).
-    $varianten = isset( $ruw['varianten'] ) && is_array( $ruw['varianten'] ) ? array_values( array_intersect( array( 'sterk', 'heel' ), $ruw['varianten'] ) ) : array();
-    if ( ! in_array( 'heel', $varianten, true ) ) {
-        $varianten[] = 'heel';
-    }
-    return array( 'crm' => $crm, 'notitie' => $notitie, 'varianten' => $varianten );
+    return array( 'crm' => $crm, 'notitie' => $notitie );
 }
 
 /**
@@ -368,14 +363,12 @@ function sfp_zelftest_rest_afgerond( WP_REST_Request $verzoek ) {
         return sfp_zelftest_rest_fout( $pakket, 'sfp_zelftest_ongeldig', 'fout_versturen', 400 );
     }
 
-    $code     = sfp_zelftest_nieuwe_code( (string) $pakket['manifest']['code_voorvoegsel'] );
-    $deelcode = sfp_zelftest_nieuwe_deelcode();
-    $nu       = sfp_zelftest_nu();
-    $duur     = max( 0, time() - (int) strtotime( $rij['gestart_op'] . ' UTC' ) );
+    $code       = sfp_zelftest_nieuwe_code( (string) $pakket['manifest']['code_voorvoegsel'] );
+    $nu         = sfp_zelftest_nu();
+    $duur       = max( 0, time() - (int) strtotime( $rij['gestart_op'] . ' UTC' ) );
     $heeft_blad = '' !== $pakket['blad'];
     $velden     = array(
         'code'         => $code,
-        'deelcode'     => $deelcode,
         'antwoorden'   => wp_json_encode( $antwoorden ),
         'uitkomst'     => wp_json_encode( $uitkomst ),
         'afgerond_op'  => $nu,

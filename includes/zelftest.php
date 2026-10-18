@@ -17,7 +17,7 @@
  *   blad.html      het pdf-blad (optioneel bij inlezen; zonder blad geen pdf).
  *
  * Bestanden staan in een eigen map onder uploads met een willekeurige naam,
- * afgesloten voor bezoekers. Daarin ook de pdf's en de deelafbeeldingen.
+ * afgesloten voor bezoekers. Daarin ook de pdf's.
  *
  * @package SFP_Page_Config
  * @since   3.4.0
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * De werkmap van de zelftest, met slash aan het eind. Maakt hem aan als hij
  * er nog niet is, met een .htaccess die alles weigert en een lege index.php.
  *
- * @param  string $sub Submap (pakket/<test>/huidig, pdf, deel), of ''.
+ * @param  string $sub Submap (pakket/<test>/huidig, pdf), of ''.
  * @return string      Pad, of '' als de map niet te maken is.
  */
 function sfp_zelftest_map( $sub = '' ) {
@@ -177,17 +177,15 @@ function sfp_zelftest_instellingen_alle() {
 function sfp_zelftest_instellingen( $test ) {
     $alle  = sfp_zelftest_instellingen_alle();
     $eigen = isset( $alle['tests'][ $test ] ) && is_array( $alle['tests'][ $test ] ) ? $alle['tests'][ $test ] : array();
-    return array_merge(
-        array(
-            'testpagina'       => 0,
-            'pdf_pad'          => '',
-            'deel_pad'         => '',
-            'webhook_start'    => '',
-            'webhook_afgerond' => '',
-            'proefmodus'       => '1',
-        ),
-        $eigen
+    $standaard = array(
+        'testpagina'       => 0,
+        'pdf_pad'          => '',
+        'webhook_start'    => '',
+        'webhook_afgerond' => '',
+        'proefmodus'       => '1',
     );
+    // Alleen bekende sleutels: een oude sleutel (deel_pad tot 3.4.0-beta.4) valt weg.
+    return array_merge( $standaard, array_intersect_key( $eigen, $standaard ) );
 }
 
 /**
@@ -205,18 +203,12 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
     if ( array_key_exists( 'testpagina', $wijzigingen ) ) {
         $nu['testpagina'] = absint( $wijzigingen['testpagina'] );
     }
-    foreach ( array( 'pdf_pad', 'deel_pad' ) as $sleutel ) {
-        if ( ! array_key_exists( $sleutel, $wijzigingen ) ) {
-            continue;
-        }
-        $pad = sfp_zelftest_pad_schoon( $wijzigingen[ $sleutel ] );
-        if ( '' === $pad && '' !== trim( (string) $wijzigingen[ $sleutel ] ) ) {
+    if ( array_key_exists( 'pdf_pad', $wijzigingen ) ) {
+        $pad = sfp_zelftest_pad_schoon( $wijzigingen['pdf_pad'] );
+        if ( '' === $pad && '' !== trim( (string) $wijzigingen['pdf_pad'] ) ) {
             return new WP_Error( 'sfp_zelftest_pad', 'Een adres bestaat uit kleine letters, cijfers, streepjes en schuine strepen, zonder domein.', array( 'status' => 400 ) );
         }
-        $nu[ $sleutel ] = $pad;
-    }
-    if ( '' !== $nu['pdf_pad'] && $nu['pdf_pad'] === $nu['deel_pad'] ) {
-        return new WP_Error( 'sfp_zelftest_pad', 'Het adres van de pdf en van de deelpagina moeten verschillen.', array( 'status' => 400 ) );
+        $nu['pdf_pad'] = $pad;
     }
     foreach ( array( 'webhook_start', 'webhook_afgerond' ) as $sleutel ) {
         if ( ! array_key_exists( $sleutel, $wijzigingen ) ) {
@@ -535,7 +527,7 @@ function sfp_zelftest_pakket_controle( array $bestanden ) {
         'resultaat'    => array( 'inMailbox', 'p10', 'p10_spam', 'p10_corrigeer', 'p10_corrigeerKnop', 'p7_knop', 'openHier', 'openHierKnop' ),
         'verlopen'     => array( 'kop', 'tekst', 'knop' ),
         'onbekend'     => array( 'kop', 'tekst', 'knop' ),
-        'module'       => array( 'wachten_kop', 'wachten_tekst', 'fout_versturen', 'fout_te_vaak', 'deel_titel', 'deel_tekst', 'deel_knop', 'deel_beschrijving' ),
+        'module'       => array( 'wachten_kop', 'wachten_tekst', 'fout_versturen', 'fout_te_vaak' ),
     );
     foreach ( $nodig as $groep => $sleutels ) {
         foreach ( $sleutels as $sleutel ) {
@@ -582,8 +574,7 @@ function sfp_zelftest_pakket_controle( array $bestanden ) {
 
 /**
  * Lees een pakket in. De huidige versie schuift door naar 'vorig'; bij een
- * fout blijft alles zoals het was. Een nieuwe pakketversie gooit de al
- * gemaakte deelafbeeldingen weg.
+ * fout blijft alles zoals het was.
  *
  * @param  string $test      Naam van de test (moet gelijk zijn aan manifest.test).
  * @param  array  $bestanden naam => inhoud.
@@ -622,12 +613,6 @@ function sfp_zelftest_pakket_inlezen( $test, array $bestanden ) {
         }
     }
 
-    $oude_versie = '';
-    $huidig      = sfp_zelftest_pakket( $test );
-    if ( $huidig && isset( $huidig['manifest']['pakket_versie'] ) ) {
-        $oude_versie = (string) $huidig['manifest']['pakket_versie'];
-    }
-
     sfp_zelftest_map_weg( $basis . 'vorig/' );
     if ( is_dir( $basis . 'huidig/' ) ) {
         // phpcs:ignore WordPress.WP.AlternativeFunctions.rename_rename -- eigen werkmap.
@@ -643,9 +628,6 @@ function sfp_zelftest_pakket_inlezen( $test, array $bestanden ) {
     }
 
     sfp_zelftest_pakket( '', true );
-    if ( $oude_versie !== (string) $controle['manifest']['pakket_versie'] && function_exists( 'sfp_zelftest_deel_vergeet' ) ) {
-        sfp_zelftest_deel_vergeet( $test );
-    }
     return $controle;
 }
 
@@ -668,9 +650,6 @@ function sfp_zelftest_pakket_terug( $test ) {
     rename( $basis . 'wissel', $basis . 'vorig' );
     // phpcs:enable
     sfp_zelftest_pakket( '', true );
-    if ( function_exists( 'sfp_zelftest_deel_vergeet' ) ) {
-        sfp_zelftest_deel_vergeet( $test );
-    }
     return true;
 }
 
@@ -753,16 +732,16 @@ function sfp_zelftest_tekst( array $pakket, $pad ) {
 }
 
 /**
- * Het adres van een test-eigen route (pdf of deelpagina).
+ * Het adres van de pdf-link van een test.
  *
  * @param  string $test  Naam.
- * @param  string $soort pdf of deel.
+ * @param  string $soort pdf (de enige route).
  * @param  array  $query Queryparameters.
  * @return string        Adres, of '' als het pad niet is ingesteld.
  */
-function sfp_zelftest_adres( $test, $soort, array $query = array() ) {
+function sfp_zelftest_adres( $test, $soort = 'pdf', array $query = array() ) {
     $inst = sfp_zelftest_instellingen( $test );
-    $pad  = 'pdf' === $soort ? $inst['pdf_pad'] : $inst['deel_pad'];
+    $pad  = $inst['pdf_pad'];
     if ( '' === $pad ) {
         return '';
     }

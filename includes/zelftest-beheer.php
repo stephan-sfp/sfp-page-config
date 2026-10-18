@@ -7,7 +7,7 @@
  *   POST /wp-json/sfp/v1/zelftest/<test>/pakket/terug   vorige versie terugzetten
  *   POST /wp-json/sfp/v1/zelftest/<test>/instellingen   adressen, webhooks, proefmodus
  *   POST /wp-json/sfp/v1/zelftest/cloudflare            account-ID en token
- *   POST /wp-json/sfp/v1/zelftest/<test>/proef          pdf of deelafbeelding voor opgegeven antwoorden (niets opgeslagen of verstuurd)
+ *   POST /wp-json/sfp/v1/zelftest/<test>/proef          pdf voor opgegeven antwoorden (niets opgeslagen of verstuurd)
  *   POST /wp-json/sfp/v1/zelftest/wissen                alles van een e-mailadres wissen
  *
  * Alleen beheerders (manage_options). Geheimen (token, webhookadressen) zijn
@@ -62,7 +62,6 @@ function sfp_zelftest_stand() {
                 'testpagina'       => (int) $inst['testpagina'],
                 'testpagina_url'   => sfp_zelftest_testpagina_url( $test ),
                 'pdf_pad'          => $inst['pdf_pad'],
-                'deel_pad'         => $inst['deel_pad'],
                 'webhook_start'    => '' !== $inst['webhook_start'],
                 'webhook_afgerond' => '' !== $inst['webhook_afgerond'],
                 'proefmodus'       => '1' === (string) $inst['proefmodus'],
@@ -216,12 +215,12 @@ function sfp_zelftest_rest_beheer() {
 }
 
 /**
- * Proef: pdf of deelafbeelding voor opgegeven antwoorden. Slaat niets op en
+ * Proef: pdf voor opgegeven antwoorden. Slaat niets op en
  * stuurt niets naar het CRM. Antwoord als base64, of met ?bestand=1 het
  * bestand zelf.
  *
  * Invoer: naam, lengte (long|short), antwoorden (object of de korte vorm
- * "1b 2b ... 39a,h 40a"), modus (pdf|deel), variant (sterk|heel), code.
+ * "1b 2b ... 39a,h 40a"), code.
  *
  * @param  WP_REST_Request $verzoek Verzoek.
  * @return WP_REST_Response|WP_Error
@@ -259,27 +258,22 @@ function sfp_zelftest_rest_proef( WP_REST_Request $verzoek ) {
     if ( null === $antwoorden ) {
         return new WP_Error( 'sfp_zelftest_antwoorden', 'De antwoorden passen niet bij deze lengte van de test.', array( 'status' => 400 ) );
     }
-    $modus    = isset( $g['modus'] ) && 'deel' === $g['modus'] ? 'deel' : 'pdf';
-    $variant  = isset( $g['variant'] ) && 'sterk' === $g['variant'] ? 'sterk' : 'heel';
     $gegevens = array(
-        'modus'      => $modus,
-        'variant'    => $variant,
         'naam'       => isset( $g['naam'] ) ? sanitize_text_field( (string) $g['naam'] ) : 'Proef',
         'antwoorden' => $antwoorden,
         'lengte'     => $lengte,
         'code'       => isset( $g['code'] ) ? sanitize_text_field( (string) $g['code'] ) : $pakket['manifest']['code_voorvoegsel'] . '-PROE-F000-0000',
         'datum'      => wp_date( 'j F Y' ),
-        'deelcode'   => 'PROEF000000000',
     );
     $html     = sfp_zelftest_blad_html( $pakket, $gegevens );
-    $voet     = 'pdf' === $modus ? sfp_zelftest_blad_voet( $pakket, $gegevens ) : '';
+    $voet     = sfp_zelftest_blad_voet( $pakket, $gegevens );
     if ( is_wp_error( $html ) ) {
         return $html;
     }
     if ( ! empty( $g['alleen_html'] ) ) {
         return rest_ensure_response( array( 'html' => $html, 'voet' => $voet ) );
     }
-    $inhoud = 'deel' === $modus ? sfp_zelftest_maak_deelbeeld( $html ) : sfp_zelftest_maak_pdf( $pakket, $html, true, $voet );
+    $inhoud = sfp_zelftest_maak_pdf( $pakket, $html, true, $voet );
     if ( is_wp_error( $inhoud ) ) {
         // Geen 502: Cloudflare vervangt een 502 van de site door een eigen
         // foutpagina, en dan is de reden weg.
@@ -288,7 +282,7 @@ function sfp_zelftest_rest_proef( WP_REST_Request $verzoek ) {
     }
     return rest_ensure_response(
         array(
-            'type'   => 'deel' === $modus ? 'image/png' : 'application/pdf',
+            'type'   => 'application/pdf',
             'base64' => base64_encode( $inhoud ), // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- binair bestand in JSON.
         )
     );

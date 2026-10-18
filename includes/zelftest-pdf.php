@@ -1,6 +1,6 @@
 <?php
 /**
- * SFP Page Config - Zelftest: pdf en deelafbeelding via Cloudflare Browser Run
+ * SFP Page Config - Zelftest: pdf via Cloudflare Browser Run
  *
  * Het blad (blad.html uit het pakket) wordt per persoon klaargemaakt en naar
  * de Chrome van Cloudflare gestuurd:
@@ -10,11 +10,10 @@
  *   - fonts: de link naar Google Fonts gaat eruit; de fonts van de site gaan
  *     inline mee, zodat Cloudflare niets van de site hoeft op te halen;
  *   - gegevens: window.sfpZelftestBlad met naam, antwoorden, lengte, code,
- *     datum, deelcode en modus (pdf of deel), plus de rekenregel (motor.js).
+ *     datum en taal, plus de rekenregel (motor.js).
  *
  * Endpoints (documentatie Cloudflare, gecontroleerd 17-10-2026):
  *   POST https://api.cloudflare.com/client/v4/accounts/<account>/browser-run/pdf
- *   POST https://api.cloudflare.com/client/v4/accounts/<account>/browser-run/screenshot
  * Token met de permissie "Browser Run - Edit".
  *
  * Gratis plan: 1 aanvraag per 10 seconden en 10 minuten browsertijd per dag,
@@ -218,7 +217,7 @@ function sfp_zelftest_blad_voet( array $pakket, array $gegevens ) {
  * Maak het blad klaar voor één persoon.
  *
  * @param  array $pakket   Pakket.
- * @param  array $gegevens naam, antwoorden, lengte, code, datum, deelcode, modus, variant.
+ * @param  array $gegevens naam, antwoorden, lengte, code, datum.
  * @return string|WP_Error HTML.
  */
 function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
@@ -232,15 +231,11 @@ function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
     $fonts = sfp_zelftest_fonts_css( $merk['families'] );
 
     $data = array(
-        'modus'      => isset( $gegevens['modus'] ) ? (string) $gegevens['modus'] : 'pdf',
-        'variant'    => isset( $gegevens['variant'] ) ? (string) $gegevens['variant'] : '',
         'naam'       => (string) $gegevens['naam'],
         'antwoorden' => (array) $gegevens['antwoorden'],
         'lengte'     => (string) $gegevens['lengte'],
         'code'       => (string) $gegevens['code'],
         'datum'      => (string) $gegevens['datum'],
-        'deelcode'   => (string) $gegevens['deelcode'],
-        'deelbasis'  => sfp_zelftest_adres( $pakket['test'], 'deel' ),
         'taal'       => sfp_zelftest_taal( $pakket ),
         'inhoud'     => $pakket['inhoud'],
     );
@@ -259,45 +254,37 @@ function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
         $html = $kop_html . $html;
     }
 
-    // Alleen in de pdf. De Chrome van Cloudflare zet ligaturen ("fl") en de
+    // De Chrome van Cloudflare zet ligaturen ("fl") en de
     // Nederlandse IJ (OpenType locl) als één teken zonder tekst eronder, zodat
     // kopiëren en zoeken in de pdf een gat geven. Beide uit, met !important,
     // want een font-shorthand in het blad zet de ligaturen anders weer aan.
     // Met een voettekst uit het pakket tekent Cloudflare de voettekst; de
     // margevakken van het blad gaan dan uit, zodat een nieuwere Chrome hem
     // niet dubbel zet.
-    if ( 'pdf' === $data['modus'] ) {
-        $stijl = '*{font-variant-ligatures:none!important;font-feature-settings:"locl" 0!important}';
-        if ( '' !== sfp_zelftest_blad_voet( $pakket, $gegevens ) ) {
-            $vakken = array( 'top-left-corner', 'top-left', 'top-center', 'top-right', 'top-right-corner', 'right-top', 'right-middle', 'right-bottom', 'bottom-right-corner', 'bottom-right', 'bottom-center', 'bottom-left', 'bottom-left-corner', 'left-bottom', 'left-middle', 'left-top' );
-            $stijl .= '@page{' . implode( '', array_map( function ( $v ) { return '@' . $v . '{content:none}'; }, $vakken ) ) . '}';
-        }
-        $stijl = '<style id="sfp-zt-pdf">' . $stijl . '</style>';
-        $plek  = strripos( $html, '</body>' );
-        $html  = false === $plek ? $html . $stijl : substr( $html, 0, $plek ) . $stijl . substr( $html, $plek );
+    $stijl = '*{font-variant-ligatures:none!important;font-feature-settings:"locl" 0!important}';
+    if ( '' !== sfp_zelftest_blad_voet( $pakket, $gegevens ) ) {
+        $vakken = array( 'top-left-corner', 'top-left', 'top-center', 'top-right', 'top-right-corner', 'right-top', 'right-middle', 'right-bottom', 'bottom-right-corner', 'bottom-right', 'bottom-center', 'bottom-left', 'bottom-left-corner', 'left-bottom', 'left-middle', 'left-top' );
+        $stijl .= '@page{' . implode( '', array_map( function ( $v ) { return '@' . $v . '{content:none}'; }, $vakken ) ) . '}';
     }
+    $stijl = '<style id="sfp-zt-pdf">' . $stijl . '</style>';
+    $plek  = strripos( $html, '</body>' );
+    $html  = false === $plek ? $html . $stijl : substr( $html, 0, $plek ) . $stijl . substr( $html, $plek );
     return $html;
 }
 
 /**
  * De gegevens van één rij voor het blad.
  *
- * @param  array  $rij     Rij.
- * @param  string $modus   pdf of deel.
- * @param  string $variant sterk of heel (bij deel).
+ * @param  array $rij Rij.
  * @return array
  */
-function sfp_zelftest_blad_gegevens( array $rij, $modus = 'pdf', $variant = '' ) {
+function sfp_zelftest_blad_gegevens( array $rij ) {
     return array(
-        'modus'      => $modus,
-        'variant'    => $variant,
         'naam'       => (string) $rij['voornaam'],
         'antwoorden' => sfp_zelftest_json( $rij, 'antwoorden' ),
         'lengte'     => (string) $rij['lengte'],
-        // De deelafbeelding is openbaar: nooit de code die de pdf opent.
-        'code'       => 'deel' === $modus ? '' : (string) $rij['code'],
+        'code'       => (string) $rij['code'],
         'datum'      => wp_date( 'j F Y', strtotime( $rij['afgerond_op'] . ' UTC' ) ),
-        'deelcode'   => (string) $rij['deelcode'],
     );
 }
 
@@ -308,7 +295,7 @@ function sfp_zelftest_blad_gegevens( array $rij, $modus = 'pdf', $variant = '' )
 /**
  * Een aanvraag bij Cloudflare Browser Run.
  *
- * @param  string $soort        pdf of screenshot.
+ * @param  string $soort        pdf (het enige soort dat de module gebruikt).
  * @param  array  $body         Gegevens.
  * @param  bool   $mag_wachten  Mag deze aanvraag tot 10 seconden wachten op de vorige?
  * @return string|WP_Error      De inhoud (pdf of png).
@@ -332,7 +319,7 @@ function sfp_zelftest_cloudflare_vraag( $soort, array $body, $mag_wachten = true
     }
     set_transient( 'sfp_pc_zt_cf_laatst', microtime( true ), MINUTE_IN_SECONDS );
 
-    $url      = 'https://api.cloudflare.com/client/v4/accounts/' . rawurlencode( $cf['account'] ) . '/browser-run/' . ( 'screenshot' === $soort ? 'screenshot' : 'pdf' );
+    $url      = 'https://api.cloudflare.com/client/v4/accounts/' . rawurlencode( $cf['account'] ) . '/browser-run/pdf';
     $antwoord = wp_remote_post(
         $url,
         array(
@@ -367,9 +354,9 @@ function sfp_zelftest_cloudflare_vraag( $soort, array $body, $mag_wachten = true
         }
         return new WP_Error( 'sfp_zelftest_cf_fout', 'Cloudflare gaf HTTP ' . $status . $melding . '.' );
     }
-    $verwacht = 'screenshot' === $soort ? "\x89PNG" : '%PDF';
+    $verwacht = '%PDF';
     if ( 0 !== strpos( $inhoud, $verwacht ) ) {
-        return new WP_Error( 'sfp_zelftest_cf_fout', 'Cloudflare gaf geen ' . ( 'screenshot' === $soort ? 'afbeelding' : 'pdf' ) . ' terug.' );
+        return new WP_Error( 'sfp_zelftest_cf_fout', 'Cloudflare gaf geen pdf terug.' );
     }
     return $inhoud;
 }
@@ -406,28 +393,6 @@ function sfp_zelftest_maak_pdf( array $pakket, $html, $mag_wachten = true, $voet
                 'waitUntil' => 'networkidle0',
                 'timeout'   => 45000,
             ),
-        ),
-        $mag_wachten
-    );
-}
-
-/**
- * Maak een deelafbeelding (1200 x 627) van een klaargemaakt blad in
- * deelmodus. Het blad zet de kaart in #sfp-zt-deelkaart.
- *
- * @param  string $html        Blad.
- * @param  bool   $mag_wachten Zie sfp_zelftest_cloudflare_vraag().
- * @return string|WP_Error     Png.
- */
-function sfp_zelftest_maak_deelbeeld( $html, $mag_wachten = true ) {
-    return sfp_zelftest_cloudflare_vraag(
-        'screenshot',
-        array(
-            'html'              => $html,
-            'viewport'          => array( 'width' => 1200, 'height' => 627, 'deviceScaleFactor' => 1 ),
-            'selector'          => '#sfp-zt-deelkaart',
-            'screenshotOptions' => array( 'type' => 'png' ),
-            'gotoOptions'       => array( 'waitUntil' => 'networkidle0', 'timeout' => 45000 ),
         ),
         $mag_wachten
     );
@@ -531,74 +496,6 @@ function sfp_zelftest_pdf_verwerk( $id, $forceer = false, $mag_wachten = true ) 
         sfp_zelftest_cron_plannen();
     }
     return $pdf;
-}
-
-/* =========================================================================
- * Deelafbeelding per rij
- * ====================================================================== */
-
-/**
- * Het pad van een deelafbeelding; maakt hem als hij er nog niet is.
- *
- * @param  array  $rij     Rij.
- * @param  string $variant sterk of heel.
- * @param  bool   $maken   Mag hij nu gemaakt worden?
- * @return string          Pad, of ''.
- */
-function sfp_zelftest_deelbeeld_pad( array $rij, $variant, $maken = true ) {
-    $map = sfp_zelftest_map( 'deel/' . $rij['test'] );
-    if ( '' === $map || ! preg_match( '/^[0-9A-Z]{14}$/', (string) $rij['deelcode'] ) ) {
-        return '';
-    }
-    $pad = $map . $rij['deelcode'] . '-' . $variant . '.png';
-    if ( is_readable( $pad ) ) {
-        return $pad;
-    }
-    if ( ! $maken ) {
-        return '';
-    }
-    $pakket = sfp_zelftest_pakket( $rij['test'] );
-    if ( ! $pakket || '' === $pakket['blad'] ) {
-        return '';
-    }
-    // Eén poging per variant per kwartier, zodat herhaalde opvragen Cloudflare niet overspoelen.
-    $rem = 'sfp_pc_zt_deel_' . md5( $pad );
-    if ( get_transient( $rem ) ) {
-        return '';
-    }
-    set_transient( $rem, 1, 15 * MINUTE_IN_SECONDS );
-    $html = sfp_zelftest_blad_html( $pakket, sfp_zelftest_blad_gegevens( $rij, 'deel', $variant ) );
-    $png  = is_wp_error( $html ) ? $html : sfp_zelftest_maak_deelbeeld( $html, false );
-    if ( is_wp_error( $png ) ) {
-        sfp_zelftest_log( $rij['test'], 'fout', 'Deelafbeelding mislukt (rij ' . (int) $rij['id'] . '): ' . $png->get_error_message() );
-        return '';
-    }
-    // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- eigen werkmap.
-    if ( false === file_put_contents( $pad, $png ) ) {
-        return '';
-    }
-    delete_transient( $rem );
-    $beelden             = sfp_zelftest_json( $rij, 'deelbeelden' );
-    $beelden[ $variant ] = sfp_zelftest_nu();
-    sfp_zelftest_rij_bij( (int) $rij['id'], array( 'deelbeelden' => wp_json_encode( $beelden ) ) );
-    return $pad;
-}
-
-/**
- * Gooi alle deelafbeeldingen van een test weg (nieuwe pakketversie).
- *
- * @param  string $test Naam.
- * @return void
- */
-function sfp_zelftest_deel_vergeet( $test ) {
-    global $wpdb;
-    $map = sfp_zelftest_map( 'deel/' . $test );
-    if ( '' !== $map ) {
-        sfp_zelftest_map_weg( $map );
-    }
-    if ( sfp_zelftest_tabel_klaar() ) {
-        $wpdb->update( sfp_zelftest_tabel(), array( 'deelbeelden' => null ), array( 'test' => $test ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-    }
 }
 
 /**

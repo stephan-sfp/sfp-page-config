@@ -1,19 +1,14 @@
 <?php
 /**
- * SFP Page Config - Zelftest: pdf-link en deelpagina
+ * SFP Page Config - Zelftest: pdf-link
  *
- * Twee adressen per test, in SFP Beheer in te stellen (geen pagina in
+ * Eén adres per test, in SFP Beheer in te stellen (geen pagina in
  * WordPress, eigen route van de plugin):
  *
  *   <pdf_pad>/?code=DPS-XXXX-XXXX-XXXX
  *       geldige code binnen de termijn: de pdf; na de termijn: "verlopen"
  *       (P17); onbekende code: "niet gevonden" (P18). Zolang de pdf nog
  *       gemaakt wordt: een wachtpagina die zichzelf ververst.
- *
- *   <deel_pad>/?d=<deelcode>&v=sterk|heel
- *       de deelpagina met de deelafbeelding als voorbeeld voor LinkedIn en
- *       WhatsApp; &beeld=1 geeft de afbeelding, &download=1 als bestand.
- *       De deelcode opent nooit de pdf.
  *
  * Altijd: geen cache (WP Rocket, SiteGround, browser), noindex. De regel
  * voor Cloudflare zet WordPress Toolkit.
@@ -29,9 +24,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'template_redirect', 'sfp_zelftest_link_route', 0 );
 
 /**
- * Bij welke test en welke route hoort dit verzoek?
+ * Bij welke test hoort dit verzoek?
  *
- * @return array|null array( 'test' => ..., 'soort' => pdf|deel ), of null.
+ * @return array|null array( 'test' => ... ), of null.
  */
 function sfp_zelftest_link_herken() {
     if ( ! function_exists( 'sfp_page_config_onderdeel_aan' ) || ! sfp_page_config_onderdeel_aan( 'zelftest' ) ) {
@@ -45,10 +40,7 @@ function sfp_zelftest_link_herken() {
     foreach ( sfp_zelftest_tests() as $test ) {
         $inst = sfp_zelftest_instellingen( $test );
         if ( '' !== $inst['pdf_pad'] && $pad === $inst['pdf_pad'] ) {
-            return array( 'test' => $test, 'soort' => 'pdf' );
-        }
-        if ( '' !== $inst['deel_pad'] && $pad === $inst['deel_pad'] ) {
-            return array( 'test' => $test, 'soort' => 'deel' );
+            return array( 'test' => $test );
         }
     }
     return null;
@@ -70,7 +62,7 @@ function sfp_zelftest_geen_cache( $cache = 'no-store, private, max-age=0' ) {
 }
 
 /**
- * Handel de pdf-link en de deelpagina af.
+ * Handel de pdf-link af.
  */
 function sfp_zelftest_link_route() {
     $route = sfp_zelftest_link_herken();
@@ -84,11 +76,7 @@ function sfp_zelftest_link_route() {
     sfp_zelftest_geen_cache();
     // Het adres bevat een code: nooit doorgeven aan een volgende pagina of dienst.
     header( 'Referrer-Policy: no-referrer' );
-    if ( 'pdf' === $route['soort'] ) {
-        sfp_zelftest_link_pdf( $pakket );
-    } else {
-        sfp_zelftest_link_deel( $pakket );
-    }
+    sfp_zelftest_link_pdf( $pakket );
     exit;
 }
 
@@ -219,125 +207,6 @@ function sfp_zelftest_kale_pagina( $titel, $inhoud, $status, $extra_kop = '' ) {
     // phpcs:enable
 }
 
-/**
- * Toon inhoud binnen de kop en voet van het thema.
- *
- * @param  string $titel     Titel van het document.
- * @param  string $inhoud    HTML (al ge-escaped).
- * @param  int    $status    HTTP-status.
- * @param  string $extra_kop Extra HTML in de head (al ge-escaped).
- * @return void
- */
-function sfp_zelftest_thema_pagina( $titel, $inhoud, $status, $extra_kop = '' ) {
-    global $wp_query;
-    status_header( (int) $status );
-    if ( $wp_query instanceof WP_Query ) {
-        $wp_query->is_404 = false;
-    }
-    add_filter(
-        'pre_get_document_title',
-        function () use ( $titel ) {
-            return $titel;
-        },
-        99
-    );
-    add_filter(
-        'wp_robots',
-        function () {
-            return array(
-                'noindex'  => true,
-                'nofollow' => true,
-            );
-        },
-        99
-    );
-    add_action(
-        'wp_head',
-        function () use ( $extra_kop ) {
-            echo $extra_kop; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste HTML of ge-escaped door de aanroeper.
-        },
-        1
-    );
-    wp_enqueue_style( 'sfp-zelftest', SFP_PAGE_CONFIG_URL . 'assets/zelftest/zelftest.css', array(), SFP_PAGE_CONFIG_VERSION );
-    wp_add_inline_style( 'sfp-zelftest', sfp_zelftest_merk_css() );
-    get_header();
-    echo '<main id="primary" class="site-main sfp-zt sfp-zt-route"><div class="sfp-zt-wrap">' . $inhoud . '</div></main>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ge-escaped door de aanroeper.
-    get_footer();
-}
-
-/* =========================================================================
- * Deelpagina
- * ====================================================================== */
-
-/**
- * De deelpagina, of de deelafbeelding.
- *
- * @param  array $pakket Pakket.
- * @return void
- */
-function sfp_zelftest_link_deel( array $pakket ) {
-    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- openbare deellink.
-    $deelcode = isset( $_GET['d'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_GET['d'] ) ) ) : '';
-    $variant  = isset( $_GET['v'] ) && 'sterk' === $_GET['v'] ? 'sterk' : 'heel';
-    $beeld    = isset( $_GET['beeld'] ) || isset( $_GET['download'] );
-    $download = isset( $_GET['download'] );
-    // phpcs:enable
-
-    $rij = null;
-    if ( preg_match( '/^[0-9A-Z]{14}$/', $deelcode ) && sfp_zelftest_limiet( 'deel-ip', sfp_zelftest_ip(), 240 ) ) {
-        $rij = sfp_zelftest_rij_op( 'deelcode', $deelcode );
-    }
-    if ( $rij && ( $rij['test'] !== $pakket['test'] || (int) $rij['geanonimiseerd'] || empty( $rij['afgerond_op'] ) ) ) {
-        $rij = null;
-    }
-    // Zonder sterkste pijler (gelijke stand) bestaat alleen de variant heel.
-    if ( $rij && 'sterk' === $variant ) {
-        $uitkomst = sfp_zelftest_json( $rij, 'uitkomst' );
-        if ( empty( $uitkomst['varianten'] ) || ! in_array( 'sterk', (array) $uitkomst['varianten'], true ) ) {
-            $variant = 'heel';
-        }
-    }
-
-    if ( $beeld ) {
-        $pad = $rij ? sfp_zelftest_deelbeeld_pad( $rij, $variant ) : '';
-        if ( '' === $pad ) {
-            status_header( 404 );
-            return;
-        }
-        sfp_zelftest_geen_cache( 'private, max-age=3600' );
-        status_header( 200 );
-        header( 'Content-Type: image/png' );
-        header( 'Content-Length: ' . filesize( $pad ) );
-        header( 'X-Content-Type-Options: nosniff' );
-        if ( $download ) {
-            header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $pakket['test'] . '-' . $variant . '.png' ) . '"' );
-        }
-        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_readfile -- de afbeelding zelf.
-        readfile( $pad );
-        return;
-    }
-
-    $titel        = sfp_zelftest_tekst( $pakket, 'module.deel_titel' );
-    $tekst        = sfp_zelftest_tekst( $pakket, 'module.deel_tekst' );
-    $knop         = sfp_zelftest_tekst( $pakket, 'module.deel_knop' );
-    $beschrijving = sfp_zelftest_tekst( $pakket, 'module.deel_beschrijving' );
-    $beeld_url    = $rij ? sfp_zelftest_adres( $pakket['test'], 'deel', array( 'd' => $rij['deelcode'], 'v' => $variant, 'beeld' => '1' ) ) : '';
-    $pagina_url   = $rij ? sfp_zelftest_adres( $pakket['test'], 'deel', array( 'd' => $rij['deelcode'], 'v' => $variant ) ) : '';
-
-    $kop = '<meta property="og:type" content="website">'
-        . '<meta property="og:title" content="' . esc_attr( $titel ) . '">'
-        . '<meta property="og:description" content="' . esc_attr( $beschrijving ) . '">'
-        . ( '' !== $pagina_url ? '<meta property="og:url" content="' . esc_url( $pagina_url ) . '">' : '' )
-        . ( '' !== $beeld_url ? '<meta property="og:image" content="' . esc_url( $beeld_url ) . '"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="627"><meta name="twitter:card" content="summary_large_image">' : '' );
-
-    $inhoud = '<div class="sfp-zt-melding sfp-zt-deel">'
-        . ( '' !== $beeld_url ? '<p class="sfp-zt-deelbeeld"><img src="' . esc_url( $beeld_url ) . '" width="1200" height="627" alt="' . esc_attr( $titel ) . '"></p>' : '' )
-        . '<h1>' . esc_html( $titel ) . '</h1><p>' . esc_html( $tekst ) . '</p>'
-        . '<p><a class="sfp-zt-knop" href="' . esc_url( sfp_zelftest_testpagina_url( $pakket['test'] ) ) . '">' . esc_html( $knop ) . '</a></p>'
-        . '</div>';
-    sfp_zelftest_thema_pagina( $titel, $inhoud, $rij ? 200 : 404, $kop );
-}
-
 /* =========================================================================
  * WP Rocket
  * ====================================================================== */
@@ -345,7 +214,7 @@ function sfp_zelftest_link_deel( array $pakket ) {
 add_filter( 'rocket_cache_reject_uri', 'sfp_zelftest_rocket_niet_cachen' );
 
 /**
- * WP Rocket bewaart de pdf-link en de deelpagina nooit.
+ * WP Rocket bewaart de pdf-link nooit.
  *
  * @param  array $uris Uitsluitingen.
  * @return array
@@ -357,10 +226,8 @@ function sfp_zelftest_rocket_niet_cachen( $uris ) {
     }
     foreach ( sfp_zelftest_tests() as $test ) {
         $inst = sfp_zelftest_instellingen( $test );
-        foreach ( array( 'pdf_pad', 'deel_pad' ) as $sleutel ) {
-            if ( '' !== $inst[ $sleutel ] ) {
-                $uris[] = '/' . $inst[ $sleutel ] . '/(.*)';
-            }
+        if ( '' !== $inst['pdf_pad'] ) {
+            $uris[] = '/' . $inst['pdf_pad'] . '/(.*)';
         }
     }
     return $uris;

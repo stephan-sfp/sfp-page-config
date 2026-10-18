@@ -219,8 +219,7 @@
 				antwoorden: antwoorden(),
 				uitkomst: {
 					crm: L.crm(S.A, R),
-					notitie: L.notitie(S.A, R, T, I),
-					varianten: typeof L.varianten === 'function' ? L.varianten(R) : ['heel']
+					notitie: L.notitie(S.A, R, T, I)
 				}
 			}).then(function (j) {
 				S.code = j.code || ''; S.resultUrl = j.result_url || '';

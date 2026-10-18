@@ -6,13 +6,13 @@
  *   - pdf-bestanden waarvan de link verlopen is (geldigheid uit het manifest)
  *     gaan weg; de rij blijft;
  *   - rijen ouder dan 2 jaar worden geanonimiseerd: naam, e-mail, UTM's,
- *     gclid, herkomstpagina, codes, sessie en deelafbeeldingen weg, tijden
+ *     gclid, herkomstpagina, code en sessie weg, tijden
  *     teruggebracht tot de eerste van de maand. Antwoorden, uitkomst en
  *     lengte blijven voor statistiek;
  *   - logregels ouder dan 30 dagen gaan weg.
  *
  * Een verwijderverzoek (SFP Beheer, REST of Gereedschap, Persoonlijke
- * gegevens wissen) wist rij, pdf en deelafbeeldingen van dat e-mailadres.
+ * gegevens wissen) wist rij en pdf van dat e-mailadres.
  *
  * @package SFP_Page_Config
  * @since   3.4.0
@@ -123,7 +123,6 @@ function sfp_zelftest_anonimiseer( array $rij ) {
         array(
             'sessie'          => '',
             'code'            => null,
-            'deelcode'        => null,
             'email'           => '',
             'voornaam'        => '',
             'lead_source_url' => '',
@@ -140,14 +139,13 @@ function sfp_zelftest_anonimiseer( array $rij ) {
             'pdf_volgende'    => null,
             'pdf_bestand'     => '',
             'pdf_status'      => 'gewist',
-            'deelbeelden'     => null,
             'geanonimiseerd'  => 1,
         )
     );
 }
 
 /**
- * De pdf en de deelafbeeldingen van een rij weg.
+ * De pdf van een rij weg.
  *
  * @param  array $rij Rij.
  * @return void
@@ -157,18 +155,10 @@ function sfp_zelftest_bestanden_weg( array $rij ) {
     if ( '' !== $pdf ) {
         wp_delete_file( $pdf );
     }
-    if ( preg_match( '/^[0-9A-Z]{14}$/', (string) $rij['deelcode'] ) ) {
-        foreach ( array( 'sterk', 'heel' ) as $variant ) {
-            $pad = sfp_zelftest_deelbeeld_pad( $rij, $variant, false );
-            if ( '' !== $pad ) {
-                wp_delete_file( $pad );
-            }
-        }
-    }
 }
 
 /**
- * Wis alles van een e-mailadres: rijen, pdf's en deelafbeeldingen.
+ * Wis alles van een e-mailadres: rijen en pdf's.
  *
  * @param  string $email E-mailadres.
  * @return int           Aantal gewiste rijen.

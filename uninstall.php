@@ -15,7 +15,7 @@
  * opnieuw installeert, bijvoorbeeld bij terugdraaien, raakt zo niets kwijt.
  *
  * Uitzondering (3.4.0): de zelftest. Gegevens van deelnemers, pdf's,
- * deelafbeeldingen, het pakket en de instellingen van de zelftest gaan weg,
+ * het pakket en de instellingen van de zelftest gaan weg,
  * omdat de bewaartermijn zonder de plugin niet meer wordt bewaakt.
  *
  * @package SFP_Page_Config
@@ -54,7 +54,7 @@ foreach ( array( 'sfp_pc_', 'sfp_feiten_', 'sfp_dashboard_', 'sfp_next_course_' 
     }
 }
 
-// Zelftest (3.4.0): gegevens van deelnemers, pdf's en deelafbeeldingen gaan
+// Zelftest (3.4.0): gegevens van deelnemers en pdf's gaan
 // weg met de plugin. Anders zouden ze blijven staan zonder dat de dagelijkse
 // opruiming (bewaartermijn van 2 jaar) nog draait. Het pakket gaat mee weg;
 // de bron staat buiten de site.

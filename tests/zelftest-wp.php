@@ -120,7 +120,7 @@ zt_is( $manifest['pakket_versie'] === sfp_zelftest_pakket( 'proeftest' )['manife
 /* ---------- Instellingen ---------- */
 zt_is( is_wp_error( sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'pdf_pad' => 'https://ergens.nl/x y' ) ) ), 'ongeldig pad wordt geweigerd' );
 zt_is( is_wp_error( sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'webhook_start' => 'http://onveilig.nl' ) ) ), 'webhook zonder https wordt geweigerd' );
-zt_is( true === sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'pdf_pad' => '/proeftest/resultaat/', 'deel_pad' => 'proeftest/delen', 'webhook_start' => 'https://voorbeeld.nl/a', 'proefmodus' => true ) ), 'geldige instellingen opgeslagen' );
+zt_is( true === sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'pdf_pad' => '/proeftest/resultaat/', 'webhook_start' => 'https://voorbeeld.nl/a', 'proefmodus' => true ) ), 'geldige instellingen opgeslagen' );
 $inst = sfp_zelftest_instellingen( 'proeftest' );
 zt_is( 'proeftest/resultaat' === $inst['pdf_pad'], 'pad zonder schuine strepen aan de randen' );
 sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'webhook_start' => '' ) );
@@ -197,7 +197,7 @@ $r2 = zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' =>
 zt_is( $code === (string) $r2->get_data()['code'], 'dubbel afgerond: dezelfde code, geen nieuwe' );
 $rij = sfp_zelftest_rij_op( 'code', $code );
 zt_is( 'wacht' === $rij['crm_afgerond'] && 'wacht' === $rij['pdf_status'], 'send 2 en pdf in de wachtrij' );
-zt_is( (bool) preg_match( '/^[0-9A-HJKMNP-TV-Z]{14}$/', (string) $rij['deelcode'] ) && false === strpos( $code, (string) $rij['deelcode'] ), 'deelcode los van de code' );
+zt_is( ! array_key_exists( 'deelcode', $rij ) && ! array_key_exists( 'deelbeelden', $rij ), 'tabel zonder kolommen van het delen' );
 
 // Opnieuw doen geeft een nieuwe code.
 zt_limiet_leeg();
@@ -276,12 +276,8 @@ if ( ! empty( $manifest['blad']['voet'] ) ) {
     unset( $zonder['manifest']['blad']['voet'] );
     zt_is( '' === sfp_zelftest_blad_voet( $zonder, $geg ), 'zonder voet in het pakket geen sjabloon' );
 }
-$deelhtml = sfp_zelftest_blad_html( $pk, sfp_zelftest_blad_gegevens( sfp_zelftest_rij_op( 'code', $code ), 'deel', 'heel' ) );
-zt_is( is_string( $deelhtml ) && false === strpos( $deelhtml, 'sfp-zt-pdf' ), 'deelmodus zonder pdf-stijl' );
-
-// Deelafbeelding: openbaar, dus zonder de code die de pdf opent.
-$deel = sfp_zelftest_blad_gegevens( sfp_zelftest_rij_op( 'code', $code ), 'deel', 'heel' );
-zt_is( '' === $deel['code'] && '' !== $deel['deelcode'], 'deelmodus geeft geen resultaatcode mee' );
+zt_is( ! function_exists( 'sfp_zelftest_maak_deelbeeld' ) && ! function_exists( 'sfp_zelftest_link_deel' ), 'geen deelfunctie meer' );
+zt_is( ! array_key_exists( 'deel_pad', sfp_zelftest_instellingen( 'proeftest' ) ), 'geen instelling voor een deelpagina' );
 
 /* ---------- IP-adres ---------- */
 zt_is( sfp_zelftest_is_cloudflare( '162.158.1.1' ) && sfp_zelftest_is_cloudflare( '2606:4700::1' ), 'adressen van Cloudflare herkend' );
@@ -323,7 +319,7 @@ zt_is( 'gewist' === sfp_zelftest_rij_op( 'code', $code )['pdf_status'], 'rij bli
 sfp_zelftest_rij_bij( (int) $rij['id'], array( 'gestart_op' => gmdate( 'Y-m-d H:i:s', time() - 2 * YEAR_IN_SECONDS - DAY_IN_SECONDS ), 'afgerond_op' => gmdate( 'Y-m-d H:i:s', time() - 2 * YEAR_IN_SECONDS - 3600 ) ) );
 sfp_zelftest_dagelijks();
 $anon = sfp_zelftest_rij_op( 'id', (string) $rij['id'] );
-zt_is( '' === $anon['email'] && '' === $anon['voornaam'] && null === $anon['code'] && null === $anon['deelcode'] && '' === $anon['lead_source_url'] && '' === $anon['utm_source'] && '' === $anon['gclid'] && '' === $anon['sessie'], 'na 2 jaar: geen persoonsgegevens' );
+zt_is( '' === $anon['email'] && '' === $anon['voornaam'] && null === $anon['code'] && '' === $anon['lead_source_url'] && '' === $anon['utm_source'] && '' === $anon['gclid'] && '' === $anon['sessie'], 'na 2 jaar: geen persoonsgegevens' );
 zt_is( '01 00:00:00' === substr( (string) $anon['gestart_op'], 8 ) && '1' === (string) $anon['geanonimiseerd'], 'na 2 jaar: tijden naar de maand, rij gemarkeerd' );
 zt_is( '' !== (string) $anon['antwoorden'] && '' !== (string) $anon['uitkomst'], 'na 2 jaar: antwoorden en uitkomst blijven' );
 zt_is( ! isset( sfp_zelftest_json( $anon, 'uitkomst' )['notitie'] ) && isset( sfp_zelftest_json( $anon, 'uitkomst' )['crm'] ), 'na 2 jaar: notitie weg, CRM-velden blijven' );
@@ -339,7 +335,6 @@ zt_is( ! empty( $uit['items_removed'] ), 'wisser van WordPress wist de rij' );
 /* ---------- Opruimen ---------- */
 $wpdb->query( $wpdb->prepare( "DELETE FROM {$tabel} WHERE test = %s", 'proeftest' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 sfp_zelftest_map_weg( sfp_zelftest_map( 'pakket/proeftest' ) );
-sfp_zelftest_map_weg( sfp_zelftest_map( 'deel/proeftest' ) );
 $alle = sfp_zelftest_instellingen_alle();
 unset( $alle['tests']['proeftest'] );
 update_option( 'sfp_zelftest', $alle, false );

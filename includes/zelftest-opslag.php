@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SFP_ZELFTEST_DB_VERSIE', '1' );
+define( 'SFP_ZELFTEST_DB_VERSIE', '2' );
 
 /**
  * Naam van de tabel.
@@ -48,7 +48,6 @@ function sfp_zelftest_tabel_klaar() {
   pakket_versie varchar(40) NOT NULL DEFAULT '',
   sessie char(32) NOT NULL DEFAULT '',
   code varchar(24) DEFAULT NULL,
-  deelcode varchar(16) DEFAULT NULL,
   email varchar(190) NOT NULL DEFAULT '',
   voornaam varchar(100) NOT NULL DEFAULT '',
   lengte varchar(5) NOT NULL DEFAULT 'long',
@@ -73,12 +72,10 @@ function sfp_zelftest_tabel_klaar() {
   pdf_volgende datetime NULL DEFAULT NULL,
   pdf_bestand varchar(100) NOT NULL DEFAULT '',
   pdf_eerste_klik datetime NULL DEFAULT NULL,
-  deelbeelden text NULL,
   opnieuw_gestuurd tinyint(3) unsigned NOT NULL DEFAULT 0,
   geanonimiseerd tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY  (id),
   UNIQUE KEY code (code),
-  UNIQUE KEY deelcode (deelcode),
   KEY sessie (sessie),
   KEY email (email),
   KEY test_afgerond (test,afgerond_op),
@@ -88,6 +85,16 @@ function sfp_zelftest_tabel_klaar() {
 ) {$charset};";
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta( $sql );
+    // Versie 2 (3.4.0-beta.5): de deelfunctie is geschrapt. dbDelta laat
+    // kolommen staan; de twee van het delen gaan hier weg.
+    foreach ( array( 'deelcode', 'deelbeelden' ) as $kolom ) {
+        if ( $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$tabel} LIKE %s", $kolom ) ) ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            if ( 'deelcode' === $kolom ) {
+                $wpdb->query( "ALTER TABLE {$tabel} DROP INDEX deelcode" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+            }
+            $wpdb->query( "ALTER TABLE {$tabel} DROP COLUMN {$kolom}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange
+        }
+    }
     $bestaat = $tabel === $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $tabel ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
     if ( $bestaat ) {
         update_option( 'sfp_zelftest_db', SFP_ZELFTEST_DB_VERSIE, true );
@@ -154,32 +161,15 @@ function sfp_zelftest_nieuwe_code( $voorvoegsel ) {
 }
 
 /**
- * Een nieuwe deelcode (14 tekens, 70 bits), uniek. Opent nooit de pdf.
- *
- * @return string
- */
-function sfp_zelftest_nieuwe_deelcode() {
-    global $wpdb;
-    $tabel = sfp_zelftest_tabel();
-    for ( $poging = 0; $poging < 5; $poging++ ) {
-        $code = sfp_zelftest_willekeurig( 14 );
-        if ( ! $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$tabel} WHERE deelcode = %s", $code ) ) ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-            return $code;
-        }
-    }
-    return sfp_zelftest_willekeurig( 14 );
-}
-
-/**
  * Een rij op een kolom.
  *
- * @param  string $kolom code, deelcode of sessie.
+ * @param  string $kolom code, sessie of id.
  * @param  string $waarde Waarde.
  * @return array|null
  */
 function sfp_zelftest_rij_op( $kolom, $waarde ) {
     global $wpdb;
-    if ( ! in_array( $kolom, array( 'code', 'deelcode', 'sessie', 'id' ), true ) || '' === (string) $waarde || ! sfp_zelftest_tabel_klaar() ) {
+    if ( ! in_array( $kolom, array( 'code', 'sessie', 'id' ), true ) || '' === (string) $waarde || ! sfp_zelftest_tabel_klaar() ) {
         return null;
     }
     $tabel = sfp_zelftest_tabel();
@@ -203,7 +193,7 @@ function sfp_zelftest_rij_bij( $id, array $velden ) {
  * Antwoorden en uitkomst van een rij als array.
  *
  * @param  array  $rij   Rij.
- * @param  string $kolom antwoorden, uitkomst, extra of deelbeelden.
+ * @param  string $kolom antwoorden, uitkomst of extra.
  * @return array
  */
 function sfp_zelftest_json( array $rij, $kolom ) {

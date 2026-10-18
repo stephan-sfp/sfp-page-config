@@ -139,8 +139,7 @@
 .sfp-zt-t3blok .sfp-zt-formulier{padding:16px 18px;background:var(--sfp-b-wit);border-radius:var(--sfp-b-r-knop);border:1px solid var(--zt-lijn)}
 @media (max-width:480px){.sfp-zt-t3blok{padding:22px 18px 24px}.sfp-zt-balk{padding:16px 16px 18px}.sfp-zt-teaser{min-height:520px}}
 
-/* Pagina's van de plugin: verlopen, onbekend, wachten, delen */
+/* Pagina's van de plugin: verlopen, onbekend, wachten */
 .sfp-zt-route{padding:56px 20px 72px}
 .sfp-zt-route .sfp-zt-melding{display:flex;flex-direction:column;gap:20px;max-width:720px;margin:0 auto}
 .sfp-zt-route .sfp-zt-melding p{margin:0}
-.sfp-zt-deelbeeld img{display:block;width:100%;height:auto;border:1px solid var(--zt-lijn);border-radius:var(--sfp-b-r-knop)}

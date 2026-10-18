@@ -984,7 +984,6 @@
 			var I = t.instellingen;
 			var pagina = paginaKeuze(I.testpagina, 'Kies de testpagina');
 			var pdfPad = tekstInvoer(I.pdf_pad, 'presentatietest/resultaat');
-			var deelPad = tekstInvoer(I.deel_pad, 'presentatietest/delen');
 			var whStart = tekstInvoer('', I.webhook_start ? 'Ingesteld; laat leeg om te houden' : 'https://...', 'password');
 			var whAf = tekstInvoer('', I.webhook_afgerond ? 'Ingesteld; laat leeg om te houden' : 'https://...', 'password');
 			[whStart, whAf].forEach(function (w) { w.setAttribute('autocomplete', 'off'); });
@@ -1005,13 +1004,12 @@
 				el('p', { text: 'Gestart: ' + c.gestart + ' (laatste 30 dagen ' + c.gestart_30 + '). Afgerond: ' + c.afgerond + ' (laatste 30 dagen ' + c.afgerond_30 + '). Pdf klaar: ' + c.pdf_klaar + '. In de wachtrij: CRM ' + c.crm_wacht + ', pdf ' + c.pdf_wacht + '.' }),
 				veld('Testpagina', pagina, 'De pagina met het blok Zelftest. Knoppen "Doe de test" wijzen hierheen.', 'sfpb-zt-pag-' + t.test),
 				veld('Adres van de pdf-link', pdfPad, 'Zonder domein, bijvoorbeeld presentatietest/resultaat. Geen bestaande pagina.', 'sfpb-zt-pdf-' + t.test),
-				veld('Adres van de deelpagina', deelPad, 'Zonder domein, bijvoorbeeld presentatietest/delen.', 'sfpb-zt-deel-' + t.test),
 				veld('Webhook bij de start (SureContact)', whStart, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-whs-' + t.test),
 				veld('Webhook bij het afronden (SureContact)', whAf, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-wha-' + t.test),
 				schakel(I.proefmodus, 'Proefmodus: niets naar het CRM, de gegevens komen in het logboek', function (nu) { proef.aan = nu; }),
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, pdf_pad: pdfPad.value, deel_pad: deelPad.value, webhook_start: whStart.value, webhook_afgerond: whAf.value, proefmodus: proef.aan });
+						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, pdf_pad: pdfPad.value, webhook_start: whStart.value, webhook_afgerond: whAf.value, proefmodus: proef.aan });
 					} }),
 					t.vorige ? el('button', { class: 'sfpb-knop', type: 'button', text: 'Vorige pakketversie terugzetten', klik: function () {
 						if (window.confirm('De vorige versie van het pakket terugzetten?')) zt(this, 'zt-' + t.test, '/' + t.test + '/pakket/terug', {}, 'Teruggezet');

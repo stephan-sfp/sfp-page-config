@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.4.0-beta.5] - 2026-10-18
+
+### Verwijderd
+- **De deelfunctie van de zelftest is geschrapt** (besluit 18-10-2026): geen deelpagina, geen deelafbeelding via Cloudflare, geen deelcode en geen instelling "Adres van de deelpagina" meer. De kolommen `deelcode` en `deelbeelden` gaan bij het bijwerken uit de tabel (tabelversie 2). Het testpakket heeft geen deelteksten meer en het label geeft geen varianten meer door.
+
 ## [3.4.0-beta.4] - 2026-10-18
 
 ### Gerepareerd
