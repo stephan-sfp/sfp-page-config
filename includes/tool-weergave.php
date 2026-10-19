@@ -171,10 +171,43 @@ function sfp_page_config_tool_shortcode() {
 function sfp_page_config_tool_shortcode_render( $atts ) {
     $atts = shortcode_atts( array( 'id' => 0, 'weergave' => 'volledig' ), (array) $atts, 'sfp_tool' );
     $id   = (int) $atts['id'];
+    // Zonder id op de pagina van een tool: die tool zelf.
+    if ( ! $id && sfp_page_config_is_tool( get_post() ) ) {
+        $id = (int) get_post()->ID;
+    }
     if ( ! $id ) {
         return '';
     }
     return sfp_page_config_tool_html( $id, (string) $atts['weergave'] );
+}
+
+add_filter( 'the_content', 'sfp_page_config_tool_in_inhoud', 8 );
+
+/**
+ * Zonder de artikelopmaak (onderdeel Artikelen uit) zet de plugin de tool
+ * zelf boven de tekst van zijn pagina, tenzij de tekst hem al plaatst met
+ * de code of het blok. Met de artikelopmaak aan doet includes/artikel.php
+ * dat, als onderdeel van de vorm tool.
+ *
+ * @param  string $inhoud Inhoud.
+ * @return string
+ */
+function sfp_page_config_tool_in_inhoud( $inhoud ) {
+    if ( ! is_singular( 'tool' ) || ! in_the_loop() || ! is_main_query() ) {
+        return $inhoud;
+    }
+    $post = get_post();
+    if ( ! sfp_page_config_tool_aan() || ! sfp_page_config_is_tool( $post ) ) {
+        return $inhoud;
+    }
+    if ( function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post ) ) {
+        return $inhoud;
+    }
+    if ( false !== strpos( $inhoud, '[sfp_tool' ) || false !== strpos( $post->post_content, '[sfp_tool' ) || has_block( 'sfp/tool', $post ) ) {
+        return $inhoud;
+    }
+    $html = sfp_page_config_tool_html( $post, 'volledig' );
+    return '' === $html ? $inhoud : $html . $inhoud;
 }
 
 add_filter( 'sfp_page_config_blokken_extra', 'sfp_page_config_tool_blokken' );
