@@ -520,7 +520,7 @@
 								if ( nt.tekst ) { rij.appendChild( el( 'p', { class: 'sfp-tool__tekst sfp-tool__tekst--klein', text: nt.tekst } ) ); }
 							}
 							sec.appendChild( rij );
-							blokken.push( { type: 'balk', naam: dimVolledig( b, d ), label: lab, deel: deel } );
+							blokken.push( { type: 'balk', naam: dimVolledig( b, d ), label: lab, deel: deel, uitslag: d === r.uitslag } );
 							if ( 'niveaus' === o.type ) { var nt2 = uitslagtekst( b, d + ':' + dim.label.sleutel ); if ( nt2.tekst ) { blokken.push( { type: 'tekst', tekst: nt2.tekst } ); } }
 						} );
 						paneelResultaat.appendChild( sec );

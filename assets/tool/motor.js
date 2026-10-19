@@ -326,53 +326,97 @@
 			doc.addFont( 'DejaVuSans.ttf', 'DejaVuSans', 'normal' );
 			doc.addFileToVFS( 'DejaVuSans-Bold.ttf', f.vet );
 			doc.addFont( 'DejaVuSans-Bold.ttf', 'DejaVuSans', 'bold' );
+			/* Dezelfde rollen als op de pagina: koppen en opschriften primair in hoofdletters, de uitslag in een vlak
+			   in Tint 2, scorebalken in Tint 1 met de uitslag in primair, bolletjes in de secundaire kleur. De kleur
+			   voor links en knoppen hoort niet in een document zonder knoppen. */
 			var primair = kleur( '--sfp-b-primair', [ 20, 20, 60 ] );
-			var accent = kleur( '--sfp-b-links', [ 0, 90, 200 ] );
-			var tint = kleur( '--sfp-b-tint2', [ 240, 240, 240 ] );
-			var body = kleur( '--sfp-b-body', [ 40, 40, 40 ] );
-			var L = 20, R = 190, B = 20, y = 22, W = R - L;
+			var secundair = kleur( '--sfp-b-secundair', primair );
+			var tint1 = kleur( '--sfp-b-tint1', [ 200, 220, 240 ] );
+			var tint = kleur( '--sfp-b-tint2', [ 230, 240, 250 ] );
+			var body = kleur( '--sfp-b-body', [ 87, 87, 87 ] );
+			var L = 20, R = 190, y = 22, W = R - L, inzet = 0;
+			function vul( k ) { doc.setFillColor( k[ 0 ], k[ 1 ], k[ 2 ] ); }
 			function nieuw( h ) { if ( y + h > 277 ) { doc.addPage(); y = 22; } }
-			function schrijf( tekst, maat, vet, kl, inspring ) {
+			function hoofd( t ) { return String( t ).toLocaleUpperCase( document.documentElement.lang || undefined ); }
+			function regels( tekst, maat, vet, inspring ) {
 				doc.setFont( 'DejaVuSans', vet ? 'bold' : 'normal' );
 				doc.setFontSize( maat );
-				doc.setTextColor( kl[ 0 ], kl[ 1 ], kl[ 2 ] );
-				var regels = doc.splitTextToSize( String( tekst ), W - ( inspring || 0 ) );
-				var h = regels.length * maat * 0.4;
-				regels.forEach( function ( r ) { nieuw( maat * 0.45 ); doc.text( r, L + ( inspring || 0 ), y ); y += maat * 0.42; } );
-				return h;
+				return doc.splitTextToSize( String( tekst ), W - 2 * inzet - ( inspring || 0 ) );
 			}
-			doc.setFillColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] );
+			function schrijf( tekst, maat, vet, kl, inspring ) {
+				var rs = regels( tekst, maat, vet, inspring );
+				doc.setTextColor( kl[ 0 ], kl[ 1 ], kl[ 2 ] );
+				rs.forEach( function ( r ) { nieuw( maat * 0.45 ); doc.text( r, L + inzet + ( inspring || 0 ), y ); y += maat * 0.42; } );
+			}
+			function maten( bl ) {
+				if ( 'kicker' === bl.type ) { return { tekst: hoofd( bl.tekst ), maat: 8.5, vet: true, kl: primair, voor: inzet ? 0 : 6, na: 1 }; }
+				if ( 'kop' === bl.type ) { return { tekst: hoofd( bl.tekst ), maat: 19, vet: true, kl: primair, voor: 6, na: 2 }; }
+				return null;
+			}
+			vul( primair );
 			doc.rect( 0, 0, 210, 14, 'F' );
 			doc.setFont( 'DejaVuSans', 'bold' ); doc.setFontSize( 10 ); doc.setTextColor( 255, 255, 255 );
-			doc.text( ( CONFIG.sitenaam || '' ), L, 9 );
+			doc.text( hoofd( CONFIG.sitenaam || '' ), L, 9 );
 			doc.setFontSize( 9 ); doc.setFont( 'DejaVuSans', 'normal' );
 			doc.text( zelf.titel, R, 9, { align: 'right' } );
-			blokken.forEach( function ( bl ) {
+			/* De uitslag bovenaan (opschrift, titel, uitleg) in een vlak in Tint 2: eerst de hoogte meten, dan tekenen. */
+			var eind = 0;
+			while ( eind < blokken.length && ( 'kicker' === blokken[ eind ].type || 'kop' === blokken[ eind ].type || ( 'tekst' === blokken[ eind ].type && eind > 0 ) ) ) { eind++; }
+			if ( eind > 0 ) {
+				inzet = 7;
+				var h = 2 * inzet - 2;
+				blokken.slice( 0, eind ).forEach( function ( bl ) {
+					var m = maten( bl );
+					if ( m ) { h += m.voor + regels( m.tekst, m.maat, m.vet ).length * m.maat * 0.42 + m.na; }
+					else { alineas( bl.tekst ).forEach( function ( a ) { h += regels( a, 10.5, false ).length * 10.5 * 0.42 + 2.5; } ); }
+				} );
+				y += 2;
+				vul( tint );
+				doc.roundedRect( L, y - 5, W, h, 4, 4, 'F' );
+				y += inzet - 1;
+			}
+			blokken.forEach( function ( bl, nr ) {
+				if ( eind > 0 && nr === eind ) { inzet = 0; y += 8; }
+				var m = maten( bl );
 				switch ( bl.type ) {
-					case 'kop': y += 4; schrijf( bl.tekst, 20, true, primair ); y += 3; break;
-					case 'kicker': schrijf( bl.tekst, 9, true, accent ); y += 1; break;
-					case 'subkop': y += 4; nieuw( 12 ); schrijf( bl.tekst, 13, true, primair ); y += 2; break;
+					case 'kop': case 'kicker': y += m.voor; schrijf( m.tekst, m.maat, m.vet, m.kl ); y += m.na; break;
+					case 'subkop': y += 5; nieuw( 12 ); schrijf( hoofd( bl.tekst ), 12, true, primair ); y += 2.5; break;
 					case 'tekst': alineas( bl.tekst ).forEach( function ( a ) { schrijf( a, 10.5, false, body ); y += 2.5; } ); break;
-					case 'lijst': ( bl.items || [] ).forEach( function ( it, i ) { nieuw( 8 ); doc.setFont( 'DejaVuSans', 'bold' ); doc.setFontSize( 10.5 ); doc.setTextColor( accent[ 0 ], accent[ 1 ], accent[ 2 ] ); doc.text( ( bl.nummers ? ( i + 1 ) + '.' : '•' ), L + 1, y ); schrijf( it, 10.5, false, body, 7 ); y += 1.5; } ); y += 2; break;
-					case 'afvink': ( bl.items || [] ).forEach( function ( it ) { nieuw( 8 ); doc.setDrawColor( accent[ 0 ], accent[ 1 ], accent[ 2 ] ); doc.rect( L + 0.5, y - 3.4, 3.6, 3.6 ); schrijf( it, 10.5, false, body, 7 ); y += 1.5; } ); y += 2; break;
+					case 'lijst': ( bl.items || [] ).forEach( function ( it, i ) {
+						nieuw( 8 );
+						if ( bl.nummers ) {
+							vul( tint ); doc.circle( L + 2.6, y - 1.3, 2.6, 'F' );
+							doc.setFont( 'DejaVuSans', 'bold' ); doc.setFontSize( 8 ); doc.setTextColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] );
+							doc.text( String( i + 1 ), L + 2.6, y - 0.3, { align: 'center' } );
+						} else { vul( secundair ); doc.circle( L + 1.6, y - 1.3, 1, 'F' ); }
+						schrijf( it, 10.5, false, body, 8 ); y += 1.8;
+					} ); y += 2; break;
+					case 'afvink': ( bl.items || [] ).forEach( function ( it ) { nieuw( 8 ); doc.setDrawColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] ); doc.rect( L + 0.5, y - 3.4, 3.6, 3.6 ); schrijf( it, 10.5, false, body, 8 ); y += 1.5; } ); y += 2; break;
 					case 'balk':
 						nieuw( 12 );
-						doc.setFont( 'DejaVuSans', 'bold' ); doc.setFontSize( 10 ); doc.setTextColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] );
-						doc.text( bl.naam, L, y );
-						doc.setFont( 'DejaVuSans', 'normal' ); doc.setFontSize( 9.5 ); doc.setTextColor( body[ 0 ], body[ 1 ], body[ 2 ] );
-						doc.text( bl.label, R, y, { align: 'right' } );
+						doc.setFont( 'DejaVuSans', 'bold' ); doc.setFontSize( 9 ); doc.setTextColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] );
+						doc.text( hoofd( bl.naam ), L, y );
+						doc.setFontSize( 8.5 );
+						doc.text( hoofd( bl.label ), R, y, { align: 'right' } );
 						y += 2;
-						doc.setFillColor( tint[ 0 ], tint[ 1 ], tint[ 2 ] ); doc.rect( L, y, W, 3, 'F' );
-						doc.setFillColor( accent[ 0 ], accent[ 1 ], accent[ 2 ] ); doc.rect( L, y, W * Math.max( 0, Math.min( 1, bl.deel || 0 ) ), 3, 'F' );
+						vul( tint ); doc.roundedRect( L, y, W, 3, 1.5, 1.5, 'F' );
+						var breed = W * Math.max( 0, Math.min( 1, bl.deel || 0 ) );
+						if ( breed > 0 ) { vul( bl.uitslag ? primair : tint1 ); doc.roundedRect( L, y, Math.max( breed, 3 ), 3, 1.5, 1.5, 'F' ); }
 						y += 8;
 						break;
 					case 'tabel':
-						( bl.rijen || [] ).forEach( function ( rij ) { schrijf( rij.join( '   |   ' ), 9.5, false, body ); } ); y += 2; break;
+						/* Per rij de eerste cel als opschrift, de rest eronder. */
+						( bl.rijen || [] ).forEach( function ( rij ) {
+							nieuw( 10 );
+							schrijf( rij[ 0 ], 9.5, true, primair );
+							if ( rij.length > 1 ) { schrijf( rij.slice( 1 ).join( ' · ' ), 9.5, false, body ); }
+							y += 2;
+						} ); y += 1; break;
 				}
 			} );
 			var n = doc.getNumberOfPages();
 			for ( var i = 1; i <= n; i++ ) {
-				doc.setPage( i ); doc.setFontSize( 8 ); doc.setFont( 'DejaVuSans', 'normal' ); doc.setTextColor( 120, 120, 120 );
+				doc.setPage( i ); doc.setFontSize( 8 ); doc.setFont( 'DejaVuSans', 'normal' ); doc.setTextColor( body[ 0 ], body[ 1 ], body[ 2 ] );
 				doc.text( ( CONFIG.siteurl || '' ) + '  ·  ' + i + ' / ' + n, 105, 290, { align: 'center' } );
 			}
 			doc.save( bestandsnaam + '.pdf' );
@@ -383,21 +427,27 @@
 		var zelf = this;
 		return laadWord().then( function () {
 			var d = window.docx;
+			/* Koppen en opschriften primair in hoofdletters, zoals op de pagina; de rest in de bodykleur. */
+			function hex( k ) { return k.map( function ( x ) { return ( '0' + x.toString( 16 ) ).slice( -2 ); } ).join( '' ); }
+			var primair = hex( kleur( '--sfp-b-primair', [ 20, 20, 60 ] ) );
+			var body = hex( kleur( '--sfp-b-body', [ 87, 87, 87 ] ) );
+			function kop( tekst, maat, voor ) { return new d.Paragraph( { spacing: { before: voor, after: 120 }, children: [ new d.TextRun( { text: tekst, bold: true, allCaps: true, size: maat, color: primair } ) ] } ); }
+			function tekst( t, na ) { return new d.Paragraph( { spacing: { after: na }, children: [ new d.TextRun( { text: t, color: body } ) ] } ); }
 			var kinderen = [];
-			kinderen.push( new d.Paragraph( { text: zelf.titel, heading: d.HeadingLevel.TITLE } ) );
+			kinderen.push( kop( zelf.titel, 22, 0 ) );
 			blokken.forEach( function ( bl ) {
 				switch ( bl.type ) {
-					case 'kicker': kinderen.push( new d.Paragraph( { children: [ new d.TextRun( { text: bl.tekst, bold: true, size: 18 } ) ] } ) ); break;
-					case 'kop': kinderen.push( new d.Paragraph( { text: bl.tekst, heading: d.HeadingLevel.HEADING_1 } ) ); break;
-					case 'subkop': kinderen.push( new d.Paragraph( { text: bl.tekst, heading: d.HeadingLevel.HEADING_2 } ) ); break;
-					case 'tekst': alineas( bl.tekst ).forEach( function ( a ) { kinderen.push( new d.Paragraph( { text: a, spacing: { after: 160 } } ) ); } ); break;
-					case 'lijst': ( bl.items || [] ).forEach( function ( it, i ) { kinderen.push( new d.Paragraph( { text: ( bl.nummers ? ( i + 1 ) + '. ' : '• ' ) + it, spacing: { after: 80 } } ) ); } ); break;
-					case 'afvink': ( bl.items || [] ).forEach( function ( it ) { kinderen.push( new d.Paragraph( { text: '☐ ' + it, spacing: { after: 80 } } ) ); } ); break;
-					case 'balk': kinderen.push( new d.Paragraph( { children: [ new d.TextRun( { text: bl.naam + ': ', bold: true } ), new d.TextRun( { text: bl.label } ) ], spacing: { after: 80 } } ) ); break;
+					case 'kicker': kinderen.push( new d.Paragraph( { spacing: { before: 240, after: 40 }, children: [ new d.TextRun( { text: bl.tekst, bold: true, allCaps: true, size: 16, color: primair } ) ] } ) ); break;
+					case 'kop': kinderen.push( kop( bl.tekst, 36, 0 ) ); break;
+					case 'subkop': kinderen.push( kop( bl.tekst, 24, 280 ) ); break;
+					case 'tekst': alineas( bl.tekst ).forEach( function ( a ) { kinderen.push( tekst( a, 160 ) ); } ); break;
+					case 'lijst': ( bl.items || [] ).forEach( function ( it, i ) { kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: ( bl.nummers ? ( i + 1 ) + '. ' : '• ' ), bold: true, color: primair } ), new d.TextRun( { text: it, color: body } ) ] } ) ); } ); break;
+					case 'afvink': ( bl.items || [] ).forEach( function ( it ) { kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: '☐ ', color: primair } ), new d.TextRun( { text: it, color: body } ) ] } ) ); } ); break;
+					case 'balk': kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: bl.naam + ': ', bold: true, allCaps: true, color: primair } ), new d.TextRun( { text: bl.label, color: body } ) ] } ) ); break;
 					case 'tabel': kinderen.push( new d.Table( { rows: ( bl.rijen || [] ).map( function ( rij ) { return new d.TableRow( { children: rij.map( function ( cel ) { return new d.TableCell( { children: [ new d.Paragraph( String( cel ) ) ] } ); } ) } ); } ) } ) ); break;
 				}
 			} );
-			kinderen.push( new d.Paragraph( { children: [ new d.TextRun( { text: ( CONFIG.sitenaam || '' ) + ' · ' + ( CONFIG.siteurl || '' ), size: 16, color: '888888' } ) ], spacing: { before: 400 } } ) );
+			kinderen.push( new d.Paragraph( { children: [ new d.TextRun( { text: ( CONFIG.sitenaam || '' ) + ' · ' + ( CONFIG.siteurl || '' ), size: 16, color: body } ) ], spacing: { before: 400 } } ) );
 			var document_ = new d.Document( { sections: [ { children: kinderen } ] } );
 			return d.Packer.toBlob( document_ ).then( function ( blob ) {
 				var a = document.createElement( 'a' );

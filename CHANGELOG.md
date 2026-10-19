@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.18] - 2026-10-19
+
+### Gewijzigd
+- **Pdf in de huisstijl van de pagina**: koppen, opschriften en scorenamen primair in hoofdletters, de uitslag in een vlak in Tint 2, scorebalken in Tint 1 met de uitslag in primair, genummerde tips in rondjes in Tint 2, opsommingen met een bolletje in de secundaire kleur, voetregel in de bodykleur. De kleur voor links en knoppen staat er niet meer in (het document heeft geen knoppen). Een tabel (zoals Onderbouwing) per rij met de eerste cel als opschrift in plaats van één regel met strepen.
+- **Word** op dezelfde rollen: koppen en opschriften primair in hoofdletters, tekst in de bodykleur.
+
 ## [3.8.0-beta.17] - 2026-10-19
 
 ### Gewijzigd
