@@ -729,6 +729,10 @@ function sfp_page_config_tool_mogelijke_sleutels( array $b, array $uitkomst ) {
                 $extra
             );
         case 'paar':
+            // Met een eigen tabel paren kan alleen wat daarin staat.
+            if ( isset( $uitkomst['paren'] ) && is_array( $uitkomst['paren'] ) ) {
+                return array_merge( array_values( array_map( 'strval', $uitkomst['paren'] ) ), $extra );
+            }
             $uit = array();
             $n   = count( $dims );
             for ( $i = 0; $i < $n; $i++ ) {
