@@ -981,6 +981,47 @@
 		]);
 	}
 
+	/* ---------- Onderdeel: tools (sinds 3.8.0) ---------- */
+
+	function detailTools() {
+		var T = S.tools || { bestaat: false, tools: [], adres: '', beheer: '', log: [] };
+		var adres = tekstInvoer(T.adres, T.beheer, 'email');
+		var rijen = T.tools.map(function (t) {
+			var stand = ! t.motor ? 'geen beschrijving' : (t.fouten ? 'beschrijving klopt niet' : (t.soort || 'onbekend'));
+			return el('tr', {}, [
+				el('td', {}, [el('a', { href: t.bewerk, text: t.titel }), t.status !== 'publish' ? el('span', { class: 'sfpb-tag', text: t.status }) : null]),
+				el('td', { text: stand, class: t.fouten || ! t.motor ? 'sfpb-fout' : '' }),
+				el('td', { text: t.meldingen ? String(t.meldingen) : '' }),
+				el('td', { text: '\uD83D\uDC4D ' + t.omhoog + '   \uD83D\uDC4E ' + t.omlaag })
+			]);
+		});
+		var tabel = el('table', { class: 'sfpb-tabel' }, [
+			el('thead', {}, [el('tr', {}, [el('th', { text: 'Tool' }), el('th', { text: 'Motor' }), el('th', { text: 'Meldingen' }), el('th', { text: 'Duimpjes' })])]),
+			el('tbody', {}, rijen.length ? rijen : [el('tr', {}, [el('td', { text: T.bestaat ? 'Nog geen tools.' : 'Het berichttype tool bestaat niet op deze site.', colspan: '4' })])])
+		]);
+		var log = T.log.length ? el('ul', { class: 'sfpb-lijst' }, T.log.map(function (r) {
+			return el('li', { text: r.tijd + ' · ' + r.tool + ' · duim ' + r.stem + ': ' + r.tekst + (r.email ? ' (' + r.email + ')' : '') });
+		})) : el('p', { class: 'sfpb-hulp', text: 'Nog geen tekstfeedback.' });
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Tools', 'Lichte tools voor bezoekers. Elke tool is een bericht van het type tool met een beschrijving; de motor rekent in de browser en bewaart niets op de server.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				veld('Adres voor tekstfeedback', adres, 'Waar de tekst bij een duimpje heen gaat. Leeg: het beheerdersadres van de site.', 'sfpb-tool-adres'),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						bewaarInstellingen(this, 'tools', { tool_feedback_mail: adres.value });
+					} }),
+					flitsPlek('tools')
+				]),
+				el('h2', { text: 'Tools op deze site' }),
+				tabel,
+				el('p', { class: 'sfpb-hulp', text: 'De duimpjes tellen door op de tellingen van de oude snippets. De beschrijving van een tool bewerk je in de editor, paneel Deze pagina.' }),
+				el('h2', { text: 'Laatste tekstfeedback' }),
+				log
+			])
+		]);
+	}
+
 	/* ---------- Onderdeel: zelftest ---------- */
 
 	/** Aanroep naar /sfp/v1/zelftest; het antwoord vervangt S.zelftest. */
@@ -1431,7 +1472,7 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 

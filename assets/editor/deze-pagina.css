@@ -16,3 +16,6 @@
 .sfp-deze-pagina .sfp-dp-foto__punt{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--wp-admin-theme-color,#3858e9);border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.4);pointer-events:none}
 .sfp-deze-pagina .sfp-dp-link{margin:0;font-weight:600;font-size:12.5px;overflow-wrap:anywhere}
 .sfp-deze-pagina .sfp-dp-knoppen{display:flex;gap:8px;flex-wrap:wrap}
+.sfp-deze-pagina .sfp-dp-melding--fout{background:#fcf0f1;border-left-color:#cc1818;color:#8a1111}
+.sfp-deze-pagina .sfp-dp-melding--ok{background:#edfaef;border-left-color:#1e8b45}
+.sfp-deze-pagina .sfp-dp-json textarea{font-family:Menlo,Consolas,monospace;font-size:11.5px;line-height:1.45;white-space:pre}

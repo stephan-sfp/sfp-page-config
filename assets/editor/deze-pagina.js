@@ -187,8 +187,13 @@
 		}
 
 		/* ---------- Vorm en pijler ---------- */
-		if ( ( S.pijler && 'post' === editor.type ) || ( ( S.pijler || S.begrip ) && ( 'begrippen' === editor.type || 'tool' === editor.type ) ) ) {
+		if ( ( S.pijler && 'post' === editor.type ) || ( ( S.pijler || S.begrip || S.tools ) && ( 'begrippen' === editor.type || 'tool' === editor.type ) ) ) {
 			delen.push( el( Vorm, { key: 'vorm', meta: meta, zetMeta: zetMeta, editor: editor, stand: stand } ) );
+		}
+
+		/* ---------- Tool: de beschrijving (sinds 3.8.0) ---------- */
+		if ( 'tool' === editor.type ) {
+			delen.push( el( ToolBeschrijving, { key: 'tool', meta: meta, zetMeta: zetMeta, editor: editor, stand: stand } ) );
 		}
 
 		/* ---------- Knop onderaan ---------- */
@@ -373,6 +378,63 @@
 			} );
 		}
 		return el( 'div', { className: 'sfp-dp-deel' }, delen );
+	}
+
+	/* ---------- Tool: beschrijving (JSON) met controle ---------- */
+	function ToolBeschrijving( props ) {
+		var meta = props.meta, stand = props.stand || {};
+		var tool = stand.tool || null;
+		var tekst = meta.sfp_tool || '';
+		var controleState = useState( null );
+		var controle = controleState[ 0 ];
+		var bezigState = useState( false );
+		var bezig = bezigState[ 0 ];
+		var stukken = [ kop( 'Tool' ) ];
+		if ( ! S.tools ) {
+			stukken.push( melding( 'Het onderdeel Tools staat uit (SFP Beheer, Onderdelen). De beschrijving kun je wel al invullen.', 'let' ) );
+		}
+		stukken.push( el( c.TextareaControl, {
+			label: 'Beschrijving (JSON)',
+			help: 'De soort, de vragen, de rekenregel en de uitslagteksten. Formaat: claude/tools-motor-ontwerp-test-2026-10-19.md. Claude schrijft dit veld via REST; teksten pas je hier aan.',
+			value: tekst,
+			rows: 14,
+			className: 'sfp-dp-json',
+			onChange: function ( v ) { props.zetMeta( 'sfp_tool', v ); controleState[ 1 ]( null ); },
+			__nextHasNoMarginBottom: true,
+		} ) );
+		stukken.push( el( c.Button, {
+			variant: 'secondary',
+			isBusy: bezig,
+			disabled: bezig || ! tekst.trim(),
+			onClick: function () {
+				bezigState[ 1 ]( true );
+				apiFetch( { path: '/sfp/v1/tool/controle', method: 'POST', data: { tekst: tekst } } ).then( function ( r ) {
+					controleState[ 1 ]( r ); bezigState[ 1 ]( false );
+				} ).catch( function ( e ) { controleState[ 1 ]( { fouten: [ ( e && e.message ) || 'Controleren lukte niet.' ], let_op: [], samenvatting: {} } ); bezigState[ 1 ]( false ); } );
+			}
+		}, 'Controleren' ) );
+		var uit = controle || tool;
+		if ( uit ) {
+			( uit.fouten || [] ).forEach( function ( f, i ) { stukken.push( el( 'div', { key: 'f' + i }, melding( f, 'fout' ) ) ); } );
+			( uit.let_op || [] ).forEach( function ( f, i ) { stukken.push( el( 'div', { key: 'l' + i }, melding( f, 'let' ) ) ); } );
+			var sv = uit.samenvatting || {};
+			if ( sv.soort ) {
+				stukken.push( regel( 'Soort', sv.soort ) );
+				stukken.push( regel( 'Vragen', sv.vragen + ( sv.scorend !== sv.vragen ? ' (' + sv.scorend + ' scoren)' : '' ) ) );
+				stukken.push( regel( 'Dimensies', ( sv.dimensies || [] ).join( ', ' ) || 'geen' ) );
+				stukken.push( regel( 'Uitkomst', sv.regel ) );
+				stukken.push( regel( 'Acties', ( sv.acties || [] ).join( ', ' ) ) );
+				stukken.push( regel( 'Formulier', sv.formulier ? 'SureForms ' + sv.formulier : 'geen' ) );
+				if ( ! ( uit.fouten || [] ).length && controle ) { stukken.push( melding( 'De beschrijving klopt.', 'ok' ) ); }
+			}
+		}
+		if ( tool && tool.meldingen ) {
+			tool.meldingen.forEach( function ( m, i ) {
+				if ( 'tool-fout' === m.code || 0 === m.code.indexOf( 'tool-letop' ) || 'tool-leeg' === m.code ) { return; }
+				stukken.push( el( 'div', { key: 'm' + i }, melding( m.tekst, 'let' ) ) );
+			} );
+		}
+		return el( 'div', { className: 'sfp-dp-deel' }, stukken );
 	}
 
 	/* ---------- Verwante begrippen ---------- */

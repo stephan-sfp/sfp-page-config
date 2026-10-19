@@ -242,6 +242,7 @@ function sfp_page_config_editor_gegevens( $post_type ) {
         'affiliate'      => 'post' === $post_type && function_exists( 'sfp_page_config_get_affiliate_layout_id' ) && sfp_page_config_get_affiliate_layout_id() && ! ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() ),
         'pijler'         => function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan(),
         'begrip'         => function_exists( 'sfp_page_config_begrip_aan' ) && sfp_page_config_begrip_aan(),
+        'tools'          => function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan(),
         'beheer'         => admin_url( 'admin.php?page=sfp-page-config' ),
         'home'           => home_url( '/' ),
     );
@@ -301,6 +302,20 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
         $stand['begrip'] = array(
             'gebruikt'  => count( sfp_page_config_begrip_gebruikt_in( $post ) ),
             'meldingen' => sfp_page_config_begrip_controle( $post ),
+        );
+    }
+
+    // Tool: de beschrijving, de samenvatting en de controle.
+    if ( function_exists( 'sfp_page_config_is_tool' ) && sfp_page_config_is_tool( $post ) ) {
+        $tekst          = trim( (string) get_post_meta( $post->ID, 'sfp_tool', true ) );
+        $uitkomst       = '' !== $tekst ? sfp_page_config_tool_controleer_tekst( $tekst ) : array( 'fouten' => array(), 'let_op' => array(), 'samenvatting' => array() );
+        $stand['tool']  = array(
+            'aan'          => sfp_page_config_tool_aan(),
+            'fouten'       => $uitkomst['fouten'],
+            'let_op'       => $uitkomst['let_op'],
+            'samenvatting' => $uitkomst['samenvatting'],
+            'meldingen'    => sfp_page_config_tool_controle( $post ),
+            'soorten'      => array_keys( sfp_page_config_tool_soorten() ),
         );
     }
 
@@ -460,7 +475,10 @@ function sfp_page_config_editor_omlijsting( WP_Post $post ) {
         list( , $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ) );
 
         $begrip = function_exists( 'sfp_page_config_is_begrip' ) && sfp_page_config_is_begrip( $post );
-        $kop    = $begrip ? sfp_page_config_begrip_pijlerregel( $post ) : sfp_page_config_artikel_pijlerregel( $post ) . sfp_page_config_artikel_kopkaart( $post, $hoofdstukken );
+        $tool   = function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post );
+        // Een tool: de regel boven de titel en de melding waar de tool komt; de
+        // motor zelf draait niet in de editor.
+        $kop    = $tool ? sfp_page_config_tool_pijlerregel( $post ) . sfp_page_config_tool_ondertitel( $post ) . '<p class="sfp-tool__noscript">' . esc_html( sfp_page_config_artikel_tekst( 'tool_plek' ) ) . '</p>' : ( $begrip ? sfp_page_config_begrip_pijlerregel( $post ) : sfp_page_config_artikel_pijlerregel( $post ) . sfp_page_config_artikel_kopkaart( $post, $hoofdstukken ) );
 
         ob_start();
         do_action( 'sfp_artikel_vervolg', $post ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- eigen actie, zie artikel.php.
@@ -468,8 +486,9 @@ function sfp_page_config_editor_omlijsting( WP_Post $post ) {
 
         $voet  = function_exists( 'sfp_page_config_affiliate_uitleg' ) ? sfp_page_config_affiliate_uitleg( $post ) : '';
         $voet .= $begrip ? sfp_page_config_begrip_leesverder( $post ) : '';
+        $voet .= $tool ? sfp_page_config_tool_makerskaart( $post ) . sfp_page_config_tool_andere( $post ) : '';
         $voet .= '' !== $vervolg ? '<div class="sfp-art-vervolg">' . $vervolg . '</div>' : '';
-        $voet .= $begrip ? '' : sfp_page_config_artikel_auteurskaart( $post );
+        $voet .= ( $begrip || $tool ) ? '' : sfp_page_config_artikel_auteurskaart( $post );
         $voet .= sfp_page_config_artikel_voetregels( $post );
     } catch ( Throwable $e ) {
         $kop  = '';

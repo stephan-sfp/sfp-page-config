@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata, zelftest en de knop onderaan voor het School for Professionals netwerk.
- * Version:     3.7.1
+ * Version:     3.8.0-beta.1
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '3.7.1' );
+define( 'SFP_PAGE_CONFIG_VERSION', '3.8.0-beta.1' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -279,7 +279,7 @@ function sfp_page_config_longread_color_keys() {
  * @return string[]
  */
 function sfp_page_config_post_types() {
-    return array( 'page', 'post', 'begrippen' );
+    return array( 'page', 'post', 'begrippen', 'tool' );
 }
 
 /* =========================================================================
@@ -527,6 +527,11 @@ $sfp_includes = array(
     'includes/vervolg.php',
     'includes/vormen.php',
     'includes/begrip.php',
+    'includes/tool.php',
+    'includes/tool-beschrijving.php',
+    'includes/tool-weergave.php',
+    'includes/tool-rest.php',
+    'includes/tool-vorm.php',
     'includes/thermometer.php',
     'includes/kop-leestekens.php',
     'includes/footer-links.php',

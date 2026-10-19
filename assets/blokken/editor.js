@@ -878,6 +878,25 @@
 	} );
 
 	/* =====================================================================
+	 * Tool (sinds 3.8.0): een tool van de site op deze pagina
+	 * ================================================================== */
+
+	blok( 'sfp/tool', function ( props ) {
+		var a = props.attributes;
+		var tl = window.sfpTools || { tools: [], aan: false };
+		var opties = [ { value: '0', label: 'Kies een tool' } ].concat( ( tl.tools || [] ).map( function ( x ) { return { value: String( x.id ), label: x.naam + ( x.soort ? ' (' + x.soort + ')' : '' ) }; } ) );
+		var leeg = ! tl.aan ? 'Het onderdeel Tools staat uit (SFP Beheer, Onderdelen).' : 'Kies een tool. Bezoekers zien hier niets zolang er geen tool gekozen is.';
+		return el( Fragment, null,
+			paneel( 'Tool', [
+				keuze( 'Tool', String( a.tool || 0 ), opties, function ( v ) { props.setAttributes( { tool: parseInt( v, 10 ) || 0 } ); } ),
+				keuze( 'Weergave', a.weergave || 'volledig', [ { value: 'volledig', label: 'Hele tool' }, { value: 'compact', label: 'Compact' } ], function ( v ) { props.setAttributes( { weergave: v } ); } ),
+				uitleg( 'Op de pagina van de tool zelf staat de tool vanzelf; dit blok is voor een andere pagina, zoals een begrip.' ),
+			] ),
+			gegeven( 'sfp/tool', null, props, leeg )
+		);
+	} );
+
+	/* =====================================================================
 	 * Gegevens van de site (sinds 3.1.0)
 	 * ================================================================== */
 

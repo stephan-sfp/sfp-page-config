@@ -4,6 +4,23 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.1] - 2026-10-19
+
+Derde deel van de vormen: de toolmotor met de soort test (CVD als proefsite). Het onderdeel Tools staat standaard uit; zonder die instelling verandert er niets.
+
+### Toegevoegd
+- **Onderdeel Tools** (SFP Beheer, Onderdelen, standaard uit): een tool is een bericht van het type tool met een beschrijving (JSON) in het metaveld `sfp_tool`, met revisies. Per soort draait één vaste motor in de browser; niets wordt op de server bewaard. Claude schrijft de beschrijving via REST (een beschrijving die niet klopt wordt geweigerd), Stephan past teksten aan in het paneel Deze pagina met de knop Controleren. Formaat: claude/tools-motor-ontwerp-test-2026-10-19.md.
+- **Soort test:** Likert (ook omgekeerd), keuze met punten per dimensie (A of B, ja of nee, puntenmatrix), context en vrije tekst; weergave per vraag, per groep of alles op één pagina, met een startscherm; score per dimensie als som, telling, percentage of gecentreerd; uitkomst als hoogste, top N, drempels, totaal, profiel, paar, kwadrant of geordende regels, met een vangnet (ook genest), vertaling van sleutels, een minimum en een minimale spreiding; uitvoer uit vaste onderdelen (profiel, balken, lijsten, afvinklijst, laagste, niveaus, onderbouwing, tabel, link, vaste tekstblokken, alle dimensies, totaal).
+- **Gedeeld door de soorten:** stappenbalk, voortgangsbalk, Vorige, toetsen 1 tot 5, voortgang in de browser met de vraag Verder waar je was, deellink die dezelfde pagina op het resultaat opent, pdf en Word uit lokale bibliotheken in de plugin (jsPDF, docx, DejaVu Latijn), mail naar jezelf via één route (de server rekent de uitslag zelf opnieuw en bouwt de mail als tekst; 5 per adres per dag, 20 per IP per uur), duimpjes via één route met overname van de tellingen uit de oude snippets, tekstfeedback naar het adres in SFP Beheer, SureForms-formulier na de uitslag, teksten in nl, en, pt, kleuren uit Astra.
+- **Vorm Tool:** regel boven de titel (Zelftest in <pijler>), de samenvatting als regel onder de titel, de tool boven de tekst, "Hoe deze test rekent" ingeklapt met de stellingen en de rekenregel, makerskaart Gemaakt door met Bijgewerkt, Fact-checked en Gebaseerd op, Andere tools (eerst dezelfde pijler), gegevens voor Google (WebApplication, gratis, isBasedOn), controles in het paneel en in het Overzicht (beschrijving, pijler, samenvatting, formulier). Het paneel Deze pagina laadt nu ook bij een tool.
+- **Blok Tool** en shortcode `[sfp_tool id="" weergave="volledig|compact"]`: een tool op een andere pagina.
+- **SFP Beheer, Tools:** de tools met hun soort, meldingen en duimpjes, het adres voor tekstfeedback en de laatste tekstfeedback.
+- Tests: `tests/tool.php` (het rekenwerk in PHP tegen het script in de browser, op de 15 omgezette tests) en `tests/tool-wp.php` (lokale WordPress).
+
+### Gewijzigd
+- Het berichttype tool registreert de plugin alleen als geen snippet dat al doet; het krijgt revisies.
+- De leesbalk (onderdeel Voortgang) staat niet op een tool: die heeft een eigen voortgang per vraag.
+
 ## [3.7.1] - 2026-10-19
 
 ### Toegevoegd

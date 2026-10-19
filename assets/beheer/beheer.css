@@ -210,3 +210,8 @@ body.toplevel_page_sfp-page-config #wpbody-content > .error { margin: 12px 24px;
 	.sfpb-top .sfpb-binnen, .sfpb-main { padding-inline: 16px; }
 	.sfpb-kaart { padding: 18px; }
 }
+.sfpb-tabel { width: 100%; border-collapse: collapse; font-size: 14px; }
+.sfpb-tabel th, .sfpb-tabel td { text-align: left; padding: 10px 12px; border-top: 1px solid var(--lijn); vertical-align: top; }
+.sfpb-tabel th { font-weight: 700; border-top: 0; }
+.sfpb-tabel td.sfpb-fout { color: var(--fout); }
+.sfpb-tag { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; background: var(--tint, #f0f0f0); font-size: 12px; }
