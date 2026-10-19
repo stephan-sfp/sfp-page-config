@@ -324,7 +324,7 @@
  ],
  "acties": {
   "pdf": true,
-  "word": false,
+  "word": true,
   "mail": true,
   "deellink": true,
   "duimpjes": true,
@@ -344,5 +344,9 @@
   "tool_bestand_fout": "Er ging iets mis bij het maken van de PDF.",
   "tool_ontbreekt": "Nog %d open. Ga terug en vul aan.",
   "tool_resultaat_slot": "Je resultaat verschijnt hier zodra je de %d stellingen hebt beantwoord."
+ },
+ "bron": {
+  "model": "Kolb, experiential learning theory (1984)",
+  "link": ""
  }
 }

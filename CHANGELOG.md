@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.4] - 2026-10-19
+
+Kleine reparaties gevonden bij het omzetten van de vijf tests van CVD, en de omgezette tests als testvoorbeelden.
+
+### Gerepareerd
+- Mail naar jezelf: de scores staan in dezelfde volgorde als op het scherm (bij balken met een vaste volgorde stonden ze in de mail op volgorde van hoogte).
+- Mail naar jezelf: een titel in hoofdletters met accenten klopt (EÉN, niet EéN).
+- Controle: bij de regel paar met een eigen tabel paren meldde de controle ten onrechte uitslagen zonder tekst.
+
+### Toegevoegd
+- `tests/tool-voorbeelden/cvd`: de Kolb-leerstijlentest, Intrinsieke motivatiescan, Metacognitie-zelftest, Didactische vaardighedentest en Welk didactisch model, omgezet uit hun oude snippets met de teksten letterlijk. Elk gaf bij de vergelijking met de oude rekenlogica dezelfde uitslag en scores. `php tests/tool.php tests/tool-voorbeelden/cvd` legt PHP en de browser erop naast elkaar.
+
 ## [3.8.0-beta.3] - 2026-10-19
 
 Reparaties na de review van 3.8.0-beta.2. Het onderdeel Tools staat nog steeds standaard uit.
