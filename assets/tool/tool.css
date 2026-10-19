@@ -52,14 +52,16 @@
 .sfp-tool__optie:hover{border-color:color-mix(in srgb,var(--sfp-b-primair) 45%,transparent);background:color-mix(in srgb,var(--sfp-b-tint2) 45%,var(--sfp-b-wit,#fff))}
 .sfp-tool__optie:has(input:checked){border-color:var(--sfp-b-primair);background:var(--sfp-b-tint2);color:var(--sfp-b-primair)}
 .sfp-tool__optie:has(input:focus-visible){outline:3px solid var(--sfp-b-primair);outline-offset:2px}
-.sfp-tool__radio{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:20px;height:20px;margin:0;border:2px solid color-mix(in srgb,var(--sfp-b-primair) 40%,transparent);border-radius:50%;background:var(--sfp-b-wit,#fff);transition:border-color .15s,box-shadow .15s;cursor:pointer}
-.sfp-tool__radio:checked{border-color:var(--sfp-b-primair);box-shadow:inset 0 0 0 4px var(--sfp-b-wit,#fff);background:var(--sfp-b-primair)}
+/* Sterker dan de opmaak van het thema voor keuzerondjes (Astra kleurt een gekozen rondje rood en zet een afronding van 6 px). */
+:root .sfp-tool input.sfp-tool__radio{appearance:none;-webkit-appearance:none;flex:0 0 auto;width:20px;height:20px;min-width:20px;margin:0;padding:0;border:2px solid color-mix(in srgb,var(--sfp-b-primair) 40%,transparent);border-radius:50%!important;background:var(--sfp-b-wit,#fff);box-shadow:none;transition:border-color .15s,box-shadow .15s;cursor:pointer}
+:root .sfp-tool input.sfp-tool__radio:checked{border-color:var(--sfp-b-primair);box-shadow:inset 0 0 0 4px var(--sfp-b-wit,#fff);background:var(--sfp-b-primair)}
+:root .sfp-tool input.sfp-tool__radio::before,:root .sfp-tool input.sfp-tool__radio::after{content:none}
 .sfp-tool__radio:focus{outline:none}
 .sfp-tool__optie:has(input:checked) .sfp-tool__optie-tekst{font-weight:700}
 .sfp-tool__likert{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 /* Cijfervakjes: het cijfer is de keuze (geen rondje); gekozen donkerblauw met een wit cijfer. */
 .sfp-tool__optie--likert{justify-content:center;padding:13px 6px;text-align:center;font-family:var(--sfp-b-kop);font-weight:900;font-size:20px;color:var(--sfp-b-primair)}
-.sfp-tool__optie--likert .sfp-tool__radio{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+:root .sfp-tool .sfp-tool__optie--likert input.sfp-tool__radio{position:absolute;opacity:0;width:1px;height:1px;min-width:0;pointer-events:none}
 .sfp-tool__optie--likert:has(input:checked){background:var(--sfp-b-primair);border-color:var(--sfp-b-primair);color:var(--sfp-b-wit,#fff)}
 .sfp-tool__uiteinden{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:10px;font-size:13px;line-height:1.35;color:var(--sfp-b-body)}
 .sfp-tool__uiteinden span:nth-child(2){text-align:center}
@@ -109,6 +111,7 @@
 .sfp-tool__lijst--afvink{list-style:none;padding-left:0}
 .sfp-tool__lijst--afvink label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
 .sfp-tool__lijst--afvink input{accent-color:var(--sfp-b-primair);margin-top:4px}
+:root .sfp-tool .sfp-tool__lijst--afvink input[type=checkbox]:checked{background-color:var(--sfp-b-primair);border-color:var(--sfp-b-primair)}
 .sfp-tool__onderbouwing{margin:16px 0}
 .sfp-tool__onderbouwing summary,.sfp-tool__hoe summary{cursor:pointer;font-family:var(--sfp-b-kop);font-weight:900;text-transform:uppercase;font-size:14px;letter-spacing:.04em;color:var(--sfp-b-primair)}
 :is(.sfp-tool__onderbouwing,.sfp-tool__hoe) summary:focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
@@ -145,7 +148,7 @@
 .sfp-tool__vraagkop{margin:0 0 4px;font-size:14px;opacity:.8}
 .sfp-tool__likert--tekst{grid-template-columns:1fr}
 .sfp-tool__likert--tekst .sfp-tool__optie--likert{flex-direction:row;justify-content:flex-start;text-align:left;font-size:16px;font-family:inherit;font-weight:400;padding:12px 16px;color:var(--sfp-b-body)}
-.sfp-tool__likert--tekst .sfp-tool__optie--likert .sfp-tool__radio{position:static;opacity:1;width:20px;height:20px;pointer-events:auto}
+:root .sfp-tool .sfp-tool__likert--tekst .sfp-tool__optie--likert input.sfp-tool__radio{position:static;opacity:1;width:20px;height:20px;min-width:20px;pointer-events:auto}
 .sfp-tool__likert--tekst .sfp-tool__optie--likert:has(input:checked){background:var(--sfp-b-tint2);color:var(--sfp-b-primair)}
 
 .sfp-tool__scherm--groep .sfp-tool__scherm.is-alles{animation:none}

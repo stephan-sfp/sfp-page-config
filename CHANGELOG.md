@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.9] - 2026-10-19
+
+### Gerepareerd
+- Het keuzerondje werd door de opmaak van het thema een rood vierkantje; het is weer een rond, donkerblauw rondje. Ook een afgevinkt vakje in een afvinklijst is donkerblauw in plaats van rood.
+
 ## [3.8.0-beta.8] - 2026-10-19
 
 ### Gewijzigd
