@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.17] - 2026-10-19
+
+### Gewijzigd
+- **Minder lichtblauw**: gedane stappen wit met een donkerblauwe rand en een vinkje, de lijn tot de actieve stap donkerblauw; lichtblauw (Tint 2) alleen nog voor wat komt. Geen ring meer om de actieve stap.
+- De teller boven de voortgangsbalk ("Vraag 2 van 16") zonder streepje: de balk eronder is het accent.
+
 ## [3.8.0-beta.16] - 2026-10-19
 
 ### Gewijzigd

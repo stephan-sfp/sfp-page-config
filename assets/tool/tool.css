@@ -9,16 +9,16 @@
 /* Wat verborgen is, blijft verborgen, ook als een regel hieronder display zet (zoals bij de duimpjes). */
 .sfp-tool [hidden]{display:none!important}
 
-/* Stappen: genummerde rondjes met de naam ernaast en een dunne lijn ertussen. Gedaan Tint 1 met een vinkje,
-   actief primair met een wit cijfer. Bewust geen balk: die zou op de scorebalken en het accentstreepje lijken. */
+/* Stappen: genummerde rondjes met de naam ernaast en een dunne lijn ertussen. Gedaan wit met een donkerblauwe rand en een vinkje,
+   actief primair met een wit cijfer. Lichtblauw (Tint 2) alleen voor wat nog komt. */
 .sfp-tool__stappen{display:flex;align-items:center;list-style:none;margin:0 0 28px;padding:0;counter-reset:sfp-stap}
 .sfp-tool__stap{counter-increment:sfp-stap;display:flex;align-items:center;gap:8px;flex:0 0 auto;min-width:0;margin:0;padding:2px 0;border:0;border-radius:0;background:none;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1.2;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;color:var(--sfp-b-primair);cursor:pointer;user-select:none}
 .sfp-tool__stap:not(:last-child){flex:1 1 auto}
 .sfp-tool__stap::before{content:counter(sfp-stap);flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--sfp-b-primair) 26%,transparent);background:var(--sfp-b-wit,#fff);color:var(--sfp-b-primair);font-size:12px;letter-spacing:0;transition:background .2s,border-color .2s,color .2s}
 .sfp-tool__stap:not(:last-child)::after{content:"";flex:1 1 auto;min-width:14px;height:2px;margin:0 6px 0 4px;border-radius:1px;background:var(--sfp-b-tint2)}
-.sfp-tool__stap:has(~ .is-actief)::after{background:var(--sfp-b-tint1)}
-.sfp-tool__stap:has(~ .is-actief)::before{content:"\2713";background:var(--sfp-b-tint1);border-color:var(--sfp-b-tint1)}
-.sfp-tool__stap.is-actief::before{background:var(--sfp-b-primair);border-color:var(--sfp-b-primair);color:var(--sfp-b-wit,#fff);box-shadow:0 0 0 4px var(--sfp-b-tint2)}
+.sfp-tool__stap:has(~ .is-actief)::after{background:var(--sfp-b-primair)}
+.sfp-tool__stap:has(~ .is-actief)::before{content:"\2713";border-color:var(--sfp-b-primair)}
+.sfp-tool__stap.is-actief::before{background:var(--sfp-b-primair);border-color:var(--sfp-b-primair);color:var(--sfp-b-wit,#fff)}
 .sfp-tool__stap:not(.is-actief):not(.is-slot):hover{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
 .sfp-tool__stap.is-slot{cursor:default}
 .sfp-tool__stap:focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px;border-radius:4px}
@@ -34,8 +34,7 @@
    is alleen voor lopende tekst in het bodyfont), met een accentstreepje in Tint 1 ervoor. Tint 1 bestaat
    bij elk merk en is nooit wit. */
 .sfp-tool__voortgang,.sfp-tool__groep,.sfp-tool__kicker{display:flex;align-items:center;gap:10px;font-family:var(--sfp-b-kop);font-size:12px;font-weight:900;line-height:1.3;letter-spacing:.06em;text-transform:uppercase;color:var(--sfp-b-primair)}
-:is(.sfp-tool__voortgang,.sfp-tool__groep,.sfp-tool__kicker)::before{content:"";flex:0 0 auto;width:22px;height:4px;border-radius:2px;background:var(--sfp-b-tint1)}
-.sfp-tool__voortgang:empty::before{content:none}
+:is(.sfp-tool__groep,.sfp-tool__kicker)::before{content:"";flex:0 0 auto;width:22px;height:4px;border-radius:2px;background:var(--sfp-b-tint1)}
 .sfp-tool__voortgang{margin:0 0 10px;min-height:1.3em}
 .sfp-tool__legenda{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 0;font-size:13px;color:var(--sfp-b-body)}
 /* Tekstlinks (Vorige, Opnieuw beginnen, Word, mail, deellink): merkbron, tweede call-to-action:
