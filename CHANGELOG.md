@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.16] - 2026-10-19
+
+### Gewijzigd
+- **Uitslag als blikvanger**: opschrift, titel en uitleg in een vlak in Tint 2.
+- **Meer leven**: genummerde tips met rondjes zoals de stappen, opsommingen met een bolletje in de secundaire kleur, scorebalken dikker en groeiend bij het tonen, een ring om de actieve stap, een gekozen vakje veert even. Bewegingen vervallen bij de instelling voor minder beweging.
+- **Geen dubbel kader** op de eigen pagina van een tool: de kaart van het thema is het kader. Hoe deze test rekent hoort er met een lijn bij.
+- **Gewone letters** voor de duimvraag (opschrift van een formulierveld) en de uitklappers Onderbouwing en Hoe deze test rekent (zoals een vraag in een FAQ).
+
+### Opgelost (merkbron)
+- De stap Resultaat stond op halve dekking (contrast 3,45); nu volle kleur.
+- Geen mengkleuren meer buiten de kleurtabel: ondergrond van de scorebalken en keuzes onder de muis (nu Tint 2, respectievelijk alleen een sterkere rand), foutmelding (nu wit met een rand in de functionele foutkleur), helpteksten (nu de bodykleur in plaats van doorzichtig).
+
 ## [3.8.0-beta.15] - 2026-10-19
 
 ### Gewijzigd
