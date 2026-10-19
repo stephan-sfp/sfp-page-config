@@ -58,13 +58,16 @@ function sfp_page_config_is_tool( $post ) {
 add_action( 'init', 'sfp_page_config_tool_posttype', 20 );
 
 /**
- * Het berichttype tool, alleen als geen snippet het al registreerde. De
- * instellingen zijn gelijk aan het netwerksnippet "Tools: berichttype".
+ * Het berichttype tool, alleen als het onderdeel Tools aan staat en geen
+ * snippet het al registreerde. De instellingen zijn gelijk aan het
+ * netwerksnippet "Tools: berichttype". Met Tools uit verschijnt er geen
+ * nieuw berichttype en geen adres /tools/.
  */
 function sfp_page_config_tool_posttype() {
-    if ( post_type_exists( 'tool' ) ) {
+    if ( post_type_exists( 'tool' ) || ! function_exists( 'sfp_page_config_onderdeel_aan' ) || ! sfp_page_config_onderdeel_aan( 'tools' ) ) {
         return;
     }
+    $GLOBALS['sfp_page_config_tool_eigen_type'] = true;
     register_post_type(
         'tool',
         array(
@@ -91,16 +94,36 @@ function sfp_page_config_tool_posttype() {
     );
 }
 
+add_action( 'init', 'sfp_page_config_tool_adressen', 99 );
+
+/**
+ * Registreert de plugin het berichttype zelf, dan horen de adressen
+ * (/tools/) daarbij. Verandert dat (onderdeel aan of uit), dan bouwt
+ * WordPress de adresregels één keer opnieuw op.
+ */
+function sfp_page_config_tool_adressen() {
+    $stand = ! empty( $GLOBALS['sfp_page_config_tool_eigen_type'] ) ? 'eigen' : 'geen';
+    if ( get_option( 'sfp_page_config_tool_adressen', 'geen' ) !== $stand ) {
+        flush_rewrite_rules( false );
+        update_option( 'sfp_page_config_tool_adressen', $stand, false );
+    }
+}
+
 add_action( 'init', 'sfp_page_config_tool_meta', 25 );
 
 /**
- * Het metaveld met de beschrijving. Revisies aan: elke versie van het
- * bericht bewaart ook de beschrijving van dat moment.
+ * Het metaveld met de beschrijving. Met Tools aan ook revisies: elke versie
+ * van het bericht bewaart dan de beschrijving van dat moment.
  */
 function sfp_page_config_tool_meta() {
+    if ( ! post_type_exists( 'tool' ) ) {
+        return;
+    }
+    $aan = sfp_page_config_tool_aan();
     // Het snippet "Tools: berichttype" registreert het type zonder revisies;
-    // zonder revisies weigert WordPress een metaveld met revisies.
-    if ( post_type_exists( 'tool' ) && ! post_type_supports( 'tool', 'revisions' ) ) {
+    // zonder revisies weigert WordPress een metaveld met revisies. Alleen met
+    // Tools aan verandert de plugin iets aan het bestaande type.
+    if ( $aan && ! post_type_supports( 'tool', 'revisions' ) ) {
         add_post_type_support( 'tool', 'revisions' );
     }
     register_post_meta(
@@ -110,7 +133,7 @@ function sfp_page_config_tool_meta() {
             'type'              => 'string',
             'single'            => true,
             'show_in_rest'      => true,
-            'revisions_enabled' => true,
+            'revisions_enabled' => $aan,
             'default'           => '',
             'sanitize_callback' => 'sfp_page_config_tool_meta_schoon',
             'auth_callback'     => function ( $toegestaan, $sleutel, $post_id ) {
@@ -145,6 +168,9 @@ add_filter( 'rest_pre_insert_tool', 'sfp_page_config_tool_rest_controle', 10, 2 
  * @return stdClass|WP_Error
  */
 function sfp_page_config_tool_rest_controle( $post, $verzoek ) {
+    if ( ! sfp_page_config_tool_aan() ) {
+        return $post;
+    }
     $meta = $verzoek->get_param( 'meta' );
     if ( ! is_array( $meta ) || ! array_key_exists( 'sfp_tool', $meta ) ) {
         return $post;

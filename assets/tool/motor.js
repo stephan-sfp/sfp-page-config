@@ -60,9 +60,14 @@
 		return String( tekst || '' ).split( /\n\s*\n/ ).map( function ( a ) { return a.trim(); } ).filter( Boolean );
 	}
 
+	/* Afronden half naar boven met een kleine marge (57,49999999999999 wordt 58), gelijk aan sfp_page_config_tool_rond() in PHP. */
+	function rond( w ) {
+		return Math.floor( Number( w ) + 0.5 + 1e-9 );
+	}
+
 	function getal( w ) {
 		w = Number( w ) || 0;
-		return String( Math.floor( w ) === w ? w : Math.round( w * 10 ) / 10 );
+		return String( Math.floor( w ) === w ? w : rond( w * 10 ) / 10 );
 	}
 
 	/* Base64-url van een JSON-object, voor de deellink. */
@@ -122,10 +127,12 @@
 		if ( geladen[ naam ] ) { return geladen[ naam ]; }
 		geladen[ naam ] = new Promise( function ( res, rej ) {
 			var s = document.createElement( 'script' );
+			/* Mislukt het laden, dan probeert een volgende klik het opnieuw. */
+			function mis() { delete geladen[ naam ]; if ( s.parentNode ) { s.parentNode.removeChild( s ); } rej( new Error( naam ) ); }
 			s.src = ( CONFIG.vendor || '' ) + pad;
 			s.async = true;
-			s.onload = function () { test() ? res() : rej( new Error( naam ) ); };
-			s.onerror = function () { rej( new Error( naam ) ); };
+			s.onload = function () { if ( test() ) { res(); } else { mis(); } };
+			s.onerror = mis;
 			document.head.appendChild( s );
 		} );
 		return geladen[ naam ];
@@ -144,7 +151,7 @@
 	function laadPdf() {
 		return script( 'jspdf', 'jspdf.umd.min.js', function () { return !! ( window.jspdf && window.jspdf.jsPDF ); } ).then( function () {
 			if ( fonts ) { return fonts; }
-			fonts = Promise.all( [ ttfBase64( 'DejaVuSans.ttf' ), ttfBase64( 'DejaVuSans-Bold.ttf' ) ] ).then( function ( p ) { return { normaal: p[ 0 ], vet: p[ 1 ] }; } );
+			fonts = Promise.all( [ ttfBase64( 'DejaVuSans.ttf' ), ttfBase64( 'DejaVuSans-Bold.ttf' ) ] ).then( function ( p ) { return { normaal: p[ 0 ], vet: p[ 1 ] }; }, function ( e ) { fonts = null; throw e; } );
 			return fonts;
 		} );
 	}
@@ -240,14 +247,14 @@
 		}
 	};
 
-	/* Mail naar jezelf: de server rekent opnieuw en bouwt de mail. */
+	/* Mail naar jezelf: de server rekent opnieuw, bouwt de mail en de link naar het resultaat. */
 	Tool.prototype.mail = function ( email, antwoorden, website ) {
-		return post( 'mail', { tool: this.id, email: email, antwoorden: antwoorden, website: website || '', link: this.deellink( antwoorden ) } );
+		return post( 'mail', { tool: this.id, email: email, antwoorden: antwoorden, website: website || '' } );
 	};
 
-	/* Duimpjes: de telling per tool en optioneel een tekst. */
-	Tool.prototype.duim = function ( stem, tekst, email, website ) {
-		return post( 'duim', { tool: this.slug, stem: stem, tekst: tekst || '', email: email || '', website: website || '' } );
+	/* Duimpjes: de telling per tool en optioneel een tekst. Bij een wissel gaat de vorige stem eraf. */
+	Tool.prototype.duim = function ( stem, tekst, email, website, vorige ) {
+		return post( 'duim', { tool: this.slug, stem: stem, vorige: vorige || '', tekst: tekst || '', email: email || '', website: website || '' } );
 	};
 
 	/* De widget "Heeft deze tool je geholpen?" */
@@ -267,7 +274,7 @@
 				gekozen = stem;
 				Array.prototype.forEach.call( knoppen.children, function ( k ) { var is = k.getAttribute( 'data-stem' ) === stem; k.classList.toggle( 'is-gekozen', is ); k.setAttribute( 'aria-pressed', is ? 'true' : 'false' ); } );
 				if ( ! eerder || eerder.stem !== stem ) {
-					zelf.duim( stem, '', '', '' ).catch( function () {} );
+					zelf.duim( stem, '', '', '', eerder && eerder.stem ? eerder.stem : '' ).catch( function () {} );
 				}
 				eerder = { stem: stem, klaar: false };
 				opslag.schrijf( sleutel, eerder );
@@ -429,6 +436,7 @@
 		el: el,
 		alineas: alineas,
 		getal: getal,
+		rond: rond,
 		codeer: codeer,
 		decodeer: decodeer,
 		Tool: Tool

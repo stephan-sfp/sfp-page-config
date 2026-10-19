@@ -178,7 +178,7 @@ function sfp_page_config_scroll_progress_bar() {
     }
     // Een tool heeft een eigen voortgang per vraag; de leesbalk zou daar
     // dubbelop zijn.
-    if ( function_exists( 'sfp_page_config_is_tool' ) && is_singular( 'tool' ) ) {
+    if ( function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan() && is_singular( 'tool' ) ) {
         return;
     }
 

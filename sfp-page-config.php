@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata, zelftest en de knop onderaan voor het School for Professionals netwerk.
- * Version:     3.8.0-beta.2
+ * Version:     3.8.0-beta.3
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '3.8.0-beta.2' );
+define( 'SFP_PAGE_CONFIG_VERSION', '3.8.0-beta.3' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -279,7 +279,12 @@ function sfp_page_config_longread_color_keys() {
  * @return string[]
  */
 function sfp_page_config_post_types() {
-    return array( 'page', 'post', 'begrippen', 'tool' );
+    $types = array( 'page', 'post', 'begrippen' );
+    // Tools alleen met het onderdeel Tools aan (3.8.0).
+    if ( function_exists( 'sfp_page_config_onderdeel_aan' ) && sfp_page_config_onderdeel_aan( 'tools' ) ) {
+        $types[] = 'tool';
+    }
+    return $types;
 }
 
 /* =========================================================================

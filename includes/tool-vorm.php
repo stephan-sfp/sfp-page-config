@@ -172,7 +172,7 @@ function sfp_page_config_tool_schema() {
         return;
     }
     $post = get_queried_object();
-    if ( ! $post instanceof WP_Post ) {
+    if ( ! $post instanceof WP_Post || post_password_required( $post ) ) {
         return;
     }
     $b   = sfp_page_config_tool_beschrijving( $post );
@@ -181,7 +181,7 @@ function sfp_page_config_tool_schema() {
         '@context'             => 'https://schema.org',
         '@type'                => 'WebApplication',
         '@id'                  => $url . '#tool',
-        'name'                 => wp_strip_all_tags( get_the_title( $post ) ),
+        'name'                 => sfp_page_config_tool_platte_titel( $post ),
         'url'                  => $url,
         'applicationCategory'  => 'EducationalApplication',
         'operatingSystem'      => 'Any',
@@ -196,14 +196,15 @@ function sfp_page_config_tool_schema() {
         'datePublished'        => wp_date( 'c', (int) get_post_timestamp( $post ) ),
         'dateModified'         => wp_date( 'c', (int) get_post_timestamp( $post, 'modified' ) ),
     );
-    $zin = trim( wp_strip_all_tags( (string) $post->post_excerpt ) );
+    $zin = trim( html_entity_decode( wp_strip_all_tags( (string) $post->post_excerpt ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
     if ( '' !== $zin ) {
         $gegevens['description'] = $zin;
     }
     if ( $b ) {
         $gegevens['isBasedOn'] = $url . '#sfp-tool-' . (int) $post->ID . '-hoe';
-        if ( '' !== $b['bron']['link'] ) {
-            $gegevens['citation'] = $b['bron']['link'];
+        $bron = '' !== $b['bron']['link'] ? esc_url_raw( $b['bron']['link'] ) : '';
+        if ( '' !== $bron ) {
+            $gegevens['citation'] = $bron;
         }
     }
     $maker = function_exists( 'sfp_page_config_maker_id' ) ? sfp_page_config_maker_id( (int) $post->post_author ) : '';
@@ -211,7 +212,7 @@ function sfp_page_config_tool_schema() {
         $gegevens['author']  = array( '@id' => $maker );
         $gegevens['creator'] = array( '@id' => $maker );
     }
-    echo '<script type="application/ld+json" id="sfp-tool-schema">' . wp_json_encode( $gegevens, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON uit eigen gegevens.
+    echo '<script type="application/ld+json" id="sfp-tool-schema">' . wp_json_encode( $gegevens, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON uit eigen gegevens.
 }
 
 /* =========================================================================

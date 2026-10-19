@@ -56,7 +56,7 @@ function sfp_page_config_tool_bestanden( $soort = 'test' ) {
             wp_add_inline_style( 'sfp-tool', sfp_page_config_blokken_css_variabelen() );
         }
         wp_enqueue_script( 'sfp-tool-motor', SFP_PAGE_CONFIG_URL . 'assets/tool/motor.js', array(), SFP_PAGE_CONFIG_VERSION, true );
-        wp_add_inline_script( 'sfp-tool-motor', 'window.sfpToolConfig=' . wp_json_encode( sfp_page_config_tool_config(), JSON_UNESCAPED_UNICODE ) . ';', 'before' );
+        wp_add_inline_script( 'sfp-tool-motor', 'window.sfpToolConfig=' . wp_json_encode( sfp_page_config_tool_config(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP ) . ';', 'before' );
     }
     if ( empty( $klaar[ $soort ] ) && isset( sfp_page_config_tool_soorten()[ $soort ] ) ) {
         $klaar[ $soort ] = true;
@@ -104,8 +104,14 @@ function sfp_page_config_tool_delay( $uitsluitingen ) {
  * @return string
  */
 function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
+    static $geteld = array();
     $post = get_post( $post );
     if ( ! $post || 'tool' !== $post->post_type || ! sfp_page_config_tool_aan() ) {
+        return '';
+    }
+    // Een concept, privé-tool of tool met wachtwoord alleen voor wie hem mag
+    // bewerken, en nooit voor het wachtwoordformulier uit.
+    if ( post_password_required( $post ) || ( 'publish' !== $post->post_status && ! current_user_can( 'edit_post', $post->ID ) ) ) {
         return '';
     }
     $b = sfp_page_config_tool_beschrijving( $post );
@@ -122,8 +128,10 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
     sfp_page_config_tool_bestanden( $b['soort'] );
     $t        = 'sfp_page_config_artikel_tekst';
     $weergave = 'compact' === $weergave ? 'compact' : 'volledig';
-    $id       = 'sfp-tool-' . (int) $post->ID;
-    $titel    = wp_strip_all_tags( get_the_title( $post ) );
+    // Dezelfde tool twee keer op een pagina: de tweede krijgt een eigen id.
+    $geteld[ $post->ID ] = isset( $geteld[ $post->ID ] ) ? $geteld[ $post->ID ] + 1 : 1;
+    $id       = 'sfp-tool-' . (int) $post->ID . ( $geteld[ $post->ID ] > 1 ? '-' . $geteld[ $post->ID ] : '' );
+    $titel    = sfp_page_config_tool_platte_titel( $post );
 
     $html  = '<div class="sfp-tool sfp-tool--' . esc_attr( $b['soort'] ) . ' sfp-tool--' . $weergave . '" id="' . esc_attr( $id ) . '" data-tool="' . (int) $post->ID . '" data-slug="' . esc_attr( $post->post_name ) . '" data-titel="' . esc_attr( $titel ) . '" data-weergave="' . $weergave . '">';
     $html .= '<script type="application/json" class="sfp-tool__data">' . wp_json_encode( sfp_page_config_tool_voor_browser( $b ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . '</script>';
@@ -145,7 +153,7 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
  * @return array
  */
 function sfp_page_config_tool_voor_browser( array $b ) {
-    unset( $b['mail'] );
+    unset( $b['mail'], $b['genegeerd'] );
     return $b;
 }
 
@@ -181,7 +189,9 @@ function sfp_page_config_tool_shortcode_render( $atts ) {
     return sfp_page_config_tool_html( $id, (string) $atts['weergave'] );
 }
 
-add_filter( 'the_content', 'sfp_page_config_tool_in_inhoud', 8 );
+// Na de shortcodes (11): de opmaak van WordPress (alinea's, aanhalingstekens,
+// shortcodes) komt dan niet aan de teksten van de tool.
+add_filter( 'the_content', 'sfp_page_config_tool_in_inhoud', 12 );
 
 /**
  * Zonder de artikelopmaak (onderdeel Artikelen uit) zet de plugin de tool

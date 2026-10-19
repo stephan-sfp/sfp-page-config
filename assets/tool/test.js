@@ -30,29 +30,37 @@
 		return { tekst: l.tekst || '', sleutel: l.sleutel || l.tekst || '' };
 	}
 	function scoreRegel( b ) { return ( b.score && b.score.per_dimensie ) || 'som'; }
+	/* De dimensies in hun volgorde: een object zet sleutels van alleen cijfers vooraan, de lijst niet. */
+	function dimLijst( b ) { return ( b.dimensie_volgorde && b.dimensie_volgorde.length ) ? b.dimensie_volgorde.slice() : Object.keys( b.dimensies || {} ); }
+	/* Een antwoord als tekst; ja/nee, lijsten en leeg tellen niet (gelijk aan PHP). */
+	function antwoord( w ) { return ( 'string' === typeof w || ( 'number' === typeof w && isFinite( w ) ) ) ? String( w ) : null; }
+	function isGetal( w ) { if ( 'number' === typeof w ) { return isFinite( w ); } return 'string' === typeof w && /^\s*-?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?\s*$/.test( w ); }
+	function alsTekst( w ) { return ( 'boolean' === typeof w ) ? ( w ? 'true' : 'false' ) : ( w === null || w === undefined || 'object' === typeof w ? '' : String( w ) ); }
+	/* Afronden half naar boven met een kleine marge, gelijk aan sfp_page_config_tool_rond() in PHP. */
+	var rond = M.rond;
 	function vergelijk( links, op, rechts ) {
-		if ( '==' === op ) { return String( links ) === String( rechts ); }
+		if ( '==' === op ) { return alsTekst( links ) === alsTekst( rechts ); }
+		if ( ! isGetal( links ) || ! isGetal( rechts ) ) { return false; }
 		var l = Number( links ), r = Number( rechts );
-		if ( isNaN( l ) || isNaN( r ) ) { return false; }
 		if ( '>=' === op ) { return l >= r; } if ( '>' === op ) { return l > r; } if ( '<=' === op ) { return l <= r; } if ( '<' === op ) { return l < r; }
 		return false;
 	}
 	function optieWaarde( o, j ) { return o.waarde !== undefined ? String( o.waarde ) : String( j + 1 ); }
 
 	function reken( b, antwoorden ) {
-		var dims = Object.keys( b.dimensies || {} );
+		var dims = dimLijst( b );
 		var som = {}, n = {}, maxsom = {}, telling = {}, telmax = {}, cent = {};
 		dims.forEach( function ( d ) { som[ d ] = 0; n[ d ] = 0; maxsom[ d ] = 0; telling[ d ] = 0; telmax[ d ] = 0; cent[ d ] = 0; } );
 		var gewicht = ( b.score && b.score.gewicht ) || {};
 		var bijdragen = {}, context = {}, teksten = {}, ontbreekt = [];
 		( b.vragen || [] ).forEach( function ( v ) {
-			var id = v.id, w = antwoorden[ id ];
+			var id = v.id, w = Object.prototype.hasOwnProperty.call( antwoorden, id ) ? antwoord( antwoorden[ id ] ) : null;
 			var type = v.type || 'likert';
 			if ( 'ab' === type || 'janee' === type ) { type = 'keuze'; }
-			if ( 'tekst' === type ) { teksten[ id ] = ( w === undefined || w === null ) ? '' : String( w ).trim(); return; }
+			if ( 'tekst' === type ) { teksten[ id ] = w === null ? '' : w.trim(); return; }
 			if ( 'context' === type ) {
 				context[ id ] = '';
-				( v.opties || [] ).forEach( function ( o, j ) { if ( w !== undefined && w !== null && String( w ) === optieWaarde( o, j ) ) { context[ id ] = o.tekst || ''; } } );
+				( v.opties || [] ).forEach( function ( o, j ) { if ( w !== null && w === optieWaarde( o, j ) ) { context[ id ] = o.tekst || ''; } } );
 				if ( '' === context[ id ] && ! v.optioneel ) { ontbreekt.push( id ); }
 				return;
 			}
@@ -61,8 +69,9 @@
 				if ( ! ( dim in som ) ) { return; }
 				var g = gewicht[ dim ] !== undefined ? Number( gewicht[ dim ] ) : 1;
 				n[ dim ]++; maxsom[ dim ] += 5;
-				if ( w === undefined || w === null || '' === w || isNaN( Number( w ) ) ) { ontbreekt.push( id ); return; }
-				var waarde = Math.max( 1, Math.min( 5, parseInt( w, 10 ) ) );
+				/* Alleen 1 tot 5; een waarde uit een deellink kan van alles zijn. */
+				if ( w === null || ! /^[1-5]$/.test( w ) ) { ontbreekt.push( id ); return; }
+				var waarde = parseInt( w, 10 );
 				if ( v.omgekeerd ) { waarde = 6 - waarde; }
 				som[ dim ] += waarde; cent[ dim ] += ( waarde - 3 ) * g;
 				bijdragen[ id ] = {}; bijdragen[ id ][ dim ] = waarde;
@@ -72,7 +81,7 @@
 			( v.opties || [] ).forEach( function ( o ) { Object.keys( o.punten || {} ).forEach( function ( d ) { var p = Number( o.punten[ d ] ) || 0; if ( perdim[ d ] === undefined || p > perdim[ d ] ) { perdim[ d ] = p; } } ); } );
 			Object.keys( perdim ).forEach( function ( d ) { if ( d in maxsom ) { maxsom[ d ] += perdim[ d ]; telmax[ d ]++; } } );
 			var gekozen = null;
-			( v.opties || [] ).forEach( function ( o, j ) { if ( w !== undefined && w !== null && String( w ) === optieWaarde( o, j ) ) { gekozen = o; } } );
+			( v.opties || [] ).forEach( function ( o, j ) { if ( w !== null && w === optieWaarde( o, j ) ) { gekozen = o; } } );
 			if ( ! gekozen ) { if ( ! v.optioneel ) { ontbreekt.push( id ); } return; }
 			bijdragen[ id ] = {};
 			Object.keys( gekozen.punten || {} ).forEach( function ( d ) { if ( ! ( d in som ) ) { return; } var p = Number( gekozen.punten[ d ] ) || 0; som[ d ] += p; if ( p > 0 ) { telling[ d ]++; } bijdragen[ id ][ d ] = p; } );
@@ -83,7 +92,7 @@
 				case 'telling': waarden[ d ] = telling[ d ]; maxima[ d ] = telmax[ d ]; minima[ d ] = 0; break;
 				case 'percentage':
 					var pct = n[ d ] > 0 ? ( som[ d ] - n[ d ] ) / ( n[ d ] * 4 ) * 100 : ( maxsom[ d ] > 0 ? som[ d ] / maxsom[ d ] * 100 : 0 );
-					waarden[ d ] = Math.max( 0, Math.min( 100, Math.round( pct ) ) ); maxima[ d ] = 100; minima[ d ] = 0; break;
+					waarden[ d ] = Math.max( 0, Math.min( 100, rond( pct ) ) ); maxima[ d ] = 100; minima[ d ] = 0; break;
 				case 'gecentreerd':
 					var gg = gewicht[ d ] !== undefined ? Number( gewicht[ d ] ) : 1;
 					waarden[ d ] = cent[ d ]; maxima[ d ] = 2 * n[ d ] * gg; minima[ d ] = -maxima[ d ]; break;
@@ -106,14 +115,14 @@
 
 	/* Een uitkomstregel, met geneste anders, vertaal, minimaal en minimale_spreiding (gelijk aan PHP). */
 	function uitkomst( b, u, stand ) {
-		var dims = Object.keys( b.dimensies || {} ), waarden = stand.waarden, volgorde = stand.volgorde;
+		var dims = dimLijst( b ), waarden = stand.waarden, volgorde = stand.volgorde;
 		var regel = u.regel || 'hoogste';
 		var labels = ( u.labels && u.labels.length ) ? u.labels : b.labels;
 		var uit = { uitslag: '', top: volgorde.slice( 0, 1 ), niveaus: {}, assen: {} };
+		/* Het vangnet begint opnieuw: wat de regel al invulde (top bij paar) telt niet (gelijk aan PHP). */
 		function anders() {
 			if ( u.anders && 'object' === typeof u.anders ) { return uitkomst( b, u.anders, stand ); }
-			uit.uitslag = u.anders ? String( u.anders ) : '';
-			return uit;
+			return { uitslag: u.anders ? String( u.anders ) : '', top: volgorde.slice( 0, 1 ), niveaus: {}, assen: {} };
 		}
 		function klaar( sleutel ) {
 			if ( u.vertaal && u.vertaal[ sleutel ] !== undefined ) { sleutel = String( u.vertaal[ sleutel ] ); }
@@ -154,13 +163,14 @@
 			case 'regels': case 'profiel':
 				var lijst = { totaal: stand.totaal, gemiddelde: stand.gemiddelde, spreiding: stand.spreiding };
 				dims.forEach( function ( d ) { lijst[ 'dimensie.' + d ] = waarden[ d ]; } );
-				Object.keys( stand.antwoorden ).forEach( function ( id ) { lijst[ 'vraag.' + id ] = stand.antwoorden[ id ]; } );
+				/* Het antwoord zoals het is; vrije tekst telt niet mee (gelijk aan PHP). */
+				( b.vragen || [] ).forEach( function ( v ) { var aw = Object.prototype.hasOwnProperty.call( stand.antwoorden, v.id ) ? antwoord( stand.antwoorden[ v.id ] ) : null; if ( 'tekst' !== v.type && aw !== null ) { lijst[ 'vraag.' + v.id ] = aw; } } );
 				var regels = u.regels || [];
 				for ( var i = 0; i < regels.length; i++ ) {
 					var r = regels[ i ], klopt = true, als = r.als || [];
 					for ( var k = 0; k < als.length; k++ ) {
 						var vw = als[ k ];
-						if ( ! vw || 3 !== vw.length || ! ( vw[ 0 ] in lijst ) || ! vergelijk( lijst[ vw[ 0 ] ], vw[ 1 ], vw[ 2 ] ) ) { klopt = false; break; }
+						if ( ! vw || 3 !== vw.length || ! Object.prototype.hasOwnProperty.call( lijst, vw[ 0 ] ) || ! vergelijk( lijst[ vw[ 0 ] ], vw[ 1 ], vw[ 2 ] ) ) { klopt = false; break; }
 					}
 					if ( klopt ) { return klaar( String( r.dan ) ); }
 				}
@@ -200,7 +210,7 @@
 		return u.lijsten[ v ] !== undefined ? u.lijsten[ v ] : null;
 	}
 	function vul( tekst, b, r, diepte ) {
-		var uit = String( tekst || '' ).replace( /\{([a-z0-9_.\[\]]+)\}/gi, function ( m, p ) { var w = bron( b, r, p ); return w === null || w === undefined ? '' : ( Array.isArray( w ) ? w.join( ', ' ) : String( w ) ); } );
+		var uit = String( tekst || '' ).replace( /\{([a-z0-9_.\[\]]+)\}/gi, function ( m, p ) { var w = bron( b, r, p ); return w === null || w === undefined ? '' : ( Array.isArray( w ) ? w.map( item ).join( ', ' ) : String( w ) ); } );
 		return ( ! diepte && uit.indexOf( '{' ) >= 0 ) ? vul( uit, b, r, 1 ) : uit;
 	}
 	function selectie( r, soort, aantal ) {
@@ -211,6 +221,10 @@
 		if ( 'top' === soort ) { return v.slice( 0, Math.max( 1, aantal || 1 ) ); }
 		return v.slice();
 	}
+	/* Eén item van een lijst als tekst (een rij: de cellen achter elkaar). */
+	function item( it ) { return Array.isArray( it ) ? it.map( String ).join( ' | ' ) : String( it ); }
+	/* Alleen http(s), een pad op de site of een anker (gelijk aan sfp_page_config_tool_url()). */
+	function veiligeUrl( u ) { u = String( u || '' ).replace( /[\x00-\x1f\x7f]+/g, '' ).trim().replace( / /g, '%20' ); return ( /^https?:\/\/[a-z0-9\[]/i.test( u ) || /^\/(?![\/\\])/.test( u ) || 0 === u.indexOf( '#' ) ) ? u : ''; }
 	function dimNaam( b, d ) { var x = b.dimensies[ d ]; return 'string' === typeof x ? x : ( x && x.naam ) || d; }
 	function dimVolledig( b, d ) { var x = b.dimensies[ d ]; return 'string' === typeof x ? x : ( x && ( x.volledig || x.naam ) ) || d; }
 
@@ -295,6 +309,8 @@
 			var input = el( 'input', { type: 'radio', name: naam, value: waarde, class: 'sfp-tool__radio', onchange: function () {
 				antwoorden[ v.id ] = waarde;
 				bewaar();
+				/* Met de pijltjes door de keuzes: niet doorgaan, Enter gaat verder. */
+				if ( pijl ) { return; }
 				if ( perGroep ) { var g = schermen[ huidig ]; if ( g && g.vragen && g.vragen.every( function ( q ) { return 'tekst' === q.type || antwoorden[ q.id ] !== undefined; } ) ) { setTimeout( function () { ga( huidig + 1 ); }, 260 ); } }
 				else if ( perVraag ) { setTimeout( function () { ga( huidig + 1 ); }, 220 ); }
 			} } );
@@ -438,7 +454,7 @@
 					case 'vast':
 						if ( kop ) { paneelResultaat.appendChild( el( 'h3', { class: 'sfp-tool__kop', text: kop } ) ); blokken.push( { type: 'subkop', tekst: kop } ); }
 						if ( o.tekst ) { alineas( vul( o.tekst, b, r ) ).forEach( function ( a ) { paneelResultaat.appendChild( el( 'p', { class: 'sfp-tool__tekst', text: a } ) ); } ); blokken.push( { type: 'tekst', tekst: vul( o.tekst, b, r ) } ); }
-						if ( o.lijst && o.lijst.length ) { var vl = el( 'ul', { class: 'sfp-tool__lijst' } ); o.lijst.forEach( function ( it ) { vl.appendChild( el( 'li', { text: it } ) ); } ); paneelResultaat.appendChild( vl ); blokken.push( { type: 'lijst', items: o.lijst.slice() } ); }
+						if ( Array.isArray( o.lijst ) && o.lijst.length ) { var vl = el( 'ul', { class: 'sfp-tool__lijst' } ); o.lijst.forEach( function ( it ) { vl.appendChild( el( 'li', { text: item( it ) } ) ); } ); paneelResultaat.appendChild( vl ); blokken.push( { type: 'lijst', items: o.lijst.map( item ) } ); }
 						break;
 					case 'totaal':
 						var tt = ( kop || tx( 'tool_scores' ) ) + ': ' + getal( r.totaal ) + ( r.totaal_max > 0 ? ' / ' + getal( r.totaal_max ) : '' );
@@ -453,17 +469,17 @@
 							var ut = uitslagtekst( b, d );
 							var naam = ut.titel || dimVolledig( b, d );
 							var kaart = el( 'div', { class: 'sfp-tool__kaart' + ( d === r.uitslag ? ' is-uitslag' : '' ) } );
-							if ( o.koppen && o.koppen[ i ] ) { kaart.appendChild( el( 'p', { class: 'sfp-tool__kicker', text: o.koppen[ i ] } ) ); blokken.push( { type: 'kicker', tekst: o.koppen[ i ] } ); }
+							if ( Array.isArray( o.koppen ) && o.koppen[ i ] ) { kaart.appendChild( el( 'p', { class: 'sfp-tool__kicker', text: o.koppen[ i ] } ) ); blokken.push( { type: 'kicker', tekst: o.koppen[ i ] } ); }
 							kaart.appendChild( el( 'h4', { text: naam + ( d === r.uitslag && o.markeer ? ' ' + o.markeer : '' ) } ) );
 							blokken.push( { type: 'subkop', tekst: naam + ( d === r.uitslag && o.markeer ? ' ' + o.markeer : '' ) } );
 							if ( ut.tekst ) { alineas( vul( ut.tekst, b, r ) ).forEach( function ( a ) { kaart.appendChild( el( 'p', { class: 'sfp-tool__tekst', text: a } ) ); } ); blokken.push( { type: 'tekst', tekst: vul( ut.tekst, b, r ) } ); }
-							( o.lijsten || [] ).forEach( function ( ln ) {
-								var items = ut.lijsten[ ln ] || [];
+							( Array.isArray( o.lijsten ) ? o.lijsten : [] ).forEach( function ( ln ) {
+								var items = Array.isArray( ut.lijsten[ ln ] ) ? ut.lijsten[ ln ] : [];
 								if ( ! items.length ) { return; }
 								var ul3 = el( 'ul', { class: 'sfp-tool__lijst' } );
-								items.forEach( function ( it ) { ul3.appendChild( el( 'li', { text: it } ) ); } );
+								items.forEach( function ( it ) { ul3.appendChild( el( 'li', { text: item( it ) } ) ); } );
 								kaart.appendChild( ul3 );
-								blokken.push( { type: 'lijst', items: items.slice() } );
+								blokken.push( { type: 'lijst', items: items.map( item ) } );
 							} );
 							paneelResultaat.appendChild( kaart );
 						} );
@@ -472,7 +488,7 @@
 						var sec = el( 'section', { class: 'sfp-tool__balken' } );
 						sec.appendChild( el( 'h3', { class: 'sfp-tool__kop', text: kop || tx( 'tool_scores' ) } ) );
 						blokken.push( { type: 'subkop', tekst: kop || tx( 'tool_scores' ) } );
-						var volg = 'vast' === o.sorteer ? Object.keys( b.dimensies || {} ) : r.volgorde;
+						var volg = 'vast' === o.sorteer ? dimLijst( b ) : r.volgorde;
 						var hoogste = r.volgorde.length ? r.dimensies[ r.volgorde[ 0 ] ].waarde : 0;
 						volg.forEach( function ( d ) {
 							var dim = r.dimensies[ d ];
@@ -500,10 +516,10 @@
 							if ( kop ) { paneelResultaat.appendChild( el( 'h3', { class: 'sfp-tool__kop', text: kop } ) ); blokken.push( { type: 'subkop', tekst: kop } ); }
 							var ul = el( 'afvinklijst' === o.type ? 'ul' : 'ol', { class: 'sfp-tool__lijst' + ( 'afvinklijst' === o.type ? ' sfp-tool__lijst--afvink' : '' ) } );
 							lijst.forEach( function ( it ) {
-								ul.appendChild( 'afvinklijst' === o.type ? el( 'li', null, [ el( 'label', null, [ el( 'input', { type: 'checkbox' } ), el( 'span', { text: it } ) ] ) ] ) : el( 'li', { text: it } ) );
+								ul.appendChild( 'afvinklijst' === o.type ? el( 'li', null, [ el( 'label', null, [ el( 'input', { type: 'checkbox' } ), el( 'span', { text: item( it ) } ) ] ) ] ) : el( 'li', { text: item( it ) } ) );
 							} );
 							paneelResultaat.appendChild( ul );
-							blokken.push( { type: 'afvinklijst' === o.type ? 'afvink' : 'lijst', items: lijst.slice(), nummers: 'lijst' === o.type } );
+							blokken.push( { type: 'afvinklijst' === o.type ? 'afvink' : 'lijst', items: lijst.map( item ), nummers: 'lijst' === o.type } );
 						}
 						break;
 					case 'tekst':
@@ -519,13 +535,14 @@
 						var laag = r.volgorde.slice().reverse().slice( 0, aantal );
 						if ( kop ) { paneelResultaat.appendChild( el( 'h3', { class: 'sfp-tool__kop', text: kop } ) ); blokken.push( { type: 'subkop', tekst: kop } ); }
 						var ul2 = el( 'ul', { class: 'sfp-tool__lijst' } ), items2 = [];
-						laag.forEach( function ( d ) { var ut = uitslagtekst( b, d ); var tip = ( ut.lijsten[ naam ] || [] )[ 0 ] || ''; var regel = dimVolledig( b, d ) + ( tip ? ': ' + tip : '' ); ul2.appendChild( el( 'li', null, [ el( 'b', { text: dimVolledig( b, d ) } ), tip ? ': ' + tip : '' ] ) ); items2.push( regel ); } );
+						laag.forEach( function ( d ) { var ut = uitslagtekst( b, d ); var tip = ( Array.isArray( ut.lijsten[ naam ] ) && ut.lijsten[ naam ].length ) ? item( ut.lijsten[ naam ][ 0 ] ) : ''; var regel = dimVolledig( b, d ) + ( tip ? ': ' + tip : '' ); ul2.appendChild( el( 'li', null, [ el( 'b', { text: dimVolledig( b, d ) } ), tip ? ': ' + tip : '' ] ) ); items2.push( regel ); } );
 						paneelResultaat.appendChild( ul2 );
 						blokken.push( { type: 'lijst', items: items2 } );
 						break;
 					case 'link':
 						var url = bron( b, r, o.bron || 'uitslag.artikel' );
-						if ( 'string' === typeof url && url ) { paneelResultaat.appendChild( el( 'p', null, [ el( 'a', { class: 'sfp-tool__link', href: url, text: kop || url } ) ] ) ); blokken.push( { type: 'tekst', tekst: ( kop ? kop + ': ' : '' ) + url } ); }
+						url = 'string' === typeof url ? veiligeUrl( url ) : '';
+						if ( url ) { paneelResultaat.appendChild( el( 'p', null, [ el( 'a', { class: 'sfp-tool__link', href: url, text: kop || url } ) ] ) ); blokken.push( { type: 'tekst', tekst: ( kop ? kop + ': ' : '' ) + url } ); }
 						break;
 					case 'onderbouwing':
 						var det = el( 'details', { class: 'sfp-tool__onderbouwing' } );
@@ -574,9 +591,11 @@
 				tekstvragenNa.forEach( function ( v ) { var w = ( antwoorden[ v.id ] || '' ).trim(); if ( w ) { extra.push( { type: 'subkop', tekst: v.label || v.tekst || '' } ); extra.push( { type: 'tekst', tekst: w } ); } } );
 				return blokken.concat( extra );
 			}
-			function wacht( knop, p ) { var oud = knop.textContent; knop.disabled = true; knop.textContent = tx( 'tool_bezig' ) + '…'; p.then( function () { knop.disabled = false; knop.textContent = oud; }, function () { knop.disabled = false; knop.textContent = oud; } ); }
-			if ( aan( 'pdf' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_pdf' ), onclick: function () { wacht( this, tool.pdf( blokkenMet(), naam() ) ); } } ) ); }
-			if ( aan( 'word' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop', text: tx( 'tool_word' ), onclick: function () { wacht( this, tool.word( blokkenMet(), naam() ) ); } } ) ); }
+			function wacht( knop, p ) { var oud = knop.textContent; knop.disabled = true; knop.textContent = tx( 'tool_bezig' ) + '…'; return p.then( function () { knop.disabled = false; knop.textContent = oud; }, function ( e ) { knop.disabled = false; knop.textContent = oud; throw e; } ); }
+			/* Lukt een pdf of Word-bestand niet (bijvoorbeeld geen verbinding), dan een melding; een volgende klik probeert het opnieuw. */
+			function bestand( knop, p ) { deelMelding.hidden = true; wacht( knop, p ).catch( function () { deelMelding.textContent = tx( 'tool_bestand_fout' ); deelMelding.hidden = false; } ); }
+			if ( aan( 'pdf' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_pdf' ), onclick: function () { bestand( this, tool.pdf( blokkenMet(), naam() ) ); } } ) ); }
+			if ( aan( 'word' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop', text: tx( 'tool_word' ), onclick: function () { bestand( this, tool.word( blokkenMet(), naam() ) ); } } ) ); }
 			if ( aan( 'mail' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop', text: tx( 'tool_mail' ), 'aria-expanded': 'false', onclick: function () { mailbox.hidden = ! mailbox.hidden; this.setAttribute( 'aria-expanded', mailbox.hidden ? 'false' : 'true' ); if ( ! mailbox.hidden ) { mailbox.querySelector( 'input[type=email]' ).focus(); } } } ) ); }
 			if ( aan( 'deellink' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop', text: tx( 'tool_deellink' ), onclick: function () { tool.deel( antwoorden, function ( m ) { deelMelding.textContent = m; deelMelding.hidden = false; setTimeout( function () { deelMelding.hidden = true; }, 6000 ); } ); } } ) ); }
 			paneelResultaat.appendChild( rij );
@@ -617,13 +636,13 @@
 			if ( perVraag ) { ga( 0 ); } else { zetStap( 0 ); window.scrollTo( { top: app.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' } ); }
 		}
 		function bewaar() { tool.bewaar( { a: antwoorden, i: huidig } ); }
+		/* Antwoorden uit een deellink of de browser: alleen bekende vragen, alleen tekst of getallen. */
 		function vulIn( a ) {
-			antwoorden = Object.assign( {}, a || {} );
-			Object.keys( antwoorden ).forEach( function ( id ) {
-				var radios = app.querySelectorAll( 'input[name="sfp-tool-' + tool.id + '-' + id + '"]' );
-				Array.prototype.forEach.call( radios, function ( rd ) { rd.checked = rd.value === String( antwoorden[ id ] ); } );
-				var ta = app.querySelector( 'textarea[aria-labelledby]' );
-				void ta;
+			antwoorden = {};
+			a = ( a && 'object' === typeof a ) ? a : {};
+			vragen.forEach( function ( v ) { if ( Object.prototype.hasOwnProperty.call( a, v.id ) && antwoord( a[ v.id ] ) !== null ) { antwoorden[ v.id ] = antwoord( a[ v.id ] ); } } );
+			Array.prototype.forEach.call( app.querySelectorAll( 'input[type=radio]' ), function ( rd ) {
+				vragen.forEach( function ( v ) { if ( rd.name === 'sfp-tool-' + tool.id + '-' + v.id ) { rd.checked = antwoorden[ v.id ] !== undefined && rd.value === antwoorden[ v.id ]; } } );
 			} );
 			schermen.forEach( function ( s ) { if ( s.vraag && 'tekst' === s.vraag.type ) { var ta = s.el.querySelector( 'textarea' ); if ( ta ) { ta.value = antwoorden[ s.vraag.id ] || ''; } } } );
 		}
@@ -635,15 +654,39 @@
 			return schermen.length - 1;
 		}
 
-		/* Toetsen: 1 tot 5 bij een Likert-vraag, pijlen tussen vragen. */
+		/* Toetsen: 1 tot 5 bij een Likert-vraag; de pijltjes kiezen binnen een
+		   vraag zonder door te gaan, Enter gaat dan naar de volgende vraag. */
+		var pijl = false;
 		app.addEventListener( 'keydown', function ( e ) {
+			pijl = /^Arrow/.test( e.key ) && 'radio' === e.target.type;
 			if ( ! perVraag || paneelVragen.hidden ) { return; }
 			var s = schermen[ huidig ];
-			if ( s && s.vraag && 'likert' === s.vraag.type && /^[1-5]$/.test( e.key ) && 'TEXTAREA' !== e.target.tagName ) {
-				var rd = s.el.querySelector( 'input[value="' + e.key + '"]' );
-				if ( rd ) { rd.checked = true; rd.dispatchEvent( new Event( 'change' ) ); e.preventDefault(); }
+			if ( ! s ) { return; }
+			var tag = e.target.tagName;
+			if ( 'Enter' === e.key && 'radio' === e.target.type && ! perGroep && s.vraag && antwoorden[ s.vraag.id ] !== undefined ) {
+				e.preventDefault(); ga( huidig + 1 ); return;
 			}
+			if ( ! /^[1-5]$/.test( e.key ) || 'TEXTAREA' === tag || 'INPUT' === tag && 'radio' !== e.target.type ) { return; }
+			/* Welke vraag: per groep de vraag met de focus, anders de eerste open Likert-vraag van de groep. */
+			var doel = null;
+			if ( s.groep ) {
+				var bij = e.target.closest ? e.target.closest( '.sfp-tool__scherm[data-index]' ) : null;
+				var q = bij ? vragenVoor[ parseInt( bij.getAttribute( 'data-index' ), 10 ) ] : null;
+				if ( ! q || 'likert' !== q.type ) { q = null; s.vragen.some( function ( x ) { if ( 'likert' === x.type && antwoorden[ x.id ] === undefined ) { q = x; return true; } return false; } ); }
+				doel = q ? s.el.querySelector( '.sfp-tool__scherm[data-index="' + vragenVoor.indexOf( q ) + '"]' ) : null;
+			} else if ( s.vraag && 'likert' === s.vraag.type ) {
+				doel = s.el;
+			}
+			var rd = doel ? doel.querySelector( 'input[type=radio][value="' + e.key + '"]' ) : null;
+			if ( ! rd ) { return; }
+			pijl = false; rd.checked = true; rd.dispatchEvent( new Event( 'change' ) ); e.preventDefault();
+			/* Per groep schuift de focus door naar de volgende open vraag. */
+			var volgende = null;
+			if ( s.groep ) { s.vragen.some( function ( x ) { if ( 'likert' === x.type && antwoorden[ x.id ] === undefined ) { volgende = s.el.querySelector( '.sfp-tool__scherm[data-index="' + vragenVoor.indexOf( x ) + '"] input[type=radio]' ); return true; } return false; } ); }
+			( volgende || rd ).focus( { preventScroll: ! volgende } );
 		} );
+		app.addEventListener( 'keyup', function () { pijl = false; } );
+		app.addEventListener( 'pointerdown', function () { pijl = false; } );
 
 		return {
 			start: function () {

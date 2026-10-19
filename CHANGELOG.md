@@ -4,6 +4,29 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.3] - 2026-10-19
+
+Reparaties na de review van 3.8.0-beta.2. Het onderdeel Tools staat nog steeds standaard uit.
+
+### Gerepareerd
+- **Zelfde uitslag op het scherm en in de mail:** de server en de browser ronden nu op dezelfde manier af. Bij een percentage van precies x,5 rondde de server naar boven en de browser soms naar beneden, waardoor een bezoeker op het scherm een andere uitslag kon zien dan in de mail.
+- **Mail naar jezelf met vraag-id's als Q1 of rol.1:** de server maakte die id's klein en schoon, vond de antwoorden daarna niet meer en weigerde elke mail. De id's blijven nu zoals ze zijn.
+- **Links in een beschrijving:** alleen een gewoon webadres (http of https), een pad op de site of een anker. Een andere link (zoals javascript:) wordt genegeerd en de controle meldt het. De gegevens voor Google kunnen geen code meer bevatten.
+- **Een beschrijving die de controle goedkeurt, laat de tool niet meer vastlopen:** losse teksten waar een lijst hoort (assen van een kwadrant, de lijst bij vast, lijsten en koppen bij alle) worden een lijst. Rijen voor een tabel blijven rijen.
+- **Nog vier verschillen tussen server en browser opgeheven:** dimensies met alleen cijfers als naam (volgorde), geneste vangnetten met labels (nu ook gesorteerd), == vergelijkt de tekst zoals hij is ("1.0" is niet "1"), en vreemde waarden uit een deellink (ja/nee, 1e1, 0x10) tellen niet als antwoord. Ook null bij anders, minimaal en vertaal geeft nu overal hetzelfde.
+- **Concepten, privé-tools en tools met een wachtwoord** zijn niet meer te zien via de code of het blok, en staan niet meer voor het wachtwoordformulier. Wie de tool mag bewerken, ziet een concept wel.
+- **Duimpjes:** alleen voor een gepubliceerde tool met duimpjes aan; een verzonnen naam wordt geweigerd. Wie van duim wisselt, telt niet meer dubbel: de vorige stem gaat eraf.
+- **Toetsenbord:** met de pijltjes kies je binnen een vraag zonder door te springen; Enter gaat naar de volgende vraag. In de weergave per groep gaan de cijfertoetsen naar de vraag met de focus (of de eerste open vraag) en schuift de focus door.
+- **Pdf en Word:** lukt het laden van de bibliotheek één keer niet, dan een melding en werkt een volgende klik weer (eerder bleef de knop stuk tot herladen).
+- **Deellink met vreemde inhoud** laat de tool niet meer leeg; alleen bekende vragen worden ingevuld.
+- Titels met leestekens (zoals Team's Q&A) staan zonder codes in de mail en in de gegevens voor Google.
+
+### Gewijzigd
+- **Met Tools uit verandert er niets:** de plugin registreert het berichttype tool (en /tools/) alleen met het onderdeel aan, zet alleen dan revisies aan op een bestaand type van een snippet, en alleen dan krijgt een tool de paginavelden en valt de leesbalk weg. Na aan- of uitzetten bouwt WordPress de adressen één keer opnieuw op.
+- **Mail naar jezelf:** vrije tekst van de bezoeker gaat niet meer mee in de mail, zodat niemand eigen tekst naar een willekeurig adres kan laten sturen. De link in de mail bouwt de server zelf. Limieten: 20 per IP per uur (IPv6 per /64, het IP van Cloudflare alleen als het verzoek echt van Cloudflare komt), 5 per adres per dag (naam+1@ telt als naam@), 100 per site per uur; elk met een vast venster.
+- De tool komt na de shortcodes in de tekst (prioriteit 12), zodat alinea's, aanhalingstekens en shortcodes van WordPress niet aan de teksten van de tool komen. Dezelfde tool twee keer op een pagina krijgt een eigen id.
+- Tests: `tests/tool.php` legt PHP en de browser nu altijd naast elkaar (met node), ook op onvolledige antwoorden en vreemde waarden, met de randgevallen uit de review. `tests/tool-wp.php` controleert de nieuwe regels.
+
 ## [3.8.0-beta.2] - 2026-10-19
 
 Derde deel van de vormen: de toolmotor met de soort test (CVD als proefsite). Het onderdeel Tools staat standaard uit; zonder die instelling verandert er niets.
