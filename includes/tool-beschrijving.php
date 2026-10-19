@@ -1443,7 +1443,8 @@ function sfp_page_config_tool_tekst_uitvoer( array $b, array $r, $titel ) {
             case 'balken':
             case 'niveaus':
                 $regels[] = '' !== $u['kop'] ? $u['kop'] : $t( 'tool_scores' );
-                foreach ( $r['volgorde'] as $d ) {
+                // Zelfde volgorde als op het scherm: vast of van hoog naar laag.
+                foreach ( ( isset( $u['sorteer'] ) && 'vast' === $u['sorteer'] ) ? sfp_page_config_tool_dims( $b ) : $r['volgorde'] as $d ) {
                     $dim   = $r['dimensies'][ $d ];
                     $label = '' !== $dim['label']['tekst'] ? ' (' . $dim['label']['tekst'] . ')' : '';
                     $eenh  = 'percentage' === $b['score']['per_dimensie'] ? '%' : ( $dim['max'] > 0 ? ' / ' . sfp_page_config_tool_getal( $dim['max'] ) : '' );

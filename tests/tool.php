@@ -399,6 +399,11 @@ ok( (bool) array_filter( $c['let_op'], function ( $m ) { return false !== strpos
 $ids = sfp_page_config_tool_normaliseer( array( 'soort' => 'test', 'dimensies' => array( 'a' => 'A' ), 'vragen' => array( array( 'id' => 'Q1', 'type' => 'likert', 'dimensie' => 'a', 'tekst' => 'x' ), array( 'id' => 'rol.1', 'type' => 'likert', 'dimensie' => 'a', 'tekst' => 'x' ) ), 'uitslagen' => array( 'a' => 'A' ) ) );
 ok( sfp_page_config_tool_reken( $ids, array( 'Q1' => '4', 'rol.1' => 5 ) )['compleet'], 'id Q1 en rol.1' );
 
+// Balken met sorteer vast: ook de tekstuitvoer (mail) in vaste volgorde.
+$vast  = sfp_page_config_tool_normaliseer( array_merge( $basis, array( 'uitvoer' => array( array( 'type' => 'balken', 'sorteer' => 'vast', 'kop' => 'S' ) ) ) ) );
+$tekst = sfp_page_config_tool_tekst_uitvoer( $vast, sfp_page_config_tool_reken( $vast, array( 'q1' => 'y', 'q2' => 'y', 'q3' => 'y' ) ), 'T' ); // c hoogst
+ok( strpos( $tekst, '- A:' ) < strpos( $tekst, '- B:' ) && strpos( $tekst, '- B:' ) < strpos( $tekst, '- C:' ), 'balken vast: vaste volgorde in de tekst' );
+
 /* ---------- 6. Beschrijvingen uit een map ---------- */
 $map = $argv[1] ?? '';
 if ( '' !== $map && is_dir( $map ) ) {
