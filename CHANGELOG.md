@@ -4,10 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.14] - 2026-10-19
+
+### Gewijzigd
+- **Stappen** als genummerde rondjes met een dunne lijn ertussen in plaats van tabs met een balk, die op de scorebalken en het accentstreepje leken.
+
 ## [3.8.0-beta.13] - 2026-10-19
 
 ### Gewijzigd
-- **Stappen** boven de uitslag als tabs met een balk eronder (gedaan Tint 1, actief primair) in plaats van gevulde pillen.
+- **Stappen** boven de uitslag als tabs met een balk eronder in plaats van gevulde pillen.
 - **Scores**: de naam bij een score is een opschrift van 14 px in plaats van een H4, die de koppenschaal van de site op 20 px zette en bijna even groot maakte als de sectiekop. Kaartkoppen 16 px.
 - **Acties**: de pdf-knop op een eigen regel, Word, mail en deellink samen als tekstlinks eronder. Opnieuw beginnen is een rustige link zonder pijl, zoals Vorige.
 - **Duimpjes**: knoplabels in het kopfont (stonden in het bodyfont in hoofdletters), zonder emoji, met dezelfde rand als de keuzes; gekozen primair met witte tekst.
