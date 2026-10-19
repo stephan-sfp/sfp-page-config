@@ -130,6 +130,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Begrippen krijgen de vorm van de woordenlijst: een definitie bovenaan, verwante begrippen eronder en de definitie als tooltip in artikelen.',
             'detail' => false,
         ),
+        'tools'      => array(
+            'naam'   => 'Tools',
+            'uitleg' => 'Lichte tools voor bezoekers (zelftest en later generator, rekenaar en meer): een bericht van het type tool met een beschrijving, de motor rekent in de browser. Met pdf, Word, deellink, mail naar jezelf en duimpjes.',
+            'detail' => true,
+        ),
         'snippets'   => array(
             'naam'   => 'Snippetbeheer via REST',
             'uitleg' => 'Het serviceaccount claude-api leest, maakt, bewerkt en schakelt PHP-snippets van ASE Pro zonder browser.',
@@ -225,6 +230,7 @@ function sfp_page_config_onderdeel_standaard( $id ) {
             return false;
         case 'begrip':
         case 'pijler':
+        case 'tools':
             // Verandert adressen en de opmaak van berichten: alleen aan als iemand dat kiest.
             return false;
         default:
@@ -646,6 +652,7 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 break;
 
             case 'cron_email':
+            case 'tool_feedback_mail':
                 $alle[ $sleutel ] = sanitize_email( (string) $ruw );
                 $bewaard[]        = $sleutel;
                 break;

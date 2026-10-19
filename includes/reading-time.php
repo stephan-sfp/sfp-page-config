@@ -176,6 +176,11 @@ function sfp_page_config_scroll_progress_bar() {
     if ( function_exists( 'sfp_zelftest_pagina_test' ) && '' !== sfp_zelftest_pagina_test() ) {
         return;
     }
+    // Een tool heeft een eigen voortgang per vraag; de leesbalk zou daar
+    // dubbelop zijn.
+    if ( function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan() && is_singular( 'tool' ) ) {
+        return;
+    }
 
     ?>
     <div id="sfp-scroll-container" aria-hidden="true"><div id="sfp-scroll-bar"></div></div>

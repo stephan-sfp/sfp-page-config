@@ -4,6 +4,179 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0] - 2026-10-19
+
+De toolmotor met de soort test. Het onderdeel Tools staat standaard uit; op een site waar het uit staat verandert er niets. Op CVD staat het aan voor vijf tests (Kolb-leerstijlentest, intrinsieke motivatiescan, metacognitie-zelftest, didactische vaardigheden-test, welk didactisch model).
+
+### Toegevoegd
+- **Onderdeel Tools**: een tool is een bericht van het type tool met een beschrijving (JSON) in het metaveld `sfp_tool`, met revisies. De motor rekent in de browser; de server rekent alleen opnieuw voor de mail. Een beschrijving die niet klopt wordt geweigerd; in de editor controleer je hem met de knop Controleren.
+- **Soort test**: Likert, keuzes met punten per dimensie, context en vrije tekst; per vraag, per groep of alles op één pagina; uitkomst als hoogste, top, drempels, totaal, profiel, paar, kwadrant of regels; uitvoer als profiel, scorebalken, lijsten, kaarten, onderbouwing en vaste tekstblokken.
+- **Gedeeld**: genummerde stappen, voortgangsbalk, Vorige, toetsen 1 tot 5, Verder waar je was, deellink, pdf en Word uit lokale bibliotheken in de huisstijl van de pagina, mail naar jezelf (met limieten per adres, per IP en per site), duimpjes met tekstfeedback naar het adres in SFP Beheer, SureForms-formulier na de uitslag, teksten in nl, en en pt.
+- **Vorm Tool**: regel boven de titel, ondertitel, Hoe deze test rekent, makerskaart, Andere tools, gegevens voor Google, controles in het paneel en het Overzicht.
+- **Blok Tool** en shortcode `[sfp_tool]` voor een tool op een andere pagina. De oude koppelcode (`[cvd_tool_auto]` enz.) toont de nieuwe tool als die een beschrijving heeft, en anders de oude.
+
+### Vormgeving
+Volgens de merkbron: één knop (pdf) met tekstlinks met pijl als tweede keus, koppen en opschriften primair in hoofdletters, vragen, formuliervelden en uitklappers in gewone letters, geen grijze vlakken en geen kleuren buiten de kleurtabel, focusrand primair, contrast minstens 4,5. De uitslag staat in een vlak in Tint 2; op de eigen pagina van een tool geen tweede kader binnen de kaart van het thema. De proefversies hieronder beschrijven de stappen.
+
+## [3.8.0-beta.18] - 2026-10-19
+
+### Gewijzigd
+- **Pdf in de huisstijl van de pagina**: koppen, opschriften en scorenamen primair in hoofdletters, de uitslag in een vlak in Tint 2, scorebalken in Tint 1 met de uitslag in primair, genummerde tips in rondjes in Tint 2, opsommingen met een bolletje in de secundaire kleur, voetregel in de bodykleur. De kleur voor links en knoppen staat er niet meer in (het document heeft geen knoppen). Een tabel (zoals Onderbouwing) per rij met de eerste cel als opschrift in plaats van één regel met strepen.
+- **Word** op dezelfde rollen: koppen en opschriften primair in hoofdletters, tekst in de bodykleur.
+
+## [3.8.0-beta.17] - 2026-10-19
+
+### Gewijzigd
+- **Minder lichtblauw**: gedane stappen wit met een donkerblauwe rand en een vinkje, de lijn tot de actieve stap donkerblauw; lichtblauw (Tint 2) alleen nog voor wat komt. Geen ring meer om de actieve stap.
+- De teller boven de voortgangsbalk ("Vraag 2 van 16") zonder streepje: de balk eronder is het accent.
+
+## [3.8.0-beta.16] - 2026-10-19
+
+### Gewijzigd
+- **Uitslag als blikvanger**: opschrift, titel en uitleg in een vlak in Tint 2.
+- **Meer leven**: genummerde tips met rondjes zoals de stappen, opsommingen met een bolletje in de secundaire kleur, scorebalken dikker en groeiend bij het tonen, een ring om de actieve stap, een gekozen vakje veert even. Bewegingen vervallen bij de instelling voor minder beweging.
+- **Geen dubbel kader** op de eigen pagina van een tool: de kaart van het thema is het kader. Hoe deze test rekent hoort er met een lijn bij.
+- **Gewone letters** voor de duimvraag (opschrift van een formulierveld) en de uitklappers Onderbouwing en Hoe deze test rekent (zoals een vraag in een FAQ).
+
+### Opgelost (merkbron)
+- De stap Resultaat stond op halve dekking (contrast 3,45); nu volle kleur.
+- Geen mengkleuren meer buiten de kleurtabel: ondergrond van de scorebalken en keuzes onder de muis (nu Tint 2, respectievelijk alleen een sterkere rand), foutmelding (nu wit met een rand in de functionele foutkleur), helpteksten (nu de bodykleur in plaats van doorzichtig).
+
+## [3.8.0-beta.15] - 2026-10-19
+
+### Gewijzigd
+- **Stappen de hele tijd zichtbaar**, ook tijdens de context en de vragen, niet pas bij de uitslag. Resultaat staat lichter tot alle vragen beantwoord zijn.
+- Bij contextvragen geen opschriftregel meer (Context staat al in de stappen).
+
+## [3.8.0-beta.14] - 2026-10-19
+
+### Gewijzigd
+- **Stappen** als genummerde rondjes met een dunne lijn ertussen in plaats van tabs met een balk, die op de scorebalken en het accentstreepje leken.
+
+## [3.8.0-beta.13] - 2026-10-19
+
+### Gewijzigd
+- **Stappen** boven de uitslag als tabs met een balk eronder in plaats van gevulde pillen.
+- **Scores**: de naam bij een score is een opschrift van 14 px in plaats van een H4, die de koppenschaal van de site op 20 px zette en bijna even groot maakte als de sectiekop. Kaartkoppen 16 px.
+- **Acties**: de pdf-knop op een eigen regel, Word, mail en deellink samen als tekstlinks eronder. Opnieuw beginnen is een rustige link zonder pijl, zoals Vorige.
+- **Duimpjes**: knoplabels in het kopfont (stonden in het bodyfont in hoofdletters), zonder emoji, met dezelfde rand als de keuzes; gekozen primair met witte tekst.
+- Nummers en bolletjes in lijsten in de primaire kleur. Onderbouwing en Hoe deze test rekent met een eigen pijltje; Hoe deze test rekent in lijn met de inhoud van de kaart.
+
+## [3.8.0-beta.12] - 2026-10-19
+
+### Gewijzigd
+- Scores in de uitslag: de balken die niet de uitslag zijn in Tint 1 in plaats van een mengsel met de primaire kleur, dat grijs oogde.
+
+## [3.8.0-beta.11] - 2026-10-19
+
+### Gewijzigd
+- **Eén opschriftregel** boven de balk: "Vraag 1 van 16", met de groep ervoor als de vragen verschillende groepen hebben ("Autonomie · Vraag 1 van 15"), bij contextvragen alleen de groep ("Context"). Geen tweede opschrift meer boven de vraag.
+- **Opschriften in de primaire kleur**: kopfont in hoofdletters is nooit de bodykleur. Het accentstreepje ervoor staat in Tint 1 (bestaat bij elk merk, nooit wit).
+- **Focus** gaat bij een nieuwe vraag naar de vraag zelf, niet naar het eerste vakje (dat leek dan gekozen).
+- **Uitslag**: scores zonder kader per regel, een dunne balk in de primaire kleur; de uitslag vol, de andere lichter. Kaarten (zoals Ook geschikt) met dezelfde dunne rand als de keuzes.
+
+## [3.8.0-beta.10] - 2026-10-19
+
+### Gewijzigd
+- Opschriften (Vraag 5 van 16, Context, de regel boven de uitslag) in de bodykleur met een kort accentstreepje in de secundaire merkkleur ervoor, zodat ze verschillen van de vraag. Een gekleurde letter kan niet: geen accentkleur haalt op alle acht sites het contrast van 4,5 voor kleine tekst.
+
+## [3.8.0-beta.9] - 2026-10-19
+
+### Gerepareerd
+- Het keuzerondje werd door de opmaak van het thema een rood vierkantje; het is weer een rond, donkerblauw rondje. Ook een afgevinkt vakje in een afvinklijst is donkerblauw in plaats van rood.
+
+## [3.8.0-beta.8] - 2026-10-19
+
+### Gewijzigd
+- Keuzes wit met een dunne rand uit de primaire kleur en weer een rondje (in merkstijl): lichter en aantrekkelijker dan volle vlakken. Gekozen: donkerblauwe rand, Tint 2 en een gevuld rondje. Cijfervakjes wit met een rand; gekozen donkerblauw met een wit cijfer.
+- Verhoudingen: de vraag iets kleiner, keuzes minder hoog en dichter op elkaar, minder lucht boven in de kaart, het opschrift dichter bij de vraag.
+
+## [3.8.0-beta.7] - 2026-10-19
+
+### Gewijzigd
+- Keuzevlakken, de stappen en de voortgangsbalk in Tint 2 (onder de muis Tint 1) in plaats van een mengsel met de primaire kleur, dat grijs oogde. De merkbron kent geen grijze vlakken.
+- Bij contextvragen en in de weergave "alles op één pagina" geen lege voortgangsbalk of lege regel meer boven de vraag.
+
+## [3.8.0-beta.6] - 2026-10-19
+
+Een rustiger vraagscherm (robuust, simpel, aantrekkelijk), na het bekijken van de Kolb-test op CVD.
+
+### Gewijzigd
+- **Voortgang één keer:** boven de vraag alleen "Vraag 3 van 16" met een dunne balk in de primaire kleur. De stappen (Context, Vragen, Resultaat) staan er pas bij de uitslag.
+- **Schaal één keer:** geen legenda meer boven de vraag; onder de vakjes staat de betekenis van 1, 3 en 5.
+- **Keuzes als vlakken:** geen rand en geen zichtbaar rondje meer; een licht vlak uit de primaire kleur, gekozen helemaal primair met witte tekst. Het rondje blijft er voor toetsenbord en schermlezer.
+- **Opschrift alleen bij een nieuwe groep** (zoals Context of Autonomie), niet boven elke vraag.
+- **Vorige** staat onder de vraag, klein en rustig.
+
+### Gerepareerd
+- De velden onder de duimpjes (Wat kan beter, e-mail) stonden altijd open; ze verschijnen weer pas na een klik op een duim. Hetzelfde voor andere verborgen onderdelen van de tool.
+
+## [3.8.0-beta.5] - 2026-10-19
+
+Opmaak van de tool volgens de netwerknormen van de merkbron, na de eerste tests op CVD.
+
+### Gewijzigd
+- **Kleuren:** opschriften (zoals Context en de regel boven de uitslag), de rand van een gekozen antwoord en de focusrand staan in de primaire kleur in plaats van de kleur voor links en knoppen. Die kleur blijft voor knoppen, links en de voortgangsbalk.
+- **Koppen:** de koppen in de uitslag, de stappen, de niveaus bij de balken en "Hoe deze test rekent" staan in hoofdletters, in het kopfont op gewicht 900.
+- **De vraag** is het opschrift van een veld: gewone letters in het bodyfont, zoals in de oude tools.
+- **Knoppen:** één knop (Download als pdf), altijd gevuld. Word, mail, deellink en Opnieuw beginnen zijn tekstlinks met een pijl erachter, in gewone letters in het bodyfont op 900. Knoppen in het kopfont op 900, in hoofdletters.
+- **Afronding:** velden, antwoordvakken, meldingen en de duimpjes 6 px.
+
+### Gerepareerd
+- De oude koppelcode van een site (`[cvd_tool_auto]` in de Tool-layout van Astra) toont bij een tool met een beschrijving de nieuwe tool, of niets als die al op de pagina staat. Daarmee verdwijnt de melding "Tool-snippet … nog niet geregistreerd" voor redacteuren, en hoeft de layout van een site niet aangepast te worden. Zonder beschrijving werkt de oude code zoals altijd.
+
+## [3.8.0-beta.4] - 2026-10-19
+
+Kleine reparaties gevonden bij het omzetten van de vijf tests van CVD, en de omgezette tests als testvoorbeelden.
+
+### Gerepareerd
+- Mail naar jezelf: de scores staan in dezelfde volgorde als op het scherm (bij balken met een vaste volgorde stonden ze in de mail op volgorde van hoogte).
+- Mail naar jezelf: een titel in hoofdletters met accenten klopt (EÉN, niet EéN).
+- Controle: bij de regel paar met een eigen tabel paren meldde de controle ten onrechte uitslagen zonder tekst.
+
+### Toegevoegd
+- `tests/tool-voorbeelden/cvd`: de Kolb-leerstijlentest, Intrinsieke motivatiescan, Metacognitie-zelftest, Didactische vaardighedentest en Welk didactisch model, omgezet uit hun oude snippets met de teksten letterlijk. Elk gaf bij de vergelijking met de oude rekenlogica dezelfde uitslag en scores. `php tests/tool.php tests/tool-voorbeelden/cvd` legt PHP en de browser erop naast elkaar.
+
+## [3.8.0-beta.3] - 2026-10-19
+
+Reparaties na de review van 3.8.0-beta.2. Het onderdeel Tools staat nog steeds standaard uit.
+
+### Gerepareerd
+- **Zelfde uitslag op het scherm en in de mail:** de server en de browser ronden nu op dezelfde manier af. Bij een percentage van precies x,5 rondde de server naar boven en de browser soms naar beneden, waardoor een bezoeker op het scherm een andere uitslag kon zien dan in de mail.
+- **Mail naar jezelf met vraag-id's als Q1 of rol.1:** de server maakte die id's klein en schoon, vond de antwoorden daarna niet meer en weigerde elke mail. De id's blijven nu zoals ze zijn.
+- **Links in een beschrijving:** alleen een gewoon webadres (http of https), een pad op de site of een anker. Een andere link (zoals javascript:) wordt genegeerd en de controle meldt het. De gegevens voor Google kunnen geen code meer bevatten.
+- **Een beschrijving die de controle goedkeurt, laat de tool niet meer vastlopen:** losse teksten waar een lijst hoort (assen van een kwadrant, de lijst bij vast, lijsten en koppen bij alle) worden een lijst. Rijen voor een tabel blijven rijen.
+- **Nog vier verschillen tussen server en browser opgeheven:** dimensies met alleen cijfers als naam (volgorde), geneste vangnetten met labels (nu ook gesorteerd), == vergelijkt de tekst zoals hij is ("1.0" is niet "1"), en vreemde waarden uit een deellink (ja/nee, 1e1, 0x10) tellen niet als antwoord. Ook null bij anders, minimaal en vertaal geeft nu overal hetzelfde.
+- **Concepten, privé-tools en tools met een wachtwoord** zijn niet meer te zien via de code of het blok, en staan niet meer voor het wachtwoordformulier. Wie de tool mag bewerken, ziet een concept wel.
+- **Duimpjes:** alleen voor een gepubliceerde tool met duimpjes aan; een verzonnen naam wordt geweigerd. Wie van duim wisselt, telt niet meer dubbel: de vorige stem gaat eraf.
+- **Toetsenbord:** met de pijltjes kies je binnen een vraag zonder door te springen; Enter gaat naar de volgende vraag. In de weergave per groep gaan de cijfertoetsen naar de vraag met de focus (of de eerste open vraag) en schuift de focus door.
+- **Pdf en Word:** lukt het laden van de bibliotheek één keer niet, dan een melding en werkt een volgende klik weer (eerder bleef de knop stuk tot herladen).
+- **Deellink met vreemde inhoud** laat de tool niet meer leeg; alleen bekende vragen worden ingevuld.
+- Titels met leestekens (zoals Team's Q&A) staan zonder codes in de mail en in de gegevens voor Google.
+
+### Gewijzigd
+- **Met Tools uit verandert er niets:** de plugin registreert het berichttype tool (en /tools/) alleen met het onderdeel aan, zet alleen dan revisies aan op een bestaand type van een snippet, en alleen dan krijgt een tool de paginavelden en valt de leesbalk weg. Na aan- of uitzetten bouwt WordPress de adressen één keer opnieuw op.
+- **Mail naar jezelf:** vrije tekst van de bezoeker gaat niet meer mee in de mail, zodat niemand eigen tekst naar een willekeurig adres kan laten sturen. De link in de mail bouwt de server zelf. Limieten: 20 per IP per uur (IPv6 per /64, het IP van Cloudflare alleen als het verzoek echt van Cloudflare komt), 5 per adres per dag (naam+1@ telt als naam@), 100 per site per uur; elk met een vast venster.
+- De tool komt na de shortcodes in de tekst (prioriteit 12), zodat alinea's, aanhalingstekens en shortcodes van WordPress niet aan de teksten van de tool komen. Dezelfde tool twee keer op een pagina krijgt een eigen id.
+- Tests: `tests/tool.php` legt PHP en de browser nu altijd naast elkaar (met node), ook op onvolledige antwoorden en vreemde waarden, met de randgevallen uit de review. `tests/tool-wp.php` controleert de nieuwe regels.
+
+## [3.8.0-beta.2] - 2026-10-19
+
+Derde deel van de vormen: de toolmotor met de soort test (CVD als proefsite). Het onderdeel Tools staat standaard uit; zonder die instelling verandert er niets.
+
+### Toegevoegd
+- **Onderdeel Tools** (SFP Beheer, Onderdelen, standaard uit): een tool is een bericht van het type tool met een beschrijving (JSON) in het metaveld `sfp_tool`, met revisies. Per soort draait één vaste motor in de browser; niets wordt op de server bewaard. Claude schrijft de beschrijving via REST (een beschrijving die niet klopt wordt geweigerd), Stephan past teksten aan in het paneel Deze pagina met de knop Controleren. Formaat: claude/tools-motor-ontwerp-test-2026-10-19.md.
+- **Soort test:** Likert (ook omgekeerd), keuze met punten per dimensie (A of B, ja of nee, puntenmatrix), context en vrije tekst; weergave per vraag, per groep of alles op één pagina, met een startscherm; score per dimensie als som, telling, percentage of gecentreerd; uitkomst als hoogste, top N, drempels, totaal, profiel, paar, kwadrant of geordende regels, met een vangnet (ook genest), vertaling van sleutels, een minimum en een minimale spreiding; uitvoer uit vaste onderdelen (profiel, balken, lijsten, afvinklijst, laagste, niveaus, onderbouwing, tabel, link, vaste tekstblokken, alle dimensies, totaal).
+- **Gedeeld door de soorten:** stappenbalk, voortgangsbalk, Vorige, toetsen 1 tot 5, voortgang in de browser met de vraag Verder waar je was, deellink die dezelfde pagina op het resultaat opent, pdf en Word uit lokale bibliotheken in de plugin (jsPDF, docx, DejaVu Latijn), mail naar jezelf via één route (de server rekent de uitslag zelf opnieuw en bouwt de mail als tekst; 5 per adres per dag, 20 per IP per uur), duimpjes via één route met overname van de tellingen uit de oude snippets, tekstfeedback naar het adres in SFP Beheer, SureForms-formulier na de uitslag, teksten in nl, en, pt, kleuren uit Astra.
+- **Vorm Tool:** regel boven de titel (Zelftest in <pijler>), de samenvatting als regel onder de titel, de tool boven de tekst, "Hoe deze test rekent" ingeklapt met de stellingen en de rekenregel, makerskaart Gemaakt door met Bijgewerkt, Fact-checked en Gebaseerd op, Andere tools (eerst dezelfde pijler), gegevens voor Google (WebApplication, gratis, isBasedOn), controles in het paneel en in het Overzicht (beschrijving, pijler, samenvatting, formulier). Het paneel Deze pagina laadt nu ook bij een tool.
+- **Blok Tool** en shortcode `[sfp_tool id="" weergave="volledig|compact"]`: een tool op een andere pagina. Zonder id op de pagina van een tool: die tool zelf. Staat de artikelopmaak uit, dan zet de plugin de tool zelf boven de tekst van zijn pagina.
+- **SFP Beheer, Tools:** de tools met hun soort, meldingen en duimpjes, het adres voor tekstfeedback en de laatste tekstfeedback.
+- Tests: `tests/tool.php` (het rekenwerk in PHP tegen het script in de browser, op de 15 omgezette tests) en `tests/tool-wp.php` (lokale WordPress).
+
+### Gewijzigd
+- Het berichttype tool registreert de plugin alleen als geen snippet dat al doet; het krijgt revisies.
+- De leesbalk (onderdeel Voortgang) staat niet op een tool: die heeft een eigen voortgang per vraag.
+
 ## [3.7.1] - 2026-10-19
 
 ### Toegevoegd

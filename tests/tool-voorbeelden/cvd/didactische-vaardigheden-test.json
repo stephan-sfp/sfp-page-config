@@ -1,0 +1,196 @@
+{
+  "versie": 1,
+  "soort": "test",
+  "weergave": {
+    "modus": "per-groep",
+    "stappen": ["Context", "Vragen", "Resultaat"],
+    "schaal": { "1": "helemaal oneens", "5": "helemaal eens" }
+  },
+  "dimensies": {
+    "instructie": { "naam": "Instructie", "volledig": "Instructie" },
+    "groep": { "naam": "Groep", "volledig": "Groepsdynamiek" },
+    "feedback": { "naam": "Feedback", "volledig": "Feedback" },
+    "ontwerp": { "naam": "Ontwerp", "volledig": "Ontwerp" },
+    "reflectie": { "naam": "Reflectie", "volledig": "Reflectie" }
+  },
+  "vragen": [
+    {
+      "id": "rol", "type": "context", "groep": "Context", "tekst": "Rol",
+      "intro": "Vertel kort iets over je rol en ervaring.",
+      "opties": [
+        { "waarde": "trainer", "tekst": "Trainer" },
+        { "waarde": "docent", "tekst": "Docent" },
+        { "waarde": "opleider", "tekst": "Opleider" },
+        { "waarde": "aspirant", "tekst": "Aspirant-trainer" },
+        { "waarde": "coach", "tekst": "Coach" }
+      ]
+    },
+    {
+      "id": "ervaring", "type": "context", "groep": "Context", "tekst": "Jaren ervaring",
+      "opties": [
+        { "waarde": "geen", "tekst": "Nog niet" },
+        { "waarde": "0-2", "tekst": "0 tot 2 jaar" },
+        { "waarde": "2-5", "tekst": "2 tot 5 jaar" },
+        { "waarde": "5-10", "tekst": "5 tot 10 jaar" },
+        { "waarde": "10plus", "tekst": "10 jaar of meer" }
+      ]
+    },
+    { "id": "i1", "type": "likert", "groep": "Vragen", "dimensie": "instructie", "tekst": "Ik leg theorie uit op een manier die mensen direct begrijpen.", "intro": "Geef voor elke stelling aan in hoeverre die op jou van toepassing is. Antwoord eerlijk; er is geen goed of fout." },
+    { "id": "i2", "type": "likert", "groep": "Vragen", "dimensie": "instructie", "tekst": "Ik gebruik analogieen en voorbeelden om abstracte concepten te verhelderen." },
+    { "id": "i3", "type": "likert", "groep": "Vragen", "dimensie": "instructie", "tekst": "Ik schakel vloeiend tussen verschillende werkvormen tijdens een sessie." },
+    { "id": "i4", "type": "likert", "groep": "Vragen", "dimensie": "instructie", "tekst": "Ik herken het moment waarop ik moet stoppen met uitleggen en gaan oefenen." },
+    { "id": "g1", "type": "likert", "groep": "Vragen", "dimensie": "groep", "tekst": "Ik herken vroeg in een sessie welke deelnemers risico lopen niet mee te doen." },
+    { "id": "g2", "type": "likert", "groep": "Vragen", "dimensie": "groep", "tekst": "Ik weet hoe ik een dominante deelnemer terugbreng zonder hem of haar te krenken." },
+    { "id": "g3", "type": "likert", "groep": "Vragen", "dimensie": "groep", "tekst": "Ik creeer veiligheid in de groep zodat mensen eerlijk durven te zijn." },
+    { "id": "g4", "type": "likert", "groep": "Vragen", "dimensie": "groep", "tekst": "Ik gebruik subgroep-vormen om dynamiek bewust te sturen." },
+    { "id": "f1", "type": "likert", "groep": "Vragen", "dimensie": "feedback", "tekst": "Ik geef feedback die concreet is en direct toepasbaar." },
+    { "id": "f2", "type": "likert", "groep": "Vragen", "dimensie": "feedback", "tekst": "Ik scheid waarneming, interpretatie en gevolg in mijn feedback." },
+    { "id": "f3", "type": "likert", "groep": "Vragen", "dimensie": "feedback", "tekst": "Ik vraag actief om feedback van deelnemers en pas mijn aanpak aan." },
+    { "id": "f4", "type": "likert", "groep": "Vragen", "dimensie": "feedback", "tekst": "Ik beoordeel werk volgens vaste criteria, niet op gevoel." },
+    { "id": "o1", "type": "likert", "groep": "Vragen", "dimensie": "ontwerp", "tekst": "Ik bouw een training op rond duidelijke leerdoelen." },
+    { "id": "o2", "type": "likert", "groep": "Vragen", "dimensie": "ontwerp", "tekst": "Ik kies werkvormen op basis van het leerdoel, niet op basis van gewoonte." },
+    { "id": "o3", "type": "likert", "groep": "Vragen", "dimensie": "ontwerp", "tekst": "Ik plan tijd, materialen en aanmoedigingsmomenten vooraf in." },
+    { "id": "o4", "type": "likert", "groep": "Vragen", "dimensie": "ontwerp", "tekst": "Ik bouw evaluatiemomenten in om bij te sturen tijdens de sessie." },
+    { "id": "r1", "type": "likert", "groep": "Vragen", "dimensie": "reflectie", "tekst": "Ik kijk na elke sessie kritisch naar mijn eigen aandeel." },
+    { "id": "r2", "type": "likert", "groep": "Vragen", "dimensie": "reflectie", "tekst": "Ik herken in mijn eigen gedrag patronen die niet werken." },
+    { "id": "r3", "type": "likert", "groep": "Vragen", "dimensie": "reflectie", "tekst": "Ik vraag een collega om mee te kijken bij sessies waar ik aan twijfel." },
+    { "id": "r4", "type": "likert", "groep": "Vragen", "dimensie": "reflectie", "tekst": "Ik investeer structureel in mijn eigen ontwikkeling als trainer." },
+    {
+      "id": "aandacht", "type": "tekst", "groep": "Focus", "optioneel": true,
+      "intro": "Optioneel: waar zou je vooral op willen groeien? Dit komt in je rapport.",
+      "tekst": "Aandachtsgebied (optioneel)",
+      "voorbeeld": "bv. ik wil scherper feedback leren geven, ik wil meer rust in de groep brengen",
+      "maxlengte": 320
+    }
+  ],
+  "score": { "per_dimensie": "percentage" },
+  "uitkomst": {
+    "regel": "paar",
+    "minimale_spreiding": 25,
+    "anders": "allrounder",
+    "paren": {
+      "instructie+ontwerp": "vakman",
+      "groep+feedback": "verbinder",
+      "ontwerp+reflectie": "architect",
+      "feedback+reflectie": "spiegel",
+      "instructie+feedback": "ontwikkelaar"
+    },
+    "vertaal": {
+      "instructie+groep": "allrounder",
+      "instructie+feedback": "ontwikkelaar",
+      "instructie+ontwerp": "vakman",
+      "instructie+reflectie": "allrounder",
+      "groep+feedback": "verbinder",
+      "groep+ontwerp": "allrounder",
+      "groep+reflectie": "allrounder",
+      "feedback+ontwerp": "allrounder",
+      "feedback+reflectie": "spiegel",
+      "ontwerp+reflectie": "architect"
+    }
+  },
+  "labels": [
+    { "vanaf": 75, "tekst": "Sterk", "sleutel": "sterk" },
+    { "vanaf": 60, "tekst": "Op niveau", "sleutel": "op-niveau" },
+    { "vanaf": 40, "tekst": "Aandachtspunt", "sleutel": "aandachtspunt" },
+    { "vanaf": 0, "tekst": "Groeigebied", "sleutel": "groeigebied" }
+  ],
+  "uitslagen": {
+    "vakman": {
+      "titel": "Vakman: sterk in instructie en ontwerp, ruimte voor groei in groepsdynamiek of reflectie.",
+      "tekst": "Rol: {context.rol} • Ervaring: {context.ervaring}",
+      "lijsten": { "bestand": ["vakman"] }
+    },
+    "verbinder": {
+      "titel": "Verbinder: sterk in groepsdynamiek en feedback, ruimte voor groei in ontwerp of reflectie.",
+      "tekst": "Rol: {context.rol} • Ervaring: {context.ervaring}",
+      "lijsten": { "bestand": ["verbinder"] }
+    },
+    "architect": {
+      "titel": "Architect: sterk in ontwerp en reflectie, ruimte voor groei in instructie of groepsdynamiek.",
+      "tekst": "Rol: {context.rol} • Ervaring: {context.ervaring}",
+      "lijsten": { "bestand": ["architect"] }
+    },
+    "spiegel": {
+      "titel": "Spiegel: sterk in feedback en reflectie, ruimte voor groei in instructie of ontwerp.",
+      "tekst": "Rol: {context.rol} • Ervaring: {context.ervaring}",
+      "lijsten": { "bestand": ["spiegel"] }
+    },
+    "ontwikkelaar": {
+      "titel": "Ontwikkelaar: sterk in instructie en feedback, ruimte voor groei in groepsdynamiek of ontwerp.",
+      "tekst": "Rol: {context.rol} • Ervaring: {context.ervaring}",
+      "lijsten": { "bestand": ["ontwikkelaar"] }
+    },
+    "allrounder": {
+      "titel": "Allrounder: relatief gelijkmatig op alle vijf dimensies. Verdiep in 1 dimensie naar keuze.",
+      "tekst": "Rol: {context.rol} • Ervaring: {context.ervaring}",
+      "lijsten": { "bestand": ["allrounder"] }
+    },
+
+    "instructie": { "lijsten": { "tips": [
+      "Werk je uitleg uit met 1 analogie of metafoor uit de leefwereld van je lerenden.",
+      "Beperk je uitleg-blok tot maximaal 7 minuten en wissel daarna af met een opdracht.",
+      "Controleer na elk uitleg-onderdeel met een check-vraag (CCQ) of de boodschap is overgekomen."
+    ] } },
+    "groep": { "lijsten": { "tips": [
+      "Maak in de eerste 15 minuten contact met elke deelnemer, hoe kort ook.",
+      "Spreek dominantie expliciet maar respectvol aan: \"Bedankt, dat is helder. Ik ben benieuwd naar de anderen.\"",
+      "Werk vaker met subgroep-vormen (duos, drietallen) om passieve deelnemers te activeren."
+    ] } },
+    "feedback": { "lijsten": { "tips": [
+      "Gebruik het waarneming-interpretatie-gevolg-model expliciet in je feedback-zinnen.",
+      "Stel deelnemers in groepswerk de vraag: \"Wat ga je hier morgen mee doen?\" om feedback om te zetten in actie.",
+      "Vraag aan het eind van elke sessie om 1 feedback-punt op jouzelf."
+    ] } },
+    "ontwerp": { "lijsten": { "tips": [
+      "Begin je voorbereiding altijd bij het leerdoel, niet bij de werkvormen.",
+      "Maak een eenvoudige toetsmatrix: doel <> werkvorm <> evaluatie. Check dat elk doel een evaluatie-moment heeft.",
+      "Plan minimaal 2 buffer-momenten in je tijdspad voor onverwachte verdieping."
+    ] } },
+    "reflectie": { "lijsten": { "tips": [
+      "Schrijf na elke sessie binnen 24 uur 3 zinnen op: wat ging goed, wat niet, wat doe ik anders.",
+      "Vraag 1x per kwartaal een collega om mee te kijken bij een sessie waar je aan twijfelt.",
+      "Lees per kwartaal 1 boek of 3 artikelen over een didactisch thema dat je raakt."
+    ] } },
+
+    "instructie:sterk": "Werk je uitleg uit met 1 analogie of metafoor uit de leefwereld van je lerenden.",
+    "instructie:op-niveau": "Werk je uitleg uit met 1 analogie of metafoor uit de leefwereld van je lerenden.",
+    "instructie:aandachtspunt": "Werk je uitleg uit met 1 analogie of metafoor uit de leefwereld van je lerenden.",
+    "instructie:groeigebied": "Werk je uitleg uit met 1 analogie of metafoor uit de leefwereld van je lerenden.",
+    "groep:sterk": "Maak in de eerste 15 minuten contact met elke deelnemer, hoe kort ook.",
+    "groep:op-niveau": "Maak in de eerste 15 minuten contact met elke deelnemer, hoe kort ook.",
+    "groep:aandachtspunt": "Maak in de eerste 15 minuten contact met elke deelnemer, hoe kort ook.",
+    "groep:groeigebied": "Maak in de eerste 15 minuten contact met elke deelnemer, hoe kort ook.",
+    "feedback:sterk": "Gebruik het waarneming-interpretatie-gevolg-model expliciet in je feedback-zinnen.",
+    "feedback:op-niveau": "Gebruik het waarneming-interpretatie-gevolg-model expliciet in je feedback-zinnen.",
+    "feedback:aandachtspunt": "Gebruik het waarneming-interpretatie-gevolg-model expliciet in je feedback-zinnen.",
+    "feedback:groeigebied": "Gebruik het waarneming-interpretatie-gevolg-model expliciet in je feedback-zinnen.",
+    "ontwerp:sterk": "Begin je voorbereiding altijd bij het leerdoel, niet bij de werkvormen.",
+    "ontwerp:op-niveau": "Begin je voorbereiding altijd bij het leerdoel, niet bij de werkvormen.",
+    "ontwerp:aandachtspunt": "Begin je voorbereiding altijd bij het leerdoel, niet bij de werkvormen.",
+    "ontwerp:groeigebied": "Begin je voorbereiding altijd bij het leerdoel, niet bij de werkvormen.",
+    "reflectie:sterk": "Schrijf na elke sessie binnen 24 uur 3 zinnen op: wat ging goed, wat niet, wat doe ik anders.",
+    "reflectie:op-niveau": "Schrijf na elke sessie binnen 24 uur 3 zinnen op: wat ging goed, wat niet, wat doe ik anders.",
+    "reflectie:aandachtspunt": "Schrijf na elke sessie binnen 24 uur 3 zinnen op: wat ging goed, wat niet, wat doe ik anders.",
+    "reflectie:groeigebied": "Schrijf na elke sessie binnen 24 uur 3 zinnen op: wat ging goed, wat niet, wat doe ik anders."
+  },
+  "uitvoer": [
+    { "type": "profiel", "kop": "Jouw didactisch competentie-profiel" },
+    { "type": "niveaus", "kop": "Jouw scores per dimensie", "sorteer": "vast" },
+    { "type": "laagste", "kop": "Top-3 aandachtspunten", "aantal": 3, "lijst": "tips" },
+    { "type": "alle", "kop": "Tips voor groei", "lijsten": ["tips"] },
+    { "type": "tekst", "kop": "Jouw eigen aandachtsgebied", "bron": "vraag.aandacht" }
+  ],
+  "acties": {
+    "pdf": true,
+    "word": false,
+    "mail": false,
+    "deellink": true,
+    "duimpjes": true,
+    "formulier": 0,
+    "pdf_bestandsnaam": "cvd-tool-didactische-vaardigheden-test-{uitslag.bestand}"
+  },
+  "teksten": {
+    "tool_pdf": "Download als PDF",
+    "tool_bestand_fout": "Er ging iets mis bij het maken van de PDF."
+  }
+}

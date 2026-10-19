@@ -1,0 +1,154 @@
+{
+  "versie": 1,
+  "soort": "test",
+  "weergave": {
+    "modus": "per-vraag",
+    "stappen": ["Context", "Vragen", "Profiel"],
+    "schaal": { "1": "helemaal oneens", "3": "neutraal", "5": "helemaal eens" }
+  },
+  "dimensies": {
+    "autonomie": { "naam": "Autonomie", "volledig": "Autonomie" },
+    "competentie": { "naam": "Competentie", "volledig": "Competentie" },
+    "verbondenheid": { "naam": "Verbondenheid", "volledig": "Verbondenheid" }
+  },
+  "vragen": [
+    { "id": "rol", "type": "context", "groep": "Jouw rol en situatie", "tekst": "Wat is jouw rol?", "opties": [
+      { "waarde": "trainer", "tekst": "Trainer of docent" },
+      { "waarde": "cursist", "tekst": "Cursist of student" },
+      { "waarde": "leidinggevende", "tekst": "Leidinggevende of teamleider" },
+      { "waarde": "professional", "tekst": "Werkende professional" },
+      { "waarde": "anders", "tekst": "Anders" }
+    ] },
+    { "id": "situatie", "type": "context", "groep": "Jouw rol en situatie", "tekst": "Op welke situatie pas je de scan toe?", "opties": [
+      { "waarde": "werk", "tekst": "Mijn huidige werk algemeen" },
+      { "waarde": "taak", "tekst": "Een specifieke taak of project" },
+      { "waarde": "leren", "tekst": "Een leertraject of opleiding" },
+      { "waarde": "team", "tekst": "Mijn team of samenwerking" }
+    ] },
+    { "id": "a1", "type": "likert", "dimensie": "autonomie", "groep": "Autonomie", "tekst": "Ik kan in deze situatie zelf bepalen hoe ik mijn werk aanpak." },
+    { "id": "a2", "type": "likert", "dimensie": "autonomie", "groep": "Autonomie", "tekst": "Mijn keuzes worden gerespecteerd, ook als ze afwijken van de norm." },
+    { "id": "a3", "type": "likert", "dimensie": "autonomie", "groep": "Autonomie", "tekst": "Ik werk voornamelijk aan dingen die ik zelf belangrijk vind." },
+    { "id": "a4", "type": "likert", "dimensie": "autonomie", "groep": "Autonomie", "tekst": "Ik heb ruimte om mijn eigen tempo en methode te kiezen." },
+    { "id": "a5", "type": "likert", "dimensie": "autonomie", "groep": "Autonomie", "tekst": "Ik voel me niet onder druk gezet om dingen te doen die niet bij mij passen." },
+    { "id": "c1", "type": "likert", "dimensie": "competentie", "groep": "Competentie", "tekst": "Ik ervaar in deze situatie dat ik dingen goed kan." },
+    { "id": "c2", "type": "likert", "dimensie": "competentie", "groep": "Competentie", "tekst": "Ik krijg geregeld de bevestiging dat mijn werk waarde heeft." },
+    { "id": "c3", "type": "likert", "dimensie": "competentie", "groep": "Competentie", "tekst": "De uitdagingen die ik krijg passen bij wat ik aankan." },
+    { "id": "c4", "type": "likert", "dimensie": "competentie", "groep": "Competentie", "tekst": "Ik leer regelmatig nieuwe dingen die mij beter maken." },
+    { "id": "c5", "type": "likert", "dimensie": "competentie", "groep": "Competentie", "tekst": "Ik zie zichtbaar resultaat van wat ik doe." },
+    { "id": "v1", "type": "likert", "dimensie": "verbondenheid", "groep": "Verbondenheid", "tekst": "Ik voel me thuis bij de mensen om me heen in deze situatie." },
+    { "id": "v2", "type": "likert", "dimensie": "verbondenheid", "groep": "Verbondenheid", "tekst": "Ik ervaar dat anderen oprecht in mij geïnteresseerd zijn." },
+    { "id": "v3", "type": "likert", "dimensie": "verbondenheid", "groep": "Verbondenheid", "tekst": "Ik kan eerlijk zijn over wat ik denk en voel." },
+    { "id": "v4", "type": "likert", "dimensie": "verbondenheid", "groep": "Verbondenheid", "tekst": "Mijn bijdrage doet ertoe voor mensen die ik waardeer." },
+    { "id": "v5", "type": "likert", "dimensie": "verbondenheid", "groep": "Verbondenheid", "tekst": "Ik werk vaak samen met mensen waarbij ik energie krijg." },
+    { "id": "aandacht", "type": "tekst", "optioneel": true, "groep": "Verdieping", "tekst": "Wil je ergens extra op letten? Optioneel. Wat je hier invult, komt in je rapport.", "voorbeeld": "bv. ik merk dat ik vooral in opdracht-werk weinig fut heb, ik wil verbondenheid met mijn team versterken", "maxlengte": 320 }
+  ],
+  "score": { "per_dimensie": "percentage" },
+  "labels": [
+    { "vanaf": 75, "tekst": "Sterk" },
+    { "vanaf": 60, "tekst": "Op niveau" },
+    { "vanaf": 40, "tekst": "Aandacht" },
+    { "vanaf": 0, "tekst": "Groeigebied" }
+  ],
+  "uitkomst": {
+    "regel": "profiel",
+    "regels": [
+      { "als": [ ["gemiddelde", ">=", 70], ["spreiding", "<=", 25] ], "dan": "sterk-in-balans" },
+      { "als": [ ["gemiddelde", ">=", 50], ["spreiding", "<=", 25] ], "dan": "stevige-basis" },
+      { "als": [ ["spreiding", "<=", 25] ], "dan": "onder-druk" }
+    ],
+    "anders": {
+      "regel": "kwadrant",
+      "assen": {
+        "x": { "naam": "competentie min autonomie", "plus": ["competentie"], "min": ["autonomie"] },
+        "y": { "naam": "verbondenheid min autonomie", "plus": ["verbondenheid"], "min": ["autonomie"] }
+      },
+      "nul": "+",
+      "kwadranten": { "x+y+": "autonomie-aandacht", "x-y+": "competentie-aandacht", "x+y-": "verbondenheid-aandacht" },
+      "anders": {
+        "regel": "kwadrant",
+        "assen": {
+          "x": { "naam": "verbondenheid min competentie", "plus": ["verbondenheid"], "min": ["competentie"] },
+          "y": { "naam": "leeg", "plus": [], "min": [] }
+        },
+        "nul": "+",
+        "kwadranten": { "x+y+": "competentie-aandacht", "x-y+": "verbondenheid-aandacht" }
+      }
+    }
+  },
+  "uitslagen": {
+    "sterk-in-balans": {
+      "titel": "Sterk in balans",
+      "tekst": "Je drie pijlers staan stevig en bij elkaar in de buurt. Je intrinsieke motivatie is voldoende gevoed in deze situatie. Houd de balans vast door bewust te blijven investeren in alle drie.",
+      "lijsten": { "pdfnaam": ["sterk-in-balans"] }
+    },
+    "stevige-basis": {
+      "titel": "Stevige basis met groeiruimte",
+      "tekst": "Je motivatie is stevig maar niet maximaal. Alle drie pijlers krijgen aandacht. Pak het laagst-scorende cluster eerst aan voor een grote sprong.",
+      "lijsten": { "pdfnaam": ["stevige-basis-met-groeiruimte"] }
+    },
+    "autonomie-aandacht": {
+      "titel": "Autonomie vraagt nu aandacht",
+      "tekst": "Je profiel laat een duidelijke onbalans zien. Autonomie staat fors lager dan de andere twee. Daar zit waarschijnlijk het meeste energieverlies. Investeren hierin geeft snel resultaat.",
+      "lijsten": { "pdfnaam": ["autonomie-vraagt-nu-aandacht"] }
+    },
+    "competentie-aandacht": {
+      "titel": "Competentie vraagt nu aandacht",
+      "tekst": "Je profiel laat een duidelijke onbalans zien. Competentie staat fors lager dan de andere twee. Daar zit waarschijnlijk het meeste energieverlies. Investeren hierin geeft snel resultaat.",
+      "lijsten": { "pdfnaam": ["competentie-vraagt-nu-aandacht"] }
+    },
+    "verbondenheid-aandacht": {
+      "titel": "Verbondenheid vraagt nu aandacht",
+      "tekst": "Je profiel laat een duidelijke onbalans zien. Verbondenheid staat fors lager dan de andere twee. Daar zit waarschijnlijk het meeste energieverlies. Investeren hierin geeft snel resultaat.",
+      "lijsten": { "pdfnaam": ["verbondenheid-vraagt-nu-aandacht"] }
+    },
+    "onder-druk": {
+      "titel": "Alle drie onder druk",
+      "tekst": "Je drie pijlers staan onder druk. Dit is een signaal om je situatie eens grondig tegen het licht te houden. Wat zou er voor jou moeten veranderen om de waarde van je werk terug te krijgen?",
+      "lijsten": { "pdfnaam": ["alle-drie-onder-druk"] }
+    }
+  },
+  "lijsten": {
+    "tips_autonomie": [
+      "Vraag bewust naar keuzemogelijkheden voor je een taak aanneemt. \"Welke aanpak heeft je voorkeur?\" is een sterke opener.",
+      "Kies elke week 1 taak die volledig naar jouw eigen invulling mag. Er kan vaak meer dan je denkt.",
+      "Bespreek momenten waarop je druk ervaart met je leidinggevende of opdrachtgever en onderhandel waar je echt zelf kunt sturen."
+    ],
+    "tips_competentie": [
+      "Maak je groei zichtbaar: noteer wekelijks 1 concreet ding dat je beter kunt dan een maand geleden.",
+      "Vraag actief om feedback van een collega of leidinggevende: \"Wat ging hier goed, wat kan beter?\"",
+      "Kies een leerdoel dat net buiten je comfortzone ligt maar haalbaar is. Te makkelijk geeft geen competentiegevoel, te moeilijk geeft frustratie."
+    ],
+    "tips_verbondenheid": [
+      "Plan 1x per week een check-in van 15 minuten met iemand uit je werkkring zonder agenda. Het gesprek zelf is de waarde.",
+      "Deel een keer een twijfel of fout met een collega. Kwetsbaarheid creëert verbondenheid sneller dan succes.",
+      "Kies 2-3 mensen van wie je energie krijgt en investeer bewust in die relaties."
+    ]
+  },
+  "uitvoer": [
+    { "type": "profiel", "kop": "Jouw motivatieprofiel" },
+    { "type": "balken", "kop": "Jouw scores per pijler", "sorteer": "vast" },
+    { "type": "lijst", "kop": "Tips om autonomie te versterken", "bron": "lijsten.tips_autonomie" },
+    { "type": "lijst", "kop": "Tips om competentie te versterken", "bron": "lijsten.tips_competentie" },
+    { "type": "lijst", "kop": "Tips om verbondenheid te versterken", "bron": "lijsten.tips_verbondenheid" },
+    { "type": "tekst", "kop": "Jouw eigen aandachtsgebied", "bron": "vraag.aandacht" }
+  ],
+  "acties": {
+    "pdf": true,
+    "word": false,
+    "mail": true,
+    "deellink": true,
+    "duimpjes": true,
+    "formulier": 0,
+    "pdf_bestandsnaam": "intrinsieke-motivatiescan-{uitslag.pdfnaam}"
+  },
+  "mail": {
+    "onderwerp": "Jouw intrinsieke-motivatie-profiel: {uitslag.titel}",
+    "intro": "JOUW INTRINSIEKE-MOTIVATIE-PROFIEL"
+  },
+  "bron": { "model": "Self-Determination Theory, Deci en Ryan" },
+  "teksten": {
+    "tool_pdf": "Download als PDF",
+    "tool_mail": "Stuur mij dit rapport",
+    "tool_volgende": "Bekijk mijn profiel"
+  }
+}

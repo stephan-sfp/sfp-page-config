@@ -1,0 +1,631 @@
+{
+  "versie": 1,
+  "soort": "test",
+  "weergave": {
+    "modus": "per-groep"
+  },
+  "dimensies": {
+    "van_gelder": {
+      "naam": "Van Gelder (didactisch analyse-model)",
+      "volledig": "Van Gelder (didactisch analyse-model)"
+    },
+    "addie": {
+      "naam": "ADDIE",
+      "volledig": "ADDIE"
+    },
+    "fourcid": {
+      "naam": "4C/ID (Vier-Componenten Instructie-Ontwerp)",
+      "volledig": "4C/ID (Vier-Componenten Instructie-Ontwerp)"
+    },
+    "backward": {
+      "naam": "Backward Design",
+      "volledig": "Backward Design"
+    },
+    "tpack": {
+      "naam": "TPACK",
+      "volledig": "TPACK"
+    },
+    "direct_instruction": {
+      "naam": "Direct Instruction (Rosenshine)",
+      "volledig": "Direct Instruction (Rosenshine)"
+    },
+    "bik": {
+      "naam": "BIK-model",
+      "volledig": "BIK-model"
+    }
+  },
+  "vragen": [
+    {
+      "id": "doelgroep",
+      "type": "keuze",
+      "groep": "Doel",
+      "tekst": "Doelgroep",
+      "intro": "Voor wie ontwerp je en wat moet de lerende straks kunnen?",
+      "opties": [
+        {
+          "waarde": "basis",
+          "tekst": "Basisonderwijs",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 1,
+            "backward": 1,
+            "direct_instruction": 3,
+            "bik": 3
+          }
+        },
+        {
+          "waarde": "vo-mbo",
+          "tekst": "VO of MBO",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 2,
+            "fourcid": 1,
+            "backward": 2,
+            "tpack": 1,
+            "direct_instruction": 3,
+            "bik": 2
+          }
+        },
+        {
+          "waarde": "hbo-wo",
+          "tekst": "HBO of WO",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 3,
+            "fourcid": 3,
+            "backward": 3,
+            "tpack": 2,
+            "direct_instruction": 1,
+            "bik": 1
+          }
+        },
+        {
+          "waarde": "profs",
+          "tekst": "Professionals",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 3,
+            "fourcid": 3,
+            "backward": 2,
+            "tpack": 2,
+            "direct_instruction": 1
+          }
+        },
+        {
+          "waarde": "mix",
+          "tekst": "Gemengde groep",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 2,
+            "fourcid": 1,
+            "backward": 2,
+            "tpack": 2,
+            "direct_instruction": 1,
+            "bik": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "doel",
+      "type": "keuze",
+      "groep": "Doel",
+      "tekst": "Doel",
+      "opties": [
+        {
+          "waarde": "kennis",
+          "tekst": "Kennis overdragen",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 2,
+            "backward": 2,
+            "tpack": 1,
+            "direct_instruction": 3,
+            "bik": 2
+          }
+        },
+        {
+          "waarde": "vaardigheid",
+          "tekst": "Vaardigheid trainen",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 2,
+            "fourcid": 3,
+            "backward": 2,
+            "tpack": 1,
+            "direct_instruction": 2
+          }
+        },
+        {
+          "waarde": "attitude",
+          "tekst": "Attitude veranderen",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 1,
+            "fourcid": 1,
+            "backward": 2,
+            "bik": 1
+          }
+        },
+        {
+          "waarde": "probleem",
+          "tekst": "Probleem oplossen leren",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 2,
+            "fourcid": 3,
+            "backward": 3,
+            "tpack": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "vakgebied",
+      "type": "tekst",
+      "groep": "Context",
+      "tekst": "Vakgebied (optioneel)",
+      "intro": "Wat is de context van je les of training?",
+      "optioneel": true,
+      "maxlengte": 120,
+      "voorbeeld": "bv. wiskunde, communicatie, verpleegkunde"
+    },
+    {
+      "id": "tijd",
+      "type": "keuze",
+      "groep": "Context",
+      "tekst": "Tijdsduur",
+      "opties": [
+        {
+          "waarde": "les",
+          "tekst": "1 les",
+          "punten": {
+            "van_gelder": 3,
+            "backward": 1,
+            "tpack": 1,
+            "direct_instruction": 3,
+            "bik": 3
+          }
+        },
+        {
+          "waarde": "module",
+          "tekst": "1 module",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 2,
+            "fourcid": 2,
+            "backward": 2,
+            "tpack": 2,
+            "direct_instruction": 2,
+            "bik": 1
+          }
+        },
+        {
+          "waarde": "cursus",
+          "tekst": "Hele cursus",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 3,
+            "fourcid": 3,
+            "backward": 3,
+            "tpack": 2,
+            "direct_instruction": 1
+          }
+        },
+        {
+          "waarde": "traject",
+          "tekst": "Langer traject",
+          "punten": {
+            "addie": 3,
+            "fourcid": 3,
+            "backward": 3,
+            "tpack": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "modus",
+      "type": "keuze",
+      "groep": "Context",
+      "tekst": "Modus",
+      "opties": [
+        {
+          "waarde": "ftf",
+          "tekst": "Face-to-face",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 2,
+            "fourcid": 2,
+            "backward": 2,
+            "direct_instruction": 3,
+            "bik": 2
+          }
+        },
+        {
+          "waarde": "online",
+          "tekst": "Online",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 2,
+            "fourcid": 1,
+            "backward": 2,
+            "tpack": 3,
+            "direct_instruction": 2,
+            "bik": 1
+          }
+        },
+        {
+          "waarde": "hybride",
+          "tekst": "Hybride",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 2,
+            "fourcid": 2,
+            "backward": 2,
+            "tpack": 3,
+            "direct_instruction": 1,
+            "bik": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "voorkennis",
+      "type": "keuze",
+      "groep": "Niveau",
+      "tekst": "Voorkennis",
+      "intro": "Wat is het uitgangsniveau van de lerenden en hoe wordt beoordeeld?",
+      "opties": [
+        {
+          "waarde": "geen",
+          "tekst": "Bijna niets",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 1,
+            "backward": 1,
+            "direct_instruction": 3,
+            "bik": 3
+          }
+        },
+        {
+          "waarde": "basis",
+          "tekst": "Basis",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 2,
+            "fourcid": 1,
+            "backward": 2,
+            "tpack": 1,
+            "direct_instruction": 2,
+            "bik": 2
+          }
+        },
+        {
+          "waarde": "gevorderd",
+          "tekst": "Gevorderd",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 2,
+            "fourcid": 3,
+            "backward": 3,
+            "tpack": 2,
+            "direct_instruction": 1,
+            "bik": 1
+          }
+        },
+        {
+          "waarde": "expert",
+          "tekst": "Experts",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 2,
+            "fourcid": 3,
+            "backward": 3,
+            "tpack": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "beoordeling",
+      "type": "keuze",
+      "groep": "Niveau",
+      "tekst": "Beoordeling",
+      "opties": [
+        {
+          "waarde": "formatief",
+          "tekst": "Vooral formatief",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 2,
+            "fourcid": 2,
+            "backward": 3,
+            "tpack": 2,
+            "direct_instruction": 1,
+            "bik": 1
+          }
+        },
+        {
+          "waarde": "summatief",
+          "tekst": "Vooral summatief",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 2,
+            "fourcid": 2,
+            "backward": 3,
+            "tpack": 1,
+            "direct_instruction": 2
+          }
+        },
+        {
+          "waarde": "portfolio",
+          "tekst": "Portfolio",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 3,
+            "fourcid": 3,
+            "backward": 3,
+            "tpack": 2
+          }
+        },
+        {
+          "waarde": "geen",
+          "tekst": "Geen formele beoordeling",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 1,
+            "fourcid": 1,
+            "tpack": 1,
+            "direct_instruction": 1,
+            "bik": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "stijl",
+      "type": "keuze",
+      "groep": "Stijl",
+      "tekst": "Werkstijl",
+      "intro": "Welke rol pas jij het liefst en hoe loop je de stof door?",
+      "opties": [
+        {
+          "waarde": "expert",
+          "tekst": "Expert die uitleg geeft",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 1,
+            "fourcid": 1,
+            "backward": 1,
+            "tpack": 1,
+            "direct_instruction": 3,
+            "bik": 2
+          }
+        },
+        {
+          "waarde": "coach",
+          "tekst": "Coach die begeleidt",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 1,
+            "fourcid": 2,
+            "backward": 1,
+            "tpack": 1,
+            "direct_instruction": 1
+          }
+        },
+        {
+          "waarde": "ontwerper",
+          "tekst": "Ontwerper van leerervaringen",
+          "punten": {
+            "van_gelder": 2,
+            "addie": 3,
+            "fourcid": 3,
+            "backward": 3,
+            "tpack": 2,
+            "direct_instruction": 1,
+            "bik": 1
+          }
+        },
+        {
+          "waarde": "facilitator",
+          "tekst": "Facilitator van leergroep",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 1,
+            "fourcid": 2,
+            "backward": 1,
+            "tpack": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "iteratie",
+      "type": "keuze",
+      "groep": "Stijl",
+      "tekst": "Iteratief of eenmalig?",
+      "opties": [
+        {
+          "waarde": "eenmalig",
+          "tekst": "Een doorloop",
+          "punten": {
+            "van_gelder": 2,
+            "fourcid": 1,
+            "backward": 2,
+            "tpack": 1,
+            "direct_instruction": 3,
+            "bik": 2
+          }
+        },
+        {
+          "waarde": "iteratief",
+          "tekst": "Herhaalde iteraties",
+          "punten": {
+            "van_gelder": 1,
+            "addie": 3,
+            "fourcid": 3,
+            "backward": 3,
+            "tpack": 2,
+            "direct_instruction": 1
+          }
+        }
+      ]
+    }
+  ],
+  "score": {
+    "per_dimensie": "som"
+  },
+  "uitkomst": {
+    "regel": "hoogste"
+  },
+  "uitslagen": {
+    "van_gelder": {
+      "titel": "Van Gelder (didactisch analyse-model)",
+      "tekst": "Het Van Gelder-model analyseert een les of training in zeven samenhangende didactische componenten: doelen, beginsituatie, leerstof, werkvormen, media, sociale vormen en evaluatie. Het is sterk voor het analyseren van een bestaande of geplande les.",
+      "lijsten": {
+        "stappenplan": [
+          "Beschrijf de doelen en beginsituatie van de lerenden.",
+          "Kies de leerstof en de werkvormen die passen bij de doelen.",
+          "Bepaal de media en de sociale vorm (klassikaal, in groepjes, individueel).",
+          "Plan de evaluatiemomenten en check de samenhang tussen alle zeven componenten."
+        ],
+        "bestandsnaam": [
+          "van-gelder-didactisch-analyse-model"
+        ]
+      }
+    },
+    "addie": {
+      "titel": "ADDIE",
+      "tekst": "ADDIE is een procesmodel voor instructional design: Analyse, Design, Development, Implementation, Evaluation. Sterk voor het ontwerpen van een complete leertraining van begin tot eind, in een iteratieve cyclus.",
+      "lijsten": {
+        "stappenplan": [
+          "Analyse: breng doelgroep, doelen en context in kaart.",
+          "Design: ontwerp de leeractiviteiten, structuur en beoordeling.",
+          "Development: ontwikkel materialen, opdrachten en media.",
+          "Implementation + Evaluation: voer uit, evalueer en pas aan voor de volgende iteratie."
+        ],
+        "bestandsnaam": [
+          "addie"
+        ]
+      }
+    },
+    "fourcid": {
+      "titel": "4C/ID (Vier-Componenten Instructie-Ontwerp)",
+      "tekst": "Het 4C/ID-model van Van Merrienboer ontwerpt training rondom complexe vaardigheden. Centraal staan leertaken (whole tasks), aangevuld met ondersteunende informatie, procedurele informatie en deeltaak-oefening.",
+      "lijsten": {
+        "stappenplan": [
+          "Identificeer de complexe vaardigheid die geleerd moet worden.",
+          "Ontwerp leertaken in oplopende moeilijkheidsgraad (van eenvoudig naar complex).",
+          "Voeg ondersteunende en procedurele informatie toe op het juiste moment in de leertaak.",
+          "Plan deeltaak-oefening voor onderdelen die geautomatiseerd moeten worden."
+        ],
+        "bestandsnaam": [
+          "4cid-vier-componenten-instructie-ontwerp"
+        ]
+      }
+    },
+    "backward": {
+      "titel": "Backward Design",
+      "tekst": "Backward Design (Wiggins en McTighe) begint bij de eindprestatie: wat moet de lerende straks aantoonbaar kunnen? Daarvandaan ontwerp je terug naar de bewijsstukken en pas dan naar de leeractiviteiten.",
+      "lijsten": {
+        "stappenplan": [
+          "Definieer de eindprestatie en de bijbehorende leerdoelen.",
+          "Bepaal welk bewijs aantoont dat het doel is bereikt (toets, opdracht, product).",
+          "Ontwerp leeractiviteiten die rechtstreeks naar dat bewijs werken.",
+          "Toets de coherentie: zit elke leeractiviteit op het pad naar de eindprestatie?"
+        ],
+        "bestandsnaam": [
+          "backward-design"
+        ]
+      }
+    },
+    "tpack": {
+      "titel": "TPACK",
+      "tekst": "TPACK (Technological Pedagogical Content Knowledge) is een model voor onderwijs met technologie. Het balanceert drie kennisdomeinen: inhoud, pedagogiek en technologie. Sterk voor online of hybride leren.",
+      "lijsten": {
+        "stappenplan": [
+          "Bepaal de inhoudelijke leerdoelen (Content Knowledge).",
+          "Kies pedagogische strategieen die passen (Pedagogical Knowledge).",
+          "Selecteer technologie die zowel inhoud als pedagogiek versterkt (Technological Knowledge).",
+          "Toets de integratie: ondersteunt de technologie de leerdoelen daadwerkelijk?"
+        ],
+        "bestandsnaam": [
+          "tpack"
+        ]
+      }
+    },
+    "direct_instruction": {
+      "titel": "Direct Instruction (Rosenshine)",
+      "tekst": "Direct Instruction met de tien principes van Rosenshine staat voor expliciete, gestructureerde uitleg, gevolgd door begeleide oefening en zelfstandige oefening. Sterk voor het overdragen van duidelijke kennis.",
+      "lijsten": {
+        "stappenplan": [
+          "Begin met een korte herhaling van eerder geleerde stof.",
+          "Geef nieuwe stof in kleine stappen, met heldere uitleg en voorbeelden.",
+          "Stel veel vragen en check het begrip; pas instructie aan op antwoorden.",
+          "Begeleid de eerste oefening, geef feedback, laat daarna zelfstandig oefenen."
+        ],
+        "bestandsnaam": [
+          "direct-instruction-rosenshine"
+        ]
+      }
+    },
+    "bik": {
+      "titel": "BIK-model",
+      "tekst": "BIK (Bekend, Interessant, Kapstok) is een didactisch start-model voor de opening van een les: maak het onderwerp eerst Bekend, dan Interessant, en bied een Kapstok aan om de inhoud aan te hangen.",
+      "lijsten": {
+        "stappenplan": [
+          "Bekend: knoop het onderwerp aan iets dat de lerenden al kennen.",
+          "Interessant: maak het onderwerp persoonlijk relevant of verrassend.",
+          "Kapstok: bied een overzichtelijke structuur waarin de inhoud past.",
+          "Verwijs gedurende de les terug naar de kapstok om samenhang te tonen."
+        ],
+        "bestandsnaam": [
+          "bik-model"
+        ]
+      }
+    }
+  },
+  "uitvoer": [
+    {
+      "type": "profiel",
+      "kop": "Jouw didactisch model"
+    },
+    {
+      "type": "tekst",
+      "kop": "Vakgebied",
+      "bron": "vraag.vakgebied"
+    },
+    {
+      "type": "onderbouwing",
+      "kop": "Onderbouwing"
+    },
+    {
+      "type": "profiel",
+      "kop": "Ook geschikt",
+      "bron": "uitslag.top[2]"
+    },
+    {
+      "type": "profiel",
+      "bron": "uitslag.top[3]"
+    },
+    {
+      "type": "lijst",
+      "kop": "4-stappen-plan",
+      "bron": "uitslag.stappenplan"
+    }
+  ],
+  "acties": {
+    "pdf": true,
+    "word": false,
+    "mail": false,
+    "deellink": true,
+    "duimpjes": true,
+    "formulier": 0,
+    "pdf_bestandsnaam": "cvd-tool-welk-didactisch-model-{uitslag.bestandsnaam}"
+  },
+  "teksten": {
+    "tool_pdf": "Download als PDF"
+  }
+}

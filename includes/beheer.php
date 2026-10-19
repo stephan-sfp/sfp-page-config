@@ -372,6 +372,7 @@ function sfp_page_config_beheer_stand() {
         ),
         'onderdelen'   => $onderdelen,
         'zelftest'     => function_exists( 'sfp_zelftest_stand' ) ? sfp_zelftest_stand() : null,
+        'tools'        => function_exists( 'sfp_page_config_tool_beheer_stand' ) ? sfp_page_config_tool_beheer_stand() : null,
         'afwijkingen'  => sfp_page_config_afwijkingen(),
         'knop'         => $knop,
         'teksten'      => $teksten,

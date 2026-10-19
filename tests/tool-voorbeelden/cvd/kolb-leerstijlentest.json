@@ -1,0 +1,352 @@
+{
+ "versie": 1,
+ "soort": "test",
+ "weergave": {
+  "modus": "per-vraag",
+  "stappen": [
+   "Context",
+   "Vragen",
+   "Resultaat"
+  ],
+  "schaal": {
+   "1": "past niet bij mij",
+   "3": "neutraal",
+   "5": "past helemaal bij mij"
+  }
+ },
+ "dimensies": {
+  "doener": {
+   "naam": "Doener",
+   "volledig": "Doener (Accommodator)"
+  },
+  "dromer": {
+   "naam": "Dromer",
+   "volledig": "Dromer (Diverger)"
+  },
+  "denker": {
+   "naam": "Denker",
+   "volledig": "Denker (Assimilator)"
+  },
+  "beslisser": {
+   "naam": "Beslisser",
+   "volledig": "Beslisser (Converger)"
+  }
+ },
+ "vragen": [
+  {
+   "id": "rol",
+   "type": "context",
+   "groep": "Context",
+   "optioneel": true,
+   "tekst": "Wat is jouw rol?",
+   "opties": [
+    {
+     "waarde": "trainer",
+     "tekst": "Trainer of docent"
+    },
+    {
+     "waarde": "cursist",
+     "tekst": "Cursist of student"
+    },
+    {
+     "waarde": "coach",
+     "tekst": "Coach of begeleider"
+    },
+    {
+     "waarde": "professional",
+     "tekst": "Werkende professional"
+    },
+    {
+     "waarde": "anders",
+     "tekst": "Anders"
+    }
+   ]
+  },
+  {
+   "id": "doel",
+   "type": "context",
+   "groep": "Context",
+   "optioneel": true,
+   "tekst": "Waarvoor wil je je leerstijl weten?",
+   "opties": [
+    {
+     "waarde": "zelfinzicht",
+     "tekst": "Zelfinzicht in hoe ik leer"
+    },
+    {
+     "waarde": "training",
+     "tekst": "Mijn training of les beter afstemmen"
+    },
+    {
+     "waarde": "team",
+     "tekst": "Team beter laten samenwerken"
+    },
+    {
+     "waarde": "loopbaan",
+     "tekst": "Loopbaan-keuzes maken"
+    }
+   ]
+  },
+  {
+   "id": "do1",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "doener",
+   "tekst": "Ik leer het beste door iets gewoon te proberen."
+  },
+  {
+   "id": "do2",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "doener",
+   "tekst": "Bij een nieuwe situatie pak ik snel aan, ik wacht niet eerst alle theorie af."
+  },
+  {
+   "id": "do3",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "doener",
+   "tekst": "Ik laat me makkelijk meeslepen door wat anderen doen of zeggen."
+  },
+  {
+   "id": "do4",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "doener",
+   "tekst": "Mijn beste ideeen krijg ik tijdens het werken zelf, niet vooraf."
+  },
+  {
+   "id": "dr1",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "dromer",
+   "tekst": "Ik denk lang na voor ik een conclusie trek."
+  },
+  {
+   "id": "dr2",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "dromer",
+   "tekst": "Ik vind het waardevol om verschillende perspectieven te verkennen."
+  },
+  {
+   "id": "dr3",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "dromer",
+   "tekst": "Bij een probleem zoek ik eerst betekenis en pas later naar de oplossing."
+  },
+  {
+   "id": "dr4",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "dromer",
+   "tekst": "Ik werk graag met beelden, verhalen en metaforen om iets te begrijpen."
+  },
+  {
+   "id": "de1",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "denker",
+   "tekst": "Ik wil eerst de theorie begrijpen voor ik aan de slag ga."
+  },
+  {
+   "id": "de2",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "denker",
+   "tekst": "Ik hou van logische modellen en heldere structuren."
+  },
+  {
+   "id": "de3",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "denker",
+   "tekst": "Ik vergelijk graag een idee met een ander idee om de verschillen te zien."
+  },
+  {
+   "id": "de4",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "denker",
+   "tekst": "Ik vind het belangrijk dat een uitspraak goed onderbouwd is."
+  },
+  {
+   "id": "be1",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "beslisser",
+   "tekst": "Bij een probleem zoek ik de meest praktische oplossing."
+  },
+  {
+   "id": "be2",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "beslisser",
+   "tekst": "Ik haal voldoening uit het toepassen van een theorie in de praktijk."
+  },
+  {
+   "id": "be3",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "beslisser",
+   "tekst": "Ik werk doelgericht, met heldere stappen tot het resultaat."
+  },
+  {
+   "id": "be4",
+   "type": "likert",
+   "groep": "Stelling",
+   "dimensie": "beslisser",
+   "tekst": "Ik experimenteer graag met verschillende methodes tot er een werkt."
+  },
+  {
+   "id": "aandacht",
+   "type": "tekst",
+   "na_uitslag": true,
+   "optioneel": true,
+   "tekst": "Eigen aandachtsgebied",
+   "label": "Eigen aandachtsgebied",
+   "hint": "optioneel, komt in je rapport",
+   "voorbeeld": "bv. ik wil leren hoe ik meer rust vind bij theorie",
+   "maxlengte": 320
+  }
+ ],
+ "score": {
+  "per_dimensie": "percentage"
+ },
+ "uitkomst": {
+  "regel": "hoogste"
+ },
+ "labels": [
+  {
+   "vanaf": 75,
+   "tekst": "Sterk"
+  },
+  {
+   "vanaf": 60,
+   "tekst": "Aanwezig"
+  },
+  {
+   "vanaf": 40,
+   "tekst": "Matig"
+  },
+  {
+   "vanaf": 0,
+   "tekst": "Zwak"
+  }
+ ],
+ "uitslagen": {
+  "doener": {
+   "titel": "Doener (Accommodator)",
+   "tekst": "Jij leert het beste door te doen. Je springt in nieuwe situaties zonder eerst alle theorie te willen kennen. Je past je snel aan, bent intuitief en sociaal. Risico: je hapt soms te snel toe zonder de tijd te nemen om te reflecteren.",
+   "lijsten": {
+    "benutten": [
+     "Plan korte experimenten in: probeer iets nieuws, evalueer kort, pas aan.",
+     "Zoek werkomgevingen waar je veel hands-on werk hebt en weinig stilzit.",
+     "Werk samen met een Denker of Dromer als je vooruitgang wilt verdiepen."
+    ],
+    "ontwikkelen": [
+     "Forceer een reflectie-moment van 15 minuten voor je weer in actie schiet.",
+     "Maak een notitie van wat je gisteren leerde, voor je vandaag begint.",
+     "Plan een wekelijks rust-moment in waar je niets doet, alleen verwerkt."
+    ]
+   }
+  },
+  "dromer": {
+   "titel": "Dromer (Diverger)",
+   "tekst": "Jij leert het beste door te observeren en te reflecteren. Je verzamelt informatie, weegt perspectieven en zoekt betekenis. Je bent verbeeldingsrijk, empatisch en goed in brainstormen. Risico: je twijfelt soms te lang voor je een keuze maakt.",
+   "lijsten": {
+    "benutten": [
+     "Geef jezelf tijd om observaties te verwerken voor je tot een keuze komt.",
+     "Werk met een journal: schrijf na elke leerervaring 3 zinnen over wat je opviel.",
+     "Zoek rollen waar perspectieven verzamelen waardevol is, zoals onderzoek, beleidsvorming of coaching."
+    ],
+    "ontwikkelen": [
+     "Stel een deadline aan reflectie: na 30 minuten denken kies je iets en doe het.",
+     "Begin een nieuwe taak met de uitvoering, niet met de analyse.",
+     "Volg een hands-on-cursus over een onderwerp dat je al theoretisch kent."
+    ]
+   }
+  },
+  "denker": {
+   "titel": "Denker (Assimilator)",
+   "tekst": "Jij leert het beste door begrip op te bouwen. Je werkt met logische modellen en abstracte concepten. Je bent precies, analytisch en goed in theorie. Risico: je kunt blijven hangen in voorbereiden waardoor handelen erbij inschiet.",
+   "lijsten": {
+    "benutten": [
+     "Bouw eerst een conceptueel model voor je nieuwe stof gebruikt.",
+     "Maak schemas, tijdlijnen of vergelijkingen om verbanden te zien.",
+     "Combineer theorie met cases of voorbeelden om abstractie te koppelen aan praktijk."
+    ],
+    "ontwikkelen": [
+     "Begin eerder met praktijk, ook als je de theorie nog niet helemaal kent.",
+     "Werk met prototypes: maak een ruwe versie en verbeter al doende.",
+     "Vraag actief feedback van mensen die anders denken dan jij."
+    ]
+   }
+  },
+  "beslisser": {
+   "titel": "Beslisser (Converger)",
+   "tekst": "Jij leert het beste door problemen op te lossen en theorie toe te passen. Je werkt doelgericht, experimenteert tot iets werkt en zoekt resultaat. Je bent praktisch en pragmatisch. Risico: je springt soms te snel naar de oplossing en mist een diepere reflectie.",
+   "lijsten": {
+    "benutten": [
+     "Begin elk project met een concrete vraag: wat moet er aan het einde werken?",
+     "Werk met try-test-improve-cycli van maximaal een week.",
+     "Zoek rollen waar problemen oplossen en methode-keuze centraal staan."
+    ],
+    "ontwikkelen": [
+     "Neem na een oplossing 10 minuten de tijd om te overdenken wat je geleerd hebt.",
+     "Bespreek je oplossing met een Denker of Dromer voor je hem uitrolt.",
+     "Lees een keer een lange beschouwing zonder direct te zoeken naar de actiepunten."
+    ]
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "profiel",
+   "kop": "Jouw dominante Kolb-leerstijl"
+  },
+  {
+   "type": "balken",
+   "kop": "Jouw scores per leerstijl",
+   "sorteer": "vast"
+  },
+  {
+   "type": "lijst",
+   "kop": "Tips om jouw leerstijl te benutten",
+   "bron": "uitslag.benutten"
+  },
+  {
+   "type": "lijst",
+   "kop": "Tips om je zwakste stijl te ontwikkelen",
+   "bron": "uitslag.laagste.ontwikkelen"
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "mail": true,
+  "deellink": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "kolb-leerstijlentest-{uitslag.naam}"
+ },
+ "mail": {
+  "onderwerp": "Jouw Kolb-leerstijl: {uitslag.titel}",
+  "intro": "Dominante stijl: {uitslag.titel} • Zwakste stijl: {uitslag.laagste.titel}\n16 stellingen • 5-puntsschaal • 4 Kolb-leerstijlen"
+ },
+ "teksten": {
+  "tool_pdf": "Download als PDF",
+  "tool_mail": "Mail mij dit rapport",
+  "tool_mail_veld": "Vul je e-mailadres in",
+  "tool_mail_ok": "Rapport verstuurd.",
+  "tool_mail_fout": "Er ging iets mis. Probeer het opnieuw of download als PDF.",
+  "tool_bestand_fout": "Er ging iets mis bij het maken van de PDF.",
+  "tool_ontbreekt": "Nog %d open. Ga terug en vul aan.",
+  "tool_resultaat_slot": "Je resultaat verschijnt hier zodra je de %d stellingen hebt beantwoord."
+ },
+ "bron": {
+  "model": "Kolb, experiential learning theory (1984)",
+  "link": ""
+ }
+}
