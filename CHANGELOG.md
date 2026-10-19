@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.15] - 2026-10-19
+
+### Gewijzigd
+- **Stappen de hele tijd zichtbaar**, ook tijdens de context en de vragen, niet pas bij de uitslag. Resultaat staat lichter tot alle vragen beantwoord zijn.
+- Bij contextvragen geen opschriftregel meer (Context staat al in de stappen).
+
 ## [3.8.0-beta.14] - 2026-10-19
 
 ### Gewijzigd

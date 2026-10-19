@@ -265,8 +265,7 @@
 			return el( 'li', { class: 'sfp-tool__stap' + ( 0 === i ? ' is-actief' : '' ) + ( laatste ? ' is-slot' : '' ), role: 'tab', 'aria-selected': 0 === i ? 'true' : 'false', tabindex: 0 === i ? '0' : '-1', 'data-stap': String( i ), onclick: function () { naarStap( i ); }, onkeydown: function ( e ) { if ( 'Enter' === e.key || ' ' === e.key ) { e.preventDefault(); naarStap( i ); } } }, [ naam ] );
 		} );
 		stapItems.forEach( function ( li ) { stappen.appendChild( li ); } );
-		/* De stappen staan er pas bij de uitslag: tijdens de vragen zeggen de balk en de teller genoeg. */
-		stappen.hidden = true;
+		/* De stappen staan er de hele tijd: waar je bent in het geheel; de balk en de teller zeggen waar je bent in de vragen. */
 		app.appendChild( stappen );
 		/* Rustig en in leesvolgorde: waar je bent, de vraag, dan pas Vorige. */
 		paneelVragen.appendChild( voortgang );
@@ -386,7 +385,8 @@
 				voortgang.textContent = ( groepenScorend.length > 1 && s.vraag.groep ? s.vraag.groep + ' · ' : '' ) + tx( 'tool_vraag_van', qi + 1, qn );
 				balk.firstChild.style.width = Math.round( ( qi + 1 ) / qn * 100 ) + '%';
 			} else {
-				voortgang.textContent = ( s.vraag && s.vraag.groep ) || ( heeftContext && s.vraag ? stapNamen[ 0 ] : '' );
+				/* Bij contextvragen staat Context al in de stappen, dus geen opschriftregel; elders alleen een eigen groep. */
+				voortgang.textContent = ( s.vraag && 'context' !== s.vraag.type && s.vraag.groep ) || '';
 				balk.firstChild.style.width = s.vraag && qi < 0 ? '0%' : balk.firstChild.style.width;
 			}
 			/* Voor de eerste scorende vraag (context, intro) nog geen lege balk of lege regel. */
@@ -413,7 +413,7 @@
 		function naarStap( i ) {
 			var laatste = i === stapNamen.length - 1;
 			if ( laatste ) { probeerResultaat( true ); return; }
-			paneelResultaat.hidden = true; paneelVragen.hidden = false; stappen.hidden = true;
+			paneelResultaat.hidden = true; paneelVragen.hidden = false;
 			if ( perVraag ) {
 				var doel = 0;
 				if ( heeftContext && i > 0 ) { for ( var k = 0; k < schermen.length; k++ ) { if ( schermen[ k ].vraag && 'context' !== schermen[ k ].vraag.type ) { doel = k; break; } } }
@@ -443,7 +443,6 @@
 			paneelVragen.hidden = true;
 			paneelResultaat.hidden = false;
 			paneelResultaat.innerHTML = '';
-			stappen.hidden = false;
 			zetStap( stapNamen.length - 1 );
 			stapItems[ stapNamen.length - 1 ].classList.remove( 'is-slot' );
 			var u = uitslagtekst( b, r.uitslag );
@@ -650,7 +649,7 @@
 			tool.wisBewaard();
 			Array.prototype.forEach.call( app.querySelectorAll( 'input[type=radio]' ), function ( i ) { i.checked = false; } );
 			Array.prototype.forEach.call( app.querySelectorAll( 'textarea' ), function ( i ) { i.value = ''; } );
-			paneelResultaat.hidden = true; paneelVragen.hidden = false; stappen.hidden = true;
+			paneelResultaat.hidden = true; paneelVragen.hidden = false;
 			stapItems[ stapNamen.length - 1 ].classList.add( 'is-slot' );
 			if ( tool.formulier ) { tool.formulier.hidden = true; }
 			try { var url = window.location.pathname; window.history.replaceState( null, '', url ); } catch ( e ) {}
