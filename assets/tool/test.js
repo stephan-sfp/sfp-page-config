@@ -353,6 +353,8 @@
 			} );
 		}
 		if ( ! perVraag ) {
+			/* Alles op één pagina: geen teller en geen balk. */
+			balk.hidden = true; voortgang.hidden = true;
 			schermen.forEach( function ( s ) { s.el.hidden = false; s.el.classList.add( 'is-alles' ); schermenWrap.appendChild( s.el ); } );
 			schermenWrap.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_naar_resultaat' ), onclick: function () { probeerResultaat(); } } ) );
 		} else {
@@ -384,6 +386,10 @@
 				voortgang.textContent = s.vraag && s.vraag.groep ? '' : ( heeftContext && s.vraag ? stapNamen[ 0 ] : '' );
 				balk.firstChild.style.width = s.vraag && qi < 0 ? '0%' : balk.firstChild.style.width;
 			}
+			/* Voor de eerste scorende vraag (context, intro) nog geen lege balk of lege regel. */
+			var zonderVoortgang = ! s.groep && ! ( s.vraag && qi >= 0 );
+			balk.hidden = zonderVoortgang;
+			voortgang.hidden = zonderVoortgang && ! voortgang.textContent;
 			legenda.hidden = true;
 			if ( ! legenda.hidden ) {
 				var sc = schaal( s.vraag );

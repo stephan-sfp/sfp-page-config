@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.7] - 2026-10-19
+
+### Gewijzigd
+- Keuzevlakken, de stappen en de voortgangsbalk in Tint 2 (onder de muis Tint 1) in plaats van een mengsel met de primaire kleur, dat grijs oogde. De merkbron kent geen grijze vlakken.
+- Bij contextvragen en in de weergave "alles op één pagina" geen lege voortgangsbalk of lege regel meer boven de vraag.
+
 ## [3.8.0-beta.6] - 2026-10-19
 
 Een rustiger vraagscherm (robuust, simpel, aantrekkelijk), na het bekijken van de Kolb-test op CVD.
