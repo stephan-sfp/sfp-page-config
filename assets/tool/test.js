@@ -280,12 +280,13 @@
 		/* Schermen */
 		function schaal( v ) { return ( v.schaal && Object.keys( v.schaal ).length ) ? v.schaal : ( ( b.weergave && b.weergave.schaal ) || {} ); }
 		function maakScherm( v, index ) {
-			/* Het opschrift alleen waar een nieuwe groep begint, niet boven elke vraag. */
+			/* Per vraag of per groep staat de groep in de ene opschriftregel boven de balk; alleen bij alles op
+			   één pagina een eigen opschrift, en dan alleen waar een nieuwe groep begint. */
 			var vorigeVraag = index > 0 ? vragenVoor[ index - 1 ] : null;
-			var kop = v.groep && ( ! vorigeVraag || vorigeVraag.groep !== v.groep ) ? el( 'p', { class: 'sfp-tool__groep', text: v.groep } ) : null;
+			var kop = ! perVraag && v.groep && ( ! vorigeVraag || vorigeVraag.groep !== v.groep ) ? el( 'p', { class: 'sfp-tool__groep', text: v.groep } ) : null;
 			var vraagId = 'sfp-tool-' + tool.id + '-v-' + index;
 			var vraagkop = ( W.vraagkop && ! perGroep && ! ( 'tekst' === v.type ) ) ? el( 'p', { class: 'sfp-tool__vraagkop', text: W.vraagkop } ) : null;
-			var tekst = el( 'p', { class: 'sfp-tool__vraag', id: vraagId, text: v.tekst } );
+			var tekst = el( 'p', { class: 'sfp-tool__vraag', id: vraagId, text: v.tekst, tabindex: '-1' } );
 			var veld;
 			if ( 'likert' === v.type ) {
 				var s = schaal( v );
@@ -341,7 +342,7 @@
 				laatste.vragen.push( v ); laatste.indexen.push( i );
 			} );
 			groepen.forEach( function ( g ) {
-				var wrap = el( 'div', { class: 'sfp-tool__scherm sfp-tool__scherm--groep', hidden: true }, [ g.naam ? el( 'p', { class: 'sfp-tool__groep', text: g.naam } ) : null ] );
+				var wrap = el( 'div', { class: 'sfp-tool__scherm sfp-tool__scherm--groep', hidden: true } );
 				g.vragen.forEach( function ( v, k ) { if ( v.intro ) { wrap.appendChild( el( 'div', { class: 'sfp-tool__intro-tekst' }, alineas( v.intro ).map( function ( a ) { return el( 'p', { text: a } ); } ) ) ); } var sch = maakScherm( v, g.indexen[ k ] ); sch.hidden = false; sch.classList.add( 'is-alles' ); var gr = sch.querySelector( '.sfp-tool__groep' ); if ( gr ) { gr.remove(); } wrap.appendChild( sch ); } );
 				wrap.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_volgende' ), onclick: function () { var open = g.vragen.filter( function ( q ) { return 'tekst' !== q.type && antwoorden[ q.id ] === undefined; } ); if ( open.length ) { toonMelding( tx( 'tool_ontbreekt', open.length ), true ); return; } ga( huidig + 1 ); } } ) );
 				schermen.push( { vragen: g.vragen, vraag: g.vragen[ 0 ], groep: true, el: wrap } );
@@ -375,15 +376,17 @@
 			var scorendV = vragenVoor.filter( function ( v ) { return 'likert' === v.type || 'keuze' === v.type; } );
 			var qi = s.vraag ? scorendV.indexOf( s.vraag ) : -1;
 			var qn = scorendV.length;
+			/* Eén opschriftregel: de groep (als de vragen verschillende groepen hebben) en waar je bent. */
+			var groepenScorend = scorendV.map( function ( v ) { return v.groep || ''; } ).filter( function ( g, k, a ) { return a.indexOf( g ) === k; } );
 			if ( s.groep ) {
 				var gi = schermen.filter( function ( x ) { return x.groep; } ).indexOf( s ), gn = schermen.filter( function ( x ) { return x.groep; } ).length;
-				voortgang.textContent = s.vragen[ 0 ].groep || tx( 'tool_vraag_van', gi + 1, gn );
+				voortgang.textContent = s.vragen[ 0 ].groep ? s.vragen[ 0 ].groep + ' · ' + ( gi + 1 ) + '/' + gn : tx( 'tool_vraag_van', gi + 1, gn );
 				balk.firstChild.style.width = Math.round( ( gi + 1 ) / gn * 100 ) + '%';
 			} else if ( s.vraag && qi >= 0 ) {
-				voortgang.textContent = tx( 'tool_vraag_van', qi + 1, qn );
+				voortgang.textContent = ( groepenScorend.length > 1 && s.vraag.groep ? s.vraag.groep + ' · ' : '' ) + tx( 'tool_vraag_van', qi + 1, qn );
 				balk.firstChild.style.width = Math.round( ( qi + 1 ) / qn * 100 ) + '%';
 			} else {
-				voortgang.textContent = s.vraag && s.vraag.groep ? '' : ( heeftContext && s.vraag ? stapNamen[ 0 ] : '' );
+				voortgang.textContent = ( s.vraag && s.vraag.groep ) || ( heeftContext && s.vraag ? stapNamen[ 0 ] : '' );
 				balk.firstChild.style.width = s.vraag && qi < 0 ? '0%' : balk.firstChild.style.width;
 			}
 			/* Voor de eerste scorende vraag (context, intro) nog geen lege balk of lege regel. */
@@ -399,7 +402,8 @@
 			vorige.hidden = 0 === i;
 			var actief = heeftContext && s.vraag && 'context' === s.vraag.type ? 0 : ( heeftContext ? 1 : 0 );
 			zetStap( actief );
-			var focus = s.el.querySelector( 'input,textarea,button' );
+			/* De focus naar de vraag zelf (niet naar het eerste vakje, dat dan op een keuze lijkt); bij een open vraag naar het veld. */
+			var focus = s.el.querySelector( 'textarea' ) || s.el.querySelector( '.sfp-tool__vraag' ) || s.el.querySelector( 'input,button' );
 			if ( focus && document.activeElement && app.contains( document.activeElement ) ) { focus.focus( { preventScroll: true } ); }
 			tool.zeg( ( s.vraag && s.vraag.tekst ) || '' );
 		}

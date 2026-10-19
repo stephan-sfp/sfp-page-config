@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.11] - 2026-10-19
+
+### Gewijzigd
+- **Eén opschriftregel** boven de balk: "Vraag 1 van 16", met de groep ervoor als de vragen verschillende groepen hebben ("Autonomie · Vraag 1 van 15"), bij contextvragen alleen de groep ("Context"). Geen tweede opschrift meer boven de vraag.
+- **Opschriften in de primaire kleur**: kopfont in hoofdletters is nooit de bodykleur. Het accentstreepje ervoor staat in Tint 1 (bestaat bij elk merk, nooit wit).
+- **Focus** gaat bij een nieuwe vraag naar de vraag zelf, niet naar het eerste vakje (dat leek dan gekozen).
+- **Uitslag**: scores zonder kader per regel, een dunne balk in de primaire kleur; de uitslag vol, de andere lichter. Kaarten (zoals Ook geschikt) met dezelfde dunne rand als de keuzes.
+
 ## [3.8.0-beta.10] - 2026-10-19
 
 ### Gewijzigd

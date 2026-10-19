@@ -18,13 +18,12 @@
 .sfp-tool__balk{position:relative;height:4px;border-radius:999px;background:var(--sfp-b-tint2);overflow:hidden}
 .sfp-tool__balk-vul{position:absolute;inset:0 auto 0 0;width:0;background:var(--sfp-b-primair);border-radius:999px;transition:width .35s ease}
 /* In de uitslag (balken per dimensie) blijft de vulling in de kleur voor links en knoppen. */
-.sfp-tool__balkrij .sfp-tool__balk-vul{background:var(--sfp-b-links)}
-.sfp-tool__balkrij .sfp-tool__balk{height:8px;background:var(--sfp-b-tint2)}
-/* Opschriften (teller, groep, regel boven de uitslag): letters in de bodykleur met een accentstreepje in de
-   secundaire merkkleur ervoor. Zo verschillen ze van de vraag (primair); geen accentkleur haalt op alle
-   sites het tekstcontrast van 4,5, het streepje hoeft dat niet. */
-.sfp-tool__voortgang,.sfp-tool__groep,.sfp-tool__kicker{display:flex;align-items:center;gap:10px;font-family:var(--sfp-b-kop);font-size:12px;font-weight:900;line-height:1.3;letter-spacing:.06em;text-transform:uppercase;color:var(--sfp-b-body)}
-:is(.sfp-tool__voortgang,.sfp-tool__groep,.sfp-tool__kicker)::before{content:"";flex:0 0 auto;width:22px;height:4px;border-radius:2px;background:var(--sfp-b-secundair)}
+.sfp-tool__balkrij .sfp-tool__balk{height:6px;background:var(--sfp-b-tint2)}
+/* Opschriften (teller, groep, regel boven de uitslag): kopfont in hoofdletters, dus primair (de bodykleur
+   is alleen voor lopende tekst in het bodyfont), met een accentstreepje in Tint 1 ervoor. Tint 1 bestaat
+   bij elk merk en is nooit wit. */
+.sfp-tool__voortgang,.sfp-tool__groep,.sfp-tool__kicker{display:flex;align-items:center;gap:10px;font-family:var(--sfp-b-kop);font-size:12px;font-weight:900;line-height:1.3;letter-spacing:.06em;text-transform:uppercase;color:var(--sfp-b-primair)}
+:is(.sfp-tool__voortgang,.sfp-tool__groep,.sfp-tool__kicker)::before{content:"";flex:0 0 auto;width:22px;height:4px;border-radius:2px;background:var(--sfp-b-tint1)}
 .sfp-tool__voortgang:empty::before{content:none}
 .sfp-tool__voortgang{margin:0 0 10px;min-height:1.3em}
 .sfp-tool__legenda{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 0;font-size:13px;color:var(--sfp-b-body);opacity:.8}
@@ -46,7 +45,9 @@
 @keyframes sfp-tool-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.sfp-tool__scherm{animation:none}.sfp-tool__balk-vul{transition:none}}
 .sfp-tool__groep{margin:0 0 8px}
-/* De vraag is het opschrift van een veld: gewone letters in het bodyfont (merkbron, hoofdlettergebruik). */
+/* De vraag is het opschrift van een veld: gewone letters in het bodyfont (merkbron, hoofdlettergebruik).
+   Hij krijgt de focus bij een nieuwe vraag, zonder rand. */
+.sfp-tool__vraag:focus{outline:none}
 .sfp-tool__vraag{margin:0 0 16px;font-family:var(--sfp-b-tekst,inherit);font-weight:700;font-size:clamp(17px,1.6vw,19px);line-height:1.45;color:var(--sfp-b-primair)}
 .sfp-tool__scherm--intro p{font-size:17px;line-height:1.55}
 
@@ -105,12 +106,14 @@
 :root .sfp-tool__kop{margin:26px 0 12px;font-family:var(--sfp-b-kop);font-weight:900;font-size:18px;text-transform:uppercase;color:var(--sfp-b-primair)}
 .sfp-tool__tekst{margin:0 0 12px;font-size:17px;line-height:1.6}
 .sfp-tool__tekst--klein{font-size:15px;margin:6px 0 0}
-.sfp-tool__balken{display:grid;gap:14px}
+.sfp-tool__balken{display:grid;gap:16px}
 .sfp-tool__balken .sfp-tool__kop{margin-bottom:0}
-.sfp-tool__balkrij{padding:14px 16px;border-radius:var(--sfp-b-r-knop,6px);border:1px solid var(--tool-lijn);background:var(--sfp-b-wit,#fff)}
-.sfp-tool__balkrij.is-uitslag{border-color:var(--sfp-b-primair);background:var(--sfp-b-tint2)}
-.sfp-tool__balkkop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
-:root .sfp-tool__balkkop h4{margin:0;font-family:var(--sfp-b-kop);font-weight:900;font-size:15px;text-transform:uppercase;color:var(--sfp-b-primair)}
+/* Scores: geen kader per regel; een dunne balk in primair, de uitslag vol, de andere lichter. */
+.sfp-tool__balkrij{padding:0}
+.sfp-tool__balkrij .sfp-tool__balk-vul{background:color-mix(in srgb,var(--sfp-b-primair) 45%,var(--sfp-b-wit,#fff))}
+.sfp-tool__balkrij.is-uitslag .sfp-tool__balk-vul{background:var(--sfp-b-primair)}
+.sfp-tool__balkkop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}
+:root .sfp-tool__balkkop h4{margin:0;font-family:var(--sfp-b-kop);font-weight:900;font-size:14px;letter-spacing:.02em;text-transform:uppercase;color:var(--sfp-b-primair)}
 .sfp-tool__balkkop span{font-family:var(--sfp-b-kop);font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;color:var(--sfp-b-primair)}
 .sfp-tool__lijst{margin:0 0 8px;padding-left:1.4em;font-size:16px;line-height:1.55}
 .sfp-tool__lijst li{margin:0 0 8px}
@@ -161,7 +164,7 @@
 .sfp-tool__intro-tekst p{font-size:16px;line-height:1.55}
 :root .sfp-tool__titel--klein{font-size:clamp(20px,2.6vw,26px);margin-top:4px}
 .sfp-tool__profiel--tweede{margin-top:10px;padding-top:14px;border-top:1px solid var(--tool-lijn)}
-.sfp-tool__kaart{padding:16px 18px;border:1px solid var(--tool-lijn);border-radius:var(--sfp-b-r-knop,6px);margin:0 0 12px;background:var(--sfp-b-wit,#fff)}
+.sfp-tool__kaart{padding:16px 18px;border:1.5px solid color-mix(in srgb,var(--sfp-b-primair) 18%,transparent);border-radius:var(--sfp-b-r-knop,6px);margin:0 0 12px;background:var(--sfp-b-wit,#fff)}
 .sfp-tool__kaart.is-uitslag{border-color:var(--sfp-b-primair);background:var(--sfp-b-tint2)}
 :root .sfp-tool__kaart h4{margin:0 0 8px;font-family:var(--sfp-b-kop);font-weight:900;font-size:17px;text-transform:uppercase;color:var(--sfp-b-primair)}
 .sfp-tool__kaart .sfp-tool__kicker{margin-bottom:4px}
