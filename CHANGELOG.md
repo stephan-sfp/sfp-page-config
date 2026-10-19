@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0] - 2026-10-19
+
+De toolmotor met de soort test. Het onderdeel Tools staat standaard uit; op een site waar het uit staat verandert er niets. Op CVD staat het aan voor vijf tests (Kolb-leerstijlentest, intrinsieke motivatiescan, metacognitie-zelftest, didactische vaardigheden-test, welk didactisch model).
+
+### Toegevoegd
+- **Onderdeel Tools**: een tool is een bericht van het type tool met een beschrijving (JSON) in het metaveld `sfp_tool`, met revisies. De motor rekent in de browser; de server rekent alleen opnieuw voor de mail. Een beschrijving die niet klopt wordt geweigerd; in de editor controleer je hem met de knop Controleren.
+- **Soort test**: Likert, keuzes met punten per dimensie, context en vrije tekst; per vraag, per groep of alles op één pagina; uitkomst als hoogste, top, drempels, totaal, profiel, paar, kwadrant of regels; uitvoer als profiel, scorebalken, lijsten, kaarten, onderbouwing en vaste tekstblokken.
+- **Gedeeld**: genummerde stappen, voortgangsbalk, Vorige, toetsen 1 tot 5, Verder waar je was, deellink, pdf en Word uit lokale bibliotheken in de huisstijl van de pagina, mail naar jezelf (met limieten per adres, per IP en per site), duimpjes met tekstfeedback naar het adres in SFP Beheer, SureForms-formulier na de uitslag, teksten in nl, en en pt.
+- **Vorm Tool**: regel boven de titel, ondertitel, Hoe deze test rekent, makerskaart, Andere tools, gegevens voor Google, controles in het paneel en het Overzicht.
+- **Blok Tool** en shortcode `[sfp_tool]` voor een tool op een andere pagina. De oude koppelcode (`[cvd_tool_auto]` enz.) toont de nieuwe tool als die een beschrijving heeft, en anders de oude.
+
+### Vormgeving
+Volgens de merkbron: één knop (pdf) met tekstlinks met pijl als tweede keus, koppen en opschriften primair in hoofdletters, vragen, formuliervelden en uitklappers in gewone letters, geen grijze vlakken en geen kleuren buiten de kleurtabel, focusrand primair, contrast minstens 4,5. De uitslag staat in een vlak in Tint 2; op de eigen pagina van een tool geen tweede kader binnen de kaart van het thema. De proefversies hieronder beschrijven de stappen.
+
 ## [3.8.0-beta.18] - 2026-10-19
 
 ### Gewijzigd
