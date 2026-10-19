@@ -4,29 +4,35 @@
 .sfp-tool__sr,.sfp-tool__hp{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:-1px;padding:0;border:0}
 .sfp-tool__app{border:1px solid var(--tool-lijn);border-radius:var(--tool-r);background:var(--sfp-b-wit,#fff);padding:clamp(18px,3vw,32px);position:relative}
 .sfp-tool__app[hidden]{display:none}
+/* Wat verborgen is, blijft verborgen, ook als een regel hieronder display zet (zoals bij de duimpjes). */
+.sfp-tool [hidden]{display:none!important}
 
 /* Stappen */
 .sfp-tool__stappen{display:flex;gap:4px;list-style:none;margin:0 0 22px;padding:0;flex-wrap:wrap}
-.sfp-tool__stap{flex:1 1 0;min-width:90px;text-align:center;padding:10px 8px;border-radius:999px;border:1px solid var(--tool-lijn);font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1.2;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);cursor:pointer;user-select:none;transition:background .2s,color .2s}
+.sfp-tool__stap{flex:1 1 0;min-width:90px;text-align:center;padding:10px 8px;border-radius:999px;border:1px solid transparent;background:color-mix(in srgb,var(--sfp-b-primair) 6%,var(--sfp-b-wit,#fff));font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1.2;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);cursor:pointer;user-select:none;transition:background .2s,color .2s}
 .sfp-tool__stap.is-actief{background:var(--sfp-b-primair);color:var(--sfp-b-wit,#fff);border-color:var(--sfp-b-primair)}
 .sfp-tool__stap.is-slot{opacity:.5;cursor:default}
 .sfp-tool__stap:focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:2px}
 
 /* Voortgang */
-.sfp-tool__balk{position:relative;height:8px;border-radius:999px;background:var(--sfp-b-tint2);overflow:hidden}
-.sfp-tool__balk-vul{position:absolute;inset:0 auto 0 0;width:0;background:var(--sfp-b-links);border-radius:999px;transition:width .35s ease}
-.sfp-tool__voortgang{margin:10px 0 0;font-family:var(--sfp-b-kop);font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--sfp-b-primair);min-height:1.2em}
+.sfp-tool__balk{position:relative;height:4px;border-radius:999px;background:color-mix(in srgb,var(--sfp-b-primair) 10%,transparent);overflow:hidden}
+.sfp-tool__balk-vul{position:absolute;inset:0 auto 0 0;width:0;background:var(--sfp-b-primair);border-radius:999px;transition:width .35s ease}
+/* In de uitslag (balken per dimensie) blijft de vulling in de kleur voor links en knoppen. */
+.sfp-tool__balkrij .sfp-tool__balk-vul{background:var(--sfp-b-links)}
+.sfp-tool__balkrij .sfp-tool__balk{height:8px;background:var(--sfp-b-tint2)}
+.sfp-tool__voortgang{margin:0 0 10px;font-family:var(--sfp-b-kop);font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--sfp-b-primair);min-height:1.2em}
 .sfp-tool__legenda{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 0;font-size:13px;color:var(--sfp-b-body);opacity:.8}
 /* Tekstlinks (Vorige, Opnieuw beginnen, Word, mail, deellink): merkbron, tweede call-to-action:
    bodyfont 900, gewone letters, onderstreept; onder de muis een dikke onderstreping, de kleur blijft. */
 :root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__tekstlink){appearance:none;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:14px 0 0;min-height:0;font-family:var(--sfp-b-tekst,inherit);font-weight:900;font-size:15px;line-height:1.4;letter-spacing:normal;text-transform:none;color:var(--sfp-b-links);cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 :root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__tekstlink):is(:hover,:focus-visible){background:none;color:var(--sfp-b-links);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 :root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__tekstlink):focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
+:root .sfp-tool .sfp-tool__vorige{margin:22px 0 0;font-size:14px;font-weight:400}
 .sfp-tool__tekstlink::after{content:"\00a0\2192";display:inline-block;text-decoration:none}
 :root .sfp-tool .sfp-tool__tekstlink:disabled{opacity:.55;cursor:wait}
 
 /* Schermen */
-.sfp-tool__schermen{margin-top:18px}
+.sfp-tool__schermen{margin-top:26px}
 .sfp-tool__scherm{animation:sfp-tool-in .25s ease}
 .sfp-tool__scherm.is-alles{padding:18px 0;border-top:1px solid var(--tool-lijn)}
 .sfp-tool__scherm.is-alles:first-child{border-top:0}
@@ -39,15 +45,18 @@
 
 /* Opties */
 .sfp-tool__keuzes{display:grid;gap:10px}
-.sfp-tool__optie{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--tool-lijn);border-radius:var(--sfp-b-r-knop,6px);cursor:pointer;background:var(--sfp-b-wit,#fff);transition:border-color .15s,background .15s;font-size:16px;line-height:1.4;margin:0}
-.sfp-tool__optie:hover{border-color:var(--sfp-b-lijn-sterk,var(--sfp-b-primair))}
-.sfp-tool__optie:has(input:checked){border-color:var(--sfp-b-primair);background:var(--sfp-b-tint2)}
+/* Een keuze is een vlak: licht uit de primaire kleur, gekozen helemaal primair met witte tekst.
+   Het rondje is niet zichtbaar (het vlak is de keuze), maar blijft er voor toetsenbord en schermlezer. */
+.sfp-tool__optie{position:relative;display:flex;align-items:center;gap:12px;padding:15px 18px;border:0;border-radius:var(--sfp-b-r-knop,6px);cursor:pointer;background:color-mix(in srgb,var(--sfp-b-primair) 6%,var(--sfp-b-wit,#fff));color:var(--sfp-b-primair);transition:background .15s,color .15s;font-size:16px;line-height:1.4;margin:0}
+.sfp-tool__optie:hover{background:color-mix(in srgb,var(--sfp-b-primair) 12%,var(--sfp-b-wit,#fff))}
+.sfp-tool__optie:has(input:checked){background:var(--sfp-b-primair);color:var(--sfp-b-wit,#fff)}
 .sfp-tool__optie:has(input:focus-visible){outline:3px solid var(--sfp-b-primair);outline-offset:2px}
-.sfp-tool__radio{width:20px;height:20px;margin:0;accent-color:var(--sfp-b-primair);flex:0 0 auto}
+.sfp-tool__radio{position:absolute;opacity:0;width:1px;height:1px;margin:0;pointer-events:none}
 .sfp-tool__likert{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.sfp-tool__optie--likert{flex-direction:column;justify-content:center;gap:8px;padding:14px 6px;text-align:center;font-family:var(--sfp-b-kop);font-weight:900;font-size:20px;color:var(--sfp-b-primair)}
-.sfp-tool__optie--likert .sfp-tool__radio{order:2;width:16px;height:16px}
-.sfp-tool__uiteinden{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font-size:13px;opacity:.8}
+.sfp-tool__optie--likert{justify-content:center;padding:18px 6px;text-align:center;font-family:var(--sfp-b-kop);font-weight:900;font-size:22px}
+.sfp-tool__optie--likert:has(input:checked){color:var(--sfp-b-wit,#fff)}
+.sfp-tool__uiteinden{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:10px;font-size:13px;line-height:1.35;color:var(--sfp-b-body)}
+.sfp-tool__uiteinden span:nth-child(2){text-align:center}
 .sfp-tool__uiteinden span:last-child{text-align:right}
 @media (max-width:480px){.sfp-tool__likert{gap:5px}.sfp-tool__optie--likert{padding:12px 2px;font-size:17px}}
 
@@ -130,7 +139,7 @@
 .sfp-tool__vraagkop{margin:0 0 4px;font-size:14px;opacity:.8}
 .sfp-tool__likert--tekst{grid-template-columns:1fr}
 .sfp-tool__likert--tekst .sfp-tool__optie--likert{flex-direction:row;justify-content:flex-start;text-align:left;font-size:16px;font-family:inherit;font-weight:400;padding:12px 16px}
-.sfp-tool__likert--tekst .sfp-tool__optie--likert .sfp-tool__radio{order:0}
+
 .sfp-tool__scherm--groep .sfp-tool__scherm.is-alles{animation:none}
 .sfp-tool__intro-tekst p{font-size:16px;line-height:1.55}
 :root .sfp-tool__titel--klein{font-size:clamp(20px,2.6vw,26px);margin-top:4px}

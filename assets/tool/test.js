@@ -265,12 +265,14 @@
 			return el( 'li', { class: 'sfp-tool__stap' + ( 0 === i ? ' is-actief' : '' ) + ( laatste ? ' is-slot' : '' ), role: 'tab', 'aria-selected': 0 === i ? 'true' : 'false', tabindex: 0 === i ? '0' : '-1', 'data-stap': String( i ), onclick: function () { naarStap( i ); }, onkeydown: function ( e ) { if ( 'Enter' === e.key || ' ' === e.key ) { e.preventDefault(); naarStap( i ); } } }, [ naam ] );
 		} );
 		stapItems.forEach( function ( li ) { stappen.appendChild( li ); } );
+		/* De stappen staan er pas bij de uitslag: tijdens de vragen zeggen de balk en de teller genoeg. */
+		stappen.hidden = true;
 		app.appendChild( stappen );
-		paneelVragen.appendChild( balk );
+		/* Rustig en in leesvolgorde: waar je bent, de vraag, dan pas Vorige. */
 		paneelVragen.appendChild( voortgang );
-		paneelVragen.appendChild( legenda );
-		paneelVragen.appendChild( vorige );
+		paneelVragen.appendChild( balk );
 		paneelVragen.appendChild( schermenWrap );
+		paneelVragen.appendChild( vorige );
 		paneelVragen.appendChild( melding );
 		app.appendChild( paneelVragen );
 		app.appendChild( paneelResultaat );
@@ -278,7 +280,9 @@
 		/* Schermen */
 		function schaal( v ) { return ( v.schaal && Object.keys( v.schaal ).length ) ? v.schaal : ( ( b.weergave && b.weergave.schaal ) || {} ); }
 		function maakScherm( v, index ) {
-			var kop = v.groep ? el( 'p', { class: 'sfp-tool__groep', text: v.groep } ) : null;
+			/* Het opschrift alleen waar een nieuwe groep begint, niet boven elke vraag. */
+			var vorigeVraag = index > 0 ? vragenVoor[ index - 1 ] : null;
+			var kop = v.groep && ( ! vorigeVraag || vorigeVraag.groep !== v.groep ) ? el( 'p', { class: 'sfp-tool__groep', text: v.groep } ) : null;
 			var vraagId = 'sfp-tool-' + tool.id + '-v-' + index;
 			var vraagkop = ( W.vraagkop && ! perGroep && ! ( 'tekst' === v.type ) ) ? el( 'p', { class: 'sfp-tool__vraagkop', text: W.vraagkop } ) : null;
 			var tekst = el( 'p', { class: 'sfp-tool__vraag', id: vraagId, text: v.tekst } );
@@ -290,7 +294,8 @@
 				for ( var w = 1; w <= 5; w++ ) {
 					veld.appendChild( maakRadio( v, String( w ), alsTekst ? ( s[ String( w ) ] || String( w ) ) : String( w ), index, alsTekst ? null : s[ String( w ) ] ) );
 				}
-				var uiteinden = alsTekst ? null : el( 'div', { class: 'sfp-tool__uiteinden' }, [ el( 'span', { text: s[ '1' ] || '' } ), el( 'span', { text: s[ '5' ] || '' } ) ] );
+				/* De betekenis van 1, 3 en 5 onder de vakjes, één keer (geen aparte legenda). */
+				var uiteinden = alsTekst ? null : el( 'div', { class: 'sfp-tool__uiteinden' }, [ el( 'span', { text: s[ '1' ] || '' } ), el( 'span', { text: s[ '3' ] || '' } ), el( 'span', { text: s[ '5' ] || '' } ) ] );
 				veld = el( 'div', { class: 'sfp-tool__likert-wrap' }, [ veld, uiteinden ] );
 			} else if ( 'keuze' === v.type || 'context' === v.type ) {
 				veld = el( 'div', { class: 'sfp-tool__keuzes', role: 'radiogroup', 'aria-labelledby': vraagId } );
@@ -379,7 +384,7 @@
 				voortgang.textContent = s.vraag && s.vraag.groep ? '' : ( heeftContext && s.vraag ? stapNamen[ 0 ] : '' );
 				balk.firstChild.style.width = s.vraag && qi < 0 ? '0%' : balk.firstChild.style.width;
 			}
-			legenda.hidden = ! ( s.vraag && 'likert' === s.vraag.type ) || !! W.likert_als_tekst;
+			legenda.hidden = true;
 			if ( ! legenda.hidden ) {
 				var sc = schaal( s.vraag );
 				legenda.innerHTML = '';
@@ -398,7 +403,7 @@
 		function naarStap( i ) {
 			var laatste = i === stapNamen.length - 1;
 			if ( laatste ) { probeerResultaat( true ); return; }
-			paneelResultaat.hidden = true; paneelVragen.hidden = false;
+			paneelResultaat.hidden = true; paneelVragen.hidden = false; stappen.hidden = true;
 			if ( perVraag ) {
 				var doel = 0;
 				if ( heeftContext && i > 0 ) { for ( var k = 0; k < schermen.length; k++ ) { if ( schermen[ k ].vraag && 'context' !== schermen[ k ].vraag.type ) { doel = k; break; } } }
@@ -428,6 +433,7 @@
 			paneelVragen.hidden = true;
 			paneelResultaat.hidden = false;
 			paneelResultaat.innerHTML = '';
+			stappen.hidden = false;
 			zetStap( stapNamen.length - 1 );
 			stapItems[ stapNamen.length - 1 ].classList.remove( 'is-slot' );
 			var u = uitslagtekst( b, r.uitslag );
@@ -630,7 +636,7 @@
 			tool.wisBewaard();
 			Array.prototype.forEach.call( app.querySelectorAll( 'input[type=radio]' ), function ( i ) { i.checked = false; } );
 			Array.prototype.forEach.call( app.querySelectorAll( 'textarea' ), function ( i ) { i.value = ''; } );
-			paneelResultaat.hidden = true; paneelVragen.hidden = false;
+			paneelResultaat.hidden = true; paneelVragen.hidden = false; stappen.hidden = true;
 			stapItems[ stapNamen.length - 1 ].classList.add( 'is-slot' );
 			if ( tool.formulier ) { tool.formulier.hidden = true; }
 			try { var url = window.location.pathname; window.history.replaceState( null, '', url ); } catch ( e ) {}

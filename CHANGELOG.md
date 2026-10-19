@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.6] - 2026-10-19
+
+Een rustiger vraagscherm (robuust, simpel, aantrekkelijk), na het bekijken van de Kolb-test op CVD.
+
+### Gewijzigd
+- **Voortgang één keer:** boven de vraag alleen "Vraag 3 van 16" met een dunne balk in de primaire kleur. De stappen (Context, Vragen, Resultaat) staan er pas bij de uitslag.
+- **Schaal één keer:** geen legenda meer boven de vraag; onder de vakjes staat de betekenis van 1, 3 en 5.
+- **Keuzes als vlakken:** geen rand en geen zichtbaar rondje meer; een licht vlak uit de primaire kleur, gekozen helemaal primair met witte tekst. Het rondje blijft er voor toetsenbord en schermlezer.
+- **Opschrift alleen bij een nieuwe groep** (zoals Context of Autonomie), niet boven elke vraag.
+- **Vorige** staat onder de vraag, klein en rustig.
+
+### Gerepareerd
+- De velden onder de duimpjes (Wat kan beter, e-mail) stonden altijd open; ze verschijnen weer pas na een klik op een duim. Hetzelfde voor andere verborgen onderdelen van de tool.
+
 ## [3.8.0-beta.5] - 2026-10-19
 
 Opmaak van de tool volgens de netwerknormen van de merkbron, na de eerste tests op CVD.
