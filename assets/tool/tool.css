@@ -20,7 +20,13 @@
 /* In de uitslag (balken per dimensie) blijft de vulling in de kleur voor links en knoppen. */
 .sfp-tool__balkrij .sfp-tool__balk-vul{background:var(--sfp-b-links)}
 .sfp-tool__balkrij .sfp-tool__balk{height:8px;background:var(--sfp-b-tint2)}
-.sfp-tool__voortgang{margin:0 0 10px;font-family:var(--sfp-b-kop);font-size:13px;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--sfp-b-primair);min-height:1.2em}
+/* Opschriften (teller, groep, regel boven de uitslag): letters in de bodykleur met een accentstreepje in de
+   secundaire merkkleur ervoor. Zo verschillen ze van de vraag (primair); geen accentkleur haalt op alle
+   sites het tekstcontrast van 4,5, het streepje hoeft dat niet. */
+.sfp-tool__voortgang,.sfp-tool__groep,.sfp-tool__kicker{display:flex;align-items:center;gap:10px;font-family:var(--sfp-b-kop);font-size:12px;font-weight:900;line-height:1.3;letter-spacing:.06em;text-transform:uppercase;color:var(--sfp-b-body)}
+:is(.sfp-tool__voortgang,.sfp-tool__groep,.sfp-tool__kicker)::before{content:"";flex:0 0 auto;width:22px;height:4px;border-radius:2px;background:var(--sfp-b-secundair)}
+.sfp-tool__voortgang:empty::before{content:none}
+.sfp-tool__voortgang{margin:0 0 10px;min-height:1.3em}
 .sfp-tool__legenda{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 0;font-size:13px;color:var(--sfp-b-body);opacity:.8}
 /* Tekstlinks (Vorige, Opnieuw beginnen, Word, mail, deellink): merkbron, tweede call-to-action:
    bodyfont 900, gewone letters, onderstreept; onder de muis een dikke onderstreping, de kleur blijft. */
@@ -39,7 +45,7 @@
 .sfp-tool__scherm.is-alles:first-child{border-top:0}
 @keyframes sfp-tool-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.sfp-tool__scherm{animation:none}.sfp-tool__balk-vul{transition:none}}
-.sfp-tool__groep{margin:0 0 4px;font-family:var(--sfp-b-kop);font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--sfp-b-primair)}
+.sfp-tool__groep{margin:0 0 8px}
 /* De vraag is het opschrift van een veld: gewone letters in het bodyfont (merkbron, hoofdlettergebruik). */
 .sfp-tool__vraag{margin:0 0 16px;font-family:var(--sfp-b-tekst,inherit);font-weight:700;font-size:clamp(17px,1.6vw,19px);line-height:1.45;color:var(--sfp-b-primair)}
 .sfp-tool__scherm--intro p{font-size:17px;line-height:1.55}
@@ -93,7 +99,7 @@
 
 /* Resultaat */
 .sfp-tool__profiel{margin-bottom:22px}
-.sfp-tool__kicker{margin:0 0 6px;font-family:var(--sfp-b-kop);font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--sfp-b-primair)}
+.sfp-tool__kicker{margin:0 0 8px}
 /* Koppen: kopfont 900 in hoofdletters (merkbron). */
 :root .sfp-tool__titel{margin:0 0 12px;font-family:var(--sfp-b-display,var(--sfp-b-kop));font-weight:900;font-size:clamp(26px,3.6vw,38px);line-height:1.1;text-transform:uppercase;color:var(--sfp-b-primair)}
 :root .sfp-tool__kop{margin:26px 0 12px;font-family:var(--sfp-b-kop);font-weight:900;font-size:18px;text-transform:uppercase;color:var(--sfp-b-primair)}

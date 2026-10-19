@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.10] - 2026-10-19
+
+### Gewijzigd
+- Opschriften (Vraag 5 van 16, Context, de regel boven de uitslag) in de bodykleur met een kort accentstreepje in de secundaire merkkleur ervoor, zodat ze verschillen van de vraag. Een gekleurde letter kan niet: geen accentkleur haalt op alle acht sites het contrast van 4,5 voor kleine tekst.
+
 ## [3.8.0-beta.9] - 2026-10-19
 
 ### Gerepareerd
