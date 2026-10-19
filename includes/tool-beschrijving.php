@@ -1389,7 +1389,7 @@ function sfp_page_config_tool_tekst_uitvoer( array $b, array $r, $titel ) {
                     $regels[] = sfp_page_config_tool_vul( $uit['kop'], $b, $r );
                 }
                 if ( '' !== $uit['titel'] ) {
-                    $regels[] = strtoupper( sfp_page_config_tool_vul( $uit['titel'], $b, $r ) );
+                    $regels[] = mb_strtoupper( sfp_page_config_tool_vul( $uit['titel'], $b, $r ), 'UTF-8' );
                 }
                 if ( '' !== $uit['tekst'] ) {
                     $regels[] = sfp_page_config_tool_vul( $uit['tekst'], $b, $r );

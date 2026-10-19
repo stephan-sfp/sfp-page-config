@@ -404,6 +404,10 @@ $vast  = sfp_page_config_tool_normaliseer( array_merge( $basis, array( 'uitvoer'
 $tekst = sfp_page_config_tool_tekst_uitvoer( $vast, sfp_page_config_tool_reken( $vast, array( 'q1' => 'y', 'q2' => 'y', 'q3' => 'y' ) ), 'T' ); // c hoogst
 ok( strpos( $tekst, '- A:' ) < strpos( $tekst, '- B:' ) && strpos( $tekst, '- B:' ) < strpos( $tekst, '- C:' ), 'balken vast: vaste volgorde in de tekst' );
 
+// Hoofdletters in de mail met accenten: Eén wordt EÉN.
+$accent = sfp_page_config_tool_normaliseer( array_merge( $basis, array( 'uitslagen' => array( 'a' => array( 'titel' => 'Eén pijler' ), 'b' => 'B', 'c' => 'C' ), 'uitvoer' => array( array( 'type' => 'profiel' ) ) ) ) );
+ok( false !== strpos( sfp_page_config_tool_tekst_uitvoer( $accent, sfp_page_config_tool_reken( $accent, array( 'q1' => 'x', 'q2' => 'x', 'q3' => 'x' ) ), 'T' ), 'EÉN PIJLER' ), 'hoofdletters met accent' );
+
 /* ---------- 6. Beschrijvingen uit een map ---------- */
 $map = $argv[1] ?? '';
 if ( '' !== $map && is_dir( $map ) ) {
