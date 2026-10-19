@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.8] - 2026-10-19
+
+### Gewijzigd
+- Keuzes wit met een dunne rand uit de primaire kleur en weer een rondje (in merkstijl): lichter en aantrekkelijker dan volle vlakken. Gekozen: donkerblauwe rand, Tint 2 en een gevuld rondje. Cijfervakjes wit met een rand; gekozen donkerblauw met een wit cijfer.
+- Verhoudingen: de vraag iets kleiner, keuzes minder hoog en dichter op elkaar, minder lucht boven in de kaart, het opschrift dichter bij de vraag.
+
 ## [3.8.0-beta.7] - 2026-10-19
 
 ### Gewijzigd
