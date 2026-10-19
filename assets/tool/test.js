@@ -513,7 +513,7 @@
 							var eenh = 'percentage' === scoreRegel( b ) ? '%' : ( dim.max > 0 ? ' / ' + getal( dim.max ) : '' );
 							var lab = getal( dim.waarde ) + eenh + ( dim.label.tekst ? ' • ' + dim.label.tekst : '' );
 							var rij = el( 'div', { class: 'sfp-tool__balkrij' + ( d === r.uitslag ? ' is-uitslag' : '' ) }, [
-								el( 'div', { class: 'sfp-tool__balkkop' }, [ el( 'h4', { text: dimVolledig( b, d ) } ), el( 'span', { text: lab } ) ] ),
+								el( 'div', { class: 'sfp-tool__balkkop' }, [ el( 'p', { class: 'sfp-tool__balknaam', text: dimVolledig( b, d ) } ), el( 'span', { text: lab } ) ] ),
 								el( 'div', { class: 'sfp-tool__balk' }, [ el( 'div', { class: 'sfp-tool__balk-vul', style: 'width:' + Math.round( deel * 100 ) + '%' } ) ] )
 							] );
 							if ( 'niveaus' === o.type ) {
@@ -599,7 +599,9 @@
 			/* Acties */
 			var acties = b.acties || {};
 			var aan = function ( k ) { return acties[ k ] === undefined ? true : !! acties[ k ]; };
-			var rij = el( 'div', { class: 'sfp-tool__acties' } );
+			var rij = el( 'div', { class: 'sfp-tool__acties sfp-tool__acties--uitslag' } );
+			/* De knop op een eigen regel, de tekstlinks samen op de regel eronder. */
+			var rijLinks = el( 'div', { class: 'sfp-tool__acties-links' } );
 			var deelMelding = el( 'p', { class: 'sfp-tool__melding sfp-tool__melding--klein', hidden: true } );
 			function naam() { var a = b.acties || {}; return a.pdf_bestandsnaam ? vul( a.pdf_bestandsnaam, b, r ).replace( /[\\\/:*?"<>|]+/g, '' ).trim().slice( 0, 80 ) || tool.bestandsnaam() : tool.bestandsnaam(); }
 			function blokkenMet() {
@@ -612,9 +614,10 @@
 			function bestand( knop, p ) { deelMelding.hidden = true; wacht( knop, p ).catch( function () { deelMelding.textContent = tx( 'tool_bestand_fout' ); deelMelding.hidden = false; } ); }
 			if ( aan( 'pdf' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_pdf' ), onclick: function () { bestand( this, tool.pdf( blokkenMet(), naam() ) ); } } ) ); }
 			/* Eén knop (pdf); de rest zijn tekstlinks met een pijl, zoals de merkbron een tweede keus wil. */
-			if ( aan( 'word' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_word' ), onclick: function () { bestand( this, tool.word( blokkenMet(), naam() ) ); } } ) ); }
-			if ( aan( 'mail' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_mail' ), 'aria-expanded': 'false', onclick: function () { mailbox.hidden = ! mailbox.hidden; this.setAttribute( 'aria-expanded', mailbox.hidden ? 'false' : 'true' ); if ( ! mailbox.hidden ) { mailbox.querySelector( 'input[type=email]' ).focus(); } } } ) ); }
-			if ( aan( 'deellink' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_deellink' ), onclick: function () { tool.deel( antwoorden, function ( m ) { deelMelding.textContent = m; deelMelding.hidden = false; setTimeout( function () { deelMelding.hidden = true; }, 6000 ); } ); } } ) ); }
+			if ( aan( 'word' ) ) { rijLinks.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_word' ), onclick: function () { bestand( this, tool.word( blokkenMet(), naam() ) ); } } ) ); }
+			if ( aan( 'mail' ) ) { rijLinks.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_mail' ), 'aria-expanded': 'false', onclick: function () { mailbox.hidden = ! mailbox.hidden; this.setAttribute( 'aria-expanded', mailbox.hidden ? 'false' : 'true' ); if ( ! mailbox.hidden ) { mailbox.querySelector( 'input[type=email]' ).focus(); } } } ) ); }
+			if ( aan( 'deellink' ) ) { rijLinks.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_deellink' ), onclick: function () { tool.deel( antwoorden, function ( m ) { deelMelding.textContent = m; deelMelding.hidden = false; setTimeout( function () { deelMelding.hidden = true; }, 6000 ); } ); } } ) ); }
+			if ( rijLinks.children.length ) { rij.appendChild( rijLinks ); }
 			paneelResultaat.appendChild( rij );
 			paneelResultaat.appendChild( deelMelding );
 			if ( aan( 'mail' ) ) {
@@ -633,7 +636,8 @@
 				mailbox = el( 'div', { class: 'sfp-tool__mailbox', hidden: true }, [ el( 'div', { class: 'sfp-tool__mailrij' }, [ email, stuur ] ), hp, mailMelding ] );
 				paneelResultaat.appendChild( mailbox );
 			}
-			paneelResultaat.appendChild( el( 'p', { class: 'sfp-tool__nav' }, [ el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_opnieuw' ), onclick: opnieuw } ) ] ) );
+			/* Opnieuw beginnen is geen call-to-action: een rustige link zonder pijl, zoals Vorige. */
+			paneelResultaat.appendChild( el( 'p', { class: 'sfp-tool__nav' }, [ el( 'button', { type: 'button', class: 'sfp-tool__opnieuw', text: tx( 'tool_opnieuw' ), onclick: opnieuw } ) ] ) );
 			if ( aan( 'duimpjes' ) ) { paneelResultaat.appendChild( tool.duimWidget() ); }
 			if ( tool.formulier ) { tool.formulier.hidden = false; }
 			tool.zeg( ( u.kop ? u.kop + ' ' : '' ) + ( u.titel || '' ) );

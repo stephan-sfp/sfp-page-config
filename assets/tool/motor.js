@@ -298,8 +298,8 @@
 				Array.prototype.forEach.call( knoppen.children, function ( k ) { k.disabled = true; } );
 			}, function () { verstuur.disabled = false; } );
 		} } );
-		knoppen.appendChild( knop( 'omhoog', '👍 ' + t( 'tool_duim_ja' ) ) );
-		knoppen.appendChild( knop( 'omlaag', '👎 ' + t( 'tool_duim_nee' ) ) );
+		knoppen.appendChild( knop( 'omhoog', t( 'tool_duim_ja' ) ) );
+		knoppen.appendChild( knop( 'omlaag', t( 'tool_duim_nee' ) ) );
 		vervolg.appendChild( veld );
 		vervolg.appendChild( mail );
 		vervolg.appendChild( hp );
