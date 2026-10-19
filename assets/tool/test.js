@@ -595,9 +595,10 @@
 			/* Lukt een pdf of Word-bestand niet (bijvoorbeeld geen verbinding), dan een melding; een volgende klik probeert het opnieuw. */
 			function bestand( knop, p ) { deelMelding.hidden = true; wacht( knop, p ).catch( function () { deelMelding.textContent = tx( 'tool_bestand_fout' ); deelMelding.hidden = false; } ); }
 			if ( aan( 'pdf' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_pdf' ), onclick: function () { bestand( this, tool.pdf( blokkenMet(), naam() ) ); } } ) ); }
-			if ( aan( 'word' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop', text: tx( 'tool_word' ), onclick: function () { bestand( this, tool.word( blokkenMet(), naam() ) ); } } ) ); }
-			if ( aan( 'mail' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop', text: tx( 'tool_mail' ), 'aria-expanded': 'false', onclick: function () { mailbox.hidden = ! mailbox.hidden; this.setAttribute( 'aria-expanded', mailbox.hidden ? 'false' : 'true' ); if ( ! mailbox.hidden ) { mailbox.querySelector( 'input[type=email]' ).focus(); } } } ) ); }
-			if ( aan( 'deellink' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop', text: tx( 'tool_deellink' ), onclick: function () { tool.deel( antwoorden, function ( m ) { deelMelding.textContent = m; deelMelding.hidden = false; setTimeout( function () { deelMelding.hidden = true; }, 6000 ); } ); } } ) ); }
+			/* Eén knop (pdf); de rest zijn tekstlinks met een pijl, zoals de merkbron een tweede keus wil. */
+			if ( aan( 'word' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_word' ), onclick: function () { bestand( this, tool.word( blokkenMet(), naam() ) ); } } ) ); }
+			if ( aan( 'mail' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_mail' ), 'aria-expanded': 'false', onclick: function () { mailbox.hidden = ! mailbox.hidden; this.setAttribute( 'aria-expanded', mailbox.hidden ? 'false' : 'true' ); if ( ! mailbox.hidden ) { mailbox.querySelector( 'input[type=email]' ).focus(); } } } ) ); }
+			if ( aan( 'deellink' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_deellink' ), onclick: function () { tool.deel( antwoorden, function ( m ) { deelMelding.textContent = m; deelMelding.hidden = false; setTimeout( function () { deelMelding.hidden = true; }, 6000 ); } ); } } ) ); }
 			paneelResultaat.appendChild( rij );
 			paneelResultaat.appendChild( deelMelding );
 			if ( aan( 'mail' ) ) {
@@ -616,7 +617,7 @@
 				mailbox = el( 'div', { class: 'sfp-tool__mailbox', hidden: true }, [ el( 'div', { class: 'sfp-tool__mailrij' }, [ email, stuur ] ), hp, mailMelding ] );
 				paneelResultaat.appendChild( mailbox );
 			}
-			paneelResultaat.appendChild( el( 'p', { class: 'sfp-tool__nav' }, [ el( 'button', { type: 'button', class: 'sfp-tool__vorige', text: '‹ ' + tx( 'tool_opnieuw' ), onclick: opnieuw } ) ] ) );
+			paneelResultaat.appendChild( el( 'p', { class: 'sfp-tool__nav' }, [ el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_opnieuw' ), onclick: opnieuw } ) ] ) );
 			if ( aan( 'duimpjes' ) ) { paneelResultaat.appendChild( tool.duimWidget() ); }
 			if ( tool.formulier ) { tool.formulier.hidden = false; }
 			tool.zeg( ( u.kop ? u.kop + ' ' : '' ) + ( u.titel || '' ) );
@@ -702,7 +703,7 @@
 						el( 'p', { class: 'sfp-tool__vraag', text: tx( 'tool_verder' ) } ),
 						el( 'div', { class: 'sfp-tool__acties' }, [
 							el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_verder_ja' ), onclick: function () { schermenWrap.removeChild( vraag ); vulIn( bewaard.a ); if ( perVraag ) { ga( eersteOpen() ); } } } ),
-							el( 'button', { type: 'button', class: 'sfp-tool__knop', text: tx( 'tool_verder_nee' ), onclick: function () { schermenWrap.removeChild( vraag ); tool.wisBewaard(); if ( perVraag ) { ga( 0 ); } } } )
+							el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_verder_nee' ), onclick: function () { schermenWrap.removeChild( vraag ); tool.wisBewaard(); if ( perVraag ) { ga( 0 ); } } } )
 						] )
 					] );
 					schermenWrap.insertBefore( vraag, schermenWrap.firstChild );

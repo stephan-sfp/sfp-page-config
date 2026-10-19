@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.5] - 2026-10-19
+
+Opmaak van de tool volgens de netwerknormen van de merkbron, na de eerste tests op CVD.
+
+### Gewijzigd
+- **Kleuren:** opschriften (zoals Context en de regel boven de uitslag), de rand van een gekozen antwoord en de focusrand staan in de primaire kleur in plaats van de kleur voor links en knoppen. Die kleur blijft voor knoppen, links en de voortgangsbalk.
+- **Koppen:** de koppen in de uitslag, de stappen, de niveaus bij de balken en "Hoe deze test rekent" staan in hoofdletters, in het kopfont op gewicht 900.
+- **De vraag** is het opschrift van een veld: gewone letters in het bodyfont, zoals in de oude tools.
+- **Knoppen:** één knop (Download als pdf), altijd gevuld. Word, mail, deellink en Opnieuw beginnen zijn tekstlinks met een pijl erachter, in gewone letters in het bodyfont op 900. Knoppen in het kopfont op 900, in hoofdletters.
+- **Afronding:** velden, antwoordvakken, meldingen en de duimpjes 6 px.
+
+### Gerepareerd
+- De oude koppelcode van een site (`[cvd_tool_auto]` in de Tool-layout van Astra) toont bij een tool met een beschrijving de nieuwe tool, of niets als die al op de pagina staat. Daarmee verdwijnt de melding "Tool-snippet … nog niet geregistreerd" voor redacteuren, en hoeft de layout van een site niet aangepast te worden. Zonder beschrijving werkt de oude code zoals altijd.
+
 ## [3.8.0-beta.4] - 2026-10-19
 
 Kleine reparaties gevonden bij het omzetten van de vijf tests van CVD, en de omgezette tests als testvoorbeelden.

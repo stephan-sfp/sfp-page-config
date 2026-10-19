@@ -259,6 +259,20 @@ preg_match( '/class="sfp-tool [^"]*" id="([^"]+)"/', $een, $id1 );
 preg_match( '/class="sfp-tool [^"]*" id="([^"]+)"/', $twee, $id2 );
 $check( 'twee keer: eigen id', ! empty( $id1[1] ) && ! empty( $id2[1] ) && $id1[1] !== $id2[1] );
 
+/* De oude koppelcode van een site ([cvd_tool_auto]) toont de nieuwe tool of niets, nooit twee keer. */
+add_shortcode( 'cvd_tool_auto', function () { return '<div class="cvd-tool-missing">oud</div>'; } );
+$GLOBALS['wp_query']->queried_object = get_post( $id );
+$GLOBALS['wp_query']->is_singular    = true;
+$GLOBALS['wp_query']->is_single      = true;
+$GLOBALS['wp_query']->set( 'post_type', 'tool' );
+$GLOBALS['post'] = get_post( $id );
+setup_postdata( $GLOBALS['post'] );
+$check( 'oude koppelcode: al getoond, dus niets', '' === do_shortcode( '[cvd_tool_auto]' ) );
+update_post_meta( $id, 'sfp_tool', '' );
+$check( 'oude koppelcode: zonder beschrijving de oude tool', false !== strpos( do_shortcode( '[cvd_tool_auto]' ), 'cvd-tool-missing' ) );
+update_post_meta( $id, 'sfp_tool', wp_slash( $json ) );
+remove_shortcode( 'cvd_tool_auto' );
+
 /* Een link in de beschrijving die geen webadres is, komt nergens op de pagina. */
 $vies            = json_decode( $json, true );
 $vies['bron']    = array( 'model' => 'Model', 'link' => '</script><script>alert(1)</script>' );

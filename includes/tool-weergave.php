@@ -142,7 +142,55 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
     }
     $html .= '<details class="sfp-tool__hoe" id="' . esc_attr( $id ) . '-hoe"><summary>' . esc_html( $t( 'tool_hoe_rekent' ) ) . '</summary>' . sfp_page_config_tool_hoe_rekent( $b ) . '</details>';
     $html .= '</div>';
+    sfp_page_config_tool_getoond( (int) $post->ID, true );
     return $html;
+}
+
+/**
+ * Staat deze tool al op de pagina? Zo komt hij niet twee keer, ook niet als
+ * een layout en de tekst hem allebei plaatsen.
+ *
+ * @param  int  $id     Tool.
+ * @param  bool $zet    Markeren als getoond.
+ * @return bool
+ */
+function sfp_page_config_tool_getoond( $id, $zet = false ) {
+    static $getoond = array();
+    if ( $zet ) {
+        $getoond[ (int) $id ] = true;
+    }
+    return ! empty( $getoond[ (int) $id ] );
+}
+
+add_filter( 'pre_do_shortcode_tag', 'sfp_page_config_tool_oude_koppeling', 10, 3 );
+
+/**
+ * De oude koppelcode van de sites ([cvd_tool_auto], [dps_tool_auto] enz.,
+ * snippet "Tools: shortcode automatisch koppelen") in de Tool-layout van
+ * Astra. Heeft de tool een beschrijving, dan toont die code de nieuwe tool
+ * (of niets als hij al op de pagina staat) in plaats van de oude tool of de
+ * melding "nog niet geregistreerd". Zonder beschrijving werkt de oude code
+ * zoals altijd.
+ *
+ * @param  false|string $uit  Kortsluiting.
+ * @param  string       $tag  Shortcode.
+ * @param  array|string $atts Attributen.
+ * @return false|string
+ */
+function sfp_page_config_tool_oude_koppeling( $uit, $tag, $atts ) {
+    if ( false !== $uit || ! preg_match( '/^[a-z]{2,4}_tool_auto$/', (string) $tag ) || ! is_singular( 'tool' ) || ! sfp_page_config_tool_aan() ) {
+        return $uit;
+    }
+    $post = get_post();
+    if ( ! $post || 'tool' !== $post->post_type || ! sfp_page_config_tool_beschrijving( $post ) ) {
+        return $uit;
+    }
+    if ( sfp_page_config_tool_getoond( $post->ID ) ) {
+        return '';
+    }
+    $html = sfp_page_config_tool_html( $post, 'volledig' );
+    // Kan de nieuwe tool niet getoond worden, dan blijft de oude code werken.
+    return '' === $html ? $uit : $html;
 }
 
 /**
@@ -213,7 +261,7 @@ function sfp_page_config_tool_in_inhoud( $inhoud ) {
     if ( function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post ) ) {
         return $inhoud;
     }
-    if ( false !== strpos( $inhoud, '[sfp_tool' ) || false !== strpos( $post->post_content, '[sfp_tool' ) || has_block( 'sfp/tool', $post ) ) {
+    if ( sfp_page_config_tool_getoond( $post->ID ) || false !== strpos( $inhoud, '[sfp_tool' ) || false !== strpos( $post->post_content, '[sfp_tool' ) || has_block( 'sfp/tool', $post ) ) {
         return $inhoud;
     }
     $html = sfp_page_config_tool_html( $post, 'volledig' );
