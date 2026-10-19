@@ -18,7 +18,7 @@
 .sfp-tool__balk{position:relative;height:4px;border-radius:999px;background:var(--sfp-b-tint2);overflow:hidden}
 .sfp-tool__balk-vul{position:absolute;inset:0 auto 0 0;width:0;background:var(--sfp-b-primair);border-radius:999px;transition:width .35s ease}
 /* In de uitslag (balken per dimensie) blijft de vulling in de kleur voor links en knoppen. */
-.sfp-tool__balkrij .sfp-tool__balk{height:6px;background:var(--sfp-b-tint2)}
+.sfp-tool__balkrij .sfp-tool__balk{height:6px;background:color-mix(in srgb,var(--sfp-b-tint2) 55%,var(--sfp-b-wit,#fff))}
 /* Opschriften (teller, groep, regel boven de uitslag): kopfont in hoofdletters, dus primair (de bodykleur
    is alleen voor lopende tekst in het bodyfont), met een accentstreepje in Tint 1 ervoor. Tint 1 bestaat
    bij elk merk en is nooit wit. */
@@ -108,9 +108,9 @@
 .sfp-tool__tekst--klein{font-size:15px;margin:6px 0 0}
 .sfp-tool__balken{display:grid;gap:16px}
 .sfp-tool__balken .sfp-tool__kop{margin-bottom:0}
-/* Scores: geen kader per regel; een dunne balk in primair, de uitslag vol, de andere lichter. */
+/* Scores: geen kader per regel; een dunne balk, de uitslag in primair, de andere in Tint 1 (geen grijs). */
 .sfp-tool__balkrij{padding:0}
-.sfp-tool__balkrij .sfp-tool__balk-vul{background:color-mix(in srgb,var(--sfp-b-primair) 45%,var(--sfp-b-wit,#fff))}
+.sfp-tool__balkrij .sfp-tool__balk-vul{background:var(--sfp-b-tint1)}
 .sfp-tool__balkrij.is-uitslag .sfp-tool__balk-vul{background:var(--sfp-b-primair)}
 .sfp-tool__balkkop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}
 :root .sfp-tool__balkkop h4{margin:0;font-family:var(--sfp-b-kop);font-weight:900;font-size:14px;letter-spacing:.02em;text-transform:uppercase;color:var(--sfp-b-primair)}

@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.0-beta.12] - 2026-10-19
+
+### Gewijzigd
+- Scores in de uitslag: de balken die niet de uitslag zijn in Tint 1 in plaats van een mengsel met de primaire kleur, dat grijs oogde.
+
 ## [3.8.0-beta.11] - 2026-10-19
 
 ### Gewijzigd
