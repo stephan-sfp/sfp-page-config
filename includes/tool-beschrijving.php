@@ -1222,7 +1222,7 @@ function sfp_page_config_tool_tekst_uitvoer( array $b, array $r, $titel ) {
  * met de topscore), de laagste (alle met de laagste score) of de top N.
  *
  * @param  array  $r        Uitslag.
- * @param  string $selectie alle, hoogste, laagste of top.
+ * @param  string $selectie alle, oplopend (laagste eerst), hoogste, laagste of top.
  * @param  int    $aantal   Bij top.
  * @return string[]
  */
@@ -1243,6 +1243,8 @@ function sfp_page_config_tool_selectie( array $r, $selectie, $aantal = 0 ) {
             return array_values( array_filter( $v, function ( $d ) use ( $w, $min ) { return $w( $d ) === $min; } ) );
         case 'top':
             return array_slice( $v, 0, max( 1, $aantal ) );
+        case 'oplopend':
+            return array_reverse( $v );
     }
     return $v;
 }
