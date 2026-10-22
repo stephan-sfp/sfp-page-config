@@ -46,6 +46,7 @@
     "anders": {
       "regel": "paar",
       "paren": {
+        "energie+inhoud": "expert",
         "energie+contact": "inspirator",
         "structuur+contact": "verteller",
         "inhoud+structuur": "architect"
