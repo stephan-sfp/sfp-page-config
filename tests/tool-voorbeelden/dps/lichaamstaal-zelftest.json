@@ -221,7 +221,7 @@
     { "type": "totaal", "kop": "Totaalscore" },
     { "type": "balken", "kop": "Per dimensie", "sorteer": "vast" },
     { "type": "alle", "kop": "Dit gaat al goed", "selectie": "hoogste", "lijsten": ["sterk"] },
-    { "type": "alle", "kop": "Jouw verbeterpunten", "selectie": "laagste", "lijsten": ["oefeningen"] }
+    { "type": "alle", "kop": "Jouw verbeterpunten", "selectie": "laagste", "zonder_hoogste": true, "leeg": "Geen specifieke verbeterpunten omdat je gelijk scoort op elke dimensie. Kies zelf een dimensie om tijdens de eerstvolgende presentatie mee te experimenteren.", "lijsten": ["oefeningen"] }
   ],
   "acties": { "pdf": true, "word": false, "mail": true, "deellink": true, "duimpjes": true, "formulier": 0, "pdf_bestandsnaam": "lichaamstaal-zelftest-spreker-{totaal}van60" },
   "mail": { "onderwerp": "Jouw lichaamstaal-zelftest", "intro": "" },

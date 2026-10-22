@@ -13,6 +13,7 @@ Tekstlinks in de tools volgens de merkbron, en opruimen van oude snippets via RE
 
 ### Toegevoegd
 - **Snippet naar de prullenbak** via `POST /sfp/v1/snippets/<id>/prullenbak`, alleen voor een snippet dat uit staat. Het snippet en zijn bestand blijven bewaard en zijn in wp-admin terug te zetten. Definitief verwijderen kan via REST nog steeds niet.
+- **Toolmotor, onderdeel `alle`:** met `"zonder_hoogste": true` vallen de dimensies met de topscore weg. Scoort iemand overal gelijk, dan blijft er bij `laagste` niets over en toont het onderdeel zijn tekst `leeg`; die tekst staat nu ook in de mail. Nodig voor de Lichaamstaal-zelftest, die bij gelijke scores geen verbeterpunten toonde maar een melding.
 - `tests/tool-voorbeelden/dps`: de Sprekerstypetest en de Lichaamstaal-zelftest, omgezet uit hun oude snippets met de teksten letterlijk. Elk geeft bij de vergelijking met de oude rekenlogica dezelfde uitslag en scores, met één bewuste uitzondering: in de oude Sprekerstypetest werd de combinatie Inhoud en Energie door een programmeerfout nooit herkend. Die geeft nu De Expert, zoals de oude code bedoelde.
 
 ## [3.8.0] - 2026-10-19

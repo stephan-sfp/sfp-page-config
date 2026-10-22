@@ -152,6 +152,16 @@ $r = sfp_page_config_tool_reken( $t6, array( 'q1' => 'x', 'q2' => 'x', 'q3' => '
 ok( 'Sterk' === $r['niveaus']['a'] && 'Zwak' === $r['niveaus']['c'], 'drempels' );
 $sel = sfp_page_config_tool_selectie( $r, 'laagste' );
 ok( array( 'c' ) === $sel, 'selectie laagste' );
+ok( array( 'c' ) === sfp_page_config_tool_selectie( $r, 'laagste', 0, true ), 'selectie laagste zonder hoogste' );
+$gelijk = $r;
+foreach ( $gelijk['dimensies'] as $d => $x ) {
+    $gelijk['dimensies'][ $d ]['waarde'] = 2;
+}
+ok( 3 === count( sfp_page_config_tool_selectie( $gelijk, 'laagste' ) ), 'alles gelijk: laagste is alles' );
+ok( array() === sfp_page_config_tool_selectie( $gelijk, 'laagste', 0, true ), 'alles gelijk: laagste zonder hoogste is leeg' );
+$u = sfp_page_config_tool_uitvoer_schoon( array( 'type' => 'alle', 'selectie' => 'laagste', 'zonder_hoogste' => true, 'leeg' => 'Niets' ) );
+ok( true === $u['zonder_hoogste'] && 'Niets' === $u['leeg'], 'zonder_hoogste en leeg blijven bewaard' );
+ok( ! isset( sfp_page_config_tool_uitvoer_schoon( array( 'type' => 'alle', 'zonder_hoogste' => false ) )['zonder_hoogste'] ), 'zonder_hoogste uit valt weg' );
 
 /* ---------- 3. Controle ---------- */
 $c = sfp_page_config_tool_controleer_tekst( '{nee' );

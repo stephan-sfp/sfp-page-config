@@ -213,9 +213,11 @@
 		var uit = String( tekst || '' ).replace( /\{([a-z0-9_.\[\]]+)\}/gi, function ( m, p ) { var w = bron( b, r, p ); return w === null || w === undefined ? '' : ( Array.isArray( w ) ? w.map( item ).join( ', ' ) : String( w ) ); } );
 		return ( ! diepte && uit.indexOf( '{' ) >= 0 ) ? vul( uit, b, r, 1 ) : uit;
 	}
-	function selectie( r, soort, aantal ) {
+	/* zonderHoogste: dimensies met de topscore vallen weg (gelijk aan PHP, sinds 3.8.1). */
+	function selectie( r, soort, aantal, zonderHoogste ) {
 		var v = r.volgorde; if ( ! v.length ) { return []; }
 		var w = function ( d ) { return r.dimensies[ d ].waarde; };
+		if ( zonderHoogste ) { var top = w( v[ 0 ] ); v = v.filter( function ( d ) { return w( d ) !== top; } ); if ( ! v.length ) { return []; } }
 		if ( 'hoogste' === soort ) { var mx = w( v[ 0 ] ); return v.filter( function ( d ) { return w( d ) === mx; } ); }
 		if ( 'laagste' === soort ) { var mn = w( v[ v.length - 1 ] ); return v.filter( function ( d ) { return w( d ) === mn; } ); }
 		if ( 'top' === soort ) { return v.slice( 0, Math.max( 1, aantal || 1 ) ); }
@@ -477,7 +479,7 @@
 						blokken.push( { type: 'tekst', tekst: tt } );
 						break;
 					case 'alle':
-						var keuze = selectie( r, o.selectie || 'alle', parseInt( o.aantal, 10 ) || 0 );
+						var keuze = selectie( r, o.selectie || 'alle', parseInt( o.aantal, 10 ) || 0, !! o.zonder_hoogste );
 						if ( kop ) { paneelResultaat.appendChild( el( 'h3', { class: 'sfp-tool__kop', text: kop } ) ); blokken.push( { type: 'subkop', tekst: kop } ); }
 						if ( ! keuze.length && o.leeg ) { paneelResultaat.appendChild( el( 'p', { class: 'sfp-tool__tekst', text: o.leeg } ) ); blokken.push( { type: 'tekst', tekst: o.leeg } ); }
 						keuze.forEach( function ( d, i ) {
