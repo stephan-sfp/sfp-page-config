@@ -1,0 +1,391 @@
+{
+ "versie": 1,
+ "soort": "test",
+ "weergave": {
+  "modus": "per-vraag",
+  "stappen": [
+   "Stellingen",
+   "Profiel"
+  ],
+  "schaal": {
+   "1": "past niet bij me",
+   "3": "soms",
+   "5": "past helemaal bij me"
+  }
+ },
+ "dimensies": {
+  "voorzitter": {
+   "naam": "Voorzitter"
+  },
+  "vormer": {
+   "naam": "Vormer"
+  },
+  "plant": {
+   "naam": "Plant"
+  },
+  "brononderzoeker": {
+   "naam": "Brononderzoeker"
+  },
+  "monitor_evaluator": {
+   "naam": "Monitor-Evaluator"
+  },
+  "teamwerker": {
+   "naam": "Teamwerker"
+  },
+  "bedrijfsman": {
+   "naam": "Bedrijfsman"
+  },
+  "specialist": {
+   "naam": "Specialist"
+  },
+  "afmaker": {
+   "naam": "Afmaker"
+  }
+ },
+ "vragen": [
+  {
+   "id": "q01",
+   "type": "likert",
+   "dimensie": "voorzitter",
+   "tekst": "Ik heb een talent om mensen te beïnvloeden zonder druk op ze uit te oefenen."
+  },
+  {
+   "id": "q02",
+   "type": "likert",
+   "dimensie": "vormer",
+   "tekst": "Ik aarzel niet om de mening van anderen ter discussie te stellen of een minderheidsstandpunt in te nemen."
+  },
+  {
+   "id": "q03",
+   "type": "likert",
+   "dimensie": "plant",
+   "tekst": "Ideeën produceren is een van mijn natuurlijke kwaliteiten."
+  },
+  {
+   "id": "q04",
+   "type": "likert",
+   "dimensie": "brononderzoeker",
+   "tekst": "Ik leg makkelijk nuttige contacten buiten de groep."
+  },
+  {
+   "id": "q05",
+   "type": "likert",
+   "dimensie": "monitor_evaluator",
+   "tekst": "Ik kom ernstige vergissingen op het spoor door waakzaam te blijven."
+  },
+  {
+   "id": "q06",
+   "type": "likert",
+   "dimensie": "teamwerker",
+   "tekst": "Ik kan goed samenwerken met heel verschillende mensen."
+  },
+  {
+   "id": "q07",
+   "type": "likert",
+   "dimensie": "bedrijfsman",
+   "tekst": "Ik bedenk graag plannen of werkschema’s om voortgang te garanderen."
+  },
+  {
+   "id": "q08",
+   "type": "likert",
+   "dimensie": "specialist",
+   "tekst": "Ik breng specialistische kennis of vaardigheden in die het team verder helpen."
+  },
+  {
+   "id": "q09",
+   "type": "likert",
+   "dimensie": "afmaker",
+   "tekst": "Ik leg de laatste hand aan zaken die anders blijven liggen."
+  },
+  {
+   "id": "q10",
+   "type": "likert",
+   "dimensie": "voorzitter",
+   "tekst": "Ik behoud mijn koelbloedigheid en blijf helder nadenken, ook onder druk."
+  },
+  {
+   "id": "q11",
+   "type": "likert",
+   "dimensie": "vormer",
+   "tekst": "Ik geef pittige uitspraken die voorkomen dat tijd wordt verspild."
+  },
+  {
+   "id": "q12",
+   "type": "likert",
+   "dimensie": "plant",
+   "tekst": "Ik vermijd het voor de hand liggende en bedenk graag iets onverwachts."
+  },
+  {
+   "id": "q13",
+   "type": "likert",
+   "dimensie": "brononderzoeker",
+   "tekst": "Ik raak verveeld zodra het werk minder verkenning vraagt en meer uitvoering."
+  },
+  {
+   "id": "q14",
+   "type": "likert",
+   "dimensie": "monitor_evaluator",
+   "tekst": "Ik weeg alle opties zorgvuldig af voordat ik een besluit steun."
+  },
+  {
+   "id": "q15",
+   "type": "likert",
+   "dimensie": "teamwerker",
+   "tekst": "Ik kan mij gemakkelijk in heel verschillende situaties verplaatsen."
+  },
+  {
+   "id": "q16",
+   "type": "likert",
+   "dimensie": "bedrijfsman",
+   "tekst": "Ik heb een talent om plannen te laten werken zodra ze geaccepteerd zijn."
+  },
+  {
+   "id": "q17",
+   "type": "likert",
+   "dimensie": "specialist",
+   "tekst": "Ik richt me liever op de kern van mijn vak dan op alle randzaken."
+  },
+  {
+   "id": "q18",
+   "type": "likert",
+   "dimensie": "afmaker",
+   "tekst": "Ik let op details die anderen over het hoofd zien."
+  },
+  {
+   "id": "naam",
+   "type": "tekst",
+   "na_uitslag": true,
+   "optioneel": true,
+   "maxlengte": 60,
+   "label": "Je naam (optioneel, komt op de PDF)"
+  }
+ ],
+ "score": {
+  "per_dimensie": "som"
+ },
+ "uitkomst": {
+  "regel": "top",
+  "aantal": 2
+ },
+ "uitslagen": {
+  "voorzitter": {
+   "kop": "Jouw primaire teamrol",
+   "titel": "Voorzitter",
+   "tekst": "Coördinerend, evenwichtig, gefocust op het doel.",
+   "lijsten": {
+    "sterk": [
+     "Je houdt overzicht en stuurt het team naar gezamenlijke doelen.",
+     "Je verdeelt taken op basis van de sterke kanten van elk teamlid.",
+     "Je creëert een sfeer waarin iedereen tot zijn recht komt."
+    ],
+    "valkuil": [
+     "Anderen kunnen je delegeerstijl ervaren als overdragen van eigen werk.",
+     "Je laat soms ruimte voor te veel discussie voor je doorpakt.",
+     "Je bent niet altijd zelf de meest creatieve of analytisch sterkste."
+    ],
+    "bijdrage": [
+     "Je zorgt dat het team koers houdt en dat iedereen weet wat zijn aandeel is."
+    ]
+   }
+  },
+  "vormer": {
+   "kop": "Jouw primaire teamrol",
+   "titel": "Vormer",
+   "tekst": "Gedreven, uitdagend, houdt het team in beweging.",
+   "lijsten": {
+    "sterk": [
+     "Je doorbreekt patstellingen en zet anderen aan tot actie.",
+     "Je accepteert geen vage afspraken of trage besluitvorming.",
+     "Je gedijt onder druk en bij weerstand."
+    ],
+    "valkuil": [
+     "Je kunt mensen tegen je in het harnas jagen door je directheid.",
+     "Je hebt de neiging om over gevoelens van anderen heen te walsen.",
+     "Je raakt gefrustreerd bij gebrek aan tempo of resultaat."
+    ],
+    "bijdrage": [
+     "Je zorgt dat het team niet stilstaat en dat besluiten daadwerkelijk worden uitgevoerd."
+    ]
+   }
+  },
+  "plant": {
+   "kop": "Jouw primaire teamrol",
+   "titel": "Plant",
+   "tekst": "Creatief, ongebonden, brengt verrassende ideeën.",
+   "lijsten": {
+    "sterk": [
+     "Je komt met originele oplossingen waar anderen niet aan denken.",
+     "Je legt verbanden tussen schijnbaar losse onderwerpen.",
+     "Je hebt geen moeite met onconventionele invalshoeken."
+    ],
+    "valkuil": [
+     "Je communicatie kan voor anderen abstract of moeilijk volgbaar zijn.",
+     "Je raakt snel afgeleid van praktische uitwerking.",
+     "Je hebt moeite met kritiek op je ideeën."
+    ],
+    "bijdrage": [
+     "Je brengt vernieuwing en doorbreekt vastgeroeste denkpatronen."
+    ]
+   }
+  },
+  "brononderzoeker": {
+   "kop": "Jouw primaire teamrol",
+   "titel": "Brononderzoeker",
+   "tekst": "Verkennend, enthousiast, brengt externe kennis binnen.",
+   "lijsten": {
+    "sterk": [
+     "Je onderzoekt mogelijkheden en kent de juiste mensen.",
+     "Je bouwt makkelijk een netwerk op binnen en buiten het team.",
+     "Je vertaalt ideeën van anderen naar concrete kansen."
+    ],
+    "valkuil": [
+     "Je enthousiasme zakt nadat de eerste opwinding voorbij is.",
+     "Je belooft soms meer dan je kunt waarmaken.",
+     "Je verliest interesse als de uitwerking saaier wordt."
+    ],
+    "bijdrage": [
+     "Je opent deuren en haalt waardevolle informatie en contacten binnen."
+    ]
+   }
+  },
+  "monitor_evaluator": {
+   "kop": "Jouw primaire teamrol",
+   "titel": "Monitor-Evaluator",
+   "tekst": "Analytisch, nuchter, weegt alle opties zorgvuldig af.",
+   "lijsten": {
+    "sterk": [
+     "Je beoordeelt opties zonder emotionele bias.",
+     "Je doorziet zwakke plekken in plannen en argumenten.",
+     "Je zorgt dat besluiten goed onderbouwd zijn."
+    ],
+    "valkuil": [
+     "Je kunt afstandelijk of kritisch overkomen.",
+     "Je inspireert anderen niet altijd tot enthousiasme.",
+     "Je beslist langzamer dan sommigen prettig vinden."
+    ],
+    "bijdrage": [
+     "Je voorkomt dat het team enthousiaste maar slecht doordachte besluiten neemt."
+    ]
+   }
+  },
+  "teamwerker": {
+   "kop": "Jouw primaire teamrol",
+   "titel": "Teamwerker",
+   "tekst": "Sociaal, harmonieus, smeert de samenwerking.",
+   "lijsten": {
+    "sterk": [
+     "Je luistert en pikt op wat anderen ongezegd laten.",
+     "Je verzacht spanningen en houdt het team bijeen.",
+     "Je past je flexibel aan veranderende situaties aan."
+    ],
+    "valkuil": [
+     "Je vermijdt soms noodzakelijke confrontaties.",
+     "Je laat je eigen mening ondersneeuwen.",
+     "Je hebt moeite met besluiten waar iemand zich tekort gedaan voelt."
+    ],
+    "bijdrage": [
+     "Je zorgt dat het team als groep blijft functioneren, ook onder spanning."
+    ]
+   }
+  },
+  "bedrijfsman": {
+   "kop": "Jouw primaire teamrol",
+   "titel": "Bedrijfsman",
+   "tekst": "Praktisch, systematisch, zet plannen om in actie.",
+   "lijsten": {
+    "sterk": [
+     "Je vertaalt ideeën naar concrete werkbare stappen.",
+     "Je werkt gestructureerd en betrouwbaar.",
+     "Je houdt je aan afspraken en planning."
+    ],
+    "valkuil": [
+     "Je kunt rigide vasthouden aan procedures.",
+     "Je hebt moeite met onvoorziene veranderingen.",
+     "Je waardeert vernieuwing niet automatisch."
+    ],
+    "bijdrage": [
+     "Je zorgt dat het team van plan naar uitvoering komt zonder dat er stappen worden overgeslagen."
+    ]
+   }
+  },
+  "specialist": {
+   "kop": "Jouw primaire teamrol",
+   "titel": "Specialist",
+   "tekst": "Toegewijd, deskundig, brengt diepe kennis in.",
+   "lijsten": {
+    "sterk": [
+     "Je bent zeer goed in jouw vakgebied en blijft je verdiepen.",
+     "Je levert inhoudelijke kwaliteit waar het echt op aankomt.",
+     "Je werkt zelfstandig en toegewijd aan je expertise."
+    ],
+    "valkuil": [
+     "Je hebt soms moeite om je expertise toegankelijk te maken.",
+     "Je focus op je eigen onderwerp kan het bredere belang verdringen.",
+     "Je raakt minder gemotiveerd buiten je vakgebied."
+    ],
+    "bijdrage": [
+     "Je brengt het expert-perspectief waar het team niet om heen kan."
+    ]
+   }
+  },
+  "afmaker": {
+   "kop": "Jouw primaire teamrol",
+   "titel": "Afmaker",
+   "tekst": "Nauwkeurig, gewetensvol, brengt het werk over de finish.",
+   "lijsten": {
+    "sterk": [
+     "Je let op details die anderen over het hoofd zien.",
+     "Je werkt afspraken en deadlines stipt na.",
+     "Je levert kwaliteit zonder losse eindjes."
+    ],
+    "valkuil": [
+     "Je delegeert moeilijk omdat je het zelf beter denkt te kunnen.",
+     "Je perfectionisme kan voortgang vertragen.",
+     "Je piekert over wat nog kan misgaan."
+    ],
+    "bijdrage": [
+     "Je zorgt dat het werk daadwerkelijk af is en aan de hoogste kwaliteitsnorm voldoet."
+    ]
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "profiel"
+  },
+  {
+   "type": "lijst",
+   "kop": "Waar je sterk in bent",
+   "bron": "uitslag.sterk"
+  },
+  {
+   "type": "lijst",
+   "kop": "Waar je tegenaan loopt",
+   "bron": "uitslag.valkuil"
+  },
+  {
+   "type": "lijst",
+   "kop": "Jouw bijdrage aan het team",
+   "bron": "uitslag.bijdrage"
+  },
+  {
+   "type": "balken",
+   "kop": "Je scores per rol"
+  }
+ ],
+ "acties": {
+  "formulier": 0
+ },
+ "mail": {
+  "onderwerp": "Jouw teamrolprofiel: {uitslag.titel}",
+  "intro": "Hierbij je persoonlijke rapport van de Belbin-teamrollentest."
+ },
+ "bron": {
+  "model": "Belbin, negen teamrollen",
+  "bron": "Meredith Belbin",
+  "link": ""
+ },
+ "teksten": {
+  "resultaat_slot": "Beantwoord eerst de 18 stellingen om je teamrolprofiel te zien."
+ }
+}

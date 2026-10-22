@@ -1,0 +1,593 @@
+{
+ "versie": 1,
+ "soort": "test",
+ "weergave": {
+  "modus": "per-vraag",
+  "stappen": [
+   "Start",
+   "Vragen",
+   "Profiel"
+  ]
+ },
+ "dimensies": {
+  "sturend": {
+   "naam": "Sturend",
+   "volledig": "Sturende stijl (S1)"
+  },
+  "coachend": {
+   "naam": "Coachend",
+   "volledig": "Coachende stijl (S2)"
+  },
+  "steunend": {
+   "naam": "Steunend",
+   "volledig": "Steunende stijl (S3)"
+  },
+  "delegerend": {
+   "naam": "Delegerend",
+   "volledig": "Delegerende stijl (S4)"
+  }
+ },
+ "vragen": [
+  {
+   "id": "v01",
+   "type": "keuze",
+   "intro": "12 situaties uit leidinggevende-praktijk. Per situatie kies je de reactie die het meest bij je past. Reken op 3-4 minuten.",
+   "tekst": "Een nieuwe medewerker begint en kent het werk nog niet:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik geef heldere instructies en check vaak of het lukt.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik leg uit waarom we het zo doen en geef ruimte voor vragen.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik geef de hoofdlijnen en laat de medewerker zelf ontdekken.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik geef de taak en spreek af wanneer we elkaar weer spreken.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v02",
+   "type": "keuze",
+   "tekst": "Een ervaren medewerker krijgt een nieuwe taak die hij nog niet kent:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik geef duidelijke kaders en stappen om mee te beginnen.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik leg de aanpak uit en bespreek samen de eerste stappen.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik vraag hoe hij het zou aanpakken en bied steun waar nodig.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik vertrouw op zijn ervaring en laat hem de taak oppakken.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v03",
+   "type": "keuze",
+   "tekst": "Een medewerker presteert ondermaats op een taak die hij eigenlijk goed kent:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik benoem helder wat verwacht wordt en wat anders moet.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik bespreek wat er anders gaat en oefen samen de aanpak.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik vraag wat er speelt en bied luisterend oor en steun.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik geef het wat tijd en kijk of het herstelt.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v04",
+   "type": "keuze",
+   "tekst": "Een team komt vast te zitten op een complex project:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik neem de regie en bepaal welke stap als eerste genomen wordt.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik help met opdelen en geef richting per onderdeel.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik stel vragen die het team helpen zelf de knoop door te hakken.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik laat het team zelf de impasse oplossen.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v05",
+   "type": "keuze",
+   "tekst": "Een medewerker komt naar je met een probleem dat hij eigenlijk zelf op kan lossen:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik geef het antwoord en spreek af dat hij dit voortaan zelf doet.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik denk mee en geef richting waarna hij het zelf afmaakt.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik vraag hoe hij het zelf zou aanpakken en bevestig zijn keuze.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik geef hem het signaal dat ik vertrouw dat hij het kan.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v06",
+   "type": "keuze",
+   "tekst": "Het is crisis op een project waar veiligheid op het spel staat:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik neem direct de leiding en geef per stap wie wat doet.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik bepaal de hoofdaanpak en betrek mensen kort bij detail-besluiten.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik vraag het team om input en kies dan samen wat we doen.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik wijs een trekker aan en laat het team het oplossen.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v07",
+   "type": "keuze",
+   "tekst": "Een medewerker wil een nieuwe verantwoordelijkheid die hij nog niet eerder had:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik geef hem een afgebakende start met duidelijke instructies.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik leg uit wat erbij komt kijken en geef ruimte voor groei.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik vraag hoe hij denkt dat het zou werken en steun zijn aanpak.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik geef hem de verantwoordelijkheid zonder veel kaders.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v08",
+   "type": "keuze",
+   "tekst": "Tijdens een vergadering verschilt het team van mening over de aanpak:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik neem de knoop door en bepaal welke aanpak we volgen.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik leid de discussie en help het team tot een gedragen besluit.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik faciliteer dat iedereen zijn mening kan toelichten.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik laat het team zelf het besluit nemen.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v09",
+   "type": "keuze",
+   "tekst": "Een medewerker die normaal goed functioneert verliest zijn motivatie:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik herhaal de verwachtingen en wat de gevolgen zijn van niet leveren.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik bespreek wat hem motiveert en hoe we daar weer bij komen.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik luister en vraag wat hij nodig heeft.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik geef hem ruimte om er zelf uit te komen.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v10",
+   "type": "keuze",
+   "tekst": "Het team werkt aan een routinetaak die ze al jaren doen:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik check regelmatig of het op tijd af is.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik moedig aan en bevestig de aanpak.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik ben beschikbaar voor vragen maar laat het verder los.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik laat het team het volledig zelf doen.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v11",
+   "type": "keuze",
+   "tekst": "Iemand uit het team komt met een nieuw idee dat raakt aan jouw verantwoordelijkheid:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik bepaal of we het gaan doen en hoe.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik bespreek het idee en help met uitwerken.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik moedig hem aan en bevestig de richting.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik geef de medewerker eigenaarschap en stap terug.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v12",
+   "type": "keuze",
+   "tekst": "Je krijgt feedback dat je team meer ruimte wil voor eigen keuzes:",
+   "opties": [
+    {
+     "waarde": "sturend",
+     "tekst": "Ik leg uit waarom de kaders nodig zijn.",
+     "punten": {
+      "sturend": 1
+     }
+    },
+    {
+     "waarde": "coachend",
+     "tekst": "Ik bespreek welke ruimte ze willen en kijk hoe dat past.",
+     "punten": {
+      "coachend": 1
+     }
+    },
+    {
+     "waarde": "steunend",
+     "tekst": "Ik vraag het team welke keuze-vrijheid ze willen invullen.",
+     "punten": {
+      "steunend": 1
+     }
+    },
+    {
+     "waarde": "delegerend",
+     "tekst": "Ik geef ze meer ruimte en laat ze zelf de grenzen voelen.",
+     "punten": {
+      "delegerend": 1
+     }
+    }
+   ]
+  }
+ ],
+ "score": {
+  "per_dimensie": "telling"
+ },
+ "uitkomst": {
+  "regel": "hoogste"
+ },
+ "uitslagen": {
+  "sturend": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Sturende stijl (S1)",
+   "tekst": "Hoog op sturing, laag op ondersteuning. Geeft directe instructies en bewaakt uitvoering.",
+   "lijsten": {
+    "context": [
+     "Past bij medewerkers die nieuw zijn in een taak (Hersey-Blanchard M1: weinig competentie, hoge motivatie). Onmisbaar in crisis-situaties of bij dossiers met veiligheidsrisico."
+    ],
+    "sterk": [
+     "Je biedt duidelijkheid in onzekere situaties.",
+     "Je geeft heldere kaders waar nieuwe medewerkers houvast aan hebben.",
+     "Je zorgt dat doelen helder zijn en dat afspraken worden nagekomen."
+    ],
+    "valkuil": [
+     "Je kunt directief overkomen waar dialoog meer past.",
+     "Je geeft soms minder ruimte voor eigen inbreng van medewerkers.",
+     "Je past je stijl niet altijd aan naarmate medewerkers ervarener worden."
+    ],
+    "ontwikkel": [
+     "Oefen met situaties waarin je expliciet niet stuurt, maar vraagt: \"hoe zou jij dit aanpakken?\". Begin met onderwerpen waarin de medewerker eigenaarschap kan dragen."
+    ]
+   }
+  },
+  "coachend": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Coachende stijl (S2)",
+   "tekst": "Hoog op sturing, hoog op ondersteuning. Geeft richting en investeert in ontwikkeling.",
+   "lijsten": {
+    "context": [
+     "Past bij medewerkers die competentie ontwikkelen maar nog onzeker zijn (M2). Sterk bij onboarding en bij medewerkers die een nieuwe taak oppakken."
+    ],
+    "sterk": [
+     "Je legt uit waarom iets op een bepaalde manier moet.",
+     "Je investeert in de groei van medewerkers door uitleg en feedback.",
+     "Je zorgt dat instructies tegelijk motiverend zijn."
+    ],
+    "valkuil": [
+     "Je tempo van uitleggen kan langzaam aanvoelen voor ervarener medewerkers.",
+     "Je verwart soms coachen met sturen-met-een-glimlach.",
+     "Je kan moeite hebben om los te laten als de medewerker zelfstandig wordt."
+    ],
+    "ontwikkel": [
+     "Stel meer open vragen voor je een antwoord geeft. Laat de medewerker eerst zelf de oplossing formuleren voor je toevoegt."
+    ]
+   }
+  },
+  "steunend": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Steunende stijl (S3)",
+   "tekst": "Laag op sturing, hoog op ondersteuning. Faciliteert in plaats van te dirigeren.",
+   "lijsten": {
+    "context": [
+     "Past bij ervaren medewerkers die competent zijn maar tijdelijk onzeker (M3). Ook bij teamleden die motivatie verliezen ondanks competentie."
+    ],
+    "sterk": [
+     "Je geeft medewerkers ruimte voor eigen aanpak.",
+     "Je luistert, vraagt door en bevestigt waar dat past.",
+     "Je creeert een sfeer waarin mensen durven uitspreken wat ze denken."
+    ],
+    "valkuil": [
+     "Je kunt te lang afwachten waar ingrijpen nodig is.",
+     "Je hebt soms moeite met directe feedback geven.",
+     "Je kunt achter blijven met besluitvorming als de medewerker dat ook lastig vindt."
+    ],
+    "ontwikkel": [
+     "Oefen met concrete feedback geven zonder de relatie te willen beschermen. Stel een vraag, en geef daarna jouw observatie als die helpt."
+    ]
+   }
+  },
+  "delegerend": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Delegerende stijl (S4)",
+   "tekst": "Laag op sturing, laag op ondersteuning. Geeft taak en verantwoordelijkheid uit handen.",
+   "lijsten": {
+    "context": [
+     "Past bij ervaren, gemotiveerde medewerkers (M4) die de taak beheersen. Niet bij nieuwe rollen, onbekende projecten of medewerkers in een dip."
+    ],
+    "sterk": [
+     "Je vertrouwt op de competentie en motivatie van anderen.",
+     "Je geeft medewerkers de ruimte om zelfstandig keuzes te maken.",
+     "Je houdt tijd over voor strategische taken doordat je delegeert."
+    ],
+    "valkuil": [
+     "Je raakt soms uit beeld bij medewerkers die wel afstemming nodig hebben.",
+     "Je verwacht zelfstandigheid die nog niet voldoende ontwikkeld is.",
+     "Je hebt minder zicht op signalen van overbelasting bij medewerkers."
+    ],
+    "ontwikkel": [
+     "Bouw een korte wekelijkse check-in in, ook bij medewerkers die op het oog zelfstandig functioneren. Toets of het delegeren matcht met hun energie en behoefte."
+    ]
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "profiel"
+  },
+  {
+   "type": "balken"
+  },
+  {
+   "type": "lijst",
+   "kop": "Wanneer werkt deze stijl",
+   "bron": "uitslag.context"
+  },
+  {
+   "type": "lijst",
+   "kop": "Waar je sterk in bent",
+   "bron": "uitslag.sterk"
+  },
+  {
+   "type": "lijst",
+   "kop": "Waar je tegenaan loopt",
+   "bron": "uitslag.valkuil"
+  },
+  {
+   "type": "lijst",
+   "kop": "Eerste ontwikkelstap",
+   "bron": "uitslag.ontwikkel"
+  }
+ ],
+ "acties": {
+  "formulier": 0
+ },
+ "mail": {
+  "onderwerp": "Jouw leiderschapsstijl-profiel: {uitslag.titel}",
+  "intro": "Hier is je leiderschapsstijl-profiel."
+ },
+ "bron": {
+  "model": "Hersey-Blanchard, Situationeel Leiderschap (1969)",
+  "bron": "Paul Hersey en Ken Blanchard",
+  "link": ""
+ }
+}

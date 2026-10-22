@@ -1,0 +1,260 @@
+{
+ "versie": 1,
+ "soort": "test",
+ "weergave": {
+  "modus": "alles",
+  "stappen": [
+   "Vragen",
+   "Resultaat"
+  ],
+  "schaal": {
+   "1": "Helemaal mee oneens",
+   "2": "Mee oneens",
+   "3": "Neutraal",
+   "4": "Mee eens",
+   "5": "Helemaal mee eens"
+  }
+ },
+ "dimensies": {
+  "beslissen": {
+   "naam": "Beslissen",
+   "volledig": "Hoe jij beslist (analytisch vs intuitief)"
+  },
+  "ordenen": {
+   "naam": "Ordenen",
+   "volledig": "Hoe jij ordent (vooraf vs al doende)"
+  }
+ },
+ "vragen": [
+  {
+   "id": "v1",
+   "type": "likert",
+   "dimensie": "ordenen",
+   "intro": "Beantwoord twaalf korte vragen. Per vraag scoor je op twee assen: hoe jij beslist (analytisch vs intuitief) en hoe jij ordent (vooraf vs al doende).",
+   "tekst": "Voor ik begin met schrijven, heb ik liever een uitgewerkt plan dan een leeg vel."
+  },
+  {
+   "id": "v2",
+   "type": "likert",
+   "dimensie": "ordenen",
+   "omgekeerd": true,
+   "tekst": "Ik begin het liefst gewoon te schrijven en zie wel waar het uitkomt."
+  },
+  {
+   "id": "v3",
+   "type": "likert",
+   "dimensie": "ordenen",
+   "tekst": "Bij belangrijke teksten maak ik eerst een ruwe versie en daarna pas een nette."
+  },
+  {
+   "id": "v4",
+   "type": "likert",
+   "dimensie": "ordenen",
+   "omgekeerd": true,
+   "tekst": "Ik herken: ik schrijf in een rush en de structuur ontstaat al schrijvend."
+  },
+  {
+   "id": "v5",
+   "type": "likert",
+   "dimensie": "beslissen",
+   "tekst": "Ik wil bewijs en bronnen voor ik beweringen op papier zet."
+  },
+  {
+   "id": "v6",
+   "type": "likert",
+   "dimensie": "beslissen",
+   "omgekeerd": true,
+   "tekst": "Ik vertrouw op mijn intuitie als ik niet zeker weet of een zin werkt."
+  },
+  {
+   "id": "v7",
+   "type": "likert",
+   "dimensie": "beslissen",
+   "tekst": "Ik herlees mijn tekst om logische gaten te vinden, niet om gevoel te checken."
+  },
+  {
+   "id": "v8",
+   "type": "likert",
+   "dimensie": "beslissen",
+   "omgekeerd": true,
+   "tekst": "Ik kijk vooral of de tekst 'lekker leest' als ik klaar ben."
+  },
+  {
+   "id": "v9",
+   "type": "likert",
+   "dimensie": "ordenen",
+   "tekst": "Een buitenstaander zou mijn werkwijze methodisch noemen."
+  },
+  {
+   "id": "v10",
+   "type": "likert",
+   "dimensie": "ordenen",
+   "omgekeerd": true,
+   "tekst": "Een buitenstaander zou mijn werkwijze chaotisch maar effectief noemen."
+  },
+  {
+   "id": "v11",
+   "type": "likert",
+   "dimensie": "beslissen",
+   "tekst": "Ik kies woorden bewust en herzie vaak tot ze precies kloppen."
+  },
+  {
+   "id": "v12",
+   "type": "likert",
+   "dimensie": "beslissen",
+   "omgekeerd": true,
+   "tekst": "Ik kies woorden op klank en gevoel; precisie komt later wel."
+  }
+ ],
+ "score": {
+  "per_dimensie": "gecentreerd"
+ },
+ "uitkomst": {
+  "regel": "kwadrant",
+  "assen": {
+   "x": {
+    "naam": "Analytisch tegenover intuitief",
+    "plus": [
+     "beslissen"
+    ],
+    "min": [],
+    "nul": "+"
+   },
+   "y": {
+    "naam": "Vooraf tegenover al doende",
+    "plus": [
+     "ordenen"
+    ],
+    "min": [],
+    "nul": "+"
+   }
+  },
+  "kwadranten": {
+   "x+y+": "architect",
+   "x+y-": "pragmatist",
+   "x-y+": "verbinder",
+   "x-y-": "verteller"
+  }
+ },
+ "uitslagen": {
+  "architect": {
+   "kop": "Jouw resultaat",
+   "titel": "Architect",
+   "tekst": "Je beslist analytisch en je ordent vooraf. Plan eerst, schrijf daarna.",
+   "lijsten": {
+    "sterk": [
+     "Heldere structuur die de lezer makkelijk volgt.",
+     "Weinig logische gaten omdat je vooraf nadenkt.",
+     "Betrouwbaar in rapportages en zakelijke teksten."
+    ],
+    "valkuilen": [
+     "Schrijven start traag omdat planning veel tijd kost.",
+     "Kan stug aanvoelen voor lezers die warmte zoeken.",
+     "Geen ruimte voor onverwachte inzichten tijdens het schrijven."
+    ],
+    "tips": [
+     "Plan ja, maar zet een tijdslot op planning (max 20% van schrijftijd).",
+     "Schrijf 1 alinea bewust 'op gevoel' per stuk; vergelijk later.",
+     "Lees voor publicatie 1x hardop voor warmte-check."
+    ]
+   }
+  },
+  "verteller": {
+   "kop": "Jouw resultaat",
+   "titel": "Verteller",
+   "tekst": "Je beslist intuitief en je ordent al doende. Schrijven is ontdekken.",
+   "lijsten": {
+    "sterk": [
+     "Originele invalshoeken die anderen niet zouden bedenken.",
+     "Teksten met natuurlijk ritme en warmte.",
+     "Beste in storytelling, blogs en persoonlijke stukken."
+    ],
+    "valkuilen": [
+     "Structuur kan rommelig zijn; lezers raken de draad kwijt.",
+     "Deadlines stressvol omdat ontdekken tijd kost.",
+     "Lastig samen te werken op formele documenten."
+    ],
+    "tips": [
+     "Schrijf eerst, structuur erna; lees achteraf met 'mind-map'-bril.",
+     "Maak het hoofdpunt expliciet in 1 zin VOOR je publiceert.",
+     "Zet 1 vaste deadline halverwege voor 'structuur-pas'."
+    ]
+   }
+  },
+  "pragmatist": {
+   "kop": "Jouw resultaat",
+   "titel": "Pragmatist",
+   "tekst": "Je beslist analytisch maar ordent al doende. Zoekend en logisch.",
+   "lijsten": {
+    "sterk": [
+     "Logische sterkte zonder rigide vooraf-plan.",
+     "Snel kunnen schakelen bij nieuwe informatie.",
+     "Effectief in advieswerk en consultancy."
+    ],
+    "valkuilen": [
+     "Risico op halverwege omgooien van structuur.",
+     "Tekst kan analytisch koel aanvoelen.",
+     "Lastig om in 1 zit klaar te zijn; revisies stapelen."
+    ],
+    "tips": [
+     "Maak een mini-skelet (3 punten) voor je begint; geen volledig plan.",
+     "Beperk revisierondes (max 3) voor je 'klaar' verklaart.",
+     "Bouw 1 anecdote of voorbeeld in voor warmte."
+    ]
+   }
+  },
+  "verbinder": {
+   "kop": "Jouw resultaat",
+   "titel": "Verbinder",
+   "tekst": "Je beslist intuitief maar ordent vooraf. Plan ja, maar op gevoel.",
+   "lijsten": {
+    "sterk": [
+     "Structuur die natuurlijk aanvoelt voor de lezer.",
+     "Combineert plan met warmte.",
+     "Sterk in coaching-content en intern communicatiewerk."
+    ],
+    "valkuilen": [
+     "Plan kan te schetsmatig blijven; logica wankel.",
+     "Beslissingen lastig te verdedigen aan analytische lezers.",
+     "Risico op te lange teksten omdat alles 'erin moet'."
+    ],
+    "tips": [
+     "Toets jouw plan logisch met 1 collega voor je schrijft.",
+     "Stel jezelf 1 'snij-vraag' per alinea: kan dit weg?",
+     "Maak per stuk een woorden-budget; houd je eraan."
+    ]
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "profiel"
+  },
+  {
+   "type": "lijst",
+   "kop": "Sterke kanten",
+   "bron": "uitslag.sterk"
+  },
+  {
+   "type": "lijst",
+   "kop": "Valkuilen",
+   "bron": "uitslag.valkuilen"
+  },
+  {
+   "type": "lijst",
+   "kop": "Drie tips voor jou",
+   "bron": "uitslag.tips"
+  }
+ ],
+ "acties": {
+  "formulier": 0
+ },
+ "bron": {
+  "model": "",
+  "link": ""
+ },
+ "mail": {
+  "onderwerp": "Jouw schrijftype: {uitslag.titel}",
+  "intro": "Hierbij je persoonlijke uitslag: welk schrijftype ben jij."
+ }
+}
