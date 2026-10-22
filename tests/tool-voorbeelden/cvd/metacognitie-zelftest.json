@@ -3,13 +3,27 @@
   "soort": "test",
   "weergave": {
     "modus": "per-vraag",
-    "stappen": ["Achtergrond", "Vragen", "Resultaat"],
-    "schaal": { "1": "(bijna) nooit", "3": "soms", "5": "(bijna) altijd" }
+    "stappen": [
+      "Achtergrond",
+      "Vragen",
+      "Resultaat"
+    ],
+    "schaal": {
+      "1": "(bijna) nooit",
+      "3": "soms",
+      "5": "(bijna) altijd"
+    }
   },
   "dimensies": {
-    "plannen": { "naam": "Plannen" },
-    "monitoren": { "naam": "Monitoren" },
-    "evalueren": { "naam": "Evalueren" }
+    "plannen": {
+      "naam": "Plannen"
+    },
+    "monitoren": {
+      "naam": "Monitoren"
+    },
+    "evalueren": {
+      "naam": "Evalueren"
+    }
   },
   "vragen": [
     {
@@ -18,11 +32,26 @@
       "groep": "Context",
       "tekst": "Wat is jouw rol?",
       "opties": [
-        { "waarde": "cursist", "tekst": "Cursist of student" },
-        { "waarde": "trainer", "tekst": "Trainer of docent" },
-        { "waarde": "coach", "tekst": "Coach of begeleider" },
-        { "waarde": "professional", "tekst": "Werkende professional" },
-        { "waarde": "anders", "tekst": "Anders" }
+        {
+          "waarde": "cursist",
+          "tekst": "Cursist of student"
+        },
+        {
+          "waarde": "trainer",
+          "tekst": "Trainer of docent"
+        },
+        {
+          "waarde": "coach",
+          "tekst": "Coach of begeleider"
+        },
+        {
+          "waarde": "professional",
+          "tekst": "Werkende professional"
+        },
+        {
+          "waarde": "anders",
+          "tekst": "Anders"
+        }
       ]
     },
     {
@@ -31,24 +60,108 @@
       "groep": "Context",
       "tekst": "Welke leersituatie heb je voor ogen?",
       "opties": [
-        { "waarde": "opleiding", "tekst": "Een opleiding of cursus" },
-        { "waarde": "zelfstudie", "tekst": "Zelfstudie of online leren" },
-        { "waarde": "werk", "tekst": "Leren op de werkvloer" },
-        { "waarde": "algemeen", "tekst": "Algemeen, geen specifiek traject" }
+        {
+          "waarde": "opleiding",
+          "tekst": "Een opleiding of cursus"
+        },
+        {
+          "waarde": "zelfstudie",
+          "tekst": "Zelfstudie of online leren"
+        },
+        {
+          "waarde": "werk",
+          "tekst": "Leren op de werkvloer"
+        },
+        {
+          "waarde": "algemeen",
+          "tekst": "Algemeen, geen specifiek traject"
+        }
       ]
     },
-    { "id": "pl1", "type": "likert", "dimensie": "plannen", "groep": "Plannen", "tekst": "Ik bepaal vooraf wat ik aan het eind wil kunnen." },
-    { "id": "pl2", "type": "likert", "dimensie": "plannen", "groep": "Plannen", "tekst": "Ik kies vooraf bewust hoe ik een taak aanpak." },
-    { "id": "pl3", "type": "likert", "dimensie": "plannen", "groep": "Plannen", "tekst": "Ik schat vooraf in hoe lang een leertaak duurt." },
-    { "id": "pl4", "type": "likert", "dimensie": "plannen", "groep": "Plannen", "tekst": "Ik verdeel een grote taak vooraf in kleinere stappen." },
-    { "id": "mo1", "type": "likert", "dimensie": "monitoren", "groep": "Monitoren", "tekst": "Tijdens het leren check ik of ik nog op koers lig." },
-    { "id": "mo2", "type": "likert", "dimensie": "monitoren", "groep": "Monitoren", "tekst": "Als ik iets niet begrijp, pauzeer ik en zoek uit waar het misgaat." },
-    { "id": "mo3", "type": "likert", "dimensie": "monitoren", "groep": "Monitoren", "tekst": "Ik merk op tijd wanneer mijn aanpak niet werkt en stel die bij." },
-    { "id": "mo4", "type": "likert", "dimensie": "monitoren", "groep": "Monitoren", "tekst": "Ik houd tijdens het leren mijn tijd in de gaten." },
-    { "id": "ev1", "type": "likert", "dimensie": "evalueren", "groep": "Evalueren", "tekst": "Na het leren kijk ik terug op wat goed ging en wat niet." },
-    { "id": "ev2", "type": "likert", "dimensie": "evalueren", "groep": "Evalueren", "tekst": "Ik schrijf of bespreek wat ik leerde, zodat het blijft hangen." },
-    { "id": "ev3", "type": "likert", "dimensie": "evalueren", "groep": "Evalueren", "tekst": "Ik kijk welke aanpak werkte en gebruik die opnieuw." },
-    { "id": "ev4", "type": "likert", "dimensie": "evalueren", "groep": "Evalueren", "tekst": "Ik vergelijk wat ik leerde met mijn oorspronkelijke leerdoel." },
+    {
+      "id": "pl1",
+      "type": "likert",
+      "dimensie": "plannen",
+      "groep": "Plannen",
+      "tekst": "Ik bepaal vooraf wat ik aan het eind wil kunnen."
+    },
+    {
+      "id": "pl2",
+      "type": "likert",
+      "dimensie": "plannen",
+      "groep": "Plannen",
+      "tekst": "Ik kies vooraf bewust hoe ik een taak aanpak."
+    },
+    {
+      "id": "pl3",
+      "type": "likert",
+      "dimensie": "plannen",
+      "groep": "Plannen",
+      "tekst": "Ik schat vooraf in hoe lang een leertaak duurt."
+    },
+    {
+      "id": "pl4",
+      "type": "likert",
+      "dimensie": "plannen",
+      "groep": "Plannen",
+      "tekst": "Ik verdeel een grote taak vooraf in kleinere stappen."
+    },
+    {
+      "id": "mo1",
+      "type": "likert",
+      "dimensie": "monitoren",
+      "groep": "Monitoren",
+      "tekst": "Tijdens het leren check ik of ik nog op koers lig."
+    },
+    {
+      "id": "mo2",
+      "type": "likert",
+      "dimensie": "monitoren",
+      "groep": "Monitoren",
+      "tekst": "Als ik iets niet begrijp, pauzeer ik en zoek uit waar het misgaat."
+    },
+    {
+      "id": "mo3",
+      "type": "likert",
+      "dimensie": "monitoren",
+      "groep": "Monitoren",
+      "tekst": "Ik merk op tijd wanneer mijn aanpak niet werkt en stel die bij."
+    },
+    {
+      "id": "mo4",
+      "type": "likert",
+      "dimensie": "monitoren",
+      "groep": "Monitoren",
+      "tekst": "Ik houd tijdens het leren mijn tijd in de gaten."
+    },
+    {
+      "id": "ev1",
+      "type": "likert",
+      "dimensie": "evalueren",
+      "groep": "Evalueren",
+      "tekst": "Na het leren kijk ik terug op wat goed ging en wat niet."
+    },
+    {
+      "id": "ev2",
+      "type": "likert",
+      "dimensie": "evalueren",
+      "groep": "Evalueren",
+      "tekst": "Ik schrijf of bespreek wat ik leerde, zodat het blijft hangen."
+    },
+    {
+      "id": "ev3",
+      "type": "likert",
+      "dimensie": "evalueren",
+      "groep": "Evalueren",
+      "tekst": "Ik kijk welke aanpak werkte en gebruik die opnieuw."
+    },
+    {
+      "id": "ev4",
+      "type": "likert",
+      "dimensie": "evalueren",
+      "groep": "Evalueren",
+      "tekst": "Ik vergelijk wat ik leerde met mijn oorspronkelijke leerdoel."
+    },
     {
       "id": "aandacht",
       "type": "tekst",
@@ -60,36 +173,122 @@
       "maxlengte": 320
     }
   ],
-  "score": { "per_dimensie": "percentage" },
+  "score": {
+    "per_dimensie": "percentage"
+  },
   "labels": [
-    { "vanaf": 75, "tekst": "Sterk" },
-    { "vanaf": 60, "tekst": "Op niveau" },
-    { "vanaf": 40, "tekst": "Aandacht" },
-    { "vanaf": 0, "tekst": "Groeigebied" }
+    {
+      "vanaf": 75,
+      "tekst": "Sterk"
+    },
+    {
+      "vanaf": 60,
+      "tekst": "Op niveau"
+    },
+    {
+      "vanaf": 40,
+      "tekst": "Aandacht"
+    },
+    {
+      "vanaf": 0,
+      "tekst": "Groeigebied"
+    }
   ],
   "uitkomst": {
     "regel": "profiel",
     "regels": [
-      { "als": [["gemiddelde", ">=", 70], ["spreiding", "<=", 20]], "dan": "sterk" },
-      { "als": [["gemiddelde", ">=", 50], ["spreiding", "<=", 20]], "dan": "bewust" },
-      { "als": [["spreiding", "<=", 25]], "dan": "alle" }
+      {
+        "als": [
+          [
+            "gemiddelde",
+            ">=",
+            70
+          ],
+          [
+            "spreiding",
+            "<=",
+            20
+          ]
+        ],
+        "dan": "sterk"
+      },
+      {
+        "als": [
+          [
+            "gemiddelde",
+            ">=",
+            50
+          ],
+          [
+            "spreiding",
+            "<=",
+            20
+          ]
+        ],
+        "dan": "bewust"
+      },
+      {
+        "als": [
+          [
+            "spreiding",
+            "<=",
+            25
+          ]
+        ],
+        "dan": "alle"
+      }
     ],
     "anders": {
       "regel": "kwadrant",
       "assen": {
-        "x": { "plus": ["plannen"], "min": ["monitoren"] },
-        "y": { "plus": ["plannen"], "min": ["evalueren"] }
+        "x": {
+          "plus": [
+            "plannen"
+          ],
+          "min": [
+            "monitoren"
+          ]
+        },
+        "y": {
+          "plus": [
+            "plannen"
+          ],
+          "min": [
+            "evalueren"
+          ]
+        }
       },
       "nul": "-",
-      "kwadranten": { "x-y-": "pijler_plannen", "x+y-": "pijler_monitoren", "x-y+": "pijler_evalueren" },
+      "kwadranten": {
+        "x-y-": "pijler_plannen",
+        "x+y-": "pijler_monitoren",
+        "x-y+": "pijler_evalueren"
+      },
       "anders": {
         "regel": "kwadrant",
         "assen": {
-          "x": { "plus": ["monitoren"], "min": ["evalueren"] },
-          "y": { "plus": ["monitoren"], "min": ["evalueren"] }
+          "x": {
+            "plus": [
+              "monitoren"
+            ],
+            "min": [
+              "evalueren"
+            ]
+          },
+          "y": {
+            "plus": [
+              "monitoren"
+            ],
+            "min": [
+              "evalueren"
+            ]
+          }
         },
         "nul": "-",
-        "kwadranten": { "x-y-": "pijler_monitoren", "x+y+": "pijler_evalueren" }
+        "kwadranten": {
+          "x-y-": "pijler_monitoren",
+          "x+y+": "pijler_evalueren"
+        }
       }
     }
   },
@@ -97,57 +296,105 @@
     "sterk": {
       "titel": "Je hebt je leren goed in de hand",
       "tekst": "Je plant, monitort en evalueert actief. Een sterke basis. Houd het scherp door af en toe een nieuwe aanpak te proberen.",
-      "lijsten": { "bestand": ["je-hebt-je-leren-goed-in-de-hand"] }
+      "lijsten": {
+        "bestand": [
+          "je-hebt-je-leren-goed-in-de-hand"
+        ]
+      }
     },
     "bewust": {
       "titel": "Bewuste leerder met groei-ruimte",
       "tekst": "Je metacognitie werkt, maar nog niet op vol vermogen. Versterk alle drie de pijlers een beetje, dan win je veel. Begin bij de pijler die je het lastigst vindt.",
-      "lijsten": { "bestand": ["bewuste-leerder-met-groei-ruimte"] }
+      "lijsten": {
+        "bestand": [
+          "bewuste-leerder-met-groei-ruimte"
+        ]
+      }
     },
     "pijler_plannen": {
       "titel": "Eén pijler vraagt aandacht: Plannen",
       "tekst": "Op twee pijlers scoor je goed, Plannen blijft achter. Daar ligt je grootste leerwinst. Richt je de komende weken op die ene pijler.",
-      "lijsten": { "bestand": ["een-pijler-vraagt-aandacht-plannen"] }
+      "lijsten": {
+        "bestand": [
+          "een-pijler-vraagt-aandacht-plannen"
+        ]
+      }
     },
     "pijler_monitoren": {
       "titel": "Eén pijler vraagt aandacht: Monitoren",
       "tekst": "Op twee pijlers scoor je goed, Monitoren blijft achter. Daar ligt je grootste leerwinst. Richt je de komende weken op die ene pijler.",
-      "lijsten": { "bestand": ["een-pijler-vraagt-aandacht-monitoren"] }
+      "lijsten": {
+        "bestand": [
+          "een-pijler-vraagt-aandacht-monitoren"
+        ]
+      }
     },
     "pijler_evalueren": {
       "titel": "Eén pijler vraagt aandacht: Evalueren",
       "tekst": "Op twee pijlers scoor je goed, Evalueren blijft achter. Daar ligt je grootste leerwinst. Richt je de komende weken op die ene pijler.",
-      "lijsten": { "bestand": ["een-pijler-vraagt-aandacht-evalueren"] }
+      "lijsten": {
+        "bestand": [
+          "een-pijler-vraagt-aandacht-evalueren"
+        ]
+      }
     },
     "alle": {
       "titel": "Alle drie de pijlers kunnen sterker",
       "tekst": "Er is nog vrij veel leerwinst te boeken. Goed nieuws: dit is te trainen. Begin met één simpele gewoonte per pijler.",
-      "lijsten": { "bestand": ["alle-drie-de-pijlers-kunnen-sterker"] }
+      "lijsten": {
+        "bestand": [
+          "alle-drie-de-pijlers-kunnen-sterker"
+        ]
+      }
+    },
+    "plannen": {
+      "titel": "Tips om plannen te versterken",
+      "lijsten": {
+        "tips": [
+          "Start elke leersessie met 2 minuten plannen: wat wil ik na deze sessie kunnen, en hoe ga ik dat aanpakken?",
+          "Maak een schatting van de benodigde tijd, en vergelijk die achteraf met de werkelijke tijd. Na 5x weet je hoe nauwkeurig je inschat.",
+          "Knip grote taken in stukken van maximaal 25 minuten. Schrijf per stuk op wat de uitkomst moet zijn."
+        ]
+      }
+    },
+    "monitoren": {
+      "titel": "Tips om monitoren te versterken",
+      "lijsten": {
+        "tips": [
+          "Bouw elke 20-25 minuten een korte check-in: wat heb ik tot nu toe gedaan, en past dit nog bij mijn doel?",
+          "Stel jezelf de vraag \"kan ik dit nu uitleggen aan iemand anders?\" om begrip te toetsen.",
+          "Gebruik een eenvoudige timer of pomodoro-techniek om de tijd zichtbaar te maken."
+        ]
+      }
+    },
+    "evalueren": {
+      "titel": "Tips om evalueren te versterken",
+      "lijsten": {
+        "tips": [
+          "Schrijf na elke leersessie 3 zinnen: wat ging goed, wat ging niet, wat doe ik volgende keer anders.",
+          "Bespreek je leerproces met een collega of medecursist. Hardop reflecteren verdiept inzicht.",
+          "Koppel je evaluatie terug aan je oorspronkelijke leerdoel: heb ik bereikt wat ik wilde, ja of nee, en waarom?"
+        ]
+      }
     }
   },
-  "lijsten": {
-    "tips_plannen": [
-      "Start elke leersessie met 2 minuten plannen: wat wil ik na deze sessie kunnen, en hoe ga ik dat aanpakken?",
-      "Maak een schatting van de benodigde tijd, en vergelijk die achteraf met de werkelijke tijd. Na 5x weet je hoe nauwkeurig je inschat.",
-      "Knip grote taken in stukken van maximaal 25 minuten. Schrijf per stuk op wat de uitkomst moet zijn."
-    ],
-    "tips_monitoren": [
-      "Bouw elke 20-25 minuten een korte check-in: wat heb ik tot nu toe gedaan, en past dit nog bij mijn doel?",
-      "Stel jezelf de vraag \"kan ik dit nu uitleggen aan iemand anders?\" om begrip te toetsen.",
-      "Gebruik een eenvoudige timer of pomodoro-techniek om de tijd zichtbaar te maken."
-    ],
-    "tips_evalueren": [
-      "Schrijf na elke leersessie 3 zinnen: wat ging goed, wat ging niet, wat doe ik volgende keer anders.",
-      "Bespreek je leerproces met een collega of medecursist. Hardop reflecteren verdiept inzicht.",
-      "Koppel je evaluatie terug aan je oorspronkelijke leerdoel: heb ik bereikt wat ik wilde, ja of nee, en waarom?"
-    ]
-  },
   "uitvoer": [
-    { "type": "profiel", "kop": "Jouw metacognitie-profiel" },
-    { "type": "balken", "kop": "Jouw scores per pijler", "sorteer": "vast" },
-    { "type": "lijst", "kop": "Tips om plannen te versterken", "bron": "lijsten.tips_plannen" },
-    { "type": "lijst", "kop": "Tips om monitoren te versterken", "bron": "lijsten.tips_monitoren" },
-    { "type": "lijst", "kop": "Tips om evalueren te versterken", "bron": "lijsten.tips_evalueren" }
+    {
+      "type": "profiel",
+      "kop": "Jouw metacognitie-profiel"
+    },
+    {
+      "type": "balken",
+      "kop": "Jouw scores per pijler",
+      "sorteer": "vast"
+    },
+    {
+      "type": "alle",
+      "selectie": "oplopend",
+      "lijsten": [
+        "tips"
+      ]
+    }
   ],
   "acties": {
     "pdf": true,
@@ -160,7 +407,7 @@
   },
   "mail": {
     "onderwerp": "Jouw metacognitie-profiel: {uitslag.titel}",
-    "intro": ""
+    "intro": "Hierbij je persoonlijke rapport van de metacognitie-zelftest."
   },
   "teksten": {
     "tool_pdf": "Download als PDF",

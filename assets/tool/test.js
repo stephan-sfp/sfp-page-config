@@ -221,6 +221,7 @@
 		if ( 'hoogste' === soort ) { var mx = w( v[ 0 ] ); return v.filter( function ( d ) { return w( d ) === mx; } ); }
 		if ( 'laagste' === soort ) { var mn = w( v[ v.length - 1 ] ); return v.filter( function ( d ) { return w( d ) === mn; } ); }
 		if ( 'top' === soort ) { return v.slice( 0, Math.max( 1, aantal || 1 ) ); }
+		if ( 'oplopend' === soort ) { return v.slice().reverse(); }
 		return v.slice();
 	}
 	/* Eén item van een lijst als tekst (een rij: de cellen achter elkaar). */

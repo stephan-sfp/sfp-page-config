@@ -224,7 +224,7 @@
     { "type": "alle", "kop": "Jouw verbeterpunten", "selectie": "laagste", "zonder_hoogste": true, "leeg": "Geen specifieke verbeterpunten omdat je gelijk scoort op elke dimensie. Kies zelf een dimensie om tijdens de eerstvolgende presentatie mee te experimenteren.", "lijsten": ["oefeningen"] }
   ],
   "acties": { "pdf": true, "word": false, "mail": true, "deellink": true, "duimpjes": true, "formulier": 0, "pdf_bestandsnaam": "lichaamstaal-zelftest-spreker-{totaal}van60" },
-  "mail": { "onderwerp": "Jouw lichaamstaal-zelftest", "intro": "" },
+  "mail": { "onderwerp": "Jouw lichaamstaal-zelftest", "intro": "Hierbij je persoonlijke rapport van de lichaamstaal-zelftest." },
   "teksten": {
     "tool_pdf": "PDF downloaden",
     "tool_mail": "Mail naar mezelf",
