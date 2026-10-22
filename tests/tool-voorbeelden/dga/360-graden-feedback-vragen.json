@@ -1,0 +1,375 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Rol",
+   "intro": "De vragen worden afgestemd op het perspectief van de invuller.",
+   "velden": [
+    {
+     "id": "rol",
+     "type": "keuze",
+     "label": "Wat is jouw rol in dit 360-feedbacktraject?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "werknemer",
+       "tekst": "Ik vraag feedback over mijzelf"
+      },
+      {
+       "waarde": "leidinggevende",
+       "tekst": "Ik organiseer feedback voor mijn medewerker"
+      },
+      {
+       "waarde": "hr",
+       "tekst": "Ik zet een 360-cyclus op (HR)"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Onderwerp",
+   "intro": "Alleen de naam van degene over wie het gaat is verplicht. De rest maakt de uitnodiging persoonlijker.",
+   "velden": [
+    {
+     "id": "eigenNaam",
+     "type": "kort",
+     "label": "Mijn naam",
+     "maxlengte": 80
+    },
+    {
+     "id": "onderwerpNaam",
+     "type": "kort",
+     "label": "Naam van de geevalueerde",
+     "maxlengte": 80,
+     "verplicht": {
+      "veld": "rol",
+      "niet": "werknemer"
+     },
+     "label_als": [
+      {
+       "als": {
+        "veld": "rol",
+        "is": "werknemer"
+       },
+       "tekst": "Mijn naam (zoals invullers mij kennen)"
+      },
+      {
+       "als": {
+        "veld": "rol",
+        "is": "leidinggevende"
+       },
+       "tekst": "Naam van de medewerker"
+      }
+     ]
+    },
+    {
+     "id": "periode",
+     "type": "kort",
+     "label": "Periode of aanleiding",
+     "voorbeeld": "Bijvoorbeeld: jaarcyclus 2026 of na het project X",
+     "maxlengte": 120
+    }
+   ]
+  },
+  {
+   "titel": "Competenties",
+   "intro": "Per competentie krijg je 3 vragen die de invuller moet beantwoorden.",
+   "velden": [
+    {
+     "id": "competenties",
+     "type": "vinkjes",
+     "label": "Vink 4 tot 7 competenties aan.",
+     "min": 1,
+     "standaard": [
+      "resultaat",
+      "samenwerking",
+      "communicatie",
+      "ontwikkeling"
+     ],
+     "opties": [
+      {
+       "waarde": "resultaat",
+       "tekst": "Resultaatgerichtheid",
+       "uitleg": "Doelen halen, kwaliteit leveren, doorzetten tot het af is."
+      },
+      {
+       "waarde": "samenwerking",
+       "tekst": "Samenwerking",
+       "uitleg": "Bijdragen aan team, ruimte geven, gezamenlijk resultaat boven eigen succes."
+      },
+      {
+       "waarde": "communicatie",
+       "tekst": "Communicatie",
+       "uitleg": "Helder formuleren, luisteren, tijdig afstemmen, juiste toon."
+      },
+      {
+       "waarde": "leiderschap",
+       "tekst": "Leiderschap",
+       "uitleg": "Richting geven, mensen meenemen, beslissingen nemen."
+      },
+      {
+       "waarde": "klant",
+       "tekst": "Klantgerichtheid",
+       "uitleg": "Behoefte begrijpen, beloften nakomen, denken vanuit afnemer."
+      },
+      {
+       "waarde": "ontwikkeling",
+       "tekst": "Ontwikkelingsgerichtheid",
+       "uitleg": "Leerwensen, openstaan voor feedback, jezelf en anderen ontwikkelen."
+      },
+      {
+       "waarde": "oordeel",
+       "tekst": "Oordeelsvermogen",
+       "uitleg": "Argumenten wegen, beslissingen onderbouwen, vakkennis toepassen."
+      },
+      {
+       "waarde": "plannen",
+       "tekst": "Plannen en organiseren",
+       "uitleg": "Overzicht houden, prioriteren, deadlines halen."
+      },
+      {
+       "waarde": "initiatief",
+       "tekst": "Initiatief",
+       "uitleg": "Zelfstandig handelen, kansen pakken, niet wachten op opdrachten."
+      },
+      {
+       "waarde": "integriteit",
+       "tekst": "Integriteit",
+       "uitleg": "Afspraken nakomen, eerlijk zijn, vertrouwelijk handelen."
+      },
+      {
+       "waarde": "druk",
+       "tekst": "Omgaan met druk",
+       "uitleg": "Kalmte onder spanning, prioriteit blijven zien, energie bewaken."
+      },
+      {
+       "waarde": "conflict",
+       "tekst": "Conflicthantering",
+       "uitleg": "Spanningen benoemen, oplossen zoeken, samenwerking herstellen."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "terugval": "{rol|bank:terugval|anders:de geevalueerde}",
+  "naam": "{onderwerpNaam|of:terugval}"
+ },
+ "banken": {
+  "terugval": {
+   "werknemer": "{eigenNaam|anders:mij}",
+   "leidinggevende": "de geevalueerde",
+   "hr": "de geevalueerde"
+  },
+  "rolLabels": {
+   "werknemer": "Feedback over mijzelf",
+   "leidinggevende": "Feedback voor mijn medewerker",
+   "hr": "360-cyclus (HR)"
+  },
+  "vragen": {
+   "resultaat": {
+    "zelf": [
+     "Op welk resultaat van het afgelopen jaar ben je het meest trots, en waarom?",
+     "Welk doel heb je niet gehaald, en wat speelde daarbij mee?",
+     "Waar levert jouw werk volgens jou de meeste impact?"
+    ],
+    "ander": [
+     "Op welk concreet resultaat van {naam} ben je het meest onder de indruk, en waarom?",
+     "Wanneer zag je {naam} het doel halen ondanks tegenslag, of juist niet?",
+     "Waar zou {naam} meer impact kunnen hebben volgens jou?"
+    ]
+   },
+   "samenwerking": {
+    "zelf": [
+     "Met welke collega werk je het soepelst samen, en wat zorgt daarvoor?",
+     "Waar in het team loopt de samenwerking voor jou stroef?",
+     "Wat zou jij anders doen om de samenwerking te verbeteren?"
+    ],
+    "ander": [
+     "Wat doet {naam} dat goede samenwerking mogelijk maakt?",
+     "In welke situatie zou samenwerking met {naam} soepeler kunnen, en wat zou daarbij helpen?",
+     "Welk concreet gedrag van {naam} versterkt of verzwakt het team?"
+    ]
+   },
+   "communicatie": {
+    "zelf": [
+     "Wanneer voer je een lastig gesprek bewust niet uit, en wat speelt er dan?",
+     "In welk type gesprek vind jij jezelf het sterkst?",
+     "Waar denk je dat jouw communicatie misverstanden veroorzaakt?"
+    ],
+    "ander": [
+     "Wanneer is {naam} op zijn of haar sterkst in communicatie?",
+     "Welke boodschap van {naam} kwam onlangs niet goed aan, en waarom denk je?",
+     "Welk gesprek met {naam} blijft je bij als heel goed of juist heel lastig?"
+    ]
+   },
+   "leiderschap": {
+    "zelf": [
+     "Welke beslissing van het afgelopen jaar typeert jouw leiderschap?",
+     "Wanneer voelde je dat je het team niet meekreeg, en wat speelde mee?",
+     "Wat is jouw eerstvolgende stap in je leiderschapsontwikkeling?"
+    ],
+    "ander": [
+     "Wanneer geeft {naam} richting op een manier die voor jou werkt?",
+     "In welke situatie miste je leiderschap van {naam}?",
+     "Welk advies zou je {naam} geven om sterker leiding te geven?"
+    ]
+   },
+   "klant": {
+    "zelf": [
+     "Welke klant of opdrachtgever heb je dit jaar het beste geholpen, en wat deed je daar?",
+     "Wanneer voelde een afnemer zich onvoldoende gehoord, en wat speelde mee?",
+     "Hoe weet je of jouw werk waarde levert vanuit het perspectief van de afnemer?"
+    ],
+    "ander": [
+     "Wanneer zag je {naam} echt iets toevoegen voor een klant of opdrachtgever?",
+     "Welke kans richting klant of afnemer heeft {naam} laten liggen?",
+     "Hoe goed luistert {naam} naar wat een afnemer echt nodig heeft?"
+    ]
+   },
+   "ontwikkeling": {
+    "zelf": [
+     "Welke vaardigheid wil je het komende jaar duidelijk versterken?",
+     "Welke feedback van het afgelopen jaar heeft je het meeste gebracht?",
+     "Hoe maak je jouw leervragen zichtbaar binnen het team?"
+    ],
+    "ander": [
+     "Op welk gebied zie je {naam} sinds vorig jaar duidelijk groeien?",
+     "Welke ontwikkelstap zou {naam} jou helpen het beste in de praktijk te brengen?",
+     "Hoe gaat {naam} om met feedback die hij of zij krijgt?"
+    ]
+   },
+   "oordeel": {
+    "zelf": [
+     "Welke beslissing van dit jaar laat zien hoe jij wegt en kiest?",
+     "Wanneer wist je achteraf dat je oordeel te snel was?",
+     "Hoe combineer je vakkennis en intuitie in een complexe casus?"
+    ],
+    "ander": [
+     "Wanneer baseerde {naam} een beslissing goed op argumenten?",
+     "Wanneer twijfelde je aan een oordeel van {naam}, en waarom?",
+     "Hoe goed onderbouwt {naam} keuzes volgens jou?"
+    ]
+   },
+   "plannen": {
+    "zelf": [
+     "Welke periode liep dit jaar het meest soepel qua planning, en hoe kwam dat?",
+     "Welke deadline ging vooral mis, en wat speelde mee?",
+     "Hoe houd jij overzicht als er veel tegelijk loopt?"
+    ],
+    "ander": [
+     "Wanneer hield {naam} overzicht in een drukke periode?",
+     "Welk werk van {naam} kwam vertraagd of incompleet binnen?",
+     "Hoe goed prioriteert {naam} volgens jou?"
+    ]
+   },
+   "initiatief": {
+    "zelf": [
+     "Welke actie heb je dit jaar genomen zonder dat het gevraagd werd?",
+     "Welke kans heb je laten liggen omdat je wachtte op iemand anders?",
+     "Wat houdt jou tegen om vaker zelf te beginnen?"
+    ],
+    "ander": [
+     "Welk initiatief van {naam} maakte verschil voor het team?",
+     "Wanneer wachtte {naam} terwijl je beweging verwachtte?",
+     "Hoe zou je het initiatief van {naam} omschrijven in 1 zin?"
+    ]
+   },
+   "integriteit": {
+    "zelf": [
+     "Welk dilemma heeft dit jaar je morele kompas getest, en wat deed je?",
+     "Wanneer hield je een afspraak die lastig was, en wat hielp daarbij?",
+     "Hoe ga je om met informatie die vertrouwelijk is?"
+    ],
+    "ander": [
+     "Wanneer zag je {naam} een principe boven gemak stellen?",
+     "Heeft {naam} dit jaar een afspraak niet nagekomen, en wat speelde mee?",
+     "Hoe betrouwbaar ervaar je {naam} in vertrouwelijke onderwerpen?"
+    ]
+   },
+   "druk": {
+    "zelf": [
+     "In welke drukke periode hield jij het hoofd koel, en wat hielp je?",
+     "Wanneer raakte je geirriteerd onder spanning, en wat zag je in jezelf?",
+     "Welk patroon in jouw stressrespons herken je het sterkst?"
+    ],
+    "ander": [
+     "Hoe gedraagt {naam} zich als de druk hoog is?",
+     "Wanneer veranderde {naam} onder spanning op een manier die opviel?",
+     "Wat helpt {naam} volgens jou om kalm te blijven?"
+    ]
+   },
+   "conflict": {
+    "zelf": [
+     "Welk conflict heb je dit jaar zelf benoemd, en hoe liep dat af?",
+     "Welk conflict heb je vermeden, en wat zou je achteraf anders doen?",
+     "Wat is jouw natuurlijke stijl in een spanningsvolle situatie?"
+    ],
+    "ander": [
+     "Wanneer pakte {naam} een spanning in het team op een goede manier op?",
+     "Wanneer wreef een conflict aan waarvan jij dacht dat {naam} kon ingrijpen?",
+     "Hoe gaat {naam} om met meningsverschillen volgens jou?"
+    ]
+   }
+  }
+ },
+ "resultaat_kop": "360-feedback vragenlijst",
+ "resultaat_intro": "Over {naam}",
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Periode of aanleiding",
+     "tekst": "{periode}"
+    },
+    {
+     "label": "Rol",
+     "tekst": "{rol|bank:rolLabels}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "tekst": "Deze vragenlijst is gegenereerd voor een 360-graden feedbacktraject. Antwoorden zijn vrij."
+  },
+  {
+   "type": "herhaal",
+   "over": "competenties",
+   "kop": "{@nr}. {@label}",
+   "inhoud": [
+    {
+     "type": "tekst",
+     "tekst": "{@uitleg}"
+    },
+    {
+     "type": "vragen",
+     "bank": "vragen",
+     "pad": [
+      "{@}",
+      "ander"
+     ],
+     "lijnen": 3
+    }
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "360-graden-feedback-vragen-{naam}"
+ },
+ "mail": {
+  "onderwerp": "360-feedback-aanvraag: {naam}",
+  "intro": "Hierbij de 360-feedback vragenlijst over {naam}."
+ }
+}

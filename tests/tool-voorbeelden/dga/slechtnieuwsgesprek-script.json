@@ -1,0 +1,342 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Type",
+   "intro": "Per type passen we de formuleringen aan.",
+   "velden": [
+    {
+     "id": "type",
+     "type": "keuze",
+     "label": "Kies het type slechtnieuws dat je moet brengen.",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "ontslag",
+       "tekst": "Ontslag",
+       "uitleg": "Einde dienstverband"
+      },
+      {
+       "waarde": "functiewijziging",
+       "tekst": "Functiewijziging",
+       "uitleg": "Andere rol of taken"
+      },
+      {
+       "waarde": "projectstop",
+       "tekst": "Project-stop",
+       "uitleg": "Project of opdracht stopt"
+      },
+      {
+       "waarde": "weigering",
+       "tekst": "Verzoek-weigeren",
+       "uitleg": "Promotie, opleiding, salaris"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Aanpak",
+   "velden": [
+    {
+     "id": "aanpak",
+     "type": "keuze",
+     "label": "Kies de aanpak die past bij je relatie met de ontvanger.",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "zakelijk",
+       "tekst": "Zakelijk en helder",
+       "uitleg": "Feiten, korte formuleringen, formele toon"
+      },
+      {
+       "waarde": "persoonlijk",
+       "tekst": "Warm en persoonlijk",
+       "uitleg": "Erkenning, ruimte voor emotie, informeler"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Context",
+   "intro": "Vul optioneel context in voor een persoonlijker script.",
+   "velden": [
+    {
+     "id": "ontNaam",
+     "type": "kort",
+     "label": "Naam ontvanger",
+     "maxlengte": 80
+    },
+    {
+     "id": "context",
+     "type": "tekstvak",
+     "label": "Korte context",
+     "voorbeeld": "Bijvoorbeeld: reorganisatie, ingangsdatum 1 januari...",
+     "maxlengte": 1000
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "scripts": {
+   "ontslag": {
+    "zakelijk": {
+     "Opening": [
+      "Bedankt voor je komst. Ik heb je gevraagd om hier te zijn omdat ik je iets moet meedelen dat impact heeft op je dienstverband.",
+      "Voor we beginnen wil ik dat duidelijk is dat dit besluit niet vandaag is genomen en niet alleen door mij."
+     ],
+     "Kernboodschap": [
+      "We hebben besloten je dienstverband te beeindigen per [datum]. Dit besluit is definitief.",
+      "De onderbouwing en het juridische traject leg ik zo aan je voor. Eerst geef ik je ruimte voor je eerste reactie."
+     ],
+     "Omgang met reactie": [
+      "Bij boosheid: laat de eerste stoot voorbij gaan zonder verdediging.",
+      "Bij tranen: schuif water naar voren, zwijg 10 tot 20 seconden.",
+      "Bij stilte: vraag na 30 seconden: \"Wat gaat er door je heen?\"",
+      "Bij ontkenning: herhaal de kernboodschap een keer, niet meerdere keren."
+     ],
+     "Afsluiting": [
+      "Vandaag bespreken we niets meer over de inhoud. Ik plan binnen 48 uur een vervolggesprek waarin we vragen, afspraken en het juridische traject doornemen.",
+      "Tussen nu en dat gesprek mag je niet werken. Je krijgt schriftelijk een bevestiging van wat hier is gezegd.",
+      "Ik zorg dat HR contact opneemt over praktische zaken: salaris, vakantiedagen, eindafrekening."
+     ]
+    },
+    "persoonlijk": {
+     "Opening": [
+      "Bedankt dat je tijd kon maken. Wat ik nu moet zeggen valt me zwaar, en ik weet dat het voor jou nog zwaarder is.",
+      "Ik wil eerlijk en duidelijk zijn. Daarom geen omtrekkende bewegingen."
+     ],
+     "Kernboodschap": [
+      "We zijn tot het besluit gekomen om je dienstverband te beeindigen, per [datum].",
+      "Het is een definitief besluit. Ik weet dat dit hard binnenkomt."
+     ],
+     "Omgang met reactie": [
+      "Bij boosheid: erken het: \"Het is logisch dat je nu boos bent.\"",
+      "Bij tranen: laat ruimte. Zwijg. Bied water en een tissue.",
+      "Bij stilte: zit erbij. Vraag niet meteen iets.",
+      "Bij vragen \"waarom mij?\": geef het feitelijke deel kort en eerlijk. Vermijd vergelijkingen met anderen."
+     ],
+     "Afsluiting": [
+      "Ik kan me voorstellen dat je nu niet alles wilt of kunt bespreken. Laten we morgen of overmorgen een vervolggesprek hebben.",
+      "Wat heb je nu van mij of de organisatie nodig om de rest van de dag door te komen?",
+      "Ik blijf bereikbaar voor je. We zorgen samen voor een nette afronding."
+     ]
+    }
+   },
+   "functiewijziging": {
+    "zakelijk": {
+     "Opening": [
+      "Bedankt voor je komst. Ik heb een wijziging in je rol die ik vandaag met je wil bespreken.",
+      "Het gaat om een verandering die per [datum] ingaat. Eerst de inhoud, daarna de reden, daarna de praktische gevolgen."
+     ],
+     "Kernboodschap": [
+      "Met ingang van [datum] verandert je functie van [oude functie] naar [nieuwe functie].",
+      "De reden is [feitelijke reden: reorganisatie / capaciteit / structuur]. Het is geen oordeel over jouw functioneren."
+     ],
+     "Omgang met reactie": [
+      "Bij verzet: erken dat je inbreng hoort, maar herhaal dat het besluit definitief is.",
+      "Bij verdriet: pauzeer, geef ruimte. Niet uitleggen of overtuigen.",
+      "Bij directe vragen over voorwaarden: beantwoord wat je weet, parkeer wat juridisch nog open is.",
+      "Bij \"is dit een degradatie?\": antwoord eerlijk over wat er feitelijk verandert (salaris, taken, hierarchie)."
+     ],
+     "Afsluiting": [
+      "Schriftelijk krijg je deze week een bevestiging met de exacte voorwaarden.",
+      "Plan binnen 2 weken een vervolggesprek met HR over de overgangsperiode.",
+      "Tot [datum] verandert er niets aan je dagelijkse werk; ondertussen kun je vragen op een rij zetten."
+     ]
+    },
+    "persoonlijk": {
+     "Opening": [
+      "Fijn dat je er bent. Ik moet je iets vertellen over je rol, en ik wil het in een gesprek doen in plaats van per mail.",
+      "Ik heb er zelf over nagedacht hoe ik dit zou brengen. Daarom maar gewoon direct."
+     ],
+     "Kernboodschap": [
+      "Per [datum] verandert je functie van [oude functie] naar [nieuwe functie].",
+      "Dat is besloten op organisatie-niveau, niet vanwege wat je in deze rol hebt gedaan."
+     ],
+     "Omgang met reactie": [
+      "Bij verbazing: leg in 2 zinnen uit waarom dit nu, niet eerder.",
+      "Bij verdriet of teleurstelling: erken het, leg niets uit.",
+      "Bij directe vragen: beantwoord wat je weet, eerlijk over wat niet.",
+      "Bij \"wat had ik anders moeten doen?\": antwoord eerlijk dat dit niet aan jouw functioneren ligt."
+     ],
+     "Afsluiting": [
+      "Ik wil dat je goed in je nieuwe rol kunt landen. Wat zou daarbij helpen?",
+      "We plannen volgende week een vervolggesprek waarin we de praktische kant doornemen.",
+      "Ik blijf nauw betrokken bij de overgang. Geef het direct aan als er iets knelt."
+     ]
+    }
+   },
+   "projectstop": {
+    "zakelijk": {
+     "Opening": [
+      "Bedankt voor je beschikbaarheid. Ik heb je gevraagd voor een update over [project], en die update is bepalend."
+     ],
+     "Kernboodschap": [
+      "[Project] wordt per [datum] gestopt. Het werk dat tot nu toe is gedaan blijft beschikbaar; we gaan er alleen niet verder mee.",
+      "De reden is [feitelijke reden: budget / strategische keuze / capaciteit]."
+     ],
+     "Omgang met reactie": [
+      "Bij teleurstelling of frustratie: erken de inzet, geef ruimte voor reactie.",
+      "Bij verbazing: leg in 2 zinnen uit wanneer het besluit is genomen en op basis waarvan.",
+      "Bij praktische vragen: beantwoord wat je weet, parkeer juridische open punten."
+     ],
+     "Afsluiting": [
+      "We plannen binnen een week een evaluatie-sessie om geleerde lessen te vangen.",
+      "Voor de overgang ga ik je begeleiden bij overdracht of nieuwe inzet.",
+      "Schriftelijk volgt deze week een bevestiging met datum, contractuele afsluiting en vervolgstappen."
+     ]
+    },
+    "persoonlijk": {
+     "Opening": [
+      "Goed dat je tijd had op korte termijn. Ik moet je iets vertellen over [project] dat impact heeft op jullie werk."
+     ],
+     "Kernboodschap": [
+      "Het project stopt per [datum]. Het werk dat jullie hebben gedaan was waardevol, maar de organisatie heeft besloten niet door te gaan."
+     ],
+     "Omgang met reactie": [
+      "Bij teleurstelling: erken eerst, leg pas daarna uit.",
+      "Bij boosheid op de organisatie: laat de uiting toe, ga er niet tegen in.",
+      "Bij \"had het anders gekund?\": eerlijk antwoord, niet defensief."
+     ],
+     "Afsluiting": [
+      "Ik wil dat we zorgvuldig afsluiten en dat jouw bijdrage zichtbaar blijft. Hoe zie jij dat?",
+      "Volgende week plannen we een gesprek over wat je hierna gaat doen.",
+      "Bedankt voor wat je hebt gedaan. Dat blijft staan, los van dit besluit."
+     ]
+    }
+   },
+   "weigering": {
+    "zakelijk": {
+     "Opening": [
+      "Bedankt voor je verzoek. Ik heb het zorgvuldig overwogen en wil je vandaag mijn antwoord geven."
+     ],
+     "Kernboodschap": [
+      "Ik kan niet ingaan op je verzoek. De reden is [feitelijke reden: budget / functieprofiel / timing].",
+      "Het is een definitief antwoord voor de komende periode, niet \"nog niet\"."
+     ],
+     "Omgang met reactie": [
+      "Bij teleurstelling: erken het, herhaal de feitelijke reden niet meer dan 1 keer.",
+      "Bij doorvragen: blijf consistent in formulering. Geen extra argumenten zoeken.",
+      "Bij \"wat moet ik anders doen?\": geef helderheid over wat wel mogelijk is en op welke termijn."
+     ],
+     "Afsluiting": [
+      "Plan over 6 tot 12 maanden een nieuw gesprek waarin we de situatie opnieuw evalueren.",
+      "Tot die tijd graag heldere voortgang op de afgesproken doelen.",
+      "Ik bevestig dit gesprek schriftelijk zodat we beiden weten waar we staan."
+     ]
+    },
+    "persoonlijk": {
+     "Opening": [
+      "Fijn dat je het gevraagd hebt. Ik begrijp dat het belangrijk voor je is, en ik wil eerlijk antwoorden."
+     ],
+     "Kernboodschap": [
+      "Op je verzoek kan ik nu niet ja zeggen. Ik weet dat dit hard kan landen.",
+      "De reden is [feitelijke reden in 1 zin]. Daar verandert mijn antwoord nu niet door."
+     ],
+     "Omgang met reactie": [
+      "Bij teleurstelling: erken het: \"Ik kan me voorstellen dat dit niet is wat je hoopte.\"",
+      "Bij argumenten: luister, laat zien dat je het hoort, herhaal niet je hele uitleg.",
+      "Bij \"wat moet ik anders doen?\": eerlijk antwoord wat in jouw ogen wel mogelijk maakt."
+     ],
+     "Afsluiting": [
+      "Voor mij blijft het belangrijk dat we hier goed uitkomen. Wat heb je van mij nodig?",
+      "Over [periode] kunnen we dit gesprek opnieuw voeren.",
+      "Bedankt voor je openheid. Het blijft tussen ons en heeft geen effect op je beoordeling."
+     ]
+    }
+   }
+  }
+ },
+ "resultaat_kop": "Slechtnieuwsgesprek",
+ "resultaat_intro": "{type|label} - {aanpak|label}",
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Type",
+     "tekst": "{type|label} ({aanpak|label})",
+     "als": {
+      "of": [
+       {
+        "veld": "ontNaam",
+        "gevuld": true
+       },
+       {
+        "veld": "context",
+        "gevuld": true
+       }
+      ]
+     }
+    },
+    {
+     "label": "Ontvanger",
+     "tekst": "{ontNaam}"
+    },
+    {
+     "label": "Context",
+     "tekst": "{context}"
+    }
+   ]
+  },
+  {
+   "type": "alineas",
+   "kop": "Opening",
+   "bank": "scripts",
+   "pad": [
+    "{type}",
+    "{aanpak}",
+    "Opening"
+   ]
+  },
+  {
+   "type": "alineas",
+   "kop": "Kernboodschap",
+   "bank": "scripts",
+   "pad": [
+    "{type}",
+    "{aanpak}",
+    "Kernboodschap"
+   ]
+  },
+  {
+   "type": "alineas",
+   "kop": "Omgang met reactie",
+   "bank": "scripts",
+   "pad": [
+    "{type}",
+    "{aanpak}",
+    "Omgang met reactie"
+   ]
+  },
+  {
+   "type": "alineas",
+   "kop": "Afsluiting",
+   "bank": "scripts",
+   "pad": [
+    "{type}",
+    "{aanpak}",
+    "Afsluiting"
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "slechtnieuwsgesprek-script-{ontNaam|of:type}"
+ },
+ "mail": {
+  "onderwerp": "Script slechtnieuwsgesprek{ontNaam|voor: met }",
+  "intro": "Hierbij je script ter voorbereiding op het slechtnieuwsgesprek."
+ }
+}

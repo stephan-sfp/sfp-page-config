@@ -220,3 +220,18 @@ ol.sfp-tool__lijst>li::before{content:counter(sfp-lijst);position:absolute;left:
 :root .sfp-tool-maker__feiten a{color:var(--sfp-b-primair);font-weight:700;text-decoration:none}
 :root .sfp-tool-maker__feiten a:is(:hover,:focus){text-decoration:underline}
 :root .sfp-tool-maker h3 small{display:block;font-size:14px;font-weight:400;opacity:.8}
+
+/* Generator (3.9.0): velden per stap, vinkjes, gegevens en antwoordvelden in het resultaat. */
+.sfp-tool__veldgroep{margin:0 0 20px}
+.sfp-tool__veldgroep[hidden]{display:none}
+.sfp-tool__veldgroep .sfp-tool__vraag{margin:0 0 8px}
+.sfp-tool__veldgroep .sfp-tool__hint{margin:-4px 0 8px;font-size:14px;color:var(--sfp-b-body)}
+.sfp-tool__optie-uitleg{display:block;font-size:14px;font-weight:400;color:var(--sfp-b-body);margin-top:2px}
+:root .sfp-tool input[type=checkbox].sfp-tool__radio{border-radius:4px!important}
+.sfp-tool__gegevens{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;margin:0 0 16px}
+.sfp-tool__gegevens dt{font-weight:700;color:var(--sfp-b-primair)}
+.sfp-tool__gegevens dd{margin:0;color:var(--sfp-b-body)}
+.sfp-tool__uitvoer .sfp-tool__titel--klein{margin:24px 0 8px}
+.sfp-tool__veld--antwoord{margin:8px 0 4px;font-size:15px}
+.sfp-tool__veld--uitvoer{margin:0 0 12px;line-height:1.55}
+@media (max-width:480px){.sfp-tool__gegevens{grid-template-columns:1fr}.sfp-tool__gegevens dd{margin-bottom:6px}}

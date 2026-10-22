@@ -1,0 +1,229 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Functie",
+   "intro": "De vragen worden afgestemd op je niveau en ervaring.",
+   "velden": [
+    {
+     "id": "functietype",
+     "type": "keuze",
+     "label": "Kies het type functie waar je op solliciteert.",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "starter",
+       "tekst": "Starter",
+       "uitleg": "Net afgestudeerd of 0-2 jaar ervaring"
+      },
+      {
+       "waarde": "professional",
+       "tekst": "Professional",
+       "uitleg": "2-8 jaar ervaring, geen leiding"
+      },
+      {
+       "waarde": "manager",
+       "tekst": "Manager",
+       "uitleg": "Leiding aan team of afdeling"
+      },
+      {
+       "waarde": "specialist",
+       "tekst": "Specialist",
+       "uitleg": "Senior vaktechnisch, geen leiding"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Onderwerpen",
+   "intro": "Per onderwerp krijg je 4 vragen.",
+   "velden": [
+    {
+     "id": "onderwerpen",
+     "type": "vinkjes",
+     "label": "Kies de onderwerpen waarop je wilt voorbereiden.",
+     "min": 1,
+     "standaard": [
+      "ervaring",
+      "motivatie",
+      "competenties"
+     ],
+     "opties": [
+      {
+       "waarde": "ervaring",
+       "tekst": "Ervaring",
+       "uitleg": "Eerdere werkervaring, projecten, prestaties"
+      },
+      {
+       "waarde": "motivatie",
+       "tekst": "Motivatie",
+       "uitleg": "Waarom deze functie, waarom dit bedrijf"
+      },
+      {
+       "waarde": "competenties",
+       "tekst": "Competenties",
+       "uitleg": "Skills, gedragsvoorbeelden via STARR"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Context",
+   "intro": "Vul optioneel context in voor een persoonlijker rapport.",
+   "velden": [
+    {
+     "id": "functie",
+     "type": "kort",
+     "label": "Functietitel",
+     "voorbeeld": "Bijvoorbeeld: Marketing Manager",
+     "maxlengte": 80
+    },
+    {
+     "id": "bedrijf",
+     "type": "kort",
+     "label": "Bedrijfsnaam",
+     "maxlengte": 80
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "vragen": {
+   "starter": {
+    "ervaring": [
+     "Vertel iets over jezelf in 90 seconden, met focus op wat relevant is voor deze rol.",
+     "Welk stage- of bijbaan-project ben je het meest trots op, en waarom?",
+     "Wat heb je tijdens je studie geleerd dat direct toepasbaar is in deze functie?",
+     "Beschrijf een moment waarop je iets nieuws moest leren in korte tijd. Hoe pakte je dat aan?"
+    ],
+    "motivatie": [
+     "Waarom solliciteer je juist nu, juist hier?",
+     "Wat trekt je in deze branche of dit type werk?",
+     "Waar zie je jezelf over 3 jaar, en hoe past deze functie in dat plaatje?",
+     "Wat weet je over ons bedrijf, en wat sprak je het meest aan?"
+    ],
+    "competenties": [
+     "Vertel over een samenwerking in een team waarin het niet vanzelf ging. Wat deed jij?",
+     "Wat is een sterke kant van jou en wat is een echte ontwikkelpunt?",
+     "Hoe ga je om met feedback of kritiek?",
+     "Geef een voorbeeld waarin je initiatief nam zonder dat het gevraagd werd."
+    ]
+   },
+   "professional": {
+    "ervaring": [
+     "Wat was je grootste prestatie in je huidige of vorige rol, en hoe heb je dat aangepakt?",
+     "Vertel over een complex project dat je hebt geleid of waarin je een sleutelrol speelde.",
+     "Welke methodes, tools of frameworks beheers je die voor deze rol relevant zijn?",
+     "Beschrijf een keuze of strategische beslissing die je hebt genomen en waarvan je achteraf veel hebt geleerd."
+    ],
+    "motivatie": [
+     "Waarom wil je deze stap maken: van wat naar wat?",
+     "Wat hoop je bij ons te kunnen wat in je huidige situatie niet kan?",
+     "Hoe past deze functie in je langere carriere-ambitie?",
+     "Wat trok jou specifiek aan in deze vacature?"
+    ],
+    "competenties": [
+     "Beschrijf een conflict met een collega of leidinggevende. Hoe is het opgelost?",
+     "Vertel over een situatie waarin je iets moest doen wat buiten je comfortzone lag.",
+     "Hoe ga je om met prioriteiten als alles tegelijk urgent lijkt?",
+     "Wat is een fout die je hebt gemaakt, en wat heb je ervan geleerd?"
+    ]
+   },
+   "manager": {
+    "ervaring": [
+     "Beschrijf je leiderschapsstijl en geef een concreet voorbeeld waarin die zichtbaar was.",
+     "Vertel over een team-verandering die je hebt geleid. Wat was de uitdaging?",
+     "Welk resultaat met een team ben je het meest trots op?",
+     "Hoe bouw je vertrouwen op in een nieuw team?"
+    ],
+    "motivatie": [
+     "Waarom wil je leiding geven aan dit specifieke team of deze afdeling?",
+     "Wat zou jouw eerste 90 dagen in deze rol eruit zien?",
+     "Wat is voor jou een succesvol team, en hoe ga je daar naartoe?",
+     "Hoe past deze stap in je leiderschaps-ontwikkeling?"
+    ],
+    "competenties": [
+     "Vertel over een ontslag of slechtnieuwsgesprek dat je hebt gevoerd.",
+     "Hoe ga je om met een teamlid dat structureel onder de verwachting presteert?",
+     "Beschrijf hoe je een conflict tussen twee teamleden hebt opgelost.",
+     "Wat doe je om je eigen feedback en zelfreflectie scherp te houden?"
+    ]
+   },
+   "specialist": {
+    "ervaring": [
+     "Welke vraagstukken in jouw vakgebied heb je opgelost waar anderen vastliepen?",
+     "Vertel over een technische of inhoudelijke uitdaging die je echt heeft uitgedaagd.",
+     "Wat zijn de 3 belangrijkste ontwikkelingen in jouw vakgebied van de laatste 2 jaar?",
+     "Welk werk van een collega heeft jouw vak-gedachten veranderd, en waarom?"
+    ],
+    "motivatie": [
+     "Waarom een specialistische rol en niet een leidinggevende rol?",
+     "Wat trekt je in dit bedrijf vanuit vak-inhoudelijk perspectief?",
+     "Op welke vraag of welk probleem zou je het liefst werken?",
+     "Hoe past deze rol in je verdere vak-ontwikkeling?"
+    ],
+    "competenties": [
+     "Hoe deel je je expertise met collegas die het vakgebied minder beheersen?",
+     "Vertel over een meningsverschil over de vakinhoudelijke aanpak. Hoe ging dat?",
+     "Wat doe je als de juiste oplossing politiek niet haalbaar lijkt?",
+     "Hoe weet je dat je werk goed genoeg is om af te leveren?"
+    ]
+   }
+  }
+ },
+ "resultaat_kop": "Sollicitatiegesprek",
+ "resultaat_intro": "Voorbereiding {functietype|label}",
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Niveau",
+     "tekst": "{functietype|label}"
+    },
+    {
+     "label": "Functie",
+     "tekst": "{functie}"
+    },
+    {
+     "label": "Bedrijf",
+     "tekst": "{bedrijf}"
+    }
+   ]
+  },
+  {
+   "type": "herhaal",
+   "over": "onderwerpen",
+   "kop": "{@label}",
+   "inhoud": [
+    {
+     "type": "vragen",
+     "bank": "vragen",
+     "pad": [
+      "{functietype}",
+      "{@}"
+     ],
+     "lijnen": 4
+    }
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "sollicitatiegesprek-vragen-{functie|of:functietype}"
+ },
+ "mail": {
+  "onderwerp": "Voorbereiding sollicitatiegesprek{functie|voor: (|na:)}",
+  "intro": "Hierbij de vragen ter voorbereiding op je sollicitatiegesprek."
+ }
+}

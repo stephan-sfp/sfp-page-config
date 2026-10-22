@@ -140,7 +140,9 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
     if ( $b['acties']['formulier'] > 0 && shortcode_exists( 'sureforms' ) ) {
         $html .= '<div class="sfp-tool__formulier" hidden>' . do_shortcode( '[sureforms id="' . (int) $b['acties']['formulier'] . '"]' ) . '</div>';
     }
-    $html .= '<details class="sfp-tool__hoe" id="' . esc_attr( $id ) . '-hoe"><summary>' . esc_html( $t( 'tool_hoe_rekent' ) ) . '</summary>' . sfp_page_config_tool_hoe_rekent( $b ) . '</details>';
+    if ( 'test' === $b['soort'] ) {
+        $html .= '<details class="sfp-tool__hoe" id="' . esc_attr( $id ) . '-hoe"><summary>' . esc_html( $t( 'tool_hoe_rekent' ) ) . '</summary>' . sfp_page_config_tool_hoe_rekent( $b ) . '</details>';
+    }
     $html .= '</div>';
     sfp_page_config_tool_getoond( (int) $post->ID, true );
     return $html;

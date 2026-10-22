@@ -392,6 +392,22 @@
 						schrijf( it, 10.5, false, body, 8 ); y += 1.8;
 					} ); y += 2; break;
 					case 'afvink': ( bl.items || [] ).forEach( function ( it ) { nieuw( 8 ); doc.setDrawColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] ); doc.rect( L + 0.5, y - 3.4, 3.6, 3.6 ); schrijf( it, 10.5, false, body, 8 ); y += 1.5; } ); y += 2; break;
+					/* Een vraag met het antwoord van de bezoeker eronder, of lege regels om op te schrijven. */
+					case 'invul': ( bl.items || [] ).forEach( function ( it, i ) {
+						nieuw( 14 );
+						if ( bl.nummers ) {
+							vul( tint ); doc.circle( L + 2.6, y - 1.3, 2.6, 'F' );
+							doc.setFont( 'DejaVuSans', 'bold' ); doc.setFontSize( 8 ); doc.setTextColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] );
+							doc.text( String( i + 1 ), L + 2.6, y - 0.3, { align: 'center' } );
+						} else { vul( secundair ); doc.circle( L + 1.6, y - 1.3, 1, 'F' ); }
+						schrijf( it.tekst, 10.5, false, body, 8 ); y += 1.5;
+						if ( it.antwoord ) { schrijf( it.antwoord, 10, false, primair, 8 ); y += 2.5; }
+						else {
+							doc.setDrawColor( tint1[ 0 ], tint1[ 1 ], tint1[ 2 ] );
+							for ( var k = 0; k < ( bl.lijnen || 0 ); k++ ) { y += 7; nieuw( 4 ); doc.line( L + 8, y, R, y ); }
+							y += 4;
+						}
+					} ); y += 2; break;
 					case 'balk':
 						nieuw( 12 );
 						doc.setFont( 'DejaVuSans', 'bold' ); doc.setFontSize( 9 ); doc.setTextColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] );
@@ -443,6 +459,11 @@
 					case 'tekst': alineas( bl.tekst ).forEach( function ( a ) { kinderen.push( tekst( a, 160 ) ); } ); break;
 					case 'lijst': ( bl.items || [] ).forEach( function ( it, i ) { kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: ( bl.nummers ? ( i + 1 ) + '. ' : '• ' ), bold: true, color: primair } ), new d.TextRun( { text: it, color: body } ) ] } ) ); } ); break;
 					case 'afvink': ( bl.items || [] ).forEach( function ( it ) { kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: '☐ ', color: primair } ), new d.TextRun( { text: it, color: body } ) ] } ) ); } ); break;
+					case 'invul': ( bl.items || [] ).forEach( function ( it, i ) {
+						kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: ( bl.nummers ? ( i + 1 ) + '. ' : '• ' ), bold: true, color: primair } ), new d.TextRun( { text: it.tekst, color: body } ) ] } ) );
+						if ( it.antwoord ) { kinderen.push( new d.Paragraph( { spacing: { after: 160 }, indent: { left: 360 }, children: [ new d.TextRun( { text: it.antwoord, color: primair } ) ] } ) ); }
+						else { for ( var k = 0; k < ( bl.lijnen || 0 ); k++ ) { kinderen.push( new d.Paragraph( { spacing: { after: 120 }, indent: { left: 360 }, children: [ new d.TextRun( { text: '______________________________________________________________', color: body } ) ] } ) ); } }
+					} ); break;
 					case 'balk': kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: bl.naam + ': ', bold: true, allCaps: true, color: primair } ), new d.TextRun( { text: bl.label, color: body } ) ] } ) ); break;
 					case 'tabel': kinderen.push( new d.Table( { rows: ( bl.rijen || [] ).map( function ( rij ) { return new d.TableRow( { children: rij.map( function ( cel ) { return new d.TableCell( { children: [ new d.Paragraph( String( cel ) ) ] } ); } ) } ); } ) } ) ); break;
 				}

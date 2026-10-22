@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.9.0-beta.1] - 2026-10-23
+
+Proefversie voor DGA: de toolmotor krijgt de soort generator.
+
+### Toegevoegd
+- **Toolmotor, soort generator:** stappen met velden (keuze, keuzelijst, vinkjes, kort tekstveld, tekstvak, regels, datum, getal), daarna een resultaat uit vaste secties, banken en sjablonen met plaatshouders (`{veld|label}`, `bank:`, `hoofdletter`, `klein`, `zin`, `eerstezin`, `eersteregel`, `kort:`, `datum`, `anders:`, `of:`). Secties: tekst, lijst, vragen met antwoordveld, afvinklijst, alinea's, gegevens en herhalen per gekozen vinkje. Voorwaarden op velden, labels die van een ander veld afhangen, velden die alleen onder een voorwaarde verschijnen.
+- Pdf en Word met de antwoorden van de bezoeker of lege schrijfregels, kopieer als tekst, deellink, voortgang in de browser, duimpjes en formulier na het resultaat, zoals bij de test.
+- Mail naar jezelf voor generatoren: de server bouwt het resultaat opnieuw uit de antwoorden. Keuzes en korte velden gaan mee, tekstvakken niet, zodat niemand eigen tekst via de site naar een willekeurig adres kan sturen.
+- `tests/generator.php` legt het bouwen in PHP en in de browser naast elkaar; `tests/tool-voorbeelden/dga` met de zeven generatoren van DGA.
+
 ## [3.8.2] - 2026-10-22
 
 ### Toegevoegd

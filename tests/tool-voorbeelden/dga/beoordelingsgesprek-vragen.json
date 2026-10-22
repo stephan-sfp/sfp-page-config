@@ -1,0 +1,170 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Rol",
+   "intro": "De vragen worden afgestemd op of je beoordeelt of beoordeeld wordt.",
+   "velden": [
+    {
+     "id": "rol",
+     "type": "keuze",
+     "label": "Kies je rol in het beoordelingsgesprek.",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "leidinggevende",
+       "tekst": "Leidinggevende",
+       "uitleg": "Ik vel het oordeel"
+      },
+      {
+       "waarde": "werknemer",
+       "tekst": "Werknemer",
+       "uitleg": "Ik word beoordeeld"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Pijlers",
+   "intro": "Per pijler krijg je 4 vragen.",
+   "velden": [
+    {
+     "id": "pijlers",
+     "type": "vinkjes",
+     "label": "Kies de pijlers die in jouw beoordelingsgesprek aan bod komen.",
+     "min": 1,
+     "opties": [
+      {
+       "waarde": "presteren",
+       "tekst": "Presteren",
+       "uitleg": "Taakresultaten, output-kwaliteit, doelen behaald"
+      },
+      {
+       "waarde": "ontwikkeling",
+       "tekst": "Ontwikkeling",
+       "uitleg": "Groei, leercurve, opvolging ontwikkelpunten"
+      },
+      {
+       "waarde": "samenwerking",
+       "tekst": "Samenwerking",
+       "uitleg": "Communicatie, teamrol, feedback"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Context",
+   "intro": "Vul optioneel context in voor een persoonlijker rapport.",
+   "velden": [
+    {
+     "id": "tegenpartij",
+     "type": "kort",
+     "label": "Naam tegenpartij",
+     "maxlengte": 80
+    },
+    {
+     "id": "periode",
+     "type": "kort",
+     "label": "Beoordelingsperiode",
+     "voorbeeld": "Bijvoorbeeld: 2025",
+     "maxlengte": 80
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "vragen": {
+   "leidinggevende": {
+    "presteren": [
+     "Welke concrete resultaten heeft de werknemer in deze periode behaald, gemeten aan de afgesproken doelen?",
+     "Welk voorbeeld kan ik geven van een prestatie die boven de verwachting uit ging, en eentje die eronder bleef?",
+     "Hoe verhoudt de output zich tot wat van iemand op dit niveau in deze functie verwacht mag worden?",
+     "Welke zichtbare impact heeft het werk gehad op de organisatie, klant of team?"
+    ],
+    "ontwikkeling": [
+     "Welke ontwikkelpunten waren afgesproken bij het vorige gesprek, en wat is daarmee gebeurd?",
+     "Welke nieuwe vaardigheid of inzicht heeft de werknemer in deze periode laten zien?",
+     "Welk gedrag uit de vorige beoordeling is verbeterd, en welk gedrag is nog onveranderd?",
+     "Welke leerkans heeft de werknemer gepakt zonder dat ik daarom vroeg?"
+    ],
+    "samenwerking": [
+     "Hoe gedraagt de werknemer zich in team-overleggen, en wat is daarvan een concreet voorbeeld?",
+     "Hoe gaat de werknemer om met feedback van mij en van collegas?",
+     "Welke rol speelt de werknemer in de teamsfeer, positief of negatief?",
+     "Hoe communiceert de werknemer over voortgang, problemen en hulp-nodig?"
+    ]
+   },
+   "werknemer": {
+    "presteren": [
+     "Welke 3 concrete resultaten ben ik trots op uit deze periode?",
+     "Welk verbeterpunt benoem ik zelf voordat mijn leidinggevende het doet?",
+     "Welk doel heb ik niet gehaald, en waarom niet?",
+     "Hoe verhoudt mijn werk zich tot wat van iemand in deze rol verwacht mag worden?"
+    ],
+    "ontwikkeling": [
+     "Welke vaardigheid heb ik in deze periode duidelijk verder ontwikkeld?",
+     "Welk ontwikkelpunt uit het vorige gesprek heb ik aangepakt, en welk niet?",
+     "Wat heb ik geleerd van een fout of een mislukking?",
+     "Welke ontwikkelvraag wil ik in het komende jaar centraal stellen?"
+    ],
+    "samenwerking": [
+     "Hoe heb ik bijgedragen aan het team-resultaat, los van mijn eigen taken?",
+     "Welke feedback van collegas of mijn leidinggevende heeft me geraakt, en wat heb ik ermee gedaan?",
+     "Met welke collega is de samenwerking gegroeid, en met welke moeilijker geworden?",
+     "Hoe schat ik mijn rol in de teamsfeer in?"
+    ]
+   }
+  }
+ },
+ "resultaat_kop": "Beoordelingsgesprek",
+ "resultaat_intro": "Voorbereiding {rol|label|klein}",
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Tegenpartij",
+     "tekst": "{tegenpartij}"
+    },
+    {
+     "label": "Periode",
+     "tekst": "{periode}"
+    }
+   ]
+  },
+  {
+   "type": "herhaal",
+   "over": "pijlers",
+   "kop": "{@label}",
+   "inhoud": [
+    {
+     "type": "vragen",
+     "bank": "vragen",
+     "pad": [
+      "{rol}",
+      "{@}"
+     ],
+     "lijnen": 3
+    }
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "beoordelingsgesprek-vragen-{tegenpartij|of:rol}"
+ },
+ "mail": {
+  "onderwerp": "Voorbereiding beoordelingsgesprek{tegenpartij|voor: met }",
+  "intro": "Hierbij de vragen ter voorbereiding op je beoordelingsgesprek."
+ }
+}

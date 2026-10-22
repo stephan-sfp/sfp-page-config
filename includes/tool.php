@@ -275,7 +275,8 @@ function sfp_page_config_tool_beschrijving_vers( $post ) {
  */
 function sfp_page_config_tool_soorten() {
     return array(
-        'test' => 'tool_test',
+        'test'      => 'tool_test',
+        'generator' => 'tool_generator',
     );
 }
 

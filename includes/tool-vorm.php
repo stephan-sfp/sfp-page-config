@@ -201,7 +201,9 @@ function sfp_page_config_tool_schema() {
         $gegevens['description'] = $zin;
     }
     if ( $b ) {
-        $gegevens['isBasedOn'] = $url . '#sfp-tool-' . (int) $post->ID . '-hoe';
+        if ( 'test' === $b['soort'] ) {
+            $gegevens['isBasedOn'] = $url . '#sfp-tool-' . (int) $post->ID . '-hoe';
+        }
         $bron = '' !== $b['bron']['link'] ? esc_url_raw( $b['bron']['link'] ) : '';
         if ( '' !== $bron ) {
             $gegevens['citation'] = $bron;
