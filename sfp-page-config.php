@@ -3,7 +3,7 @@
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
  * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata, zelftest en de knop onderaan voor het School for Professionals netwerk.
- * Version:     3.8.0
+ * Version:     3.8.1
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '3.8.0' );
+define( 'SFP_PAGE_CONFIG_VERSION', '3.8.1' );
 define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
@@ -183,6 +183,13 @@ function sfp_page_config_get_brand() {
         ),
         $cta_bg
     );
+    // Text links: Astra's link colour. The brand source gives DPS, DST and
+    // FL a text link in the primary colour, the other brands in the button
+    // colour; Astra already carries that per site.
+    $link = sfp_page_config_first_color(
+        array( sfp_page_config_astra_option( 'link-color' ) ),
+        $cta_bg
+    );
     // White is the network-wide "Wit" role, not a brand colour.
     $cta_text = sfp_page_config_first_color(
         array( sfp_page_config_astra_option( 'button-color' ) ),
@@ -227,6 +234,7 @@ function sfp_page_config_get_brand() {
         'cta_bg'    => $cta_bg,
         'cta_hover' => $cta_hover,
         'cta_text'  => $cta_text,
+        'link'      => $link,
         'font'      => $font,
         'weight'    => $weight,
         'body_font' => $body_font,

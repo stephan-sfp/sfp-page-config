@@ -1,0 +1,161 @@
+{
+  "versie": 1,
+  "soort": "test",
+  "weergave": {
+    "modus": "per-groep",
+    "stappen": ["Vragen", "Resultaat"],
+    "likert_als_tekst": true,
+    "schaal": { "1": "Helemaal oneens", "2": "Oneens", "3": "Neutraal", "4": "Eens", "5": "Helemaal eens" },
+    "intro": {
+      "tekst": "Doe in 4 minuten de Sprekerstype-test. 15 vragen, eerlijke antwoorden. Ontdek jouw spreker-archetype, drie sterke punten en concrete ontwikkeltips.",
+      "knop": "Start de test"
+    }
+  },
+  "dimensies": {
+    "energie": { "naam": "Energie", "volledig": "Energie" },
+    "inhoud": { "naam": "Inhoud", "volledig": "Inhoud" },
+    "structuur": { "naam": "Structuur", "volledig": "Structuur" },
+    "contact": { "naam": "Contact", "volledig": "Contact" }
+  },
+  "vragen": [
+    { "id": "e1", "type": "likert", "groep": "Energie", "dimensie": "energie", "tekst": "Bij een presentatie merk ik dat mijn energie toeneemt als er meer mensen kijken." },
+    { "id": "e2", "type": "likert", "groep": "Energie", "dimensie": "energie", "tekst": "Ik gebruik graag beweging, gebaar en stemvariatie om mijn boodschap te onderstrepen." },
+    { "id": "e3", "type": "likert", "groep": "Energie", "dimensie": "energie", "omgekeerd": true, "tekst": "Een rustig sprekend persoon vind ik vaak overtuigender dan iemand met veel energie." },
+    { "id": "e4", "type": "likert", "groep": "Energie", "dimensie": "energie", "tekst": "Tijdens een presentatie zie ik graag dat het publiek lacht of geraakt is." },
+    { "id": "i1", "type": "likert", "groep": "Inhoud", "dimensie": "inhoud", "tekst": "Voor een presentatie investeer ik liever in mijn slides en argumenten dan in mijn voordracht." },
+    { "id": "i2", "type": "likert", "groep": "Inhoud", "dimensie": "inhoud", "tekst": "Een sterke onderbouwing met data en bronnen is voor mij belangrijker dan een mooie metafoor." },
+    { "id": "i3", "type": "likert", "groep": "Inhoud", "dimensie": "inhoud", "tekst": "Ik vind het lastig om diepgang op te offeren voor toegankelijkheid." },
+    { "id": "i4", "type": "likert", "groep": "Inhoud", "dimensie": "inhoud", "tekst": "Mijn presentatie is geslaagd als het publiek iets concreets heeft geleerd." },
+    { "id": "s1", "type": "likert", "groep": "Structuur", "dimensie": "structuur", "tekst": "Ik schrijf mijn presentatie liefst woord voor woord uit, of werk met een gedetailleerde outline." },
+    { "id": "s2", "type": "likert", "groep": "Structuur", "dimensie": "structuur", "tekst": "Een strakke structuur in een presentatie helpt mij om scherp te blijven." },
+    { "id": "s3", "type": "likert", "groep": "Structuur", "dimensie": "structuur", "omgekeerd": true, "tekst": "Ik improviseer graag in een presentatie en pas mijn route aan op het publiek." },
+    { "id": "s4", "type": "likert", "groep": "Structuur", "dimensie": "structuur", "tekst": "Een go-no-go-moment in een presentatie laat ik niet aan toeval over." },
+    { "id": "c1", "type": "likert", "groep": "Contact", "dimensie": "contact", "tekst": "Ik zoek tijdens een presentatie graag oogcontact met individuele luisteraars." },
+    { "id": "c2", "type": "likert", "groep": "Contact", "dimensie": "contact", "tekst": "Voor de presentatie wil ik weten wie er in de zaal zit en wat hun belang is." },
+    { "id": "c3", "type": "likert", "groep": "Contact", "dimensie": "contact", "omgekeerd": true, "tekst": "Het maakt me niet veel uit of het publiek mij sympathiek vindt, als de boodschap maar overkomt." }
+  ],
+  "score": { "per_dimensie": "percentage" },
+  "uitkomst": {
+    "regel": "regels",
+    "regels": [
+      { "als": [ ["dimensie.energie", ">=", 65], ["dimensie.structuur", ">=", 65], ["dimensie.contact", ">=", 65] ], "dan": "verteller" },
+      { "als": [ ["dimensie.energie", ">=", 65], ["dimensie.structuur", "<", 65], ["dimensie.contact", ">=", 65] ], "dan": "inspirator" },
+      { "als": [ ["dimensie.inhoud", ">=", 65], ["dimensie.energie", "<", 65], ["dimensie.structuur", ">=", 65] ], "dan": "expert" },
+      { "als": [ ["dimensie.structuur", ">=", 65], ["dimensie.inhoud", ">=", 65], ["dimensie.contact", "<", 65] ], "dan": "architect" }
+    ],
+    "anders": {
+      "regel": "paar",
+      "paren": {
+        "energie+contact": "inspirator",
+        "structuur+contact": "verteller",
+        "inhoud+structuur": "architect"
+      },
+      "anders": {
+        "regel": "hoogste",
+        "vertaal": { "energie": "inspirator", "inhoud": "expert", "structuur": "architect", "contact": "verteller" }
+      }
+    },
+    "vertaal": { "energie": "inspirator", "inhoud": "expert", "structuur": "architect", "contact": "verteller" }
+  },
+  "uitslagen": {
+    "verteller": {
+      "titel": "De Verteller",
+      "tekst": "Verhalenverteller die structuur en verbinding combineert.",
+      "lijsten": {
+        "sterk": [
+          "Verhaal-arc maken die het publiek meeneemt",
+          "Dynamisch wisselen tussen serieus en lichter",
+          "Eindigen op een emotioneel pakkend moment"
+        ],
+        "ontwikkel": [
+          "Werk aan datavalidatie van je verhalen",
+          "Houd ook structuur als het publiek meegaat in een uitweiding",
+          "Test je verhaal-arc bij een kritische luisteraar"
+        ],
+        "bestand": ["verteller"]
+      }
+    },
+    "inspirator": {
+      "titel": "De Inspirator",
+      "tekst": "Improvisator die energie en publiek-contact zoekt.",
+      "lijsten": {
+        "sterk": [
+          "Het publiek opvrolijken en energie creeren",
+          "Spontaan inspelen op vragen en reacties",
+          "Authentiek overkomen, zonder afstand"
+        ],
+        "ontwikkel": [
+          "Bouw een basis-structuur waar je altijd op terug kunt vallen",
+          "Bereid kerncijfers en bronnen voor (improvisatie + onderbouwing combineren)",
+          "Plan een vast slot-moment, ook bij vrije improvisatie"
+        ],
+        "bestand": ["inspirator"]
+      }
+    },
+    "expert": {
+      "titel": "De Expert",
+      "tekst": "Kennis-gerichte spreker met sterke structuur.",
+      "lijsten": {
+        "sterk": [
+          "Een diepgaande analyse heel toegankelijk maken",
+          "Argumenten zo opbouwen dat ze niet te weerleggen zijn",
+          "Vakgenoten respect afdwingen door grondigheid"
+        ],
+        "ontwikkel": [
+          "Vertel meer verhalen en voorbeelden, minder data dumps",
+          "Investeer in stemvariatie en gebaar",
+          "Maak vroeg contact met je publiek voor je inhoudelijk wordt"
+        ],
+        "bestand": ["expert"]
+      }
+    },
+    "architect": {
+      "titel": "De Architect",
+      "tekst": "Planmatige spreker met inhoudelijke diepgang.",
+      "lijsten": {
+        "sterk": [
+          "Een complex onderwerp helder structureren",
+          "Logica en data perfect verweven",
+          "Argumenten waterdicht presenteren"
+        ],
+        "ontwikkel": [
+          "Maak het persoonlijk: wat raakt jou aan dit onderwerp?",
+          "Plan publiekscontact-momenten (vragen, voorbeelden uit de zaal)",
+          "Sta toe dat je presentatie iets oplevert dat je niet had voorbereid"
+        ],
+        "bestand": ["architect"]
+      }
+    }
+  },
+  "uitvoer": [
+    { "type": "profiel", "kop": "Jouw resultaat" },
+    { "type": "balken", "kop": "Jouw score per dimensie", "sorteer": "vast" },
+    { "type": "lijst", "kop": "Drie sterke punten", "bron": "uitslag.sterk" },
+    { "type": "lijst", "kop": "Drie ontwikkeltips", "bron": "uitslag.ontwikkel" },
+    { "type": "vast", "kop": "Over dit model", "tekst": "De Sprekerstype-test gebruikt 4 dimensies: Energie, Inhoud, Structuur en Contact. Elke spreker scoort op elk van deze dimensies en het patroon bepaalt het archetype. Het model gaat uit van bewuste keuzes, niet van vaste persoonlijkheidstrekken." },
+    { "type": "vast", "kop": "Vergelijkbaar in andere modellen", "tekst": "Het model komt deels overeen met de DISC-typering (Dominant, Inspirerend, Stabiel, Conscientieus), maar is specifieker op presentatie-context. MBTI-types (E/I, S/N, T/F, J/P) corresponderen niet 1-op-1." }
+  ],
+  "acties": {
+    "pdf": true,
+    "word": false,
+    "mail": true,
+    "deellink": false,
+    "duimpjes": true,
+    "formulier": 0,
+    "pdf_bestandsnaam": "sprekerstype-test-{uitslag.bestand}"
+  },
+  "mail": {
+    "onderwerp": "Jouw Sprekerstype-resultaat: {uitslag.titel}",
+    "intro": "Jouw archetype: {uitslag.titel}"
+  },
+  "teksten": {
+    "tool_pdf": "PDF downloaden",
+    "tool_mail": "Mail naar mezelf",
+    "tool_mail_veld": "Mijn e-mailadres",
+    "tool_mail_verstuur": "Verstuur",
+    "tool_mail_ok": "Mail verstuurd.",
+    "tool_mail_fout": "Netwerkfout. Probeer opnieuw of download als PDF.",
+    "tool_bestand_fout": "Er ging iets mis.",
+    "tool_opnieuw": "Opnieuw beginnen"
+  }
+}

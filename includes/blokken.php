@@ -541,12 +541,14 @@ function sfp_page_config_blokken_css_variabelen() {
     $primair = isset( $brand['primary'] ) && '' !== $brand['primary'] ? $brand['primary'] : 'var(--ast-global-color-2)';
     $links   = isset( $brand['cta_bg'] ) && '' !== $brand['cta_bg'] ? $brand['cta_bg'] : 'var(--ast-global-color-0)';
     $hover   = isset( $brand['cta_hover'] ) && '' !== $brand['cta_hover'] ? $brand['cta_hover'] : $links;
+    $link    = isset( $brand['link'] ) && '' !== $brand['link'] ? $brand['link'] : $links;
 
     return ':root{'
         . '--sfp-b-primair:var(--sfp-rol-primair,' . $primair . ');'
         . '--sfp-b-secundair:var(--sfp-rol-secundair,var(--sfp-b-primair));'
         . '--sfp-b-links:var(--sfp-rol-links,' . $links . ');'
         . '--sfp-b-hover:var(--sfp-rol-hover,' . $hover . ');'
+        . '--sfp-b-tekstlink:var(--sfp-rol-tekstlink,' . $link . ');'
         . '--sfp-b-knoptekst:' . ( isset( $brand['cta_text'] ) && '' !== $brand['cta_text'] ? $brand['cta_text'] : '#fff' ) . ';'
         . '--sfp-b-tint1:var(--sfp-rol-tint-1,var(--sfp-b-tint3));'
         . '--sfp-b-tint2:var(--sfp-rol-tint-2,var(--ast-global-color-8));'
