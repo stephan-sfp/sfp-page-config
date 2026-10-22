@@ -1,0 +1,240 @@
+{
+  "versie": 1,
+  "soort": "test",
+  "weergave": { "modus": "per-vraag", "stappen": ["Vragen", "Resultaat"], "schaal": { "1": "zeer mee oneens", "3": "neutraal", "5": "zeer mee eens" } },
+  "dimensies": {
+    "houding": { "naam": "Houding", "volledig": "Houding" },
+    "gezicht": { "naam": "Gezicht", "volledig": "Gezicht" },
+    "gebaren": { "naam": "Gebaren", "volledig": "Gebaren" },
+    "oogcontact": { "naam": "Oogcontact", "volledig": "Oogcontact" }
+  },
+  "vragen": [
+    { "id": "h1", "type": "likert", "dimensie": "houding", "groep": "Houding", "tekst": "Ik sta met mijn voeten op heupbreedte en mijn gewicht gelijk verdeeld over beide voeten." },
+    { "id": "h2", "type": "likert", "dimensie": "houding", "groep": "Houding", "tekst": "Ik houd mijn rug recht en mijn schouders ontspannen tijdens een presentatie." },
+    { "id": "h3", "type": "likert", "dimensie": "houding", "groep": "Houding", "tekst": "Ik beweeg bewust naar mijn publiek toe op belangrijke momenten." },
+    { "id": "g1", "type": "likert", "dimensie": "gezicht", "groep": "Gezicht", "tekst": "Ik glimlach aan het begin en op passende momenten in mijn verhaal." },
+    { "id": "g2", "type": "likert", "dimensie": "gezicht", "groep": "Gezicht", "tekst": "Mijn gezichtsuitdrukking ondersteunt mijn boodschap (serieus, enthousiast, vragend)." },
+    { "id": "g3", "type": "likert", "dimensie": "gezicht", "groep": "Gezicht", "tekst": "Mijn gezicht blijft ontspannen, ook tijdens lastige momenten." },
+    { "id": "a1", "type": "likert", "dimensie": "gebaren", "groep": "Gebaren", "tekst": "Ik gebruik mijn handen om belangrijke punten te benadrukken." },
+    { "id": "a2", "type": "likert", "dimensie": "gebaren", "groep": "Gebaren", "tekst": "Mijn gebaren passen bij wat ik zeg en zijn rustig en doelgericht." },
+    { "id": "a3", "type": "likert", "dimensie": "gebaren", "groep": "Gebaren", "tekst": "Als ik geen gebaren maak, houd ik mijn handen in een neutrale basispositie." },
+    { "id": "o1", "type": "likert", "dimensie": "oogcontact", "groep": "Oogcontact", "tekst": "Ik kijk afwisselend verschillende mensen in het publiek aan." },
+    { "id": "o2", "type": "likert", "dimensie": "oogcontact", "groep": "Oogcontact", "tekst": "Ik houd oogcontact enkele seconden vast voor ik wissel naar de volgende persoon." },
+    { "id": "o3", "type": "likert", "dimensie": "oogcontact", "groep": "Oogcontact", "tekst": "Ik kijk mijn publiek aan tijdens inhoudelijke passages." }
+  ],
+  "score": { "per_dimensie": "som" },
+  "labels": [{ "vanaf": 12, "tekst": "Sterk", "sleutel": "sterk" }, { "vanaf": 8, "tekst": "Gemiddeld", "sleutel": "gemiddeld" }, { "vanaf": 0, "tekst": "Aandachtspunt", "sleutel": "aandachtspunt" }],
+  "uitkomst": {
+    "regel": "regels",
+    "regels": [
+      { "als": [["spreiding", "<=", 0], ["totaal", ">=", 45]], "dan": "sterk-gelijk" },
+      { "als": [["spreiding", "<=", 0], ["totaal", ">=", 29]], "dan": "basis-gelijk" },
+      { "als": [["spreiding", "<=", 0]], "dan": "aandacht-gelijk" },
+      { "als": [["dimensie.gezicht", "==", 15], ["dimensie.gebaren", "==", 15], ["dimensie.oogcontact", "==", 15], ["dimensie.houding", "<", 15]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 15], ["dimensie.gebaren", "==", 15], ["dimensie.oogcontact", "==", 15], ["dimensie.gezicht", "<", 15]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 15], ["dimensie.gezicht", "==", 15], ["dimensie.oogcontact", "==", 15], ["dimensie.gebaren", "<", 15]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 15], ["dimensie.gezicht", "==", 15], ["dimensie.gebaren", "==", 15], ["dimensie.oogcontact", "<", 15]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.gezicht", "==", 14], ["dimensie.gebaren", "==", 14], ["dimensie.oogcontact", "==", 14], ["dimensie.houding", "<", 14]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 14], ["dimensie.gebaren", "==", 14], ["dimensie.oogcontact", "==", 14], ["dimensie.gezicht", "<", 14]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 14], ["dimensie.gezicht", "==", 14], ["dimensie.oogcontact", "==", 14], ["dimensie.gebaren", "<", 14]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 14], ["dimensie.gezicht", "==", 14], ["dimensie.gebaren", "==", 14], ["dimensie.oogcontact", "<", 14]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.gezicht", "==", 13], ["dimensie.gebaren", "==", 13], ["dimensie.oogcontact", "==", 13], ["dimensie.houding", "<", 13], ["totaal", ">=", 45]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.gezicht", "==", 13], ["dimensie.gebaren", "==", 13], ["dimensie.oogcontact", "==", 13], ["dimensie.houding", "<", 13]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 13], ["dimensie.gebaren", "==", 13], ["dimensie.oogcontact", "==", 13], ["dimensie.gezicht", "<", 13], ["totaal", ">=", 45]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 13], ["dimensie.gebaren", "==", 13], ["dimensie.oogcontact", "==", 13], ["dimensie.gezicht", "<", 13]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 13], ["dimensie.gezicht", "==", 13], ["dimensie.oogcontact", "==", 13], ["dimensie.gebaren", "<", 13], ["totaal", ">=", 45]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 13], ["dimensie.gezicht", "==", 13], ["dimensie.oogcontact", "==", 13], ["dimensie.gebaren", "<", 13]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 13], ["dimensie.gezicht", "==", 13], ["dimensie.gebaren", "==", 13], ["dimensie.oogcontact", "<", 13], ["totaal", ">=", 45]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 13], ["dimensie.gezicht", "==", 13], ["dimensie.gebaren", "==", 13], ["dimensie.oogcontact", "<", 13]], "dan": "basis-hoog" },
+      { "als": [["dimensie.gezicht", "==", 12], ["dimensie.gebaren", "==", 12], ["dimensie.oogcontact", "==", 12], ["dimensie.houding", "<", 12], ["totaal", ">=", 45]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.gezicht", "==", 12], ["dimensie.gebaren", "==", 12], ["dimensie.oogcontact", "==", 12], ["dimensie.houding", "<", 12]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 12], ["dimensie.gebaren", "==", 12], ["dimensie.oogcontact", "==", 12], ["dimensie.gezicht", "<", 12], ["totaal", ">=", 45]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 12], ["dimensie.gebaren", "==", 12], ["dimensie.oogcontact", "==", 12], ["dimensie.gezicht", "<", 12]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 12], ["dimensie.gezicht", "==", 12], ["dimensie.oogcontact", "==", 12], ["dimensie.gebaren", "<", 12], ["totaal", ">=", 45]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 12], ["dimensie.gezicht", "==", 12], ["dimensie.oogcontact", "==", 12], ["dimensie.gebaren", "<", 12]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 12], ["dimensie.gezicht", "==", 12], ["dimensie.gebaren", "==", 12], ["dimensie.oogcontact", "<", 12], ["totaal", ">=", 45]], "dan": "sterk-hoog" },
+      { "als": [["dimensie.houding", "==", 12], ["dimensie.gezicht", "==", 12], ["dimensie.gebaren", "==", 12], ["dimensie.oogcontact", "<", 12]], "dan": "basis-hoog" },
+      { "als": [["dimensie.gezicht", "==", 11], ["dimensie.gebaren", "==", 11], ["dimensie.oogcontact", "==", 11], ["dimensie.houding", "<", 11]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 11], ["dimensie.gebaren", "==", 11], ["dimensie.oogcontact", "==", 11], ["dimensie.gezicht", "<", 11]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 11], ["dimensie.gezicht", "==", 11], ["dimensie.oogcontact", "==", 11], ["dimensie.gebaren", "<", 11]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 11], ["dimensie.gezicht", "==", 11], ["dimensie.gebaren", "==", 11], ["dimensie.oogcontact", "<", 11]], "dan": "basis-hoog" },
+      { "als": [["dimensie.gezicht", "==", 10], ["dimensie.gebaren", "==", 10], ["dimensie.oogcontact", "==", 10], ["dimensie.houding", "<", 10]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 10], ["dimensie.gebaren", "==", 10], ["dimensie.oogcontact", "==", 10], ["dimensie.gezicht", "<", 10]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 10], ["dimensie.gezicht", "==", 10], ["dimensie.oogcontact", "==", 10], ["dimensie.gebaren", "<", 10]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 10], ["dimensie.gezicht", "==", 10], ["dimensie.gebaren", "==", 10], ["dimensie.oogcontact", "<", 10]], "dan": "basis-hoog" },
+      { "als": [["dimensie.gezicht", "==", 9], ["dimensie.gebaren", "==", 9], ["dimensie.oogcontact", "==", 9], ["dimensie.houding", "<", 9]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 9], ["dimensie.gebaren", "==", 9], ["dimensie.oogcontact", "==", 9], ["dimensie.gezicht", "<", 9]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 9], ["dimensie.gezicht", "==", 9], ["dimensie.oogcontact", "==", 9], ["dimensie.gebaren", "<", 9]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 9], ["dimensie.gezicht", "==", 9], ["dimensie.gebaren", "==", 9], ["dimensie.oogcontact", "<", 9]], "dan": "basis-hoog" },
+      { "als": [["dimensie.gezicht", "==", 8], ["dimensie.gebaren", "==", 8], ["dimensie.oogcontact", "==", 8], ["dimensie.houding", "<", 8], ["totaal", ">=", 29]], "dan": "basis-hoog" },
+      { "als": [["dimensie.gezicht", "==", 8], ["dimensie.gebaren", "==", 8], ["dimensie.oogcontact", "==", 8], ["dimensie.houding", "<", 8]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 8], ["dimensie.gebaren", "==", 8], ["dimensie.oogcontact", "==", 8], ["dimensie.gezicht", "<", 8], ["totaal", ">=", 29]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 8], ["dimensie.gebaren", "==", 8], ["dimensie.oogcontact", "==", 8], ["dimensie.gezicht", "<", 8]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 8], ["dimensie.gezicht", "==", 8], ["dimensie.oogcontact", "==", 8], ["dimensie.gebaren", "<", 8], ["totaal", ">=", 29]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 8], ["dimensie.gezicht", "==", 8], ["dimensie.oogcontact", "==", 8], ["dimensie.gebaren", "<", 8]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 8], ["dimensie.gezicht", "==", 8], ["dimensie.gebaren", "==", 8], ["dimensie.oogcontact", "<", 8], ["totaal", ">=", 29]], "dan": "basis-hoog" },
+      { "als": [["dimensie.houding", "==", 8], ["dimensie.gezicht", "==", 8], ["dimensie.gebaren", "==", 8], ["dimensie.oogcontact", "<", 8]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.gezicht", "==", 7], ["dimensie.gebaren", "==", 7], ["dimensie.oogcontact", "==", 7], ["dimensie.houding", "<", 7]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 7], ["dimensie.gebaren", "==", 7], ["dimensie.oogcontact", "==", 7], ["dimensie.gezicht", "<", 7]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 7], ["dimensie.gezicht", "==", 7], ["dimensie.oogcontact", "==", 7], ["dimensie.gebaren", "<", 7]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 7], ["dimensie.gezicht", "==", 7], ["dimensie.gebaren", "==", 7], ["dimensie.oogcontact", "<", 7]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.gezicht", "==", 6], ["dimensie.gebaren", "==", 6], ["dimensie.oogcontact", "==", 6], ["dimensie.houding", "<", 6]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 6], ["dimensie.gebaren", "==", 6], ["dimensie.oogcontact", "==", 6], ["dimensie.gezicht", "<", 6]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 6], ["dimensie.gezicht", "==", 6], ["dimensie.oogcontact", "==", 6], ["dimensie.gebaren", "<", 6]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 6], ["dimensie.gezicht", "==", 6], ["dimensie.gebaren", "==", 6], ["dimensie.oogcontact", "<", 6]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.gezicht", "==", 5], ["dimensie.gebaren", "==", 5], ["dimensie.oogcontact", "==", 5], ["dimensie.houding", "<", 5]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 5], ["dimensie.gebaren", "==", 5], ["dimensie.oogcontact", "==", 5], ["dimensie.gezicht", "<", 5]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 5], ["dimensie.gezicht", "==", 5], ["dimensie.oogcontact", "==", 5], ["dimensie.gebaren", "<", 5]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 5], ["dimensie.gezicht", "==", 5], ["dimensie.gebaren", "==", 5], ["dimensie.oogcontact", "<", 5]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.gezicht", "==", 4], ["dimensie.gebaren", "==", 4], ["dimensie.oogcontact", "==", 4], ["dimensie.houding", "<", 4]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 4], ["dimensie.gebaren", "==", 4], ["dimensie.oogcontact", "==", 4], ["dimensie.gezicht", "<", 4]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 4], ["dimensie.gezicht", "==", 4], ["dimensie.oogcontact", "==", 4], ["dimensie.gebaren", "<", 4]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.houding", "==", 4], ["dimensie.gezicht", "==", 4], ["dimensie.gebaren", "==", 4], ["dimensie.oogcontact", "<", 4]], "dan": "aandacht-hoog" },
+      { "als": [["dimensie.gezicht", "==", 14], ["dimensie.gebaren", "==", 14], ["dimensie.oogcontact", "==", 14], ["dimensie.houding", ">", 14]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 14], ["dimensie.gebaren", "==", 14], ["dimensie.oogcontact", "==", 14], ["dimensie.gezicht", ">", 14]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 14], ["dimensie.gezicht", "==", 14], ["dimensie.oogcontact", "==", 14], ["dimensie.gebaren", ">", 14]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 14], ["dimensie.gezicht", "==", 14], ["dimensie.gebaren", "==", 14], ["dimensie.oogcontact", ">", 14]], "dan": "sterk-laag" },
+      { "als": [["dimensie.gezicht", "==", 13], ["dimensie.gebaren", "==", 13], ["dimensie.oogcontact", "==", 13], ["dimensie.houding", ">", 13]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 13], ["dimensie.gebaren", "==", 13], ["dimensie.oogcontact", "==", 13], ["dimensie.gezicht", ">", 13]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 13], ["dimensie.gezicht", "==", 13], ["dimensie.oogcontact", "==", 13], ["dimensie.gebaren", ">", 13]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 13], ["dimensie.gezicht", "==", 13], ["dimensie.gebaren", "==", 13], ["dimensie.oogcontact", ">", 13]], "dan": "sterk-laag" },
+      { "als": [["dimensie.gezicht", "==", 12], ["dimensie.gebaren", "==", 12], ["dimensie.oogcontact", "==", 12], ["dimensie.houding", ">", 12]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 12], ["dimensie.gebaren", "==", 12], ["dimensie.oogcontact", "==", 12], ["dimensie.gezicht", ">", 12]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 12], ["dimensie.gezicht", "==", 12], ["dimensie.oogcontact", "==", 12], ["dimensie.gebaren", ">", 12]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 12], ["dimensie.gezicht", "==", 12], ["dimensie.gebaren", "==", 12], ["dimensie.oogcontact", ">", 12]], "dan": "sterk-laag" },
+      { "als": [["dimensie.gezicht", "==", 11], ["dimensie.gebaren", "==", 11], ["dimensie.oogcontact", "==", 11], ["dimensie.houding", ">", 11]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 11], ["dimensie.gebaren", "==", 11], ["dimensie.oogcontact", "==", 11], ["dimensie.gezicht", ">", 11]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 11], ["dimensie.gezicht", "==", 11], ["dimensie.oogcontact", "==", 11], ["dimensie.gebaren", ">", 11]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 11], ["dimensie.gezicht", "==", 11], ["dimensie.gebaren", "==", 11], ["dimensie.oogcontact", ">", 11]], "dan": "sterk-laag" },
+      { "als": [["dimensie.gezicht", "==", 10], ["dimensie.gebaren", "==", 10], ["dimensie.oogcontact", "==", 10], ["dimensie.houding", ">", 10], ["totaal", ">=", 45]], "dan": "sterk-laag" },
+      { "als": [["dimensie.gezicht", "==", 10], ["dimensie.gebaren", "==", 10], ["dimensie.oogcontact", "==", 10], ["dimensie.houding", ">", 10]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 10], ["dimensie.gebaren", "==", 10], ["dimensie.oogcontact", "==", 10], ["dimensie.gezicht", ">", 10], ["totaal", ">=", 45]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 10], ["dimensie.gebaren", "==", 10], ["dimensie.oogcontact", "==", 10], ["dimensie.gezicht", ">", 10]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 10], ["dimensie.gezicht", "==", 10], ["dimensie.oogcontact", "==", 10], ["dimensie.gebaren", ">", 10], ["totaal", ">=", 45]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 10], ["dimensie.gezicht", "==", 10], ["dimensie.oogcontact", "==", 10], ["dimensie.gebaren", ">", 10]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 10], ["dimensie.gezicht", "==", 10], ["dimensie.gebaren", "==", 10], ["dimensie.oogcontact", ">", 10], ["totaal", ">=", 45]], "dan": "sterk-laag" },
+      { "als": [["dimensie.houding", "==", 10], ["dimensie.gezicht", "==", 10], ["dimensie.gebaren", "==", 10], ["dimensie.oogcontact", ">", 10]], "dan": "basis-laag" },
+      { "als": [["dimensie.gezicht", "==", 9], ["dimensie.gebaren", "==", 9], ["dimensie.oogcontact", "==", 9], ["dimensie.houding", ">", 9]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 9], ["dimensie.gebaren", "==", 9], ["dimensie.oogcontact", "==", 9], ["dimensie.gezicht", ">", 9]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 9], ["dimensie.gezicht", "==", 9], ["dimensie.oogcontact", "==", 9], ["dimensie.gebaren", ">", 9]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 9], ["dimensie.gezicht", "==", 9], ["dimensie.gebaren", "==", 9], ["dimensie.oogcontact", ">", 9]], "dan": "basis-laag" },
+      { "als": [["dimensie.gezicht", "==", 8], ["dimensie.gebaren", "==", 8], ["dimensie.oogcontact", "==", 8], ["dimensie.houding", ">", 8]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 8], ["dimensie.gebaren", "==", 8], ["dimensie.oogcontact", "==", 8], ["dimensie.gezicht", ">", 8]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 8], ["dimensie.gezicht", "==", 8], ["dimensie.oogcontact", "==", 8], ["dimensie.gebaren", ">", 8]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 8], ["dimensie.gezicht", "==", 8], ["dimensie.gebaren", "==", 8], ["dimensie.oogcontact", ">", 8]], "dan": "basis-laag" },
+      { "als": [["dimensie.gezicht", "==", 7], ["dimensie.gebaren", "==", 7], ["dimensie.oogcontact", "==", 7], ["dimensie.houding", ">", 7]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 7], ["dimensie.gebaren", "==", 7], ["dimensie.oogcontact", "==", 7], ["dimensie.gezicht", ">", 7]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 7], ["dimensie.gezicht", "==", 7], ["dimensie.oogcontact", "==", 7], ["dimensie.gebaren", ">", 7]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 7], ["dimensie.gezicht", "==", 7], ["dimensie.gebaren", "==", 7], ["dimensie.oogcontact", ">", 7]], "dan": "basis-laag" },
+      { "als": [["dimensie.gezicht", "==", 6], ["dimensie.gebaren", "==", 6], ["dimensie.oogcontact", "==", 6], ["dimensie.houding", ">", 6], ["totaal", ">=", 29]], "dan": "basis-laag" },
+      { "als": [["dimensie.gezicht", "==", 6], ["dimensie.gebaren", "==", 6], ["dimensie.oogcontact", "==", 6], ["dimensie.houding", ">", 6]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 6], ["dimensie.gebaren", "==", 6], ["dimensie.oogcontact", "==", 6], ["dimensie.gezicht", ">", 6], ["totaal", ">=", 29]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 6], ["dimensie.gebaren", "==", 6], ["dimensie.oogcontact", "==", 6], ["dimensie.gezicht", ">", 6]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 6], ["dimensie.gezicht", "==", 6], ["dimensie.oogcontact", "==", 6], ["dimensie.gebaren", ">", 6], ["totaal", ">=", 29]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 6], ["dimensie.gezicht", "==", 6], ["dimensie.oogcontact", "==", 6], ["dimensie.gebaren", ">", 6]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 6], ["dimensie.gezicht", "==", 6], ["dimensie.gebaren", "==", 6], ["dimensie.oogcontact", ">", 6], ["totaal", ">=", 29]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 6], ["dimensie.gezicht", "==", 6], ["dimensie.gebaren", "==", 6], ["dimensie.oogcontact", ">", 6]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.gezicht", "==", 5], ["dimensie.gebaren", "==", 5], ["dimensie.oogcontact", "==", 5], ["dimensie.houding", ">", 5], ["totaal", ">=", 29]], "dan": "basis-laag" },
+      { "als": [["dimensie.gezicht", "==", 5], ["dimensie.gebaren", "==", 5], ["dimensie.oogcontact", "==", 5], ["dimensie.houding", ">", 5]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 5], ["dimensie.gebaren", "==", 5], ["dimensie.oogcontact", "==", 5], ["dimensie.gezicht", ">", 5], ["totaal", ">=", 29]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 5], ["dimensie.gebaren", "==", 5], ["dimensie.oogcontact", "==", 5], ["dimensie.gezicht", ">", 5]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 5], ["dimensie.gezicht", "==", 5], ["dimensie.oogcontact", "==", 5], ["dimensie.gebaren", ">", 5], ["totaal", ">=", 29]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 5], ["dimensie.gezicht", "==", 5], ["dimensie.oogcontact", "==", 5], ["dimensie.gebaren", ">", 5]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 5], ["dimensie.gezicht", "==", 5], ["dimensie.gebaren", "==", 5], ["dimensie.oogcontact", ">", 5], ["totaal", ">=", 29]], "dan": "basis-laag" },
+      { "als": [["dimensie.houding", "==", 5], ["dimensie.gezicht", "==", 5], ["dimensie.gebaren", "==", 5], ["dimensie.oogcontact", ">", 5]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.gezicht", "==", 4], ["dimensie.gebaren", "==", 4], ["dimensie.oogcontact", "==", 4], ["dimensie.houding", ">", 4]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 4], ["dimensie.gebaren", "==", 4], ["dimensie.oogcontact", "==", 4], ["dimensie.gezicht", ">", 4]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 4], ["dimensie.gezicht", "==", 4], ["dimensie.oogcontact", "==", 4], ["dimensie.gebaren", ">", 4]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 4], ["dimensie.gezicht", "==", 4], ["dimensie.gebaren", "==", 4], ["dimensie.oogcontact", ">", 4]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.gezicht", "==", 3], ["dimensie.gebaren", "==", 3], ["dimensie.oogcontact", "==", 3], ["dimensie.houding", ">", 3]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 3], ["dimensie.gebaren", "==", 3], ["dimensie.oogcontact", "==", 3], ["dimensie.gezicht", ">", 3]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 3], ["dimensie.gezicht", "==", 3], ["dimensie.oogcontact", "==", 3], ["dimensie.gebaren", ">", 3]], "dan": "aandacht-laag" },
+      { "als": [["dimensie.houding", "==", 3], ["dimensie.gezicht", "==", 3], ["dimensie.gebaren", "==", 3], ["dimensie.oogcontact", ">", 3]], "dan": "aandacht-laag" }
+    ],
+    "anders": {
+      "regel": "totaal",
+      "labels": [
+        { "vanaf": 45, "tekst": "Je lichaamstaal is over de hele linie sterk", "sleutel": "sterk" },
+        { "vanaf": 29, "tekst": "Je lichaamstaal heeft een goede basis", "sleutel": "basis" },
+        { "vanaf": 0, "tekst": "Je lichaamstaal verdient aandacht", "sleutel": "aandacht" }
+      ]
+    }
+  },
+  "uitslagen": {
+    "aandacht": { "titel": "Je lichaamstaal verdient aandacht", "tekst": "Werk aan je twee laagste dimensies." },
+    "aandacht-gelijk": {
+      "titel": "Je lichaamstaal verdient aandacht",
+      "tekst": "Werk aan je twee laagste dimensies.\n\nJe scoort op alle vier dimensies gelijk. Kies zelf een dimensie om tijdens de eerstvolgende presentatie mee te experimenteren."
+    },
+    "aandacht-hoog": { "titel": "Je lichaamstaal verdient aandacht", "tekst": "Werk aan je twee laagste dimensies.\n\nMeerdere dimensies scoren even hoog." },
+    "aandacht-laag": { "titel": "Je lichaamstaal verdient aandacht", "tekst": "Werk aan je twee laagste dimensies.\n\nEn meerdere even laag. Kies waar je eerst mee aan de slag wilt." },
+    "basis": { "titel": "Je lichaamstaal heeft een goede basis", "tekst": "Werk aan je laagste dimensies." },
+    "basis-gelijk": {
+      "titel": "Je lichaamstaal heeft een goede basis",
+      "tekst": "Werk aan je laagste dimensies.\n\nJe scoort op alle vier dimensies gelijk. Kies zelf een dimensie om tijdens de eerstvolgende presentatie mee te experimenteren."
+    },
+    "basis-hoog": { "titel": "Je lichaamstaal heeft een goede basis", "tekst": "Werk aan je laagste dimensies.\n\nMeerdere dimensies scoren even hoog." },
+    "basis-laag": { "titel": "Je lichaamstaal heeft een goede basis", "tekst": "Werk aan je laagste dimensies.\n\nEn meerdere even laag. Kies waar je eerst mee aan de slag wilt." },
+    "sterk": { "titel": "Je lichaamstaal is over de hele linie sterk", "tekst": "Scherp je laagste dimensie aan." },
+    "sterk-gelijk": {
+      "titel": "Je lichaamstaal is over de hele linie sterk",
+      "tekst": "Scherp je laagste dimensie aan.\n\nJe scoort op alle vier dimensies gelijk. Kies zelf een dimensie om tijdens de eerstvolgende presentatie mee te experimenteren."
+    },
+    "sterk-hoog": { "titel": "Je lichaamstaal is over de hele linie sterk", "tekst": "Scherp je laagste dimensie aan.\n\nMeerdere dimensies scoren even hoog." },
+    "sterk-laag": { "titel": "Je lichaamstaal is over de hele linie sterk", "tekst": "Scherp je laagste dimensie aan.\n\nEn meerdere even laag. Kies waar je eerst mee aan de slag wilt." },
+    "houding": {
+      "lijsten": {
+        "sterk": ["Je staat stabiel en in balans. Daarmee straal je rust en gezag uit."],
+        "oefeningen": [
+          "Stevigheidsoefening: ga 30 seconden voor de spiegel staan met je voeten op heupbreedte en je schouders licht naar achter.",
+          "Wandelblokken: deel je presentatie op in 3 ankerplekken op het podium en oefen elke verplaatsing."
+        ]
+      }
+    },
+    "gezicht": {
+      "lijsten": {
+        "sterk": ["Je gezicht ondersteunt met je verhaal. Dat maakt je geloofwaardig en prettig om naar te kijken."],
+        "oefeningen": [
+          "Spiegelbewust: lees je opener 3 keer voor met andere stemming (serieus, vrolijk, vragend) en zie het verschil in je gezicht.",
+          "Kaakcheck: zet je vingertoppen op je kaaklijn en voel of je hem ontspannen kunt houden tijdens een lastige zin."
+        ]
+      }
+    },
+    "gebaren": {
+      "lijsten": {
+        "sterk": ["Je handen ondersteunen je woorden. Dat versterkt je boodschap."],
+        "oefeningen": [
+          "Hand-rust-zone: oefen je basispositie voor je handen, ergens tussen schouder en heup, niet langs het lichaam.",
+          "Top-3-gebaren: kies 3 inhoudswoorden uit je verhaal en bedenk per woord 1 passend gebaar dat je 3 keer oefent."
+        ]
+      }
+    },
+    "oogcontact": {
+      "lijsten": {
+        "sterk": ["Je maakt contact met je publiek. Zo houd je de mensen betrokken bij je verhaal."],
+        "oefeningen": ["3-personen-regel: oefen oogcontact in een denkbeeldig publiek met 3 vaste posities (links, midden, rechts).", "3-seconden-tel: tel intern tot 3 voor je wisselt naar de volgende persoon."]
+      }
+    }
+  },
+  "uitvoer": [
+    { "type": "profiel", "kop": "Jouw lichaamstaal in beeld" },
+    { "type": "totaal", "kop": "Totaalscore" },
+    { "type": "balken", "kop": "Per dimensie", "sorteer": "vast" },
+    { "type": "alle", "kop": "Dit gaat al goed", "selectie": "hoogste", "lijsten": ["sterk"] },
+    { "type": "alle", "kop": "Jouw verbeterpunten", "selectie": "laagste", "zonder_hoogste": true, "leeg": "Geen specifieke verbeterpunten omdat je gelijk scoort op elke dimensie. Kies zelf een dimensie om tijdens de eerstvolgende presentatie mee te experimenteren.", "lijsten": ["oefeningen"] }
+  ],
+  "acties": { "pdf": true, "word": false, "mail": true, "deellink": true, "duimpjes": true, "formulier": 0, "pdf_bestandsnaam": "lichaamstaal-zelftest-spreker-{totaal}van60" },
+  "mail": { "onderwerp": "Jouw lichaamstaal-zelftest", "intro": "" },
+  "teksten": {
+    "tool_pdf": "PDF downloaden",
+    "tool_mail": "Mail naar mezelf",
+    "tool_deellink": "Deel via link",
+    "tool_mail_veld": "E-mailadres",
+    "tool_mail_verstuur": "Verzenden",
+    "tool_mail_ok": "Verstuurd. Check je inbox.",
+    "tool_mail_fout": "Verzenden mislukt. Probeer later opnieuw.",
+    "tool_ontbreekt": "Nog %d open. Ga terug en vul aan.",
+    "tool_resultaat_slot": "Beantwoord eerst de %d stellingen op stap 1 om je resultaat te zien.",
+    "tool_bestand_fout": "PDF-bibliotheek kon niet geladen worden. Probeer mail-route of probeer later opnieuw."
+  }
+}

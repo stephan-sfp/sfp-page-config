@@ -240,6 +240,26 @@ $same( 'body{}', get_post( $css )->post_content, 'CSS-snippet blijft ongewijzigd
 list( $code, $data ) = $rest( 'GET', '/snippets/' . $css, null, $claude );
 $same( 'css', $data['taal'], 'CSS-snippet is wel te lezen' );
 
+/* ---------- Prullenbak (3.8.1) ---------- */
+
+$weg_id = wp_insert_post( array( 'post_type' => 'asenha_code_snippet', 'post_status' => 'publish', 'post_title' => 'Proef prullenbak', 'post_content' => "<?php\n// leeg" ) );
+$opruimen[] = $weg_id;
+update_post_meta( $weg_id, 'options', array( 'language' => 'php' ) );
+update_post_meta( $weg_id, '_active', 'yes' );
+list( $code ) = $rest( 'POST', '/snippets/' . $weg_id . '/prullenbak', null, $claude );
+$same( 409, $code, 'Prullenbak: snippet dat aan staat geweigerd' );
+$same( 'publish', get_post( $weg_id )->post_status, 'Prullenbak: snippet dat aan staat blijft staan' );
+list( $code ) = $rest( 'POST', '/snippets/' . $weg_id . '/prullenbak', null, $anders );
+$same( 403, $code, 'Prullenbak: andere beheerder geweigerd' );
+update_post_meta( $weg_id, '_active', 'no' );
+list( $code, $data ) = $rest( 'POST', '/snippets/' . $weg_id . '/prullenbak', null, $claude );
+$same( 200, $code, 'Prullenbak: snippet dat uit staat, 200' );
+$same( 'trash', get_post( $weg_id )->post_status, 'Prullenbak: in de prullenbak, niet weg' );
+list( $code ) = $rest( 'GET', '/snippets/' . $weg_id, null, $claude );
+$same( 404, $code, 'Prullenbak: daarna niet meer te lezen' );
+list( $code ) = $rest( 'POST', '/snippets/' . $pagina . '/prullenbak', null, $claude );
+$same( 404, $code, 'Prullenbak: andere post 404' );
+
 /* ---------- Opruimen ---------- */
 
 wp_set_current_user( $claude->ID );

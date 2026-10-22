@@ -38,9 +38,10 @@
 .sfp-tool__voortgang{margin:0 0 10px;min-height:1.3em}
 .sfp-tool__legenda{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 0;font-size:13px;color:var(--sfp-b-body)}
 /* Tekstlinks (Vorige, Opnieuw beginnen, Word, mail, deellink): merkbron, tweede call-to-action:
-   bodyfont 900, gewone letters, onderstreept; onder de muis een dikke onderstreping, de kleur blijft. */
-:root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__opnieuw,.sfp-tool__tekstlink){appearance:none;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:14px 0 0;min-height:0;font-family:var(--sfp-b-tekst,inherit);font-weight:900;font-size:15px;line-height:1.4;letter-spacing:normal;text-transform:none;color:var(--sfp-b-links);cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
-:root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__opnieuw,.sfp-tool__tekstlink):is(:hover,:focus-visible){background:none;color:var(--sfp-b-links);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+   bodyfont 900, gewone letters, onderstreept, in de linkkleur van Astra (bij DPS, DST en FL de primaire kleur);
+   onder de muis een dikke onderstreping in de rol links en knoppen, de kleur blijft. */
+:root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__opnieuw,.sfp-tool__tekstlink){appearance:none;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:14px 0 0;min-height:0;font-family:var(--sfp-b-tekst,inherit);font-weight:900;font-size:15px;line-height:1.4;letter-spacing:normal;text-transform:none;color:var(--sfp-b-tekstlink,var(--sfp-b-links));cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__opnieuw,.sfp-tool__tekstlink):is(:hover,:focus-visible){background:none;color:var(--sfp-b-tekstlink,var(--sfp-b-links));text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 :root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__opnieuw,.sfp-tool__tekstlink):focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
 :root .sfp-tool .sfp-tool__vorige{margin:22px 0 0;font-size:14px;font-weight:400}
 :root .sfp-tool .sfp-tool__opnieuw{margin:0;font-size:14px;font-weight:400}
@@ -158,9 +159,9 @@ ol.sfp-tool__lijst>li::before{content:counter(sfp-lijst);position:absolute;left:
 :is(.sfp-tool__onderbouwing,.sfp-tool__hoe) summary:focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
 .sfp-tool__tabel{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0}
 .sfp-tool__tabel td{padding:6px 8px;border-bottom:1px solid var(--tool-lijn);vertical-align:top}
-:root .sfp-tool .sfp-tool__link{font-family:var(--sfp-b-tekst,inherit);font-weight:900;color:var(--sfp-b-links);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root .sfp-tool .sfp-tool__link{font-family:var(--sfp-b-tekst,inherit);font-weight:900;color:var(--sfp-b-tekstlink,var(--sfp-b-links));text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 .sfp-tool__link::after{content:"\00a0\2192";display:inline-block;text-decoration:none}
-:root .sfp-tool .sfp-tool__link:is(:hover,:focus){color:var(--sfp-b-links);text-decoration-thickness:3px}
+:root .sfp-tool .sfp-tool__link:is(:hover,:focus){color:var(--sfp-b-tekstlink,var(--sfp-b-links));text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 
 /* Duimpjes */
 .sfp-tool__duim{margin-top:26px;padding-top:22px;border-top:1px solid var(--tool-lijn)}

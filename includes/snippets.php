@@ -22,7 +22,9 @@
  * half op te slaan.
  *
  * Toegang: het onderdeel Snippetbeheer staat aan (standaard uit) en de
- * gebruiker is claude-api met manage_options. Verwijderen kan hier niet.
+ * gebruiker is claude-api met manage_options. Definitief verwijderen kan
+ * hier niet; een snippet dat uit staat kan naar de prullenbak (sinds 3.8.1),
+ * en is daar in wp-admin terug te zetten.
  *
  * @package SFP_Page_Config
  * @since   3.3.0
@@ -475,6 +477,31 @@ function sfp_page_config_snippets_schakel( $id, $aan ) {
     return true;
 }
 
+/**
+ * Een snippet naar de prullenbak, zoals Prullenbak in de lijst van ASE.
+ *
+ * Alleen een snippet dat uit staat: wat nog draait, zet je eerst uit en
+ * controleer je. Het bestand blijft staan, zodat terugzetten vanuit de
+ * prullenbak het snippet compleet teruggeeft.
+ *
+ * @param  int $id Post-id.
+ * @return true|WP_Error
+ */
+function sfp_page_config_snippets_prullenbak( $id ) {
+    $post = sfp_page_config_snippets_post( $id );
+    if ( is_wp_error( $post ) ) {
+        return $post;
+    }
+    if ( 'no' !== get_post_meta( $post->ID, '_active', true ) ) {
+        return new WP_Error( 'sfp_snippets_staat_aan', 'Dit snippet staat aan. Zet het eerst uit; alleen een snippet dat uit staat gaat naar de prullenbak.', array( 'status' => 409 ) );
+    }
+    if ( ! wp_trash_post( $post->ID ) ) {
+        return new WP_Error( 'sfp_snippets_prullenbak_mislukt', 'WordPress kon dit snippet niet naar de prullenbak verplaatsen.', array( 'status' => 500 ) );
+    }
+    Code_Snippets_Manager()->rebuild_snippets_tree();
+    return true;
+}
+
 /* =========================================================================
  * REST
  * ====================================================================== */
@@ -590,6 +617,30 @@ function sfp_page_config_snippets_rest() {
                 $aan   = true === $gegevens['aan'] || 1 === $gegevens['aan'] || '1' === $gegevens['aan'] || 'true' === $gegevens['aan'];
                 $klaar = sfp_page_config_snippets_schakel( (int) $verzoek['id'], $aan );
                 return is_wp_error( $klaar ) ? $klaar : $antwoord( (int) $verzoek['id'] );
+            },
+        )
+    );
+
+    // Naar de prullenbak, alleen als het uit staat.
+    register_rest_route(
+        'sfp/v1',
+        '/snippets/(?P<id>\d+)/prullenbak',
+        array(
+            'methods'             => 'POST',
+            'permission_callback' => $mag,
+            'callback'            => function ( WP_REST_Request $verzoek ) {
+                $klaar = sfp_page_config_snippets_prullenbak( (int) $verzoek['id'] );
+                if ( is_wp_error( $klaar ) ) {
+                    return $klaar;
+                }
+                $post = get_post( (int) $verzoek['id'] );
+                return rest_ensure_response(
+                    array(
+                        'id'     => (int) $post->ID,
+                        'titel'  => html_entity_decode( get_the_title( $post ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+                        'status' => (string) $post->post_status,
+                    )
+                );
             },
         )
     );

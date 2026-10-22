@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.1] - 2026-10-22
+
+Tekstlinks in de tools volgens de merkbron, en opruimen van oude snippets via REST.
+
+### Gerepareerd
+- **Tekstlinks in een tool** (Vorige, Opnieuw beginnen, Word, mail, deellink en de links in een uitslag) stonden in de knopkleur. Volgens de merkbron staat een tekstlink in de linkkleur: bij DPS, DST en FL de primaire kleur, bij de andere merken de kleur van links en knoppen. Ze volgen nu de linkkleur van Astra; onder de muis blijft de kleur en wordt de onderstreping 3 px dik in de kleur van links en knoppen. Nieuwe variabele `--sfp-b-tekstlink` (rol `--sfp-rol-tekstlink` gaat voor).
+
+### Toegevoegd
+- **Snippet naar de prullenbak** via `POST /sfp/v1/snippets/<id>/prullenbak`, alleen voor een snippet dat uit staat. Het snippet en zijn bestand blijven bewaard en zijn in wp-admin terug te zetten. Definitief verwijderen kan via REST nog steeds niet.
+- **Toolmotor, onderdeel `alle`:** met `"zonder_hoogste": true` vallen de dimensies met de topscore weg. Scoort iemand overal gelijk, dan blijft er bij `laagste` niets over en toont het onderdeel zijn tekst `leeg`; die tekst staat nu ook in de mail. Nodig voor de Lichaamstaal-zelftest, die bij gelijke scores geen verbeterpunten toonde maar een melding.
+- `tests/tool-voorbeelden/dps`: de Sprekerstypetest en de Lichaamstaal-zelftest, omgezet uit hun oude snippets met de teksten letterlijk. Elk geeft bij de vergelijking met de oude rekenlogica dezelfde uitslag en scores, met één bewuste uitzondering: in de oude Sprekerstypetest werd de combinatie Inhoud en Energie door een programmeerfout nooit herkend. Die geeft nu De Expert, zoals de oude code bedoelde.
+
 ## [3.8.0] - 2026-10-19
 
 De toolmotor met de soort test. Het onderdeel Tools staat standaard uit; op een site waar het uit staat verandert er niets. Op CVD staat het aan voor vijf tests (Kolb-leerstijlentest, intrinsieke motivatiescan, metacognitie-zelftest, didactische vaardigheden-test, welk didactisch model).

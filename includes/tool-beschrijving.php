@@ -419,6 +419,10 @@ function sfp_page_config_tool_uitvoer_schoon( array $u ) {
     if ( isset( $u['aantal'] ) && is_numeric( $u['aantal'] ) ) {
         $uit['aantal'] = (int) $u['aantal'];
     }
+    // Bij `alle`: dimensies met de topscore vallen weg (sinds 3.8.1).
+    if ( ! empty( $u['zonder_hoogste'] ) ) {
+        $uit['zonder_hoogste'] = true;
+    }
     // Bij `vast` een lijst items, bij `laagste` de naam van een lijst.
     if ( isset( $u['lijst'] ) ) {
         $uit['lijst'] = 'vast' === $uit['type'] ? sfp_page_config_tool_teksten_schoon( $u['lijst'] ) : sfp_page_config_tool_tekst_schoon( $u['lijst'] );
@@ -1422,9 +1426,13 @@ function sfp_page_config_tool_tekst_uitvoer( array $b, array $r, $titel ) {
                 $regels[] = '';
                 break;
             case 'alle':
-                $keuze = sfp_page_config_tool_selectie( $r, isset( $u['selectie'] ) ? (string) $u['selectie'] : 'alle', isset( $u['aantal'] ) ? (int) $u['aantal'] : 0 );
+                $keuze = sfp_page_config_tool_selectie( $r, isset( $u['selectie'] ) ? (string) $u['selectie'] : 'alle', isset( $u['aantal'] ) ? (int) $u['aantal'] : 0, ! empty( $u['zonder_hoogste'] ) );
                 if ( '' !== $u['kop'] ) {
                     $regels[] = $u['kop'];
+                }
+                if ( ! $keuze && isset( $u['leeg'] ) && '' !== $u['leeg'] ) {
+                    $regels[] = $u['leeg'];
+                    $regels[] = '';
                 }
                 $koppen = isset( $u['koppen'] ) && is_array( $u['koppen'] ) ? $u['koppen'] : array();
                 foreach ( $keuze as $i => $d ) {
@@ -1542,13 +1550,16 @@ function sfp_page_config_tool_tekst_uitvoer( array $b, array $r, $titel ) {
 /**
  * Welke dimensies een uitvoeronderdeel `alle` toont: alle, de hoogste (alle
  * met de topscore), de laagste (alle met de laagste score) of de top N.
+ * Met $zonder_hoogste vallen de dimensies met de topscore weg: scoort alles
+ * gelijk, dan blijft er bij `laagste` niets over.
  *
- * @param  array  $r        Uitslag.
- * @param  string $selectie alle, hoogste, laagste of top.
- * @param  int    $aantal   Bij top.
+ * @param  array  $r              Uitslag.
+ * @param  string $selectie       alle, hoogste, laagste of top.
+ * @param  int    $aantal         Bij top.
+ * @param  bool   $zonder_hoogste Dimensies met de topscore weglaten.
  * @return string[]
  */
-function sfp_page_config_tool_selectie( array $r, $selectie, $aantal = 0 ) {
+function sfp_page_config_tool_selectie( array $r, $selectie, $aantal = 0, $zonder_hoogste = false ) {
     $v = $r['volgorde'];
     if ( ! $v ) {
         return array();
@@ -1556,6 +1567,13 @@ function sfp_page_config_tool_selectie( array $r, $selectie, $aantal = 0 ) {
     $w = function ( $d ) use ( $r ) {
         return $r['dimensies'][ $d ]['waarde'];
     };
+    if ( $zonder_hoogste ) {
+        $max = $w( $v[0] );
+        $v   = array_values( array_filter( $v, function ( $d ) use ( $w, $max ) { return $w( $d ) !== $max; } ) );
+        if ( ! $v ) {
+            return array();
+        }
+    }
     switch ( $selectie ) {
         case 'hoogste':
             $max = $w( $v[0] );
