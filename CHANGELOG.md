@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.8.2] - 2026-10-22
+
+### Toegevoegd
+- **Toolmotor, onderdeel `alle`:** selectie `oplopend` toont alle dimensies met de laagste eerst. Besluit Stephan 19-10: bij tests met tips per pijler staan de tips van de laagste pijler bovenaan, zoals de profieltekst de lezer aanraadt.
+
+### Gewijzigd
+- Intrinsieke motivatiescan en Metacognitie-zelftest (CVD): de tips per pijler komen uit de uitslag van die pijler en staan in oplopende volgorde van de score, in plaats van in vaste volgorde.
+- De mail naar jezelf begint bij de omgezette tests met één gewone zin ("Hierbij je persoonlijke rapport van ...") in plaats van de oude kop in hoofdletters.
+
 ## [3.8.1] - 2026-10-22
 
 Tekstlinks in de tools volgens de merkbron, en opruimen van oude snippets via REST.

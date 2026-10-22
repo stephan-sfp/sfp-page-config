@@ -147,7 +147,7 @@
   },
   "mail": {
     "onderwerp": "Jouw Sprekerstype-resultaat: {uitslag.titel}",
-    "intro": "Jouw archetype: {uitslag.titel}"
+    "intro": "Hierbij je persoonlijke rapport van de sprekerstype-test.\nJouw archetype: {uitslag.titel}"
   },
   "teksten": {
     "tool_pdf": "PDF downloaden",

@@ -1554,7 +1554,7 @@ function sfp_page_config_tool_tekst_uitvoer( array $b, array $r, $titel ) {
  * gelijk, dan blijft er bij `laagste` niets over.
  *
  * @param  array  $r              Uitslag.
- * @param  string $selectie       alle, hoogste, laagste of top.
+ * @param  string $selectie       alle, oplopend (laagste eerst), hoogste, laagste of top.
  * @param  int    $aantal         Bij top.
  * @param  bool   $zonder_hoogste Dimensies met de topscore weglaten.
  * @return string[]
@@ -1583,6 +1583,8 @@ function sfp_page_config_tool_selectie( array $r, $selectie, $aantal = 0, $zonde
             return array_values( array_filter( $v, function ( $d ) use ( $w, $min ) { return $w( $d ) === $min; } ) );
         case 'top':
             return array_slice( $v, 0, max( 1, $aantal ) );
+        case 'oplopend':
+            return array_reverse( $v );
     }
     return $v;
 }

@@ -333,7 +333,7 @@
  },
  "mail": {
   "onderwerp": "Jouw Kolb-leerstijl: {uitslag.titel}",
-  "intro": "Dominante stijl: {uitslag.titel} • Zwakste stijl: {uitslag.laagste.titel}\n16 stellingen • 5-puntsschaal • 4 Kolb-leerstijlen"
+  "intro": "Hierbij je persoonlijke rapport van de Kolb-leerstijlentest.\nDominante stijl: {uitslag.titel} • Zwakste stijl: {uitslag.laagste.titel}\n16 stellingen • 5-puntsschaal • 4 Kolb-leerstijlen"
  },
  "teksten": {
   "tool_pdf": "Download als PDF",
