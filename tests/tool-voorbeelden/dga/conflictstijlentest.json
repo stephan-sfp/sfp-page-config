@@ -1,0 +1,700 @@
+{
+ "versie": 1,
+ "soort": "test",
+ "weergave": {
+  "modus": "per-vraag",
+  "stappen": [
+   "Start",
+   "Vragen",
+   "Resultaat"
+  ]
+ },
+ "dimensies": {
+  "concurreren": {
+   "naam": "Concurreren",
+   "volledig": "Concurreren"
+  },
+  "samenwerken": {
+   "naam": "Samenwerken",
+   "volledig": "Samenwerken"
+  },
+  "compromis": {
+   "naam": "Compromis",
+   "volledig": "Compromis sluiten"
+  },
+  "vermijden": {
+   "naam": "Vermijden",
+   "volledig": "Vermijden"
+  },
+  "aanpassen": {
+   "naam": "Aanpassen",
+   "volledig": "Aanpassen"
+  }
+ },
+ "vragen": [
+  {
+   "id": "v1",
+   "type": "keuze",
+   "intro": "Deze test brengt jouw dominante conflictstijl in beeld volgens het Thomas-Kilmann-model. 30 keuzes uit twee stellingen, ongeveer 5 minuten werk. Aan het eind krijg je een profiel met ontwikkeltips per stijl.",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik probeer mijn standpunt te laten winnen, ook als de ander het er niet mee eens is.",
+     "punten": {
+      "concurreren": 1
+     }
+    },
+    {
+     "tekst": "Ik probeer onderwerpen te vermijden die spanning oproepen.",
+     "punten": {
+      "vermijden": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v2",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik probeer alle zorgen en belangen op tafel te krijgen voor we een keuze maken.",
+     "punten": {
+      "samenwerken": 1
+     }
+    },
+    {
+     "tekst": "Ik probeer rekening te houden met de gevoelens van de ander.",
+     "punten": {
+      "aanpassen": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v3",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik zoek naar een tussenoplossing waarin beiden iets geven en iets krijgen.",
+     "punten": {
+      "compromis": 1
+     }
+    },
+    {
+     "tekst": "Ik zet mijn argumenten stevig neer om mijn punt te maken.",
+     "punten": {
+      "concurreren": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v4",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik vermijd liever discussies die persoonlijk worden.",
+     "punten": {
+      "vermijden": 1
+     }
+    },
+    {
+     "tekst": "Ik vind het belangrijk dat we het probleem grondig uitspreken voor we besluiten.",
+     "punten": {
+      "samenwerken": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v5",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik geef vaak toe als dat de relatie goed houdt.",
+     "punten": {
+      "aanpassen": 1
+     }
+    },
+    {
+     "tekst": "Ik stel een redelijk midden voor zodat we vooruit kunnen.",
+     "punten": {
+      "compromis": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v6",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik vind het belangrijk om mijn standpunt duidelijk te verdedigen.",
+     "punten": {
+      "concurreren": 1
+     }
+    },
+    {
+     "tekst": "Ik werk graag samen aan een oplossing waar beide partijen achter staan.",
+     "punten": {
+      "samenwerken": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v7",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Soms vind ik het beter een conflict tijdelijk te laten rusten.",
+     "punten": {
+      "vermijden": 1
+     }
+    },
+    {
+     "tekst": "Ik onderhandel het liefst naar een redelijk midden.",
+     "punten": {
+      "compromis": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v8",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik laat de wensen van de ander vaak voor mijn eigen wensen gaan.",
+     "punten": {
+      "aanpassen": 1
+     }
+    },
+    {
+     "tekst": "Ik geef niet snel op als ik vind dat ik gelijk heb.",
+     "punten": {
+      "concurreren": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v9",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik investeer tijd om met de ander tot een gezamenlijk besluit te komen.",
+     "punten": {
+      "samenwerken": 1
+     }
+    },
+    {
+     "tekst": "Ik trek me liever terug dan dat ik een felle discussie aanga.",
+     "punten": {
+      "vermijden": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v10",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik vind een eerlijke deal beter dan een doodgeslagen discussie.",
+     "punten": {
+      "compromis": 1
+     }
+    },
+    {
+     "tekst": "Ik vind het lastig om iemand teleur te stellen.",
+     "punten": {
+      "aanpassen": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v11",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Bij belangrijke kwesties laat ik niet snel mijn standpunt los.",
+     "punten": {
+      "concurreren": 1
+     }
+    },
+    {
+     "tekst": "Ik wil graag dat iedereen tevreden is, ook als dat ten koste gaat van mijn wens.",
+     "punten": {
+      "aanpassen": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v12",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik zoek naar de onderliggende belangen voordat ik een keuze maak.",
+     "punten": {
+      "samenwerken": 1
+     }
+    },
+    {
+     "tekst": "Een gulden middenweg werkt voor mij meestal beter dan een principekwestie.",
+     "punten": {
+      "compromis": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v13",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Als ik kan, schuif ik moeilijke gesprekken liever uit.",
+     "punten": {
+      "vermijden": 1
+     }
+    },
+    {
+     "tekst": "Ik schroom niet om duidelijk te zeggen wat ik wil.",
+     "punten": {
+      "concurreren": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v14",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik vind harmonie belangrijker dan mijn gelijk halen.",
+     "punten": {
+      "aanpassen": 1
+     }
+    },
+    {
+     "tekst": "Ik geloof dat we samen tot een betere oplossing komen dan ieder voor zich.",
+     "punten": {
+      "samenwerken": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v15",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik geef vaak iets in om iets terug te krijgen.",
+     "punten": {
+      "compromis": 1
+     }
+    },
+    {
+     "tekst": "Soms is wegblijven uit een conflict het slimst.",
+     "punten": {
+      "vermijden": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v16",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "In het werk durf ik posities in te nemen die anderen liever vermijden.",
+     "punten": {
+      "concurreren": 1
+     }
+    },
+    {
+     "tekst": "Ik organiseer graag een gesprek waarin alle belangen op tafel komen.",
+     "punten": {
+      "samenwerken": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v17",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik kies er soms voor om niet te reageren op een opmerking die spanning kan opleveren.",
+     "punten": {
+      "vermijden": 1
+     }
+    },
+    {
+     "tekst": "Ik vind het lastig om nee te zeggen tegen mensen om wie ik geef.",
+     "punten": {
+      "aanpassen": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v18",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik verwacht dat iedereen een beetje water bij de wijn doet.",
+     "punten": {
+      "compromis": 1
+     }
+    },
+    {
+     "tekst": "Als ik weet dat ik gelijk heb, blijf ik bij mijn standpunt.",
+     "punten": {
+      "concurreren": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v19",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik vind het belangrijk dat een oplossing voor beide kanten echt klopt.",
+     "punten": {
+      "samenwerken": 1
+     }
+    },
+    {
+     "tekst": "Ik laat sommige conflicten gewoon overwaaien.",
+     "punten": {
+      "vermijden": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v20",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik vind het normaal om bij te draaien als de ander dat duidelijk wil.",
+     "punten": {
+      "aanpassen": 1
+     }
+    },
+    {
+     "tekst": "Een gemiddelde uitkomst is meestal werkbaarder dan een uiterste.",
+     "punten": {
+      "compromis": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v21",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik durf hard te onderhandelen voor wat ik wil.",
+     "punten": {
+      "concurreren": 1
+     }
+    },
+    {
+     "tekst": "Ik streef naar een evenwichtige uitkomst.",
+     "punten": {
+      "compromis": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v22",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik geloof dat we sterker uit een conflict komen als we het samen aanpakken.",
+     "punten": {
+      "samenwerken": 1
+     }
+    },
+    {
+     "tekst": "Soms is het belangrijker om de relatie te bewaren dan om mijn punt te maken.",
+     "punten": {
+      "aanpassen": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v23",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Als een onderwerp emotioneel beladen is, neem ik liever afstand.",
+     "punten": {
+      "vermijden": 1
+     }
+    },
+    {
+     "tekst": "Juist als emoties spelen, vind ik het belangrijk om samen door te praten.",
+     "punten": {
+      "samenwerken": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v24",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik zeg duidelijk wat ik vind, ook als dat ongemakkelijk is.",
+     "punten": {
+      "concurreren": 1
+     }
+    },
+    {
+     "tekst": "Ik kies er soms voor om iets niet te zeggen, omdat de moeite niet opweegt.",
+     "punten": {
+      "vermijden": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v25",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik schik mij vaak naar wat de groep wil.",
+     "punten": {
+      "aanpassen": 1
+     }
+    },
+    {
+     "tekst": "Ik wil dat iedereen in de groep gehoord wordt voor we een keuze maken.",
+     "punten": {
+      "samenwerken": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v26",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Een redelijk midden levert vaak het beste resultaat.",
+     "punten": {
+      "compromis": 1
+     }
+    },
+    {
+     "tekst": "Een redelijk midden is voor mij vaak te oppervlakkig; ik wil een echte oplossing.",
+     "punten": {
+      "samenwerken": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v27",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik onderhandel direct over wat ik wil bereiken.",
+     "punten": {
+      "concurreren": 1
+     }
+    },
+    {
+     "tekst": "Ik richt me eerst op wat de ander nodig heeft.",
+     "punten": {
+      "aanpassen": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v28",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik betwist niet snel iemands mening.",
+     "punten": {
+      "vermijden": 1
+     }
+    },
+    {
+     "tekst": "Ik betwist actief meningen waar ik het niet mee eens ben.",
+     "punten": {
+      "concurreren": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v29",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik leg eerst alle belangen op tafel voor we conclusies trekken.",
+     "punten": {
+      "samenwerken": 1
+     }
+    },
+    {
+     "tekst": "Een eerlijke verdeling is voor mij belangrijker dan een perfecte oplossing.",
+     "punten": {
+      "compromis": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v30",
+   "type": "keuze",
+   "tekst": "Welke stelling past het beste bij hoe jij meestal handelt?",
+   "opties": [
+    {
+     "tekst": "Ik vind het belangrijk om de ander niet voor het hoofd te stoten.",
+     "punten": {
+      "aanpassen": 1
+     }
+    },
+    {
+     "tekst": "Ik vind het belangrijk om uit de spanning te blijven.",
+     "punten": {
+      "vermijden": 1
+     }
+    }
+   ]
+  }
+ ],
+ "score": {
+  "per_dimensie": "som"
+ },
+ "uitkomst": {
+  "regel": "hoogste"
+ },
+ "uitslagen": {
+  "concurreren": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Concurreren",
+   "tekst": "Hoge assertiviteit, lage cooperativiteit. Je zoekt je eigen belang en bent bereid daarvoor positie te nemen, ook als dat ten koste gaat van de relatie.\n\nSterk: Effectief bij crisis-situaties, principekwesties of beslissingen die niemand wil nemen. Snelheid, helderheid en moed.\n\nValkuil: Risico op beschadigde relaties, weerstand en gemiste perspectieven. Anderen voelen zich overruled.",
+   "lijsten": {
+    "tips": [
+     "Vraag jezelf af: kan ik mijn doel halen zonder de relatie te beschadigen?",
+     "Onderzoek vooraf het belang van de ander. Soms kun je daarmee creatiever winnen.",
+     "Reflecteer achteraf: was deze keuze nodig, of was het gewoonte?"
+    ]
+   }
+  },
+  "samenwerken": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Samenwerken",
+   "tekst": "Hoge assertiviteit en hoge cooperativiteit. Je zoekt naar oplossingen die voor beide partijen werken, ook als dat tijd kost.\n\nSterk: Effectief bij complexe vraagstukken, langlopende relaties en situaties waar commitment van beide kanten nodig is.\n\nValkuil: Risico op tijdverlies, over-analyse en het oprekken van beslissingen die snelheid vragen.",
+   "lijsten": {
+    "tips": [
+     "Beoordeel of het belang van het issue de tijdsinvestering rechtvaardigt.",
+     "Maak afspraken over deadlines, ook als jullie samen zoeken.",
+     "Erken dat niet elke beslissing een win-win nodig heeft."
+    ]
+   }
+  },
+  "compromis": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Compromis sluiten",
+   "tekst": "Gemiddelde assertiviteit en gemiddelde cooperativiteit. Je zoekt een middenweg waarbij beide partijen iets geven en iets krijgen.\n\nSterk: Effectief bij gelijkwaardige machtsverhoudingen, korte tijd en relatief evenwichtige belangen.\n\nValkuil: Risico op oppervlakkige oplossingen waarmee niemand echt blij is, en op verzwakking van standpunten.",
+   "lijsten": {
+    "tips": [
+     "Verken eerst of een win-win mogelijk is voor je inlevert.",
+     "Maak expliciet wat je inlevert en wat je terugkrijgt.",
+     "Voorkom dat compromis je default-modus wordt; soms is dieper zoeken nodig."
+    ]
+   }
+  },
+  "vermijden": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Vermijden",
+   "tekst": "Lage assertiviteit, lage cooperativiteit. Je gaat het conflict uit de weg, stelt het uit of doet of het er niet is.\n\nSterk: Effectief bij triviale issues, situaties waar emoties hoog oplopen of waar jij geen invloed hebt. Soms is even afkoelen wijs.\n\nValkuil: Risico op opbouwende spanning, niet-uitgesproken frustraties en gemiste kansen om iets op te lossen.",
+   "lijsten": {
+    "tips": [
+     "Onderscheid bewust vermijden van automatisch wegduiken.",
+     "Spreek af wanneer je wel terugkomt op het issue, en doe dat ook.",
+     "Train de vaardigheid om kleine spanningen vroeg te benoemen."
+    ]
+   }
+  },
+  "aanpassen": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Aanpassen",
+   "tekst": "Lage assertiviteit, hoge cooperativiteit. Je geeft het belang van de ander voorrang boven je eigen wens of mening.\n\nSterk: Effectief bij ondergeschikte kwesties, opbouwen van goodwill of als je achteraf erkent ongelijk te hebben.\n\nValkuil: Risico op verlies van eigen positie, onderwaardering en frustratie op de lange termijn.",
+   "lijsten": {
+    "tips": [
+     "Vraag jezelf af: geef ik dit echt op of slik ik iets in?",
+     "Wees expliciet als je iets toegeeft; maak het zichtbaar dat je een keuze maakt.",
+     "Train je assertiviteit voor kwesties waarvan je weet dat ze je raken."
+    ]
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "profiel"
+  },
+  {
+   "type": "balken",
+   "kop": "Hieronder zie je hoe je scoort op elke van de 5 stijlen uit het Thomas-Kilmann-model."
+  },
+  {
+   "type": "lijst",
+   "kop": "Ontwikkeltips",
+   "bron": "uitslag.tips"
+  }
+ ],
+ "acties": {
+  "formulier": 0
+ },
+ "bron": {
+  "model": "Thomas-Kilmann-model",
+  "link": ""
+ },
+ "mail": {
+  "onderwerp": "Jouw conflictstijl: {uitslag.titel}",
+  "intro": "Hierbij je persoonlijke rapport van de conflictstijlentest."
+ }
+}

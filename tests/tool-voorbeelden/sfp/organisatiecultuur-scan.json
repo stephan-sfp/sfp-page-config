@@ -1,0 +1,601 @@
+{
+ "versie": 1,
+ "soort": "test",
+ "weergave": {
+  "modus": "per-vraag",
+  "stappen": [
+   "Start",
+   "Vragen",
+   "Profiel"
+  ]
+ },
+ "dimensies": {
+  "familie": {
+   "naam": "Familie",
+   "volledig": "Familiecultuur (Clan)"
+  },
+  "hierarchie": {
+   "naam": "Hierarchie",
+   "volledig": "Hierarchiecultuur"
+  },
+  "markt": {
+   "naam": "Markt",
+   "volledig": "Marktcultuur"
+  },
+  "adhocratie": {
+   "naam": "Adhocratie",
+   "volledig": "Adhocratiecultuur"
+  }
+ },
+ "vragen": [
+  {
+   "id": "v01",
+   "type": "keuze",
+   "intro": "12 stellingen over jouw organisatie. Per stelling kies je welke variant het meest van toepassing is. Reken op 4-5 minuten.",
+   "tekst": "Wat typeert de organisatie waar je werkt het meest?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Een hechte werkplek waar mensen veel van zichzelf laten zien en elkaar steunen.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Een formele en gestructureerde plek waar procedures bepalen wat mensen doen.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Een resultaatgerichte omgeving waar mensen vooral op prestatie worden afgerekend.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Een dynamische en ondernemende plek waar mensen risico’s durven nemen.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v02",
+   "type": "keuze",
+   "tekst": "Hoe gedragen leidinggevenden zich vooral?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Als mentor, coach en ouderfiguur.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Als coordinator en organisator met focus op efficientie.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Als harde driver en doelgerichte onderhandelaar.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Als visionair, ondernemer en innovator.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v03",
+   "type": "keuze",
+   "tekst": "Hoe worden medewerkers gemanaged?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Met nadruk op teamwerk, consensus en deelnemen.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Met nadruk op werkzekerheid, voorspelbaarheid en stabiele relaties.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Met nadruk op individuele prestatie, competitie en duidelijke targets.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Met nadruk op individuele initiatieven, vrijheid en uniciteit.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v04",
+   "type": "keuze",
+   "tekst": "Wat houdt de organisatie bij elkaar?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Loyaliteit, wederzijds vertrouwen en betrokkenheid bij de organisatie.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Formele regels en beleidsstukken. Soepele werking is belangrijk.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Resultaatdrang en het bereiken van doelen.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Toewijding aan vernieuwing en ontwikkeling.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v05",
+   "type": "keuze",
+   "tekst": "Waar legt de organisatie strategisch de nadruk op?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Op menselijke ontwikkeling, openheid en participatie.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Op continuiteit, stabiliteit en efficiente werking.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Op competitieve acties en het verkrijgen van marktaandeel.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Op nieuwe bronnen aanboren en uitdagingen aangaan.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v06",
+   "type": "keuze",
+   "tekst": "Wat wordt gezien als succes?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Ontwikkeling van mensen, teamwerk en betrokkenheid van medewerkers.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Efficientie, betrouwbaarheid van levering en lage kosten.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Marktaandeel en marktdoorbraak winnen van concurrenten.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Het unieke en nieuwste product of dienst op de markt brengen.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v07",
+   "type": "keuze",
+   "tekst": "Hoe wordt omgegaan met conflicten?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Vermeden of besproken in een sfeer van harmonie zoeken.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Volgens procedures en hierarchische beslislijnen.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Direct uitgevochten; de beste oplossing wint.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Gezien als kans voor innovatie en doorbraak.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v08",
+   "type": "keuze",
+   "tekst": "Hoe wordt besloten?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "In overleg, gericht op draagvlak.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Volgens vaste procedures door de juiste rol.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Snel en op basis van data en resultaten.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Door wie het initiatief neemt en de visie heeft.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v09",
+   "type": "keuze",
+   "tekst": "Wat doet de organisatie met fouten?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Bespreken in vertrouwen, ervan leren in een steunende sfeer.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Analyseren wat in de procedure mis ging, en die aanscherpen.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Hard zijn op de oorzaak en snel weer doorgaan.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Vieren als leereffect, want experimenteren betekent fouten maken.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v10",
+   "type": "keuze",
+   "tekst": "Hoe wordt nieuwe medewerkers ontvangen?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Warm welkom, koffiemomenten, buddy-systeem.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Onboarding-traject met procedures en handboeken.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Direct in target en prestatieverwachtingen.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Vrijheid om de rol zelf in te kleuren en mee te ondernemen.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v11",
+   "type": "keuze",
+   "tekst": "Wat gebeurt er bij grote veranderingen in de markt?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Eerst intern peilen wat het voor mensen betekent.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Procedures aanpassen en risico’s minimaliseren.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Snel reorganiseren om weer voorop te lopen.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "De verandering aangrijpen om iets nieuws te starten.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v12",
+   "type": "keuze",
+   "tekst": "Wat is typerend voor de communicatie binnen de organisatie?",
+   "opties": [
+    {
+     "waarde": "familie",
+     "tekst": "Persoonlijk, openhartig en gericht op de relatie.",
+     "punten": {
+      "familie": 1
+     }
+    },
+    {
+     "waarde": "hierarchie",
+     "tekst": "Formeel, via vastgelegde kanalen en met duidelijke afzenders.",
+     "punten": {
+      "hierarchie": 1
+     }
+    },
+    {
+     "waarde": "markt",
+     "tekst": "Direct, zakelijk en gericht op het resultaat.",
+     "punten": {
+      "markt": 1
+     }
+    },
+    {
+     "waarde": "adhocratie",
+     "tekst": "Snel, ad-hoc, vol energie en met veel ruimte voor ideeen.",
+     "punten": {
+      "adhocratie": 1
+     }
+    }
+   ]
+  }
+ ],
+ "score": {
+  "per_dimensie": "telling"
+ },
+ "uitkomst": {
+  "regel": "hoogste"
+ },
+ "uitslagen": {
+  "familie": {
+   "kop": "Dominante cultuur",
+   "titel": "Familiecultuur (Clan)",
+   "tekst": "Persoonlijke, mensgerichte werkplek waar samenwerking, loyaliteit en ontwikkeling centraal staan.",
+   "lijsten": {
+    "sterk": [
+     "Mensen voelen zich gezien en betrokken bij elkaar.",
+     "Sterke onderlinge band en hoog werkgeluk.",
+     "Coachende leiderschapsstijl, talent-ontwikkeling van binnenuit."
+    ],
+    "risico": [
+     "Conflicten worden gemeden ten koste van helderheid.",
+     "Besluitvorming kan langzaam zijn door consensus-zoeken.",
+     "Te grote interne focus, te weinig externe orientatie."
+    ],
+    "leiders": [
+     "Leiders gedragen zich als mentor, coach, ouderfiguur."
+    ],
+    "acties": [
+     "Zet feedback-cultuur expliciet in (kalibratiemomenten, peer-review).",
+     "Combineer met meer markt-elementen als groei stagneert (KPI-focus, externe benchmarks).",
+     "Maak besluitvormingsprocessen explicieter om consensus-traagheid te voorkomen."
+    ]
+   }
+  },
+  "hierarchie": {
+   "kop": "Dominante cultuur",
+   "titel": "Hierarchiecultuur",
+   "tekst": "Gestructureerde, geformaliseerde werkplek met duidelijke procedures, regels en verantwoordelijkheden.",
+   "lijsten": {
+    "sterk": [
+     "Voorspelbaarheid, betrouwbaarheid en compliance op orde.",
+     "Duidelijke rollen en taken, weinig ambiguiteit.",
+     "Geschikt voor risicobeheersing en kwaliteitscontrole."
+    ],
+    "risico": [
+     "Trage aanpassing aan nieuwe omstandigheden.",
+     "Procedures kunnen belangrijker worden dan resultaat.",
+     "Initiatief en creativiteit worden ontmoedigd."
+    ],
+    "leiders": [
+     "Leiders zijn coordinator, organisator en bewaker van efficientie."
+    ],
+    "acties": [
+     "Introduceer experiment-ruimte (innovatie-budget, pilotperiodes).",
+     "Maak processen lichter waar regels meer kosten dan opleveren.",
+     "Stimuleer cross-team-samenwerking om silo’s te doorbreken."
+    ]
+   }
+  },
+  "markt": {
+   "kop": "Dominante cultuur",
+   "titel": "Marktcultuur",
+   "tekst": "Resultaatgerichte, competitieve werkplek met focus op doelen, prestatie en marktwaarde.",
+   "lijsten": {
+    "sterk": [
+     "Hoge prestatie-orientatie en duidelijke meetbaarheid.",
+     "Daadkracht en snelle besluiten op basis van data.",
+     "Sterk in commerciele groei en marktverovering."
+    ],
+    "risico": [
+     "Burn-out-risico bij medewerkers door hoge druk.",
+     "Korte-termijn-focus kan ten koste gaan van duurzame relaties.",
+     "Interne competitie kan samenwerking ondermijnen."
+    ],
+    "leiders": [
+     "Leiders zijn driver, harde onderhandelaar, doelgericht."
+    ],
+    "acties": [
+     "Bouw expliciet samenwerkings-rituelen in (cross-team-doelen).",
+     "Investeer in welzijn en duurzame inzetbaarheid.",
+     "Voeg lange-termijn-strategische doelen toe naast korte-termijn-targets."
+    ]
+   }
+  },
+  "adhocratie": {
+   "kop": "Dominante cultuur",
+   "titel": "Adhocratiecultuur",
+   "tekst": "Dynamische, ondernemende werkplek waar innovatie, experiment en aanpassingsvermogen centraal staan.",
+   "lijsten": {
+    "sterk": [
+     "Hoge innovatiekracht en aanpassingsvermogen.",
+     "Aantrekkelijk voor creatieve en zelfstandige professionals.",
+     "Snelle reactie op markt- en technologie-veranderingen."
+    ],
+    "risico": [
+     "Chaos en gebrek aan structuur bij groei.",
+     "Inconsistentie in werkprocessen en kwaliteit.",
+     "Moeite met institutionalisering van leereffecten."
+    ],
+    "leiders": [
+     "Leiders zijn visionair, ondernemer, innovator."
+    ],
+    "acties": [
+     "Borg geleerde lessen in lichte procedures (geen bureaucratie maar wel basis-standaarden).",
+     "Maak rollen duidelijker waar groei dat vraagt.",
+     "Combineer met markt-elementen om experimenten naar resultaat te brengen."
+    ]
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "profiel"
+  },
+  {
+   "type": "balken"
+  },
+  {
+   "type": "lijst",
+   "kop": "Wat gaat goed",
+   "bron": "uitslag.sterk"
+  },
+  {
+   "type": "lijst",
+   "kop": "Wat vraagt aandacht",
+   "bron": "uitslag.risico"
+  },
+  {
+   "type": "lijst",
+   "kop": "Leiderschapsprofiel",
+   "bron": "uitslag.leiders"
+  },
+  {
+   "type": "lijst",
+   "kop": "5 prioritaire acties",
+   "bron": "uitslag.acties"
+  }
+ ],
+ "acties": {
+  "formulier": 0
+ },
+ "mail": {
+  "onderwerp": "Jouw organisatiecultuur-profiel: {uitslag.titel}",
+  "intro": "Hier is je organisatiecultuur-profiel."
+ },
+ "bron": {
+  "model": "Quinn en Cameron, Competing Values Framework (afgeschaalde OCAI)",
+  "bron": "Robert Quinn en Kim Cameron",
+  "link": ""
+ }
+}

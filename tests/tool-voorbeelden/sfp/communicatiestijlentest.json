@@ -1,0 +1,435 @@
+{
+ "versie": 1,
+ "soort": "test",
+ "weergave": {
+  "modus": "per-vraag",
+  "stappen": [
+   "Vragen",
+   "Profiel"
+  ]
+ },
+ "dimensies": {
+  "drijvend": {
+   "naam": "Drijvend",
+   "volledig": "Drijvende stijl"
+  },
+  "expressief": {
+   "naam": "Expressief",
+   "volledig": "Expressieve stijl"
+  },
+  "beschouwend": {
+   "naam": "Beschouwend",
+   "volledig": "Beschouwende stijl"
+  },
+  "volgend": {
+   "naam": "Volgend",
+   "volledig": "Volgende stijl"
+  }
+ },
+ "vragen": [
+  {
+   "id": "v01",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik geef het liefst snel en direct mijn mening.",
+     "punten": {
+      "drijvend": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik denk graag eerst rustig na voor ik iets zeg.",
+     "punten": {
+      "beschouwend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v02",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik trek liever zelf de kar.",
+     "punten": {
+      "drijvend": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik zoek liever afstemming met de groep.",
+     "punten": {
+      "volgend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v03",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik vind data en feiten doorslaggevend.",
+     "punten": {
+      "beschouwend": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik laat me leiden door ervaring en intuitie.",
+     "punten": {
+      "expressief": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v04",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Bij conflicten benoem ik de pijn helder.",
+     "punten": {
+      "drijvend": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Bij conflicten zoek ik een oplossing die voor iedereen werkt.",
+     "punten": {
+      "volgend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v05",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik praat liever met enthousiasme en verhalen.",
+     "punten": {
+      "expressief": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik praat liever met cijfers en argumenten.",
+     "punten": {
+      "beschouwend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v06",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik vind harmonie belangrijker dan winnen.",
+     "punten": {
+      "volgend": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik vind resultaat belangrijker dan iedereen tevreden houden.",
+     "punten": {
+      "drijvend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v07",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik beslis liefst snel, ook met onvolledige info.",
+     "punten": {
+      "drijvend": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik wil eerst alle info hebben voor ik beslis.",
+     "punten": {
+      "beschouwend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v08",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik werk graag samen aan een gedragen oplossing.",
+     "punten": {
+      "volgend": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik werk graag alleen of in een kleine groep aan de inhoud.",
+     "punten": {
+      "beschouwend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v09",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik krijg energie van veel mensen om me heen.",
+     "punten": {
+      "expressief": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik krijg energie van rust en concentratie.",
+     "punten": {
+      "beschouwend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v10",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik zeg meestal wat ik denk, ook als dat ongemakkelijk is.",
+     "punten": {
+      "drijvend": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik kies mijn woorden zorgvuldig om anderen niet te raken.",
+     "punten": {
+      "volgend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v11",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik raak gemotiveerd door nieuwe ideeen en mogelijkheden.",
+     "punten": {
+      "expressief": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik raak gemotiveerd door een degelijk plan en duidelijke stappen.",
+     "punten": {
+      "beschouwend": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v12",
+   "type": "keuze",
+   "tekst": "Welke uitspraak past het beste bij jou?",
+   "opties": [
+    {
+     "waarde": "a",
+     "tekst": "Ik kan goed luisteren zonder direct te reageren.",
+     "punten": {
+      "volgend": 1
+     }
+    },
+    {
+     "waarde": "b",
+     "tekst": "Ik wil het liefst direct praten en de zaak openbreken.",
+     "punten": {
+      "expressief": 1
+     }
+    }
+   ]
+  }
+ ],
+ "score": {
+  "per_dimensie": "telling"
+ },
+ "uitkomst": {
+  "regel": "hoogste"
+ },
+ "uitslagen": {
+  "drijvend": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Drijvende stijl",
+   "tekst": "Direct, doelgericht, snel beslissend.",
+   "lijsten": {
+    "sterk": [
+     "Je benoemt zaken helder en zonder omhaal.",
+     "Je neemt snel besluiten en houdt vaart in een team.",
+     "Je legt de focus op resultaat en aanpakken."
+    ],
+    "valkuil": [
+     "Je rijdt soms over mensen heen die meer tijd nodig hebben.",
+     "Je ongeduld kan overkomen als bot of ongeinteresseerd.",
+     "Je vergeet de afstemming met collega’s die langzamer beslissen."
+    ],
+    "eerste_stap": [
+     "Bouw bewust korte luistermomenten in. Vraag expliciet wat anderen vinden voordat je een beslissing neemt."
+    ],
+    "modellen": [
+     "In het DISC-model komt jouw stijl overeen met D (Dominant).",
+     "In Insights Discovery vertoont jouw stijl de meeste overlap met Vurig rood.",
+     "In het Merrill-Reid-model van sociale stijlen heet dit de Driver-stijl.",
+     "In Big Five-termen scoor jij waarschijnlijk hoog op Extraversie, lager op Vriendelijkheid."
+    ]
+   }
+  },
+  "expressief": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Expressieve stijl",
+   "tekst": "Enthousiast, inspirerend, mensgericht.",
+   "lijsten": {
+    "sterk": [
+     "Je krijgt mensen mee met energie en verhalen.",
+     "Je ziet snel kansen en weet die te delen.",
+     "Je creeert een open sfeer waarin anderen durven praten."
+    ],
+    "valkuil": [
+     "Je praat soms langs anderen heen en mist nuance.",
+     "Je belooft te veel onder invloed van enthousiasme.",
+     "Je hebt minder oog voor cijfers, details en deadlines."
+    ],
+    "eerste_stap": [
+     "Toets na een gesprek of de ander hetzelfde heeft begrepen als jij. Maak afspraken concreet en zet ze op papier."
+    ],
+    "modellen": [
+     "In het DISC-model komt jouw stijl overeen met i (Invloed).",
+     "In Insights Discovery vertoont jouw stijl de meeste overlap met Stralend geel.",
+     "In het Merrill-Reid-model van sociale stijlen heet dit de Expressive-stijl.",
+     "In Big Five-termen scoor jij waarschijnlijk hoog op Extraversie en Openheid."
+    ]
+   }
+  },
+  "beschouwend": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Beschouwende stijl",
+   "tekst": "Analytisch, nauwkeurig, weloverwogen.",
+   "lijsten": {
+    "sterk": [
+     "Je werkt met data en feiten en bouwt sterke onderbouwingen.",
+     "Je signaleert risico’s en blinde vlekken die anderen missen.",
+     "Je levert kwaliteit en zorgt voor degelijke beslissingen."
+    ],
+    "valkuil": [
+     "Je aanloop is soms te lang voor anderen die snel willen.",
+     "Je vraagt meer informatie dan strikt nodig is om te beslissen.",
+     "Je raakt onder druk verstrikt in details."
+    ],
+    "eerste_stap": [
+     "Spreek met jezelf af op welk punt je genoeg weet om te beslissen, en houd je daaraan. Vertel kort waarom je iets vindt, niet alleen wat."
+    ],
+    "modellen": [
+     "In het DISC-model komt jouw stijl overeen met C (Conformisme).",
+     "In Insights Discovery vertoont jouw stijl de meeste overlap met IJzig blauw.",
+     "In het Merrill-Reid-model van sociale stijlen heet dit de Analytical-stijl.",
+     "In Big Five-termen scoor jij waarschijnlijk hoog op Consciëntieusheid, lager op Extraversie."
+    ]
+   }
+  },
+  "volgend": {
+   "kop": "Jouw dominante stijl",
+   "titel": "Volgende stijl",
+   "tekst": "Geduldig, ondersteunend, harmonie-zoekend.",
+   "lijsten": {
+    "sterk": [
+     "Je luistert echt en mensen voelen zich gehoord bij jou.",
+     "Je zorgt voor verbinding en houdt teams bij elkaar.",
+     "Je werkt loyaal en stabiel ook in lastige situaties."
+    ],
+    "valkuil": [
+     "Je vermijdt confrontatie en blijft daarmee soms te lang in een lastige situatie.",
+     "Je laat je eigen mening minder vaak horen dan goed voor je is.",
+     "Verandering kost je meer moeite dan anderen denken."
+    ],
+    "eerste_stap": [
+     "Oefen met een korte directe formulering bij meningsverschillen. Het is OK om “ik vind dit anders” te zeggen zonder daar een lange verdediging bij te plakken."
+    ],
+    "modellen": [
+     "In het DISC-model komt jouw stijl overeen met S (Stabiliteit).",
+     "In Insights Discovery vertoont jouw stijl de meeste overlap met Zacht groen.",
+     "In het Merrill-Reid-model van sociale stijlen heet dit de Amiable-stijl.",
+     "In Big Five-termen scoor jij waarschijnlijk hoog op Vriendelijkheid en Emotionele stabiliteit."
+    ]
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "profiel"
+  },
+  {
+   "type": "balken"
+  },
+  {
+   "type": "lijst",
+   "kop": "Waar je sterk in bent",
+   "bron": "uitslag.sterk"
+  },
+  {
+   "type": "lijst",
+   "kop": "Waar je tegenaan loopt",
+   "bron": "uitslag.valkuil"
+  },
+  {
+   "type": "lijst",
+   "kop": "Eerste stap",
+   "bron": "uitslag.eerste_stap"
+  },
+  {
+   "type": "lijst",
+   "kop": "Vergelijkbaar in andere modellen",
+   "bron": "uitslag.modellen"
+  }
+ ],
+ "acties": {
+  "formulier": 0
+ },
+ "mail": {
+  "onderwerp": "Jouw communicatiestijl-profiel: {uitslag.titel}",
+  "intro": "Hier is je communicatiestijl-profiel."
+ },
+ "bron": {
+  "model": "Vier communicatiestijlen (drijvend, expressief, beschouwend, volgend), parallel aan DISC, Insights Discovery en Merrill-Reid",
+  "bron": "",
+  "link": ""
+ }
+}

@@ -1,0 +1,308 @@
+{
+ "versie": 1,
+ "soort": "test",
+ "weergave": {
+  "modus": "alles",
+  "stappen": [
+   "Vragen",
+   "Resultaat"
+  ]
+ },
+ "dimensies": {
+  "perfectionist": {
+   "naam": "Perfectionist",
+   "volledig": "Het perfectionist-blok"
+  },
+  "structuur": {
+   "naam": "Structuur",
+   "volledig": "Het structuur-blok"
+  },
+  "doelgroep": {
+   "naam": "Doelgroep",
+   "volledig": "Het doelgroep-blok"
+  },
+  "motivatie": {
+   "naam": "Motivatie",
+   "volledig": "Het motivatie-blok"
+  }
+ },
+ "vragen": [
+  {
+   "id": "v1",
+   "type": "keuze",
+   "intro": "Tien ja-nee-vragen over hoe jouw blokkade voelt. Aan het einde een diagnose en drie unblock-tips.",
+   "tekst": "Ik vind elke eerste zin meteen 'niet goed genoeg' en blijf herschrijven.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "perfectionist": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v2",
+   "type": "keuze",
+   "tekst": "Ik blijf googelen of 'meer onderzoek doen' in plaats van te beginnen.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "perfectionist": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v3",
+   "type": "keuze",
+   "tekst": "Ik weet niet waar de tekst moet eindigen of hoe alles aan elkaar hangt.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "structuur": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v4",
+   "type": "keuze",
+   "tekst": "Ik heb een vaag gevoel waarover het moet gaan, maar geen scherp beeld van de hoofdvraag.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "structuur": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v5",
+   "type": "keuze",
+   "tekst": "Ik weet niet zeker voor wie ik schrijf; meerdere lezers tegelijk verwarren me.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "doelgroep": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v6",
+   "type": "keuze",
+   "tekst": "Ik twijfel over de toon: te formeel, te informeel, te kort, te lang.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "doelgroep": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v7",
+   "type": "keuze",
+   "tekst": "Ik vind het stuk eigenlijk niet belangrijk en stel uit tot het echt moet.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "motivatie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v8",
+   "type": "keuze",
+   "tekst": "Ik snap niet goed waarom dit moet of waarom ik dit moet schrijven.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "motivatie": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v9",
+   "type": "keuze",
+   "tekst": "Ik schrijf wat, lees terug en gooi het weg omdat ik denk 'dit kan beter'.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "perfectionist": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "v10",
+   "type": "keuze",
+   "tekst": "Ik begin en weet halverwege niet meer hoe ik bij het einde kom.",
+   "opties": [
+    {
+     "tekst": "Nee",
+     "punten": {}
+    },
+    {
+     "tekst": "Ja",
+     "punten": {
+      "structuur": 1
+     }
+    }
+   ]
+  },
+  {
+   "id": "todo",
+   "type": "tekst",
+   "na_uitslag": true,
+   "optioneel": true,
+   "label": "Wat ga je vandaag concreet doen?",
+   "voorbeeld": "Bijvoorbeeld: vanavond 20:00, timer op 15 min, alleen schrijven aan inleiding rapport."
+  }
+ ],
+ "score": {
+  "per_dimensie": "som"
+ },
+ "uitkomst": {
+  "regel": "hoogste"
+ },
+ "uitslagen": {
+  "perfectionist": {
+   "kop": "Jouw resultaat",
+   "titel": "Het perfectionist-blok",
+   "tekst": "Jouw blokkade zit in te hoge eisen aan de eerste versie. Je schrijft als ware het al een eindversie.\n\nPerfectionisme bij schrijven is meestal niet de oorzaak van betere teksten, maar van uitstel. Jouw eerste versie hoort slecht te zijn; revisie maakt hem goed. Schrijvers die productief zijn beschermen hun ruwe versie tegen interne kritiek tot ze klaar zijn met de eerste pass.",
+   "lijsten": {
+    "tips": [
+     "Stel een timer op 15 minuten voor je eerste alinea. Wat er staat blijft staan, ook als het slecht is. Pas in revisie ga je herschrijven.",
+     "Schrijf eerst de inhoud, daarna pas de openingszin. De openingszin schrijf je als de tekst zelf klaar is.",
+     "Maak een 'shitty first draft' regel: niemand ziet de eerste versie behalve jij. Geen voorpublicatie aan collega's."
+    ]
+   }
+  },
+  "structuur": {
+   "kop": "Jouw resultaat",
+   "titel": "Het structuur-blok",
+   "tekst": "Jouw blokkade zit in onhelderheid over de opbouw van de tekst. Niet wat je schrijft, maar hoe het samenhangt.\n\nSchrijven zonder structuur is als reizen zonder route: elke kruising kost beslissingen. Schrijvers die snel werken hebben vooraf een skelet (al is het maar 3 hoofdpunten). Het skelet hoeft niet definitief; het is een werkbare richting die je tijdens schrijven nog kunt bijstellen.",
+   "lijsten": {
+    "tips": [
+     "Schrijf eerst 1 zin: 'Dit stuk gaat over X en wil dat de lezer Y begrijpt'. Plak het boven jouw werk.",
+     "Maak een mini-skelet van 3 bullets: opening, kern, conclusie. Meer hoef je niet vooraf te bedenken.",
+     "Gebruik bij twijfel het rapport-outline-tool als startpunt; dat geeft een werkbaar skelet voor zakelijke teksten."
+    ]
+   }
+  },
+  "doelgroep": {
+   "kop": "Jouw resultaat",
+   "titel": "Het doelgroep-blok",
+   "tekst": "Jouw blokkade zit in onhelderheid over voor wie je schrijft. Toon en woordkeuze zijn onbeslisbaar zonder duidelijke lezer.\n\nSchrijvers met dit blok proberen vaak meerdere lezers tegelijk te bedienen (formele directeur en jonge collega) en blokkeren op de tone-mismatch. Het advies van professionals: kies 1 primaire lezer, schrijf voor die persoon, en laat de rest zichzelf vinden.",
+   "lijsten": {
+    "tips": [
+     "Beschrijf jouw primaire lezer in 1 zin: 'Marieke, 42, manager, weet niets over X maar wel veel over Y'. Houd die zin in zicht.",
+     "Stel je voor dat je dezelfde inhoud mondeling aan die lezer vertelt. Welke woorden gebruik je? Schrijf die op.",
+     "Accepteer dat secundaire lezers minder bediend worden. Beter 1 lezer raken dan 3 missen."
+    ]
+   }
+  },
+  "motivatie": {
+   "kop": "Jouw resultaat",
+   "titel": "Het motivatie-blok",
+   "tekst": "Jouw blokkade zit niet in het schrijven zelf, maar in onhelderheid over het waarom. Waarom moet dit, en waarom door jou.\n\nMotivatie-blokken zijn de moeilijkste omdat ze niet door schrijftechniek opgelost worden. Soms is de opdracht onlogisch, soms ligt het aan de opdrachtgever, soms ben je gewoon moe of overprikkeld. Erken dat eerst, voordat je 'discipline-tips' probeert.",
+   "lijsten": {
+    "tips": [
+     "Schrijf in 1 alinea op waarom dit moet, voor wie, en wat er gebeurt als het er niet is. Lees terug; voelt het overtuigend?",
+     "Als bovenstaande zinnen leeg blijven: bespreek de opdracht met opdrachtgever. Misschien is het stuk niet meer nodig.",
+     "Onderscheid 'geen zin' van 'geen energie'. Bij energie-tekort werkt rust, niet doorduwen. Plan een pauze, kom terug."
+    ]
+   }
+  },
+  "geen-duidelijke": {
+   "kop": "Jouw resultaat",
+   "titel": "Geen duidelijk patroon",
+   "tekst": "Jouw antwoorden wijzen niet op een specifiek blokkade-type. Mogelijk is jouw blokkade situationeel of zit hij in factoren buiten dit testbereik.\n\nNiet elke blokkade past in een type. Soms is het de omgeving, de deadline, of een combinatie van factoren. Probeer de tips bij alle types door te lezen en zie welke voor jou herkenbaar zijn.",
+   "lijsten": {
+    "tips": [
+     "Lees de tips bij alle vier de types door en pak wat herkenbaar voelt.",
+     "Bespreek jouw situatie met iemand die jouw werk kent.",
+     "Probeer 1 week lang elke dag 15 minuten te schrijven, ongeacht of het resultaat goed is."
+    ]
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "profiel"
+  },
+  {
+   "type": "lijst",
+   "kop": "Drie tips voor jou",
+   "bron": "uitslag.tips"
+  },
+  {
+   "type": "afvinklijst",
+   "bron": "uitslag.tips"
+  },
+  {
+   "type": "tekst",
+   "bron": "vraag.todo",
+   "kop": "Wat ga je vandaag concreet doen?"
+  }
+ ],
+ "acties": {
+  "formulier": 0
+ },
+ "bron": {
+  "model": "",
+  "link": ""
+ },
+ "mail": {
+  "onderwerp": "Jouw schrijfblokkade: {uitslag.titel}",
+  "intro": "Hierbij je persoonlijke uitslag van de schrijfblokkade-diagnose."
+ }
+}

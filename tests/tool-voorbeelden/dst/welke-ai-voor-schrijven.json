@@ -1,0 +1,344 @@
+{
+ "versie": 1,
+ "soort": "test",
+ "weergave": {
+  "modus": "per-vraag",
+  "stappen": [
+   "Tekstsoort",
+   "Toon",
+   "Taal",
+   "Privacy",
+   "Advies"
+  ]
+ },
+ "dimensies": {
+  "chatgpt": {
+   "naam": "ChatGPT",
+   "volledig": "ChatGPT van OpenAI"
+  },
+  "claude": {
+   "naam": "Claude",
+   "volledig": "Claude van Anthropic"
+  },
+  "gemini": {
+   "naam": "Gemini",
+   "volledig": "Gemini van Google"
+  },
+  "mistral": {
+   "naam": "Le Chat",
+   "volledig": "Le Chat van Mistral"
+  },
+  "copilot": {
+   "naam": "Copilot",
+   "volledig": "Copilot van Microsoft"
+  },
+  "perplexity": {
+   "naam": "Perplexity",
+   "volledig": "Perplexity van Perplexity AI"
+  }
+ },
+ "vragen": [
+  {
+   "id": "type",
+   "type": "keuze",
+   "groep": "Tekstsoort",
+   "tekst": "Wat ga je schrijven?",
+   "opties": [
+    {
+     "tekst": "Zakelijke brief",
+     "punten": {
+      "chatgpt": 4,
+      "claude": 4,
+      "gemini": 4,
+      "mistral": 3,
+      "copilot": 4,
+      "perplexity": 3
+     }
+    },
+    {
+     "tekst": "E-mail",
+     "punten": {
+      "chatgpt": 4,
+      "claude": 4,
+      "gemini": 4,
+      "mistral": 3,
+      "copilot": 4,
+      "perplexity": 3
+     }
+    },
+    {
+     "tekst": "Rapport of lange tekst",
+     "punten": {
+      "chatgpt": 4,
+      "claude": 6,
+      "gemini": 4,
+      "mistral": 3,
+      "copilot": 4,
+      "perplexity": 5
+     }
+    },
+    {
+     "tekst": "LinkedIn-post of social",
+     "punten": {
+      "chatgpt": 4,
+      "claude": 4,
+      "gemini": 5,
+      "mistral": 3,
+      "copilot": 3,
+      "perplexity": 3
+     }
+    },
+    {
+     "tekst": "Creatief of verhalend",
+     "punten": {
+      "chatgpt": 5,
+      "claude": 4,
+      "gemini": 5,
+      "mistral": 3,
+      "copilot": 3,
+      "perplexity": 3
+     }
+    },
+    {
+     "tekst": "Academisch of onderzoek",
+     "punten": {
+      "chatgpt": 4,
+      "claude": 6,
+      "gemini": 4,
+      "mistral": 3,
+      "copilot": 3,
+      "perplexity": 5
+     }
+    }
+   ]
+  },
+  {
+   "id": "toon",
+   "type": "keuze",
+   "groep": "Toon",
+   "tekst": "Welke toon moet de tekst hebben?",
+   "opties": [
+    {
+     "tekst": "Zakelijk en neutraal",
+     "punten": {
+      "claude": 1
+     }
+    },
+    {
+     "tekst": "Persoonlijk en warm",
+     "punten": {
+      "claude": 1
+     }
+    },
+    {
+     "tekst": "Overtuigend of activerend",
+     "punten": {}
+    },
+    {
+     "tekst": "Formeel en juridisch",
+     "punten": {}
+    }
+   ]
+  },
+  {
+   "id": "taal",
+   "type": "keuze",
+   "groep": "Taal",
+   "tekst": "In welke taal schrijf je?",
+   "opties": [
+    {
+     "tekst": "Vooral Nederlands",
+     "punten": {
+      "claude": 2,
+      "mistral": 1
+     }
+    },
+    {
+     "tekst": "Vooral Engels",
+     "punten": {}
+    },
+    {
+     "tekst": "Beide of meertalig",
+     "punten": {}
+    }
+   ]
+  },
+  {
+   "id": "privacy",
+   "type": "keuze",
+   "groep": "Privacy",
+   "tekst": "Werk je met gevoelige inhoud?",
+   "opties": [
+    {
+     "tekst": "Ja, privacy is belangrijk",
+     "punten": {
+      "chatgpt": -2,
+      "gemini": -2,
+      "mistral": 3,
+      "copilot": 1
+     }
+    },
+    {
+     "tekst": "Nee, geen gevoelige inhoud",
+     "punten": {}
+    }
+   ]
+  }
+ ],
+ "score": {
+  "per_dimensie": "som"
+ },
+ "uitkomst": {
+  "regel": "top",
+  "aantal": 3
+ },
+ "uitslagen": {
+  "chatgpt": {
+   "kop": "Beste match",
+   "titel": "ChatGPT",
+   "tekst": "van OpenAI",
+   "lijsten": {
+    "sterk": [
+     "veelzijdig",
+     "grote community",
+     "sterke prompts"
+    ],
+    "letop": [
+     "kan over-formeel of opgeklopt klinken in Nederlands"
+    ]
+   },
+   "artikel": "https://chat.openai.com"
+  },
+  "claude": {
+   "kop": "Beste match",
+   "titel": "Claude",
+   "tekst": "van Anthropic",
+   "lijsten": {
+    "sterk": [
+     "natuurlijk Nederlands",
+     "lange teksten",
+     "ingehouden toon"
+    ],
+    "letop": [
+     "kleinere user-base, minder integraties"
+    ]
+   },
+   "artikel": "https://claude.ai"
+  },
+  "gemini": {
+   "kop": "Beste match",
+   "titel": "Gemini",
+   "tekst": "van Google",
+   "lijsten": {
+    "sterk": [
+     "snelle research",
+     "goede integratie met Google",
+     "multimodaal"
+    ],
+    "letop": [
+     "kan in Nederlands net iets te formeel klinken"
+    ]
+   },
+   "artikel": "https://gemini.google.com"
+  },
+  "mistral": {
+   "kop": "Beste match",
+   "titel": "Le Chat",
+   "tekst": "van Mistral",
+   "lijsten": {
+    "sterk": [
+     "Europese aanbieder",
+     "sterk in Frans en Nederlands",
+     "privacy-bewust"
+    ],
+    "letop": [
+     "kleinere ecosysteem, minder uitgebreide features"
+    ]
+   },
+   "artikel": "https://chat.mistral.ai"
+  },
+  "copilot": {
+   "kop": "Beste match",
+   "titel": "Copilot",
+   "tekst": "van Microsoft",
+   "lijsten": {
+    "sterk": [
+     "integratie met Office",
+     "enterprise-functies",
+     "toegankelijk"
+    ],
+    "letop": [
+     "output minder vrij dan ChatGPT zelf"
+    ]
+   },
+   "artikel": "https://copilot.microsoft.com"
+  },
+  "perplexity": {
+   "kop": "Beste match",
+   "titel": "Perplexity",
+   "tekst": "van Perplexity AI",
+   "lijsten": {
+    "sterk": [
+     "sterke bronvermelding",
+     "goed voor research",
+     "feiten-check"
+    ],
+    "letop": [
+     "minder geschikt voor pure schrijftaken zonder bronnen"
+    ]
+   },
+   "artikel": "https://www.perplexity.ai"
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "profiel"
+  },
+  {
+   "type": "lijst",
+   "kop": "Sterk in",
+   "bron": "uitslag.sterk"
+  },
+  {
+   "type": "lijst",
+   "kop": "Let op",
+   "bron": "uitslag.letop"
+  },
+  {
+   "type": "link",
+   "kop": "Ga direct naar",
+   "bron": "uitslag.artikel"
+  },
+  {
+   "type": "lijst",
+   "kop": "Goed alternatief: sterk in",
+   "bron": "uitslag.top[2].sterk"
+  },
+  {
+   "type": "lijst",
+   "kop": "Goed alternatief: let op",
+   "bron": "uitslag.top[2].letop"
+  },
+  {
+   "type": "lijst",
+   "kop": "Derde optie: sterk in",
+   "bron": "uitslag.top[3].sterk"
+  },
+  {
+   "type": "lijst",
+   "kop": "Derde optie: let op",
+   "bron": "uitslag.top[3].letop"
+  }
+ ],
+ "acties": {
+  "formulier": 0
+ },
+ "bron": {
+  "model": "",
+  "link": ""
+ },
+ "mail": {
+  "onderwerp": "Jouw beste match: {uitslag.titel}",
+  "intro": "Hierbij je persoonlijke advies: welke AI past bij jouw schrijfwerk."
+ }
+}
