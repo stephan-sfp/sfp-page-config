@@ -114,26 +114,6 @@
      "voorbeeld": "Bijvoorbeeld: zorgmanagers in de tweedelijns zorg",
      "maxlengte": 80,
      "verplicht": true
-    },
-    {
-     "id": "niveau",
-     "type": "keuze",
-     "label": "Niveau-aanname",
-     "verplicht": true,
-     "opties": [
-      {
-       "waarde": "geen-voorkennis",
-       "tekst": "Geen voorkennis"
-      },
-      {
-       "waarde": "basiskennis",
-       "tekst": "Basiskennis aanwezig"
-      },
-      {
-       "waarde": "expert",
-       "tekst": "Expert-niveau"
-      }
-     ]
     }
    ]
   }
@@ -428,7 +408,7 @@
   }
  },
  "resultaat_kop": "Presentatie-template: {onderwerp}",
- "resultaat_intro": "{doel} - {duur} min - {doelgroep} - {niveau|label|klein}",
+ "resultaat_intro": "{doel} - {duur} min - {doelgroep}",
  "resultaat_slot": "Jouw outline is klaar. Bewerk online of download direct. De outline neem je over in PowerPoint, Keynote of Google Slides (geen PPTX-bestand).",
  "bewerkbaar": true,
  "uitvoer": [

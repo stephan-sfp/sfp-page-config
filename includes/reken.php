@@ -482,10 +482,23 @@ function sfp_page_config_reken_formaat( $soort, $arg, $w ) {
     if ( null === $n ) {
         return $w;
     }
-    $dec = '' !== $arg && is_numeric( $arg ) ? (int) $arg : 0;
+    // ~n: hoogstens n decimalen, nullen aan het eind weg (2,5 en 25).
+    $kaal = '~' === substr( (string) $arg, 0, 1 );
+    $arg  = $kaal ? substr( (string) $arg, 1 ) : $arg;
+    $dec  = '' !== $arg && is_numeric( $arg ) ? (int) $arg : 0;
     switch ( $soort ) {
         case 'getal':
-            return sfp_page_config_reken_opmaak( $n, $dec );
+            $s = sfp_page_config_reken_opmaak( $n, $dec );
+            if ( $kaal && $dec > 0 ) {
+                $komma = sfp_page_config_generator_tekens( (string) sfp_page_config_artikel_tekst( 'tool_getal_scheiding' ) );
+                $komma = isset( $komma[0] ) ? $komma[0] : ',';
+                $delen = explode( $komma, $s );
+                if ( 2 === count( $delen ) ) {
+                    $staart = rtrim( $delen[1], '0' );
+                    $s      = $delen[0] . ( '' !== $staart ? $komma . $staart : '' );
+                }
+            }
+            return $s;
         case 'euro':
             return sprintf( (string) sfp_page_config_artikel_tekst( 'tool_euro' ), sfp_page_config_reken_opmaak( $n, $dec ) );
         case 'procent':

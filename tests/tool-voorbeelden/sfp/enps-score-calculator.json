@@ -36,7 +36,10 @@
      "voorbeeld": "0",
      "min": 0,
      "stap": 1,
-     "toon_als": { "veld": "methode", "niet": "los" }
+     "toon_als": {
+      "veld": "methode",
+      "niet": "los"
+     }
     },
     {
      "id": "passives",
@@ -45,7 +48,10 @@
      "voorbeeld": "0",
      "min": 0,
      "stap": 1,
-     "toon_als": { "veld": "methode", "niet": "los" }
+     "toon_als": {
+      "veld": "methode",
+      "niet": "los"
+     }
     },
     {
      "id": "detractors",
@@ -54,7 +60,10 @@
      "voorbeeld": "0",
      "min": 0,
      "stap": 1,
-     "toon_als": { "veld": "methode", "niet": "los" }
+     "toon_als": {
+      "veld": "methode",
+      "niet": "los"
+     }
     },
     {
      "id": "scores",
@@ -64,7 +73,10 @@
      "min": 0,
      "max": 10,
      "maxlengte": 20000,
-     "toon_als": { "veld": "methode", "is": "los" }
+     "toon_als": {
+      "veld": "methode",
+      "is": "los"
+     }
     },
     {
      "id": "sector",
@@ -73,39 +85,144 @@
      "verplicht": true,
      "standaard": "algemeen",
      "opties": [
-      { "waarde": "algemeen", "tekst": "NL algemeen", "getallen": { "gem": 13, "top25": 25 } },
-      { "waarde": "zorg", "tekst": "Zorg", "getallen": { "gem": 8, "top25": 20 } },
-      { "waarde": "overheid", "tekst": "Overheid", "getallen": { "gem": 5, "top25": 16 } },
-      { "waarde": "onderwijs", "tekst": "Onderwijs", "getallen": { "gem": 10, "top25": 22 } },
-      { "waarde": "zakelijke_dienstverlening", "tekst": "Zakelijke dienstverlening", "getallen": { "gem": 18, "top25": 32 } },
-      { "waarde": "ict", "tekst": "ICT", "getallen": { "gem": 22, "top25": 38 } },
-      { "waarde": "industrie", "tekst": "Industrie", "getallen": { "gem": 12, "top25": 24 } },
-      { "waarde": "retail_horeca", "tekst": "Retail en horeca", "getallen": { "gem": 9, "top25": 21 } },
-      { "waarde": "non_profit", "tekst": "Non-profit", "getallen": { "gem": 15, "top25": 28 } }
+      {
+       "waarde": "algemeen",
+       "tekst": "NL algemeen",
+       "getallen": {
+        "gem": 13,
+        "top25": 25
+       }
+      },
+      {
+       "waarde": "zorg",
+       "tekst": "Zorg",
+       "getallen": {
+        "gem": 8,
+        "top25": 20
+       }
+      },
+      {
+       "waarde": "overheid",
+       "tekst": "Overheid",
+       "getallen": {
+        "gem": 5,
+        "top25": 16
+       }
+      },
+      {
+       "waarde": "onderwijs",
+       "tekst": "Onderwijs",
+       "getallen": {
+        "gem": 10,
+        "top25": 22
+       }
+      },
+      {
+       "waarde": "zakelijke_dienstverlening",
+       "tekst": "Zakelijke dienstverlening",
+       "getallen": {
+        "gem": 18,
+        "top25": 32
+       }
+      },
+      {
+       "waarde": "ict",
+       "tekst": "ICT",
+       "getallen": {
+        "gem": 22,
+        "top25": 38
+       }
+      },
+      {
+       "waarde": "industrie",
+       "tekst": "Industrie",
+       "getallen": {
+        "gem": 12,
+        "top25": 24
+       }
+      },
+      {
+       "waarde": "retail_horeca",
+       "tekst": "Retail en horeca",
+       "getallen": {
+        "gem": 9,
+        "top25": 21
+       }
+      },
+      {
+       "waarde": "non_profit",
+       "tekst": "Non-profit",
+       "getallen": {
+        "gem": 15,
+        "top25": 28
+       }
+      }
      ]
     }
    ]
   }
  ],
  "reken": [
-  { "id": "pp", "formule": "als(methode = \"los\", tel(scores, 9, 10), max(0, omlaag(promoters)))" },
-  { "id": "dd", "formule": "als(methode = \"los\", tel(scores, 0, 7) - tel(scores, 7, 7), max(0, omlaag(detractors)))" },
-  { "id": "pas", "formule": "als(methode = \"los\", aantal(scores) - pp - dd, max(0, omlaag(passives)))" },
-  { "id": "totaal", "formule": "pp + pas + dd" },
-  { "id": "score", "formule": "afronden(pp / totaal * 100 - dd / totaal * 100)" },
-  { "id": "positie", "formule": "als(score > sector.top25, \"boven top-25% (sterk)\", als(score > sector.gem, \"boven gemiddelde\", \"onder gemiddelde\"))" }
+  {
+   "id": "pp",
+   "formule": "als(methode = \"los\", tel(scores, 9, 10), max(0, omlaag(promoters)))"
+  },
+  {
+   "id": "dd",
+   "formule": "als(methode = \"los\", tel(scores, 0, 7) - tel(scores, 7, 7), max(0, omlaag(detractors)))"
+  },
+  {
+   "id": "pas",
+   "formule": "als(methode = \"los\", aantal(scores) - pp - dd, max(0, omlaag(passives)))"
+  },
+  {
+   "id": "totaal",
+   "formule": "pp + pas + dd"
+  },
+  {
+   "id": "score",
+   "formule": "afronden(pp / totaal * 100 - dd / totaal * 100)"
+  },
+  {
+   "id": "positie",
+   "formule": "als(score > sector.top25, \"boven top-25% (sterk)\", als(score = sector.top25, \"gelijk aan top-25%\", als(score > sector.gem, \"boven gemiddelde\", als(score = sector.gem, \"gelijk aan gemiddelde\", \"onder gemiddelde\"))))"
+  }
  ],
  "controles": [
-  { "formule": "methode = \"\"", "melding": "Kies eerst een methode.", "stap": 1 },
-  { "formule": "methode = \"los\" en totaal < 1", "melding": "Plak ten minste 1 score (0-10) in het invoerveld.", "stap": 2 },
-  { "formule": "methode != \"los\" en totaal < 1", "melding": "Vul ten minste 1 promoter, passive of detractor in.", "stap": 2 }
+  {
+   "formule": "methode = \"\"",
+   "melding": "Kies eerst een methode.",
+   "stap": 1
+  },
+  {
+   "formule": "methode = \"los\" en totaal < 1",
+   "melding": "Plak ten minste 1 score (0-10) in het invoerveld.",
+   "stap": 2
+  },
+  {
+   "formule": "methode != \"los\" en totaal < 1",
+   "melding": "Vul ten minste 1 promoter, passive of detractor in.",
+   "stap": 2
+  }
  ],
  "oordeel": {
   "op": "score",
   "labels": [
-   { "vanaf": 31, "sleutel": "sterk", "tekst": "Sterk (boven +30)" },
-   { "vanaf": 0, "sleutel": "matig", "tekst": "Matig (0 tot +30)" },
-   { "vanaf": -100, "sleutel": "zorgelijk", "tekst": "Zorgelijk (onder 0)" }
+   {
+    "vanaf": 31,
+    "sleutel": "sterk",
+    "tekst": "Sterk (boven +30)"
+   },
+   {
+    "vanaf": 0,
+    "sleutel": "matig",
+    "tekst": "Matig (0 tot +30)"
+   },
+   {
+    "vanaf": -100,
+    "sleutel": "zorgelijk",
+    "tekst": "Zorgelijk (onder 0)"
+   }
   ]
  },
  "banken": {
@@ -143,29 +260,71 @@
   }
  },
  "uitvoer": [
-  { "type": "getal", "label": "Jouw eNPS-score", "waarde": "score", "formaat": "teken", "onder": "{oordeel_tekst}" },
+  {
+   "type": "getal",
+   "label": "Jouw eNPS-score",
+   "waarde": "score",
+   "formaat": "teken",
+   "onder": "{oordeel_tekst}"
+  },
   {
    "type": "verdeling",
    "kop": "Verdeling",
    "delen": [
-    { "label": "Promoters", "waarde": "pp" },
-    { "label": "Passives", "waarde": "pas" },
-    { "label": "Detractors", "waarde": "dd" }
+    {
+     "label": "Promoters",
+     "waarde": "pp"
+    },
+    {
+     "label": "Passives",
+     "waarde": "pas"
+    },
+    {
+     "label": "Detractors",
+     "waarde": "dd"
+    }
    ]
   },
   {
    "type": "gegevens",
    "kop": "Benchmark {sector|label}",
    "regels": [
-    { "label": "Gemiddelde", "tekst": "{sector.gem}" },
-    { "label": "Top 25%", "tekst": "{sector.top25}" },
-    { "label": "Jouw positie", "tekst": "{positie}" }
+    {
+     "label": "Gemiddelde",
+     "tekst": "{sector.gem}"
+    },
+    {
+     "label": "Top 25%",
+     "tekst": "{sector.top25}"
+    },
+    {
+     "label": "Jouw positie",
+     "tekst": "{positie}"
+    }
    ]
   },
-  { "type": "tekst", "tekst": "Benchmarkcijfers: NL-gemiddelden uit publieke bronnen (Effectory, Integron, Glassdoor)." },
-  { "type": "tekst", "kop": "Wat betekent dit", "tekst": "{oordeel|bank:duiding}" },
-  { "type": "lijst", "kop": "5 prioritaire acties", "bank": "acties", "pad": [ "{oordeel}" ] },
-  { "type": "tekst", "kop": "Over deze meting", "tekst": "eNPS (employee Net Promoter Score) wordt berekend als percentage promoters minus percentage detractors. Promoters geven score 9-10, passives 7-8, detractors 0-6. Schaal: -100 tot +100. Deze tool is een rekenmachine. Voor een gestructureerde meetcyclus met respondent-toestemming en trendanalyse heb je een dedicated platform nodig." },
+  {
+   "type": "tekst",
+   "tekst": "Benchmarkcijfers: NL-gemiddelden uit publieke bronnen (Effectory, Integron, Glassdoor)."
+  },
+  {
+   "type": "tekst",
+   "kop": "Wat betekent dit",
+   "tekst": "{oordeel|bank:duiding}"
+  },
+  {
+   "type": "lijst",
+   "kop": "5 prioritaire acties",
+   "bank": "acties",
+   "pad": [
+    "{oordeel}"
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Over deze meting",
+   "tekst": "eNPS (employee Net Promoter Score) wordt berekend als percentage promoters minus percentage detractors. Promoters geven score 9-10, passives 7-8, detractors 0-6. Schaal: -100 tot +100. Deze tool is een rekenmachine. Voor een gestructureerde meetcyclus met respondent-toestemming en trendanalyse heb je een dedicated platform nodig."
+  },
   {
    "type": "lijst",
    "kop": "Vergelijkbaar in andere modellen",

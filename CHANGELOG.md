@@ -4,6 +4,22 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.10.0-beta.1] - 2026-10-23
+
+Proefversie voor DPS: de toolmotor krijgt de soorten rekenaar, checklist en tekstanalyse. Twaalf tools kunnen van hun eigen snippet naar de motor.
+
+### Toegevoegd
+- **Rekentaal** voor formules in tools: rekenen, vergelijken, en/of/niet en vaste functies (min, max, afronden, als, som, aantal, tel, bevat, woorden). Alleen rekenen, geen code; browser en server rekenen gelijk. Afronden de helft van nul af.
+- **Soort rekenaar:** velden met getallen, getallen per keuzeoptie, rekenregels, controles die een stap blokkeren, tips per stap, een oordeel met drempels, live meerekenen. Uitvoer als groot getal en als verdeling met balken; opmaak als getal, euro, procent, met teken, minuten:seconden en uren:minuten.
+- **Sectie kaarten** in de generator: items uit een bank filteren, met voorkeur, terugval, sortering en aantal; om en om over gekozen categorieën; groeperen per dag.
+- **Soort checklist:** afvinklijst met vaste ids; de vinkjes gaan mee in de deellink, de browser en de mail, met "x van y afgevinkt".
+- **Soort tekstanalyse:** zinnen, woorden, lettergrepen, komma's, lijdende vorm en woordenlijsten per zin; tellers, oordeel, gemarkeerde tekst en per zin een regel met splitsplek. De tekst blijft in de browser: geen mail, geen deellink.
+- Webadressen in een resultaattekst zijn klikbaar.
+- Beschrijvingen van de twaalf tools in `tests/tool-voorbeelden`; formaat in `tests/FORMAAT-3.10.md`.
+
+### Gewijzigd
+- De uitleg van het onderdeel Tools in SFP Beheer noemt de soorten die er nu zijn.
+
 ## [3.9.0] - 2026-10-23
 
 De toolmotor krijgt de soort generator. 22 generatoren op het netwerk kunnen nu van hun eigen snippet naar de motor (DGA 7 al omgezet op de proefversie; SFP 2, DPS 3, CVD 1, DST 8, FL 1 volgen na deze release). Proefversies 3.9.0-beta.1 en beta.2 op DGA.

@@ -30,7 +30,7 @@ Voorbeelden van 3.9.0: `tests/tool-voorbeelden/*/*.json` met `"soort": "generato
 ### In sjablonen
 - `{naam}` werkt ook voor reken-id's, `oordeel`, `oordeel_tekst`, `veld.kolom`, `item.x`, `nr`.
 - `{=formule}`: een formule midden in tekst (geen `{`, `}` of `|` in de formule).
-- Opmaakfilters op getallen: `|getal:1` (decimalen, scheidingstekens van de sitetaal), `|euro` / `|euro:2`, `|procent:1`, `|teken` (+ voor positieve), `|minsec` (seconden naar m:ss), `|klok` (minuten naar u:mm).
+- Opmaakfilters op getallen: `|getal:1` (`|getal:~1`: hoogstens 1 decimaal, zonder nullen aan het eind) (decimalen, scheidingstekens van de sitetaal), `|euro` / `|euro:2`, `|procent:1`, `|teken` (+ voor positieve), `|minsec` (seconden naar m:ss), `|klok` (minuten naar u:mm).
 - Geen geneste plaatshouders in filters; gebruik `|of:andereNaam` voor terugval op een andere waarde.
 
 ### Voorwaarden

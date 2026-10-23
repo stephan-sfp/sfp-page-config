@@ -231,10 +231,15 @@
 	function formaat( soort, arg, w ) {
 		var n = rGetal( w );
 		if ( null === n ) { return w; }
+		var kaal = '~' === String( arg ).charAt( 0 );
+		if ( kaal ) { arg = String( arg ).slice( 1 ); }
 		var dec = '' !== arg && ! isNaN( Number( arg ) ) ? Math.trunc( Number( arg ) ) : 0;
 		var x;
 		switch ( soort ) {
-			case 'getal': return opmaak( n, dec );
+			case 'getal':
+				x = opmaak( n, dec );
+				if ( kaal && dec > 0 ) { var komma = Array.from( String( t( 'tool_getal_scheiding' ) ) )[ 0 ] || ','; var dl = x.split( komma ); if ( 2 === dl.length ) { var st = dl[ 1 ].replace( /0+$/, '' ); x = dl[ 0 ] + ( st ? komma + st : '' ); } }
+				return x;
 			case 'euro': return t( 'tool_euro', opmaak( n, dec ) );
 			case 'procent': return opmaak( n, dec ) + '%';
 			case 'teken': return ( afronden( n, dec ) > 0 ? '+' : '' ) + opmaak( n, dec );

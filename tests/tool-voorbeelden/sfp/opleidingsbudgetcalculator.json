@@ -15,9 +15,9 @@
      "hint": "Aantal fte op de afdeling of in de organisatie.",
      "voorbeeld": "bv. 25",
      "verplicht": true,
-     "min": 1,
+     "min": 0.1,
      "max": 10000,
-     "stap": 1
+     "stap": 0.1
     },
     {
      "id": "loonsom",
@@ -111,7 +111,7 @@
  "reken": [
   {
    "id": "fte",
-   "formule": "omlaag(medewerkers)"
+   "formule": "medewerkers"
   },
   {
    "id": "totaal",
@@ -124,8 +124,8 @@
  ],
  "controles": [
   {
-   "formule": "niet (fte >= 1)",
-   "melding": "Vul een geldig aantal medewerkers in (minstens 1).",
+   "formule": "niet (fte > 0)",
+   "melding": "Vul een geldig aantal medewerkers in (meer dan 0).",
    "stap": 1
   },
   {
@@ -149,7 +149,7 @@
     },
     {
      "label": "Aantal medewerkers (fte)",
-     "tekst": "{fte}"
+     "tekst": "{fte|getal:~1}"
     },
     {
      "label": "Aanbevolen budget totaal",
