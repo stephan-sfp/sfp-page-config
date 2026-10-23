@@ -15,8 +15,8 @@
 	if ( ! M || ! M.reken ) { return; }
 	var t = M.t, el = M.el, R = M.reken;
 
-	var WOORD = /[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu;
-	var VOLTOOID = /^(ge|be|ver|ont|her|er)\p{L}{2,}(d|t|en)$/u;
+	var WOORD = /\p{N}+(?:[.,]\p{N}+)*|[\p{L}\p{N}]+(?:['’\-][\p{L}\p{N}]+)*/gu;
+	var VOLTOOID = /^(\p{L}{2,6}ge|ge|be|ver|ont|her|er)\p{L}{2,}(d|t|en)$/u;
 	var WORDEN = [ 'word', 'wordt', 'worden', 'werd', 'werden' ];
 
 	function woordenVan( s ) { return String( s ).match( WOORD ) || []; }
@@ -91,7 +91,9 @@
 		}
 		( cfg.voegwoorden || [] ).forEach( function ( v ) {
 			var vre = new RegExp( '\\s(' + String( v ).replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ) + ')(?=\\s)', 'giu' );
-			while ( ( m = vre.exec( zin ) ) ) { kandidaten.push( { links: zin.slice( 0, m.index ), rechts: zin.slice( m.index + 1 ), plek: m.index } ); }
+			while ( ( m = vre.exec( zin ) ) ) {
+				if ( /^tot\s+en\s+met\b/i.test( zin.slice( m.index + 1 ) ) || /\btot\s*$/i.test( zin.slice( 0, m.index ) ) ) { continue; }
+				kandidaten.push( { links: zin.slice( 0, m.index ), rechts: zin.slice( m.index + 1 ), plek: m.index } ); }
 		} );
 		var midden = zin.length / 2, beste = null;
 		kandidaten.forEach( function ( c ) {

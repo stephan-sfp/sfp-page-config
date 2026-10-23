@@ -634,5 +634,8 @@
   "mail": true,
   "duimpjes": true,
   "pdf_bestandsnaam": "presentatie-checklist-{type}-{duur}min"
+ },
+ "teksten": {
+  "tool_mail": "Mail naar mezelf"
  }
 }
