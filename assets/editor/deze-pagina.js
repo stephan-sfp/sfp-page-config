@@ -420,9 +420,12 @@
 			var sv = uit.samenvatting || {};
 			if ( sv.soort ) {
 				stukken.push( regel( 'Soort', sv.soort ) );
-				if ( 'generator' === sv.soort ) {
+				if ( [ 'generator', 'rekenaar', 'checklist' ].indexOf( sv.soort ) >= 0 ) {
 					stukken.push( regel( 'Stappen', String( sv.stappen ) ) );
 					stukken.push( regel( 'Velden', String( sv.velden ) ) );
+					stukken.push( regel( 'Onderdelen van het resultaat', String( sv.secties ) ) );
+				} else if ( 'tekstanalyse' === sv.soort ) {
+					stukken.push( regel( 'Metingen per zin', String( sv.metingen ) ) );
 					stukken.push( regel( 'Onderdelen van het resultaat', String( sv.secties ) ) );
 				} else {
 					stukken.push( regel( 'Vragen', sv.vragen + ( sv.scorend !== sv.vragen ? ' (' + sv.scorend + ' scoren)' : '' ) ) );

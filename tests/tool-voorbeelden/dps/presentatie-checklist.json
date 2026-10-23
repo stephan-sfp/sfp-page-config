@@ -1,0 +1,638 @@
+{
+ "versie": 1,
+ "soort": "checklist",
+ "resultaat_kop": "Presentatie-checklist",
+ "resultaat_intro": "{type|label} · {duur|label} · {setting|label} · {dagen|label}",
+ "stappen": [
+  {
+   "titel": "Type",
+   "intro": "Vul 4 korte vragen in over jouw presentatie. De tool genereert een persoonlijke checklist van 22 tot 41 items.",
+   "velden": [
+    {
+     "id": "type",
+     "type": "keuze",
+     "label": "Wat voor presentatie ga je geven?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "sales-pitch",
+       "tekst": "Sales-pitch"
+      },
+      {
+       "waarde": "informatief",
+       "tekst": "Informatieve presentatie"
+      },
+      {
+       "waarde": "overtuigend",
+       "tekst": "Overtuigende presentatie"
+      },
+      {
+       "waarde": "kennis",
+       "tekst": "Kennisoverdracht / training"
+      },
+      {
+       "waarde": "afstudeer",
+       "tekst": "Afstudeerpresentatie"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Duur",
+   "velden": [
+    {
+     "id": "duur",
+     "type": "keuze",
+     "label": "Hoe lang duurt de presentatie?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "5",
+       "tekst": "5 minuten",
+       "getallen": {
+        "n": 5
+       }
+      },
+      {
+       "waarde": "10",
+       "tekst": "10 minuten",
+       "getallen": {
+        "n": 10
+       }
+      },
+      {
+       "waarde": "15",
+       "tekst": "15 minuten",
+       "getallen": {
+        "n": 15
+       }
+      },
+      {
+       "waarde": "20",
+       "tekst": "20 minuten",
+       "getallen": {
+        "n": 20
+       }
+      },
+      {
+       "waarde": "30",
+       "tekst": "30 minuten",
+       "getallen": {
+        "n": 30
+       }
+      },
+      {
+       "waarde": "60",
+       "tekst": "60 minuten",
+       "getallen": {
+        "n": 60
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Setting",
+   "velden": [
+    {
+     "id": "setting",
+     "type": "keuze",
+     "label": "Waar ga je de presentatie geven?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "live",
+       "tekst": "Live in de zaal"
+      },
+      {
+       "waarde": "online",
+       "tekst": "Online (Teams / Zoom / etc.)"
+      },
+      {
+       "waarde": "hybride",
+       "tekst": "Hybride (live + online)"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Dagen",
+   "velden": [
+    {
+     "id": "dagen",
+     "type": "keuze",
+     "label": "Hoeveel dagen heb je nog?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "vandaag",
+       "tekst": "Vandaag of morgen",
+       "getallen": {
+        "n": 1
+       }
+      },
+      {
+       "waarde": "3-dagen",
+       "tekst": "3 dagen",
+       "getallen": {
+        "n": 3
+       }
+      },
+      {
+       "waarde": "1-week",
+       "tekst": "1 week",
+       "getallen": {
+        "n": 7
+       }
+      },
+      {
+       "waarde": "2-weken",
+       "tekst": "2 weken of meer",
+       "getallen": {
+        "n": 14
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "uitvoer": [
+  {
+   "type": "afvink",
+   "kop": "Inhoud + boodschap",
+   "items": [
+    {
+     "id": "inh-kern",
+     "tekst": "Kernboodschap in 1 zin geformuleerd"
+    },
+    {
+     "id": "inh-doel",
+     "tekst": "Doel van de presentatie expliciet vastgesteld"
+    },
+    {
+     "id": "inh-pub",
+     "tekst": "Doelgroep-analyse: wie zit er in de zaal"
+    },
+    {
+     "id": "inh-usp",
+     "tekst": "USP en unieke waarde uitgewerkt",
+     "als": {
+      "veld": "type",
+      "in": [
+       "sales-pitch"
+      ]
+     }
+    },
+    {
+     "id": "inh-ask",
+     "tekst": "Concrete ask of next step geformuleerd",
+     "als": {
+      "veld": "type",
+      "in": [
+       "sales-pitch"
+      ]
+     }
+    },
+    {
+     "id": "inh-leer",
+     "tekst": "Leerdoelen per kern-thema vastgesteld",
+     "als": {
+      "veld": "type",
+      "in": [
+       "informatief",
+       "kennis"
+      ]
+     }
+    },
+    {
+     "id": "inh-voor",
+     "tekst": "Voorkennis-aannames gecheckt",
+     "als": {
+      "veld": "type",
+      "in": [
+       "informatief",
+       "kennis"
+      ]
+     }
+    },
+    {
+     "id": "inh-arg",
+     "tekst": "Argumentatielijn (claim, onderbouwing, weerlegging) uitgewerkt",
+     "als": {
+      "veld": "type",
+      "in": [
+       "overtuigend"
+      ]
+     }
+    },
+    {
+     "id": "inh-tegen",
+     "tekst": "Tegenargumenten geïnventariseerd",
+     "als": {
+      "veld": "type",
+      "in": [
+       "overtuigend"
+      ]
+     }
+    },
+    {
+     "id": "inh-hoofd",
+     "tekst": "Hoofdvraag duidelijk geformuleerd",
+     "als": {
+      "veld": "type",
+      "in": [
+       "afstudeer"
+      ]
+     }
+    },
+    {
+     "id": "inh-conc",
+     "tekst": "Conclusie staat los van het proces beschreven",
+     "als": {
+      "veld": "type",
+      "in": [
+       "afstudeer"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "type": "afvink",
+   "kop": "Structuur + opbouw",
+   "items": [
+    {
+     "id": "str-open",
+     "tekst": "Opening: hoe trek je de aandacht in de eerste 30 seconden?"
+    },
+    {
+     "id": "str-route",
+     "tekst": "Routekaart: weet het publiek waar je heengaat?"
+    },
+    {
+     "id": "str-slot",
+     "tekst": "Slot: laatste indruk vastgesteld (CTA / kernzin / vraag)"
+    },
+    {
+     "id": "str-tijd",
+     "tekst": "Tijdverdeling per onderdeel uitgerekend"
+    },
+    {
+     "id": "str-mid",
+     "tekst": "Mid-point check: hoe houd je aandacht vast?",
+     "als": {
+      "formule": "duur.n >= 20"
+     }
+    },
+    {
+     "id": "str-rust",
+     "tekst": "Bewuste rust-momenten ingepland",
+     "als": {
+      "formule": "duur.n >= 20"
+     }
+    },
+    {
+     "id": "str-lus",
+     "tekst": "Open lus (cliffhanger) ergens vroeg ingebouwd",
+     "als": {
+      "veld": "type",
+      "in": [
+       "overtuigend",
+       "sales-pitch"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "type": "afvink",
+   "kop": "Slides + visueel materiaal",
+   "items": [
+    {
+     "id": "sl-aantal",
+     "tekst": "Aantal slides afgestemd op duur (1-2 min/slide)"
+    },
+    {
+     "id": "sl-stijl",
+     "tekst": "Eenheid in slide-style (font, kleur, layout)"
+    },
+    {
+     "id": "sl-min",
+     "tekst": "Geen overvolle slides (max 6 bullets, max 30 woorden)"
+    },
+    {
+     "id": "sl-eerst",
+     "tekst": "Eerste slide trekt aandacht (geen Agenda)",
+     "als": {
+      "veld": "type",
+      "in": [
+       "sales-pitch",
+       "overtuigend"
+      ]
+     }
+    },
+    {
+     "id": "sl-cijfer",
+     "tekst": "Kerncijfers visueel uitgelicht",
+     "als": {
+      "veld": "type",
+      "in": [
+       "sales-pitch",
+       "overtuigend"
+      ]
+     }
+    },
+    {
+     "id": "sl-concept",
+     "tekst": "Belangrijke concepten visueel ondersteund (model, schema)",
+     "als": {
+      "veld": "type",
+      "in": [
+       "kennis"
+      ]
+     }
+    },
+    {
+     "id": "sl-lees",
+     "tekst": "Slides leesbaar op kleinere schermen",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "online",
+       "hybride"
+      ]
+     }
+    },
+    {
+     "id": "sl-cam",
+     "tekst": "Camera-test gepland op presentatie-laptop",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "online",
+       "hybride"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "type": "afvink",
+   "kop": "Oefenen + spreektijd",
+   "items": [
+    {
+     "id": "oef-hardop",
+     "tekst": "Hardop oefenen met stopwatch (minimaal 1x)"
+    },
+    {
+     "id": "oef-tijd",
+     "tekst": "Spreektijd geverifieerd tegen toegestane duur"
+    },
+    {
+     "id": "oef-2x",
+     "tekst": "2x hardop oefenen met stopwatch",
+     "als": {
+      "formule": "dagen.n >= 3"
+     }
+    },
+    {
+     "id": "oef-pub",
+     "tekst": "Oefenen met testpubliek (collega, vriend, partner)",
+     "als": {
+      "formule": "dagen.n >= 3"
+     }
+    },
+    {
+     "id": "oef-3x",
+     "tekst": "3x hardop oefenen met stopwatch",
+     "als": {
+      "formule": "dagen.n >= 7"
+     }
+    },
+    {
+     "id": "oef-2pub",
+     "tekst": "2x oefenen met testpubliek + feedback verwerkt",
+     "als": {
+      "formule": "dagen.n >= 7"
+     }
+    },
+    {
+     "id": "oef-hoofd",
+     "tekst": "Eerste hoofdstuk uit het hoofd geoefend",
+     "als": {
+      "formule": "dagen.n >= 7"
+     }
+    },
+    {
+     "id": "oef-vraag",
+     "tekst": "Antwoorden op top-5 te verwachten vragen uitgewerkt",
+     "als": {
+      "veld": "type",
+      "in": [
+       "sales-pitch"
+      ]
+     }
+    },
+    {
+     "id": "oef-comm",
+     "tekst": "Vraag-en-antwoord-sessie geoefend met commissielid-rol",
+     "als": {
+      "veld": "type",
+      "in": [
+       "afstudeer"
+      ]
+     }
+    },
+    {
+     "id": "oef-vrag",
+     "tekst": "Gladde overgang naar vragenronde",
+     "als": {
+      "veld": "type",
+      "in": [
+       "afstudeer"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "type": "afvink",
+   "kop": "Technisch + setting",
+   "items": [
+    {
+     "id": "tech-mic",
+     "tekst": "Microfoon-type bekend (handheld, headset, vast)",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "live",
+       "hybride"
+      ]
+     }
+    },
+    {
+     "id": "tech-clk",
+     "tekst": "Slideclicker getest",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "live",
+       "hybride"
+      ]
+     }
+    },
+    {
+     "id": "tech-zaal",
+     "tekst": "Zaal-grootte en publiek-aantal weten",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "live",
+       "hybride"
+      ]
+     }
+    },
+    {
+     "id": "tech-loop",
+     "tekst": "Looproute en positie afgesproken",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "live",
+       "hybride"
+      ]
+     }
+    },
+    {
+     "id": "tech-net",
+     "tekst": "Internetverbinding getest op locatie van presenteren",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "online",
+       "hybride"
+      ]
+     }
+    },
+    {
+     "id": "tech-cam",
+     "tekst": "Camera-hoogte op ooghoogte",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "online",
+       "hybride"
+      ]
+     }
+    },
+    {
+     "id": "tech-licht",
+     "tekst": "Lichtinval gecheckt",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "online",
+       "hybride"
+      ]
+     }
+    },
+    {
+     "id": "tech-bg",
+     "tekst": "Achtergrond opgeruimd of virtuele achtergrond gekozen",
+     "als": {
+      "veld": "setting",
+      "in": [
+       "online",
+       "hybride"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "type": "afvink",
+   "kop": "Dag-zelf + na afloop",
+   "items": [
+    {
+     "id": "dag-back",
+     "tekst": "Eindversie slides opgeslagen op meerdere locaties"
+    },
+    {
+     "id": "dag-bat",
+     "tekst": "Reservebatterij of voeding voor laptop geregeld"
+    },
+    {
+     "id": "dag-vroeg",
+     "tekst": "Vroeg op locatie of online-call (15 min voor start)"
+    },
+    {
+     "id": "dag-water",
+     "tekst": "Water bij de hand"
+    },
+    {
+     "id": "dag-kaart",
+     "tekst": "Visitekaartjes / contactgegevens klaar",
+     "als": {
+      "veld": "type",
+      "in": [
+       "sales-pitch",
+       "overtuigend"
+      ]
+     }
+    },
+    {
+     "id": "dag-actie",
+     "tekst": "Vervolg-actie naar publiek geformuleerd",
+     "als": {
+      "veld": "type",
+      "in": [
+       "sales-pitch",
+       "overtuigend"
+      ]
+     }
+    },
+    {
+     "id": "dag-script",
+     "tekst": "Aantal exemplaren scriptie meegenomen",
+     "als": {
+      "veld": "type",
+      "in": [
+       "afstudeer"
+      ]
+     }
+    },
+    {
+     "id": "dag-react",
+     "tekst": "Reactie-strategie op kritische vraag voorbereid",
+     "als": {
+      "veld": "type",
+      "in": [
+       "afstudeer"
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "mail": {
+  "onderwerp": "Presentatie-checklist: {type|label} ({duur|label})",
+  "intro": "{type|label} · {duur|label} · {setting|label} · {dagen|label}"
+ },
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": false,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "pdf_bestandsnaam": "presentatie-checklist-{type}-{duur}min"
+ }
+}

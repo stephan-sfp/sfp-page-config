@@ -238,3 +238,41 @@ ol.sfp-tool__lijst>li::before{content:counter(sfp-lijst);position:absolute;left:
 .sfp-tool__bewerk:hover{border-color:color-mix(in srgb,var(--sfp-b-primair) 30%,transparent)}
 .sfp-tool__bewerk:focus{border-color:var(--sfp-b-primair);background:var(--sfp-b-wit,#fff)}
 .sfp-tool__hint--bewerk{margin:0 0 12px;font-size:14px;color:var(--sfp-b-body)}
+/* Rekenaar en checklist (sinds 3.10.0) */
+.sfp-tool__getal{margin:4px 0 18px}
+.sfp-tool__getal-label{margin:0 0 4px;font-family:var(--sfp-b-kop);font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--sfp-b-primair)}
+.sfp-tool__getal-waarde{margin:0;font-family:var(--sfp-b-kop);font-weight:900;font-size:clamp(38px,6vw,56px);line-height:1.05;color:var(--sfp-b-primair)}
+.sfp-tool__getal-onder{margin:6px 0 0;font-weight:700;color:var(--sfp-b-primair)}
+.sfp-tool__balkrij{margin:0 0 12px}
+.sfp-tool__balkrij-kop{display:flex;justify-content:space-between;gap:12px;margin:0 0 4px;font-size:14px;line-height:1.4}
+.sfp-tool__balkrij-kop span:first-child{font-weight:700;color:var(--sfp-b-primair)}
+.sfp-tool__getalveld{display:flex;align-items:center;gap:10px}
+.sfp-tool__getalveld .sfp-tool__veld{max-width:240px}
+.sfp-tool__eenheid{font-size:15px;color:var(--sfp-b-body)}
+.sfp-tool__tips:empty{display:none}
+.sfp-tool__tip{margin:12px 0 0;padding:10px 12px;border-radius:var(--sfp-b-r-knop,6px);background:var(--sfp-b-tint2);color:var(--sfp-b-primair);font-size:14px}
+.sfp-tool__voortgang--vink{margin:0 0 12px}
+.sfp-tool__lijst--afvink label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.sfp-tool__lijst--afvink input{margin-top:5px;flex:0 0 auto}
+.sfp-tool__lijst--afvink li:has(input:checked) label{text-decoration:line-through;text-decoration-thickness:1px;opacity:.7}
+.sfp-tool__scherm--live{margin-top:22px;padding-top:18px;border-top:1px solid var(--tool-lijn)}
+/* Tekstanalyse (sinds 3.10.0): niveaus onderscheiden met lijnsoort, niet alleen met kleur. */
+.sfp-tool__tellers{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:0 0 18px}
+.sfp-tool__teller{padding:12px 14px;border-radius:var(--sfp-b-r-knop,6px);background:var(--sfp-b-tint2)}
+.sfp-tool__teller-waarde{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:26px;line-height:1.1;color:var(--sfp-b-primair)}
+.sfp-tool__teller-label{display:block;margin-top:4px;font-size:13px;line-height:1.35;color:var(--sfp-b-body)}
+.sfp-tool__gemarkeerd{margin:0 0 12px;padding:14px 16px;border:1px solid var(--tool-lijn);border-radius:var(--sfp-b-r-knop,6px);line-height:1.8;white-space:pre-wrap}
+.sfp-tool__zin.is-niveau-0{background:var(--sfp-b-tint2);text-decoration:underline wavy var(--sfp-b-primair);text-decoration-thickness:1.5px;text-underline-offset:4px}
+.sfp-tool__zin.is-niveau-1{text-decoration:underline dotted var(--sfp-b-primair);text-decoration-thickness:2px;text-underline-offset:4px}
+.sfp-tool__zin.is-vlag{box-shadow:inset 0 -2px 0 var(--sfp-b-tint1)}
+.sfp-tool__term{background:var(--sfp-b-tint1);color:inherit;padding:0 2px;border-radius:3px}
+.sfp-tool__legenda span{display:inline-flex;gap:6px;align-items:center}
+.sfp-tool__zinnen{list-style:none;margin:0 0 12px;padding:0}
+.sfp-tool__zinnen li{margin:0 0 12px;padding:12px 14px;border:1px solid var(--tool-lijn);border-radius:var(--sfp-b-r-knop,6px)}
+.sfp-tool__zin-meta{margin:0 0 4px;font-size:13px;font-weight:700;color:var(--sfp-b-primair)}
+.sfp-tool__zin-tekst{margin:0}
+.sfp-tool__zin-suggestie{margin:8px 0 0;font-size:14px;color:var(--sfp-b-body)}
+.sfp-tool__zin-suggestie mark{background:var(--sfp-b-tint1);color:inherit;padding:0 3px;border-radius:3px}
+.sfp-tool__tekstvak-teller{margin:6px 0 0;font-size:13px;color:var(--sfp-b-body)}
+.sfp-tool--tekstanalyse .sfp-tool__scherm--resultaat{margin-top:28px;padding-top:22px;border-top:1px solid var(--tool-lijn)}
+.sfp-tool--tekstanalyse .sfp-tool__legenda{margin:0 0 18px}

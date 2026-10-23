@@ -543,6 +543,7 @@ $sfp_includes = array(
     'includes/tool.php',
     'includes/tool-beschrijving.php',
     'includes/generator.php',
+    'includes/tekstanalyse.php',
     'includes/tool-weergave.php',
     'includes/tool-rest.php',
     'includes/tool-vorm.php',

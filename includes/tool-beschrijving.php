@@ -23,6 +23,17 @@ if ( ! defined( 'ABSPATH' ) ) {
  * ====================================================================== */
 
 /**
+ * Draait deze soort op de motor van de generator (generator, rekenaar,
+ * checklist)?
+ *
+ * @param  string $soort Soort.
+ * @return bool
+ */
+function sfp_page_config_tool_op_generator( $soort ) {
+    return function_exists( 'sfp_page_config_generator_soorten' ) && in_array( $soort, sfp_page_config_generator_soorten(), true );
+}
+
+/**
  * Vul de standaardwaarden in en zet lijsten in een vaste vorm, zodat de
  * rest van de code geen isset() nodig heeft.
  *
@@ -30,8 +41,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return array
  */
 function sfp_page_config_tool_normaliseer( array $b ) {
-    if ( isset( $b['soort'] ) && 'generator' === $b['soort'] && function_exists( 'sfp_page_config_generator_normaliseer' ) ) {
+    if ( isset( $b['soort'] ) && function_exists( 'sfp_page_config_generator_normaliseer' ) && sfp_page_config_tool_op_generator( $b['soort'] ) ) {
         return sfp_page_config_generator_normaliseer( $b );
+    }
+    if ( isset( $b['soort'] ) && 'tekstanalyse' === $b['soort'] && function_exists( 'sfp_page_config_tekstanalyse_normaliseer' ) ) {
+        return sfp_page_config_tekstanalyse_normaliseer( $b );
     }
     $b['versie'] = isset( $b['versie'] ) ? (int) $b['versie'] : 1;
     $b['soort']  = isset( $b['soort'] ) ? (string) $b['soort'] : '';
@@ -511,8 +525,11 @@ function sfp_page_config_tool_controleer( array $b ) {
         $fouten[] = 'Onbekende soort "' . $b['soort'] . '". Bekend: ' . implode( ', ', array_keys( $soorten ) ) . '.';
         return compact( 'fouten', 'let_op' );
     }
-    if ( 'generator' === $b['soort'] ) {
+    if ( sfp_page_config_tool_op_generator( $b['soort'] ) ) {
         return sfp_page_config_generator_controleer( $b );
+    }
+    if ( 'tekstanalyse' === $b['soort'] && function_exists( 'sfp_page_config_tekstanalyse_controleer' ) ) {
+        return sfp_page_config_tekstanalyse_controleer( $b );
     }
     if ( ! $b['dimensies'] ) {
         $fouten[] = 'Geen dimensies.';
@@ -774,8 +791,11 @@ function sfp_page_config_tool_mogelijke_sleutels( array $b, array $uitkomst ) {
  * @return array
  */
 function sfp_page_config_tool_samenvatting( array $b ) {
-    if ( 'generator' === $b['soort'] ) {
+    if ( sfp_page_config_tool_op_generator( $b['soort'] ) ) {
         return sfp_page_config_generator_samenvatting( $b );
+    }
+    if ( 'tekstanalyse' === $b['soort'] && function_exists( 'sfp_page_config_tekstanalyse_samenvatting' ) ) {
+        return sfp_page_config_tekstanalyse_samenvatting( $b );
     }
     $scorend = 0;
     foreach ( $b['vragen'] as $v ) {
