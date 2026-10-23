@@ -23,7 +23,7 @@
 	function heeft( o, k ) { return o !== null && 'object' === typeof o && Object.prototype.hasOwnProperty.call( o, k ); }
 	function alsTekst( w ) { return ( 'string' === typeof w ) ? w : ( ( 'number' === typeof w && isFinite( w ) ) ? String( w ) : '' ); }
 	function isLeeg( w ) { return w === null || w === undefined || ( Array.isArray( w ) ? ! w.length : '' === alsTekst( w ).trim() ); }
-	function eersteLetter( s ) { var c = Array.from( s ); return c.length ? c[ 0 ].toUpperCase() + c.slice( 1 ).join( '' ) : s; }
+	function eersteLetter( s, klein ) { var c = Array.from( s ); for ( var i = 0; i < c.length; i++ ) { if ( c[ i ].toUpperCase() !== c[ i ].toLowerCase() ) { c[ i ] = klein ? c[ i ].toLowerCase() : c[ i ].toUpperCase(); break; } } return c.join( '' ); }
 
 	/* Alle velden op id. */
 	function velden( b ) {
@@ -53,6 +53,7 @@
 		if ( 'datum' === v.type ) { return /^\d{4}-\d{2}-\d{2}$/.test( w ) ? w : ''; }
 		if ( 'getal' === v.type ) { return /^-?\d+(\.\d+)?$/.test( w.trim() ) ? w.trim() : ''; }
 		var max = v.maxlengte || ( 'kort' === v.type ? 160 : 2000 );
+		if ( 'kort' === v.type ) { w = w.trim(); }
 		return Array.from( w ).slice( 0, max ).join( '' );
 	}
 
@@ -94,6 +95,7 @@
 				if ( Array.isArray( w ) ) { return w.map( function ( x ) { var o = optie( v, x ); return o ? o.tekst : x; } ); }
 				var o = optie( v, w );
 				return o ? o.tekst : w;
+			case 'samen': return Array.isArray( w ) ? w.join( arg ) : w;
 			case 'bank':
 				var bank = heeft( b.banken, arg ) ? b.banken[ arg ] : null;
 				var zoek = function ( x ) { return bank && ! Array.isArray( bank ) && heeft( bank, x ) && 'string' === typeof bank[ x ] ? vul( bank[ x ], b, a, ctx ) : ''; };
@@ -104,6 +106,8 @@
 		switch ( soort ) {
 			case 'hoofdletter': return eersteLetter( w );
 			case 'klein': return w.toLowerCase();
+			case 'kleinbegin': return eersteLetter( w, true );
+			case 'slug': return w.normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' ).toLowerCase().replace( /[^a-z0-9]+/g, '-' ).replace( /^-+|-+$/g, '' );
 			case 'zin': w = w.trim(); return ( '' === w || /[.!?…:]$/.test( w ) ) ? w : w + '.';
 			case 'eerstezin': var mz = /^[\s\S]*?[.!?](?=\s|$)/.exec( w.trim() ); return mz ? mz[ 0 ] : w.trim();
 			case 'eersteregel': return w.trim().split( /\r?\n/ )[ 0 ].trim();
@@ -153,6 +157,7 @@
 	/* De items van een lijst: vaste sjablonen, een bank op een pad of de regels van een tekstvak. */
 	function items( b, a, s, ctx ) {
 		var uit = [];
+		var elk = function ( w ) { if ( ! s.elk ) { return w; } String( s.elk ).split( '|' ).forEach( function ( f ) { w = String( filter( b, a, w, '', f, ctx ) ); } ); return w; };
 		var voeg = function ( x ) {
 			if ( x && 'object' === typeof x && ! Array.isArray( x ) ) {
 				if ( ! klopt( b, a, x.als, ctx ) ) { return; }
@@ -160,7 +165,7 @@
 			}
 			if ( 'string' !== typeof x ) { return; }
 			var w = vul( x, b, a, ctx ).trim();
-			if ( '' !== w ) { uit.push( w ); }
+			if ( '' !== w ) { uit.push( elk( w ) ); }
 		};
 		if ( Array.isArray( s.items ) ) { s.items.forEach( voeg ); }
 		if ( s.bank ) {
@@ -171,7 +176,7 @@
 		if ( s.regels ) {
 			alsTekst( lees( b, a, s.regels, ctx ) ).split( /\r?\n/ ).forEach( function ( r ) {
 				r = r.trim().replace( /^[-*•]\s*/, '' );
-				if ( '' !== r ) { uit.push( ( s.voor ? vul( s.voor, b, a, ctx ) : '' ) + r ); }
+				if ( '' !== r ) { uit.push( ( s.voor ? vul( s.voor, b, a, ctx ) : '' ) + elk( r ) ); }
 			} );
 		}
 		return uit;
@@ -238,14 +243,15 @@
 		( stap.velden || [] ).forEach( function ( v ) {
 			var w = antwoordVan( b, a, v.id );
 			if ( 'vinkjes' === v.type && zichtbaar( b, a, v ) && ( v.min || 0 ) > w.length ) { uit.push( v.id ); return; }
+			if ( 'regels' === v.type && zichtbaar( b, a, v ) && ( v.min || 0 ) > w.split( /\r?\n/ ).filter( function ( r ) { return '' !== r.trim(); } ).length ) { uit.push( v.id ); return; }
 			if ( verplicht( b, a, v ) && isLeeg( w ) ) { uit.push( v.id ); }
 		} );
 		return uit;
 	}
 
 	/* Platte tekst van de blokken, voor kopieren. */
-	function platteTekst( titel, blokken, antw ) {
-		var r = [ titel, '' ];
+	function platteTekst( titel, blokken, antw, kaal ) {
+		var r = kaal ? [] : [ titel, '' ];
 		blokken.forEach( function ( bl ) {
 			if ( 'subkop' === bl.type ) { r.push( '', bl.tekst.toUpperCase() ); }
 			else if ( 'tekst' === bl.type ) { r.push( bl.tekst, '' ); }
@@ -302,7 +308,7 @@
 			var id = 'sfp-tool-' + tool.id + '-g-' + v.id;
 			var labelTekst = v.label || '';
 			var labelEl = el( 'p', { class: 'sfp-tool__vraag', id: id + '-l', text: labelTekst } );
-			var hint = v.hint ? el( 'p', { class: 'sfp-tool__hint', text: v.hint } ) : null;
+			var hint = v.hint ? el( 'p', { class: 'sfp-tool__hint', text: '' } ) : null;
 			var veld;
 			if ( 'keuze' === v.type ) {
 				veld = el( 'div', { class: 'sfp-tool__keuzes', role: 'radiogroup', 'aria-labelledby': id + '-l' } );
@@ -331,13 +337,14 @@
 				veld = el( 'input', { type: soort, class: 'sfp-tool__veld', id: id, maxlength: 'kort' === v.type ? String( v.maxlengte || 160 ) : null, placeholder: v.voorbeeld || '', 'aria-labelledby': id + '-l', oninput: function () { zet( v.id, this.value ); } } );
 			}
 			var wrap = el( 'div', { class: 'sfp-tool__veldgroep', 'data-veld': v.id }, [ labelEl, hint, veld ] );
-			invoer[ v.id ] = { wrap: wrap, veld: veld, label: labelEl, v: v };
+			invoer[ v.id ] = { wrap: wrap, veld: veld, label: labelEl, hint: hint, v: v };
 			return wrap;
 		}
 
+		var intros = [];
 		var schermen = stappen.map( function ( s, i ) {
 			var scherm = el( 'div', { class: 'sfp-tool__scherm', hidden: true } );
-			if ( s.intro ) { alineas( vul( s.intro, b, antwoorden ) ).forEach( function ( x ) { scherm.appendChild( el( 'p', { class: 'sfp-tool__intro-tekst', text: x } ) ); } ); }
+			if ( s.intro ) { var intro = el( 'div', { class: 'sfp-tool__intro-tekst' } ); intro.setAttribute( 'data-stap', String( i ) ); scherm.appendChild( intro ); intros.push( { el: intro, tekst: s.intro } ); }
 			( s.velden || [] ).forEach( function ( v ) { scherm.appendChild( maakVeld( v, i ) ); } );
 			scherm.appendChild( el( 'div', { class: 'sfp-tool__nav' }, [ el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: i === stappen.length - 1 ? tx( 'tool_maak' ) : tx( 'tool_volgende' ), onclick: function () { volgende(); } } ) ] ) );
 			schermenWrap.appendChild( scherm );
@@ -348,11 +355,14 @@
 
 		/* Labels die van een ander veld afhangen, en velden die alleen onder een voorwaarde verschijnen. */
 		function werkZichtbaar() {
+			intros.forEach( function ( x ) { x.el.innerHTML = ''; alineas( vul( x.tekst, b, antwoorden ) ).forEach( function ( a ) { x.el.appendChild( el( 'p', { text: a } ) ); } ); } );
 			Object.keys( invoer ).forEach( function ( id ) {
 				var x = invoer[ id ];
 				x.wrap.hidden = ! zichtbaar( b, antwoorden, x.v );
 				var lab = x.v.label || '';
 				( x.v.label_als || [] ).some( function ( r ) { if ( klopt( b, antwoorden, r.als, null ) ) { lab = r.tekst; return true; } return false; } );
+				if ( x.hint ) { x.hint.textContent = vul( x.v.hint, b, antwoorden ); }
+				if ( x.v.voorbeeld && x.veld.setAttribute && 'DIV' !== x.veld.tagName && 'SELECT' !== x.veld.tagName ) { x.veld.setAttribute( 'placeholder', vul( x.v.voorbeeld, b, antwoorden ) ); }
 				x.label.textContent = vul( lab, b, antwoorden ) + ( verplicht( b, antwoorden, x.v ) ? '' : ( x.v.type !== 'keuze' && x.v.type !== 'vinkjes' ? ' ' + tx( 'tool_optioneel' ) : '' ) );
 			} );
 		}
@@ -410,10 +420,11 @@
 			resultaat.appendChild( el( 'h3', { class: 'sfp-tool__kop sfp-tool__kop--resultaat', tabindex: '-1', text: b.resultaat_kop ? vul( b.resultaat_kop, b, antwoorden ) : tool.titel } ) );
 			if ( b.resultaat_intro ) { alineas( vul( b.resultaat_intro, b, antwoorden ) ).forEach( function ( x ) { resultaat.appendChild( el( 'p', { class: 'sfp-tool__tekst', text: x } ) ); } ); }
 			var inhoud = el( 'div', { class: 'sfp-tool__uitvoer' } );
+			if ( b.bewerkbaar ) { resultaat.appendChild( el( 'p', { class: 'sfp-tool__hint sfp-tool__hint--bewerk', text: tx( 'tool_bewerk_hint' ) } ) ); }
 			blokken.forEach( function ( bl, bi ) {
 				if ( 'subkop' === bl.type ) { inhoud.appendChild( el( 'h4', { class: 'sfp-tool__titel sfp-tool__titel--klein', text: bl.tekst } ) ); return; }
 				if ( 'tekst' === bl.type ) {
-					if ( b.bewerkbaar ) { inhoud.appendChild( el( 'textarea', { class: 'sfp-tool__veld sfp-tool__veld--uitvoer', rows: String( Math.min( 14, 2 + bl.tekst.split( '\n' ).length + Math.floor( bl.tekst.length / 70 ) ) ), 'aria-label': tx( 'tool_pas_aan' ), oninput: function () { var x = huidigeBlokken().slice(); x[ bi ] = { type: 'tekst', tekst: this.value }; bewerkt = x; } }, [ bl.tekst ] ) ); return; }
+					if ( b.bewerkbaar ) { inhoud.appendChild( el( 'div', { class: 'sfp-tool__bewerk', contenteditable: 'true', role: 'textbox', 'aria-multiline': 'true', 'aria-label': tx( 'tool_pas_aan' ), spellcheck: 'true', oninput: function () { var x = huidigeBlokken().slice(); x[ bi ] = { type: 'tekst', tekst: this.innerText.replace( /\n{3,}/g, '\n\n' ).trim() }; bewerkt = x; } }, [ bl.tekst ] ) ); return; }
 					alineas( bl.tekst ).forEach( function ( x ) { inhoud.appendChild( el( 'p', { class: 'sfp-tool__tekst' }, x.split( '\n' ).reduce( function ( acc, r, k ) { return k ? acc.concat( [ el( 'br' ), r ] ) : acc.concat( [ r ] ); }, [] ) ) ); } );
 					return;
 				}
@@ -439,7 +450,8 @@
 			function kort( m ) { deelMelding.textContent = m; deelMelding.hidden = false; setTimeout( function () { deelMelding.hidden = true; }, 6000 ); }
 			if ( aan( 'pdf' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_pdf' ), onclick: function () { bestand( this, tool.pdf( voorBestand(), naam() ) ); } } ) ); }
 			if ( aan( 'kopieer' ) ) { rijLinks.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_kopieer' ), onclick: function () {
-				var tekst = platteTekst( tool.titel, huidigeBlokken(), invul );
+				var kopTekst = b.resultaat_kop ? vul( b.resultaat_kop, b, antwoorden ) : tool.titel;
+				var tekst = platteTekst( kopTekst, ( ! acties.kopieer_kaal && b.resultaat_intro ? [ { type: 'tekst', tekst: vul( b.resultaat_intro, b, antwoorden ) } ] : [] ).concat( huidigeBlokken() ), invul, !! acties.kopieer_kaal );
 				if ( navigator.clipboard && navigator.clipboard.writeText ) { navigator.clipboard.writeText( tekst ).then( function () { kort( tx( 'tool_gekopieerd' ) ); tool.zeg( tx( 'tool_gekopieerd' ) ); }, function () { kort( tx( 'tool_bestand_fout' ) ); } ); } else { kort( tx( 'tool_bestand_fout' ) ); }
 			} } ) ); }
 			if ( aan( 'word' ) ) { rijLinks.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_word' ), onclick: function () { bestand( this, tool.word( voorBestand(), naam() ) ); } } ) ); }
@@ -467,7 +479,19 @@
 			resultaat.appendChild( deelMelding );
 			resultaat.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink sfp-tool__opnieuw', text: tx( 'tool_opnieuw' ), onclick: opnieuw } ) );
 			if ( aan( 'duimpjes' ) ) { resultaat.appendChild( tool.duimWidget() ); }
-			if ( tool.formulier ) { tool.formulier.hidden = false; }
+			if ( b.resultaat_slot ) { var slot = el( 'div', { class: 'sfp-tool__slot' } ); alineas( vul( b.resultaat_slot, b, antwoorden ) ).forEach( function ( x ) { slot.appendChild( el( 'p', { class: 'sfp-tool__tekst', text: x } ) ); } ); resultaat.insertBefore( slot, rij ); }
+			if ( tool.formulier ) {
+				tool.formulier.hidden = false;
+				/* Verborgen velden van het formulier vullen met het resultaat (@uitvoer) of een sjabloon. */
+				var fv = acties.formulier_velden || {};
+				Object.keys( fv ).forEach( function ( naam ) {
+					var w = '@uitvoer' === fv[ naam ] ? platteTekst( tool.titel, huidigeBlokken(), invul, true ) : vul( fv[ naam ], b, antwoorden );
+					Array.prototype.forEach.call( tool.formulier.querySelectorAll( 'input, textarea' ), function ( inp ) {
+						var n = inp.getAttribute( 'name' ) || '';
+						if ( n === naam || n.slice( - ( naam.length + 1 ) ) === '-' + naam ) { inp.value = w; inp.dispatchEvent( new Event( 'input', { bubbles: true } ) ); }
+					} );
+				} );
+			}
 		}
 
 		function vulIn( a ) {

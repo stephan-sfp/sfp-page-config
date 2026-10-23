@@ -233,5 +233,8 @@ ol.sfp-tool__lijst>li::before{content:counter(sfp-lijst);position:absolute;left:
 .sfp-tool__gegevens dd{margin:0;color:var(--sfp-b-body)}
 .sfp-tool__uitvoer .sfp-tool__titel--klein{margin:24px 0 8px}
 .sfp-tool__veld--antwoord{margin:8px 0 4px;font-size:15px}
-.sfp-tool__veld--uitvoer{margin:0 0 12px;line-height:1.55}
 @media (max-width:480px){.sfp-tool__gegevens{grid-template-columns:1fr}.sfp-tool__gegevens dd{margin-bottom:6px}}
+.sfp-tool__bewerk{white-space:pre-wrap;margin:0 -10px 6px;padding:6px 10px;border:1px dashed transparent;border-radius:var(--sfp-b-r-knop,6px);color:var(--sfp-b-body);line-height:1.6;outline:none;transition:border-color .15s,background .15s}
+.sfp-tool__bewerk:hover{border-color:color-mix(in srgb,var(--sfp-b-primair) 30%,transparent)}
+.sfp-tool__bewerk:focus{border-color:var(--sfp-b-primair);background:var(--sfp-b-wit,#fff)}
+.sfp-tool__hint--bewerk{margin:0 0 12px;font-size:14px;color:var(--sfp-b-body)}

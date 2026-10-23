@@ -194,6 +194,13 @@
 		this.sr = el( 'span', { class: 'sfp-tool__sr', 'aria-live': 'polite' } );
 	}
 
+	/* Een vaste tekst, met voorrang voor de eigen teksten van de tool (teksten in de beschrijving). */
+	Tool.prototype.tx = function ( sleutel ) {
+		var eigen = this.b && this.b.teksten ? this.b.teksten : {};
+		var rest = Array.prototype.slice.call( arguments, 1 );
+		return t.apply( null, [ Object.prototype.hasOwnProperty.call( eigen, sleutel ) ? eigen[ sleutel ] : sleutel ].concat( rest ) );
+	};
+
 	Tool.prototype.start = function () {
 		if ( ! this.b || ! this.app ) { return false; }
 		var fabriek = SOORTEN[ this.b.soort ];
@@ -238,12 +245,12 @@
 		return basis + '?t=' + codeer( { id: this.id, a: antwoorden } );
 	};
 	Tool.prototype.deel = function ( antwoorden, melding ) {
-		var url = this.deellink( antwoorden );
 		var zelf = this;
+		var url = this.deellink( antwoorden );
 		if ( navigator.clipboard && navigator.clipboard.writeText ) {
-			navigator.clipboard.writeText( url ).then( function () { melding( t( 'tool_deellink_ok' ) ); zelf.zeg( t( 'tool_deellink_ok' ) ); }, function () { melding( t( 'tool_deellink_toon', url ) ); } );
+			navigator.clipboard.writeText( url ).then( function () { melding( zelf.tx( 'tool_deellink_ok' ) ); zelf.zeg( zelf.tx( 'tool_deellink_ok' ) ); }, function () { melding( zelf.tx( 'tool_deellink_toon', url ) ); } );
 		} else {
-			melding( t( 'tool_deellink_toon', url ) );
+			melding( zelf.tx( 'tool_deellink_toon', url ) );
 		}
 	};
 
@@ -263,7 +270,7 @@
 		var sleutel = this.sleutel + '-duim';
 		var eerder = opslag.lees( sleutel );
 		var wrap = el( 'div', { class: 'sfp-tool__duim' } );
-		var vraag = el( 'p', { class: 'sfp-tool__duim-vraag', text: t( 'tool_duim_vraag' ) } );
+		var vraag = el( 'p', { class: 'sfp-tool__duim-vraag', text: zelf.tx( 'tool_duim_vraag' ) } );
 		var knoppen = el( 'div', { class: 'sfp-tool__duim-knoppen' } );
 		var vervolg = el( 'div', { class: 'sfp-tool__duim-vervolg', hidden: true } );
 		var gekozen = eerder && eerder.stem ? eerder.stem : '';
@@ -282,11 +289,11 @@
 				veld.focus();
 			} }, [ label ] );
 		}
-		var veld = el( 'textarea', { class: 'sfp-tool__veld', rows: '2', maxlength: '600', placeholder: t( 'tool_duim_meer' ), 'aria-label': t( 'tool_duim_meer' ) } );
-		var mail = el( 'input', { type: 'email', class: 'sfp-tool__veld', maxlength: '160', placeholder: t( 'tool_duim_mail_hint' ), 'aria-label': t( 'tool_duim_mail_hint' ), autocomplete: 'email' } );
+		var veld = el( 'textarea', { class: 'sfp-tool__veld', rows: '2', maxlength: '600', placeholder: zelf.tx( 'tool_duim_meer' ), 'aria-label': zelf.tx( 'tool_duim_meer' ) } );
+		var mail = el( 'input', { type: 'email', class: 'sfp-tool__veld', maxlength: '160', placeholder: zelf.tx( 'tool_duim_mail_hint' ), 'aria-label': zelf.tx( 'tool_duim_mail_hint' ), autocomplete: 'email' } );
 		var hp = el( 'input', { type: 'text', name: 'website', tabindex: '-1', autocomplete: 'off', class: 'sfp-tool__hp', 'aria-hidden': 'true' } );
-		var dank = el( 'p', { class: 'sfp-tool__duim-dank', hidden: true, text: t( 'tool_duim_dank' ) } );
-		var verstuur = el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--klein', text: t( 'tool_duim_verstuur' ), onclick: function () {
+		var dank = el( 'p', { class: 'sfp-tool__duim-dank', hidden: true, text: zelf.tx( 'tool_duim_dank' ) } );
+		var verstuur = el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--klein', text: zelf.tx( 'tool_duim_verstuur' ), onclick: function () {
 			var tekst = veld.value.trim();
 			verstuur.disabled = true;
 			var p = tekst ? zelf.duim( gekozen || 'omhoog', tekst, mail.value.trim(), hp.value ) : Promise.resolve();
@@ -298,8 +305,8 @@
 				Array.prototype.forEach.call( knoppen.children, function ( k ) { k.disabled = true; } );
 			}, function () { verstuur.disabled = false; } );
 		} } );
-		knoppen.appendChild( knop( 'omhoog', t( 'tool_duim_ja' ) ) );
-		knoppen.appendChild( knop( 'omlaag', t( 'tool_duim_nee' ) ) );
+		knoppen.appendChild( knop( 'omhoog', zelf.tx( 'tool_duim_ja' ) ) );
+		knoppen.appendChild( knop( 'omlaag', zelf.tx( 'tool_duim_nee' ) ) );
 		vervolg.appendChild( veld );
 		vervolg.appendChild( mail );
 		vervolg.appendChild( hp );

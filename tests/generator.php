@@ -116,6 +116,11 @@ ok( 'rol' !== ( sfp_page_config_generator_ontbreekt( $b, array( 'rol' => 'onbeke
 ok( 'Een tekst die heel…' === sfp_page_config_generator_filter( $b, array(), 'Een tekst die heel lang doorgaat', 'x', 'kort:20', null ), 'kort op woordgrens' );
 ok( 'sara' === sfp_page_config_generator_vul( '{onbekend|of:naam|anders:niemand}', $b, array( 'naam' => 'sara' ) ) && 'niemand' === sfp_page_config_generator_vul( '{onbekend|of:naam|anders:niemand}', $b, array() ), 'terugval op een ander veld' );
 ok( 'Iets met sara' === sfp_page_config_generator_vul( 'Iets{naam|voor: met }', $b, array( 'naam' => 'sara' ) ) && 'Iets' === sfp_page_config_generator_vul( 'Iets{naam|voor: met }', $b, array() ), 'voorvoegsel alleen als gevuld' );
+ok( '"Citaat' === sfp_page_config_generator_filter( $b, array(), '"citaat', 'x', 'hoofdletter', null ), 'hoofdletter na een aanhalingsteken' );
+ok( 'je beheert' === sfp_page_config_generator_filter( $b, array(), 'Je beheert', 'x', 'kleinbegin', null ), 'kleine beginletter' );
+ok( 'creeren-en-doen' === sfp_page_config_generator_filter( $b, array(), 'Creëren en doen!', 'x', 'slug', null ), 'slug zonder accenten' );
+ok( 'Aa • Bee' === sfp_page_config_generator_vul( '{vink|label|samen: • }', $b, array( 'vink' => array( 'a', 'b' ) ) ), 'vinkjes samenvoegen met eigen teken' );
+ok( 'sara' === sfp_page_config_generator_vul( '{naam}', $b, array( 'naam' => '  sara  ' ) ), 'kort veld zonder spaties eromheen' );
 ok( 'Zin een.' === sfp_page_config_generator_filter( $b, array(), 'Zin een. Zin twee.', 'x', 'eerstezin', null ), 'eerste zin' );
 ok( 'Klaar.' === sfp_page_config_generator_filter( $b, array(), 'Klaar', 'x', 'zin', null ) && 'Klaar?' === sfp_page_config_generator_filter( $b, array(), 'Klaar?', 'x', 'zin', null ), 'zin met punt' );
 $m = sfp_page_config_generator_mail_antwoorden( $b, array( 'rol' => 'x', 'naam' => str_repeat( 'a', 200 ), 'tekst' => 'lang verhaal', 'vreemd' => 'x' ) );

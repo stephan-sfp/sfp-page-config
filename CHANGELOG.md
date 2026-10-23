@@ -4,6 +4,22 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.9.0-beta.2] - 2026-10-23
+
+Tweede proefversie voor DGA: aanvullingen op de generator voor de andere sites.
+
+### Toegevoegd
+- Filters `kleinbegin`, `samen:` (eigen teken tussen gekozen opties) en `slug`; sectiesleutel `elk` (filter op elke regel van een lijst); `min` ook bij een veld met regels.
+- Hint, voorbeeldtekst en intro van een stap volgen de antwoorden (plaatshouders).
+- `resultaat_slot`: tekst onder het resultaat, alleen op het scherm.
+- `acties.kopieer_kaal`: kopiëren zonder kop, voor een mail, brief of post. Kopiëren neemt verder de kop en intro van het resultaat mee.
+- `acties.formulier_velden`: vult verborgen velden van het SureForms-formulier na het resultaat met de uitvoer of een sjabloon.
+- Bewerkbaar resultaat: de tekst is direct in het document aan te passen, met een hintregel erboven.
+
+### Gewijzigd
+- Korte velden zonder spaties eromheen; `hoofdletter` slaat leestekens aan het begin over.
+- Duimpjes en deellink gebruiken ook de eigen teksten van een tool.
+
 ## [3.9.0-beta.1] - 2026-10-23
 
 Proefversie voor DGA: de toolmotor krijgt de soort generator.

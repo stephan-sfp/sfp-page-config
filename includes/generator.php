@@ -54,6 +54,7 @@ function sfp_page_config_generator_normaliseer( array $b ) {
         'resultaat_kop'   => isset( $b['resultaat_kop'] ) && is_scalar( $b['resultaat_kop'] ) ? (string) $b['resultaat_kop'] : '',
         'resultaat_intro' => isset( $b['resultaat_intro'] ) && is_scalar( $b['resultaat_intro'] ) ? (string) $b['resultaat_intro'] : '',
         'bewerkbaar'      => ! empty( $b['bewerkbaar'] ),
+        'resultaat_slot'  => isset( $b['resultaat_slot'] ) && is_scalar( $b['resultaat_slot'] ) ? (string) $b['resultaat_slot'] : '',
     );
 
     $stappen = array();
@@ -110,7 +111,20 @@ function sfp_page_config_generator_normaliseer( array $b ) {
         'mail'      => ! isset( $acties['mail'] ) || ! empty( $acties['mail'] ),
         'duimpjes'  => ! isset( $acties['duimpjes'] ) || ! empty( $acties['duimpjes'] ),
         'formulier' => isset( $acties['formulier'] ) ? (int) $acties['formulier'] : 0,
+        'kopieer_kaal' => ! empty( $acties['kopieer_kaal'] ),
+        'formulier_velden' => new stdClass(),
     );
+    if ( isset( $acties['formulier_velden'] ) && is_array( $acties['formulier_velden'] ) ) {
+        $velden_f = array();
+        foreach ( $acties['formulier_velden'] as $naam => $sjabloon ) {
+            if ( is_scalar( $sjabloon ) && preg_match( '/^[a-zA-Z0-9_-]+$/', (string) $naam ) ) {
+                $velden_f[ (string) $naam ] = (string) $sjabloon;
+            }
+        }
+        if ( $velden_f ) {
+            $uit['acties']['formulier_velden'] = $velden_f;
+        }
+    }
 
     $mail        = isset( $b['mail'] ) && is_array( $b['mail'] ) ? $b['mail'] : array();
     $uit['mail'] = array(
@@ -241,7 +255,7 @@ function sfp_page_config_generator_bank_schoon( $w, $diepte = 0 ) {
  */
 function sfp_page_config_generator_sectie_schoon( array $s ) {
     $uit = array( 'type' => isset( $s['type'] ) && is_scalar( $s['type'] ) ? (string) $s['type'] : 'tekst' );
-    foreach ( array( 'kop', 'tekst', 'bank', 'regels', 'voor', 'over', 'leeg' ) as $sleutel ) {
+    foreach ( array( 'kop', 'tekst', 'bank', 'regels', 'voor', 'over', 'leeg', 'elk' ) as $sleutel ) {
         if ( isset( $s[ $sleutel ] ) && is_scalar( $s[ $sleutel ] ) ) {
             $uit[ $sleutel ] = (string) $s[ $sleutel ];
         }
@@ -537,6 +551,9 @@ function sfp_page_config_generator_antwoord( array $b, array $a, $id ) {
         return preg_match( '/^-?\d+(\.\d+)?$/', $w ) ? $w : '';
     }
     $max = ! empty( $v['maxlengte'] ) ? (int) $v['maxlengte'] : ( 'kort' === $v['type'] ? 160 : 2000 );
+    if ( 'kort' === $v['type'] ) {
+        $w = sfp_page_config_generator_trim( $w );
+    }
     return implode( '', array_slice( sfp_page_config_generator_tekens( $w ), 0, $max ) );
 }
 
@@ -633,6 +650,9 @@ function sfp_page_config_generator_filter( array $b, array $a, $w, $naam, $f, $c
         };
         return is_array( $w ) ? array_map( $label, $w ) : $label( $w );
     }
+    if ( 'samen' === $soort ) {
+        return is_array( $w ) ? implode( $arg, $w ) : $w;
+    }
     if ( 'bank' === $soort ) {
         $banken = is_array( $b['banken'] ) ? $b['banken'] : array();
         $bank   = isset( $banken[ $arg ] ) && is_array( $banken[ $arg ] ) ? $banken[ $arg ] : null;
@@ -647,8 +667,20 @@ function sfp_page_config_generator_filter( array $b, array $a, $w, $naam, $f, $c
     $w = (string) $w;
     switch ( $soort ) {
         case 'hoofdletter':
+        case 'kleinbegin':
             $t = sfp_page_config_generator_tekens( $w );
-            return $t ? mb_strtoupper( $t[0], 'UTF-8' ) . implode( '', array_slice( $t, 1 ) ) : $w;
+            foreach ( $t as $i => $c ) {
+                if ( mb_strtoupper( $c, 'UTF-8' ) !== mb_strtolower( $c, 'UTF-8' ) ) {
+                    $t[ $i ] = 'kleinbegin' === $soort ? mb_strtolower( $c, 'UTF-8' ) : mb_strtoupper( $c, 'UTF-8' );
+                    break;
+                }
+            }
+            return implode( '', $t );
+        case 'slug':
+            $s = class_exists( 'Normalizer' ) ? Normalizer::normalize( $w, Normalizer::FORM_D ) : $w;
+            $s = preg_replace( '/\p{Mn}+/u', '', (string) $s );
+            $s = preg_replace( '/[^a-z0-9]+/', '-', mb_strtolower( (string) $s, 'UTF-8' ) );
+            return trim( (string) $s, '-' );
         case 'klein':
             return mb_strtolower( $w, 'UTF-8' );
         case 'zin':
@@ -800,7 +832,17 @@ function sfp_page_config_generator_klopt( array $b, array $a, $als, $ctx = null 
  */
 function sfp_page_config_generator_items( array $b, array $a, array $s, $ctx ) {
     $uit  = array();
-    $voeg = function ( $x ) use ( &$uit, $b, $a, $ctx ) {
+    $elk  = function ( $w ) use ( $s, $b, $a, $ctx ) {
+        if ( empty( $s['elk'] ) ) {
+            return $w;
+        }
+        foreach ( explode( '|', $s['elk'] ) as $f ) {
+            $w = sfp_page_config_generator_filter( $b, $a, $w, '', $f, $ctx );
+            $w = is_array( $w ) ? implode( ', ', $w ) : (string) $w;
+        }
+        return $w;
+    };
+    $voeg = function ( $x ) use ( &$uit, $b, $a, $ctx, $elk ) {
         if ( is_array( $x ) && array_values( $x ) !== $x ) {
             if ( ! sfp_page_config_generator_klopt( $b, $a, isset( $x['als'] ) ? $x['als'] : null, $ctx ) ) {
                 return;
@@ -812,7 +854,7 @@ function sfp_page_config_generator_items( array $b, array $a, array $s, $ctx ) {
         }
         $w = sfp_page_config_generator_trim( sfp_page_config_generator_vul( $x, $b, $a, $ctx ) );
         if ( '' !== $w ) {
-            $uit[] = $w;
+            $uit[] = $elk( $w );
         }
     };
     if ( isset( $s['items'] ) && is_array( $s['items'] ) ) {
@@ -842,7 +884,7 @@ function sfp_page_config_generator_items( array $b, array $a, array $s, $ctx ) {
         foreach ( preg_split( '/\r?\n/', $tekst ) as $r ) {
             $r = preg_replace( '/(*UCP)^[-*•]\s*/u', '', sfp_page_config_generator_trim( $r ) );
             if ( '' !== $r ) {
-                $uit[] = ( isset( $s['voor'] ) ? sfp_page_config_generator_vul( $s['voor'], $b, $a, $ctx ) : '' ) . $r;
+                $uit[] = ( isset( $s['voor'] ) ? sfp_page_config_generator_vul( $s['voor'], $b, $a, $ctx ) : '' ) . $elk( $r );
             }
         }
     }
@@ -982,6 +1024,10 @@ function sfp_page_config_generator_ontbreekt( array $b, array $a, array $stap ) 
         $zichtbaar = sfp_page_config_generator_klopt( $b, $a, isset( $v['toon_als'] ) ? $v['toon_als'] : null );
         $w         = sfp_page_config_generator_antwoord( $b, $a, $v['id'] );
         if ( 'vinkjes' === $v['type'] && $zichtbaar && ( isset( $v['min'] ) ? $v['min'] : 0 ) > count( $w ) ) {
+            $uit[] = $v['id'];
+            continue;
+        }
+        if ( 'regels' === $v['type'] && $zichtbaar && ( isset( $v['min'] ) ? $v['min'] : 0 ) > count( array_filter( preg_split( '/\r?\n/', (string) $w ), function ( $r ) { return '' !== sfp_page_config_generator_trim( $r ); } ) ) ) {
             $uit[] = $v['id'];
             continue;
         }
