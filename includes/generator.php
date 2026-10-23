@@ -1654,7 +1654,7 @@ function sfp_page_config_generator_mail_antwoorden( array $b, array $antwoorden 
         }
         $w = sfp_page_config_generator_antwoord( $b, $antwoorden, $id );
         if ( is_string( $w ) && in_array( $v['type'], array( 'kort', 'tekstvak', 'regels', 'getallen' ), true ) ) {
-            $w = implode( '', array_slice( sfp_page_config_generator_tekens( $w ), 0, 'kort' === $v['type'] ? 80 : 400 ) );
+            $w = implode( '', array_slice( sfp_page_config_generator_tekens( $w ), 0, 'kort' === $v['type'] ? 80 : ( 'getallen' === $v['type'] ? 2000 : 400 ) ) );
         }
         if ( ! sfp_page_config_generator_leeg( $w ) ) {
             $schoon[ $id ] = $w;

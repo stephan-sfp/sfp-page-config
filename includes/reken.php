@@ -259,7 +259,9 @@ function sfp_page_config_reken_tekst_getal( $n ) {
     if ( 0.0 === (float) $r ) {
         return '0';
     }
-    return sfp_page_config_generator_js_getal( (float) $r );
+    // Vaste notatie, zoals de browser hem schrijft tot 1e21 (geen 8.2e-5).
+    $s = rtrim( rtrim( number_format( abs( $r ), 6, '.', '' ), '0' ), '.' );
+    return ( $r < 0 ? '-' : '' ) . $s;
 }
 
 /**
