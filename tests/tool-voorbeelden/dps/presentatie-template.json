@@ -3,7 +3,7 @@
  "soort": "generator",
  "stappen": [
   {
-   "titel": "Vul de context in",
+   "titel": "Invullen",
    "intro": "De tool maakt een slide-voor-slide outline die je downloadt als PDF of Word.",
    "velden": [
     {
@@ -472,7 +472,7 @@
  ],
  "teksten": {
   "tool_maak": "Genereer template",
-  "tool_resultaat": "Je template is klaar"
+  "tool_resultaat": "Klaar"
  },
  "acties": {
   "pdf": true,
