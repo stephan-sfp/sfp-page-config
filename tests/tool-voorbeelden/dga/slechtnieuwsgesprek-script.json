@@ -25,12 +25,12 @@
       },
       {
        "waarde": "projectstop",
-       "tekst": "Project-stop",
+       "tekst": "Projectstop",
        "uitleg": "Project of opdracht stopt"
       },
       {
        "waarde": "weigering",
-       "tekst": "Verzoek-weigeren",
+       "tekst": "Verzoek weigeren",
        "uitleg": "Promotie, opleiding, salaris"
       }
      ]
@@ -90,7 +90,7 @@
       "Voor we beginnen wil ik dat duidelijk is dat dit besluit niet vandaag is genomen en niet alleen door mij."
      ],
      "Kernboodschap": [
-      "We hebben besloten je dienstverband te beeindigen per [datum]. Dit besluit is definitief.",
+      "We hebben besloten je dienstverband te beëindigen per [datum]. Dit besluit is definitief.",
       "De onderbouwing en het juridische traject leg ik zo aan je voor. Eerst geef ik je ruimte voor je eerste reactie."
      ],
      "Omgang met reactie": [
@@ -111,7 +111,7 @@
       "Ik wil eerlijk en duidelijk zijn. Daarom geen omtrekkende bewegingen."
      ],
      "Kernboodschap": [
-      "We zijn tot het besluit gekomen om je dienstverband te beeindigen, per [datum].",
+      "We zijn tot het besluit gekomen om je dienstverband te beëindigen, per [datum].",
       "Het is een definitief besluit. Ik weet dat dit hard binnenkomt."
      ],
      "Omgang met reactie": [
@@ -174,7 +174,7 @@
    "projectstop": {
     "zakelijk": {
      "Opening": [
-      "Bedankt voor je beschikbaarheid. Ik heb je gevraagd voor een update over [project], en die update is bepalend."
+      "Bedankt voor je beschikbaarheid. Ik heb je gevraagd voor een update over [project], omdat er een besluit over is genomen."
      ],
      "Kernboodschap": [
       "[Project] wordt per [datum] gestopt. Het werk dat tot nu toe is gedaan blijft beschikbaar; we gaan er alleen niet verder mee.",
@@ -246,7 +246,7 @@
      "Afsluiting": [
       "Voor mij blijft het belangrijk dat we hier goed uitkomen. Wat heb je van mij nodig?",
       "Over [periode] kunnen we dit gesprek opnieuw voeren.",
-      "Bedankt voor je openheid. Het blijft tussen ons en heeft geen effect op je beoordeling."
+      "Bedankt voor je openheid."
      ]
     }
    }
@@ -338,5 +338,6 @@
  "mail": {
   "onderwerp": "Script slechtnieuwsgesprek{ontNaam|voor: met }",
   "intro": "Hierbij je script ter voorbereiding op het slechtnieuwsgesprek."
- }
+ },
+ "bewerkbaar": true
 }

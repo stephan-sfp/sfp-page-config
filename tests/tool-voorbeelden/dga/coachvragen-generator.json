@@ -21,7 +21,7 @@
       {
        "waarde": "reality",
        "tekst": "Reality",
-       "uitleg": "Hoe ziet de huidige situatie er uit?"
+       "uitleg": "Hoe ziet de huidige situatie eruit?"
       },
       {
        "waarde": "options",
@@ -49,7 +49,7 @@
      "opties": [
       {
        "waarde": "loopbaan",
-       "tekst": "Loopbaan en carriere"
+       "tekst": "Loopbaan en carrière"
       },
       {
        "waarde": "leiderschap",
@@ -89,7 +89,7 @@
      "id": "situatie",
      "type": "tekstvak",
      "label": "Korte beschrijving van de situatie",
-     "voorbeeld": "Bijvoorbeeld: coachee twijfelt over een carriereswitch naar een andere sector...",
+     "voorbeeld": "Bijvoorbeeld: coachee twijfelt over een carrièreswitch naar een andere sector...",
      "maxlengte": 1000
     }
    ]
@@ -114,7 +114,7 @@
      "Welk type leider wil jij zijn voor je team?",
      "Wat zou jouw team over een jaar over jou moeten kunnen zeggen?",
      "Welk concreet gedrag wil je vaker laten zien?",
-     "Welke leider in je carriere wil jij niet kopieren, en welke wel?",
+     "Welke leider in je carrière wil jij niet kopieren, en welke wel?",
      "Wat is voor jou het verschil tussen managen en leiden?",
      "Hoe weet je over een half jaar of je groei hebt gemaakt?",
      "Welke vaardigheid is het belangrijkste om dit jaar te verbeteren?",
@@ -178,7 +178,7 @@
      "Wat zegt je omgeving over hoe het met je gaat in je werk?",
      "Wanneer voelde je voor het laatst echt energie van je werk?",
      "Wat houdt je nu tegen om iets te veranderen?",
-     "Welk verhaal vertel je jezelf over je carriere?",
+     "Welk verhaal vertel je jezelf over je carrière?",
      "Welke kansen heb je de laatste 2 jaar laten lopen?",
      "Welke patronen herken je in je werkkeuzes?",
      "Wat zou je doen als je vandaag opnieuw moest beginnen?",
@@ -186,7 +186,7 @@
     ],
     "leiderschap": [
      "Hoe zien anderen je leiderschap, en hoe ervaar je dat zelf?",
-     "Welk feedback hoor je vaker dan je lief is?",
+     "Welke feedback hoor je vaker dan je lief is?",
      "Wanneer voelde je je het sterkst als leider?",
      "Welk gedrag laat je nu zien dat je liever niet doet?",
      "Hoe ga je om met mensen die niet doen wat je vraagt?",
@@ -352,7 +352,7 @@
      "Welke obstakels verwacht je?",
      "Hoe meet je dat je vooruitgang boekt?",
      "Wanneer evalueer je of deze richting werkt?",
-     "Welk gedrag los je los als je hieraan begint?",
+     "Welk gedrag laat je los als je hieraan begint?",
      "Welke beloning hoort bij vooruitgang?",
      "Wat is je commitment, in 1 zin?"
     ],
@@ -360,7 +360,7 @@
      "Welke 3 dingen ga je deze week schrappen of overdragen?",
      "Welk gesprek voer je vandaag of morgen?",
      "Welke afspraak met jezelf maak je over rust?",
-     "Hoe ga je nee zeggen tegen de eerstvolgende verzoek?",
+     "Hoe ga je nee zeggen tegen het eerstvolgende verzoek?",
      "Wanneer evalueer je hoe het gaat?",
      "Wat doe je vandaag voor jezelf?",
      "Welke gewoonte bouw je in voor herstel?",
@@ -370,7 +370,7 @@
     ],
     "relatie": [
      "Welk gesprek voer je deze week, en wanneer?",
-     "Hoe ga je het gesprek opening doen?",
+     "Hoe ga je het gesprek openen?",
      "Welk gedrag pas je vanaf morgen aan?",
      "Welke afspraak maak je met jezelf over je reactie?",
      "Wat doe je als de ander niet meebeweegt?",

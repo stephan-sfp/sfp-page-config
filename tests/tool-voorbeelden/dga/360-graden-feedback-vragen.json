@@ -42,7 +42,7 @@
     {
      "id": "onderwerpNaam",
      "type": "kort",
-     "label": "Naam van de geevalueerde",
+     "label": "Naam van de geëvalueerde",
      "maxlengte": 80,
      "verplicht": {
       "veld": "rol",
@@ -156,14 +156,14 @@
   }
  ],
  "waarden": {
-  "terugval": "{rol|bank:terugval|anders:de geevalueerde}",
+  "terugval": "{rol|bank:terugval|anders:de geëvalueerde}",
   "naam": "{onderwerpNaam|of:terugval}"
  },
  "banken": {
   "terugval": {
    "werknemer": "{eigenNaam|anders:mij}",
-   "leidinggevende": "de geevalueerde",
-   "hr": "de geevalueerde"
+   "leidinggevende": "de geëvalueerde",
+   "hr": "de geëvalueerde"
   },
   "rolLabels": {
    "werknemer": "Feedback over mijzelf",
@@ -239,7 +239,7 @@
     ],
     "ander": [
      "Op welk gebied zie je {naam} sinds vorig jaar duidelijk groeien?",
-     "Welke ontwikkelstap zou {naam} jou helpen het beste in de praktijk te brengen?",
+     "Welke ontwikkelstap zou {naam} volgens jou het beste in de praktijk kunnen brengen?",
      "Hoe gaat {naam} om met feedback die hij of zij krijgt?"
     ]
    },
@@ -247,7 +247,7 @@
     "zelf": [
      "Welke beslissing van dit jaar laat zien hoe jij wegt en kiest?",
      "Wanneer wist je achteraf dat je oordeel te snel was?",
-     "Hoe combineer je vakkennis en intuitie in een complexe casus?"
+     "Hoe combineer je vakkennis en intuïtie in een complexe casus?"
     ],
     "ander": [
      "Wanneer baseerde {naam} een beslissing goed op argumenten?",
@@ -274,7 +274,7 @@
      "Wat houdt jou tegen om vaker zelf te beginnen?"
     ],
     "ander": [
-     "Welk initiatief van {naam} maakte verschil voor het team?",
+     "Welk initiatief van {naam} heeft het team echt vooruitgeholpen?",
      "Wanneer wachtte {naam} terwijl je beweging verwachtte?",
      "Hoe zou je het initiatief van {naam} omschrijven in 1 zin?"
     ]
@@ -294,7 +294,7 @@
    "druk": {
     "zelf": [
      "In welke drukke periode hield jij het hoofd koel, en wat hielp je?",
-     "Wanneer raakte je geirriteerd onder spanning, en wat zag je in jezelf?",
+     "Wanneer raakte je geïrriteerd onder spanning, en wat zag je in jezelf?",
      "Welk patroon in jouw stressrespons herken je het sterkst?"
     ],
     "ander": [
@@ -311,7 +311,7 @@
     ],
     "ander": [
      "Wanneer pakte {naam} een spanning in het team op een goede manier op?",
-     "Wanneer wreef een conflict aan waarvan jij dacht dat {naam} kon ingrijpen?",
+     "Bij welk conflict dacht jij dat {naam} had kunnen ingrijpen?",
      "Hoe gaat {naam} om met meningsverschillen volgens jou?"
     ]
    }
@@ -351,9 +351,26 @@
      "bank": "vragen",
      "pad": [
       "{@}",
+      "zelf"
+     ],
+     "lijnen": 3,
+     "als": {
+      "veld": "rol",
+      "is": "werknemer"
+     }
+    },
+    {
+     "type": "vragen",
+     "bank": "vragen",
+     "pad": [
+      "{@}",
       "ander"
      ],
-     "lijnen": 3
+     "lijnen": 3,
+     "als": {
+      "veld": "rol",
+      "niet": "werknemer"
+     }
     }
    ]
   }
