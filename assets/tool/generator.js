@@ -833,6 +833,8 @@
 			if ( invoer[ mis[ 0 ] ] ) { var f = invoer[ mis[ 0 ] ].wrap.querySelector( 'input, select, textarea' ); if ( f ) { f.focus(); } }
 		}
 		function volgende() {
+			/* WP Rocket speelt een klik soms nog eens af nadat de scripts geladen zijn; op het resultaat is er geen volgende stap. */
+			if ( huidig >= stappen.length ) { return; }
 			if ( ontbreekt( b, antwoorden, stappen[ huidig ] ).length ) { toonOntbreekt( huidig ); return; }
 			naar( huidig + 1 );
 		}

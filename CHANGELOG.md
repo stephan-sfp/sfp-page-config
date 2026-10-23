@@ -4,6 +4,19 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.10.0] - 2026-10-23
+
+De toolmotor krijgt de soorten rekenaar, checklist en tekstanalyse, en de generator de sectie kaarten. Twaalf tools gaan van hun eigen snippet naar de motor: SFP 2, DPS 5, CVD 2, DST 2, DGA 1. Proefversie 3.10.0-beta.1 op DPS.
+
+### Toegevoegd
+- Alles uit 3.10.0-beta.1: rekentaal, rekenaar, checklist met vinkjes, tekstanalyse, kaarten, klikbare webadressen.
+- Opmaak `getal:~n`: hoogstens n decimalen zonder nullen aan het eind (2,5 fte en 25 fte).
+
+### Gerepareerd
+- Een klik die WP Rocket na het laden van de scripts nog eens afspeelt, gaf op het resultaatscherm een scriptfout.
+- Getallen onder 0,0001 schreef de server in e-notatie; de opmaak als euro brak dan in de mail.
+- Een lange lijst losse getallen (eNPS) werd in de mail afgekapt, waardoor de mail met minder scores rekende dan het scherm.
+
 ## [3.10.0-beta.1] - 2026-10-23
 
 Proefversie voor DPS: de toolmotor krijgt de soorten rekenaar, checklist en tekstanalyse. Twaalf tools kunnen van hun eigen snippet naar de motor.
