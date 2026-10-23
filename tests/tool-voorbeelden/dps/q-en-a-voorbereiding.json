@@ -1,0 +1,262 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Invoer",
+   "intro": "Drie korte vragen. De tool stelt voor jou de top-vragen op die je vandaag of morgen kunt krijgen.",
+   "velden": [
+    {
+     "id": "onderwerp",
+     "type": "kort",
+     "label": "Onderwerp van je presentatie",
+     "hint": "In 1 of 2 woorden of een korte beschrijving. De tool gebruikt dit in de vragen.",
+     "voorbeeld": "bijvoorbeeld: jouw productlancering, jouw onderzoek, jouw beleid",
+     "maxlengte": 120,
+     "verplicht": true,
+     "mail": true
+    },
+    {
+     "id": "publiek",
+     "type": "keuze",
+     "label": "Publiek-type",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "kort",
+       "tekst": "Kort op de tijd"
+      },
+      {
+       "waarde": "lang",
+       "tekst": "Diepgaand"
+      },
+      {
+       "waarde": "critisch",
+       "tekst": "Kritisch"
+      },
+      {
+       "waarde": "welwillend",
+       "tekst": "Welwillend"
+      }
+     ]
+    },
+    {
+     "id": "gevoel",
+     "type": "keuze",
+     "label": "Gevoeligheid van het onderwerp",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "laag",
+       "tekst": "Laag"
+      },
+      {
+       "waarde": "midden",
+       "tekst": "Midden"
+      },
+      {
+       "waarde": "hoog",
+       "tekst": "Hoog"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "gevoellabel": {
+   "laag": "lage",
+   "midden": "middel",
+   "hoog": "hoge"
+  }
+ },
+ "resultaat_kop": "Q&A-voorbereiding",
+ "resultaat_intro": "Onderwerp: \"{onderwerp}\"  -  Publiek: {publiek|label|klein}  -  Gevoeligheid: {gevoel|bank:gevoellabel}.",
+ "uitvoer": [
+  {
+   "type": "lijst",
+   "kop": "Verwachte vragen",
+   "nummers": true,
+   "items": [
+    "Wat is je kernboodschap over {onderwerp}?",
+    "Welke aannames liggen ten grondslag aan {onderwerp}?",
+    "Wat als {onderwerp} niet werkt zoals verwacht?",
+    "Hoeveel kost {onderwerp} en wie betaalt dat?",
+    "Hoe verschilt dit van wat er al bestaat over {onderwerp}?",
+    {
+     "tekst": "Geef {onderwerp} in 1 zin.",
+     "als": {
+      "veld": "publiek",
+      "is": "kort"
+     }
+    },
+    {
+     "tekst": "Wat is de essentie van {onderwerp}?",
+     "als": {
+      "veld": "publiek",
+      "is": "kort"
+     }
+    },
+    {
+     "tekst": "Waarom nu en niet over een jaar?",
+     "als": {
+      "veld": "publiek",
+      "is": "kort"
+     }
+    },
+    {
+     "tekst": "Vertel meer over de achtergrond van {onderwerp}.",
+     "als": {
+      "veld": "publiek",
+      "is": "lang"
+     }
+    },
+    {
+     "tekst": "Hoe verhoudt {onderwerp} zich tot eerder werk in dit vakgebied?",
+     "als": {
+      "veld": "publiek",
+      "is": "lang"
+     }
+    },
+    {
+     "tekst": "Wat zijn de subtielere implicaties van {onderwerp}?",
+     "als": {
+      "veld": "publiek",
+      "is": "lang"
+     }
+    },
+    {
+     "tekst": "Welk hard bewijs heb je voor {onderwerp}?",
+     "als": {
+      "veld": "publiek",
+      "is": "critisch"
+     }
+    },
+    {
+     "tekst": "Wie heeft er publiekelijk kritiek geleverd op {onderwerp}?",
+     "als": {
+      "veld": "publiek",
+      "is": "critisch"
+     }
+    },
+    {
+     "tekst": "Wat doe je als je over {onderwerp} ongelijk blijkt te hebben?",
+     "als": {
+      "veld": "publiek",
+      "is": "critisch"
+     }
+    },
+    {
+     "tekst": "Hoe ga je om met tegenargumenten over {onderwerp}?",
+     "als": {
+      "veld": "publiek",
+      "is": "critisch"
+     }
+    },
+    {
+     "tekst": "Hoe kunnen wij helpen om {onderwerp} verder te brengen?",
+     "als": {
+      "veld": "publiek",
+      "is": "welwillend"
+     }
+    },
+    {
+     "tekst": "Wat is jouw volgende stap met {onderwerp}?",
+     "als": {
+      "veld": "publiek",
+      "is": "welwillend"
+     }
+    },
+    {
+     "tekst": "Wanneer zien we de eerste resultaten van {onderwerp}?",
+     "als": {
+      "veld": "publiek",
+      "is": "welwillend"
+     }
+    },
+    {
+     "tekst": "Hoe zorg je voor balans tussen perspectieven rond {onderwerp}?",
+     "als": {
+      "veld": "gevoel",
+      "is": "midden"
+     }
+    },
+    {
+     "tekst": "Wie heb je geraadpleegd voor {onderwerp}?",
+     "als": {
+      "veld": "gevoel",
+      "is": "midden"
+     }
+    },
+    {
+     "tekst": "Hoe legitiem is jouw positie over {onderwerp}?",
+     "als": {
+      "veld": "gevoel",
+      "is": "hoog"
+     }
+    },
+    {
+     "tekst": "Wie heeft belang bij {onderwerp} en wie verliest?",
+     "als": {
+      "veld": "gevoel",
+      "is": "hoog"
+     }
+    },
+    {
+     "tekst": "Wat als {onderwerp} verkeerd wordt geïnterpreteerd?",
+     "als": {
+      "veld": "gevoel",
+      "is": "hoog"
+     }
+    },
+    {
+     "tekst": "Is er draagvlak voor {onderwerp} en wie steunt het niet?",
+     "als": {
+      "veld": "gevoel",
+      "is": "hoog"
+     }
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "4 tactieken voor lastige vragen",
+   "regels": [
+    {
+     "label": "Parkeer-techniek",
+     "tekst": "Wanneer: Vraag past nu niet (te lang, te ver van onderwerp). Formule: \"Goede vraag. Daar kom ik graag op terug bij het volgende deel\" of \"Laat ik dat na de presentatie met je opnemen\" (en doe dat dan ook)."
+    },
+    {
+     "label": "Herformuleer-vraag",
+     "tekst": "Wanneer: Vraag is lang, verward of vijandig. Formule: \"Dus jouw vraag is...\" en geef een neutrale samenvatting. Wacht op bevestiging, dan beantwoord je. Haalt scherpte uit vijandige toon."
+    },
+    {
+     "label": "Terugkaats-strategie",
+     "tekst": "Wanneer: Vraag is meningsvragend of polariserend. Formule: \"Mooie vraag. Wat zou jouw eerste reflex zijn?\" of \"Hoe zou je dat zelf aanpakken?\" Geeft jou denktijd en bouwt verbinding."
+    },
+    {
+     "label": "Eerlijk-niet-weten",
+     "tekst": "Wanneer: Je weet het echt niet. Formule: \"Goede vraag, daar moet ik op terugkomen. Laat je mailadres achter, dan kom ik er binnen 48 uur op terug\" of \"Daar heb ik geen data over, mijn eerste inschatting is X maar zonder check zou ik dat niet hard maken\"."
+    }
+   ]
+  }
+ ],
+ "teksten": {
+  "tool_maak": "Genereer vragenlijst",
+  "tool_resultaat": "Vragenlijst"
+ },
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "q-en-a-voorbereiding-{onderwerp}"
+ },
+ "mail": {
+  "onderwerp": "Jouw Q&A-voorbereiding",
+  "intro": ""
+ }
+}

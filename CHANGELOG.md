@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.9.0] - 2026-10-23
+
+De toolmotor krijgt de soort generator. 22 generatoren op het netwerk kunnen nu van hun eigen snippet naar de motor (DGA 7 al omgezet op de proefversie; SFP 2, DPS 3, CVD 1, DST 8, FL 1 volgen na deze release). Proefversies 3.9.0-beta.1 en beta.2 op DGA.
+
+### Toegevoegd
+- **Soort generator:** stappen met velden (keuze, keuzelijst, vinkjes, kort tekstveld, tekstvak, regels, datum, getal), daarna een resultaat uit vaste secties, banken en sjablonen met plaatshouders en filters. Secties: tekst, lijst, vragen met antwoordveld en schrijfregels, afvinklijst, alinea's, gegevens en herhalen per gekozen optie. Voorwaarden op velden, labels, hints en intro's die de antwoorden volgen.
+- Bewerkbaar resultaat: de bezoeker past de tekst in het document aan voor kopiëren of downloaden.
+- Pdf en Word met antwoorden of schrijfregels, kopiëren (ook zonder kop), deellink, voortgang in de browser, duimpjes, SureForms-formulier na het resultaat met verborgen velden gevuld uit het resultaat.
+- Mail naar jezelf: de server bouwt het resultaat opnieuw uit de antwoorden; keuzes en korte velden gaan mee, tekstvakken niet, zodat niemand eigen tekst via de site naar een willekeurig adres kan sturen.
+- `tests/generator.php` legt het bouwen in PHP en in de browser naast elkaar; voorbeelden van alle 22 generatoren in `tests/tool-voorbeelden`.
+
+### Gewijzigd
+- Duimpjes en deellink gebruiken ook de eigen teksten van een tool.
+
 ## [3.9.0-beta.2] - 2026-10-23
 
 Tweede proefversie voor DGA: aanvullingen op de generator voor de andere sites.

@@ -1,0 +1,395 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "MINHA APRESENTAÇÃO",
+ "resultaat_intro": "montada com o método FASTER",
+ "stappen": [
+  {
+   "titel": "TEMA",
+   "intro": "Antes de tudo: qual é a apresentação?\n\nSem rodeio. Me diga o tema e a situação, e a gente começa a trabalhar.",
+   "velden": [
+    {
+     "id": "tema",
+     "type": "kort",
+     "label": "Tema da apresentação",
+     "voorbeeld": "ex.: resultados do trimestre, proposta de projeto, defesa do TCC",
+     "hint": "Vale reunião, aula, banca, pitch: qualquer fala com plateia."
+    }
+   ]
+  },
+  {
+   "titel": "F",
+   "intro": "F · Formule seu objetivo",
+   "velden": [
+    {
+     "id": "verbo",
+     "type": "keuze",
+     "label": "A preocupação é a mente ocupada antes da hora. A gente resolve isso com UMA frase. Primeiro, escolha um verbo. Um só. Isso já diminui seu estresse pela metade.",
+     "opties": [
+      {
+       "waarde": "Informar",
+       "tekst": "Informar",
+       "uitleg": "transmitir dados, fatos, atualizações"
+      },
+      {
+       "waarde": "Instruir",
+       "tekst": "Instruir",
+       "uitleg": "ensinar algo prático, um passo a passo"
+      },
+      {
+       "waarde": "Inspirar",
+       "tekst": "Inspirar",
+       "uitleg": "entusiasmar ou motivar"
+      },
+      {
+       "waarde": "Convencer",
+       "tekst": "Convencer",
+       "uitleg": "vencer uma resistência ou decidir um conflito de ideias"
+      },
+      {
+       "waarde": "Ativar",
+       "tekst": "Ativar",
+       "uitleg": "mudar um comportamento ou instigar uma ação concreta"
+      }
+     ]
+    },
+    {
+     "id": "pub",
+     "type": "kort",
+     "label": "Quem é o seu público? (seja específico)",
+     "voorbeeld": "ex.: minha equipe de 10 pessoas / a banca de 3 professores"
+    },
+    {
+     "id": "res",
+     "type": "kort",
+     "label": "Se a apresentação for um sucesso absoluto, o que exatamente acontece?",
+     "voorbeeld": "ex.: que eles apoiem e contribuam com o projeto piloto",
+     "hint": "Qual o primeiro micro-passo que eles dariam? Foque na transformação, não nas objeções."
+    }
+   ]
+  },
+  {
+   "titel": "A",
+   "intro": "A · Analise seu público\n\nVocê não fala só por falar: o público precisa sair diferente de como entrou. Pra ajustar o tom, duas perguntas:",
+   "velden": [
+    {
+     "id": "intr",
+     "type": "lijst",
+     "label": "Interesse deles no tema",
+     "opties": [
+      {
+       "waarde": "baixo",
+       "tekst": "Baixo: vão porque precisam"
+      },
+      {
+       "waarde": "alto",
+       "tekst": "Alto: querem estar lá"
+      }
+     ]
+    },
+    {
+     "id": "conh",
+     "type": "lijst",
+     "label": "Conhecimento deles do tema",
+     "opties": [
+      {
+       "waarde": "baixo",
+       "tekst": "Baixo: são leigos"
+      },
+      {
+       "waarde": "alto",
+       "tekst": "Alto: dominam o assunto"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "S",
+   "intro": "S · Sistematize suas ideias",
+   "velden": [
+    {
+     "id": "estr",
+     "type": "keuze",
+     "label": "Raciocínio confuso cansa o público e alimenta o SEU nervosismo. Escolha uma estrutura e coloque UMA ideia central por bloco. Se você tivesse só um minuto, o que diria?",
+     "opties": [
+      {
+       "waarde": "problema",
+       "tekst": "Problema, Análise e Solução",
+       "uitleg": "comece com a dor, explore as causas e apresente sua proposta"
+      },
+      {
+       "waarde": "tempo",
+       "tekst": "Passado, Presente e Futuro",
+       "uitleg": "dê o contexto, mostre a situação atual e projete o que virá"
+      },
+      {
+       "waarde": "porque",
+       "tekst": "O Porquê, O Como e O Quê",
+       "uitleg": "explique a motivação, o processo e o resultado"
+      }
+     ]
+    },
+    {
+     "id": "abre",
+     "type": "kort",
+     "label": "Abertura (primeira frase pronta: pergunta, dado ou mini-história)",
+     "voorbeeld": "quem sabe como começa, começa"
+    },
+    {
+     "id": "b1",
+     "type": "tekstvak",
+     "label": "Bloco 1{estr|bank:bloco1|voor: · }",
+     "hint": "{estr|bank:dica1}"
+    },
+    {
+     "id": "b2",
+     "type": "tekstvak",
+     "label": "Bloco 2{estr|bank:bloco2|voor: · }",
+     "hint": "{estr|bank:dica2}"
+    },
+    {
+     "id": "b3",
+     "type": "tekstvak",
+     "label": "Bloco 3{estr|bank:bloco3|voor: · }",
+     "hint": "{estr|bank:dica3}"
+    },
+    {
+     "id": "fecha",
+     "type": "kort",
+     "label": "Fechamento (recapitule + chamada de ação)",
+     "voorbeeld": "ex.: Recapitulando… O próximo passo é…"
+    }
+   ]
+  },
+  {
+   "titel": "T",
+   "intro": "T · Treine suas técnicas",
+   "velden": [
+    {
+     "id": "ensaio",
+     "type": "vinkjes",
+     "label": "Preparação técnica transforma ansiedade em energia utilizável. Faça AGORA, não na véspera:",
+     "opties": [
+      {
+       "waarde": "t1",
+       "tekst": "Ler a abertura em voz alta, 3 vezes. (Quem começa bem, continua.)"
+      },
+      {
+       "waarde": "t2",
+       "tekst": "Ensaiar as transições entre os blocos: é onde a maioria se perde."
+      },
+      {
+       "waarde": "t3",
+       "tekst": "Escrever as 3 perguntas que você mais teme receber, com uma resposta curta pra cada."
+      },
+      {
+       "waarde": "t4",
+       "tekst": "Combinar com você mesmo: 3 respirações lentas antes de entrar."
+      }
+     ]
+    },
+    {
+     "id": "pergs",
+     "type": "tekstvak",
+     "label": "Suas 3 perguntas temidas (e as respostas)",
+     "voorbeeld": "1) … resposta: …"
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "combinacao": "{intr}_{conh}",
+  "tom": "{combinacao|bank:tom}",
+  "prompt_slides": "Crie a estrutura de uma apresentação de slides a partir do roteiro abaixo.\n\nContexto: esta apresentação foi montada com o método FASTER.\nO objetivo dela é {verbo|klein|anders:[verbo]} {pub|anders:[público]}, para que {res|anders:[resultado]}.\nPerfil do público: interesse {intr|anders:-} no tema, conhecimento {conh|anders:-} do assunto.\n\nEstrutura da fala:\n- Abertura: {abre|anders:-}\n- {estr|bank:bloco1|anders:Bloco 1}: {b1|anders:-}\n- {estr|bank:bloco2|anders:Bloco 2}: {b2|anders:-}\n- {estr|bank:bloco3|anders:Bloco 3}: {b3|anders:-}\n- Fechamento: {fecha|anders:-}\n\nRegras para os slides:\n1. Um slide por ideia. Sugira entre 8 e 12 slides no total.\n2. Pouco texto por slide: título curto + no máximo 3 linhas de apoio. O roteiro é o que eu FALO, não o que aparece na tela.\n3. Para cada slide, sugira: título, texto de apoio e uma ideia de recurso visual.\n4. Slide de abertura com impacto e slide final com a chamada de ação do fechamento.\n5. Não invente dados nem estatísticas. Se sugerir um número, marque como [dado a preencher]."
+ },
+ "banken": {
+  "tom": {
+   "baixo_baixo": "Público de baixo envolvimento: conquiste a atenção primeiro. Abra com o PORQUÊ (o que eles ganham) antes de qualquer conteúdo. Conhecimento baixo: evite jargão e construa do básico, com exemplos do dia a dia.",
+   "baixo_alto": "Público de baixo envolvimento: conquiste a atenção primeiro. Abra com o PORQUÊ (o que eles ganham) antes de qualquer conteúdo. Conhecimento alto: pule o básico e traga profundidade, dados e nuance.",
+   "alto_baixo": "Público de alto envolvimento: eles já querem ouvir. Vá mais fundo, sem gastar tempo vendendo o tema. Conhecimento baixo: evite jargão e construa do básico, com exemplos do dia a dia.",
+   "alto_alto": "Público de alto envolvimento: eles já querem ouvir. Vá mais fundo, sem gastar tempo vendendo o tema. Conhecimento alto: pule o básico e traga profundidade, dados e nuance."
+  },
+  "bloco1": {
+   "problema": "O Problema",
+   "tempo": "O Passado",
+   "porque": "O Porquê"
+  },
+  "bloco2": {
+   "problema": "A Análise",
+   "tempo": "O Presente",
+   "porque": "O Como"
+  },
+  "bloco3": {
+   "problema": "A Solução",
+   "tempo": "O Futuro",
+   "porque": "O Quê"
+  },
+  "dica1": {
+   "problema": "Descreva a dor como o público sente. O que incomoda hoje? Use uma situação real, com contexto e consequência.",
+   "tempo": "Dê o contexto: como chegamos até aqui? Só o essencial pra situar quem ouve.",
+   "porque": "Comece pela motivação: por que isso importa? Conecte com o que o seu público valoriza."
+  },
+  "dica2": {
+   "problema": "Explore as causas: por que isso acontece? Traga os 2 ou 3 fatores por trás do problema, com um dado ou exemplo.",
+   "tempo": "Mostre a fotografia de hoje, com fatos e números atuais.",
+   "porque": "Explique o processo: como funciona, em poucos passos claros."
+  },
+  "dica3": {
+   "problema": "Apresente a sua proposta e o que muda ao adotá-la. Termine com o primeiro passo concreto.",
+   "tempo": "Projete o que vem: cenário, oportunidade ou risco, e o que fazer agora pra chegar lá.",
+   "porque": "Feche com o concreto: o que será feito, entregue ou decidido, e por quem."
+  },
+  "interesse": {
+   "baixo": "baixo (vão porque precisam)",
+   "alto": "alto (querem estar lá)"
+  },
+  "conhecimento": {
+   "baixo": "baixo (são leigos)",
+   "alto": "alto (dominam o assunto)"
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "kop": "TEMA",
+   "tekst": "{tema|anders:-}"
+  },
+  {
+   "type": "tekst",
+   "kop": "OBJETIVO",
+   "tekst": "O objetivo da minha apresentação é {verbo|klein|anders:-} {pub|anders:-}, para que {res|anders:-}."
+  },
+  {
+   "type": "tekst",
+   "kop": "PÚBLICO",
+   "tekst": "Interesse: {intr|bank:interesse|anders:-} · Conhecimento: {conh|bank:conhecimento|anders:-}\nTom: {tom|anders:-}"
+  },
+  {
+   "type": "tekst",
+   "kop": "ESTRUTURA",
+   "tekst": "{estr|label|anders:-}"
+  },
+  {
+   "type": "tekst",
+   "kop": "ABERTURA",
+   "tekst": "{abre|anders:-}"
+  },
+  {
+   "type": "tekst",
+   "kop": "BLOCO 1{estr|bank:bloco1|voor: · }",
+   "tekst": "{b1|anders:-}"
+  },
+  {
+   "type": "tekst",
+   "kop": "BLOCO 2{estr|bank:bloco2|voor: · }",
+   "tekst": "{b2|anders:-}"
+  },
+  {
+   "type": "tekst",
+   "kop": "BLOCO 3{estr|bank:bloco3|voor: · }",
+   "tekst": "{b3|anders:-}"
+  },
+  {
+   "type": "tekst",
+   "kop": "FECHAMENTO (recapitule, agradeça e faça a chamada de ação)",
+   "tekst": "{fecha|anders:-}"
+  },
+  {
+   "type": "alineas",
+   "kop": "ENSAIO (o T do FASTER)",
+   "items": [
+    {
+     "tekst": "[x] Li a abertura em voz alta 3 vezes",
+     "als": {
+      "veld": "ensaio",
+      "bevat": "t1"
+     }
+    },
+    {
+     "tekst": "[ ] Li a abertura em voz alta 3 vezes",
+     "als": {
+      "veld": "ensaio",
+      "niet": "t1"
+     }
+    },
+    {
+     "tekst": "[x] Ensaiei as transições entre blocos",
+     "als": {
+      "veld": "ensaio",
+      "bevat": "t2"
+     }
+    },
+    {
+     "tekst": "[ ] Ensaiei as transições entre blocos",
+     "als": {
+      "veld": "ensaio",
+      "niet": "t2"
+     }
+    },
+    {
+     "tekst": "[x] Escrevi as 3 perguntas que mais temo (com respostas curtas)",
+     "als": {
+      "veld": "ensaio",
+      "bevat": "t3"
+     }
+    },
+    {
+     "tekst": "[ ] Escrevi as 3 perguntas que mais temo (com respostas curtas)",
+     "als": {
+      "veld": "ensaio",
+      "niet": "t3"
+     }
+    },
+    {
+     "tekst": "[x] Respiração: 3 ciclos lentos antes de entrar",
+     "als": {
+      "veld": "ensaio",
+      "bevat": "t4"
+     }
+    },
+    {
+     "tekst": "[ ] Respiração: 3 ciclos lentos antes de entrar",
+     "als": {
+      "veld": "ensaio",
+      "niet": "t4"
+     }
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "PERGUNTAS TEMIDAS",
+   "tekst": "{pergs}"
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 2250,
+  "pdf_bestandsnaam": "construtor-de-apresentacao-{tema|klein|anders:apresentacao}",
+  "formulier_velden": {
+   "roteiro": "@uitvoer",
+   "prompt_slides": "{prompt_slides}"
+  }
+ },
+ "mail": {
+  "onderwerp": "MINHA APRESENTAÇÃO{tema|voor: · }",
+  "intro": ""
+ },
+ "teksten": {
+  "tool_resultaat": "PRONTO",
+  "tool_volgende": "Próximo passo",
+  "tool_vorige": "Voltar",
+  "tool_maak": "Montar meu roteiro",
+  "tool_pdf": "Baixar em PDF",
+  "tool_word": "Baixar em Word",
+  "tool_kopieer": "Copiar roteiro",
+  "tool_gekopieerd": "Copiado ✓",
+  "tool_opnieuw": "Começar de novo"
+ }
+}

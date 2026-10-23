@@ -1,0 +1,468 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Conversation blueprint",
+ "stappen": [
+  {
+   "titel": "Context",
+   "intro": "Your answers are not stored on our servers. They are only kept temporarily in your own browser, so you can continue later. Want to clear everything? Use the Start over button on the last step.",
+   "velden": [
+    {
+     "id": "situaties",
+     "type": "vinkjes",
+     "label": "Why is this conversation taking place?",
+     "hint": "Your choice shapes the examples at each step. Not sure? Choose \"Something else, namely...\".",
+     "opties": [
+      {
+       "waarde": "besluit",
+       "tekst": "Explaining a decision or change"
+      },
+      {
+       "waarde": "draagvlak",
+       "tekst": "Asking for buy-in for an approach"
+      },
+      {
+       "waarde": "motiveren",
+       "tekst": "Motivating an employee"
+      },
+      {
+       "waarde": "lastig",
+       "tekst": "Delivering a difficult message"
+      },
+      {
+       "waarde": "algemeen",
+       "tekst": "Other"
+      }
+     ]
+    },
+    {
+     "id": "situatieAnders",
+     "type": "kort",
+     "label": "Something else, namely",
+     "voorbeeld": "Enter your own situation",
+     "maxlengte": 120,
+     "toon_als": {
+      "veld": "situaties",
+      "bevat": "algemeen"
+     },
+     "verplicht": {
+      "veld": "situaties",
+      "bevat": "algemeen"
+     }
+    },
+    {
+     "id": "gesprekType",
+     "type": "keuze",
+     "label": "Conversation type",
+     "hint": "Are you having this conversation with one person or with a group?",
+     "opties": [
+      {
+       "waarde": "een",
+       "tekst": "With one person"
+      },
+      {
+       "waarde": "groep",
+       "tekst": "With a group or team"
+      }
+     ]
+    },
+    {
+     "id": "rolOnderwerp",
+     "type": "keuze",
+     "label": "Your role",
+     "hint": "What role do you have in this conversation?",
+     "opties": [
+      {
+       "waarde": "eigenaar",
+       "tekst": "I own this decision"
+      },
+      {
+       "waarde": "doorgeven",
+       "tekst": "I am passing on a decision from above"
+      },
+      {
+       "waarde": "meedenken",
+       "tekst": "I contribute within set boundaries"
+      }
+     ]
+    },
+    {
+     "id": "doelstelling",
+     "type": "tekstvak",
+     "label": "What result do you want from this conversation?",
+     "hint": "Make it concrete and measurable.",
+     "voorbeeld": "What do you want to be different or clear after this conversation?",
+     "verplicht": true
+    }
+   ]
+  },
+  {
+   "titel": "Content",
+   "velden": [
+    {
+     "id": "kernboodschap",
+     "type": "tekstvak",
+     "label": "The two or three sentences that absolutely must stick",
+     "hint": "Test: if your conversation partner retells the conversation tomorrow, what should they say?",
+     "voorbeeld": "The two or three sentences that really must stick.",
+     "verplicht": true
+    },
+    {
+     "id": "kp1",
+     "type": "kort",
+     "label": "Key points",
+     "hint": "The points that must be covered no matter how the conversation goes.",
+     "voorbeeld": "A point that must be covered no matter what",
+     "verplicht": true
+    },
+    {
+     "id": "kp2",
+     "type": "kort",
+     "label": "Key point",
+     "voorbeeld": "A point that must be covered no matter what",
+     "verplicht": true
+    },
+    {
+     "id": "kp3",
+     "type": "kort",
+     "label": "Key point",
+     "voorbeeld": "A point that must be covered no matter what"
+    },
+    {
+     "id": "kp4",
+     "type": "kort",
+     "label": "Key point",
+     "voorbeeld": "A point that must be covered no matter what"
+    },
+    {
+     "id": "bezwaren",
+     "type": "tekstvak",
+     "label": "Expected objection",
+     "hint": "Optional. Anticipate pushback so you stay in control."
+    },
+    {
+     "id": "bezwaarReactie",
+     "type": "tekstvak",
+     "label": "Your response"
+    }
+   ]
+  },
+  {
+   "titel": "Boundaries",
+   "intro": "Decide in advance what the conversation is and is not about.",
+   "velden": [
+    {
+     "id": "wel",
+     "type": "tekstvak",
+     "label": "What is the conversation about?",
+     "verplicht": true
+    },
+    {
+     "id": "niet",
+     "type": "tekstvak",
+     "label": "What is the conversation not about?",
+     "hint": "Name topics that are relevant but outside your control.",
+     "verplicht": true
+    },
+    {
+     "id": "gespreksNaam",
+     "type": "kort",
+     "label": "Your name",
+     "voorbeeld": "For your blueprint",
+     "maxlengte": 60
+    },
+    {
+     "id": "gespreksMet",
+     "type": "kort",
+     "label": "Conversation with",
+     "voorbeeld": "Name or team",
+     "maxlengte": 80
+    },
+    {
+     "id": "gespreksDatum",
+     "type": "kort",
+     "label": "Date",
+     "voorbeeld": "For example: Tuesday 10 June",
+     "maxlengte": 40
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "situatie": {
+   "besluit": "Explaining a decision or change",
+   "draagvlak": "Asking for buy-in for an approach",
+   "besluit, draagvlak": "Explaining a decision or change • Asking for buy-in for an approach",
+   "motiveren": "Motivating an employee",
+   "besluit, motiveren": "Explaining a decision or change • Motivating an employee",
+   "draagvlak, motiveren": "Asking for buy-in for an approach • Motivating an employee",
+   "besluit, draagvlak, motiveren": "Explaining a decision or change • Asking for buy-in for an approach • Motivating an employee",
+   "lastig": "Delivering a difficult message",
+   "besluit, lastig": "Explaining a decision or change • Delivering a difficult message",
+   "draagvlak, lastig": "Asking for buy-in for an approach • Delivering a difficult message",
+   "besluit, draagvlak, lastig": "Explaining a decision or change • Asking for buy-in for an approach • Delivering a difficult message",
+   "motiveren, lastig": "Motivating an employee • Delivering a difficult message",
+   "besluit, motiveren, lastig": "Explaining a decision or change • Motivating an employee • Delivering a difficult message",
+   "draagvlak, motiveren, lastig": "Asking for buy-in for an approach • Motivating an employee • Delivering a difficult message",
+   "besluit, draagvlak, motiveren, lastig": "Explaining a decision or change • Asking for buy-in for an approach • Motivating an employee • Delivering a difficult message",
+   "algemeen": "{situatieAnders|eersteregel|anders:Other}",
+   "besluit, algemeen": "Explaining a decision or change • {situatieAnders|eersteregel|anders:Other}",
+   "draagvlak, algemeen": "Asking for buy-in for an approach • {situatieAnders|eersteregel|anders:Other}",
+   "besluit, draagvlak, algemeen": "Explaining a decision or change • Asking for buy-in for an approach • {situatieAnders|eersteregel|anders:Other}",
+   "motiveren, algemeen": "Motivating an employee • {situatieAnders|eersteregel|anders:Other}",
+   "besluit, motiveren, algemeen": "Explaining a decision or change • Motivating an employee • {situatieAnders|eersteregel|anders:Other}",
+   "draagvlak, motiveren, algemeen": "Asking for buy-in for an approach • Motivating an employee • {situatieAnders|eersteregel|anders:Other}",
+   "besluit, draagvlak, motiveren, algemeen": "Explaining a decision or change • Asking for buy-in for an approach • Motivating an employee • {situatieAnders|eersteregel|anders:Other}",
+   "lastig, algemeen": "Delivering a difficult message • {situatieAnders|eersteregel|anders:Other}",
+   "besluit, lastig, algemeen": "Explaining a decision or change • Delivering a difficult message • {situatieAnders|eersteregel|anders:Other}",
+   "draagvlak, lastig, algemeen": "Asking for buy-in for an approach • Delivering a difficult message • {situatieAnders|eersteregel|anders:Other}",
+   "besluit, draagvlak, lastig, algemeen": "Explaining a decision or change • Asking for buy-in for an approach • Delivering a difficult message • {situatieAnders|eersteregel|anders:Other}",
+   "motiveren, lastig, algemeen": "Motivating an employee • Delivering a difficult message • {situatieAnders|eersteregel|anders:Other}",
+   "besluit, motiveren, lastig, algemeen": "Explaining a decision or change • Motivating an employee • Delivering a difficult message • {situatieAnders|eersteregel|anders:Other}",
+   "draagvlak, motiveren, lastig, algemeen": "Asking for buy-in for an approach • Motivating an employee • Delivering a difficult message • {situatieAnders|eersteregel|anders:Other}",
+   "besluit, draagvlak, motiveren, lastig, algemeen": "Explaining a decision or change • Asking for buy-in for an approach • Motivating an employee • Delivering a difficult message • {situatieAnders|eersteregel|anders:Other}"
+  },
+  "voorbeelden": {
+   "besluit": {
+    "doel": "For example: my team understands why this decision was made and what it means for their daily work.",
+    "boodschap": "For example: this decision is final; together we will look at how to make it land well.",
+    "punt": "For example: what concretely changes and from when"
+   },
+   "draagvlak": {
+    "doel": "For example: my team backs the approach and wants to help shape how we carry it out.",
+    "boodschap": "For example: I believe in this approach and I need you to make it work.",
+    "punt": "For example: which problem this solves"
+   },
+   "motiveren": {
+    "doel": "For example: my employee feels seen and has fresh energy for the next step.",
+    "boodschap": "For example: I see what you contribute and I believe in your next step.",
+    "punt": "For example: a concrete example of what is going well"
+   },
+   "lastig": {
+    "doel": "For example: the message has come across clearly and we have a follow-up meeting.",
+    "boodschap": "For example: I need to tell you something difficult, and I want to discuss it together.",
+    "punt": "For example: the heart of the message, without padding"
+   },
+   "algemeen": {
+    "doel": "What do you want to be different or clear after this conversation?",
+    "boodschap": "The two or three sentences that really must stick.",
+    "punt": "A point that must be covered no matter what"
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "als": {
+    "veld": "gespreksMet",
+    "gevuld": true
+   },
+   "tekst": "{gespreksNaam|eersteregel|voor:Blueprint by |na: • }Conversation with {gespreksMet|eersteregel}{gespreksDatum|eersteregel|voor:, }"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "gespreksMet",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksDatum",
+     "gevuld": true
+    }
+   ],
+   "tekst": "{gespreksNaam|eersteregel|voor:Blueprint by |na: • }Conversation on {gespreksDatum|eersteregel}"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "gespreksMet",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksDatum",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksNaam",
+     "gevuld": true
+    }
+   ],
+   "tekst": "Blueprint by {gespreksNaam|eersteregel}"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "gespreksMet",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksDatum",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksNaam",
+     "gevuld": false
+    }
+   ],
+   "tekst": "Blueprint by …………  •  Conversation with …………"
+  },
+  {
+   "type": "tekst",
+   "als": {
+    "veld": "situaties",
+    "gevuld": true
+   },
+   "tekst": "{situaties|klein|bank:situatie}{gesprekType|label|voor: • }{rolOnderwerp|label|voor: • }"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "situaties",
+     "gevuld": false
+    },
+    {
+     "veld": "gesprekType",
+     "gevuld": true
+    }
+   ],
+   "tekst": "{gesprekType|label}{rolOnderwerp|label|voor: • }"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "situaties",
+     "gevuld": false
+    },
+    {
+     "veld": "gesprekType",
+     "gevuld": false
+    }
+   ],
+   "tekst": "{rolOnderwerp|label}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Core message",
+   "tekst": "{kernboodschap|anders:-}"
+  },
+  {
+   "type": "afvink",
+   "kop": "Key points",
+   "items": [
+    "{kp1}",
+    "{kp2}",
+    "{kp3}",
+    "{kp4}",
+    {
+     "tekst": "-",
+     "als": [
+      {
+       "veld": "kp1",
+       "gevuld": false
+      },
+      {
+       "veld": "kp2",
+       "gevuld": false
+      },
+      {
+       "veld": "kp3",
+       "gevuld": false
+      },
+      {
+       "veld": "kp4",
+       "gevuld": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "Expected objections",
+   "regels": [
+    {
+     "label": "Objection",
+     "tekst": "{bezwaren}"
+    },
+    {
+     "label": "Response",
+     "tekst": "{bezwaarReactie}"
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "Boundaries",
+   "regels": [
+    {
+     "label": "In scope",
+     "tekst": "{wel|anders:-}"
+    },
+    {
+     "label": "Out of scope",
+     "tekst": "{niet|anders:-}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Objective",
+   "tekst": "{doelstelling|anders:-}"
+  },
+  {
+   "type": "vragen",
+   "nummers": false,
+   "lijnen": 8,
+   "items": [
+    "Notes and agreements"
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "conversation-blueprint{gespreksMet|klein|voor:-}"
+ },
+ "mail": {
+  "onderwerp": "Your conversation blueprint{gespreksMet|voor: for your conversation with }",
+  "intro": "Hi{gespreksNaam|voor: },\n\nHere is the blueprint for your conversation{gespreksMet|voor: with }{gespreksDatum|voor: on }.\n\nHow to use it:\n- Read it through once more, five minutes before the conversation.\n- During or after the conversation, tick off your key points and note any agreements in the notes box.\n- Is the conversation drifting outside the boundaries? Name it, park it, and return to your core message."
+ },
+ "teksten": {
+  "tool_resultaat": "Done",
+  "tool_maak": "Create my blueprint",
+  "tool_volgende": "Next",
+  "tool_vorige": "Back",
+  "tool_pdf": "Download as PDF",
+  "tool_mail": "Email it to me",
+  "tool_word": "Prefer Word? Download as .docx",
+  "tool_mail_veld": "Your email address",
+  "tool_mail_verstuur": "Send",
+  "tool_opnieuw": "Start over",
+  "tool_kies": "Choose",
+  "tool_optioneel": "(optional)",
+  "tool_vul_in": "Fill in first: %s",
+  "tool_kies_minimaal": "Choose at least %d.",
+  "tool_kopieer": "Copy text",
+  "tool_gekopieerd": "Text copied",
+  "tool_deellink": "Share link",
+  "tool_bezig": "Working on it",
+  "tool_bestand_fout": "The file could not be made. Check your connection and try again.",
+  "tool_mail_ok": "Sent. Check your inbox.",
+  "tool_mail_fout": "Sending failed. Try again later.",
+  "tool_pas_aan": "Edit this text",
+  "tool_jouw_antwoord": "Your answer",
+  "tool_verder": "Continue where you left off?",
+  "tool_verder_ja": "Continue",
+  "tool_verder_nee": "Start over"
+ }
+}

@@ -1,0 +1,292 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Jouw brief",
+ "bewerkbaar": true,
+ "stappen": [
+  {
+   "titel": "Type brief",
+   "velden": [
+    {
+     "id": "type",
+     "type": "keuze",
+     "label": "Kies een type brief",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "klacht",
+       "tekst": "Klachtbrief"
+      },
+      {
+       "waarde": "opzegging",
+       "tekst": "Opzeggingsbrief"
+      },
+      {
+       "waarde": "bezwaar",
+       "tekst": "Bezwaarschrift"
+      },
+      {
+       "waarde": "verzoek",
+       "tekst": "Informatie- of verzoekbrief"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Van wie en aan wie?",
+   "velden": [
+    {
+     "id": "afz_naam",
+     "type": "kort",
+     "label": "Jouw naam",
+     "verplicht": true
+    },
+    {
+     "id": "afz_adres",
+     "type": "kort",
+     "label": "Adres + nummer"
+    },
+    {
+     "id": "afz_postcode",
+     "type": "kort",
+     "label": "Postcode",
+     "voorbeeld": "1234 AB"
+    },
+    {
+     "id": "afz_plaats",
+     "type": "kort",
+     "label": "Plaats",
+     "voorbeeld": "Amsterdam"
+    },
+    {
+     "id": "ger_naam",
+     "type": "kort",
+     "label": "Geadresseerde (naam of organisatie)",
+     "verplicht": true
+    },
+    {
+     "id": "ger_adres",
+     "type": "kort",
+     "label": "Adres geadresseerde"
+    },
+    {
+     "id": "ger_postcode",
+     "type": "kort",
+     "label": "Postcode",
+     "voorbeeld": "1234 AB"
+    },
+    {
+     "id": "ger_plaats",
+     "type": "kort",
+     "label": "Plaats",
+     "voorbeeld": "Amsterdam"
+    },
+    {
+     "id": "brief_plaats",
+     "type": "kort",
+     "label": "Plaats",
+     "voorbeeld": "Amsterdam"
+    },
+    {
+     "id": "brief_datum",
+     "type": "datum",
+     "label": "Datum",
+     "standaard": "vandaag"
+    },
+    {
+     "id": "onderwerp",
+     "type": "kort",
+     "label": "Onderwerp van de brief",
+     "verplicht": true,
+     "hint": "Korte aanduiding, bijvoorbeeld 'Klacht over levering bestelnummer 12345' of 'Opzegging lidmaatschap'."
+    }
+   ]
+  },
+  {
+   "titel": "Wat is de kern?",
+   "velden": [
+    {
+     "id": "kp1",
+     "type": "tekstvak",
+     "label": "Kernpunt 1",
+     "verplicht": true,
+     "hint": "Het belangrijkste dat de geadresseerde moet weten. Een hele zin."
+    },
+    {
+     "id": "kp2",
+     "type": "tekstvak",
+     "label": "Kernpunt 2",
+     "hint": "Optionele toelichting of tweede argument."
+    },
+    {
+     "id": "kp3",
+     "type": "tekstvak",
+     "label": "Kernpunt 3",
+     "hint": "Optioneel derde argument of context."
+    },
+    {
+     "id": "actie",
+     "type": "tekstvak",
+     "label": "Gewenste actie",
+     "verplicht": true,
+     "hint": "Wat moet de geadresseerde concreet doen of toezeggen? Bijvoorbeeld 'binnen 14 dagen het bedrag terugstorten op rekening NL.. ten name van ..'."
+    },
+    {
+     "id": "toon",
+     "type": "keuze",
+     "label": "Toon van de brief",
+     "verplicht": true,
+     "standaard": "zakelijk",
+     "opties": [
+      {
+       "waarde": "zakelijk",
+       "tekst": "Formeel-zakelijk",
+       "uitleg": "Neutraal en correct. Standaardkeuze."
+      },
+      {
+       "waarde": "vriendelijk",
+       "tekst": "Formeel-vriendelijk",
+       "uitleg": "Formele opbouw, warmere toon."
+      },
+      {
+       "waarde": "strikt",
+       "tekst": "Juridisch-strikt",
+       "uitleg": "Feitelijk, met termijnen en rechten."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "afz_pc_plaats": "{afz_postcode|na: }{afz_plaats}",
+  "ger_pc_plaats": "{ger_postcode|na: }{ger_plaats}"
+ },
+ "banken": {
+  "aanhef": {
+   "zakelijk": "Geachte heer/mevrouw,",
+   "vriendelijk": "Geachte heer/mevrouw,",
+   "strikt": "Geachte heer/mevrouw,"
+  },
+  "slot": {
+   "zakelijk": "Met vriendelijke groet,",
+   "vriendelijk": "Met vriendelijke groet,",
+   "strikt": "Hoogachtend,"
+  },
+  "inleiding": {
+   "klacht": {
+    "zakelijk": "Met deze brief dien ik een klacht in. Hieronder licht ik de situatie toe en geef ik aan welke oplossing ik van u verwacht.",
+    "vriendelijk": "Met deze brief wil ik u attent maken op een vervelende situatie. Ik ga ervan uit dat we hier samen tot een passende oplossing kunnen komen.",
+    "strikt": "Hierbij dien ik formeel een klacht in. Conform de geldende regels en termijnen verzoek ik u tijdig en adequaat te reageren."
+   },
+   "opzegging": {
+    "zakelijk": "Met deze brief zeg ik bovengenoemde overeenkomst op. Graag ontvang ik een schriftelijke bevestiging van de opzegging.",
+    "vriendelijk": "Bij deze laat ik u weten dat ik wil opzeggen. Ik dank u voor de samenwerking en ontvang graag een bevestiging.",
+    "strikt": "Hierbij zeg ik bovengenoemde overeenkomst formeel op, met inachtneming van de geldende opzegtermijn. Ik verwacht binnen zeven dagen een schriftelijke bevestiging."
+   },
+   "bezwaar": {
+    "zakelijk": "Met deze brief maak ik bezwaar tegen het bovengenoemde besluit. Hieronder licht ik mijn bezwaar toe.",
+    "vriendelijk": "Met deze brief wil ik graag bezwaar maken tegen het bovengenoemde besluit. Hieronder licht ik mijn beweegredenen toe en ik vertrouw op een zorgvuldige heroverweging.",
+    "strikt": "Hierbij maak ik formeel bezwaar tegen het bovengenoemde besluit, op grond van de Algemene wet bestuursrecht. Mijn bezwaargronden zijn als volgt."
+   },
+   "verzoek": {
+    "zakelijk": "Met deze brief richt ik mij tot u met een verzoek. Hieronder licht ik dat verzoek toe.",
+    "vriendelijk": "Met deze brief wil ik u vriendelijk verzoeken om uw medewerking. Hieronder leg ik kort uit waar het om gaat.",
+    "strikt": "Hierbij dien ik formeel een verzoek in. Ik verwacht een onderbouwde reactie binnen de wettelijk gestelde termijn."
+   }
+  },
+  "afsluiting": {
+   "klacht": {
+    "zakelijk": "Ik verzoek u binnen 14 dagen na dagtekening inhoudelijk te reageren en aan te geven hoe u deze klacht oplost.",
+    "vriendelijk": "Ik hoor graag binnen 14 dagen van u hoe u deze situatie oplost. Bij voorbaat dank voor uw aandacht.",
+    "strikt": "Ik wijs u op uw plicht binnen de geldende termijn van 14 dagen schriftelijk en inhoudelijk te reageren. Bij uitblijven van een reactie behoud ik mij alle rechten voor."
+   },
+   "opzegging": {
+    "zakelijk": "Graag ontvang ik een schriftelijke bevestiging van deze opzegging, inclusief de einddatum.",
+    "vriendelijk": "Ik vertrouw erop dat u deze opzegging tijdig in behandeling neemt en mij een bevestiging stuurt. Dank voor de prettige jaren.",
+    "strikt": "Ik verwacht binnen zeven dagen een schriftelijke bevestiging van deze opzegging, met vermelding van de einddatum en eventuele restituties."
+   },
+   "bezwaar": {
+    "zakelijk": "Ik verzoek u mijn bezwaar in behandeling te nemen en mij schriftelijk over de uitkomst te informeren.",
+    "vriendelijk": "Ik vertrouw op een zorgvuldige heroverweging en hoor graag binnen de geldende termijn van u.",
+    "strikt": "Ik verzoek u mijn bezwaar overeenkomstig de wettelijke termijnen in behandeling te nemen. Ik behoud mij alle rechten voor om, indien nodig, beroep in te stellen bij de bevoegde instantie."
+   },
+   "verzoek": {
+    "zakelijk": "Ik zie uw inhoudelijke reactie graag tegemoet en dank u alvast voor uw medewerking.",
+    "vriendelijk": "Ik kijk uit naar uw reactie en dank u hartelijk voor uw tijd.",
+    "strikt": "Ik verzoek u binnen de geldende termijn schriftelijk en inhoudelijk te reageren."
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "tekst": "{afz_naam}{afz_adres|voor:\n}{afz_pc_plaats|eersteregel|voor:\n}\n{brief_plaats|of:afz_plaats|anders:Plaats|eersteregel}{brief_datum|datum|voor:, }"
+  },
+  {
+   "type": "tekst",
+   "tekst": "{ger_naam}{ger_adres|voor:\n}{ger_pc_plaats|eersteregel|voor:\n}"
+  },
+  {
+   "type": "tekst",
+   "tekst": "{onderwerp|voor:Betreft: }"
+  },
+  {
+   "type": "tekst",
+   "tekst": "{toon|bank:aanhef}"
+  },
+  {
+   "type": "alineas",
+   "bank": "inleiding",
+   "pad": [
+    "{type}",
+    "{toon}"
+   ]
+  },
+  {
+   "type": "tekst",
+   "tekst": "{kp1}"
+  },
+  {
+   "type": "tekst",
+   "tekst": "{kp2}"
+  },
+  {
+   "type": "tekst",
+   "tekst": "{kp3}"
+  },
+  {
+   "type": "tekst",
+   "tekst": "{actie|voor:Mijn verzoek: }"
+  },
+  {
+   "type": "alineas",
+   "bank": "afsluiting",
+   "pad": [
+    "{type}",
+    "{toon}"
+   ]
+  },
+  {
+   "type": "tekst",
+   "tekst": "{toon|bank:slot}{afz_naam|voor:\n\n}"
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "zakelijke-brief-{type}{afz_naam|voor:-}",
+  "kopieer_kaal": true
+ },
+ "mail": {
+  "onderwerp": "Je zakelijke brief: {type|label}",
+  "intro": "Hieronder vind je de brief die je via de Brief-generator hebt samengesteld. Je kunt hem kopiëren naar Word, opmaken en versturen."
+ }
+}

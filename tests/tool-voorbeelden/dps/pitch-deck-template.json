@@ -1,0 +1,226 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Context",
+   "intro": "Vul 8 korte vragen in over jouw bedrijf en pitch-doel. De tool levert een complete pitchdeck van 9 of 10 slides als PDF of Word.",
+   "velden": [
+    {
+     "id": "bedrijf",
+     "type": "kort",
+     "label": "Bedrijfsnaam",
+     "voorbeeld": "Bijvoorbeeld: Stenhuis Consult",
+     "maxlengte": 60,
+     "verplicht": true
+    },
+    {
+     "id": "doel",
+     "type": "keuze",
+     "label": "Pitch-doel",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "investeerder",
+       "tekst": "Investeerder"
+      },
+      {
+       "waarde": "klant",
+       "tekst": "Klant"
+      },
+      {
+       "waarde": "partner",
+       "tekst": "Partner"
+      },
+      {
+       "waarde": "intern",
+       "tekst": "Interne stakeholder"
+      }
+     ]
+    },
+    {
+     "id": "claim",
+     "type": "kort",
+     "label": "Eenzinsclaim",
+     "hint": "1 zin, max 120 tekens.",
+     "voorbeeld": "Wij helpen [doelgroep] bij [probleem] door [oplossing]",
+     "maxlengte": 120,
+     "verplicht": true
+    },
+    {
+     "id": "markt",
+     "type": "kort",
+     "label": "Doelmarkt",
+     "voorbeeld": "Bijvoorbeeld: mkb-ondernemers in Nederland, ~ 40.000",
+     "maxlengte": 120,
+     "verplicht": true
+    }
+   ]
+  },
+  {
+   "titel": "Inhoud",
+   "velden": [
+    {
+     "id": "probleem",
+     "type": "tekstvak",
+     "label": "Welk concreet probleem los je op?",
+     "voorbeeld": "Wie heeft het probleem, hoe vaak, met welke kosten of pijn?",
+     "maxlengte": 240,
+     "verplicht": true
+    },
+    {
+     "id": "oplossing",
+     "type": "tekstvak",
+     "label": "Hoe los jouw bedrijf het op?",
+     "voorbeeld": "Wat doet jouw product of dienst concreet, en waarom werkt het?",
+     "maxlengte": 240,
+     "verplicht": true
+    },
+    {
+     "id": "tractie",
+     "type": "tekstvak",
+     "label": "Welke resultaten heb je tot nu toe?",
+     "voorbeeld": "Klanten, omzet, partnerships, MVP-validaties, testimonials",
+     "maxlengte": 240
+    },
+    {
+     "id": "ask",
+     "type": "tekstvak",
+     "label": "Wat vraag je aan het einde?",
+     "voorbeeld": "Bedrag, partnership, klant-commitment, mandaat",
+     "maxlengte": 200,
+     "verplicht": true
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "concurrentie": "Concurrent 1: ...\nConcurrent 2: ...\nOns onderscheid: ...\nOnze positie in 1 zin: ...\n\nWij onderscheiden ons door ...",
+  "team": "Founder(s): ...\nAchtergrond: ...\nAdviseurs / board: ...\nWat we zoeken: ...\n\nOns team is uitgerust om ...",
+  "vraag": "{ask|kort:80}\nDoel: {doel|label}\nVolgende stap: ...\n\n{doel|bank:vraagconcept}"
+ },
+ "banken": {
+  "vraagconcept": {
+   "investeerder": "{ask|zin|voor:Wij zoeken |na: Laten we een vervolggesprek inplannen.}",
+   "klant": "Wij willen jou helpen. Mogen we een korte demo plannen?",
+   "partner": "Samen kunnen we meer. Klinkt dit interessant?",
+   "intern": "{ask|zin|voor:Met jullie mandaat kunnen we |na: Akkoord op de volgende stap?}"
+  }
+ },
+ "resultaat_kop": "Pitch deck-template voor {bedrijf}",
+ "resultaat_intro": "{doel|label}  -  {markt}",
+ "bewerkbaar": true,
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "kop": "1. Cover",
+   "tekst": "{bedrijf}\n\n{claim}"
+  },
+  {
+   "type": "tekst",
+   "kop": "2. Het probleem",
+   "tekst": "{probleem}\n\n{probleem|kort:120}"
+  },
+  {
+   "type": "tekst",
+   "kop": "3. Onze oplossing",
+   "tekst": "{oplossing}\n\n{oplossing|kort:120}"
+  },
+  {
+   "type": "tekst",
+   "kop": "4. Markt en kans",
+   "tekst": "Doelmarkt: {markt}\nTotale markt (TAM)\nAdresseerbare markt (SAM)\nDirect realiseerbaar (SOM)\n\nWij richten ons op {markt|zin}"
+  },
+  {
+   "type": "tekst",
+   "kop": "5. Hoe het werkt",
+   "tekst": "Stap 1: gebruiker doet X\nStap 2: ons product/dienst doet Y\nStap 3: resultaat Z\nTijdsinvestering: ...\n\nIn 3 stappen levert {bedrijf} het resultaat."
+  },
+  {
+   "type": "tekst",
+   "kop": "6. Verdienmodel",
+   "tekst": "Omzetbron: ...\nPricing: ...\nKlant-lifetime: ...\nMarge / unit economics: ...\n\nWij verdienen via ..."
+  },
+  {
+   "type": "tekst",
+   "kop": "7. Wat we tot nu toe bereikten",
+   "tekst": "{tractie}\n\n{tractie|kort:120}",
+   "als": {
+    "veld": "tractie",
+    "gevuld": true
+   }
+  },
+  {
+   "type": "tekst",
+   "kop": "8. Concurrentie en onderscheid",
+   "tekst": "{concurrentie}",
+   "als": {
+    "veld": "tractie",
+    "gevuld": true
+   }
+  },
+  {
+   "type": "tekst",
+   "kop": "7. Concurrentie en onderscheid",
+   "tekst": "{concurrentie}",
+   "als": {
+    "veld": "tractie",
+    "gevuld": false
+   }
+  },
+  {
+   "type": "tekst",
+   "kop": "9. Team",
+   "tekst": "{team}",
+   "als": {
+    "veld": "tractie",
+    "gevuld": true
+   }
+  },
+  {
+   "type": "tekst",
+   "kop": "8. Team",
+   "tekst": "{team}",
+   "als": {
+    "veld": "tractie",
+    "gevuld": false
+   }
+  },
+  {
+   "type": "tekst",
+   "kop": "10. Onze vraag",
+   "tekst": "{vraag}",
+   "als": {
+    "veld": "tractie",
+    "gevuld": true
+   }
+  },
+  {
+   "type": "tekst",
+   "kop": "9. Onze vraag",
+   "tekst": "{vraag}",
+   "als": {
+    "veld": "tractie",
+    "gevuld": false
+   }
+  }
+ ],
+ "teksten": {
+  "tool_maak": "Genereer template",
+  "tool_resultaat": "Klaar"
+ },
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "pitch-deck-template-{bedrijf}"
+ },
+ "mail": {
+  "onderwerp": "Pitch deck-template voor {bedrijf}",
+  "intro": ""
+ }
+}

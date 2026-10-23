@@ -1,0 +1,140 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Jouw vacaturetekst",
+ "bewerkbaar": true,
+ "stappen": [
+  {
+   "titel": "Functie",
+   "velden": [
+    {
+     "id": "functie",
+     "type": "kort",
+     "label": "Functienaam",
+     "voorbeeld": "bv. Marketing-manager",
+     "verplicht": true
+    },
+    {
+     "id": "niveau",
+     "type": "lijst",
+     "label": "Niveau",
+     "opties": [
+      {
+       "waarde": "junior",
+       "tekst": "Junior"
+      },
+      {
+       "waarde": "medior",
+       "tekst": "Medior"
+      },
+      {
+       "waarde": "senior",
+       "tekst": "Senior"
+      },
+      {
+       "waarde": "lead",
+       "tekst": "Lead / management"
+      }
+     ]
+    },
+    {
+     "id": "uren",
+     "type": "lijst",
+     "label": "Uren per week",
+     "opties": [
+      {
+       "waarde": "8-16",
+       "tekst": "8-16 uur"
+      },
+      {
+       "waarde": "16-24",
+       "tekst": "16-24 uur"
+      },
+      {
+       "waarde": "24-32",
+       "tekst": "24-32 uur"
+      },
+      {
+       "waarde": "32-40",
+       "tekst": "32-40 uur"
+      },
+      {
+       "waarde": "flexibel",
+       "tekst": "Flexibel"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Inhoud",
+   "velden": [
+    {
+     "id": "kerntaken",
+     "type": "regels",
+     "label": "3 kerntaken (1 per regel)",
+     "voorbeeld": "Wat doet deze persoon dagelijks?",
+     "verplicht": true
+    },
+    {
+     "id": "musthaves",
+     "type": "regels",
+     "label": "Must-haves (max 5)",
+     "voorbeeld": "Opleiding, ervaring, vaardigheden"
+    },
+    {
+     "id": "cultuur",
+     "type": "tekstvak",
+     "label": "Cultuur in 1-2 zinnen",
+     "voorbeeld": "Wat maakt het werken bij jullie bijzonder?"
+    }
+   ]
+  }
+ ],
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "kop": "Lead",
+   "tekst": "Voor {functie} zoeken wij een {niveau|label|na:-}collega{uren|label|voor: (|na:)}. Je werkt in een team dat zich richt op {kerntaken|eersteregel|klein|anders:de kern van het werk|zin} {cultuur}"
+  },
+  {
+   "type": "lijst",
+   "kop": "Functieprofiel",
+   "regels": "kerntaken",
+   "voor": "Je "
+  },
+  {
+   "type": "lijst",
+   "kop": "Wat jij meebrengt",
+   "regels": "musthaves"
+  },
+  {
+   "type": "lijst",
+   "kop": "Wat wij bieden",
+   "items": [
+    "Een rol met directe impact op de organisatie.",
+    "Een team dat samenwerkt en verantwoordelijkheid neemt.",
+    "Ruimte voor ontwikkeling en eigen invulling."
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Solliciteren",
+   "tekst": "Interesse? Stuur jouw motivatie en CV. We kijken naar jouw verhaal, jouw werkwijze en wat jij toevoegt aan onze {cultuur|kort:30|anders:organisatie|zin}"
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "vacaturetekst-builder-{functie}"
+ },
+ "mail": {
+  "onderwerp": "",
+  "intro": ""
+ }
+}

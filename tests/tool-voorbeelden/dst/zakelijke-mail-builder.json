@@ -1,0 +1,172 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Jouw mail",
+ "bewerkbaar": true,
+ "stappen": [
+  {
+   "titel": "Ontvanger",
+   "velden": [
+    {
+     "id": "mailtype",
+     "type": "lijst",
+     "label": "Type mail",
+     "opties": [
+      {
+       "waarde": "afspraak",
+       "tekst": "Afspraak inplannen"
+      },
+      {
+       "waarde": "opvolging",
+       "tekst": "Opvolging na contact"
+      },
+      {
+       "waarde": "slecht",
+       "tekst": "Slechtnieuwsmail"
+      },
+      {
+       "waarde": "afwijzen",
+       "tekst": "Afwijzen / nee-zeggen"
+      },
+      {
+       "waarde": "aanvraag",
+       "tekst": "Aanvraag of verzoek"
+      }
+     ]
+    },
+    {
+     "id": "ontvanger_relatie",
+     "type": "lijst",
+     "label": "Relatie met ontvanger",
+     "opties": [
+      {
+       "waarde": "onbekend",
+       "tekst": "Onbekend / koud contact"
+      },
+      {
+       "waarde": "eerder",
+       "tekst": "Eerder contact gehad"
+      },
+      {
+       "waarde": "bestaand",
+       "tekst": "Bestaande relatie"
+      },
+      {
+       "waarde": "intern",
+       "tekst": "Interne collega"
+      }
+     ]
+    },
+    {
+     "id": "ontvanger_naam",
+     "type": "kort",
+     "label": "Voornaam ontvanger",
+     "voorbeeld": "bv. Mark"
+    }
+   ]
+  },
+  {
+   "titel": "Inhoud",
+   "velden": [
+    {
+     "id": "kern",
+     "type": "tekstvak",
+     "label": "Kern van de boodschap (1-3 zinnen)",
+     "voorbeeld": "Wat is de essentie?",
+     "verplicht": true
+    },
+    {
+     "id": "context",
+     "type": "tekstvak",
+     "label": "Context",
+     "voorbeeld": "Wat moet de ontvanger weten om dit te begrijpen?"
+    },
+    {
+     "id": "vervolg",
+     "type": "kort",
+     "label": "Gewenste vervolgactie",
+     "voorbeeld": "bv. afspraak deze week, akkoord geven, antwoord voor vrijdag"
+    },
+    {
+     "id": "toon",
+     "type": "lijst",
+     "label": "Toon",
+     "opties": [
+      {
+       "waarde": "zakelijk",
+       "tekst": "Zakelijk"
+      },
+      {
+       "waarde": "persoonlijk",
+       "tekst": "Persoonlijk (je/jij)"
+      },
+      {
+       "waarde": "direct",
+       "tekst": "Direct en kort"
+      },
+      {
+       "waarde": "empathisch",
+       "tekst": "Empathisch"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "kern_kort": "{kern|eersteregel|kort:60}"
+ },
+ "banken": {
+  "onderwerp": {
+   "afspraak": "Voorstel afspraak: {kern|eersteregel|kort:60}",
+   "opvolging": "Vervolg op ons gesprek: {kern|eersteregel|kort:60}",
+   "slecht": "Belangrijke update over {kern|eersteregel|kort:60}",
+   "afwijzen": "Reactie op jouw vraag",
+   "aanvraag": "Verzoek: {kern|eersteregel|kort:60}"
+  },
+  "aanhef": {
+   "onbekend": "Geachte heer, mevrouw",
+   "eerder": "Beste",
+   "bestaand": "Beste",
+   "intern": "Hoi"
+  },
+  "opening": {
+   "afspraak": "Graag wil ik met jou een moment inplannen om door te praten.",
+   "opvolging": "Dank voor het goede contact eerder. Ik kom terug op wat we hebben besproken.",
+   "slecht": "Ik moet jou helaas iets vervelends laten weten.",
+   "afwijzen": "Dank voor jouw bericht. Ik heb hier zorgvuldig naar gekeken.",
+   "aanvraag": "Ik heb een verzoek waar ik graag bij stilsta."
+  },
+  "afsluiting": {
+   "zakelijk": "Met vriendelijke groet,",
+   "persoonlijk": "Hartelijke groet,",
+   "direct": "Groet,",
+   "empathisch": "Met warme groet,"
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "tekst": "{mailtype|bank:onderwerp|of:kern_kort|voor:Onderwerp: }"
+  },
+  {
+   "type": "tekst",
+   "tekst": "{ontvanger_relatie|bank:aanhef|anders:Beste}{ontvanger_naam|eersteregel|voor: },\n\n{mailtype|bank:opening|anders:Ik kom bij je terug op het volgende.}\n\n{kern}{context|voor:\n\n}\n\n{vervolg|zin|voor:Concreet vraag ik: |anders:Ik hoor graag wat jouw reactie is.}\n\n{toon|bank:afsluiting|anders:Met vriendelijke groet,}"
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "zakelijke-mail-builder-{mailtype}",
+  "kopieer_kaal": true
+ },
+ "mail": {
+  "onderwerp": "",
+  "intro": ""
+ }
+}

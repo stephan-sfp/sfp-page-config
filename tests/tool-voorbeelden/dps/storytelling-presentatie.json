@@ -1,0 +1,166 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Invoer",
+   "intro": "Vul de vijf kernelementen in. De tool maakt jouw verhaalskelet in vier aktes met voorbeeldzinnen per akte.",
+   "velden": [
+    {
+     "id": "onderwerp",
+     "type": "kort",
+     "label": "Onderwerp van je presentatie",
+     "voorbeeld": "bijvoorbeeld: een nieuwe werkwijze in jouw team",
+     "maxlengte": 120,
+     "verplicht": true,
+     "mail": true
+    },
+    {
+     "id": "held",
+     "type": "keuze",
+     "label": "Wie is de held?",
+     "hint": "In storytelling werkt het meestal beter als de held niet jij bent maar je publiek of je klant. Jij bent de gids of mentor.",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "klant",
+       "tekst": "Je klant"
+      },
+      {
+       "waarde": "team",
+       "tekst": "Je team"
+      },
+      {
+       "waarde": "sector",
+       "tekst": "Je sector"
+      }
+     ]
+    },
+    {
+     "id": "hindernis",
+     "type": "kort",
+     "label": "Kernhindernis (wat staat de held in de weg?)",
+     "voorbeeld": "bijvoorbeeld: gebrek aan tijd of overzicht",
+     "maxlengte": 160,
+     "verplicht": true,
+     "mail": true
+    },
+    {
+     "id": "transformatie",
+     "type": "kort",
+     "label": "Transformatie of resultaat (wat lukt de held dankzij jouw oplossing?)",
+     "voorbeeld": "bijvoorbeeld: in 1 uur per week werkende rapportages",
+     "maxlengte": 160,
+     "verplicht": true,
+     "mail": true
+    },
+    {
+     "id": "cta",
+     "type": "kort",
+     "label": "Call-to-action (wat moet het publiek doen)",
+     "voorbeeld": "bijvoorbeeld: ga deze week aan de slag met stap 1",
+     "maxlengte": 160,
+     "verplicht": true,
+     "mail": true
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "heldnaam": "{held|label|klein}"
+ },
+ "resultaat_kop": "Jouw verhaalskelet in vier aktes",
+ "resultaat_intro": "Onderwerp \"{onderwerp}\" met als held: {heldnaam}.",
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "kop": "Akte 1: De situatie en de held",
+   "regels": [
+    {
+     "label": "Doel",
+     "tekst": "Stel de wereld voor zoals die nu is. Maak de held herkenbaar voor het publiek."
+    },
+    {
+     "label": "Voorbeeldopener",
+     "tekst": "Stel je voor: {heldnaam} staat voor de uitdaging van {onderwerp|zin}"
+    },
+    {
+     "label": "Tip",
+     "tekst": "Houd Akte 1 kort en concreet. Doel: het publiek herkent zichzelf in de held binnen 30 seconden."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "Akte 2: De hindernis",
+   "regels": [
+    {
+     "label": "Doel",
+     "tekst": "Maak de spanning voelbaar. Wat staat {heldnaam} in de weg?"
+    },
+    {
+     "label": "Voorbeeldopener",
+     "tekst": "Maar dan komt {hindernis|zin} En dat blokkeert verder."
+    },
+    {
+     "label": "Tip",
+     "tekst": "Maak de hindernis specifiek, niet abstract. Een datum, een concreet incident of een sprekend voorbeeld werkt beter dan een algemene beschrijving."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "Akte 3: De transformatie",
+   "regels": [
+    {
+     "label": "Doel",
+     "tekst": "Toon hoe {heldnaam} van situatie A naar B komt. Hier komt jouw oplossing binnen."
+    },
+    {
+     "label": "Voorbeeldopener",
+     "tekst": "Het keerpunt: {transformatie|zin}"
+    },
+    {
+     "label": "Tip",
+     "tekst": "Praat hier niet over jezelf. Jij bent de gids, niet de held. Beschrijf de transformatie vanuit het perspectief van {heldnaam}."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "Akte 4: De call-to-action",
+   "regels": [
+    {
+     "label": "Doel",
+     "tekst": "Verlaat het publiek met een concrete eerste stap."
+    },
+    {
+     "label": "Voorbeeldopener",
+     "tekst": "{cta|zin|hoofdletter}"
+    },
+    {
+     "label": "Tip",
+     "tekst": "De call-to-action moet klein en concreet zijn. Eerste stap, deze week, vandaag. Geen vage oproep."
+    }
+   ]
+  }
+ ],
+ "teksten": {
+  "tool_maak": "Genereer mijn verhaalskelet",
+  "tool_resultaat": "Verhaalskelet"
+ },
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "storytelling-presentatie-{onderwerp}"
+ },
+ "mail": {
+  "onderwerp": "Jouw storytelling presentatie-opbouw",
+  "intro": ""
+ }
+}
