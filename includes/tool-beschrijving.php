@@ -30,6 +30,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return array
  */
 function sfp_page_config_tool_normaliseer( array $b ) {
+    if ( isset( $b['soort'] ) && 'generator' === $b['soort'] && function_exists( 'sfp_page_config_generator_normaliseer' ) ) {
+        return sfp_page_config_generator_normaliseer( $b );
+    }
     $b['versie'] = isset( $b['versie'] ) ? (int) $b['versie'] : 1;
     $b['soort']  = isset( $b['soort'] ) ? (string) $b['soort'] : '';
 
@@ -508,6 +511,9 @@ function sfp_page_config_tool_controleer( array $b ) {
         $fouten[] = 'Onbekende soort "' . $b['soort'] . '". Bekend: ' . implode( ', ', array_keys( $soorten ) ) . '.';
         return compact( 'fouten', 'let_op' );
     }
+    if ( 'generator' === $b['soort'] ) {
+        return sfp_page_config_generator_controleer( $b );
+    }
     if ( ! $b['dimensies'] ) {
         $fouten[] = 'Geen dimensies.';
     }
@@ -768,6 +774,9 @@ function sfp_page_config_tool_mogelijke_sleutels( array $b, array $uitkomst ) {
  * @return array
  */
 function sfp_page_config_tool_samenvatting( array $b ) {
+    if ( 'generator' === $b['soort'] ) {
+        return sfp_page_config_generator_samenvatting( $b );
+    }
     $scorend = 0;
     foreach ( $b['vragen'] as $v ) {
         if ( 'likert' === $v['type'] || 'keuze' === $v['type'] ) {

@@ -1,0 +1,180 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Verslag functioneringsgesprek",
+ "stappen": [
+  {
+   "titel": "Kerngegevens",
+   "velden": [
+    {
+     "id": "rol",
+     "type": "kort",
+     "label": "Functie / rol",
+     "voorbeeld": "bv. Senior projectleider",
+     "verplicht": true
+    },
+    {
+     "id": "periode",
+     "type": "lijst",
+     "label": "Verslagperiode",
+     "opties": [
+      {
+       "waarde": "half-jaar",
+       "tekst": "Half jaar"
+      },
+      {
+       "waarde": "heel-jaar",
+       "tekst": "Heel jaar"
+      },
+      {
+       "waarde": "proef-3",
+       "tekst": "Proeftijd 3 maanden"
+      },
+      {
+       "waarde": "proef-6",
+       "tekst": "Proeftijd 6 maanden"
+      }
+     ]
+    },
+    {
+     "id": "gesprekstype",
+     "type": "lijst",
+     "label": "Gesprekstype",
+     "opties": [
+      {
+       "waarde": "functionering",
+       "tekst": "Functioneringsgesprek (open-ontwikkelend)"
+      },
+      {
+       "waarde": "beoordeling",
+       "tekst": "Beoordelingsgesprek (vaststellend)"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Terugblik op de periode",
+   "velden": [
+    {
+     "id": "doelen",
+     "type": "regels",
+     "label": "Behaalde doelen (1 per regel)",
+     "voorbeeld": "Wat is gerealiseerd in deze periode?",
+     "verplicht": true
+    },
+    {
+     "id": "ontwikkelpunten",
+     "type": "regels",
+     "label": "Ontwikkelpunten (1 per regel)",
+     "voorbeeld": "Waar zit ruimte voor groei?"
+    }
+   ]
+  },
+  {
+   "titel": "Vervolgafspraken",
+   "velden": [
+    {
+     "id": "medewerker_input",
+     "type": "tekstvak",
+     "label": "Inbreng medewerker",
+     "voorbeeld": "Wat bracht de medewerker zelf in?"
+    },
+    {
+     "id": "afspraken",
+     "type": "regels",
+     "label": "Vervolgafspraken (1 per regel)",
+     "voorbeeld": "Wie doet wat tegen welke datum?",
+     "verplicht": true
+    }
+   ]
+  }
+ ],
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "kop": "Kerngegevens",
+   "regels": [
+    {
+     "label": "Rol",
+     "tekst": "{rol}"
+    },
+    {
+     "label": "Periode",
+     "tekst": "{periode|label}"
+    },
+    {
+     "label": "Gesprekstype",
+     "tekst": "{gesprekstype|label}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Terugblik op de periode",
+   "als": {
+    "veld": "doelen",
+    "gevuld": true
+   },
+   "tekst": "De afgelopen periode kenmerkt zich door de volgende behaalde resultaten:"
+  },
+  {
+   "type": "lijst",
+   "regels": "doelen"
+  },
+  {
+   "type": "tekst",
+   "kop": "Ontwikkelopgaven",
+   "als": {
+    "veld": "ontwikkelpunten",
+    "gevuld": true
+   },
+   "tekst": "In de komende periode liggen er ontwikkelopgaven op de volgende punten:"
+  },
+  {
+   "type": "lijst",
+   "regels": "ontwikkelpunten"
+  },
+  {
+   "type": "tekst",
+   "kop": "Inbreng medewerker",
+   "tekst": "{medewerker_input}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Vervolgafspraken",
+   "als": {
+    "veld": "afspraken",
+    "gevuld": true
+   },
+   "tekst": "Concrete afspraken voor de komende periode:"
+  },
+  {
+   "type": "lijst",
+   "regels": "afspraken"
+  },
+  {
+   "type": "lijst",
+   "kop": "Ondertekening",
+   "items": [
+    "Datum: ___________",
+    "Handtekening medewerker: ___________",
+    "Handtekening leidinggevende: ___________"
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "functioneringsverslag-generator-{rol}"
+ },
+ "mail": {
+  "onderwerp": "",
+  "intro": ""
+ }
+}

@@ -1,0 +1,99 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Drie lead-varianten",
+ "stappen": [
+  {
+   "titel": "Onderwerp en kern",
+   "velden": [
+    {
+     "id": "onderwerp",
+     "type": "kort",
+     "label": "Onderwerp van het stuk",
+     "voorbeeld": "bv. Hybride werken in 2026",
+     "verplicht": true
+    },
+    {
+     "id": "doelgroep",
+     "type": "kort",
+     "label": "Doelgroep / lezer",
+     "voorbeeld": "bv. HR-managers, MKB-eigenaren"
+    },
+    {
+     "id": "kern",
+     "type": "tekstvak",
+     "label": "Kernclaim of belangrijkste boodschap",
+     "voorbeeld": "Wat wil je dat de lezer onthoudt?",
+     "verplicht": true
+    }
+   ]
+  },
+  {
+   "titel": "Voorbeelden",
+   "velden": [
+    {
+     "id": "voorbeeld_probleem",
+     "type": "tekstvak",
+     "label": "Concreet probleem dat de doelgroep ervaart",
+     "voorbeeld": "Wat is hun pijn?"
+    },
+    {
+     "id": "voorbeeld_cijfer",
+     "type": "kort",
+     "label": "Statistiek of cijfer",
+     "voorbeeld": "bv. 60% van de werknemers..."
+    },
+    {
+     "id": "voorbeeld_verhaal",
+     "type": "tekstvak",
+     "label": "Casus of voorbeeld-persoon",
+     "voorbeeld": "1 zin over een herkenbaar persoon of situatie"
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "verhaal_doelgroep": "{doelgroep|voor:Iemand uit jouw doelgroep (|na:) herkent het waarschijnlijk.}",
+  "kern_onderwerp": "Dit stuk doet dat wel, vanuit {onderwerp|anders:dit onderwerp}."
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "kop": "Variant A: probleem-lead",
+   "tekst": "{voorbeeld_probleem|anders:Het probleem speelt breed.|zin} En toch lijken weinigen daar bewust mee bezig. {kern|anders:In dit stuk verkennen we waarom.}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Variant B: verhaal-lead",
+   "tekst": "{voorbeeld_verhaal|zin|of:verhaal_doelgroep|anders:Iemand die dit dagelijks ervaart, herkent het.} Het is een patroon dat we vaker zien. {kern|anders:En dat patroon is precies wat dit stuk onderzoekt.}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Variant C: statistiek-lead",
+   "tekst": "{voorbeeld_cijfer|anders:Een meerderheid van de doelgroep heeft hiermee te maken.|zin} Toch wordt er weinig over geschreven dat verder gaat dan de cijfers. {kern|of:kern_onderwerp}"
+  },
+  {
+   "type": "lijst",
+   "kop": "Tip voor combinatie",
+   "items": [
+    "Geen lead is af zonder bridge naar de kern: zorg dat de tweede alinea expliciet aansluit op jouw kernclaim.",
+    "Test eventueel 2 leads bij collega's: laat ze in 30 seconden samenvatten waar het stuk over gaat.",
+    "Voor mailings werkt probleem-lead doorgaans het best; voor blogs verhaal-lead; voor rapporten statistiek-lead."
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "lead-bouwer-{onderwerp}"
+ },
+ "mail": {
+  "onderwerp": "",
+  "intro": ""
+ }
+}

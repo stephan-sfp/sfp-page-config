@@ -1,0 +1,442 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Fase",
+   "intro": "De vragen worden afgestemd op deze fase.",
+   "velden": [
+    {
+     "id": "fase",
+     "type": "keuze",
+     "label": "Kies de GROW-fase waarin het coachgesprek zich nu bevindt.",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "goal",
+       "tekst": "Goal",
+       "uitleg": "Wat wil de coachee bereiken?"
+      },
+      {
+       "waarde": "reality",
+       "tekst": "Reality",
+       "uitleg": "Hoe ziet de huidige situatie eruit?"
+      },
+      {
+       "waarde": "options",
+       "tekst": "Options",
+       "uitleg": "Welke mogelijkheden zijn er?"
+      },
+      {
+       "waarde": "will",
+       "tekst": "Will",
+       "uitleg": "Wat gaat de coachee echt doen?"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Thema",
+   "velden": [
+    {
+     "id": "thema",
+     "type": "keuze",
+     "label": "Kies het thema waar het coachgesprek over gaat.",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "loopbaan",
+       "tekst": "Loopbaan en carrière"
+      },
+      {
+       "waarde": "leiderschap",
+       "tekst": "Leiderschap"
+      },
+      {
+       "waarde": "ontwikkeling",
+       "tekst": "Persoonlijke ontwikkeling"
+      },
+      {
+       "waarde": "werkdruk",
+       "tekst": "Werkdruk en balans"
+      },
+      {
+       "waarde": "relatie",
+       "tekst": "Werkrelaties en samenwerking"
+      },
+      {
+       "waarde": "besluit",
+       "tekst": "Beslissing of dilemma"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Context",
+   "intro": "Vul optioneel de naam van je coachee en een korte beschrijving van de situatie in. Deze velden maken het rapport persoonlijker.",
+   "velden": [
+    {
+     "id": "coacheeNaam",
+     "type": "kort",
+     "label": "Naam coachee",
+     "maxlengte": 80
+    },
+    {
+     "id": "situatie",
+     "type": "tekstvak",
+     "label": "Korte beschrijving van de situatie",
+     "voorbeeld": "Bijvoorbeeld: coachee twijfelt over een carrièreswitch naar een andere sector...",
+     "maxlengte": 1000
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "vragen": {
+   "goal": {
+    "loopbaan": [
+     "Hoe ziet jouw ideale werksituatie er over 2 jaar uit?",
+     "Wat zou je doen als je dit jaar geen rekening hoefde te houden met geld of zekerheid?",
+     "Welk woord beschrijft wat je vooral mist in je huidige werk?",
+     "Wat zou voor jou bewijs zijn dat je in een goede richting beweegt?",
+     "Welke 3 elementen wil je in elk geval terugzien in je volgende stap?",
+     "Hoe wil je over jezelf praten als je over 3 jaar terugkijkt op deze fase?",
+     "Welk doel is van jezelf, en welk doel komt eigenlijk van anderen?",
+     "Hoe groot wil je de stap maken: koerscorrectie of echte overstap?",
+     "Wat zou een mooie eerste mijlpaal zijn over 3 maanden?",
+     "Hoe zou jij dit doel in 1 zin formuleren aan een collega?"
+    ],
+    "leiderschap": [
+     "Welk type leider wil jij zijn voor je team?",
+     "Wat zou jouw team over een jaar over jou moeten kunnen zeggen?",
+     "Welk concreet gedrag wil je vaker laten zien?",
+     "Welke leider in je carrière wil jij niet kopieren, en welke wel?",
+     "Wat is voor jou het verschil tussen managen en leiden?",
+     "Hoe weet je over een half jaar of je groei hebt gemaakt?",
+     "Welke vaardigheid is het belangrijkste om dit jaar te verbeteren?",
+     "Wat zou een team-resultaat zijn waar je trots op zou zijn?",
+     "Welke rol wil je echt loslaten dit jaar?",
+     "Wat moet er over 3 maanden anders zijn voor jou om te zeggen: het werkt?"
+    ],
+    "ontwikkeling": [
+     "Welke kwaliteit wil je dit jaar duidelijk verder ontwikkelen?",
+     "Wie wil jij zijn voor de mensen om je heen?",
+     "Wat is een patroon dat je wilt doorbreken?",
+     "Welk doel maakt jou echt zenuwachtig om uit te spreken?",
+     "Hoe zou je leven er anders uitzien als je dit haalt?",
+     "Welke versie van jezelf wil je vaker laten zien?",
+     "Welke gewoonte wil je inbouwen die nu nog ontbreekt?",
+     "Waar zou je over 6 maanden over jezelf willen kunnen zeggen: dit is een stap vooruit?",
+     "Welk doel kun je formuleren zonder dat het meteen een actie is?",
+     "Wat zou bewijzen dat jouw zelfbeeld klopt met wat anderen zien?"
+    ],
+    "werkdruk": [
+     "Hoe zou jouw week eruit zien als de druk hanteerbaar zou zijn?",
+     "Welk percentage van je tijd wil je besteden aan dingen die energie geven?",
+     "Wat zou je doen met 1 uur extra per dag?",
+     "Welke balans zoek je tussen werk, privé en herstel?",
+     "Wat zou voor jou bewijs zijn dat het beter gaat?",
+     "Welk gevoel wil je over 3 maanden vaker hebben?",
+     "Welk type taken wil je structureel minder doen?",
+     "Hoe ziet een goede maandag-ochtend er voor jou uit?",
+     "Wat wil je niet meer accepteren in je werkweek?",
+     "Welke afspraak met jezelf wil je echt nakomen?"
+    ],
+    "relatie": [
+     "Hoe wil je dat de samenwerking met collega X verandert?",
+     "Welk gesprek wil je voeren dat je nu uitstelt?",
+     "Welk type collega wil jij zelf zijn?",
+     "Wat is een goede uitkomst van het herstellen van deze relatie?",
+     "Welk gedrag wil jij vaker laten zien naar collega Y?",
+     "Wat zou bewijzen dat de werksfeer beter is geworden?",
+     "Welk patroon in je team wil je doorbreken?",
+     "Welke samenwerking inspireert jou, en wat kun je daaruit leren?",
+     "Hoe weet je dat een lastig gesprek goed gegaan is?",
+     "Wat is voor jou een geslaagde teammeeting?"
+    ],
+    "besluit": [
+     "Welke beslissing wil je nemen voor het einde van deze maand?",
+     "Hoe zou je achteraf willen terugkijken op deze keuze?",
+     "Wat is voor jou een goed besluit, los van de uitkomst?",
+     "Welke optie schrijft je hart voor, welke je hoofd?",
+     "Wat zou bewijzen dat de keuze juist is?",
+     "Hoe wil je over 6 maanden uitleggen wat je hebt gedaan?",
+     "Welke criteria gebruik je om de opties tegen elkaar af te wegen?",
+     "Wat moet er gebeuren voor je het kunt loslaten?",
+     "Welk type beslisser wil jij zijn in deze situatie?",
+     "Wanneer mag dit besluit definitief zijn?"
+    ]
+   },
+   "reality": {
+    "loopbaan": [
+     "Wat klopt op dit moment wel in je werk, en wat niet?",
+     "Welk signaal van jouw lichaam negeer je het vaakst?",
+     "Wat zegt je omgeving over hoe het met je gaat in je werk?",
+     "Wanneer voelde je voor het laatst echt energie van je werk?",
+     "Wat houdt je nu tegen om iets te veranderen?",
+     "Welk verhaal vertel je jezelf over je carrière?",
+     "Welke kansen heb je de laatste 2 jaar laten lopen?",
+     "Welke patronen herken je in je werkkeuzes?",
+     "Wat zou je doen als je vandaag opnieuw moest beginnen?",
+     "Wat doe je nu om dit moment niet onder ogen te zien?"
+    ],
+    "leiderschap": [
+     "Hoe zien anderen je leiderschap, en hoe ervaar je dat zelf?",
+     "Welke feedback hoor je vaker dan je lief is?",
+     "Wanneer voelde je je het sterkst als leider?",
+     "Welk gedrag laat je nu zien dat je liever niet doet?",
+     "Hoe ga je om met mensen die niet doen wat je vraagt?",
+     "Welk team-issue herhaalt zich, en wat doe jij telkens?",
+     "Wat geeft je vertrouwen, wat ondermijnt het?",
+     "Welk leiderschapsmoment van de laatste maand blijft je bij?",
+     "Hoe weet je dat je een goede dag had als leider?",
+     "Welk patroon van jezelf zien anderen voor jou?"
+    ],
+    "ontwikkeling": [
+     "Wat doe je nu vooral op de automatische piloot?",
+     "Welke kwaliteit herken je in jezelf maar zet je weinig in?",
+     "Welk patroon herhaalt zich in jouw leven?",
+     "Wat is het verschil tussen wat je wilt zijn en wat je doet?",
+     "Hoe ga je om met mislukking?",
+     "Welk verhaal vertel je over jezelf?",
+     "Wat voelt zwaarder dan het zou moeten zijn?",
+     "Wanneer voelde je voor het laatst echte trots?",
+     "Welk innerlijk gesprek voer je het vaakst?",
+     "Wat in je leven groeit nu vanzelf, wat stagneert?"
+    ],
+    "werkdruk": [
+     "Hoe ervaar je je werkweek op een schaal van 1 tot 10?",
+     "Wat doe je in een week dat eigenlijk niet nodig is?",
+     "Wanneer voel je herstel?",
+     "Welke taken kosten jou het meeste energie?",
+     "Hoe ziet je grenzen-stelling er nu uit?",
+     "Wat heeft de laatste keer geholpen toen het zwaar was?",
+     "Welke signalen zien anderen aan jou?",
+     "Hoe lang gaat dit tempo nog werken?",
+     "Wat doe je om te ontspannen, en werkt dat?",
+     "Welk aandeel heb je zelf in de hoogte van je werkdruk?"
+    ],
+    "relatie": [
+     "Hoe zou je de relatie met collega X in 3 woorden beschrijven?",
+     "Wat heb je geprobeerd, en wat heeft niet gewerkt?",
+     "Welk gedrag van jou veroorzaakt mede de dynamiek?",
+     "Hoe denkt collega Y over jou, denk je?",
+     "Welk patroon zit er in het team?",
+     "Welk gesprek loop je al maanden uit?",
+     "Hoe zit jouw eigen aandeel in dit conflict?",
+     "Wat heb je nooit eerlijk gezegd?",
+     "Welk verhaal heb je over deze persoon dat misschien niet klopt?",
+     "Hoe weet je dat jouw blik op deze relatie nog klopt?"
+    ],
+    "besluit": [
+     "Welke opties heb je nu echt overwogen?",
+     "Wat heb je tot nu toe gedaan om een keuze te maken?",
+     "Welk gevoel hoort bij elke optie?",
+     "Wat houdt je tegen om te kiezen?",
+     "Welke informatie ontbreekt nog?",
+     "Wie heeft hierover meegedacht en wat zeiden ze?",
+     "Welke optie schuif je het liefst van je af?",
+     "Welk verhaal vertel je jezelf over de risicos?",
+     "Wat zou een buitenstaander zien dat jij nu niet ziet?",
+     "Hoe gaat jouw lichaam reageren op elke optie?"
+    ]
+   },
+   "options": {
+    "loopbaan": [
+     "Welke 3 paden zou je in principe kunnen bewandelen?",
+     "Wat zou je doen als je een jaar sabbatical had?",
+     "Welke deur is nog nooit door je gepoogd te openen?",
+     "Welke optie negeer je omdat hij \"niet realistisch\" lijkt?",
+     "Wie in je netwerk doet wat jij zou willen, en hoe is dat ontstaan?",
+     "Wat is een tussenstap die de overstap kleiner maakt?",
+     "Welk experiment van 3 maanden zou helderheid geven?",
+     "Wat is de wildste optie die je hebt overwogen?",
+     "Welke combinatie van 2 paden is mogelijk?",
+     "Welke optie geeft je het meeste leven?"
+    ],
+    "leiderschap": [
+     "Welke 3 manieren zijn er om dit team-issue aan te pakken?",
+     "Wat zou een leider doen die je bewondert?",
+     "Welke aanpak heb je nog niet geprobeerd?",
+     "Wat als je het zou loslaten in plaats van actief sturen?",
+     "Wie in je organisatie zou je nu om hulp kunnen vragen?",
+     "Welk type gesprek heb je nog niet gevoerd?",
+     "Welke routine wil je breken?",
+     "Welke nieuwe rolverdeling zou kunnen helpen?",
+     "Wat als je 2 weken niet ingreep, wat gebeurt er?",
+     "Welk experiment zou je veel kunnen leren?"
+    ],
+    "ontwikkeling": [
+     "Welke verschillende paden zie je voor je groei?",
+     "Wat als je 30 minuten per dag aan dit thema zou besteden?",
+     "Welke trainer, coach of mentor zou jou kunnen helpen?",
+     "Welk experiment kun je deze week starten?",
+     "Welk boek, podcast of cursus past hier bij?",
+     "Welk klein gedrag zou groot verschil maken?",
+     "Wat als je dit met iemand samen oppakt?",
+     "Welke routine wil je inbouwen?",
+     "Welk patroon kun je deze week 1 keer doorbreken?",
+     "Welke optie hebben anderen al voor zichzelf succesvol gevonden?"
+    ],
+    "werkdruk": [
+     "Welke taken zou je kunnen schrappen of overdragen?",
+     "Wat als je 1 dag per week structureel anders inricht?",
+     "Welke afspraken zou je opnieuw kunnen onderhandelen?",
+     "Welk type werk doen anderen sneller dan jij?",
+     "Wat zou een sabbatical van 1 maand opleveren?",
+     "Welke energie-bron heb je nog niet ingezet?",
+     "Hoe zou je dag eruit zien als je harder grenzen stelt?",
+     "Welke gewoonte zou ruimte creeren?",
+     "Wat zou je doen met meer slaap?",
+     "Welke optie heb je weggewuifd omdat hij te radicaal leek?"
+    ],
+    "relatie": [
+     "Welke verschillende gespreksvormen kun je proberen?",
+     "Wat als je collega X uitnodigt voor een 1-op-1?",
+     "Welke rol zou een tussenpersoon kunnen spelen?",
+     "Welk gedrag van jou kun je veranderen, ongeacht de ander?",
+     "Wat als je het uitspreekt zonder het op te lossen?",
+     "Welke nieuwe afspraken zouden de samenwerking veranderen?",
+     "Welke verschillende reacties zou je kunnen geven op gedrag X?",
+     "Wat als je deze relatie loslaat, wat gebeurt er?",
+     "Welk experiment zou je in de samenwerking kunnen doen?",
+     "Welke optie heb je nooit echt overwogen?"
+    ],
+    "besluit": [
+     "Welke 3 opties zie je nu echt voor je?",
+     "Welk verschil maakt het als je optie A kiest in plaats van B?",
+     "Welke combinatie van opties is mogelijk?",
+     "Wat is de optie waarvan je hoopt dat ik er niet over begin?",
+     "Welke optie schuif je weg omdat hij eng is?",
+     "Welke tussenstap maakt elke optie omkeerbaar?",
+     "Wat als je niets kiest, wat gebeurt er dan?",
+     "Welke optie geeft het kleinste spijtgevoel?",
+     "Welke optie past het beste bij wie je wilt zijn?",
+     "Welke optie zou je adviseren aan iemand anders in jouw situatie?"
+    ]
+   },
+   "will": {
+    "loopbaan": [
+     "Welke stap ga je deze week zetten?",
+     "Wat heb je nodig om die stap te zetten?",
+     "Wie ga je deze week spreken?",
+     "Wat is je eerste meetbare actie?",
+     "Wanneer evalueer je hoe het gaat?",
+     "Welke obstakels verwacht je, en hoe ga je daarmee om?",
+     "Welke afspraak maak je met jezelf?",
+     "Hoe bewaar je je commitment als het lastig wordt?",
+     "Wat is het bewijs dat je echt aan de slag gaat?",
+     "Wat is je eerste concrete stap binnen 48 uur?"
+    ],
+    "leiderschap": [
+     "Welk gesprek voer je deze week?",
+     "Wat ga je vanaf morgen anders doen?",
+     "Welk team-moment ga je gebruiken om iets uit te proberen?",
+     "Welke afspraak maak je met jezelf?",
+     "Hoe houd je jezelf scherp als het lastig wordt?",
+     "Wat is je eerste meetbare gedragsverandering?",
+     "Wanneer evalueer je de impact?",
+     "Welk obstakel verwacht je, en hoe pak je dat aan?",
+     "Welke afspraak met je team ga je deze week maken?",
+     "Wat is het bewijs dat je het volhoudt?"
+    ],
+    "ontwikkeling": [
+     "Welke gewoonte ga je deze week beginnen?",
+     "Wanneer in je week ga je hier tijd voor maken?",
+     "Wat is je eerste oefen-moment binnen 48 uur?",
+     "Wie helpt jou eraan te denken?",
+     "Welke obstakels verwacht je?",
+     "Hoe meet je dat je vooruitgang boekt?",
+     "Wanneer evalueer je of deze richting werkt?",
+     "Welk gedrag laat je los als je hieraan begint?",
+     "Welke beloning hoort bij vooruitgang?",
+     "Wat is je commitment, in 1 zin?"
+    ],
+    "werkdruk": [
+     "Welke 3 dingen ga je deze week schrappen of overdragen?",
+     "Welk gesprek voer je vandaag of morgen?",
+     "Welke afspraak met jezelf maak je over rust?",
+     "Hoe ga je nee zeggen tegen het eerstvolgende verzoek?",
+     "Wanneer evalueer je hoe het gaat?",
+     "Wat doe je vandaag voor jezelf?",
+     "Welke gewoonte bouw je in voor herstel?",
+     "Welk obstakel zie je aankomen, en hoe pak je dat aan?",
+     "Wie helpt je om koers te houden?",
+     "Wat is bewijs dat je het echt anders doet?"
+    ],
+    "relatie": [
+     "Welk gesprek voer je deze week, en wanneer?",
+     "Hoe ga je het gesprek openen?",
+     "Welk gedrag pas je vanaf morgen aan?",
+     "Welke afspraak maak je met jezelf over je reactie?",
+     "Wat doe je als de ander niet meebeweegt?",
+     "Wanneer evalueer je of de samenwerking verbetert?",
+     "Welk obstakel zie je aankomen?",
+     "Wie kan jou steunen bij dit traject?",
+     "Welke grenzen ga je deze week trekken?",
+     "Wat is je commitment, in 1 zin?"
+    ],
+    "besluit": [
+     "Wanneer neem je de beslissing definitief?",
+     "Welke laatste stap moet je zetten voor je kunt kiezen?",
+     "Wie deel je je beslissing als eerste mee?",
+     "Wat is je eerste actie na de keuze?",
+     "Hoe communiceer je je keuze naar de mensen die het raakt?",
+     "Welke twijfel ga je niet meer toelaten?",
+     "Hoe houd je jezelf bij de keuze als het twijfelt?",
+     "Welk symbolisch moment kun je maken van het besluit?",
+     "Wanneer evalueer je hoe het uitpakt?",
+     "Wat is je commitment, in 1 zin?"
+    ]
+   }
+  }
+ },
+ "resultaat_kop": "Coachvragen",
+ "resultaat_intro": "{fase|label} - {thema|label}",
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Coachee",
+     "tekst": "{coacheeNaam}"
+    },
+    {
+     "label": "Situatie",
+     "tekst": "{situatie}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "tekst": "Hieronder staan 10 coachvragen die je tijdens de sessie of als voorbereiding kunt gebruiken."
+  },
+  {
+   "type": "lijst",
+   "nummers": true,
+   "bank": "vragen",
+   "pad": [
+    "{fase}",
+    "{thema}"
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "coachvragen-{fase}-{thema}"
+ },
+ "mail": {
+  "onderwerp": "Coachvragen {fase|label} - {thema|label}",
+  "intro": "Hierbij de coachvragen voor je coachgesprek."
+ }
+}

@@ -194,6 +194,13 @@
 		this.sr = el( 'span', { class: 'sfp-tool__sr', 'aria-live': 'polite' } );
 	}
 
+	/* Een vaste tekst, met voorrang voor de eigen teksten van de tool (teksten in de beschrijving). */
+	Tool.prototype.tx = function ( sleutel ) {
+		var eigen = this.b && this.b.teksten ? this.b.teksten : {};
+		var rest = Array.prototype.slice.call( arguments, 1 );
+		return t.apply( null, [ Object.prototype.hasOwnProperty.call( eigen, sleutel ) ? eigen[ sleutel ] : sleutel ].concat( rest ) );
+	};
+
 	Tool.prototype.start = function () {
 		if ( ! this.b || ! this.app ) { return false; }
 		var fabriek = SOORTEN[ this.b.soort ];
@@ -238,12 +245,12 @@
 		return basis + '?t=' + codeer( { id: this.id, a: antwoorden } );
 	};
 	Tool.prototype.deel = function ( antwoorden, melding ) {
-		var url = this.deellink( antwoorden );
 		var zelf = this;
+		var url = this.deellink( antwoorden );
 		if ( navigator.clipboard && navigator.clipboard.writeText ) {
-			navigator.clipboard.writeText( url ).then( function () { melding( t( 'tool_deellink_ok' ) ); zelf.zeg( t( 'tool_deellink_ok' ) ); }, function () { melding( t( 'tool_deellink_toon', url ) ); } );
+			navigator.clipboard.writeText( url ).then( function () { melding( zelf.tx( 'tool_deellink_ok' ) ); zelf.zeg( zelf.tx( 'tool_deellink_ok' ) ); }, function () { melding( zelf.tx( 'tool_deellink_toon', url ) ); } );
 		} else {
-			melding( t( 'tool_deellink_toon', url ) );
+			melding( zelf.tx( 'tool_deellink_toon', url ) );
 		}
 	};
 
@@ -263,7 +270,7 @@
 		var sleutel = this.sleutel + '-duim';
 		var eerder = opslag.lees( sleutel );
 		var wrap = el( 'div', { class: 'sfp-tool__duim' } );
-		var vraag = el( 'p', { class: 'sfp-tool__duim-vraag', text: t( 'tool_duim_vraag' ) } );
+		var vraag = el( 'p', { class: 'sfp-tool__duim-vraag', text: zelf.tx( 'tool_duim_vraag' ) } );
 		var knoppen = el( 'div', { class: 'sfp-tool__duim-knoppen' } );
 		var vervolg = el( 'div', { class: 'sfp-tool__duim-vervolg', hidden: true } );
 		var gekozen = eerder && eerder.stem ? eerder.stem : '';
@@ -282,11 +289,11 @@
 				veld.focus();
 			} }, [ label ] );
 		}
-		var veld = el( 'textarea', { class: 'sfp-tool__veld', rows: '2', maxlength: '600', placeholder: t( 'tool_duim_meer' ), 'aria-label': t( 'tool_duim_meer' ) } );
-		var mail = el( 'input', { type: 'email', class: 'sfp-tool__veld', maxlength: '160', placeholder: t( 'tool_duim_mail_hint' ), 'aria-label': t( 'tool_duim_mail_hint' ), autocomplete: 'email' } );
+		var veld = el( 'textarea', { class: 'sfp-tool__veld', rows: '2', maxlength: '600', placeholder: zelf.tx( 'tool_duim_meer' ), 'aria-label': zelf.tx( 'tool_duim_meer' ) } );
+		var mail = el( 'input', { type: 'email', class: 'sfp-tool__veld', maxlength: '160', placeholder: zelf.tx( 'tool_duim_mail_hint' ), 'aria-label': zelf.tx( 'tool_duim_mail_hint' ), autocomplete: 'email' } );
 		var hp = el( 'input', { type: 'text', name: 'website', tabindex: '-1', autocomplete: 'off', class: 'sfp-tool__hp', 'aria-hidden': 'true' } );
-		var dank = el( 'p', { class: 'sfp-tool__duim-dank', hidden: true, text: t( 'tool_duim_dank' ) } );
-		var verstuur = el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--klein', text: t( 'tool_duim_verstuur' ), onclick: function () {
+		var dank = el( 'p', { class: 'sfp-tool__duim-dank', hidden: true, text: zelf.tx( 'tool_duim_dank' ) } );
+		var verstuur = el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--klein', text: zelf.tx( 'tool_duim_verstuur' ), onclick: function () {
 			var tekst = veld.value.trim();
 			verstuur.disabled = true;
 			var p = tekst ? zelf.duim( gekozen || 'omhoog', tekst, mail.value.trim(), hp.value ) : Promise.resolve();
@@ -298,8 +305,8 @@
 				Array.prototype.forEach.call( knoppen.children, function ( k ) { k.disabled = true; } );
 			}, function () { verstuur.disabled = false; } );
 		} } );
-		knoppen.appendChild( knop( 'omhoog', t( 'tool_duim_ja' ) ) );
-		knoppen.appendChild( knop( 'omlaag', t( 'tool_duim_nee' ) ) );
+		knoppen.appendChild( knop( 'omhoog', zelf.tx( 'tool_duim_ja' ) ) );
+		knoppen.appendChild( knop( 'omlaag', zelf.tx( 'tool_duim_nee' ) ) );
 		vervolg.appendChild( veld );
 		vervolg.appendChild( mail );
 		vervolg.appendChild( hp );
@@ -392,6 +399,22 @@
 						schrijf( it, 10.5, false, body, 8 ); y += 1.8;
 					} ); y += 2; break;
 					case 'afvink': ( bl.items || [] ).forEach( function ( it ) { nieuw( 8 ); doc.setDrawColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] ); doc.rect( L + 0.5, y - 3.4, 3.6, 3.6 ); schrijf( it, 10.5, false, body, 8 ); y += 1.5; } ); y += 2; break;
+					/* Een vraag met het antwoord van de bezoeker eronder, of lege regels om op te schrijven. */
+					case 'invul': ( bl.items || [] ).forEach( function ( it, i ) {
+						nieuw( 14 );
+						if ( bl.nummers ) {
+							vul( tint ); doc.circle( L + 2.6, y - 1.3, 2.6, 'F' );
+							doc.setFont( 'DejaVuSans', 'bold' ); doc.setFontSize( 8 ); doc.setTextColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] );
+							doc.text( String( i + 1 ), L + 2.6, y - 0.3, { align: 'center' } );
+						} else { vul( secundair ); doc.circle( L + 1.6, y - 1.3, 1, 'F' ); }
+						schrijf( it.tekst, 10.5, false, body, 8 ); y += 1.5;
+						if ( it.antwoord ) { schrijf( it.antwoord, 10, false, primair, 8 ); y += 2.5; }
+						else {
+							doc.setDrawColor( tint1[ 0 ], tint1[ 1 ], tint1[ 2 ] );
+							for ( var k = 0; k < ( bl.lijnen || 0 ); k++ ) { y += 7; nieuw( 4 ); doc.line( L + 8, y, R, y ); }
+							y += 4;
+						}
+					} ); y += 2; break;
 					case 'balk':
 						nieuw( 12 );
 						doc.setFont( 'DejaVuSans', 'bold' ); doc.setFontSize( 9 ); doc.setTextColor( primair[ 0 ], primair[ 1 ], primair[ 2 ] );
@@ -443,6 +466,11 @@
 					case 'tekst': alineas( bl.tekst ).forEach( function ( a ) { kinderen.push( tekst( a, 160 ) ); } ); break;
 					case 'lijst': ( bl.items || [] ).forEach( function ( it, i ) { kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: ( bl.nummers ? ( i + 1 ) + '. ' : '• ' ), bold: true, color: primair } ), new d.TextRun( { text: it, color: body } ) ] } ) ); } ); break;
 					case 'afvink': ( bl.items || [] ).forEach( function ( it ) { kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: '☐ ', color: primair } ), new d.TextRun( { text: it, color: body } ) ] } ) ); } ); break;
+					case 'invul': ( bl.items || [] ).forEach( function ( it, i ) {
+						kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: ( bl.nummers ? ( i + 1 ) + '. ' : '• ' ), bold: true, color: primair } ), new d.TextRun( { text: it.tekst, color: body } ) ] } ) );
+						if ( it.antwoord ) { kinderen.push( new d.Paragraph( { spacing: { after: 160 }, indent: { left: 360 }, children: [ new d.TextRun( { text: it.antwoord, color: primair } ) ] } ) ); }
+						else { for ( var k = 0; k < ( bl.lijnen || 0 ); k++ ) { kinderen.push( new d.Paragraph( { spacing: { after: 120 }, indent: { left: 360 }, children: [ new d.TextRun( { text: '______________________________________________________________', color: body } ) ] } ) ); } }
+					} ); break;
 					case 'balk': kinderen.push( new d.Paragraph( { spacing: { after: 80 }, children: [ new d.TextRun( { text: bl.naam + ': ', bold: true, allCaps: true, color: primair } ), new d.TextRun( { text: bl.label, color: body } ) ] } ) ); break;
 					case 'tabel': kinderen.push( new d.Table( { rows: ( bl.rijen || [] ).map( function ( rij ) { return new d.TableRow( { children: rij.map( function ( cel ) { return new d.TableCell( { children: [ new d.Paragraph( String( cel ) ) ] } ); } ) } ); } ) } ) ); break;
 				}

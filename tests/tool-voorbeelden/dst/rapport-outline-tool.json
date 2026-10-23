@@ -1,0 +1,161 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Rapportskelet",
+ "stappen": [
+  {
+   "titel": "Doel en lezer",
+   "velden": [
+    {
+     "id": "doel",
+     "type": "lijst",
+     "label": "Doel van het rapport",
+     "opties": [
+      {
+       "waarde": "advies",
+       "tekst": "Adviesrapport (aanbevelingen voor besluit)"
+      },
+      {
+       "waarde": "onderzoek",
+       "tekst": "Onderzoeksrapport (bevindingen + conclusie)"
+      },
+      {
+       "waarde": "evaluatie",
+       "tekst": "Projectevaluatie"
+      },
+      {
+       "waarde": "trend",
+       "tekst": "Trend- of marktanalyse"
+      }
+     ]
+    },
+    {
+     "id": "doelgroep",
+     "type": "kort",
+     "label": "Doelgroep / lezer",
+     "voorbeeld": "bv. Directie, klant X, raad van bestuur",
+     "verplicht": true
+    },
+    {
+     "id": "hoofdvraag",
+     "type": "tekstvak",
+     "label": "Hoofdvraag / kernopdracht",
+     "voorbeeld": "Welke vraag beantwoordt dit rapport?",
+     "verplicht": true
+    }
+   ]
+  },
+  {
+   "titel": "Inhoud",
+   "velden": [
+    {
+     "id": "kerngegevens",
+     "type": "regels",
+     "label": "3-5 kerngegevens / hoofdbevindingen",
+     "voorbeeld": "1 per regel",
+     "verplicht": true
+    },
+    {
+     "id": "context",
+     "type": "tekstvak",
+     "label": "Context (waarom dit nu?)",
+     "voorbeeld": "Aanleiding of trigger"
+    }
+   ]
+  }
+ ],
+ "uitvoer": [
+  {
+   "type": "lijst",
+   "kop": "Managementsamenvatting",
+   "items": [
+    "Schrijven aan het einde, op basis van conclusie en aanbevelingen.",
+    "Hoogstens 1 pagina. Antwoord op de hoofdvraag in 3-5 bullets.",
+    "Eindigt met de kernaanbeveling."
+   ]
+  },
+  {
+   "type": "lijst",
+   "kop": "1. Inleiding",
+   "items": [
+    "{context|voor:Aanleiding: }",
+    "{hoofdvraag|voor:Hoofdvraag: }",
+    "{doel|label|voor:Doel: }",
+    "{doelgroep|voor:Doelgroep: }",
+    "Leeswijzer voor het rapport"
+   ]
+  },
+  {
+   "type": "lijst",
+   "kop": "2. Aanpak",
+   "items": [
+    "Beschrijf hoe je de hoofdvraag onderzocht hebt.",
+    "Welke bronnen, methodes, interviews of data zijn gebruikt.",
+    "Wat zijn de beperkingen?"
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "3. Bevindingen",
+   "als": {
+    "veld": "kerngegevens",
+    "gevuld": true
+   },
+   "tekst": "Per kerngegeven een subparagraaf:"
+  },
+  {
+   "type": "lijst",
+   "regels": "kerngegevens"
+  },
+  {
+   "type": "lijst",
+   "kop": "4. Analyse",
+   "items": [
+    "Wat betekenen de bevindingen samen?",
+    "Welke verbanden zijn er?",
+    "Welke conclusies vloeien hieruit voort?"
+   ]
+  },
+  {
+   "type": "lijst",
+   "kop": "5. Conclusies",
+   "items": [
+    "3-5 kernconclusies, elk in 1 zin.",
+    "Verbind elke conclusie expliciet aan de hoofdvraag.",
+    "Geen nieuwe informatie hier; alleen synthese van bevindingen."
+   ]
+  },
+  {
+   "type": "lijst",
+   "kop": "6. Aanbevelingen",
+   "items": [
+    "Concrete aanbevelingen voor {doelgroep}.",
+    "Per aanbeveling: wat, waarom, door wie, wanneer.",
+    "Maximaal 5 aanbevelingen; meer leest als wensenlijst."
+   ]
+  },
+  {
+   "type": "lijst",
+   "kop": "Bijlagen",
+   "items": [
+    "Bronnenlijst",
+    "Gebruikte data of interviewverslagen",
+    "Eventuele methodische verantwoording"
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "rapport-outline-tool{doel|voor:-}"
+ },
+ "mail": {
+  "onderwerp": "",
+  "intro": ""
+ }
+}

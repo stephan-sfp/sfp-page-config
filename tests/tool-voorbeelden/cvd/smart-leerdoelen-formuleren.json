@@ -1,0 +1,427 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "SMART-leerdoelen{onderwerp|eersteregel|voor:: }",
+ "resultaat_intro": "{bloom|label|voor:Bloom: |na: • }Sector: {sector|label|anders:Algemeen}{termijndeel}{doelgroep|eersteregel|voor: • Doelgroep: }",
+ "stappen": [
+  {
+   "titel": "Sector",
+   "intro": "In welke sector werkt of leert je doelgroep? De tool past de toon en context van de gegenereerde leerdoelen daarop aan.",
+   "velden": [
+    {
+     "id": "sector",
+     "type": "keuze",
+     "label": "Sector",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "algemeen",
+       "tekst": "Algemeen"
+      },
+      {
+       "waarde": "basisonderwijs",
+       "tekst": "Basisonderwijs"
+      },
+      {
+       "waarde": "voortgezet",
+       "tekst": "VO, MBO, HBO"
+      },
+      {
+       "waarde": "zorg",
+       "tekst": "Zorg"
+      },
+      {
+       "waarde": "leiderschap",
+       "tekst": "Leiderschap"
+      },
+      {
+       "waarde": "stage",
+       "tekst": "Stage"
+      },
+      {
+       "waarde": "persoonlijk",
+       "tekst": "Persoonlijke ontwikkeling"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Bloom",
+   "intro": "Op welk denkniveau moet de lerende dit straks kunnen?\n\nWat is een Bloom-niveau?\n\nBloom's taxonomie ordent zes denkniveaus, van laag naar hoog: Onthouden (feiten weten), Begrijpen (in eigen woorden uitleggen), Toepassen (gebruiken in een nieuwe situatie), Analyseren (onderdelen onderscheiden), Evalueren (beoordelen of kiezen) en Creëren (zelf nieuw maken). Kies het niveau dat past bij wat de lerende straks moet kunnen. Twijfel je? Kies Toepassen; dat is voor de meeste trainingen passend.",
+   "velden": [
+    {
+     "id": "bloom",
+     "type": "keuze",
+     "label": "Bloom-niveau",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "onthouden",
+       "tekst": "Onthouden"
+      },
+      {
+       "waarde": "begrijpen",
+       "tekst": "Begrijpen"
+      },
+      {
+       "waarde": "toepassen",
+       "tekst": "Toepassen"
+      },
+      {
+       "waarde": "analyseren",
+       "tekst": "Analyseren"
+      },
+      {
+       "waarde": "evalueren",
+       "tekst": "Evalueren"
+      },
+      {
+       "waarde": "creeren",
+       "tekst": "Creëren"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Context",
+   "intro": "Beschrijf het onderwerp en de context.",
+   "velden": [
+    {
+     "id": "onderwerp",
+     "type": "kort",
+     "label": "Onderwerp",
+     "voorbeeld": "bv. klantgesprek voeren, decubitus voorkomen, ADDIE-model toepassen",
+     "maxlengte": 140,
+     "verplicht": true
+    },
+    {
+     "id": "doelgroep",
+     "type": "kort",
+     "label": "Doelgroep",
+     "voorbeeld": "bv. eerstejaars verpleegkundigen, nieuwe trainers, MBO-3 logistiek",
+     "maxlengte": 120
+    },
+    {
+     "id": "termijn",
+     "type": "keuze",
+     "label": "Termijn",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "les",
+       "tekst": "Aan het eind van de les"
+      },
+      {
+       "waarde": "module",
+       "tekst": "Aan het eind van de module"
+      },
+      {
+       "waarde": "traject",
+       "tekst": "Aan het eind van het traject"
+      },
+      {
+       "waarde": "weken6",
+       "tekst": "Na 6 weken"
+      },
+      {
+       "waarde": "maanden6",
+       "tekst": "Na 6 maanden"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Aanscherpen",
+   "intro": "Scherp eventueel de S-M-A-R-T-componenten aan. Laat velden leeg om automatische suggesties te gebruiken.\n\nWat is een SMART-leerdoel?\n\nSMART staat voor Specifiek, Meetbaar, Acceptabel, Realistisch en Tijdgebonden. De vijf criteria zorgen dat een leerdoel toetsbaar en haalbaar is.",
+   "velden": [
+    {
+     "id": "smart_s",
+     "type": "kort",
+     "label": "S Specifiek",
+     "voorbeeld": "Wat moet de lerende exact kunnen?",
+     "maxlengte": 220
+    },
+    {
+     "id": "smart_m",
+     "type": "kort",
+     "label": "M Meetbaar",
+     "voorbeeld": "Hoe meet je dat: toets, observatie, opdracht, reflectie?",
+     "maxlengte": 220
+    },
+    {
+     "id": "smart_a",
+     "type": "kort",
+     "label": "A Acceptabel",
+     "voorbeeld": "Met welke hulpmiddelen, in welke context?",
+     "maxlengte": 220
+    },
+    {
+     "id": "smart_r",
+     "type": "kort",
+     "label": "R Realistisch",
+     "voorbeeld": "Vanaf welk uitgangsniveau begint de lerende?",
+     "maxlengte": 220
+    },
+    {
+     "id": "smart_t",
+     "type": "kort",
+     "label": "T Tijdgebonden",
+     "hint": "(vervangt de termijn)",
+     "voorbeeld": "bv. binnen 4 weken, voor het eindgesprek",
+     "maxlengte": 120
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "werkwoord": "{bloom|bank:werkwoord|anders:gebruiken}",
+  "onderwerptekst": "{onderwerp|eersteregel|anders:het onderwerp}",
+  "termijndeel": "{termijn|bank:termijndeel}",
+  "lerende": "{sector|bank:lerende|anders:de lerende}",
+  "context": "{sector|bank:context|anders:in een relevante werksituatie}",
+  "termijnnaam": "{termijn|bank:termijn}",
+  "termijntekst": "{smart_t|eersteregel|of:termijnnaam|anders:binnen afzienbare tijd}",
+  "sectormeting": "{sector|bank:meting|anders:aan de hand van een vooraf afgesproken criterium}",
+  "meetbaar": "{smart_m|eersteregel|of:sectormeting}",
+  "sectoracceptabel": "{sector|bank:acceptabel|anders:met instructie en oefenruimte}",
+  "acceptabel": "{smart_a|eersteregel|of:sectoracceptabel}",
+  "realistisch_standaard": "uitgaande van de huidige beginsituatie van {lerende}",
+  "realistisch": "{smart_r|eersteregel|of:realistisch_standaard}",
+  "realistisch_ik": "{smart_r|eersteregel|anders:vanuit mijn huidige beginsituatie}"
+ },
+ "banken": {
+  "werkwoord": {
+   "onthouden": "noemen",
+   "begrijpen": "uitleggen",
+   "toepassen": "gebruiken",
+   "analyseren": "onderzoeken",
+   "evalueren": "beoordelen",
+   "creeren": "ontwerpen"
+  },
+  "werkwoorden": {
+   "onthouden": [
+    "noemen",
+    "opsommen",
+    "definiëren",
+    "herkennen",
+    "omschrijven",
+    "identificeren",
+    "reproduceren",
+    "aanwijzen"
+   ],
+   "begrijpen": [
+    "uitleggen",
+    "samenvatten",
+    "parafraseren",
+    "interpreteren",
+    "vergelijken",
+    "classificeren",
+    "voorspellen"
+   ],
+   "toepassen": [
+    "gebruiken",
+    "demonstreren",
+    "uitvoeren",
+    "illustreren",
+    "oplossen",
+    "implementeren",
+    "beoefenen"
+   ],
+   "analyseren": [
+    "onderzoeken",
+    "onderscheiden",
+    "indelen",
+    "ontleden",
+    "structureren",
+    "koppelen"
+   ],
+   "evalueren": [
+    "beoordelen",
+    "kritisch bekijken",
+    "onderbouwen",
+    "verdedigen",
+    "prioriteren",
+    "valideren"
+   ],
+   "creeren": [
+    "ontwerpen",
+    "samenstellen",
+    "bedenken",
+    "formuleren",
+    "plannen",
+    "construeren",
+    "ontwikkelen"
+   ]
+  },
+  "lerende": {
+   "algemeen": "de lerende",
+   "basisonderwijs": "de leerling",
+   "voortgezet": "de student",
+   "zorg": "de zorgmedewerker",
+   "leiderschap": "de leidinggevende",
+   "stage": "de stagiair",
+   "persoonlijk": "ik"
+  },
+  "context": {
+   "algemeen": "in een relevante werksituatie",
+   "basisonderwijs": "in een betekenisvolle leeractiviteit in de klas",
+   "voortgezet": "binnen de module in een toets- of opdrachtsituatie",
+   "zorg": "in een praktijksituatie volgens protocol",
+   "leiderschap": "in een gesprek met een teamlid of in een teamoverleg",
+   "stage": "tijdens de stage in een praktijksituatie",
+   "persoonlijk": "in een betekenisvolle werk- of levenssituatie"
+  },
+  "meting": {
+   "algemeen": "aan de hand van een vooraf afgesproken criterium",
+   "basisonderwijs": "aan de hand van een observatie of toets",
+   "voortgezet": "aan de hand van een rubric of toetsmatrix",
+   "zorg": "aan de hand van een observatie of reflectiegesprek",
+   "leiderschap": "aan de hand van een 360-graden-feedback of zelfevaluatie",
+   "stage": "aan de hand van een stageopdracht en gesprek met de stagebegeleider",
+   "persoonlijk": "aan de hand van zelfreflectie en feedback van een coach of collega"
+  },
+  "acceptabel": {
+   "algemeen": "met instructie en oefenruimte",
+   "basisonderwijs": "met instructie van de leerkracht en passende materialen",
+   "voortgezet": "met de besproken theorie en oefenmateriaal",
+   "zorg": "met begeleiding van een werkbegeleider en de geldende richtlijnen",
+   "leiderschap": "met inzet van geleerde technieken en bewuste reflectie",
+   "stage": "met begeleiding van de stagebegeleider en gebruik van het stageportfolio",
+   "persoonlijk": "met bewuste oefening en reflectiemomenten"
+  },
+  "termijn": {
+   "les": "aan het eind van de les",
+   "module": "aan het eind van de module",
+   "traject": "aan het eind van het traject",
+   "weken6": "binnen 6 weken",
+   "maanden6": "binnen 6 maanden"
+  },
+  "termijndeel": {
+   "les": " • Termijn: {termijntekst}",
+   "module": " • Termijn: {termijntekst}",
+   "traject": " • Termijn: {termijntekst}",
+   "weken6": " • Termijn: {termijntekst}",
+   "maanden6": " • Termijn: {termijntekst}"
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "kop": "Variant 1: Kort",
+   "tekst": "{lerende|hoofdletter} kan {termijntekst} {onderwerptekst} {werkwoord}."
+  },
+  {
+   "type": "gegevens",
+   "kop": "SMART-onderbouwing",
+   "regels": [
+    {
+     "label": "S Specifiek",
+     "tekst": "{lerende|hoofdletter} kan {onderwerptekst} {werkwoord}."
+    },
+    {
+     "label": "M Meetbaar",
+     "tekst": "{meetbaar}."
+    },
+    {
+     "label": "A Acceptabel",
+     "tekst": "{acceptabel}."
+    },
+    {
+     "label": "R Realistisch",
+     "tekst": "{realistisch}."
+    },
+    {
+     "label": "T Tijdgebonden",
+     "tekst": "{termijntekst}."
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Variant 2: Uitgebreid met meetcriterium",
+   "tekst": "{lerende|hoofdletter} kan {termijntekst} {onderwerptekst} {werkwoord}, {context}. Dit wordt beoordeeld {meetbaar}."
+  },
+  {
+   "type": "gegevens",
+   "kop": "SMART-onderbouwing",
+   "regels": [
+    {
+     "label": "S Specifiek",
+     "tekst": "{lerende|hoofdletter} kan {onderwerptekst} {werkwoord}, {context}."
+    },
+    {
+     "label": "M Meetbaar",
+     "tekst": "{meetbaar}."
+    },
+    {
+     "label": "A Acceptabel",
+     "tekst": "{acceptabel}."
+    },
+    {
+     "label": "R Realistisch",
+     "tekst": "{realistisch}."
+    },
+    {
+     "label": "T Tijdgebonden",
+     "tekst": "{termijntekst}."
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Variant 3: Ik-vorm voor lerenden",
+   "tekst": "Ik kan {termijntekst} {onderwerptekst} {werkwoord}."
+  },
+  {
+   "type": "gegevens",
+   "kop": "SMART-onderbouwing",
+   "regels": [
+    {
+     "label": "S Specifiek",
+     "tekst": "Ik kan {onderwerptekst} {werkwoord}."
+    },
+    {
+     "label": "M Meetbaar",
+     "tekst": "Ik laat zien dat ik dit kan {meetbaar}."
+    },
+    {
+     "label": "A Acceptabel",
+     "tekst": "Ik werk daarbij {acceptabel}."
+    },
+    {
+     "label": "R Realistisch",
+     "tekst": "Ik begin {realistisch_ik}."
+    },
+    {
+     "label": "T Tijdgebonden",
+     "tekst": "{termijntekst}."
+    }
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "cvd-tool-smart-leerdoelen-formuleren-{onderwerp|klein}"
+ },
+ "mail": {
+  "onderwerp": "SMART-leerdoelen{onderwerp|eersteregel|voor:: }",
+  "intro": ""
+ },
+ "teksten": {
+  "tool_maak": "Genereer 3 leerdoelen",
+  "tool_pdf": "Download als PDF",
+  "tool_deellink": "Deelbare link",
+  "tool_opnieuw": "Opnieuw beginnen"
+ }
+}

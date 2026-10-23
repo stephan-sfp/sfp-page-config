@@ -1,0 +1,298 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Rol",
+   "intro": "Dit bepaalt vanuit welk perspectief de vragen gesteld worden.",
+   "velden": [
+    {
+     "id": "rol",
+     "type": "keuze",
+     "label": "Wie ben jij in dit gesprek?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "werknemer",
+       "tekst": "Ik ben de werknemer"
+      },
+      {
+       "waarde": "leidinggevende",
+       "tekst": "Ik ben de leidinggevende"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Context",
+   "intro": "Alleen het type gesprek is verplicht. De rest maakt het document persoonlijker.",
+   "velden": [
+    {
+     "id": "gesprekstype",
+     "type": "lijst",
+     "label": "Type gesprek",
+     "verplicht": true,
+     "standaard": "functionering",
+     "opties": [
+      {
+       "waarde": "functionering",
+       "tekst": "Functioneringsgesprek"
+      },
+      {
+       "waarde": "voortgang",
+       "tekst": "Voortgangsgesprek"
+      },
+      {
+       "waarde": "evaluatie",
+       "tekst": "Evaluatiegesprek"
+      }
+     ]
+    },
+    {
+     "id": "eigenNaam",
+     "type": "kort",
+     "label": "Mijn naam",
+     "voorbeeld": "Bijvoorbeeld: Sara",
+     "maxlengte": 80
+    },
+    {
+     "id": "tegenpartij",
+     "type": "kort",
+     "label": "Naam van de ander",
+     "voorbeeld": "Bijvoorbeeld: Jeroen",
+     "maxlengte": 80,
+     "label_als": [
+      {
+       "als": {
+        "veld": "rol",
+        "is": "werknemer"
+       },
+       "tekst": "Naam van mijn leidinggevende"
+      },
+      {
+       "als": {
+        "veld": "rol",
+        "is": "leidinggevende"
+       },
+       "tekst": "Naam van mijn medewerker"
+      }
+     ]
+    },
+    {
+     "id": "periode",
+     "type": "kort",
+     "label": "Periode",
+     "voorbeeld": "Bijvoorbeeld: 2025 of Q1-Q2 2026",
+     "maxlengte": 60
+    }
+   ]
+  },
+  {
+   "titel": "Pijlers",
+   "intro": "Vink aan wat je wilt opnemen. Per pijler krijg je scherpe vragen, afgestemd op je rol.",
+   "velden": [
+    {
+     "id": "pijlers",
+     "type": "vinkjes",
+     "label": "Welke pijlers wil je bespreken?",
+     "min": 1,
+     "standaard": [
+      "terugblik",
+      "prestatie",
+      "ontwikkeling",
+      "samenwerking",
+      "vooruitkijken"
+     ],
+     "opties": [
+      {
+       "waarde": "terugblik",
+       "tekst": "Terugblik",
+       "uitleg": "Wat is er sinds het vorige gesprek gebeurd, en hoe kijk je daarop terug."
+      },
+      {
+       "waarde": "prestatie",
+       "tekst": "Prestatie",
+       "uitleg": "Resultaten, doelen, kwaliteit van het werk en aanwezige sterke punten."
+      },
+      {
+       "waarde": "ontwikkeling",
+       "tekst": "Ontwikkeling",
+       "uitleg": "Leerwensen, opleiding, doorgroei en wat nodig is om verder te komen."
+      },
+      {
+       "waarde": "samenwerking",
+       "tekst": "Samenwerking",
+       "uitleg": "Verhouding tot collega's, leidinggevende of team, en de werksfeer."
+      },
+      {
+       "waarde": "vooruitkijken",
+       "tekst": "Vooruitblik",
+       "uitleg": "Doelen, afspraken en wat de komende periode aandacht vraagt."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "anderRol": "{rol|bank:anderRol}"
+ },
+ "banken": {
+  "anderRol": {
+   "werknemer": "Leidinggevende",
+   "leidinggevende": "Medewerker"
+  },
+  "vragen": {
+   "werknemer": {
+    "terugblik": [
+     "Wat is mijn belangrijkste prestatie sinds het vorige gesprek?",
+     "Welk moment of project gaf mij de meeste energie, en waarom?",
+     "Welke afspraak uit het vorige gesprek heb ik echt waargemaakt?",
+     "Welke afspraak is niet gelukt, en wat speelde daarbij mee?",
+     "Wat heb ik geleerd dat ik vooraf niet wist?"
+    ],
+    "prestatie": [
+     "Op welk resultaat ben ik trots, en waarom?",
+     "Waar denk ik dat mijn werk meer impact had kunnen hebben?",
+     "Welke vaardigheid heb ik dit jaar het meeste ingezet?",
+     "Op welk gebied wil ik feedback van mijn leidinggevende?",
+     "Wat zou ik graag horen over hoe mijn werk gezien wordt?"
+    ],
+    "ontwikkeling": [
+     "Welke vaardigheid wil ik de komende periode verder ontwikkelen?",
+     "Welk type werk wil ik meer doen, en welk type juist minder?",
+     "Welke training, opleiding of begeleiding zou mij helpen?",
+     "Wat is een rol of project waar ik op de lange termijn naartoe wil?",
+     "Wat houdt mij nu tegen om die kant op te bewegen?"
+    ],
+    "samenwerking": [
+     "Met welke collega werk ik het prettigst samen, en wat maakt dat zo?",
+     "Waar in het team loopt de samenwerking voor mij stroef?",
+     "Wat heb ik nodig van mijn leidinggevende om mijn werk goed te doen?",
+     "Wat krijg ik te weinig of juist te veel terug aan sturing?",
+     "Hoe ervaar ik de werksfeer en mijn rol daarin?"
+    ],
+    "vooruitkijken": [
+     "Welke 2 of 3 doelen wil ik voor de komende periode afspreken?",
+     "Wat moet er anders dan voorheen om die doelen haalbaar te maken?",
+     "Welke randvoorwaarden zijn nodig (tijd, mensen, middelen, ruimte)?",
+     "Wanneer en hoe wil ik tussentijds de voortgang bespreken?",
+     "Wat zou over een jaar bewijzen dat dit gesprek echt iets heeft opgeleverd?"
+    ]
+   },
+   "leidinggevende": {
+    "terugblik": [
+     "Welk moment of project van het afgelopen jaar springt er voor jou uit?",
+     "Op welk resultaat ben je het meest trots?",
+     "Welk doel uit het vorige gesprek is gehaald, en welk doel niet?",
+     "Wat heb je geleerd dat je vooraf niet zag aankomen?",
+     "Wat zou je achteraf anders hebben aangepakt?"
+    ],
+    "prestatie": [
+     "Hoe kijk je zelf naar de kwaliteit van je werk de afgelopen periode?",
+     "Op welke onderdelen voel je dat je het sterkst presteert?",
+     "Waar vind je dat je werk meer impact zou moeten hebben?",
+     "Welke feedback over je werk heb je van anderen gekregen, en wat doe je daarmee?",
+     "Welke verwachtingen vanuit mij of het team zijn nog onduidelijk?"
+    ],
+    "ontwikkeling": [
+     "Welke vaardigheid of kennisgebied wil je verder ontwikkelen?",
+     "Welk type werk geeft jou het meeste energie, en welk type kost juist energie?",
+     "Welke training, coaching of begeleiding zou je helpen?",
+     "Hoe zie je je eigen rol over een of twee jaar?",
+     "Wat zou ik kunnen doen om jouw ontwikkeling te ondersteunen?"
+    ],
+    "samenwerking": [
+     "Hoe ervaar je de samenwerking binnen het team?",
+     "Met welke collega loopt het soepel, en waar is meer afstemming nodig?",
+     "Wat heb je van mij nodig in onze samenwerking?",
+     "Krijg je voldoende of juist te veel sturing van mij?",
+     "Hoe ervaar je de werksfeer, en wat zou die beter maken?"
+    ],
+    "vooruitkijken": [
+     "Welke 2 of 3 concrete doelen wil je voor de komende periode afspreken?",
+     "Wat moet er anders dan voorheen om die doelen haalbaar te maken?",
+     "Welke randvoorwaarden vanuit het team of de organisatie zijn nodig?",
+     "Hoe en wanneer willen we tussentijds de voortgang bespreken?",
+     "Wat zou over een jaar bewijzen dat dit gesprek echt iets heeft opgeleverd?"
+    ]
+   }
+  },
+  "rolNaam": {
+   "werknemer": "Werknemer",
+   "leidinggevende": "Leidinggevende"
+  }
+ },
+ "resultaat_kop": "Vragen voor mijn {gesprekstype|label|klein}",
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Rol",
+     "tekst": "{rol|bank:rolNaam}"
+    },
+    {
+     "label": "Naam",
+     "tekst": "{eigenNaam}"
+    },
+    {
+     "label": "{anderRol}",
+     "tekst": "{tegenpartij}"
+    },
+    {
+     "label": "Periode",
+     "tekst": "{periode}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "als": {
+    "veld": "rol",
+    "is": "werknemer"
+   },
+   "tekst": "Loop deze vragen door voorafgaand aan het gesprek. Schrijf bij elke vraag in steekwoorden je antwoord op, zodat je in het gesprek niet hoeft te improviseren."
+  },
+  {
+   "type": "tekst",
+   "als": {
+    "veld": "rol",
+    "is": "leidinggevende"
+   },
+   "tekst": "Loop deze vragen door voorafgaand aan het gesprek. Per pijler kun je de vragen die je wilt stellen markeren en alvast aantekenen wat je zelf zou antwoorden of horen."
+  },
+  {
+   "type": "herhaal",
+   "over": "pijlers",
+   "kop": "{@nr}. {@label}",
+   "inhoud": [
+    {
+     "type": "vragen",
+     "bank": "vragen",
+     "pad": [
+      "{rol}",
+      "{@}"
+     ],
+     "lijnen": 2
+    }
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "functioneringsgesprek-vragen {eigenNaam|anders:vragen}"
+ },
+ "mail": {
+  "onderwerp": "Vragen voor mijn {gesprekstype|label|klein}",
+  "intro": "Hierbij de vragen voor je {gesprekstype|label|klein}."
+ }
+}

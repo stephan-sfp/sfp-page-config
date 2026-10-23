@@ -206,6 +206,9 @@ function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
     if ( ! is_array( $antwoorden ) ) {
         return new WP_REST_Response( array( 'ok' => false, 'message' => 'Geen antwoorden.' ), 400 );
     }
+    if ( 'generator' === $b['soort'] ) {
+        return sfp_page_config_generator_rest_mail( $post, $b, $email, $antwoorden );
+    }
     // Alleen antwoorden op vragen van deze tool, op hun eigen id (Q1 blijft
     // Q1). Vrije tekst gaat niet mee: dan zou iedereen eigen tekst naar elk
     // adres kunnen laten mailen. De mail bevat zo alleen teksten van de site.
@@ -239,6 +242,48 @@ function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
     $body .= sprintf( $t( 'tool_mail_afzender' ), $eigen ) . "\n";
     $body  = wp_strip_all_tags( wp_check_invalid_utf8( $body, true ) );
     $ok    = wp_mail( $email, $onderwerp, $body, array( 'Content-Type: text/plain; charset=UTF-8' ) );
+    if ( ! $ok ) {
+        return new WP_REST_Response( array( 'ok' => false, 'message' => $t( 'tool_mail_fout' ) ), 500 );
+    }
+    return new WP_REST_Response( array( 'ok' => true ), 200 );
+}
+
+/**
+ * Mail naar jezelf bij een generator: de server bouwt het resultaat opnieuw
+ * uit de antwoorden. Alleen keuzes en korte velden gaan mee (zie
+ * sfp_page_config_generator_mail_antwoorden), zodat de mail geen lappen
+ * tekst van de bezoeker bevat.
+ *
+ * @param  WP_Post $post       Tool.
+ * @param  array   $b          Beschrijving.
+ * @param  string  $email      Adres.
+ * @param  array   $antwoorden Ruwe antwoorden.
+ * @return WP_REST_Response
+ */
+function sfp_page_config_generator_rest_mail( $post, array $b, $email, array $antwoorden ) {
+    $t = 'sfp_page_config_artikel_tekst';
+    foreach ( $b['stappen'] as $stap ) {
+        if ( sfp_page_config_generator_ontbreekt( $b, $antwoorden, $stap ) ) {
+            return new WP_REST_Response( array( 'ok' => false, 'message' => sprintf( $t( 'tool_vul_in' ), $stap['titel'] ) ), 400 );
+        }
+    }
+    if ( ! sfp_page_config_tool_limiet( 'mail-ip-' . sfp_page_config_tool_ip(), 20, HOUR_IN_SECONDS )
+        || ! sfp_page_config_tool_limiet( 'mail-adres-' . sfp_page_config_tool_adres_sleutel( $email ), 5, DAY_IN_SECONDS )
+        || ! sfp_page_config_tool_limiet( 'mail-site', 100, HOUR_IN_SECONDS ) ) {
+        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Te veel verzoeken. Probeer het later opnieuw.' ), 429 );
+    }
+    $schoon    = sfp_page_config_generator_mail_antwoorden( $b, $antwoorden );
+    $titel     = sfp_page_config_tool_platte_titel( $post );
+    $onderwerp = '' !== $b['mail']['onderwerp'] ? sfp_page_config_generator_vul( $b['mail']['onderwerp'], $b, $schoon ) : $titel;
+    $onderwerp = sanitize_text_field( $onderwerp );
+    $eigen     = (string) wp_parse_url( home_url(), PHP_URL_HOST );
+    $link      = sfp_page_config_tool_deellink( $post, $schoon );
+    $body      = '' !== $b['mail']['intro'] ? sfp_page_config_generator_vul( $b['mail']['intro'], $b, $schoon ) . "\n\n" : '';
+    $body     .= sfp_page_config_generator_tekst( sfp_page_config_generator_bouw( $b, $schoon ), $titel );
+    $body     .= "\n" . sprintf( $t( 'tool_mail_slot' ), $link ) . "\n\n";
+    $body     .= sprintf( $t( 'tool_mail_afzender' ), $eigen ) . "\n";
+    $body      = wp_strip_all_tags( wp_check_invalid_utf8( $body, true ) );
+    $ok        = wp_mail( $email, $onderwerp, $body, array( 'Content-Type: text/plain; charset=UTF-8' ) );
     if ( ! $ok ) {
         return new WP_REST_Response( array( 'ok' => false, 'message' => $t( 'tool_mail_fout' ) ), 500 );
     }

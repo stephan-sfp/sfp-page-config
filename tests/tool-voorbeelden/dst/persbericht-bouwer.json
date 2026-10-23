@@ -1,0 +1,148 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Jouw persbericht",
+ "bewerkbaar": true,
+ "stappen": [
+  {
+   "titel": "Nieuws",
+   "velden": [
+    {
+     "id": "gebeurtenis",
+     "type": "kort",
+     "label": "Wat is er gebeurd? (kernfeit in 1 zin)",
+     "voorbeeld": "bv. Nieuwe samenwerking met X aangekondigd",
+     "verplicht": true
+    },
+    {
+     "id": "wie",
+     "type": "kort",
+     "label": "Wie is betrokken?",
+     "voorbeeld": "Welke organisatie(s) / persoon (personen)",
+     "verplicht": true
+    },
+    {
+     "id": "wat",
+     "type": "tekstvak",
+     "label": "Wat is het precies?",
+     "voorbeeld": "Beschrijf het in 2-3 zinnen",
+     "verplicht": true
+    }
+   ]
+  },
+  {
+   "titel": "Waar, wanneer, waarom",
+   "velden": [
+    {
+     "id": "waar_wanneer",
+     "type": "kort",
+     "label": "Waar en wanneer?",
+     "voorbeeld": "bv. Vandaag in Amsterdam"
+    },
+    {
+     "id": "waarom",
+     "type": "tekstvak",
+     "label": "Waarom is dit nieuws?",
+     "voorbeeld": "Wat maakt het relevant voor lezers?",
+     "verplicht": true
+    }
+   ]
+  },
+  {
+   "titel": "Quote",
+   "velden": [
+    {
+     "id": "quote_persoon",
+     "type": "kort",
+     "label": "Wie spreekt in de quote?",
+     "voorbeeld": "Naam en functie"
+    },
+    {
+     "id": "quote_tekst",
+     "type": "tekstvak",
+     "label": "Quote-tekst",
+     "voorbeeld": "1-2 zinnen in de woorden van die persoon"
+    }
+   ]
+  },
+  {
+   "titel": "Organisatie en contact",
+   "velden": [
+    {
+     "id": "boilerplate",
+     "type": "tekstvak",
+     "label": "Over de organisatie (1-3 zinnen)",
+     "voorbeeld": "Standaardtekst over jouw organisatie"
+    },
+    {
+     "id": "contact",
+     "type": "tekstvak",
+     "label": "Contactgegevens (naam + mail + telefoon)",
+     "voorbeeld": "Voor persvragen"
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "gebeurtenis_kort": "{gebeurtenis|kort:80}"
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "tekst": "PERSBERICHT - Voor directe publicatie"
+  },
+  {
+   "type": "tekst",
+   "kop": "Titel",
+   "tekst": "{gebeurtenis}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Lead",
+   "tekst": "{waar_wanneer|na: - }{wie} {wat|kort:80|of:gebeurtenis_kort|zin} {waarom|eersteregel|zin}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Uitwerking",
+   "tekst": "{wat}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Achtergrond",
+   "tekst": "{waarom}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Quote",
+   "als": {
+    "veld": "quote_tekst",
+    "gevuld": true
+   },
+   "tekst": "\"{quote_tekst}\"{quote_persoon|voor: - }"
+  },
+  {
+   "type": "tekst",
+   "kop": "Over de organisatie",
+   "tekst": "{boilerplate}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Voor persvragen",
+   "tekst": "{contact}"
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "persbericht-bouwer-{gebeurtenis}"
+ },
+ "mail": {
+  "onderwerp": "",
+  "intro": ""
+ }
+}

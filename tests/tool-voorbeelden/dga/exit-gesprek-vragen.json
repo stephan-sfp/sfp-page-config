@@ -1,0 +1,173 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Rol",
+   "intro": "De vragen worden afgestemd op je rol.",
+   "velden": [
+    {
+     "id": "rol",
+     "type": "keuze",
+     "label": "Kies wie het exit-gesprek voert.",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "hr",
+       "tekst": "HR",
+       "uitleg": "Neutrale gesprekspartner, focus op organisatiedata"
+      },
+      {
+       "waarde": "leidinggevende",
+       "tekst": "Leidinggevende",
+       "uitleg": "Directe aansturing, focus op samenwerking en afscheid"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Pijlers",
+   "intro": "Per pijler krijg je 4 vragen.",
+   "velden": [
+    {
+     "id": "pijlers",
+     "type": "vinkjes",
+     "label": "Kies de pijlers die in het exit-gesprek aan bod komen.",
+     "min": 1,
+     "opties": [
+      {
+       "waarde": "vertrekredenen",
+       "tekst": "Vertrekredenen",
+       "uitleg": "Push-factoren, pull-factoren, timing"
+      },
+      {
+       "waarde": "werkbeleving",
+       "tekst": "Werkbeleving",
+       "uitleg": "Manager, team, taken, groei"
+      },
+      {
+       "waarde": "organisatie",
+       "tekst": "Organisatie",
+       "uitleg": "Cultuur, beleid, verbeterpunten"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Context",
+   "intro": "Vul optioneel context in voor een persoonlijker rapport.",
+   "velden": [
+    {
+     "id": "vertrekker",
+     "type": "kort",
+     "label": "Naam vertrekkende werknemer",
+     "maxlengte": 80
+    },
+    {
+     "id": "reden",
+     "type": "kort",
+     "label": "Vertrekreden",
+     "voorbeeld": "Bijvoorbeeld: nieuwe baan elders, einde contract",
+     "maxlengte": 120
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "vragen": {
+   "hr": {
+    "vertrekredenen": [
+     "Wat is de doorslaggevende reden voor je vertrek? Was er een specifiek moment of een opbouw?",
+     "Welke factoren in je nieuwe stap of situatie hebben hieraan bijgedragen?",
+     "Was er iets dat ons als organisatie eerder anders had kunnen doen om je te behouden?",
+     "Zijn er signalen die we hadden kunnen oppikken in de afgelopen 6 maanden?"
+    ],
+    "werkbeleving": [
+     "Wat ging in jouw werk hier het beste, los van de uitvoering ervan?",
+     "Welke onderdelen van je werk gaven je structureel energie, en welke kostten energie?",
+     "Hoe heb je je groei en ontwikkeling hier ervaren?",
+     "Hoe was de samenwerking met je directe collegas en je leidinggevende?"
+    ],
+    "organisatie": [
+     "Wat zou jij een nieuwe medewerker over deze organisatie vertellen, eerlijk?",
+     "Wat is een concreet beleidsstuk of werkwijze dat in jouw ogen niet werkt?",
+     "Hoe ervaren jullie elkaar over teams en afdelingen? Klopt het beeld dat het management heeft?",
+     "Welke verandering in deze organisatie had voor jou de doorslag gegeven om te blijven?"
+    ]
+   },
+   "leidinggevende": {
+    "vertrekredenen": [
+     "Wat heeft je doen besluiten te vertrekken? Was dat een specifiek moment of een geleidelijk proces?",
+     "Wat had ik als leidinggevende eerder kunnen zien of doen?",
+     "Welk gesprek had ik met je moeten voeren dat we niet hebben gehad?",
+     "Wat trekt je specifiek aan in je nieuwe situatie?"
+    ],
+    "werkbeleving": [
+     "In welke fase van je werk hier voelde je je het meest in je element?",
+     "Welke taken of projecten gaven jou voldoening?",
+     "Hoe hebben we je geholpen of belemmerd in je ontwikkeling?",
+     "Wat zou je in je werk anders willen als je hier zou blijven?"
+    ],
+    "organisatie": [
+     "Hoe heb jij de teamcultuur ervaren?",
+     "Welke patronen in samenwerking met collegas blijven je bij?",
+     "Wat zou ik aan onze manier van werken moeten veranderen volgens jou?",
+     "Wat moet ik beter weten over hoe medewerkers het hier ervaren?"
+    ]
+   }
+  }
+ },
+ "resultaat_kop": "Exit-gesprek",
+ "resultaat_intro": "Voorbereiding {rol|label}",
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Rol gespreksleider",
+     "tekst": "{rol|label}"
+    },
+    {
+     "label": "Vertrekkende werknemer",
+     "tekst": "{vertrekker}"
+    },
+    {
+     "label": "Vertrekreden",
+     "tekst": "{reden}"
+    }
+   ]
+  },
+  {
+   "type": "herhaal",
+   "over": "pijlers",
+   "kop": "{@label}",
+   "inhoud": [
+    {
+     "type": "vragen",
+     "bank": "vragen",
+     "pad": [
+      "{rol}",
+      "{@}"
+     ],
+     "lijnen": 4
+    }
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "exit-gesprek-vragen-{vertrekker|of:rol}"
+ },
+ "mail": {
+  "onderwerp": "Voorbereiding exit-gesprek{vertrekker|voor: met }",
+  "intro": "Hierbij de vragen ter voorbereiding op het exit-gesprek."
+ }
+}

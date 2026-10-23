@@ -1,0 +1,450 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Regieplan",
+ "stappen": [
+  {
+   "titel": "Context",
+   "intro": "Je antwoorden worden niet op onze servers opgeslagen. Ze blijven alleen tijdelijk in je eigen browser bewaard, zodat je later verder kunt. Wil je alles wissen? Gebruik 'Opnieuw beginnen' op de laatste stap.",
+   "velden": [
+    {
+     "id": "situaties",
+     "type": "vinkjes",
+     "label": "Waarom vindt dit gesprek plaats?",
+     "hint": "Je keuze kleurt de voorbeelden bij elke stap. Twijfel je? Kies \"Anders, namelijk...\".",
+     "opties": [
+      {
+       "waarde": "besluit",
+       "tekst": "Een besluit of verandering toelichten"
+      },
+      {
+       "waarde": "draagvlak",
+       "tekst": "Draagvlak vragen voor een aanpak"
+      },
+      {
+       "waarde": "motiveren",
+       "tekst": "Een medewerker motiveren"
+      },
+      {
+       "waarde": "lastig",
+       "tekst": "Een lastige boodschap brengen"
+      },
+      {
+       "waarde": "algemeen",
+       "tekst": "Anders"
+      }
+     ]
+    },
+    {
+     "id": "situatieAnders",
+     "type": "kort",
+     "label": "Anders, namelijk",
+     "voorbeeld": "Vul je eigen situatie in",
+     "maxlengte": 120,
+     "toon_als": {
+      "veld": "situaties",
+      "bevat": "algemeen"
+     },
+     "verplicht": {
+      "veld": "situaties",
+      "bevat": "algemeen"
+     }
+    },
+    {
+     "id": "gesprekType",
+     "type": "keuze",
+     "label": "Type gesprek",
+     "hint": "Voer je dit gesprek met één persoon of met een groep?",
+     "opties": [
+      {
+       "waarde": "een",
+       "tekst": "Met één persoon"
+      },
+      {
+       "waarde": "groep",
+       "tekst": "Met een groep of team"
+      }
+     ]
+    },
+    {
+     "id": "rolOnderwerp",
+     "type": "keuze",
+     "label": "Jouw rol",
+     "hint": "Welke rol vervul je tijdens dit gesprek?",
+     "opties": [
+      {
+       "waarde": "eigenaar",
+       "tekst": "Ik ben eigenaar van dit besluit"
+      },
+      {
+       "waarde": "doorgeven",
+       "tekst": "Ik geef een besluit van hogerhand door"
+      },
+      {
+       "waarde": "meedenken",
+       "tekst": "Ik denk mee binnen vastgestelde kaders"
+      }
+     ]
+    },
+    {
+     "id": "doelstelling",
+     "type": "tekstvak",
+     "label": "Welk resultaat wil je met dit gesprek bereiken?",
+     "hint": "Maak het concreet en toetsbaar.",
+     "voorbeeld": "Wat wil je dat er na dit gesprek anders of duidelijk is?",
+     "verplicht": true
+    }
+   ]
+  },
+  {
+   "titel": "Inhoud",
+   "velden": [
+    {
+     "id": "kernboodschap",
+     "type": "tekstvak",
+     "label": "De twee of drie zinnen die per se moeten blijven hangen",
+     "hint": "Test: als je gesprekspartner het gesprek morgen navertelt, wat moet hij of zij dan zeggen?",
+     "voorbeeld": "De twee of drie zinnen die echt moeten blijven hangen.",
+     "verplicht": true
+    },
+    {
+     "id": "kp1",
+     "type": "kort",
+     "label": "Kernpunten",
+     "hint": "De punten die hoe dan ook over tafel moeten, ongeacht het verloop van het gesprek.",
+     "voorbeeld": "Een punt dat hoe dan ook over tafel moet",
+     "verplicht": true
+    },
+    {
+     "id": "kp2",
+     "type": "kort",
+     "label": "Kernpunt",
+     "voorbeeld": "Een punt dat hoe dan ook over tafel moet",
+     "verplicht": true
+    },
+    {
+     "id": "kp3",
+     "type": "kort",
+     "label": "Kernpunt",
+     "voorbeeld": "Een punt dat hoe dan ook over tafel moet"
+    },
+    {
+     "id": "kp4",
+     "type": "kort",
+     "label": "Kernpunt",
+     "voorbeeld": "Een punt dat hoe dan ook over tafel moet"
+    },
+    {
+     "id": "bezwaren",
+     "type": "tekstvak",
+     "label": "Verwacht bezwaar",
+     "hint": "Optioneel. Anticipeer op tegenwerpingen, zo houd je de regie."
+    },
+    {
+     "id": "bezwaarReactie",
+     "type": "tekstvak",
+     "label": "Jouw weerwoord"
+    }
+   ]
+  },
+  {
+   "titel": "Kaders",
+   "intro": "Bepaal vooraf waar het gesprek wel en niet over gaat.",
+   "velden": [
+    {
+     "id": "wel",
+     "type": "tekstvak",
+     "label": "Waar gaat het gesprek wel over?",
+     "verplicht": true
+    },
+    {
+     "id": "niet",
+     "type": "tekstvak",
+     "label": "Waar gaat het gesprek niet over?",
+     "hint": "Benoem hier onderwerpen die wel relevant zijn, maar waar jij geen invloed op hebt.",
+     "verplicht": true
+    },
+    {
+     "id": "gespreksNaam",
+     "type": "kort",
+     "label": "Je naam",
+     "voorbeeld": "Voor in je regieplan",
+     "maxlengte": 60
+    },
+    {
+     "id": "gespreksMet",
+     "type": "kort",
+     "label": "Gesprek met",
+     "voorbeeld": "Naam of team",
+     "maxlengte": 80
+    },
+    {
+     "id": "gespreksDatum",
+     "type": "kort",
+     "label": "Datum",
+     "voorbeeld": "Bijvoorbeeld: dinsdag 10 juni",
+     "maxlengte": 40
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "situatie": {
+   "besluit": "Een besluit of verandering toelichten",
+   "draagvlak": "Draagvlak vragen voor een aanpak",
+   "besluit, draagvlak": "Een besluit of verandering toelichten • Draagvlak vragen voor een aanpak",
+   "motiveren": "Een medewerker motiveren",
+   "besluit, motiveren": "Een besluit of verandering toelichten • Een medewerker motiveren",
+   "draagvlak, motiveren": "Draagvlak vragen voor een aanpak • Een medewerker motiveren",
+   "besluit, draagvlak, motiveren": "Een besluit of verandering toelichten • Draagvlak vragen voor een aanpak • Een medewerker motiveren",
+   "lastig": "Een lastige boodschap brengen",
+   "besluit, lastig": "Een besluit of verandering toelichten • Een lastige boodschap brengen",
+   "draagvlak, lastig": "Draagvlak vragen voor een aanpak • Een lastige boodschap brengen",
+   "besluit, draagvlak, lastig": "Een besluit of verandering toelichten • Draagvlak vragen voor een aanpak • Een lastige boodschap brengen",
+   "motiveren, lastig": "Een medewerker motiveren • Een lastige boodschap brengen",
+   "besluit, motiveren, lastig": "Een besluit of verandering toelichten • Een medewerker motiveren • Een lastige boodschap brengen",
+   "draagvlak, motiveren, lastig": "Draagvlak vragen voor een aanpak • Een medewerker motiveren • Een lastige boodschap brengen",
+   "besluit, draagvlak, motiveren, lastig": "Een besluit of verandering toelichten • Draagvlak vragen voor een aanpak • Een medewerker motiveren • Een lastige boodschap brengen",
+   "algemeen": "{situatieAnders|eersteregel|anders:Anders}",
+   "besluit, algemeen": "Een besluit of verandering toelichten • {situatieAnders|eersteregel|anders:Anders}",
+   "draagvlak, algemeen": "Draagvlak vragen voor een aanpak • {situatieAnders|eersteregel|anders:Anders}",
+   "besluit, draagvlak, algemeen": "Een besluit of verandering toelichten • Draagvlak vragen voor een aanpak • {situatieAnders|eersteregel|anders:Anders}",
+   "motiveren, algemeen": "Een medewerker motiveren • {situatieAnders|eersteregel|anders:Anders}",
+   "besluit, motiveren, algemeen": "Een besluit of verandering toelichten • Een medewerker motiveren • {situatieAnders|eersteregel|anders:Anders}",
+   "draagvlak, motiveren, algemeen": "Draagvlak vragen voor een aanpak • Een medewerker motiveren • {situatieAnders|eersteregel|anders:Anders}",
+   "besluit, draagvlak, motiveren, algemeen": "Een besluit of verandering toelichten • Draagvlak vragen voor een aanpak • Een medewerker motiveren • {situatieAnders|eersteregel|anders:Anders}",
+   "lastig, algemeen": "Een lastige boodschap brengen • {situatieAnders|eersteregel|anders:Anders}",
+   "besluit, lastig, algemeen": "Een besluit of verandering toelichten • Een lastige boodschap brengen • {situatieAnders|eersteregel|anders:Anders}",
+   "draagvlak, lastig, algemeen": "Draagvlak vragen voor een aanpak • Een lastige boodschap brengen • {situatieAnders|eersteregel|anders:Anders}",
+   "besluit, draagvlak, lastig, algemeen": "Een besluit of verandering toelichten • Draagvlak vragen voor een aanpak • Een lastige boodschap brengen • {situatieAnders|eersteregel|anders:Anders}",
+   "motiveren, lastig, algemeen": "Een medewerker motiveren • Een lastige boodschap brengen • {situatieAnders|eersteregel|anders:Anders}",
+   "besluit, motiveren, lastig, algemeen": "Een besluit of verandering toelichten • Een medewerker motiveren • Een lastige boodschap brengen • {situatieAnders|eersteregel|anders:Anders}",
+   "draagvlak, motiveren, lastig, algemeen": "Draagvlak vragen voor een aanpak • Een medewerker motiveren • Een lastige boodschap brengen • {situatieAnders|eersteregel|anders:Anders}",
+   "besluit, draagvlak, motiveren, lastig, algemeen": "Een besluit of verandering toelichten • Draagvlak vragen voor een aanpak • Een medewerker motiveren • Een lastige boodschap brengen • {situatieAnders|eersteregel|anders:Anders}"
+  },
+  "voorbeelden": {
+   "besluit": {
+    "doel": "Bijvoorbeeld: mijn team begrijpt waarom dit besluit is genomen en weet wat het voor het dagelijks werk betekent.",
+    "boodschap": "Bijvoorbeeld: dit besluit staat vast; samen kijken we hoe we het goed laten landen.",
+    "punt": "Bijvoorbeeld: wat er concreet verandert en vanaf wanneer"
+   },
+   "draagvlak": {
+    "doel": "Bijvoorbeeld: mijn team staat achter de aanpak en wil meedenken over de uitvoering.",
+    "boodschap": "Bijvoorbeeld: ik geloof in deze aanpak en ik heb jullie nodig om het te laten werken.",
+    "punt": "Bijvoorbeeld: welk probleem we hiermee oplossen"
+   },
+   "motiveren": {
+    "doel": "Bijvoorbeeld: mijn medewerker voelt zich gezien en heeft weer energie voor de volgende stap.",
+    "boodschap": "Bijvoorbeeld: ik zie wat je bijdraagt en ik geloof in je volgende stap.",
+    "punt": "Bijvoorbeeld: een concreet voorbeeld van wat goed gaat"
+   },
+   "lastig": {
+    "doel": "Bijvoorbeeld: de boodschap is duidelijk overgekomen en we hebben een vervolgafspraak.",
+    "boodschap": "Bijvoorbeeld: ik moet je iets vertellen dat lastig ligt, en ik wil het samen bespreken.",
+    "punt": "Bijvoorbeeld: de kern van de boodschap, zonder omhaal"
+   },
+   "algemeen": {
+    "doel": "Wat wil je dat er na dit gesprek anders of duidelijk is?",
+    "boodschap": "De twee of drie zinnen die echt moeten blijven hangen.",
+    "punt": "Een punt dat hoe dan ook over tafel moet"
+   }
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "als": {
+    "veld": "gespreksMet",
+    "gevuld": true
+   },
+   "tekst": "{gespreksNaam|eersteregel|voor:Regieplan van |na: • }Gesprek met {gespreksMet|eersteregel}{gespreksDatum|eersteregel|voor:, }"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "gespreksMet",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksDatum",
+     "gevuld": true
+    }
+   ],
+   "tekst": "{gespreksNaam|eersteregel|voor:Regieplan van |na: • }Gesprek op {gespreksDatum|eersteregel}"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "gespreksMet",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksDatum",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksNaam",
+     "gevuld": true
+    }
+   ],
+   "tekst": "Regieplan van {gespreksNaam|eersteregel}"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "gespreksMet",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksDatum",
+     "gevuld": false
+    },
+    {
+     "veld": "gespreksNaam",
+     "gevuld": false
+    }
+   ],
+   "tekst": "Regieplan van …………  •  Gesprek met …………"
+  },
+  {
+   "type": "tekst",
+   "als": {
+    "veld": "situaties",
+    "gevuld": true
+   },
+   "tekst": "{situaties|klein|bank:situatie}{gesprekType|label|voor: • }{rolOnderwerp|label|voor: • }"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "situaties",
+     "gevuld": false
+    },
+    {
+     "veld": "gesprekType",
+     "gevuld": true
+    }
+   ],
+   "tekst": "{gesprekType|label}{rolOnderwerp|label|voor: • }"
+  },
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "situaties",
+     "gevuld": false
+    },
+    {
+     "veld": "gesprekType",
+     "gevuld": false
+    }
+   ],
+   "tekst": "{rolOnderwerp|label}"
+  },
+  {
+   "type": "tekst",
+   "kop": "Kernboodschap",
+   "tekst": "{kernboodschap|anders:-}"
+  },
+  {
+   "type": "afvink",
+   "kop": "Kernpunten",
+   "items": [
+    "{kp1}",
+    "{kp2}",
+    "{kp3}",
+    "{kp4}",
+    {
+     "tekst": "-",
+     "als": [
+      {
+       "veld": "kp1",
+       "gevuld": false
+      },
+      {
+       "veld": "kp2",
+       "gevuld": false
+      },
+      {
+       "veld": "kp3",
+       "gevuld": false
+      },
+      {
+       "veld": "kp4",
+       "gevuld": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "Verwachte bezwaren",
+   "regels": [
+    {
+     "label": "Bezwaar",
+     "tekst": "{bezwaren}"
+    },
+    {
+     "label": "Reactie",
+     "tekst": "{bezwaarReactie}"
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "Kaders",
+   "regels": [
+    {
+     "label": "Wel",
+     "tekst": "{wel|anders:-}"
+    },
+    {
+     "label": "Niet",
+     "tekst": "{niet|anders:-}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Doel",
+   "tekst": "{doelstelling|anders:-}"
+  },
+  {
+   "type": "vragen",
+   "nummers": false,
+   "lijnen": 8,
+   "items": [
+    "Aantekeningen en afspraken"
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "regieplan-gesprek{gespreksMet|klein|voor:-}"
+ },
+ "mail": {
+  "onderwerp": "Je regieplan{gespreksMet|voor: voor je gesprek met }",
+  "intro": "Hoi{gespreksNaam|voor: },\n\nHier is het regieplan voor je gesprek{gespreksMet|voor: met }{gespreksDatum|voor: op }.\n\nZo gebruik je het:\n- Lees het vijf minuten voor het gesprek nog een keer door.\n- Vink tijdens of na het gesprek je kernpunten af en noteer afspraken in het aantekeningenvak.\n- Schiet het gesprek buiten de kaders? Benoem het, parkeer het en keer terug naar je kernboodschap."
+ },
+ "teksten": {
+  "tool_resultaat": "Klaar",
+  "tool_maak": "Maak mijn regieplan",
+  "tool_pdf": "Download als PDF",
+  "tool_mail": "Mail naar mezelf",
+  "tool_word": "Liever in Word? Download als .docx",
+  "tool_mail_veld": "Je e-mailadres",
+  "tool_mail_verstuur": "Verstuur",
+  "tool_opnieuw": "Opnieuw beginnen"
+ }
+}

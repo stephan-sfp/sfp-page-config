@@ -1,0 +1,531 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Jouw post",
+ "bewerkbaar": true,
+ "stappen": [
+  {
+   "titel": "Doel",
+   "intro": "Kies er een. De tool gaat verder zodra je klikt.",
+   "velden": [
+    {
+     "id": "doel",
+     "type": "keuze",
+     "label": "Wat is het doel van jouw post?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "kennis",
+       "tekst": "Kennis delen"
+      },
+      {
+       "waarde": "vraag",
+       "tekst": "Vraag stellen"
+      },
+      {
+       "waarde": "mening",
+       "tekst": "Mening geven"
+      },
+      {
+       "waarde": "aankondiging",
+       "tekst": "Aankondiging"
+      },
+      {
+       "waarde": "netwerk",
+       "tekst": "Netwerk activeren"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Inhoud",
+   "intro": "Waar gaat de post over?\n\nGeef in een paar zinnen het onderwerp en 1-3 kernpunten.",
+   "velden": [
+    {
+     "id": "onderwerp",
+     "type": "tekstvak",
+     "label": "Onderwerp (1-2 zinnen)",
+     "maxlengte": 400
+    },
+    {
+     "id": "kern1",
+     "type": "kort",
+     "label": "Kernpunt 1",
+     "maxlengte": 200
+    },
+    {
+     "id": "kern2",
+     "type": "kort",
+     "label": "Kernpunt 2",
+     "maxlengte": 200
+    },
+    {
+     "id": "kern3",
+     "type": "kort",
+     "label": "Kernpunt 3",
+     "maxlengte": 200
+    },
+    {
+     "id": "hook_kennis",
+     "type": "lijst",
+     "label": "Andere hook",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "kennis"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Vorige week ontdekte ik iets wat ik niet eerder zag:"
+      },
+      {
+       "waarde": "2",
+       "tekst": "Een patroon dat ik steeds vaker tegenkom:"
+      },
+      {
+       "waarde": "3",
+       "tekst": "Iets wat zelden hardop wordt gezegd:"
+      },
+      {
+       "waarde": "4",
+       "tekst": "De meeste collega's missen dit nog:"
+      },
+      {
+       "waarde": "5",
+       "tekst": "Drie jaar dacht ik dat ik dit goed deed. Tot:"
+      }
+     ]
+    },
+    {
+     "id": "hook_vraag",
+     "type": "lijst",
+     "label": "Andere hook",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "vraag"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Iets om over na te denken:"
+      },
+      {
+       "waarde": "2",
+       "tekst": "Een vraag die mij bezighoudt:"
+      },
+      {
+       "waarde": "3",
+       "tekst": "Hoe doen jullie dit eigenlijk?"
+      },
+      {
+       "waarde": "4",
+       "tekst": "Wie kan mij helpen denken over:"
+      },
+      {
+       "waarde": "5",
+       "tekst": "Eerlijk: waar zit jouw twijfel hier?"
+      }
+     ]
+    },
+    {
+     "id": "hook_mening",
+     "type": "lijst",
+     "label": "Andere hook",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "mening"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Onpopulaire opvatting, maar:"
+      },
+      {
+       "waarde": "2",
+       "tekst": "Dit denk ik over:"
+      },
+      {
+       "waarde": "3",
+       "tekst": "Tegen de stroom in:"
+      },
+      {
+       "waarde": "4",
+       "tekst": "Ik weet dat dit gevoelig ligt, maar:"
+      },
+      {
+       "waarde": "5",
+       "tekst": "Tijd om dit hardop te zeggen:"
+      }
+     ]
+    },
+    {
+     "id": "hook_aankondiging",
+     "type": "lijst",
+     "label": "Andere hook",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "aankondiging"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Nieuws van vandaag:"
+      },
+      {
+       "waarde": "2",
+       "tekst": "Vandaag is het zover:"
+      },
+      {
+       "waarde": "3",
+       "tekst": "Een mooie volgende stap:"
+      },
+      {
+       "waarde": "4",
+       "tekst": "Een mijlpaal die ik wil delen:"
+      },
+      {
+       "waarde": "5",
+       "tekst": "Met trots en een glimlach:"
+      }
+     ]
+    },
+    {
+     "id": "hook_netwerk",
+     "type": "lijst",
+     "label": "Andere hook",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "netwerk"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Ik kan jullie hulp gebruiken bij:"
+      },
+      {
+       "waarde": "2",
+       "tekst": "Wie kent iemand die:"
+      },
+      {
+       "waarde": "3",
+       "tekst": "Op zoek naar:"
+      },
+      {
+       "waarde": "4",
+       "tekst": "Een vriendelijk verzoek aan mijn netwerk:"
+      },
+      {
+       "waarde": "5",
+       "tekst": "Jullie netwerk is groter dan het mijne:"
+      }
+     ]
+    },
+    {
+     "id": "cta_kennis",
+     "type": "lijst",
+     "label": "Andere CTA",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "kennis"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Wat is jouw ervaring? Deel het hieronder."
+      },
+      {
+       "waarde": "2",
+       "tekst": "Herken je dit ook? Laat het weten."
+      },
+      {
+       "waarde": "3",
+       "tekst": "Welke nuance zou jij toevoegen?"
+      }
+     ]
+    },
+    {
+     "id": "cta_vraag",
+     "type": "lijst",
+     "label": "Andere CTA",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "vraag"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Reageer hieronder met jouw aanpak."
+      },
+      {
+       "waarde": "2",
+       "tekst": "Ik lees jullie reacties graag."
+      },
+      {
+       "waarde": "3",
+       "tekst": "Ik hoor graag hoe jij dit ziet."
+      }
+     ]
+    },
+    {
+     "id": "cta_mening",
+     "type": "lijst",
+     "label": "Andere CTA",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "mening"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Eens, oneens, of iets ertussenin?"
+      },
+      {
+       "waarde": "2",
+       "tekst": "Welke uitzonderingen zie jij?"
+      },
+      {
+       "waarde": "3",
+       "tekst": "Ik ben benieuwd hoe jij dit ziet."
+      }
+     ]
+    },
+    {
+     "id": "cta_aankondiging",
+     "type": "lijst",
+     "label": "Andere CTA",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "aankondiging"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Reageer als dit jou ook interesseert."
+      },
+      {
+       "waarde": "2",
+       "tekst": "Tag iemand voor wie dit relevant is."
+      },
+      {
+       "waarde": "3",
+       "tekst": "Ik kijk uit naar wat eruit gaat komen."
+      }
+     ]
+    },
+    {
+     "id": "cta_netwerk",
+     "type": "lijst",
+     "label": "Andere CTA",
+     "standaard": "1",
+     "toon_als": {
+      "veld": "doel",
+      "is": "netwerk"
+     },
+     "opties": [
+      {
+       "waarde": "1",
+       "tekst": "Tag iemand of stuur een DM."
+      },
+      {
+       "waarde": "2",
+       "tekst": "Reageer of deel deze post."
+      },
+      {
+       "waarde": "3",
+       "tekst": "Bedankt aan iedereen die meedenkt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Toon",
+   "intro": "De tool voegt een zin toe die bij de toon past.",
+   "velden": [
+    {
+     "id": "toon",
+     "type": "keuze",
+     "label": "Welke toon?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "zakelijk",
+       "tekst": "Zakelijk en neutraal"
+      },
+      {
+       "waarde": "persoonlijk",
+       "tekst": "Persoonlijk en warm"
+      },
+      {
+       "waarde": "kritisch",
+       "tekst": "Kritisch of confronterend"
+      },
+      {
+       "waarde": "inspirerend",
+       "tekst": "Inspirerend of optimistisch"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "opsomming": "{kern1|voor:\n- }{kern2|voor:\n- }{kern3|voor:\n- }"
+ },
+ "banken": {
+  "hook": {
+   "kennis": "{hook_kennis|label|anders:Vorige week ontdekte ik iets wat ik niet eerder zag:}",
+   "vraag": "{hook_vraag|label|anders:Iets om over na te denken:}",
+   "mening": "{hook_mening|label|anders:Onpopulaire opvatting, maar:}",
+   "aankondiging": "{hook_aankondiging|label|anders:Nieuws van vandaag:}",
+   "netwerk": "{hook_netwerk|label|anders:Ik kan jullie hulp gebruiken bij:}"
+  },
+  "cta": {
+   "kennis": "{cta_kennis|label|anders:Wat is jouw ervaring? Deel het hieronder.}",
+   "vraag": "{cta_vraag|label|anders:Reageer hieronder met jouw aanpak.}",
+   "mening": "{cta_mening|label|anders:Eens, oneens, of iets ertussenin?}",
+   "aankondiging": "{cta_aankondiging|label|anders:Reageer als dit jou ook interesseert.}",
+   "netwerk": "{cta_netwerk|label|anders:Tag iemand of stuur een DM.}"
+  },
+  "toonzin": {
+   "persoonlijk": "Misschien klinkt het persoonlijk, maar dat hoort bij dit onderwerp.",
+   "kritisch": "Ik weet dat dit confronterend kan klinken. Goede gesprekken beginnen vaak zo.",
+   "inspirerend": "Kleine acties leiden vaak tot grote verschuivingen."
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "als": [
+    {
+     "veld": "kern1",
+     "gevuld": false
+    },
+    {
+     "veld": "kern2",
+     "gevuld": false
+    },
+    {
+     "veld": "kern3",
+     "gevuld": false
+    }
+   ],
+   "tekst": "{doel|bank:hook}\n\n{onderwerp|anders:(jouw onderwerp)}{toon|bank:toonzin|voor:\n\n}\n\n{doel|bank:cta}"
+  },
+  {
+   "type": "tekst",
+   "als": {
+    "of": [
+     [
+      {
+       "veld": "kern1",
+       "gevuld": true
+      },
+      {
+       "veld": "kern2",
+       "gevuld": false
+      },
+      {
+       "veld": "kern3",
+       "gevuld": false
+      }
+     ],
+     [
+      {
+       "veld": "kern1",
+       "gevuld": false
+      },
+      {
+       "veld": "kern2",
+       "gevuld": true
+      },
+      {
+       "veld": "kern3",
+       "gevuld": false
+      }
+     ],
+     [
+      {
+       "veld": "kern1",
+       "gevuld": false
+      },
+      {
+       "veld": "kern2",
+       "gevuld": false
+      },
+      {
+       "veld": "kern3",
+       "gevuld": true
+      }
+     ]
+    ]
+   },
+   "tekst": "{doel|bank:hook}\n\n{onderwerp|na:\n\n}{kern1}{kern2}{kern3}{toon|bank:toonzin|voor:\n\n}\n\n{doel|bank:cta}"
+  },
+  {
+   "type": "tekst",
+   "als": {
+    "of": [
+     [
+      {
+       "veld": "kern1",
+       "gevuld": true
+      },
+      {
+       "veld": "kern2",
+       "gevuld": true
+      }
+     ],
+     [
+      {
+       "veld": "kern1",
+       "gevuld": true
+      },
+      {
+       "veld": "kern3",
+       "gevuld": true
+      }
+     ],
+     [
+      {
+       "veld": "kern2",
+       "gevuld": true
+      },
+      {
+       "veld": "kern3",
+       "gevuld": true
+      }
+     ]
+    ]
+   },
+   "tekst": "{doel|bank:hook}\n\n{onderwerp|na:\n\n}{opsomming|kort:1000}{toon|bank:toonzin|voor:\n\n}\n\n{doel|bank:cta}"
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "linkedin-post",
+  "kopieer_kaal": true
+ },
+ "mail": {
+  "onderwerp": "Jouw LinkedIn-post",
+  "intro": ""
+ }
+}

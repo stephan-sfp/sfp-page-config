@@ -420,9 +420,15 @@
 			var sv = uit.samenvatting || {};
 			if ( sv.soort ) {
 				stukken.push( regel( 'Soort', sv.soort ) );
-				stukken.push( regel( 'Vragen', sv.vragen + ( sv.scorend !== sv.vragen ? ' (' + sv.scorend + ' scoren)' : '' ) ) );
-				stukken.push( regel( 'Dimensies', ( sv.dimensies || [] ).join( ', ' ) || 'geen' ) );
-				stukken.push( regel( 'Uitkomst', sv.regel ) );
+				if ( 'generator' === sv.soort ) {
+					stukken.push( regel( 'Stappen', String( sv.stappen ) ) );
+					stukken.push( regel( 'Velden', String( sv.velden ) ) );
+					stukken.push( regel( 'Onderdelen van het resultaat', String( sv.secties ) ) );
+				} else {
+					stukken.push( regel( 'Vragen', sv.vragen + ( sv.scorend !== sv.vragen ? ' (' + sv.scorend + ' scoren)' : '' ) ) );
+					stukken.push( regel( 'Dimensies', ( sv.dimensies || [] ).join( ', ' ) || 'geen' ) );
+					stukken.push( regel( 'Uitkomst', sv.regel ) );
+				}
 				stukken.push( regel( 'Acties', ( sv.acties || [] ).join( ', ' ) ) );
 				stukken.push( regel( 'Formulier', sv.formulier ? 'SureForms ' + sv.formulier : 'geen' ) );
 				if ( ! ( uit.fouten || [] ).length && controle ) { stukken.push( melding( 'De beschrijving klopt.', 'ok' ) ); }
