@@ -206,8 +206,11 @@ function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
     if ( ! is_array( $antwoorden ) ) {
         return new WP_REST_Response( array( 'ok' => false, 'message' => 'Geen antwoorden.' ), 400 );
     }
-    if ( 'generator' === $b['soort'] ) {
+    if ( sfp_page_config_tool_op_generator( $b['soort'] ) ) {
         return sfp_page_config_generator_rest_mail( $post, $b, $email, $antwoorden );
+    }
+    if ( 'test' !== $b['soort'] ) {
+        return new WP_REST_Response( array( 'ok' => false, 'message' => $t( 'tool_mail_fout' ) ), 400 );
     }
     // Alleen antwoorden op vragen van deze tool, op hun eigen id (Q1 blijft
     // Q1). Vrije tekst gaat niet mee: dan zou iedereen eigen tekst naar elk

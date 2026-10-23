@@ -1,0 +1,296 @@
+{
+ "versie": 1,
+ "soort": "tekstanalyse",
+ "resultaat_kop": "B1-checker leesbaarheidsrapport",
+ "resultaat_intro": "Lange zinnen, jargon en passieve vormen zijn gemarkeerd.\n\nHet rapport (pdf of Word) bevat de score, de tellers, jouw tekst en de zinnen om na te lopen.",
+ "invoer": {
+  "label": "Plak jouw tekst",
+  "hint": "Maximaal 5.000 tekens. De analyse gebeurt in jouw browser; niets wordt opgeslagen.",
+  "voorbeeld": "Plak hier de tekst die je wilt analyseren...",
+  "min_tekens": 50,
+  "max_tekens": 5000
+ },
+ "afkortingen": [
+  "bijv.",
+  "bv.",
+  "o.a.",
+  "d.w.z.",
+  "m.a.w.",
+  "enz.",
+  "etc.",
+  "ca.",
+  "resp.",
+  "i.p.v.",
+  "t.a.v.",
+  "m.b.t.",
+  "z.s.m.",
+  "mr.",
+  "dr.",
+  "drs.",
+  "ir.",
+  "ing.",
+  "prof.",
+  "dhr.",
+  "mevr.",
+  "nr.",
+  "art.",
+  "blz.",
+  "p.",
+  "d.d.",
+  "max.",
+  "min.",
+  "incl.",
+  "excl.",
+  "evt.",
+  "vs.",
+  "zgn.",
+  "i.v.m.",
+  "n.a.v.",
+  "o.b.v."
+ ],
+ "lijsten": {
+  "jargon": [
+   "middels",
+   "zulks",
+   "derhalve",
+   "aldus",
+   "conform",
+   "ingevolge",
+   "krachtens",
+   "betreffende",
+   "aangaande",
+   "hetwelk",
+   "geldende",
+   "vigerende",
+   "onverwijld",
+   "desbetreffende",
+   "jegens",
+   "alvorens",
+   "alhier",
+   "alwaar",
+   "mitsdien",
+   "voorts",
+   "beschikking",
+   "vaststellen",
+   "constateren",
+   "faciliteren",
+   "implementeren",
+   "operationaliseren",
+   "optimaliseren",
+   "stroomlijnen",
+   "positioneren",
+   "verwezenlijken",
+   "prioriteren",
+   "monitoren",
+   "categoriseren",
+   "substantieel",
+   "fundamenteel",
+   "structureel",
+   "essentieel",
+   "cruciaal",
+   "adequaat",
+   "optimaal",
+   "competent",
+   "integraal",
+   "cumulatief",
+   "incrementeel",
+   "gerelateerd",
+   "problematiek",
+   "procesgang",
+   "systematiek",
+   "methodiek",
+   "mechanisme",
+   "component",
+   "parameter",
+   "criterium",
+   "instantie",
+   "entiteit",
+   "entiteiten",
+   "beleidsmedewerker",
+   "casemanager",
+   "stakeholder",
+   "ketenpartner",
+   "afgevaardigde",
+   "gedelegeerde",
+   "richtlijn",
+   "verordening",
+   "regelgeving",
+   "modaliteit",
+   "faciliteit",
+   "aanvragingsformulier",
+   "beslisbevoegdheid",
+   "bezwaartermijn",
+   "ingebrekestelling",
+   "tegemoetkoming",
+   "kennisgeving",
+   "ondergetekende",
+   "ten behoeve van",
+   "met betrekking tot",
+   "in voorkomend geval",
+   "in het kader van",
+   "voor zover",
+   "binnen afzienbare termijn",
+   "met inachtneming van",
+   "onder de voorwaarde dat",
+   "op nader te bepalen wijze",
+   "indien noodzakelijk",
+   "voor het overige",
+   "desalniettemin",
+   "niettemin",
+   "wijders",
+   "voorliggende",
+   "initiëren",
+   "faciliteert",
+   "gefaciliteerd",
+   "implementeert",
+   "geïmplementeerd",
+   "operationaliseert",
+   "geoperationaliseerd",
+   "optimaliseert",
+   "geoptimaliseerd",
+   "stroomlijnt",
+   "gestroomlijnd",
+   "positioneert",
+   "gepositioneerd",
+   "verwezenlijkt",
+   "prioriteert",
+   "geprioriteerd",
+   "monitort",
+   "gemonitord",
+   "initieert",
+   "geïnitieerd",
+   "categoriseert",
+   "gecategoriseerd",
+   "constateert",
+   "geconstateerd",
+   "vastgesteld"
+  ]
+ },
+ "per_zin": [
+  {
+   "id": "jargon",
+   "meet": "lijst",
+   "lijst": "jargon",
+   "label": "Jargon"
+  },
+  {
+   "id": "passief",
+   "meet": "passief",
+   "label": "Passieve vorm"
+  }
+ ],
+ "klassen": {
+  "op": "woorden",
+  "labels": [
+   {
+    "vanaf": 26,
+    "sleutel": "lang",
+    "tekst": "Lange zin (>25 woorden)"
+   },
+   {
+    "vanaf": 0,
+    "sleutel": "ok",
+    "tekst": "Zin tot 25 woorden"
+   }
+  ]
+ },
+ "reken": [
+  {
+   "id": "leesgemak",
+   "formule": "max(0, min(100, afronden(206.835 - 0.93 * woorden / zinnen - 77 * lettergrepen / woorden)))"
+  }
+ ],
+ "oordeel": {
+  "op": "leesgemak",
+  "labels": [
+   {
+    "vanaf": 80,
+    "sleutel": "a2",
+    "tekst": "Inschatting taalniveau: A2"
+   },
+   {
+    "vanaf": 65,
+    "sleutel": "b1",
+    "tekst": "Inschatting taalniveau: B1"
+   },
+   {
+    "vanaf": 50,
+    "sleutel": "b2",
+    "tekst": "Inschatting taalniveau: B2"
+   },
+   {
+    "vanaf": 0,
+    "sleutel": "c1",
+    "tekst": "Inschatting taalniveau: C1+"
+   }
+  ]
+ },
+ "uitvoer": [
+  {
+   "type": "getal",
+   "label": "Leesbaarheid (Flesch-Douma, 0 tot 100)",
+   "waarde": "leesgemak",
+   "formaat": "getal",
+   "onder": "{oordeel_tekst}"
+  },
+  {
+   "type": "tellers",
+   "items": [
+    {
+     "label": "Zinnen",
+     "waarde": "zinnen"
+    },
+    {
+     "label": "Te lang",
+     "waarde": "klasse_lang"
+    },
+    {
+     "label": "Jargon",
+     "waarde": "jargon"
+    },
+    {
+     "label": "Passief",
+     "waarde": "passief"
+    }
+   ]
+  },
+  {
+   "type": "gemarkeerd",
+   "kop": "Jouw tekst",
+   "markeer": [
+    "klasse",
+    "jargon",
+    "passief"
+   ],
+   "legenda": true
+  },
+  {
+   "type": "zinnen",
+   "kop": "Zinnen om na te lopen",
+   "alleen": "woorden >= 26 of jargon > 0 of passief > 0",
+   "regel": "Zin {nr} · {woorden} woorden{=als(woorden >= 26, \" · lang\", \"\")}{=als(jargon > 0, \" · jargon\", \"\")}{=als(passief > 0, \" · passief\", \"\")}",
+   "markeer": [
+    "klasse",
+    "jargon",
+    "passief"
+   ]
+  },
+  {
+   "type": "tekst",
+   "tekst": "Het taalniveau is een inschatting op basis van de Flesch-Douma-score (zinslengte en lettergrepen per woord), geen officiële toets."
+  },
+  {
+   "type": "tekst",
+   "tekst": "Tip: een tekst op echt B1 vraagt meestal meer dan alleen kortere zinnen. Doelgroep-inschatting en concrete voorbeelden tellen ook mee. Voor diepgaander schrijfadvies: kijk eens op De Schrijftrainers."
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "duimpjes": true,
+  "pdf_bestandsnaam": "b1-checker-rapport"
+ },
+ "teksten": {
+  "tool_analyseer": "Analyseer tekst"
+ }
+}

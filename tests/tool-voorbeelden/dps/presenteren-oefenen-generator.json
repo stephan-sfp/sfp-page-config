@@ -1,0 +1,264 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Invoer",
+   "intro": "Kies focusgebieden, dagen tot je presentatie en oefentijd per dag. Krijg direct een dag-voor-dag plan met concrete oefeningen.",
+   "velden": [
+    {
+     "id": "focus",
+     "type": "vinkjes",
+     "label": "Focusgebieden (kies 1 of meer)",
+     "min": 1,
+     "opties": [
+      {
+       "waarde": "zenuwen",
+       "tekst": "Zenuwen"
+      },
+      {
+       "waarde": "stem",
+       "tekst": "Stem en volume"
+      },
+      {
+       "waarde": "structuur",
+       "tekst": "Structuur"
+      },
+      {
+       "waarde": "qa",
+       "tekst": "Q&A omgang"
+      },
+      {
+       "waarde": "lichaamstaal",
+       "tekst": "Lichaamstaal"
+      }
+     ]
+    },
+    {
+     "id": "dagen",
+     "type": "keuze",
+     "label": "Dagen tot je presentatie",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "3",
+       "tekst": "3 dagen"
+      },
+      {
+       "waarde": "7",
+       "tekst": "7 dagen"
+      },
+      {
+       "waarde": "14",
+       "tekst": "14 dagen"
+      }
+     ]
+    },
+    {
+     "id": "tijd",
+     "type": "keuze",
+     "label": "Oefentijd per dag",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "5",
+       "tekst": "5 min (1 oefening)"
+      },
+      {
+       "waarde": "10",
+       "tekst": "10 min (2 oefeningen)"
+      },
+      {
+       "waarde": "15",
+       "tekst": "15 min (3 oefeningen)"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "reken": [
+  {
+   "id": "perdag",
+   "formule": "max(1, afronden(tijd / 5))"
+  }
+ ],
+ "banken": {
+  "focuslabels": {
+   "zenuwen": "Zenuwen",
+   "stem": "Stem en volume",
+   "structuur": "Structuur",
+   "qa": "Q&A omgang",
+   "lichaamstaal": "Lichaamstaal"
+  },
+  "oefeningen": [
+   {
+    "categorie": "zenuwen",
+    "titel": "4-7-8 ademhaling",
+    "tekst": "Adem 4 tellen in, houd 7 tellen vast, adem 8 tellen uit. Doe dit 4 rondes. Verlaagt direct je hartslag voor podium."
+   },
+   {
+    "categorie": "zenuwen",
+    "titel": "Schouder-shake",
+    "tekst": "Sta rechtop, ontspan je armen, schud je schouders 30 seconden los. Daarna nog 10 seconden vanuit de heupen."
+   },
+   {
+    "categorie": "zenuwen",
+    "titel": "Positieve self-talk",
+    "tekst": "Schrijf 3 zinnen op die je kort voor de start tegen jezelf zegt. Begin met \"Ik...\" en eindig met een werkwoord. Lees ze 3 keer."
+   },
+   {
+    "categorie": "zenuwen",
+    "titel": "Voorbereidingsritueel",
+    "tekst": "Doe steeds dezelfde 5 stappen kort voor je presentatie (kleding-check, water, ademhaling, kernzin, glimlach). Geeft houvast onder stress."
+   },
+   {
+    "categorie": "zenuwen",
+    "titel": "Vinger-tappen",
+    "tekst": "Tap met je duim achtereenvolgens je wijs-, middel-, ring- en pinkvinger. Doe 20 rondes. Activeert je voorste hersengebied dat zenuwen reguleert."
+   },
+   {
+    "categorie": "stem",
+    "titel": "Resonantie-bromtoon",
+    "tekst": "Maak een lange \"mmm\" met gesloten lippen, voel de trilling in je gezicht. 1 minuut. Daarna 1 minuut op een lagere toon."
+   },
+   {
+    "categorie": "stem",
+    "titel": "Drie stem-niveaus",
+    "tekst": "Lees dezelfde alinea hardop op intieme stem, gespreksstem en presentatiestem. Voel het verschil in volume en projectie."
+   },
+   {
+    "categorie": "stem",
+    "titel": "Adem-borst-buik",
+    "tekst": "Adem in, voel je buik uitzetten (niet je borst). Adem uit en zeg \"1\". Tot 10 tellen. Trainen van diepe ademhaling."
+   },
+   {
+    "categorie": "stem",
+    "titel": "Klinkers articuleren",
+    "tekst": "Spreek a-e-i-o-u uit, elk 3 seconden lang. Overdrijf de mondvorm. Daarna een zin met overdreven articulatie."
+   },
+   {
+    "categorie": "stem",
+    "titel": "Lijn van zacht naar luid",
+    "tekst": "Spreek dezelfde zin in 5 volume-stappen, van fluister naar zaal-vullend. Voel waar jouw natuurlijke presentatie-volume zit."
+   },
+   {
+    "categorie": "structuur",
+    "titel": "3-zinnen-pitch je opener",
+    "tekst": "Schrijf je openingszin in 3 versies. Lees ze hardop. Kies de versie die het sterkst landt. Oefen 5 keer met die ene zin."
+   },
+   {
+    "categorie": "structuur",
+    "titel": "Bullet-points naar verhaal",
+    "tekst": "Pak een slide met bullet-points. Vertel hardop wat erop staat zonder de slide voor te lezen. Verbind met \"omdat\", \"daarom\" en \"concreet\"."
+   },
+   {
+    "categorie": "structuur",
+    "titel": "Overgangs-frasen",
+    "tekst": "Schrijf 3 overgangs-zinnen tussen je hoofdstukken (bijvoorbeeld \"Dat brengt me bij...\"). Oefen elke overgang 3 keer hardop."
+   },
+   {
+    "categorie": "structuur",
+    "titel": "Slot in 1 zin",
+    "tekst": "Formuleer je laatste zin. Lees hardop. Pas aan tot hij blijft hangen. Toets bij iemand of die zin sticky is."
+   },
+   {
+    "categorie": "structuur",
+    "titel": "Routekaart-test",
+    "tekst": "Leg in 30 seconden de structuur van je hele presentatie uit aan een denkbeeldig publiek. Kun je het niet, dan is de structuur nog niet sterk genoeg."
+   },
+   {
+    "categorie": "qa",
+    "titel": "Top-5-vraag-voorbereiding",
+    "tekst": "Schrijf 5 vragen op die je vandaag zou krijgen van het publiek. Bedenk per vraag 1 antwoord in 2-3 zinnen. Oefen hardop."
+   },
+   {
+    "categorie": "qa",
+    "titel": "Parkeer-techniek",
+    "tekst": "Oefen \"Goede vraag, daar kom ik bij het volgende deel op terug\". Doe het 3 keer met andere vragen."
+   },
+   {
+    "categorie": "qa",
+    "titel": "Herformuleer-vraag",
+    "tekst": "Krijg een vraag, herformuleer voor je antwoordt. Oefen formule \"Dus jouw vraag is...\". Doe 3 oefen-vragen."
+   },
+   {
+    "categorie": "qa",
+    "titel": "Geen-idee gracefully",
+    "tekst": "Bedenk 3 manieren om \"Dat weet ik niet\" netjes te zeggen. Bijvoorbeeld: \"Goede vraag, daar moet ik op terugkomen, kun je je e-mail achterlaten?\". Oefen."
+   },
+   {
+    "categorie": "qa",
+    "titel": "Tijdslimiet-management",
+    "tekst": "Bepaal je vragenronde-tijd. Oefen om na 8 minuten te zeggen \"1 laatste vraag\". Niet te streng, wel duidelijk."
+   },
+   {
+    "categorie": "lichaamstaal",
+    "titel": "Heupbreedte-houding",
+    "tekst": "Sta 30 seconden voor de spiegel met voeten op heupbreedte, gewicht gelijk verdeeld, schouders zacht naar achter. Voel de balans."
+   },
+   {
+    "categorie": "lichaamstaal",
+    "titel": "3-personen-oogcontact",
+    "tekst": "Stel een denkbeeldig publiek voor met 3 vaste posities (links, midden, rechts). Spreek je opener uit en wissel oogcontact bewust."
+   },
+   {
+    "categorie": "lichaamstaal",
+    "titel": "Handen-rust-zone",
+    "tekst": "Vind je basis-positie voor handen, tussen schouder en heup. Spreek 1 minuut zonder dat ze in zakken of bij gezicht komen."
+   },
+   {
+    "categorie": "lichaamstaal",
+    "titel": "Mid-sentence pauze",
+    "tekst": "Spreek een zin van 2 deelzinnen. Las 2 seconden stilte in de middenstop. Doe 5 keer met andere zinnen. Train durf-tot-pauze."
+   },
+   {
+    "categorie": "lichaamstaal",
+    "titel": "Glimlach-check spiegel",
+    "tekst": "Oefen je openingszin met natuurlijke glimlach. Spiegel-feedback. Verschil tussen geforceerde en echte glimlach voelen."
+   }
+  ]
+ },
+ "resultaat_kop": "Jouw oefenplan",
+ "resultaat_intro": "{dagen} dagen, {tijd} minuten per dag, focus op: {focus|label}.",
+ "uitvoer": [
+  {
+   "type": "kaarten",
+   "bank": "oefeningen",
+   "om_en_om": {
+    "veld": "focus",
+    "sleutel": "categorie"
+   },
+   "aantal": "dagen * perdag",
+   "groeperen": {
+    "per": "perdag",
+    "kop": "Dag {groep} / {groepen} ({tijd} min)"
+   },
+   "kaartkop": "{item.categorie|bank:focuslabels}: {item.titel}",
+   "inhoud": [
+    {
+     "type": "tekst",
+     "tekst": "{item.tekst}"
+    }
+   ]
+  }
+ ],
+ "teksten": {
+  "tool_maak": "Genereer mijn plan",
+  "tool_resultaat": "Oefenplan"
+ },
+ "acties": {
+  "pdf": true,
+  "word": false,
+  "kopieer": false,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "presenteren-oefenen-{dagen}d-{tijd}min"
+ },
+ "mail": {
+  "onderwerp": "Jouw presenteren-oefenplan",
+  "intro": ""
+ }
+}

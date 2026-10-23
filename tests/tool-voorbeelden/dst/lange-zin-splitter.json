@@ -1,0 +1,154 @@
+{
+ "versie": 1,
+ "soort": "tekstanalyse",
+ "resultaat_kop": "Lange-zin-splitter rapport",
+ "resultaat_intro": "Zinnen met 26 of meer woorden zijn zeer lang (golflijn); zinnen van 16 tot en met 25 woorden zijn lang (stippellijn); kortere zinnen zijn goed en blijven ongemarkeerd.\n\nHet rapport (pdf of Word) bevat per zin het aantal woorden en komma's en, bij zeer lange zinnen, de plek waar je kunt splitsen.",
+ "invoer": {
+  "label": "Plak jouw tekst",
+  "hint": "Maximaal 5.000 tekens. Analyse gebeurt in jouw browser; niets wordt opgeslagen.",
+  "voorbeeld": "Plak hier de tekst die je wilt controleren op te lange zinnen...",
+  "min_tekens": 50,
+  "max_tekens": 5000
+ },
+ "afkortingen": [
+  "bijv.",
+  "bv.",
+  "o.a.",
+  "d.w.z.",
+  "m.a.w.",
+  "enz.",
+  "etc.",
+  "ca.",
+  "resp.",
+  "i.p.v.",
+  "t.a.v.",
+  "m.b.t.",
+  "z.s.m.",
+  "mr.",
+  "dr.",
+  "drs.",
+  "ir.",
+  "ing.",
+  "prof.",
+  "dhr.",
+  "mevr.",
+  "nr.",
+  "art.",
+  "blz.",
+  "p.",
+  "d.d.",
+  "max.",
+  "min.",
+  "incl.",
+  "excl.",
+  "evt.",
+  "vs.",
+  "zgn.",
+  "i.v.m.",
+  "n.a.v.",
+  "o.b.v."
+ ],
+ "klassen": {
+  "op": "woorden",
+  "labels": [
+   {
+    "vanaf": 26,
+    "sleutel": "rood",
+    "tekst": "Zeer lang"
+   },
+   {
+    "vanaf": 16,
+    "sleutel": "oranje",
+    "tekst": "Lang"
+   },
+   {
+    "vanaf": 0,
+    "sleutel": "groen",
+    "tekst": "Goed"
+   }
+  ]
+ },
+ "splitsen": {
+  "vanaf": 26,
+  "voegwoorden": [
+   "omdat",
+   "terwijl",
+   "hoewel",
+   "waardoor",
+   "aangezien",
+   "zodat",
+   "doordat",
+   "indien",
+   "wanneer",
+   "tenzij",
+   "tot",
+   "sinds",
+   "nadat",
+   "voordat",
+   "totdat",
+   "mits",
+   "of",
+   "en",
+   "maar",
+   "dat",
+   "die",
+   "waarbij",
+   "waarmee",
+   "waarna",
+   "welke"
+  ],
+  "min_tekens": 5
+ },
+ "uitvoer": [
+  {
+   "type": "tellers",
+   "items": [
+    {
+     "label": "Zinnen",
+     "waarde": "zinnen"
+    },
+    {
+     "label": "Gem. lengte",
+     "waarde": "woorden / zinnen",
+     "formaat": "getal:1"
+    },
+    {
+     "label": "Lang (16-25w)",
+     "waarde": "klasse_oranje"
+    },
+    {
+     "label": "Zeer lang (26w+)",
+     "waarde": "klasse_rood"
+    }
+   ]
+  },
+  {
+   "type": "gemarkeerd",
+   "kop": "Jouw tekst",
+   "markeer": [
+    "klasse"
+   ],
+   "legenda": true
+  },
+  {
+   "type": "zinnen",
+   "kop": "Per zin",
+   "regel": "Zin {nr} · {woorden} woorden · {kommas} komma's · {klasse_tekst}",
+   "markeer": [
+    "klasse"
+   ],
+   "suggestie": true
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "duimpjes": true,
+  "pdf_bestandsnaam": "lange-zin-splitter-rapport"
+ },
+ "teksten": {
+  "tool_analyseer": "Analyseer zinnen",
+  "tool_splits_hier": "Splits-suggestie",
+  "tool_geen_splits": "Tip: deze zin is lang, maar bevat geen duidelijke komma- of voegwoord-splits. Overweeg de inhoud op te splitsen in twee aparte zinnen."
+ }
+}

@@ -132,7 +132,7 @@ function sfp_page_config_onderdelen() {
         ),
         'tools'      => array(
             'naam'   => 'Tools',
-            'uitleg' => 'Lichte tools voor bezoekers (zelftest en later generator, rekenaar en meer): een bericht van het type tool met een beschrijving, de motor rekent in de browser. Met pdf, Word, deellink, mail naar jezelf en duimpjes.',
+            'uitleg' => 'Lichte tools voor bezoekers (test, generator, rekenaar, checklist en tekstanalyse): een bericht van het type tool met een beschrijving, de motor rekent in de browser. Met pdf, Word, deellink, mail naar jezelf en duimpjes.',
             'detail' => true,
         ),
         'snippets'   => array(

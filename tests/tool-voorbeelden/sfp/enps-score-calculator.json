@@ -1,0 +1,355 @@
+{
+ "versie": 1,
+ "soort": "rekenaar",
+ "resultaat_kop": "Jouw eNPS-rapport",
+ "stappen": [
+  {
+   "titel": "Methode",
+   "intro": "Kies hoe je de eNPS wil berekenen. Beide methoden geven dezelfde score; methode 2 is preciezer als je individuele antwoorden hebt.",
+   "velden": [
+    {
+     "id": "methode",
+     "type": "keuze",
+     "label": "Methode",
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "aantallen",
+       "tekst": "Methode 1: ik weet hoeveel promoters, passives en detractors er zijn."
+      },
+      {
+       "waarde": "los",
+       "tekst": "Methode 2: ik heb individuele scores 0-10 en wil die invoeren."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Invoeren",
+   "intro": "{methode|bank:invoerintro}",
+   "velden": [
+    {
+     "id": "promoters",
+     "type": "getal",
+     "label": "Aantal promoters (score 9-10)",
+     "voorbeeld": "0",
+     "min": 0,
+     "stap": 1,
+     "toon_als": {
+      "veld": "methode",
+      "niet": "los"
+     }
+    },
+    {
+     "id": "passives",
+     "type": "getal",
+     "label": "Aantal passives (score 7-8)",
+     "voorbeeld": "0",
+     "min": 0,
+     "stap": 1,
+     "toon_als": {
+      "veld": "methode",
+      "niet": "los"
+     }
+    },
+    {
+     "id": "detractors",
+     "type": "getal",
+     "label": "Aantal detractors (score 0-6)",
+     "voorbeeld": "0",
+     "min": 0,
+     "stap": 1,
+     "toon_als": {
+      "veld": "methode",
+      "niet": "los"
+     }
+    },
+    {
+     "id": "scores",
+     "type": "getallen",
+     "label": "Individuele scores",
+     "voorbeeld": "9, 8, 6, 10, 7, 9, 5, 8, 10, 9",
+     "min": 0,
+     "max": 10,
+     "maxlengte": 20000,
+     "toon_als": {
+      "veld": "methode",
+      "is": "los"
+     }
+    },
+    {
+     "id": "sector",
+     "type": "lijst",
+     "label": "Sector voor benchmark",
+     "verplicht": true,
+     "standaard": "algemeen",
+     "opties": [
+      {
+       "waarde": "algemeen",
+       "tekst": "NL algemeen",
+       "getallen": {
+        "gem": 13,
+        "top25": 25
+       }
+      },
+      {
+       "waarde": "zorg",
+       "tekst": "Zorg",
+       "getallen": {
+        "gem": 8,
+        "top25": 20
+       }
+      },
+      {
+       "waarde": "overheid",
+       "tekst": "Overheid",
+       "getallen": {
+        "gem": 5,
+        "top25": 16
+       }
+      },
+      {
+       "waarde": "onderwijs",
+       "tekst": "Onderwijs",
+       "getallen": {
+        "gem": 10,
+        "top25": 22
+       }
+      },
+      {
+       "waarde": "zakelijke_dienstverlening",
+       "tekst": "Zakelijke dienstverlening",
+       "getallen": {
+        "gem": 18,
+        "top25": 32
+       }
+      },
+      {
+       "waarde": "ict",
+       "tekst": "ICT",
+       "getallen": {
+        "gem": 22,
+        "top25": 38
+       }
+      },
+      {
+       "waarde": "industrie",
+       "tekst": "Industrie",
+       "getallen": {
+        "gem": 12,
+        "top25": 24
+       }
+      },
+      {
+       "waarde": "retail_horeca",
+       "tekst": "Retail en horeca",
+       "getallen": {
+        "gem": 9,
+        "top25": 21
+       }
+      },
+      {
+       "waarde": "non_profit",
+       "tekst": "Non-profit",
+       "getallen": {
+        "gem": 15,
+        "top25": 28
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "reken": [
+  {
+   "id": "pp",
+   "formule": "als(methode = \"los\", tel(scores, 9, 10), max(0, omlaag(promoters)))"
+  },
+  {
+   "id": "dd",
+   "formule": "als(methode = \"los\", tel(scores, 0, 7) - tel(scores, 7, 7), max(0, omlaag(detractors)))"
+  },
+  {
+   "id": "pas",
+   "formule": "als(methode = \"los\", aantal(scores) - pp - dd, max(0, omlaag(passives)))"
+  },
+  {
+   "id": "totaal",
+   "formule": "pp + pas + dd"
+  },
+  {
+   "id": "score",
+   "formule": "afronden(pp / totaal * 100 - dd / totaal * 100)"
+  },
+  {
+   "id": "positie",
+   "formule": "als(score > sector.top25, \"boven top-25% (sterk)\", als(score = sector.top25, \"gelijk aan top-25%\", als(score > sector.gem, \"boven gemiddelde\", als(score = sector.gem, \"gelijk aan gemiddelde\", \"onder gemiddelde\"))))"
+  }
+ ],
+ "controles": [
+  {
+   "formule": "methode = \"\"",
+   "melding": "Kies eerst een methode.",
+   "stap": 1
+  },
+  {
+   "formule": "methode = \"los\" en totaal < 1",
+   "melding": "Plak ten minste 1 score (0-10) in het invoerveld.",
+   "stap": 2
+  },
+  {
+   "formule": "methode != \"los\" en totaal < 1",
+   "melding": "Vul ten minste 1 promoter, passive of detractor in.",
+   "stap": 2
+  }
+ ],
+ "oordeel": {
+  "op": "score",
+  "labels": [
+   {
+    "vanaf": 31,
+    "sleutel": "sterk",
+    "tekst": "Sterk (boven +30)"
+   },
+   {
+    "vanaf": 0,
+    "sleutel": "matig",
+    "tekst": "Matig (0 tot +30)"
+   },
+   {
+    "vanaf": -100,
+    "sleutel": "zorgelijk",
+    "tekst": "Zorgelijk (onder 0)"
+   }
+  ]
+ },
+ "banken": {
+  "invoerintro": {
+   "aantallen": "Vul de aantallen in.",
+   "los": "Plak de individuele scores 0-10, gescheiden door komma’s of nieuwe regels."
+  },
+  "duiding": {
+   "sterk": "Een eNPS boven +30 is gezond. Medewerkers bevelen jouw organisatie actief aan en zijn ambassadeurs op de arbeidsmarkt.",
+   "matig": "Een eNPS tussen 0 en +30 is gemiddeld voor NL-organisaties. Er is werk aan de winkel om passives in beweging te brengen en detractors te begrijpen.",
+   "zorgelijk": "Een eNPS onder 0 betekent dat meer medewerkers detractor zijn dan promoter. Dit signaleert structurele problemen die urgent aandacht vragen."
+  },
+  "acties": {
+   "sterk": [
+    "Maak promoter-verhalen zichtbaar (op LinkedIn, in recruitment-materiaal).",
+    "Investeer in retentie: wie zijn de top-promoters en wat houdt hen vast?",
+    "Identificeer wat goed werkt en borg het in onboarding en managementsystemen.",
+    "Vier het succes intern zonder zelfgenoegzaamheid: blijf vragen wat beter kan.",
+    "Zet promoters in als interne ambassadeurs (mentorprogramma, referral-bonus)."
+   ],
+   "matig": [
+    "Doe diepgaand kwalitatief onderzoek naar de redenen achter passives en detractors.",
+    "Identificeer 2-3 verbeterthema’s en pak die concreet aan binnen 90 dagen.",
+    "Versterk leiderschapsvaardigheden van direct leidinggevenden via training.",
+    "Maak feedback-loops korter: niet jaarlijks meten, maar elk kwartaal.",
+    "Communiceer transparant over wat je doet met de eNPS-uitkomsten."
+   ],
+   "zorgelijk": [
+    "Doe direct kwalitatief onderzoek: 1-op-1 gesprekken met cross-doorsnede van detractors.",
+    "Identificeer drie meest gehoorde pijnpunten en maak een 30-60-90-plan per pijnpunt.",
+    "Investeer eerst in fundamenten: leiderschap, werkdruk, communicatie van directie.",
+    "Voorkom verlooppiek: vraag detractors expliciet wat ze houden of doet vertrekken.",
+    "Maak voortgang zichtbaar maandelijks; risico anders dat verbetering geen geloof krijgt."
+   ]
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "getal",
+   "label": "Jouw eNPS-score",
+   "waarde": "score",
+   "formaat": "teken",
+   "onder": "{oordeel_tekst}"
+  },
+  {
+   "type": "verdeling",
+   "kop": "Verdeling",
+   "delen": [
+    {
+     "label": "Promoters",
+     "waarde": "pp"
+    },
+    {
+     "label": "Passives",
+     "waarde": "pas"
+    },
+    {
+     "label": "Detractors",
+     "waarde": "dd"
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "Benchmark {sector|label}",
+   "regels": [
+    {
+     "label": "Gemiddelde",
+     "tekst": "{sector.gem}"
+    },
+    {
+     "label": "Top 25%",
+     "tekst": "{sector.top25}"
+    },
+    {
+     "label": "Jouw positie",
+     "tekst": "{positie}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "tekst": "Benchmarkcijfers: NL-gemiddelden uit publieke bronnen (Effectory, Integron, Glassdoor)."
+  },
+  {
+   "type": "tekst",
+   "kop": "Wat betekent dit",
+   "tekst": "{oordeel|bank:duiding}"
+  },
+  {
+   "type": "lijst",
+   "kop": "5 prioritaire acties",
+   "bank": "acties",
+   "pad": [
+    "{oordeel}"
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Over deze meting",
+   "tekst": "eNPS (employee Net Promoter Score) wordt berekend als percentage promoters minus percentage detractors. Promoters geven score 9-10, passives 7-8, detractors 0-6. Schaal: -100 tot +100. Deze tool is een rekenmachine. Voor een gestructureerde meetcyclus met respondent-toestemming en trendanalyse heb je een dedicated platform nodig."
+  },
+  {
+   "type": "lijst",
+   "kop": "Vergelijkbaar in andere modellen",
+   "items": [
+    "Klassiek NPS (klanten i.p.v. medewerkers) gebruikt dezelfde berekening maar vraagt naar aanbevelingskans aan vrienden voor producten/diensten.",
+    "eSat (employee satisfaction) meet alle medewerkerstevredenheid op 5-puntsschaal en pakt vaak meer dimensies; eNPS is bondiger.",
+    "Engagement-scores (Gallup Q12, Effectory) combineren meerdere vragen tot een breder engagement-beeld; eNPS is een snelle proxy."
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": false,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "enps-score-calculator-{oordeel}"
+ },
+ "mail": {
+  "onderwerp": "Jouw eNPS-rapport: score {score}",
+  "intro": "Hier is je eNPS-rapport."
+ },
+ "teksten": {
+  "tool_maak": "Bereken eNPS"
+ }
+}

@@ -1,0 +1,202 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "{niveau|bank:titel}",
+ "stappen": [
+  {
+   "titel": "Niveau",
+   "intro": "Kies een van de zes niveaus van de taxonomie van Bloom. Je krijgt de omschrijving, passende werkwoorden en voorbeeld-leerdoelen.",
+   "velden": [
+    {
+     "id": "niveau",
+     "type": "keuze",
+     "label": "Welk niveau zoek je?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "onthouden",
+       "tekst": "1. Onthouden",
+       "uitleg": "De lerende kan feiten of begrippen oproepen uit het geheugen."
+      },
+      {
+       "waarde": "begrijpen",
+       "tekst": "2. Begrijpen",
+       "uitleg": "De lerende kan in eigen woorden uitleggen wat iets betekent."
+      },
+      {
+       "waarde": "toepassen",
+       "tekst": "3. Toepassen",
+       "uitleg": "De lerende kan kennis of een techniek in een nieuwe situatie gebruiken."
+      },
+      {
+       "waarde": "analyseren",
+       "tekst": "4. Analyseren",
+       "uitleg": "De lerende kan een geheel ontleden in onderdelen en relaties leggen."
+      },
+      {
+       "waarde": "evalueren",
+       "tekst": "5. Evalueren",
+       "uitleg": "De lerende kan oordelen of beoordelen op basis van criteria."
+      },
+      {
+       "waarde": "creeren",
+       "tekst": "6. Creëren",
+       "uitleg": "De lerende kan iets nieuws ontwerpen of samenstellen."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "titel": {
+   "onthouden": "Niveau 1: Onthouden",
+   "begrijpen": "Niveau 2: Begrijpen",
+   "toepassen": "Niveau 3: Toepassen",
+   "analyseren": "Niveau 4: Analyseren",
+   "evalueren": "Niveau 5: Evalueren",
+   "creeren": "Niveau 6: Creëren"
+  },
+  "omschrijving": {
+   "onthouden": "De lerende kan feiten of begrippen oproepen uit het geheugen.",
+   "begrijpen": "De lerende kan in eigen woorden uitleggen wat iets betekent.",
+   "toepassen": "De lerende kan kennis of een techniek in een nieuwe situatie gebruiken.",
+   "analyseren": "De lerende kan een geheel ontleden in onderdelen en relaties leggen.",
+   "evalueren": "De lerende kan oordelen of beoordelen op basis van criteria.",
+   "creeren": "De lerende kan iets nieuws ontwerpen of samenstellen."
+  },
+  "werkwoorden": {
+   "onthouden": [
+    "noemen",
+    "opsommen",
+    "definiëren",
+    "herkennen",
+    "omschrijven",
+    "identificeren",
+    "reproduceren",
+    "aanwijzen",
+    "herhalen"
+   ],
+   "begrijpen": [
+    "uitleggen",
+    "samenvatten",
+    "parafraseren",
+    "interpreteren",
+    "vergelijken",
+    "classificeren",
+    "voorspellen",
+    "generaliseren"
+   ],
+   "toepassen": [
+    "gebruiken",
+    "demonstreren",
+    "uitvoeren",
+    "illustreren",
+    "oplossen",
+    "implementeren",
+    "beoefenen",
+    "simuleren"
+   ],
+   "analyseren": [
+    "onderzoeken",
+    "onderscheiden",
+    "indelen",
+    "ontleden",
+    "structureren",
+    "koppelen",
+    "deconstrueren"
+   ],
+   "evalueren": [
+    "beoordelen",
+    "kritisch bekijken",
+    "onderbouwen",
+    "verdedigen",
+    "prioriteren",
+    "valideren",
+    "toetsen",
+    "aanbevelen"
+   ],
+   "creeren": [
+    "ontwerpen",
+    "samenstellen",
+    "bedenken",
+    "formuleren",
+    "plannen",
+    "construeren",
+    "produceren",
+    "componeren",
+    "ontwikkelen"
+   ]
+  },
+  "voorbeelden": {
+   "onthouden": [
+    "De student kan de zeven didactische componenten van Van Gelder opsommen.",
+    "De medewerker kan de stappen van het BHV-protocol noemen.",
+    "De stagiair kan de drie vormen van decubitus identificeren."
+   ],
+   "begrijpen": [
+    "De docent kan in eigen woorden uitleggen hoe formatief evalueren verschilt van summatief evalueren.",
+    "De medewerker kan een klantvraag samenvatten in 1 zin.",
+    "De student kan twee leertheorieën vergelijken."
+   ],
+   "toepassen": [
+    "De trainer kan de NIVEA-techniek toepassen in een rollenspel.",
+    "De zorgmedewerker voert de juiste tilhandeling uit bij een patiënt met verminderde mobiliteit.",
+    "De student lost een wiskundeprobleem op met de geleerde formule."
+   ],
+   "analyseren": [
+    "De adviseur onderzoekt de oorzaak van een conflict in een team.",
+    "De docent onderscheidt in een lesopzet de leerdoelen, werkvormen en evaluatiemomenten.",
+    "De student ontleedt een argumentatie in premisse en conclusie."
+   ],
+   "evalueren": [
+    "De manager beoordeelt drie offertes op basis van afgesproken criteria.",
+    "De docent onderbouwt waarom een werkvorm wel of niet werkte.",
+    "De student prioriteert de aanbevelingen in een onderzoeksrapport."
+   ],
+   "creeren": [
+    "De trainer ontwerpt een nieuwe training rond een leervraag van de klant.",
+    "De docent stelt een toetsmatrix samen voor een module.",
+    "De student bedenkt een onderzoeksvoorstel dat aansluit op een actueel vraagstuk."
+   ]
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "tekst": "{niveau|bank:omschrijving}"
+  },
+  {
+   "type": "lijst",
+   "kop": "Werkwoorden",
+   "bank": "werkwoorden",
+   "pad": [
+    "{niveau}"
+   ]
+  },
+  {
+   "type": "lijst",
+   "kop": "Voorbeeld-leerdoelen",
+   "bank": "voorbeelden",
+   "pad": [
+    "{niveau}"
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "A4-poster",
+   "tekst": "Download het hele werkwoordenwiel als A4-poster: https://centrumvoordidactiek.nl/wp-content/uploads/2026/06/bloom-werkwoordenwiel-poster-v3.pdf"
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "bloom-werkwoordenwiel-{niveau}"
+ }
+}

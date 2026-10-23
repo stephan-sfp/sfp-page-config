@@ -58,9 +58,24 @@ function sfp_page_config_tool_bestanden( $soort = 'test' ) {
         wp_enqueue_script( 'sfp-tool-motor', SFP_PAGE_CONFIG_URL . 'assets/tool/motor.js', array(), SFP_PAGE_CONFIG_VERSION, true );
         wp_add_inline_script( 'sfp-tool-motor', 'window.sfpToolConfig=' . wp_json_encode( sfp_page_config_tool_config(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP ) . ';', 'before' );
     }
-    if ( empty( $klaar[ $soort ] ) && isset( sfp_page_config_tool_soorten()[ $soort ] ) ) {
-        $klaar[ $soort ] = true;
-        wp_enqueue_script( 'sfp-tool-' . $soort, SFP_PAGE_CONFIG_URL . 'assets/tool/' . $soort . '.js', array( 'sfp-tool-motor' ), SFP_PAGE_CONFIG_VERSION, true );
+    if ( ! isset( sfp_page_config_tool_soorten()[ $soort ] ) ) {
+        return;
+    }
+    // Rekenaar en checklist draaien op de motor van de generator; de
+    // tekstanalyse gebruikt daarnaast de rekentaal uit dat script.
+    $scripts = array( $soort );
+    if ( sfp_page_config_tool_op_generator( $soort ) ) {
+        $scripts = array( 'generator' );
+    } elseif ( 'tekstanalyse' === $soort ) {
+        $scripts = array( 'generator', 'tekstanalyse' );
+    }
+    $vorige = 'sfp-tool-motor';
+    foreach ( $scripts as $script ) {
+        if ( empty( $klaar[ $script ] ) ) {
+            $klaar[ $script ] = true;
+            wp_enqueue_script( 'sfp-tool-' . $script, SFP_PAGE_CONFIG_URL . 'assets/tool/' . $script . '.js', array( $vorige ), SFP_PAGE_CONFIG_VERSION, true );
+        }
+        $vorige = 'sfp-tool-' . $script;
     }
 }
 
