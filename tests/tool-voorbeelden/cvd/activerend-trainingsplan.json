@@ -1,0 +1,1343 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Trainingscontext",
+   "intro": "Vul kort de basis in. Op basis hiervan kiest de tool werkvormen en tijdsverdeling.",
+   "velden": [
+    {
+     "id": "onderwerp",
+     "type": "kort",
+     "label": "Onderwerp",
+     "voorbeeld": "bijv. Feedback geven, NT2-grammatica, Procesoptimalisatie",
+     "maxlengte": 120,
+     "verplicht": true
+    },
+    {
+     "id": "doelgroep",
+     "type": "kort",
+     "label": "Doelgroep",
+     "voorbeeld": "bijv. nieuwe leidinggevenden, vmbo-3 leerlingen, zorgmedewerkers",
+     "maxlengte": 80
+    },
+    {
+     "id": "groep",
+     "type": "lijst",
+     "label": "Groepsgrootte",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "klein",
+       "tekst": "minder dan 6 deelnemers",
+       "getallen": {
+        "min": 1,
+        "max": 6
+       }
+      },
+      {
+       "waarde": "kleine",
+       "tekst": "6 tot 12 deelnemers",
+       "getallen": {
+        "min": 6,
+        "max": 12
+       }
+      },
+      {
+       "waarde": "middel",
+       "tekst": "12 tot 20 deelnemers",
+       "getallen": {
+        "min": 12,
+        "max": 20
+       }
+      },
+      {
+       "waarde": "grote",
+       "tekst": "20 tot 30 deelnemers",
+       "getallen": {
+        "min": 20,
+        "max": 30
+       }
+      },
+      {
+       "waarde": "zaal",
+       "tekst": "meer dan 30 deelnemers",
+       "getallen": {
+        "min": 30,
+        "max": 200
+       }
+      }
+     ]
+    },
+    {
+     "id": "tijd",
+     "type": "lijst",
+     "label": "Totale tijd",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "60",
+       "tekst": "1 uur (60 min)"
+      },
+      {
+       "waarde": "90",
+       "tekst": "1,5 uur (90 min)"
+      },
+      {
+       "waarde": "120",
+       "tekst": "2 uur (120 min)"
+      },
+      {
+       "waarde": "180",
+       "tekst": "3 uur (180 min)"
+      },
+      {
+       "waarde": "240",
+       "tekst": "halve dag (240 min)"
+      },
+      {
+       "waarde": "360",
+       "tekst": "hele dag (360 min)"
+      }
+     ]
+    },
+    {
+     "id": "doeltype",
+     "type": "keuze",
+     "label": "Leerdoel",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "kennis",
+       "tekst": "Kennis"
+      },
+      {
+       "waarde": "vaardigheid",
+       "tekst": "Vaardigheid"
+      },
+      {
+       "waarde": "attitude",
+       "tekst": "Attitude"
+      },
+      {
+       "waarde": "gedrag",
+       "tekst": "Gedrag"
+      }
+     ]
+    },
+    {
+     "id": "doel",
+     "type": "tekstvak",
+     "label": "Beschrijf het leerdoel in 1 zin",
+     "voorbeeld": "bijv. Deelnemers kunnen na de training concrete, ontvanger-gerichte feedback geven aan een collega.",
+     "maxlengte": 220
+    }
+   ]
+  },
+  {
+   "titel": "Tijdsverdeling per fase",
+   "intro": "De standaardverdeling komt uit het CVD-artikel over de activatiecurve. Wijzig de percentages als jouw sessie een andere balans vraagt. Toepassing krijgt altijd meer tijd dan theorie.",
+   "velden": [
+    {
+     "id": "pct_activatie",
+     "type": "getal",
+     "label": "Activatie",
+     "min": 5,
+     "max": 30,
+     "stap": 1,
+     "eenheid": "%",
+     "standaard": "12",
+     "verplicht": true
+    },
+    {
+     "id": "pct_theorie",
+     "type": "getal",
+     "label": "Theorie",
+     "min": 10,
+     "max": 40,
+     "stap": 1,
+     "eenheid": "%",
+     "standaard": "25",
+     "verplicht": true
+    },
+    {
+     "id": "pct_toepassing",
+     "type": "getal",
+     "label": "Toepassing",
+     "min": 25,
+     "max": 65,
+     "stap": 1,
+     "eenheid": "%",
+     "standaard": "45",
+     "verplicht": true
+    },
+    {
+     "id": "pct_reflectie",
+     "type": "getal",
+     "label": "Reflectie",
+     "min": 5,
+     "max": 25,
+     "stap": 1,
+     "eenheid": "%",
+     "standaard": "18",
+     "verplicht": true
+    }
+   ]
+  },
+  {
+   "titel": "Activatie- en theoriefase",
+   "intro": "Fase 1. Activatie. Doel: voorkennis ophalen en betrokkenheid creëren. Trainerrol: ophalen, niet uitleggen. Fase 2. Theorie. Doel: nieuwe stof aanbieden in maximaal 3 kernconcepten (chunking). Toepassing krijgt straks meer tijd dan deze fase.",
+   "velden": [
+    {
+     "id": "act_voorkennis",
+     "type": "tekstvak",
+     "label": "Welke voorkennis of blinde vlek wil je ophalen?",
+     "voorbeeld": "bijv. wat ze al weten over actief luisteren, of de aanname dat feedback altijd negatief is.",
+     "maxlengte": 200
+    },
+    {
+     "id": "act_houding",
+     "type": "tekstvak",
+     "label": "Welke houding of overtuiging wil je peilen aan het begin?",
+     "voorbeeld": "bijv. de overtuiging 'mijn team kan geen feedback aan'.",
+     "maxlengte": 200
+    },
+    {
+     "id": "theorie_kc1",
+     "type": "kort",
+     "label": "Maximaal 3 kernconcepten die deelnemers moeten kennen",
+     "voorbeeld": "Kernconcept 1",
+     "maxlengte": 100
+    },
+    {
+     "id": "theorie_kc2",
+     "type": "kort",
+     "label": "Kernconcept 2",
+     "voorbeeld": "Kernconcept 2",
+     "maxlengte": 100
+    },
+    {
+     "id": "theorie_kc3",
+     "type": "kort",
+     "label": "Kernconcept 3 (optioneel)",
+     "voorbeeld": "Kernconcept 3 (optioneel)",
+     "maxlengte": 100
+    },
+    {
+     "id": "theorie_niveau",
+     "type": "lijst",
+     "label": "Hoeveel voorkennis hebben deelnemers al?",
+     "standaard": "opp",
+     "opties": [
+      {
+       "waarde": "geen",
+       "tekst": "Geen"
+      },
+      {
+       "waarde": "opp",
+       "tekst": "Oppervlakkig"
+      },
+      {
+       "waarde": "werk",
+       "tekst": "Werkkennis"
+      },
+      {
+       "waarde": "expert",
+       "tekst": "Expert"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Toepassings- en reflectiefase",
+   "intro": "Fase 3. Toepassing. Doel: deelnemers oefenen en maken transfer naar hun praktijk. Trainerrol: coach, niet uitlegger. Fase 4. Reflectie. Doel: leeropbrengst vastleggen en metacognitie bevorderen. Nooit weglaten.",
+   "velden": [
+    {
+     "id": "toe_doel",
+     "type": "tekstvak",
+     "label": "Wat moeten deelnemers concreet kunnen na de toepassing?",
+     "voorbeeld": "bijv. ze kunnen een casus oplossen waarin ze feedback geven aan een lastige collega.",
+     "maxlengte": 200
+    },
+    {
+     "id": "toe_type",
+     "type": "lijst",
+     "label": "Type toepassing",
+     "standaard": "casus",
+     "opties": [
+      {
+       "waarde": "casus",
+       "tekst": "Casusuitwerking"
+      },
+      {
+       "waarde": "vaardigheid",
+       "tekst": "Vaardigheidstest of rollenspel"
+      },
+      {
+       "waarde": "check",
+       "tekst": "Kennis-check"
+      },
+      {
+       "waarde": "praktijk",
+       "tekst": "Praktijktransfer-opdracht"
+      }
+     ]
+    },
+    {
+     "id": "toe_werkvorm",
+     "type": "lijst",
+     "label": "Werken deelnemers individueel of in groep?",
+     "standaard": "tweetal",
+     "opties": [
+      {
+       "waarde": "individueel",
+       "tekst": "Individueel"
+      },
+      {
+       "waarde": "tweetal",
+       "tekst": "Tweetallen"
+      },
+      {
+       "waarde": "subgroep",
+       "tekst": "Subgroepen"
+      },
+      {
+       "waarde": "plenair",
+       "tekst": "Plenair"
+      }
+     ]
+    },
+    {
+     "id": "ref_actie",
+     "type": "tekstvak",
+     "label": "Welke ene concrete actie moeten deelnemers morgen toepassen?",
+     "voorbeeld": "bijv. minimaal één keer per dag concrete feedback geven aan een teamlid.",
+     "maxlengte": 200
+    },
+    {
+     "id": "ref_vorm",
+     "type": "lijst",
+     "label": "Hoe leggen deelnemers hun leeropbrengst vast?",
+     "standaard": "exit",
+     "opties": [
+      {
+       "waarde": "exit",
+       "tekst": "Exit-ticket (schriftelijk)"
+      },
+      {
+       "waarde": "schrijf",
+       "tekst": "Schrijfopdracht"
+      },
+      {
+       "waarde": "rondje",
+       "tekst": "Mondeling rondje"
+      },
+      {
+       "waarde": "app",
+       "tekst": "App-bericht of mail aan zichzelf"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "reken": [
+  {
+   "id": "som",
+   "formule": "som(pct_activatie, pct_theorie, pct_toepassing, pct_reflectie)"
+  },
+  {
+   "id": "act",
+   "formule": "afronden(tijd * pct_activatie / 100)"
+  },
+  {
+   "id": "theo",
+   "formule": "afronden(tijd * pct_theorie / 100)"
+  },
+  {
+   "id": "toe",
+   "formule": "afronden(tijd * pct_toepassing / 100)"
+  },
+  {
+   "id": "refl",
+   "formule": "tijd - act - theo - toe"
+  },
+  {
+   "id": "start_theo",
+   "formule": "act"
+  },
+  {
+   "id": "start_toe",
+   "formule": "act + theo"
+  },
+  {
+   "id": "start_refl",
+   "formule": "act + theo + toe"
+  }
+ ],
+ "controles": [
+  {
+   "formule": "som != 100",
+   "melding": "Som moet 100% zijn. Nu: {som}%.",
+   "stap": 2
+  }
+ ],
+ "meldingen": [
+  {
+   "formule": "som = 100 en pct_toepassing < pct_theorie",
+   "melding": "Tip: toepassing krijgt nu minder tijd dan theorie. De activatiecurve adviseert juist meer tijd voor toepassing dan voor theorie.",
+   "stap": 2
+  }
+ ],
+ "banken": {
+  "groeplabel": {
+   "klein": "<6 deelnemers",
+   "kleine": "6-12 deelnemers",
+   "middel": "12-20 deelnemers",
+   "grote": "20-30 deelnemers",
+   "zaal": "30+ deelnemers"
+  },
+  "tijdlabel": {
+   "60": "1u",
+   "90": "1u 30m",
+   "120": "2u",
+   "180": "3u",
+   "240": "4u",
+   "360": "6u"
+  },
+  "werkvormen": [
+   {
+    "naam": "Voorkennis-flits",
+    "fase": "activatie",
+    "min": 5,
+    "max": 30,
+    "tijd": 5,
+    "doel": [
+     "kennis",
+     "vaardigheid"
+    ],
+    "instructie": "Deelnemers schrijven in 60 seconden alles op wat ze al weten over het onderwerp; deel daarna in tweetallen.",
+    "materialen": "post-its of papier"
+   },
+   {
+    "naam": "Drie-stellingen-meter",
+    "fase": "activatie",
+    "min": 6,
+    "max": 50,
+    "tijd": 5,
+    "doel": [
+     "attitude",
+     "gedrag"
+    ],
+    "instructie": "Plak drie stellingen op de muur (eens-twijfel-oneens). Deelnemers gaan staan bij hun keuze; vraag door op redenen.",
+    "materialen": "flipover of plakband"
+   },
+   {
+    "naam": "Eén-woord-rondje",
+    "fase": "activatie",
+    "min": 6,
+    "max": 18,
+    "tijd": 5,
+    "doel": [
+     "attitude",
+     "gedrag"
+    ],
+    "instructie": "Iedereen noemt een woord dat omschrijft wat hij associeert met het thema. Trainer schrijft op.",
+    "materialen": "flipover"
+   },
+   {
+    "naam": "Pixar-pitch in 60 sec",
+    "fase": "activatie",
+    "min": 6,
+    "max": 20,
+    "tijd": 10,
+    "doel": [
+     "vaardigheid",
+     "attitude"
+    ],
+    "instructie": "Deelnemer pitcht in 60s een eigen casus of probleem; tweetal luistert en vat samen.",
+    "materialen": "geen"
+   },
+   {
+    "naam": "Mind-map voorkennis",
+    "fase": "activatie",
+    "min": 6,
+    "max": 24,
+    "tijd": 10,
+    "doel": [
+     "kennis"
+    ],
+    "instructie": "Groep maakt samen een mind-map van wat ze al kennen rond het onderwerp.",
+    "materialen": "flipover + stiften"
+   },
+   {
+    "naam": "Quiz: wat weet je al?",
+    "fase": "activatie",
+    "min": 8,
+    "max": 100,
+    "tijd": 10,
+    "doel": [
+     "kennis"
+    ],
+    "instructie": "5-vragen-Mentimeter of Kahoot om voorkennis te peilen; gebruik uitkomsten als kapstok.",
+    "materialen": "Mentimeter of Kahoot"
+   },
+   {
+    "naam": "Stel je vraag",
+    "fase": "activatie",
+    "min": 6,
+    "max": 30,
+    "tijd": 8,
+    "doel": [
+     "kennis",
+     "gedrag"
+    ],
+    "instructie": "Iedereen schrijft 1 vraag die ze beantwoord willen krijgen. Verzamel en sorteer als agenda voor de sessie.",
+    "materialen": "post-its"
+   },
+   {
+    "naam": "Carrousel van casussen",
+    "fase": "activatie",
+    "min": 12,
+    "max": 40,
+    "tijd": 15,
+    "doel": [
+     "vaardigheid",
+     "gedrag"
+    ],
+    "instructie": "Per 4 personen 1 casus uitwerken in 3 minuten; daarna roteren. Ophalen waar de pijn zit.",
+    "materialen": "casuskaarten"
+   },
+   {
+    "naam": "Trainer-instructie + chunks",
+    "fase": "theorie",
+    "min": 6,
+    "max": 100,
+    "tijd": 15,
+    "doel": [
+     "kennis"
+    ],
+    "niveau": [
+     "geen",
+     "opp"
+    ],
+    "instructie": "Verdeel je theorie in maximaal 3 chunks van 5 minuten. Tussen elk chunk een check-vraag.",
+    "materialen": "slides of flipover"
+   },
+   {
+    "naam": "Video + reflectievragen",
+    "fase": "theorie",
+    "min": 6,
+    "max": 100,
+    "tijd": 15,
+    "doel": [
+     "kennis",
+     "attitude"
+    ],
+    "niveau": [
+     "geen",
+     "opp",
+     "werk"
+    ],
+    "instructie": "Korte video (3-7 min) + 3 reflectievragen in tweetallen.",
+    "materialen": "beamer"
+   },
+   {
+    "naam": "Expert-puzzel (jigsaw)",
+    "fase": "theorie",
+    "min": 12,
+    "max": 30,
+    "tijd": 25,
+    "doel": [
+     "kennis"
+    ],
+    "niveau": [
+     "werk",
+     "expert"
+    ],
+    "instructie": "Subgroepen leren elk een deel van de stof. Daarna mengen ze in nieuwe groepen waar elke expert zijn deel uitlegt.",
+    "materialen": "leesteksten per subgroep"
+   },
+   {
+    "naam": "Lees + vat samen",
+    "fase": "theorie",
+    "min": 6,
+    "max": 24,
+    "tijd": 15,
+    "doel": [
+     "kennis"
+    ],
+    "niveau": [
+     "opp",
+     "werk"
+    ],
+    "instructie": "Korte tekst (1 A4) lezen; in tweetallen samenvatten in 3 zinnen.",
+    "materialen": "hand-out"
+   },
+   {
+    "naam": "Concept-kaartjes ordenen",
+    "fase": "theorie",
+    "min": 6,
+    "max": 20,
+    "tijd": 15,
+    "doel": [
+     "kennis"
+    ],
+    "niveau": [
+     "werk",
+     "expert"
+    ],
+    "instructie": "Geef subgroepen kaartjes met begrippen en definities. Zij koppelen en leggen het model op tafel.",
+    "materialen": "kaartenset per groep"
+   },
+   {
+    "naam": "Live-tekening van het model",
+    "fase": "theorie",
+    "min": 6,
+    "max": 30,
+    "tijd": 10,
+    "doel": [
+     "kennis"
+    ],
+    "niveau": [
+     "geen",
+     "opp"
+    ],
+    "instructie": "Teken het didactisch model live op het bord terwijl je het uitlegt; deelnemers tekenen mee in hun notitieboek.",
+    "materialen": "flipover + stiften"
+   },
+   {
+    "naam": "Mythe of feit?",
+    "fase": "theorie",
+    "min": 8,
+    "max": 50,
+    "tijd": 10,
+    "doel": [
+     "kennis",
+     "attitude"
+    ],
+    "niveau": [
+     "opp",
+     "werk",
+     "expert"
+    ],
+    "instructie": "Stellingen over het onderwerp; in tweetallen mythe-of-feit. Trainer geeft theoretische toelichting na elke stelling.",
+    "materialen": "stellingen-lijst"
+   },
+   {
+    "naam": "Theorie-bingo",
+    "fase": "theorie",
+    "min": 8,
+    "max": 30,
+    "tijd": 12,
+    "doel": [
+     "kennis"
+    ],
+    "niveau": [
+     "geen",
+     "opp"
+    ],
+    "instructie": "Bingo-kaart met kernbegrippen. Deelnemers kruisen aan zodra een begrip uitgelegd wordt.",
+    "materialen": "bingo-kaarten"
+   },
+   {
+    "naam": "Kernconcept in 1 zin",
+    "fase": "theorie",
+    "min": 6,
+    "max": 24,
+    "tijd": 8,
+    "doel": [
+     "kennis"
+    ],
+    "niveau": [
+     "geen",
+     "opp",
+     "werk"
+    ],
+    "instructie": "Na elke chunk: een deelnemer vat het kernconcept in 1 zin samen. Anderen vullen aan.",
+    "materialen": "geen"
+   },
+   {
+    "naam": "Demo + check-vragen",
+    "fase": "theorie",
+    "min": 6,
+    "max": 40,
+    "tijd": 12,
+    "doel": [
+     "vaardigheid"
+    ],
+    "niveau": [
+     "geen",
+     "opp",
+     "werk"
+    ],
+    "instructie": "Trainer demonstreert; pauzeert op kritieke momenten met een check-vraag.",
+    "materialen": "demo-materiaal"
+   },
+   {
+    "naam": "Rollenspel in tweetallen",
+    "fase": "toepassing",
+    "min": 6,
+    "max": 30,
+    "tijd": 20,
+    "doel": [
+     "vaardigheid",
+     "gedrag"
+    ],
+    "soort": [
+     "vaardigheid"
+    ],
+    "vorm": [
+     "tweetal"
+    ],
+    "instructie": "Deelnemers oefenen om beurten met een korte casus; observator geeft feedback.",
+    "materialen": "casuskaarten"
+   },
+   {
+    "naam": "Casusbespreking subgroep",
+    "fase": "toepassing",
+    "min": 8,
+    "max": 40,
+    "tijd": 25,
+    "doel": [
+     "vaardigheid",
+     "kennis"
+    ],
+    "soort": [
+     "casus"
+    ],
+    "vorm": [
+     "subgroep"
+    ],
+    "instructie": "Subgroep krijgt complexe casus; werkt 20 min uit; presenteert kort plenair.",
+    "materialen": "casus per groep"
+   },
+   {
+    "naam": "Speed-dating oplossingen",
+    "fase": "toepassing",
+    "min": 10,
+    "max": 30,
+    "tijd": 15,
+    "doel": [
+     "vaardigheid",
+     "attitude"
+    ],
+    "soort": [
+     "vaardigheid"
+    ],
+    "vorm": [
+     "tweetal"
+    ],
+    "instructie": "Elke 3 minuten wissel je gesprekspartner; je oefent steeds dezelfde vaardigheid met andere persoon.",
+    "materialen": "rondloopschema"
+   },
+   {
+    "naam": "Werkstuk maken (individueel)",
+    "fase": "toepassing",
+    "min": 4,
+    "max": 20,
+    "tijd": 30,
+    "doel": [
+     "kennis",
+     "vaardigheid"
+    ],
+    "soort": [
+     "praktijk"
+    ],
+    "vorm": [
+     "individueel"
+    ],
+    "instructie": "Individuele opdracht waarin deelnemer iets concreets oplevert (plan, schema, document).",
+    "materialen": "templatedocument"
+   },
+   {
+    "naam": "Live-feedback met checklist",
+    "fase": "toepassing",
+    "min": 6,
+    "max": 18,
+    "tijd": 25,
+    "doel": [
+     "vaardigheid",
+     "gedrag"
+    ],
+    "soort": [
+     "vaardigheid"
+    ],
+    "vorm": [
+     "plenair"
+    ],
+    "instructie": "Een deelnemer oefent voor de groep; rest gebruikt checklist om gericht feedback te geven.",
+    "materialen": "checklist"
+   },
+   {
+    "naam": "Practicum: doe het zelf",
+    "fase": "toepassing",
+    "min": 6,
+    "max": 24,
+    "tijd": 30,
+    "doel": [
+     "vaardigheid"
+    ],
+    "soort": [
+     "praktijk",
+     "vaardigheid"
+    ],
+    "vorm": [
+     "individueel"
+    ],
+    "instructie": "Deelnemers passen geleerde vaardigheid toe op hun eigen materiaal (lesplan, document, project).",
+    "materialen": "eigen materiaal"
+   },
+   {
+    "naam": "Fishbowl-discussie",
+    "fase": "toepassing",
+    "min": 10,
+    "max": 30,
+    "tijd": 25,
+    "doel": [
+     "attitude",
+     "gedrag"
+    ],
+    "soort": [
+     "casus"
+    ],
+    "vorm": [
+     "plenair"
+    ],
+    "instructie": "5 mensen binnencirkel discussiëren; rest observeert en wisselt na 10 min van rol.",
+    "materialen": "stoelen in 2 cirkels"
+   },
+   {
+    "naam": "Casus met 3 perspectieven",
+    "fase": "toepassing",
+    "min": 6,
+    "max": 24,
+    "tijd": 25,
+    "doel": [
+     "attitude",
+     "vaardigheid"
+    ],
+    "soort": [
+     "casus"
+    ],
+    "vorm": [
+     "subgroep"
+    ],
+    "instructie": "Subgroep bekijkt casus vanuit 3 rollen (bv. werkgever, werknemer, OR); vergelijkt uitkomsten.",
+    "materialen": "rollenkaarten"
+   },
+   {
+    "naam": "Doelmatige transfer-opdracht",
+    "fase": "toepassing",
+    "min": 4,
+    "max": 30,
+    "tijd": 20,
+    "doel": [
+     "gedrag"
+    ],
+    "soort": [
+     "praktijk"
+    ],
+    "vorm": [
+     "individueel",
+     "tweetal"
+    ],
+    "instructie": "Deelnemer formuleert wat hij in zijn werk de komende week gaat veranderen; deelt met buurpersoon.",
+    "materialen": "transfer-template"
+   },
+   {
+    "naam": "Probleem-puzzel",
+    "fase": "toepassing",
+    "min": 6,
+    "max": 30,
+    "tijd": 20,
+    "doel": [
+     "kennis",
+     "vaardigheid"
+    ],
+    "soort": [
+     "casus",
+     "check"
+    ],
+    "vorm": [
+     "subgroep"
+    ],
+    "instructie": "Subgroepen krijgen complex probleem opgesplitst in 4 stukken; elk lid lost 1 stuk op.",
+    "materialen": "probleem-set"
+   },
+   {
+    "naam": "Pitch en tegenpitch",
+    "fase": "toepassing",
+    "min": 8,
+    "max": 24,
+    "tijd": 25,
+    "doel": [
+     "vaardigheid",
+     "attitude"
+    ],
+    "soort": [
+     "vaardigheid"
+    ],
+    "vorm": [
+     "tweetal"
+    ],
+    "instructie": "Tweetallen verdedigen voor en tegen een keuze; rest oordeelt op argumentkracht.",
+    "materialen": "stellingen"
+   },
+   {
+    "naam": "Praktijksimulatie",
+    "fase": "toepassing",
+    "min": 6,
+    "max": 24,
+    "tijd": 30,
+    "doel": [
+     "vaardigheid",
+     "gedrag"
+    ],
+    "soort": [
+     "vaardigheid",
+     "praktijk"
+    ],
+    "vorm": [
+     "tweetal",
+     "subgroep"
+    ],
+    "instructie": "Realistische simulatie van werksituatie met acteur of mede-deelnemer; debrief in subgroep.",
+    "materialen": "acteur of script"
+   },
+   {
+    "naam": "Exit-ticket schriftelijk",
+    "fase": "reflectie",
+    "min": 1,
+    "max": 100,
+    "tijd": 5,
+    "doel": [
+     "kennis",
+     "attitude",
+     "gedrag"
+    ],
+    "vorm": [
+     "exit"
+    ],
+    "instructie": "Deelnemer schrijft 3 zinnen: wat heb ik geleerd, wat ga ik doen, welke vraag blijft over.",
+    "materialen": "exit-ticket-blaadjes"
+   },
+   {
+    "naam": "Eén-actie-rondje",
+    "fase": "reflectie",
+    "min": 6,
+    "max": 18,
+    "tijd": 8,
+    "doel": [
+     "gedrag"
+    ],
+    "vorm": [
+     "rondje"
+    ],
+    "instructie": "Iedereen formuleert 1 concrete actie voor morgen. Hardop in een rondje.",
+    "materialen": "geen"
+   },
+   {
+    "naam": "Brief aan jezelf",
+    "fase": "reflectie",
+    "min": 1,
+    "max": 30,
+    "tijd": 10,
+    "doel": [
+     "attitude",
+     "gedrag"
+    ],
+    "vorm": [
+     "schrijf"
+    ],
+    "instructie": "Schrijf brief aan jezelf over wat je gaat doen; trainer mailt na 4 weken.",
+    "materialen": "enveloppen + adres"
+   },
+   {
+    "naam": "1-2-allen-reflectie",
+    "fase": "reflectie",
+    "min": 6,
+    "max": 24,
+    "tijd": 10,
+    "doel": [
+     "kennis",
+     "attitude"
+    ],
+    "vorm": [
+     "rondje"
+    ],
+    "instructie": "Reflecteer 1 min individueel, 2 min in tweetal, daarna plenair 3 hoogtepunten.",
+    "materialen": "geen"
+   },
+   {
+    "naam": "Stappenplan voor morgen",
+    "fase": "reflectie",
+    "min": 4,
+    "max": 30,
+    "tijd": 12,
+    "doel": [
+     "gedrag"
+    ],
+    "vorm": [
+     "schrijf"
+    ],
+    "instructie": "Deelnemer maakt mini-stappenplan (3 stappen) voor toepassing in eigen werk.",
+    "materialen": "template"
+   },
+   {
+    "naam": "Schaal van 1 tot 10",
+    "fase": "reflectie",
+    "min": 4,
+    "max": 40,
+    "tijd": 8,
+    "doel": [
+     "kennis",
+     "attitude"
+    ],
+    "vorm": [
+     "rondje"
+    ],
+    "instructie": "Iedereen scoort eigen vertrouwen in toepassing van 1-10 en motiveert keuze; bespreek uitschieters.",
+    "materialen": "geen"
+   },
+   {
+    "naam": "Buddy-koppeling",
+    "fase": "reflectie",
+    "min": 6,
+    "max": 30,
+    "tijd": 10,
+    "doel": [
+     "gedrag"
+    ],
+    "vorm": [
+     "app"
+    ],
+    "instructie": "Koppel deelnemers in tweetallen die elkaar over 2 weken bellen voor accountability.",
+    "materialen": "contactlijst"
+   },
+   {
+    "naam": "Metacognitie-vragen",
+    "fase": "reflectie",
+    "min": 4,
+    "max": 24,
+    "tijd": 10,
+    "doel": [
+     "kennis"
+    ],
+    "vorm": [
+     "schrijf"
+    ],
+    "instructie": "Wat heb je geleerd? Hoe heb je dat geleerd? Wat doe je morgen anders?",
+    "materialen": "vragenlijst"
+   },
+   {
+    "naam": "Sketchnote samenvatting",
+    "fase": "reflectie",
+    "min": 4,
+    "max": 18,
+    "tijd": 12,
+    "doel": [
+     "kennis",
+     "attitude"
+    ],
+    "vorm": [
+     "schrijf"
+    ],
+    "instructie": "Deelnemer tekent in 10 min een sketchnote van de sessie; deelt met buurman.",
+    "materialen": "papier + stiften"
+   },
+   {
+    "naam": "Mailbericht aan zichzelf",
+    "fase": "reflectie",
+    "min": 1,
+    "max": 100,
+    "tijd": 5,
+    "doel": [
+     "gedrag"
+    ],
+    "vorm": [
+     "app"
+    ],
+    "instructie": "Iedereen mailt zichzelf 3 acties (gebruik bijvoorbeeld FutureMe.org).",
+    "materialen": "telefoons"
+   }
+  ]
+ },
+ "resultaat_kop": "Trainingsplan: {onderwerp|anders:Activatiecurve-training}",
+ "resultaat_intro": "{groep|bank:groeplabel} · {tijd|bank:tijdlabel}{doelgroep|voor: · }",
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Leerdoel",
+     "tekst": "{doel}"
+    }
+   ]
+  },
+  {
+   "type": "verdeling",
+   "delen": [
+    {
+     "label": "Activatie",
+     "waarde": "act"
+    },
+    {
+     "label": "Theorie",
+     "waarde": "theo"
+    },
+    {
+     "label": "Toepassing",
+     "waarde": "toe"
+    },
+    {
+     "label": "Reflectie",
+     "waarde": "refl"
+    }
+   ],
+   "formaat": "na: min"
+  },
+  {
+   "type": "tekst",
+   "kop": "Fase 1. Activatie",
+   "tekst": "0{=0|klok} – 0{act|klok} · {act} min"
+  },
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Doel",
+     "tekst": "Voorkennis ophalen, betrokkenheid creëren"
+    },
+    {
+     "label": "Rol trainer",
+     "tekst": "Ophalen, niet uitleggen"
+    },
+    {
+     "label": "Voorkennis ophalen",
+     "tekst": "{act_voorkennis}"
+    },
+    {
+     "label": "Houding peilen",
+     "tekst": "{act_houding}"
+    }
+   ]
+  },
+  {
+   "type": "kaarten",
+   "kop": "Aanbevolen werkvormen",
+   "bank": "werkvormen",
+   "filter": "item.fase = \"activatie\" en item.tijd <= act + 5 en item.min <= groep.max en item.max >= groep.min",
+   "voorkeur": {
+    "formule": "bevat(item.doel, doeltype)",
+    "minimaal": 2
+   },
+   "terugval": {
+    "filter": "item.fase = \"activatie\"",
+    "aantal": 2
+   },
+   "sorteer": "abs(item.tijd - act / 2)",
+   "aantal": "3",
+   "kaartkop": "{item.naam} · {item.tijd} min",
+   "inhoud": [
+    {
+     "type": "tekst",
+     "tekst": "{item.instructie}"
+    },
+    {
+     "type": "tekst",
+     "tekst": "Materialen: {item.materialen}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Fase 2. Theorie",
+   "tekst": "0{start_theo|klok} – 0{start_toe|klok} · {theo} min"
+  },
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Doel",
+     "tekst": "Nieuwe stof aanbieden via chunking"
+    },
+    {
+     "label": "Rol trainer",
+     "tekst": "Doseren in maximaal 3 kernconcepten"
+    }
+   ]
+  },
+  {
+   "type": "lijst",
+   "kop": "Kernconcepten",
+   "nummers": true,
+   "items": [
+    "{theorie_kc1}",
+    "{theorie_kc2}",
+    "{theorie_kc3}"
+   ]
+  },
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Voorkennis-niveau",
+     "tekst": "{theorie_niveau|label}"
+    }
+   ]
+  },
+  {
+   "type": "kaarten",
+   "kop": "Aanbevolen werkvormen",
+   "bank": "werkvormen",
+   "filter": "item.fase = \"theorie\" en item.tijd <= theo + 5 en item.min <= groep.max en item.max >= groep.min",
+   "voorkeur": {
+    "formule": "bevat(item.doel, doeltype)",
+    "minimaal": 2
+   },
+   "terugval": {
+    "filter": "item.fase = \"theorie\"",
+    "aantal": 2
+   },
+   "sorteer": "abs(item.tijd - theo / 2) - als(bevat(item.niveau, theorie_niveau), 1000, 0)",
+   "aantal": "3",
+   "kaartkop": "{item.naam} · {item.tijd} min",
+   "inhoud": [
+    {
+     "type": "tekst",
+     "tekst": "{item.instructie}"
+    },
+    {
+     "type": "tekst",
+     "tekst": "Materialen: {item.materialen}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Fase 3. Toepassing",
+   "tekst": "0{start_toe|klok} – 0{start_refl|klok} · {toe} min"
+  },
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Doel",
+     "tekst": "Oefenen en transfer maken naar de eigen praktijk"
+    },
+    {
+     "label": "Rol trainer",
+     "tekst": "Coach, niet uitlegger"
+    },
+    {
+     "label": "Concreet kunnen",
+     "tekst": "{toe_doel}"
+    },
+    {
+     "label": "Type",
+     "tekst": "{toe_type|label}"
+    },
+    {
+     "label": "Werkvorm",
+     "tekst": "{toe_werkvorm|label}"
+    }
+   ]
+  },
+  {
+   "type": "kaarten",
+   "kop": "Aanbevolen werkvormen",
+   "bank": "werkvormen",
+   "filter": "item.fase = \"toepassing\" en item.tijd <= toe + 5 en item.min <= groep.max en item.max >= groep.min",
+   "voorkeur": {
+    "formule": "bevat(item.doel, doeltype)",
+    "minimaal": 2
+   },
+   "terugval": {
+    "filter": "item.fase = \"toepassing\"",
+    "aantal": 2
+   },
+   "sorteer": "abs(item.tijd - toe / 2) - als(bevat(item.soort, toe_type), 1000, 0) - als(bevat(item.vorm, toe_werkvorm), 500, 0)",
+   "aantal": "3",
+   "kaartkop": "{item.naam} · {item.tijd} min",
+   "inhoud": [
+    {
+     "type": "tekst",
+     "tekst": "{item.instructie}"
+    },
+    {
+     "type": "tekst",
+     "tekst": "Materialen: {item.materialen}"
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Fase 4. Reflectie",
+   "tekst": "0{start_refl|klok} – 0{tijd|klok} · {refl} min"
+  },
+  {
+   "type": "gegevens",
+   "regels": [
+    {
+     "label": "Doel",
+     "tekst": "Vastleggen wat is geleerd, plan voor morgen"
+    },
+    {
+     "label": "Rol trainer",
+     "tekst": "Borg leeropbrengst, faciliteer metacognitie"
+    },
+    {
+     "label": "Concrete actie morgen",
+     "tekst": "{ref_actie}"
+    },
+    {
+     "label": "Vorm vastlegging",
+     "tekst": "{ref_vorm|label}"
+    }
+   ]
+  },
+  {
+   "type": "kaarten",
+   "kop": "Aanbevolen werkvormen",
+   "bank": "werkvormen",
+   "filter": "item.fase = \"reflectie\" en item.tijd <= refl + 5 en item.min <= groep.max en item.max >= groep.min",
+   "voorkeur": {
+    "formule": "bevat(item.doel, doeltype)",
+    "minimaal": 2
+   },
+   "terugval": {
+    "filter": "item.fase = \"reflectie\"",
+    "aantal": 2
+   },
+   "sorteer": "abs(item.tijd - refl / 2) - als(bevat(item.vorm, ref_vorm), 1000, 0)",
+   "aantal": "3",
+   "kaartkop": "{item.naam} · {item.tijd} min",
+   "inhoud": [
+    {
+     "type": "tekst",
+     "tekst": "{item.instructie}"
+    },
+    {
+     "type": "tekst",
+     "tekst": "Materialen: {item.materialen}"
+    }
+   ]
+  }
+ ],
+ "teksten": {
+  "tool_maak": "Genereer trainingsplan",
+  "tool_resultaat": "Je trainingsplan"
+ },
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": false,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "trainingsplan-{onderwerp|slug}"
+ }
+}

@@ -1,0 +1,196 @@
+{
+ "versie": 1,
+ "soort": "rekenaar",
+ "resultaat_kop": "Aanbevolen opleidingsbudget",
+ "resultaat_intro": "Aanbevolen budget op basis van loonsom, cao en sector.",
+ "stappen": [
+  {
+   "titel": "Loonsom",
+   "intro": "Vul de loonsom van je afdeling of organisatie in. De calculator berekent het aanbevolen opleidingsbudget op basis van cao-richtlijn en sectorbenchmark. Duurt minder dan 2 minuten.",
+   "velden": [
+    {
+     "id": "medewerkers",
+     "type": "getal",
+     "label": "Aantal medewerkers (fte)",
+     "hint": "Aantal fte op de afdeling of in de organisatie.",
+     "voorbeeld": "bv. 25",
+     "verplicht": true,
+     "min": 1,
+     "max": 10000,
+     "stap": 1
+    },
+    {
+     "id": "loonsom",
+     "type": "getal",
+     "label": "Bruto loonsom totaal per jaar (in euro)",
+     "hint": "Totale bruto loonsom inclusief vakantiegeld, exclusief sociale lasten.",
+     "voorbeeld": "bv. 1500000",
+     "verplicht": true,
+     "min": 0,
+     "stap": 1000
+    }
+   ]
+  },
+  {
+   "titel": "Sector",
+   "velden": [
+    {
+     "id": "sector",
+     "type": "lijst",
+     "label": "Sector / cao-richtlijn",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "algemeen",
+       "tekst": "NL algemeen (2,0%)",
+       "getallen": {
+        "pct": 2.0
+       }
+      },
+      {
+       "waarde": "overheid",
+       "tekst": "Overheid (2,5%)",
+       "getallen": {
+        "pct": 2.5
+       }
+      },
+      {
+       "waarde": "zorg",
+       "tekst": "Zorg (1,8%)",
+       "getallen": {
+        "pct": 1.8
+       }
+      },
+      {
+       "waarde": "onderwijs",
+       "tekst": "Onderwijs (2,2%)",
+       "getallen": {
+        "pct": 2.2
+       }
+      },
+      {
+       "waarde": "industrie",
+       "tekst": "Industrie (1,5%)",
+       "getallen": {
+        "pct": 1.5
+       }
+      },
+      {
+       "waarde": "zakelijke-dienstverlening",
+       "tekst": "Zakelijke dienstverlening (2,3%)",
+       "getallen": {
+        "pct": 2.3
+       }
+      },
+      {
+       "waarde": "ict",
+       "tekst": "ICT (2,8%)",
+       "getallen": {
+        "pct": 2.8
+       }
+      },
+      {
+       "waarde": "retail-horeca",
+       "tekst": "Retail en horeca (1,2%)",
+       "getallen": {
+        "pct": 1.2
+       }
+      },
+      {
+       "waarde": "non-profit",
+       "tekst": "Non-profit (2,0%)",
+       "getallen": {
+        "pct": 2.0
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "reken": [
+  {
+   "id": "fte",
+   "formule": "omlaag(medewerkers)"
+  },
+  {
+   "id": "totaal",
+   "formule": "loonsom * sector.pct / 100"
+  },
+  {
+   "id": "perfte",
+   "formule": "afronden(totaal / fte)"
+  }
+ ],
+ "controles": [
+  {
+   "formule": "niet (fte >= 1)",
+   "melding": "Vul een geldig aantal medewerkers in (minstens 1).",
+   "stap": 1
+  },
+  {
+   "formule": "niet (loonsom >= 1000)",
+   "melding": "Vul een geldige loonsom in (minstens 1000 euro).",
+   "stap": 1
+  }
+ ],
+ "uitvoer": [
+  {
+   "type": "gegevens",
+   "kop": "Jouw aanbeveling",
+   "regels": [
+    {
+     "label": "Sector / cao",
+     "tekst": "{sector|label}"
+    },
+    {
+     "label": "Loonsom totaal",
+     "tekst": "{loonsom|euro}"
+    },
+    {
+     "label": "Aantal medewerkers (fte)",
+     "tekst": "{fte}"
+    },
+    {
+     "label": "Aanbevolen budget totaal",
+     "tekst": "{totaal|euro}"
+    },
+    {
+     "label": "Per fte per jaar",
+     "tekst": "{perfte|euro}"
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "Drie scenario’s",
+   "regels": [
+    {
+     "label": "Conservatief (70%)",
+     "tekst": "{=totaal * 0.7|euro} totaal. Voor jaren met krappe budgetten of als reservering veiligheidsbuffer."
+    },
+    {
+     "label": "Realistisch (100%)",
+     "tekst": "{totaal|euro} totaal. Cao-conforme richtlijn voor jouw sector."
+    },
+    {
+     "label": "Ambitieus (130%)",
+     "tekst": "{=totaal * 1.3|euro} totaal. Voor sterke retentie of in groeiscenario’s."
+    }
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": false,
+  "kopieer": false,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "opleidingsbudgetcalculator-{sector}"
+ },
+ "teksten": {
+  "tool_maak": "Bereken budget"
+ }
+}

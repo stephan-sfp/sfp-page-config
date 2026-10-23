@@ -1,0 +1,1114 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "NIVEA-oefenrapport",
+ "resultaat_intro": "Context: {context|label}",
+ "stappen": [
+  {
+   "titel": "Context",
+   "intro": "Kies de context waarin jij gesprekken voert. De 8 oefenmomenten worden daarop afgestemd.",
+   "velden": [
+    {
+     "id": "context",
+     "type": "keuze",
+     "label": "In welke context voer jij gesprekken?",
+     "verplicht": true,
+     "verder": true,
+     "opties": [
+      {
+       "waarde": "algemeen",
+       "tekst": "Algemeen"
+      },
+      {
+       "waarde": "zorg",
+       "tekst": "Zorg"
+      },
+      {
+       "waarde": "didactisch",
+       "tekst": "Didactisch (onderwijs)"
+      },
+      {
+       "waarde": "coaching",
+       "tekst": "Coaching"
+      },
+      {
+       "waarde": "management",
+       "tekst": "Management / HR"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "kop": "Wat is NIVEA?",
+   "tekst": "NIVEA staat voor \"Niet Invullen Voor Een Ander\". Het is een gesprekstechniek die voorkomt dat je interpretaties, gevoelens of bedoelingen toedicht aan je gesprekspartner. In plaats daarvan benoem je wat je waarneemt en stel je open vragen.\n\nHieronder vind je per oefenmoment: de situatie, een veelvoorkomende invul-reactie, een NIVEA-alternatief, en de bijbehorende uitleg. Onderaan staan drie reflectievragen."
+  },
+  {
+   "type": "gegevens",
+   "kop": "1. De stilte na een lastige vraag",
+   "als": {
+    "veld": "context",
+    "is": "algemeen"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Je vraagt iemand: \"Hoe gaat het met je?\" en de ander valt stil. Je voelt de stilte ongemakkelijk worden."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Ik snap dat het lastig is om over te praten. Laten we het ergens anders over hebben.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Ik merk dat je even nadenkt. Neem je tijd.\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Vermijd het invullen van wat de ander voelt. Benoem alleen wat je objectief ziet en geef ruimte."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "2. De korte reactie",
+   "als": {
+    "veld": "context",
+    "is": "algemeen"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een collega zegt: \"Het ging wel oké.\" Verder niets."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Je vond het zeker zwaar?\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat maakt dat het wel oké was?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Open vraag stellen om door te vragen op wat de ander zelf zegt, niet op wat jij vermoedt."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "3. De zucht halverwege",
+   "als": {
+    "veld": "context",
+    "is": "algemeen"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Tijdens een uitleg zucht je gesprekspartner luid."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Ik zie dat ik je verveel.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Ik hoor je zuchten. Wil je iets zeggen?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Beschrijf wat je waarneemt zonder er een interpretatie aan te hangen. Geef de ander ruimte om zelf te benoemen."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "4. De vermijdende blik",
+   "als": {
+    "veld": "context",
+    "is": "algemeen"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Iemand kijkt weg en zegt: \"Nee hoor, niks aan de hand.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Het zit je duidelijk dwars. Je moet het echt zeggen.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Ik merk dat je niet echt mijn kant op kijkt. Klopt dat?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Benoem het gedrag, niet de aanname. De ander mag bepalen of er iets achter zit."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "5. De ja-zeggende collega",
+   "als": {
+    "veld": "context",
+    "is": "algemeen"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Je vraagt of er nog vragen zijn. Iedereen zegt: \"Nee, helder.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Mooi, dan zijn we klaar.\" (en haasten naar de volgende afspraak)"
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat is het eerste dat jullie morgen gaan doen met deze informatie?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Een controlerende open vraag legt bloot wat een ja-knik niet doet. Vermijd de aanname dat het echt helder is."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "6. De boze ondertoon",
+   "als": {
+    "veld": "context",
+    "is": "algemeen"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een collega snauwt: \"Het maakt mij niet uit hoor.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Je bent boos op mij.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Ik hoor iets in je stem. Wat speelt er voor jou?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Benoem wat je waarneemt, geef de ander gelegenheid om zelf zijn beleving te benoemen."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "7. De afwezige knik",
+   "als": {
+    "veld": "context",
+    "is": "algemeen"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Bij een uitleg knikt de ander de hele tijd, maar je merkt dat hij elders is."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Volgens mij ben je er niet helemaal bij.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat blijft hangen van wat ik net vertelde?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Toets begrip via een open vraag. Vermijd de aanname; het is een uitnodiging tot bewustwording."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "8. De vroege oplossing",
+   "als": {
+    "veld": "context",
+    "is": "algemeen"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Iemand vertelt over een probleem. Je hebt al snel een oplossing in je hoofd."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Je moet gewoon X doen.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat heb je zelf al overwogen?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Eerst onderzoeken voor je adviseert. Vaak heeft de ander al meer nagedacht dan je denkt."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "1. De patiënt die zwijgt",
+   "als": {
+    "veld": "context",
+    "is": "zorg"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een patiënt zegt op je vraag \"Hoe voelt u zich vandaag?\" niets. Hij kijkt weg."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"U vindt het zeker moeilijk.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Ik zie dat u even stil bent. Neem rustig de tijd.\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Vermijd het invullen van emotie. Benoem alleen wat je objectief ziet."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "2. De familie die concludeert",
+   "als": {
+    "veld": "context",
+    "is": "zorg"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een familielid zegt: \"Hij wil dit echt niet, dat weet ik gewoon.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"U kent hem het beste, dus dan doen we het zo.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat heeft hij zelf gezegd over wat hij wel of niet wil?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Toets de aanname. De wens van de patiënt is leidend, niet de invulling door familie."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "3. De vage klacht",
+   "als": {
+    "veld": "context",
+    "is": "zorg"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een patiënt zegt: \"Ik voel me gewoon niet zo lekker.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Bent u verkouden? Veel mensen hebben dat nu.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat bedoelt u precies met niet zo lekker?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Stel een open vraag om de klacht te concretiseren in plaats van een hypothese in te vullen."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "4. De pijnschaal",
+   "als": {
+    "veld": "context",
+    "is": "zorg"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Op de vraag \"Hoeveel pijn heeft u?\" zegt de patiënt: \"Het gaat wel.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Als het wel gaat dan zit u rond een 3 of 4.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat betekent het gaat wel op een schaal van 0 tot 10?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Geef de patiënt de ruimte om zelf te scoren. Voorkom dat je een waarde invult."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "5. De berustende patiënt",
+   "als": {
+    "veld": "context",
+    "is": "zorg"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een patiënt zegt: \"Ach ja, dat is dan zo, ik kan er toch niks aan veranderen.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Inderdaad, daar moet u mee leren leven.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat zou u willen veranderen als dat wel kon?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Berusting is vaak een vermomming. De open vraag onthult wat er nog meer speelt."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "6. De afwijzing van zorg",
+   "als": {
+    "veld": "context",
+    "is": "zorg"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een patiënt weigert een behandeling: \"Dat hoef ik niet, dat heeft toch geen zin.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"U geeft het te snel op.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat maakt dat het voor u geen zin heeft?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Onderzoek de overtuiging. De keuze blijft van de patiënt, maar je begrijpt nu het waarom."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "7. De boze begeleider",
+   "als": {
+    "veld": "context",
+    "is": "zorg"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een begeleider zegt: \"Het personeel hier doet ook nooit wat ik vraag!\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Ik bied excuses aan, ik zal het oplossen.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat was uw vraag, en hoe is daarop gereageerd?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Verzamel feiten voor je naar conclusies springt. De excuses zijn vaak terecht, maar pas na onderzoek."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "8. De symptoom-aanname",
+   "als": {
+    "veld": "context",
+    "is": "zorg"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een collega zegt: \"Mevrouw is vandaag erg verward, zal de urineweginfectie weer zijn.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Klopt, geef maar een antibioticumkuur.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Waaraan zie je dat ze vandaag verward is, en sinds wanneer?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Toets de hypothese door de waarneming uit te vragen. Voorkomt diagnose-bias."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "1. De student die afhaakt",
+   "als": {
+    "veld": "context",
+    "is": "didactisch"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een student tijdens de les: \"Ik snap er niets van.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Dat komt omdat je niet hebt opgelet.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Waar is voor jou het punt waarop het onduidelijk wordt?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Begin bij het concrete obstakel, niet bij een interpretatie van gedrag."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "2. De ja-knikker",
+   "als": {
+    "veld": "context",
+    "is": "didactisch"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Bij uitleg knikt de leerling braaf. Bij de oefening blijkt hij vast te lopen."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Ja precies, doe maar zo.\" (en je loopt door)"
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Hoe zou je dit aan een klasgenoot uitleggen?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Toets begrip actief door de leerling het te laten vertellen. Knikken is geen begrip."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "3. De ouder die concludeert",
+   "als": {
+    "veld": "context",
+    "is": "didactisch"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Op ouderavond zegt een ouder: \"Mijn dochter heeft echt geen interesse in dit vak.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Dan moet ze het maar accepteren, het hoort gewoon bij de opleiding.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat heeft ze er zelf over gezegd?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "De ouder vult in voor het kind. Vraag wat de leerling zelf zegt, voor je beleid maakt."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "4. De stille klas",
+   "als": {
+    "veld": "context",
+    "is": "didactisch"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Je stelt een vraag aan de klas. Niemand reageert."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Niemand weet het antwoord, dus we gaan door.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat houdt jullie tegen om antwoord te geven? Tijd nodig of vraag niet helder?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Onderzoek de oorzaak van de stilte. Misschien is de vraag onduidelijk, niet het kennisniveau te laag."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "5. De motivatie-aanname",
+   "als": {
+    "veld": "context",
+    "is": "didactisch"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een leerling levert opnieuw een ondermaatse opdracht in."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Je doet er gewoon niet je best voor.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat ging er mis bij deze opdracht?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Begin bij feiten. Onderprestatie kan duizend oorzaken hebben; aanname over inzet sluit ze af."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "6. De ruzie op het schoolplein",
+   "als": {
+    "veld": "context",
+    "is": "didactisch"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Twee leerlingen komen binnen, een huilt: \"Hij heeft mij geduwd!\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Jij hebt vast iets gedaan, anders had hij dat niet gedaan.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Vertel mij wat er gebeurde, jij eerst, en dan jij.\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Verzamel beide kanten. Aannames over schuld vergroten conflict; feitenvolgorde brengt nuance."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "7. De stress-uitspraak",
+   "als": {
+    "veld": "context",
+    "is": "didactisch"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een student zegt: \"Ik ga deze toets toch niet halen.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Onzin, je kunt het best!\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat geeft je het idee dat het niet gaat lukken?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Geruststellen bevestigt vaak het gevoel. Onderzoeken van de overtuiging biedt een opening."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "8. De brutale opmerking",
+   "als": {
+    "veld": "context",
+    "is": "didactisch"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een leerling reageert tijdens je uitleg: \"Boeit toch niet.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Ben je tegendraads bezig?\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat hoor je mij zeggen waarvan jij denkt dat het niet boeit?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Vraag door op de inhoud. Je verandert het gesprek van karakter (jij) naar inhoud (de stof)."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "1. De vage doelstelling",
+   "als": {
+    "veld": "context",
+    "is": "coaching"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Coachee zegt: \"Ik wil gewoon dat het beter gaat op het werk.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Je bedoelt dat je meer voldoening wilt halen uit je werk.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat betekent beter voor jou concreet?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "De coachee mag het zelf invullen. Voorkom dat jouw woorden zijn doel kapen."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "2. De zelfdiagnose",
+   "als": {
+    "veld": "context",
+    "is": "coaching"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Coachee: \"Ik denk dat ik gewoon een controlfreak ben.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Veel mensen herkennen dat. Het is een veelvoorkomend patroon.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Waar herken je dat aan jezelf?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Bevestig labels niet automatisch. Onderzoek het gedrag dat erachter zit."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "3. De tranen",
+   "als": {
+    "veld": "context",
+    "is": "coaching"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Tijdens een gesprek begint coachee te huilen."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Het is rouw, je bent nog niet verder.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Ik zie de tranen. Wat raakt je nu?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Benoem wat je waarneemt en geef ruimte. Vermijd de diagnose."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "4. De voortgangsclaim",
+   "als": {
+    "veld": "context",
+    "is": "coaching"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Coachee: \"Het gaat eigenlijk best goed nu.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Mooi, dan ronden we volgende sessie af.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Waaraan merk je dat het beter gaat?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Toets de claim. Bewijs maakt het concreet, vermijd voorbarige conclusie over voortgang."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "5. De afwezigheid in de relatie",
+   "als": {
+    "veld": "context",
+    "is": "coaching"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Coachee zegt: \"Mijn partner snapt mij gewoon niet.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Heb je daar weleens openlijk over gepraat?\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Waaraan merk je dat hij of zij jou niet snapt?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Specifiek maken voor je advies geeft. De oplossing volgt vaak vanzelf uit de specifieke ervaring."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "6. De versnelling",
+   "als": {
+    "veld": "context",
+    "is": "coaching"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Coachee: \"Ik wil graag dat we deze sessie 3 thema's behandelen.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Prima, dan beginnen we met dit thema.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat is voor jou nu het belangrijkste om vandaag te bespreken?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Voorkom dat tempo de diepgang verdringt. Laat de coachee prioriteren."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "7. De stilte tijdens reflectie",
+   "als": {
+    "veld": "context",
+    "is": "coaching"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Je stelt een open vraag, coachee zwijgt 30 seconden."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Geen probleem als je het niet weet.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "Zwijgen. (Hou de stilte vast.)"
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Stilte is denkruimte. Invullen verstoort wat zich net begint te vormen."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "8. De externe schuld",
+   "als": {
+    "veld": "context",
+    "is": "coaching"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Coachee: \"Het is allemaal de schuld van mijn leidinggevende.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Klinkt alsof je leidinggevende echt niet goed functioneert.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Welk deel van wat er gebeurt heeft met jouw invloed te maken?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Verleg de focus naar wat coachee zelf kan beïnvloeden. Vermijd om mee te gaan in externe attributie."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "1. De afhaker",
+   "als": {
+    "veld": "context",
+    "is": "management"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Tijdens jouw uitleg loopt iemand met de telefoon. Je voelt irritatie."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Ik zie dat dit jou niet boeit.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Ik merk dat je naar je telefoon kijkt. Speelt er iets?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Benoem het waargenomen gedrag zonder oordeel over motivatie."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "2. De ja-zegger in 1-op-1",
+   "als": {
+    "veld": "context",
+    "is": "management"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "In jullie 1-op-1 zegt de medewerker steeds: \"Ja prima, geen issues.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Mooi, dan is alles goed bij jou.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Waar loop je deze week tegenaan, hoe klein ook?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Specifieke open vraag onthult wat een algemene controle niet doet."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "3. De prestatiedaling",
+   "als": {
+    "veld": "context",
+    "is": "management"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een medewerker presteert minder dan een paar maanden geleden."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Je bent eronderdoor aan het gaan.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Welke factoren spelen er voor jou nu mee?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Onderzoek factoren zonder ze in te vullen. Mogelijke oorzaken zijn breed: werk, persoonlijk, gezondheid, omgeving."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "4. De conflict-toon",
+   "als": {
+    "veld": "context",
+    "is": "management"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een teamlid: \"Ik werk niet meer samen met X.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Jij moet je gewoon professioneler opstellen.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat is er concreet voorgevallen?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Eerst de feiten verzamelen voor je een norm-uitspraak doet over gedrag."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "5. De promotievraag",
+   "als": {
+    "veld": "context",
+    "is": "management"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Een medewerker: \"Ik wil graag promotie.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Daar heb je nog tijd voor nodig, denk ik.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat zou de volgende stap voor jou inhouden, concreet?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Onderzoek wat de medewerker wil voor je het beoordeelt. Soms is \"promotie\" een woord voor iets anders."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "6. De koffie-feedback",
+   "als": {
+    "veld": "context",
+    "is": "management"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Iemand zegt informeel: \"Tja, de meeting van vanochtend was niet je beste.\""
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Het ging prima, ik denk dat jij het niet helemaal begreep.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Wat had ik volgens jou beter kunnen doen?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Neem feedback aan voor je verdedigt. Het kost niets en je leert het meeste van losse opmerkingen."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "7. De stille collega",
+   "als": {
+    "veld": "context",
+    "is": "management"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "In het teamoverleg zegt 1 collega nooit iets."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Hij heeft gewoon weinig in te brengen.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Ik merk dat jij weinig zegt in dit overleg. Wat heb je nodig om mee te doen?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Vraag naar voorwaarden voor deelname. Stilte heeft vele oorzaken; aanname zwakt de bijdrage onnodig af."
+    }
+   ]
+  },
+  {
+   "type": "gegevens",
+   "kop": "8. De gedragsverandering",
+   "als": {
+    "veld": "context",
+    "is": "management"
+   },
+   "regels": [
+    {
+     "label": "Situatie",
+     "tekst": "Iemand komt vaker te laat dan voorheen."
+    },
+    {
+     "label": "Wat veel mensen invullen",
+     "tekst": "\"Je zal wel een conflict thuis hebben.\""
+    },
+    {
+     "label": "NIVEA-alternatief",
+     "tekst": "\"Ik merk dat je de laatste tijd vaker later bent. Wat speelt er?\""
+    },
+    {
+     "label": "Uitleg",
+     "tekst": "Benoem het feit, vraag naar de oorzaak. De medewerker kiest hoe diep hij gaat."
+    }
+   ]
+  },
+  {
+   "type": "tekst",
+   "kop": "Jouw reflectie",
+   "tekst": "3 korte reflectievragen. Beantwoorden is optioneel, maar maakt je oefenrapport persoonlijker."
+  },
+  {
+   "type": "vragen",
+   "lijnen": 3,
+   "items": [
+    "In welk type situatie val ik het vaakst in 'invullen voor de ander'?",
+    "Welk alternatief uit deze oefening wil ik vanaf nu vaker gebruiken?",
+    "Bij welk gesprek deze week ga ik dit bewust toepassen?"
+   ]
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "nivea-oefenrapport-{context}"
+ }
+}

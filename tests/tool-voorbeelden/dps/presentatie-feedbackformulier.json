@@ -1,0 +1,226 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "Feedback voor {spreker}",
+ "resultaat_intro": "{onderwerp|voor:Onderwerp: |na: · }{duur|voor:Duur: |na: · }Setting: {setting|label}",
+ "stappen": [
+  {
+   "titel": "Context",
+   "intro": "De naam van de spreker is verplicht. De rest is optioneel, maar maakt het formulier persoonlijker.",
+   "velden": [
+    {
+     "id": "spreker",
+     "type": "kort",
+     "label": "Naam spreker(s)",
+     "hint": "Meerdere sprekers? Zet de namen achter elkaar, bijvoorbeeld: Sara en Jeroen.",
+     "voorbeeld": "Bijvoorbeeld: Sara",
+     "verplicht": true,
+     "maxlengte": 120
+    },
+    {
+     "id": "onderwerp",
+     "type": "kort",
+     "label": "Onderwerp of titel",
+     "voorbeeld": "Bijvoorbeeld: Pitch nieuwe dienst",
+     "maxlengte": 120
+    },
+    {
+     "id": "duur",
+     "type": "kort",
+     "label": "Geplande duur",
+     "voorbeeld": "Bijvoorbeeld: 15 minuten",
+     "maxlengte": 40
+    },
+    {
+     "id": "setting",
+     "type": "lijst",
+     "label": "Setting",
+     "standaard": "live",
+     "opties": [
+      {
+       "waarde": "live",
+       "tekst": "Live publiek"
+      },
+      {
+       "waarde": "online",
+       "tekst": "Online meeting"
+      },
+      {
+       "waarde": "hybride",
+       "tekst": "Hybride"
+      },
+      {
+       "waarde": "opname",
+       "tekst": "Opname"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "Focus",
+   "intro": "Vink aan welke onderwerpen je in het formulier wilt.",
+   "velden": [
+    {
+     "id": "focus",
+     "type": "vinkjes",
+     "label": "Focusgebieden",
+     "min": 1,
+     "standaard": [
+      "algemeen",
+      "inhoud",
+      "structuur",
+      "stem",
+      "lichaamstaal",
+      "expressie",
+      "taal",
+      "interactie",
+      "slides"
+     ],
+     "opties": [
+      {
+       "waarde": "algemeen",
+       "tekst": "Algemeen",
+       "uitleg": "Een algemene indruk van de presentatie als geheel."
+      },
+      {
+       "waarde": "inhoud",
+       "tekst": "Inhoud",
+       "uitleg": "De kernboodschap en wat de spreker overdraagt."
+      },
+      {
+       "waarde": "structuur",
+       "tekst": "Structuur",
+       "uitleg": "De opbouw van de presentatie en de samenhang tussen onderdelen."
+      },
+      {
+       "waarde": "stem",
+       "tekst": "Stemgebruik",
+       "uitleg": "Tempo, volume, intonatie en variatie in de stem."
+      },
+      {
+       "waarde": "lichaamstaal",
+       "tekst": "Lichaamstaal",
+       "uitleg": "Houding, gebaren, oogcontact en bewegingen in de ruimte."
+      },
+      {
+       "waarde": "expressie",
+       "tekst": "Expressie",
+       "uitleg": "Mimiek, energie en de mate waarin de spreker betrokkenheid toont."
+      },
+      {
+       "waarde": "taal",
+       "tekst": "Taalgebruik",
+       "uitleg": "Woordkeuze, beelden, voorbeelden en zinsopbouw."
+      },
+      {
+       "waarde": "interactie",
+       "tekst": "Interactie",
+       "uitleg": "De connectie met het publiek en het reageren op signalen."
+      },
+      {
+       "waarde": "slides",
+       "tekst": "Slides",
+       "uitleg": "De ondersteunende beelden, leesbaarheid en aansluiting bij het gesprokene."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "banken": {
+  "leeslink": {
+   "algemeen": "Lees meer over presenteren met impact: https://depresenteerschool.nl/blog/presenteren-de-ultieme-gids-voor-professionals/",
+   "inhoud": "Lees meer over de inhoud van je presentatie: https://depresenteerschool.nl/blog/presentatie-voorbereiden-de-kern-in-twee-stappen/#formule",
+   "structuur": "Lees meer over de presentatiestructuur: https://depresenteerschool.nl/blog/presentatie-opbouwen-hoe-doe-je-dat/",
+   "stem": "Lees meer over stemgebruik: https://depresenteerschool.nl/blog/stemfuncties-voor-krachtige-en-gezonde-stem/",
+   "lichaamstaal": "Lees meer over lichaamstaal: https://depresenteerschool.nl/blog/je-lichaamstaal-verbeteren-7-strategieen/",
+   "expressie": "Lees meer over expressie: https://depresenteerschool.nl/blog/congruente-communicatie-geloofwaardigheid/",
+   "taal": "Lees meer over taalgebruik als spreker: https://depresenteerschool.nl/blog/woordkeuze-boodschap-verspreiden/",
+   "interactie": "Lees meer over interactie tijdens presentaties: https://depresenteerschool.nl/blog/interactief-presenteren-het-publiek-betrekken-bij-je-praatje/",
+   "slides": "Lees meer over effectieve slides: https://depresenteerschool.nl/blog/de-5-5-5-regel-om-effectieve-slides-te-ontwerpen/"
+  },
+  "vragen": {
+   "algemeen": [
+    "Wat is je als publiek het meest bijgebleven van deze presentatie, en waardoor?",
+    "Op welk moment had de spreker je aandacht het sterkst, en op welk moment verslapte die?",
+    "Welk ene punt zou de presentatie volgens jou het sterkst verbeteren?"
+   ],
+   "inhoud": [
+    "Hoe zou je de kernboodschap in één zin samenvatten, zoals jij die hebt begrepen?",
+    "Welk argument, voorbeeld of cijfer overtuigde je het meest, en welk deel bleef te vaag?",
+    "Wat wilde de spreker dat je na afloop zou doen, denken of voelen?"
+   ],
+   "structuur": [
+    "Hoe opende de spreker, en wat deed die opening met je aandacht?",
+    "Waar kon je goed volgen waar de spreker was in het verhaal, en waar raakte je de draad kwijt?",
+    "Hoe sloot de spreker af, en hoe sloot dat slot aan op de opening en de kernboodschap?"
+   ],
+   "stem": [
+    "Hoe gebruikte de spreker tempo en pauzes, en waar had je meer of minder rust gewild?",
+    "Op welke momenten varieerde de spreker in volume of intonatie, en wat deed dat met de boodschap?",
+    "Welke stopwoorden of stemgewoonten vielen je op, en hoe vaak ongeveer?"
+   ],
+   "lichaamstaal": [
+    "Hoe verdeelde de spreker het oogcontact over het publiek of de camera?",
+    "Welke gebaren ondersteunden de boodschap, en welke bewegingen leidden je af?",
+    "Hoe stond of bewoog de spreker in de ruimte, en wat straalde dat voor jou uit?"
+   ],
+   "expressie": [
+    "Op welke momenten zag je dat de spreker zelf betrokken was bij het onderwerp, en waaraan zag je dat?",
+    "Hoe pasten gezichtsuitdrukking en energie bij wat de spreker zei?",
+    "Waar had de spreker meer of juist minder energie kunnen tonen?"
+   ],
+   "taal": [
+    "Welke woorden, beelden of voorbeelden maakten de boodschap concreet voor je?",
+    "Welke vaktermen, afkortingen of lange zinnen maakten het je moeilijker om te volgen?",
+    "Welke formulering is je letterlijk bijgebleven?"
+   ],
+   "interactie": [
+    "Hoe betrok de spreker het publiek, en hoe reageerde het publiek daarop?",
+    "Welke signalen uit het publiek pikte de spreker op, en welke liet hij of zij liggen?",
+    "Hoe ging de spreker om met vragen of reacties uit het publiek?"
+   ],
+   "slides": [
+    "Hoe hielpen de slides je om de boodschap te begrijpen of te onthouden?",
+    "Welke slide bevatte te veel tekst of was slecht leesbaar, en wat zou je weglaten?",
+    "Op welke momenten liepen wat de spreker zei en wat er op het scherm stond uit de pas?"
+   ]
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "herhaal",
+   "over": "focus",
+   "kop": "{@nr}. {@label}",
+   "inhoud": [
+    {
+     "type": "tekst",
+     "tekst": "{@|bank:leeslink}"
+    },
+    {
+     "type": "vragen",
+     "bank": "vragen",
+     "pad": [
+      "{@}"
+     ],
+     "lijnen": 3
+    }
+   ]
+  }
+ ],
+ "mail": {
+  "onderwerp": "Feedbackformulier voor {spreker}",
+  "intro": "Hierbij het feedbackformulier voor de presentatie van {spreker}."
+ },
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "presentatie-feedback-{spreker|slug}"
+ }
+}

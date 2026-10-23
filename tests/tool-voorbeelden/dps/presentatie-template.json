@@ -1,0 +1,491 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "stappen": [
+  {
+   "titel": "Vul de context in",
+   "intro": "De tool maakt een slide-voor-slide outline die je downloadt als PDF of Word.",
+   "velden": [
+    {
+     "id": "onderwerp",
+     "type": "kort",
+     "label": "Onderwerp",
+     "voorbeeld": "Bijvoorbeeld: kunstmatige intelligentie in de zorg",
+     "maxlengte": 80,
+     "verplicht": true
+    },
+    {
+     "id": "doel",
+     "type": "keuze",
+     "label": "Doel",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "informeren",
+       "tekst": "Informeren",
+       "getallen": {
+        "slides": 10
+       }
+      },
+      {
+       "waarde": "overtuigen",
+       "tekst": "Overtuigen",
+       "getallen": {
+        "slides": 10
+       }
+      },
+      {
+       "waarde": "onderwijzen",
+       "tekst": "Onderwijzen",
+       "getallen": {
+        "slides": 10
+       }
+      },
+      {
+       "waarde": "inspireren",
+       "tekst": "Inspireren",
+       "getallen": {
+        "slides": 9
+       }
+      }
+     ]
+    },
+    {
+     "id": "duur",
+     "type": "keuze",
+     "label": "Duur",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "5",
+       "tekst": "5 min",
+       "getallen": {
+        "slides": 5
+       }
+      },
+      {
+       "waarde": "10",
+       "tekst": "10 min",
+       "getallen": {
+        "slides": 8
+       }
+      },
+      {
+       "waarde": "15",
+       "tekst": "15 min",
+       "getallen": {
+        "slides": 10
+       }
+      },
+      {
+       "waarde": "20",
+       "tekst": "20 min",
+       "getallen": {
+        "slides": 12
+       }
+      },
+      {
+       "waarde": "30",
+       "tekst": "30 min",
+       "getallen": {
+        "slides": 14
+       }
+      },
+      {
+       "waarde": "45",
+       "tekst": "45 min",
+       "getallen": {
+        "slides": 16
+       }
+      },
+      {
+       "waarde": "60",
+       "tekst": "60 min",
+       "getallen": {
+        "slides": 18
+       }
+      }
+     ]
+    },
+    {
+     "id": "doelgroep",
+     "type": "kort",
+     "label": "Doelgroep",
+     "voorbeeld": "Bijvoorbeeld: zorgmanagers in de tweedelijns zorg",
+     "maxlengte": 80,
+     "verplicht": true
+    },
+    {
+     "id": "niveau",
+     "type": "keuze",
+     "label": "Niveau-aanname",
+     "verplicht": true,
+     "opties": [
+      {
+       "waarde": "geen-voorkennis",
+       "tekst": "Geen voorkennis"
+      },
+      {
+       "waarde": "basiskennis",
+       "tekst": "Basiskennis aanwezig"
+      },
+      {
+       "waarde": "expert",
+       "tekst": "Expert-niveau"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "reken": [
+  {
+   "id": "n",
+   "formule": "min(duur.slides, doel.slides)"
+  }
+ ],
+ "banken": {
+  "structuren": {
+   "informeren": [
+    {
+     "id": "cover",
+     "titel": "Cover",
+     "p1": "Onderwerp",
+     "p2": "Spreker / context",
+     "concept": "De cover toont onderwerp en spreker."
+    },
+    {
+     "id": "context",
+     "titel": "Probleemstelling / context",
+     "p1": "Wat speelt er?",
+     "p2": "Voor wie van belang?",
+     "concept": "Beschrijf kort de context van het onderwerp."
+    },
+    {
+     "id": "vraag",
+     "titel": "Vraag die we beantwoorden",
+     "p1": "Centrale vraag",
+     "p2": "Waarom nu?",
+     "concept": "Formuleer de hoofdvraag van de presentatie."
+    },
+    {
+     "id": "concept1",
+     "titel": "Kernconcept 1",
+     "p1": "Definitie",
+     "p2": "Werking",
+     "p3": "Belang",
+     "concept": "Werk het eerste kernconcept uit."
+    },
+    {
+     "id": "concept2",
+     "titel": "Kernconcept 2",
+     "p1": "Definitie",
+     "p2": "Werking",
+     "p3": "Belang",
+     "concept": "Werk het tweede kernconcept uit."
+    },
+    {
+     "id": "concept3",
+     "titel": "Kernconcept 3",
+     "p1": "Definitie",
+     "p2": "Werking",
+     "p3": "Belang",
+     "concept": "Werk het derde kernconcept uit."
+    },
+    {
+     "id": "voorbeelden",
+     "titel": "Concrete voorbeelden",
+     "p1": "Voorbeeld 1",
+     "p2": "Voorbeeld 2",
+     "concept": "Geef tastbare voorbeelden."
+    },
+    {
+     "id": "toepassing",
+     "titel": "Toepassing of implicaties",
+     "p1": "Wat betekent dit?",
+     "p2": "Voor wie?",
+     "concept": "Vertaal het naar de praktijk."
+    },
+    {
+     "id": "conclusie",
+     "titel": "Conclusie + take-aways",
+     "p1": "3 take-aways",
+     "concept": "Vat samen wat de luisteraar onthoudt.",
+     "voor": "Vat samen wat ",
+     "na": " onthoudt."
+    },
+    {
+     "id": "vragen",
+     "titel": "Vragen / discussie",
+     "p1": "Open voor vragen",
+     "concept": "Nodig uit tot vragen."
+    }
+   ],
+   "overtuigen": [
+    {
+     "id": "cover",
+     "titel": "Cover",
+     "p1": "Onderwerp",
+     "p2": "Stelling",
+     "concept": "Cover met onderwerp."
+    },
+    {
+     "id": "status",
+     "titel": "Stand van zaken",
+     "p1": "Huidig probleem",
+     "p2": "Status quo",
+     "concept": "Schets de huidige situatie."
+    },
+    {
+     "id": "urgentie",
+     "titel": "Waarom dit ertoe doet",
+     "p1": "Urgentie",
+     "p2": "Impact",
+     "concept": "Maak urgentie voelbaar."
+    },
+    {
+     "id": "claim",
+     "titel": "Onze claim / oplossing",
+     "p1": "Wat stellen wij voor",
+     "p2": "Waarom dit werkt",
+     "concept": "Formuleer de claim helder."
+    },
+    {
+     "id": "onderb1",
+     "titel": "Onderbouwing 1",
+     "p1": "Data, voorbeeld, redenering",
+     "concept": "Eerste onderbouwing."
+    },
+    {
+     "id": "onderb2",
+     "titel": "Onderbouwing 2",
+     "p1": "Data, voorbeeld, redenering",
+     "concept": "Tweede onderbouwing."
+    },
+    {
+     "id": "onderb3",
+     "titel": "Onderbouwing 3",
+     "p1": "Data, voorbeeld, redenering",
+     "concept": "Derde onderbouwing."
+    },
+    {
+     "id": "tegen",
+     "titel": "Tegenargument + weerlegging",
+     "p1": "Veelgehoord bezwaar",
+     "p2": "Onze weerlegging",
+     "concept": "Adresseer het sterkste tegenargument."
+    },
+    {
+     "id": "cta",
+     "titel": "Concrete vervolgstap / call-to-action",
+     "p1": "Wat vraag je?",
+     "p2": "Wanneer?",
+     "concept": "Eindig met een duidelijke vraag."
+    },
+    {
+     "id": "vragen",
+     "titel": "Vragen",
+     "p1": "Open voor vragen",
+     "concept": "Nodig uit tot vragen."
+    }
+   ],
+   "onderwijzen": [
+    {
+     "id": "cover",
+     "titel": "Cover + leerdoel",
+     "p1": "Onderwerp",
+     "p2": "Leerdoel",
+     "concept": "Open met het leerdoel."
+    },
+    {
+     "id": "waarom",
+     "titel": "Waarom dit van belang",
+     "p1": "Voor de deelnemer",
+     "p2": "In de praktijk",
+     "concept": "Maak relevantie expliciet."
+    },
+    {
+     "id": "concept1",
+     "titel": "Concept 1: uitleg",
+     "p1": "Definitie",
+     "p2": "Voorbeeld",
+     "concept": "Leg het eerste concept uit."
+    },
+    {
+     "id": "demo1",
+     "titel": "Concept 1: demonstratie",
+     "p1": "Werkwijze tonen",
+     "concept": "Demonstreer hoe het werkt."
+    },
+    {
+     "id": "concept2",
+     "titel": "Concept 2: uitleg",
+     "p1": "Definitie",
+     "p2": "Voorbeeld",
+     "concept": "Leg het tweede concept uit."
+    },
+    {
+     "id": "demo2",
+     "titel": "Concept 2: demonstratie",
+     "p1": "Werkwijze tonen",
+     "concept": "Demonstreer hoe het werkt."
+    },
+    {
+     "id": "oefening",
+     "titel": "Oefening / opdracht",
+     "p1": "Wat doe je?",
+     "p2": "Hoeveel tijd?",
+     "concept": "Geef een gerichte oefening."
+    },
+    {
+     "id": "reflectie",
+     "titel": "Reflectie / nabespreking",
+     "p1": "Wat viel op?",
+     "p2": "Wat werkte?",
+     "concept": "Bespreek na."
+    },
+    {
+     "id": "takeaway",
+     "titel": "Take-aways + huiswerk",
+     "p1": "Top 3 om mee te nemen",
+     "p2": "Vervolgopdracht",
+     "concept": "Eindig met concrete take-aways."
+    },
+    {
+     "id": "vragen",
+     "titel": "Vragen",
+     "p1": "Open voor vragen",
+     "concept": "Nodig uit tot vragen."
+    }
+   ],
+   "inspireren": [
+    {
+     "id": "cover",
+     "titel": "Cover",
+     "p1": "Krachtige beeldspraak",
+     "p2": "Of: een vraag",
+     "concept": "Open zonder agenda, met impact."
+    },
+    {
+     "id": "hook",
+     "titel": "Hook: scene of vraag",
+     "p1": "Anekdote",
+     "p2": "Verhaal",
+     "concept": "Trek de luisteraar in een scene.",
+     "voor": "Trek ",
+     "na": " in een scene."
+    },
+    {
+     "id": "verhaal",
+     "titel": "Mijn-verhaal of casus",
+     "p1": "Wat overkwam mij/ons?",
+     "p2": "Wat leerde ik?",
+     "concept": "Vertel een persoonlijk verhaal."
+    },
+    {
+     "id": "wending",
+     "titel": "Punt van conflict / wending",
+     "p1": "Onverwacht moment",
+     "p2": "Inzicht",
+     "concept": "Laat de wending zien."
+    },
+    {
+     "id": "inzicht",
+     "titel": "Inzicht / take-away",
+     "p1": "Wat is het inzicht?",
+     "p2": "Waarom geldt het breder?",
+     "concept": "Vat het inzicht samen."
+    },
+    {
+     "id": "jij",
+     "titel": "Wat dit voor jou betekent",
+     "p1": "Toepassing voor de luisteraar",
+     "concept": "Vertaal het naar de luisteraar.",
+     "voor": "Vertaal het naar ",
+     "na": "."
+    },
+    {
+     "id": "uitnodiging",
+     "titel": "Uitnodiging / oproep",
+     "p1": "Wat kun jij doen?",
+     "p2": "Wat vraag ik?",
+     "concept": "Nodig uit tot actie."
+    },
+    {
+     "id": "slot",
+     "titel": "Sluitend beeld of zin",
+     "p1": "Slotzin",
+     "p2": "Beeld",
+     "concept": "Sluit krachtig af."
+    },
+    {
+     "id": "vragen",
+     "titel": "Vragen / gesprek",
+     "p1": "Open voor gesprek",
+     "concept": "Nodig uit tot gesprek."
+    }
+   ]
+  }
+ },
+ "resultaat_kop": "Presentatie-template: {onderwerp}",
+ "resultaat_intro": "{doel} - {duur} min - {doelgroep} - {niveau|label|klein}",
+ "resultaat_slot": "Jouw outline is klaar. Bewerk online of download direct. De outline neem je over in PowerPoint, Keynote of Google Slides (geen PPTX-bestand).",
+ "bewerkbaar": true,
+ "uitvoer": [
+  {
+   "type": "kaarten",
+   "bank": "structuren",
+   "pad": [
+    "{doel}"
+   ],
+   "aantal": "n",
+   "kaartkop": "{nr}. {item.titel}",
+   "inhoud": [
+    {
+     "type": "tekst",
+     "tekst": "{=omlaag((nr - 1) * duur * 60 / n)|minsec} - {=omlaag(nr * duur * 60 / n)|minsec} min"
+    },
+    {
+     "type": "lijst",
+     "items": [
+      "{item.p1}",
+      "{item.p2}",
+      "{item.p3}"
+     ]
+    },
+    {
+     "type": "tekst",
+     "tekst": "{item.concept}",
+     "als": {
+      "formule": "niet (bevat(item.concept, \"de luisteraar\"))"
+     }
+    },
+    {
+     "type": "tekst",
+     "tekst": "{item.voor}{doelgroep|anders:de luisteraar}{item.na}",
+     "als": {
+      "formule": "bevat(item.concept, \"de luisteraar\")"
+     }
+    }
+   ]
+  }
+ ],
+ "teksten": {
+  "tool_maak": "Genereer template",
+  "tool_resultaat": "Je template is klaar"
+ },
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": false,
+  "deellink": true,
+  "mail": true,
+  "duimpjes": true,
+  "formulier": 0,
+  "pdf_bestandsnaam": "presentatie-template-{onderwerp|slug}"
+ },
+ "mail": {
+  "onderwerp": "Presentatie-template: {onderwerp}",
+  "intro": ""
+ }
+}

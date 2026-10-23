@@ -1,0 +1,49 @@
+{
+ "versie": 1,
+ "soort": "rekenaar",
+ "live": true,
+ "stappen": [
+  {
+   "titel": "Spreektijd",
+   "velden": [
+    {
+     "id": "tekst",
+     "type": "tekstvak",
+     "label": "Je tekst",
+     "voorbeeld": "Je tekst",
+     "verplicht": true,
+     "maxlengte": 200000
+    },
+    {
+     "id": "tempo",
+     "type": "lijst",
+     "label": "Je snelheid",
+     "verplicht": true,
+     "standaard": "140",
+     "opties": [
+      { "waarde": "170", "tekst": "Snel (170 wpm)" },
+      { "waarde": "140", "tekst": "Gemiddeld (140 wpm)" },
+      { "waarde": "110", "tekst": "Langzaam (110 wpm)" }
+     ]
+    }
+   ]
+  }
+ ],
+ "reken": [
+  { "id": "aantal_woorden", "formule": "woorden(tekst)" },
+  { "id": "seconden", "formule": "afronden(aantal_woorden / tempo * 60)" }
+ ],
+ "uitvoer": [
+  { "type": "getal", "label": "Aantal woorden", "waarde": "aantal_woorden", "formaat": "getal" },
+  { "type": "getal", "label": "Duur", "waarde": "seconden", "formaat": "minsec" }
+ ],
+ "acties": {
+  "pdf": false,
+  "word": false,
+  "kopieer": false,
+  "deellink": false,
+  "mail": false,
+  "duimpjes": true,
+  "formulier": 0
+ }
+}

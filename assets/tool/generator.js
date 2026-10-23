@@ -665,6 +665,18 @@
 		return r.join( '\n' ).replace( /\n{3,}/g, '\n\n' ).trim() + '\n';
 	}
 
+	/* Webadressen in een tekst aanklikbaar maken (alleen https en http). */
+	function metLinks( r ) {
+		var uit = [], pos = 0, re = /https?:\/\/[^\s<>"]+[^\s<>".,;:!?)]/g, m;
+		while ( ( m = re.exec( r ) ) ) {
+			if ( m.index > pos ) { uit.push( r.slice( pos, m.index ) ); }
+			uit.push( el( 'a', { href: m[ 0 ], text: m[ 0 ], rel: 'noopener', target: '_blank' } ) );
+			pos = m.index + m[ 0 ].length;
+		}
+		if ( pos < r.length ) { uit.push( r.slice( pos ) ); }
+		return uit.length ? uit : [ r ];
+	}
+
 	window.sfpToolMotor.bouwGenerator = bouw;
 	window.sfpToolMotor.generatorOntbreekt = ontbreekt;
 	/* De rekentaal en het invullen van sjablonen, ook voor de tekstanalyse. */
@@ -893,7 +905,7 @@
 				if ( 'subkop' === bl.type ) { inhoud.appendChild( el( 'h4', { class: 'sfp-tool__titel sfp-tool__titel--klein', text: bl.tekst } ) ); return; }
 				if ( 'tekst' === bl.type ) {
 					if ( b.bewerkbaar ) { inhoud.appendChild( el( 'div', { class: 'sfp-tool__bewerk', contenteditable: 'true', role: 'textbox', 'aria-multiline': 'true', 'aria-label': tx( 'tool_pas_aan' ), spellcheck: 'true', oninput: function () { var x = huidigeBlokken().slice(); x[ bi ] = { type: 'tekst', tekst: this.innerText.replace( /\n{3,}/g, '\n\n' ).trim() }; bewerkt = x; } }, [ bl.tekst ] ) ); return; }
-					alineas( bl.tekst ).forEach( function ( x ) { inhoud.appendChild( el( 'p', { class: 'sfp-tool__tekst' }, x.split( '\n' ).reduce( function ( acc, r, k ) { return k ? acc.concat( [ el( 'br' ), r ] ) : acc.concat( [ r ] ); }, [] ) ) ); } );
+					alineas( bl.tekst ).forEach( function ( x ) { inhoud.appendChild( el( 'p', { class: 'sfp-tool__tekst' }, x.split( '\n' ).reduce( function ( acc, r, k ) { return ( k ? acc.concat( [ el( 'br' ) ] ) : acc ).concat( metLinks( r ) ); }, [] ) ) ); } );
 					return;
 				}
 				if ( 'tabel' === bl.type ) { inhoud.appendChild( el( 'dl', { class: 'sfp-tool__gegevens' }, bl.rijen.reduce( function ( acc, r ) { return acc.concat( [ el( 'dt', { text: r[ 0 ] } ), el( 'dd', { text: r[ 1 ] } ) ] ); }, [] ) ) ); return; }
