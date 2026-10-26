@@ -4,9 +4,9 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.12.0-beta.1] - 2026-10-26
+## [3.12.0] - 2026-10-26
 
-Proefversie voor DPS. De opmaak van de plugin houdt het tonen van de pagina niet meer op: geen losse stijlbestanden meer op de voorkant.
+De opmaak van de plugin houdt het tonen van de pagina niet meer op: geen losse stijlbestanden meer op de voorkant. Proefversie 3.12.0-beta.1 op DPS: op vijf paginasoorten gelijk aan 3.11.0 (screenshots mobiel, 0 pixels verschil), geen scriptfouten.
 
 ### Gewijzigd
 - Leestijd, WhatsApp-knop, reviews, dienstpagina, tools, longread-navigatie en zelftest zetten hun opmaak inline in de pagina, alleen waar het onderdeel iets toont. De losse bestanden hielden het tonen van de pagina op (render-blocking, gemeten 151 tot 507 ms op mobiel).
