@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.11.0] - 2026-10-26
+
+De zelftest kan meer talen en meer tests aan. Een testpakket wordt nu gebouwd uit één algemene motor met de structuur en de teksten per taal uit de bron van de test; de plugin volgt daarbij de taal van de bezoeker. DPS werkt ongewijzigd.
+
+### Toegevoegd
+- Eén test in meer talen op één site: per extra taal van het pakket een eigen testpagina en een eigen adres van de pdf-link (SFP Beheer, Zelftest). Pdf, datum, naam van de pdf, mailtekst, pagina's verlopen en niet gevonden en het kruisje van de testpagina volgen de taal van de bezoeker.
+- Blok Zelftest en code `[sfp_zelftest]` met een keuze voor de taal (alleen bij een pakket met meer talen).
+- De taal gaat bij een pakket met meer talen mee naar SureContact (veld `test_language`), zodat de mail per taal kan. Bij één taal blijft wat naar SureContact gaat gelijk.
+- Weergave per pakket (manifest `weergave`): vragen met een score en hun antwoorden in willekeurige volgorde, en de naam van het blok boven de vraag aan of uit. De score verandert niet; context- en slotvragen blijven op hun plek. Zonder instelling blijft alles zoals het was.
+- Proef in een andere taal van het pakket via de proefroute.
+
+### Gerepareerd
+- Een klik op Start van voor het laden, die WP Rocket na het laden nog eens afspeelt, gaf een scriptfout (zelftest.js regel 131). Die klik doet nu niets meer.
+
 ## [3.10.0] - 2026-10-23
 
 De toolmotor krijgt de soorten rekenaar, checklist en tekstanalyse, en de generator de sectie kaarten. Twaalf tools gaan van hun eigen snippet naar de motor: SFP 2, DPS 5, CVD 2, DST 2, DGA 1. Proefversie 3.10.0-beta.1 op DPS.

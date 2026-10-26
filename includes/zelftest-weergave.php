@@ -38,10 +38,20 @@ function sfp_zelftest_registreer() {
                         'type'    => 'string',
                         'default' => '',
                     ),
+                    // Sinds 3.11.0: taal van de test op deze pagina (leeg: de taal van de testpagina of de site).
+                    'taal' => array(
+                        'type'    => 'string',
+                        'default' => '',
+                    ),
                 ),
                 'supports'        => array( 'html' => false ),
                 'render_callback' => function ( $attributen ) {
-                    return sfp_zelftest_shortcode( array( 'test' => isset( $attributen['test'] ) ? $attributen['test'] : '' ) );
+                    return sfp_zelftest_shortcode(
+                        array(
+                            'test' => isset( $attributen['test'] ) ? $attributen['test'] : '',
+                            'taal' => isset( $attributen['taal'] ) ? $attributen['taal'] : '',
+                        )
+                    );
                 },
             )
         );
@@ -59,7 +69,8 @@ function sfp_zelftest_editor_gegevens() {
         $pakket  = sfp_zelftest_pakket( $test );
         $tests[] = array(
             'test' => $test,
-            'naam' => $pakket ? sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' ) : $test,
+            'naam'  => $pakket ? sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' ) : $test,
+            'talen' => $pakket ? sfp_zelftest_pakket_talen( $pakket ) : array(),
         );
     }
     wp_add_inline_script( 'sfp-zelftest-editor', 'window.sfpZelftestTests=' . wp_json_encode( array( 'tests' => $tests, 'aan' => sfp_page_config_onderdeel_aan( 'zelftest' ) ) ) . ';', 'before' );
@@ -96,7 +107,7 @@ function sfp_zelftest_stijl() {
  * @return string
  */
 function sfp_zelftest_shortcode( $atts ) {
-    $atts   = shortcode_atts( array( 'test' => '' ), (array) $atts, 'sfp_zelftest' );
+    $atts   = shortcode_atts( array( 'test' => '', 'taal' => '' ), (array) $atts, 'sfp_zelftest' );
     $test   = sfp_zelftest_naam( $atts['test'] );
     $pakket = ( '' !== $test && sfp_page_config_onderdeel_aan( 'zelftest' ) ) ? sfp_zelftest_pakket( $test ) : null;
     if ( ! $pakket ) {
@@ -112,14 +123,18 @@ function sfp_zelftest_shortcode( $atts ) {
     }
     $al[ $test ] = true;
 
+    // Taal: uit het blok of de code, anders die van de testpagina waarop we staan, anders die van de site.
+    sfp_zelftest_taal_context( sfp_zelftest_pagina_taal( $test, $atts['taal'] ) );
     $taal   = sfp_zelftest_taal( $pakket );
     $config = array(
-        'test'    => $test,
-        'taal'    => $taal,
-        'rest'    => esc_url_raw( rest_url( 'sfp/v1/zelftest/' . $test . '/' ) ),
-        'lengtes' => $pakket['manifest']['lengtes'],
-        'inhoud'  => $pakket['inhoud'],
-        'privacy' => (string) get_privacy_policy_url(),
+        'test'     => $test,
+        'taal'     => $taal,
+        'rest'     => esc_url_raw( rest_url( 'sfp/v1/zelftest/' . $test . '/' ) ),
+        'lengtes'  => $pakket['manifest']['lengtes'],
+        'inhoud'   => $pakket['inhoud'],
+        'privacy'  => (string) get_privacy_policy_url(),
+        // Sinds 3.11.0: volgorde van vragen en opties, en of de bloknaam boven een vraag staat.
+        'weergave' => sfp_zelftest_weergave( $pakket ),
     );
 
     sfp_zelftest_stijl();
@@ -136,6 +151,50 @@ function sfp_zelftest_shortcode( $atts ) {
     );
 
     return '<div class="sfp-zt" id="sfp-zelftest" data-test="' . esc_attr( $test ) . '" lang="' . esc_attr( $taal ) . '"><div class="sfp-zt-wrap"><p class="sfp-zt-laden">&nbsp;</p></div></div>';
+}
+
+/**
+ * De taal van de test op deze pagina: de opgegeven taal als het pakket die
+ * heeft, anders de taal waarvoor deze pagina de testpagina is, anders ''.
+ *
+ * @param  string $test Naam.
+ * @param  string $taal Taal uit het blok of de code.
+ * @return string
+ */
+function sfp_zelftest_pagina_taal( $test, $taal = '' ) {
+    $pakket = sfp_zelftest_pakket( $test );
+    $talen  = $pakket ? sfp_zelftest_pakket_talen( $pakket ) : array();
+    $taal   = sfp_zelftest_taalcode( $taal );
+    if ( '' !== $taal && in_array( $taal, $talen, true ) ) {
+        return $taal;
+    }
+    $id = (int) get_queried_object_id();
+    if ( $id > 0 ) {
+        foreach ( sfp_zelftest_testpaginas( $test ) as $t => $pagina ) {
+            if ( '' !== $t && $pagina === $id && in_array( $t, $talen, true ) ) {
+                return $t;
+            }
+        }
+    }
+    return '';
+}
+
+/**
+ * Hoe de vragen getoond worden (manifest.weergave, sinds 3.11.0). Standaard
+ * zoals altijd: vaste volgorde, bloknaam zichtbaar.
+ *
+ * @param  array $pakket Pakket.
+ * @return array{vragen:string,opties:string,blokkop:bool,scorend:int[]}
+ */
+function sfp_zelftest_weergave( array $pakket ) {
+    $w = isset( $pakket['manifest']['weergave'] ) && is_array( $pakket['manifest']['weergave'] ) ? $pakket['manifest']['weergave'] : array();
+    return array(
+        'vragen'  => isset( $w['volgorde_vragen'] ) && 'willekeurig' === $w['volgorde_vragen'] ? 'willekeurig' : 'vast',
+        'opties'  => isset( $w['volgorde_opties'] ) && 'willekeurig' === $w['volgorde_opties'] ? 'willekeurig' : 'vast',
+        'blokkop' => ! ( isset( $w['blokkop'] ) && 'nee' === $w['blokkop'] ),
+        // Alleen de vragen met een score wisselen van plek en volgorde van opties; context- en slotvragen blijven staan.
+        'scorend' => array_map( 'intval', array_keys( isset( $pakket['manifest']['scoretabel'] ) ? (array) $pakket['manifest']['scoretabel'] : array() ) ),
+    );
 }
 
 add_filter( 'rocket_delay_js_exclusions', 'sfp_zelftest_rocket_delay' );

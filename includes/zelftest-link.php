@@ -38,9 +38,11 @@ function sfp_zelftest_link_herken() {
         return null;
     }
     foreach ( sfp_zelftest_tests() as $test ) {
-        $inst = sfp_zelftest_instellingen( $test );
-        if ( '' !== $inst['pdf_pad'] && $pad === $inst['pdf_pad'] ) {
-            return array( 'test' => $test );
+        // Eén adres per taal van de test (sinds 3.11.0); '' is de eerste taal.
+        foreach ( sfp_zelftest_pdf_paden( $test ) as $taal => $eigen ) {
+            if ( $pad === $eigen ) {
+                return array( 'test' => $test, 'taal' => (string) $taal );
+            }
         }
     }
     return null;
@@ -73,6 +75,8 @@ function sfp_zelftest_link_route() {
     if ( ! $pakket ) {
         return;
     }
+    // Taal van het adres; met een geldige code wint de taal van de rij.
+    sfp_zelftest_taal_context( isset( $route['taal'] ) ? $route['taal'] : '' );
     sfp_zelftest_geen_cache();
     // Het adres bevat een code: nooit doorgeven aan een volgende pagina of dienst.
     header( 'Referrer-Policy: no-referrer' );
@@ -100,6 +104,9 @@ function sfp_zelftest_link_pdf( array $pakket ) {
     if ( ! $rij || $rij['test'] !== $pakket['test'] || (int) $rij['geanonimiseerd'] || empty( $rij['afgerond_op'] ) ) {
         sfp_zelftest_link_pagina( $pakket, 'onbekend', 404 );
         return;
+    }
+    if ( '' !== sfp_zelftest_rij_taal( $rij ) ) {
+        sfp_zelftest_taal_context( sfp_zelftest_rij_taal( $rij ) );
     }
     $dagen = (int) $pakket['manifest']['geldigheid_dagen'];
     if ( strtotime( $rij['afgerond_op'] . ' UTC' ) + $dagen * DAY_IN_SECONDS < time() ) {
@@ -155,7 +162,11 @@ function sfp_zelftest_link_pdf( array $pakket ) {
 function sfp_zelftest_pdf_bestandsnaam( array $pakket, $code ) {
     $m     = isset( $pakket['manifest'] ) ? $pakket['manifest'] : array();
     $voor  = isset( $m['code_voorvoegsel'] ) ? strtoupper( (string) $m['code_voorvoegsel'] ) : strtoupper( (string) $pakket['test'] );
-    $naam  = isset( $m['naam'] ) && '' !== trim( (string) $m['naam'] ) ? trim( (string) $m['naam'] ) : (string) $pakket['test'];
+    // De naam in de taal van de test (sinds 3.11.0), anders die uit het manifest.
+    $naam  = trim( (string) sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' ) );
+    if ( '' === $naam ) {
+        $naam = isset( $m['naam'] ) && '' !== trim( (string) $m['naam'] ) ? trim( (string) $m['naam'] ) : (string) $pakket['test'];
+    }
     $code  = strtoupper( $code );
     if ( '' !== $voor && 0 === strpos( $code, $voor . '-' ) ) {
         $code = substr( $code, strlen( $voor ) + 1 );
@@ -223,7 +234,7 @@ function sfp_zelftest_kale_pagina( $titel, $inhoud, $status, $extra_kop = '' ) {
     $kop     = function_exists( 'sfp_page_config_sanitize_font_family' ) ? sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'headings-font-family' ) ) : '';
     $tekst   = function_exists( 'sfp_page_config_sanitize_font_family' ) ? sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'body-font-family' ) ) : '';
     $fonts   = is_readable( trailingslashit( WP_CONTENT_DIR ) . 'astra-local-fonts/astra-local-fonts.css' ) ? '<link rel="stylesheet" href="' . esc_url( content_url( 'astra-local-fonts/astra-local-fonts.css' ) ) . '">' : '';
-    $taal    = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
+    $taal    = '' !== sfp_zelftest_taal_context() ? sfp_zelftest_taal_context() : ( function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl' );
     $basis   = ':root{' . $vars . '}' . sfp_zelftest_merk_css()
         . ':root{--sfp-b-kop:' . ( '' !== $kop ? $kop : 'inherit' ) . ';--sfp-b-tekst:' . ( '' !== $tekst ? $tekst : 'system-ui,sans-serif' ) . '}'
         . 'html,body{margin:0;background:var(--sfp-b-wit,#fff)}body{font-family:var(--sfp-b-tekst);color:var(--sfp-b-body)}';
@@ -254,9 +265,8 @@ function sfp_zelftest_rocket_niet_cachen( $uris ) {
         return $uris;
     }
     foreach ( sfp_zelftest_tests() as $test ) {
-        $inst = sfp_zelftest_instellingen( $test );
-        if ( '' !== $inst['pdf_pad'] ) {
-            $uris[] = '/' . $inst['pdf_pad'] . '/(.*)';
+        foreach ( sfp_zelftest_pdf_paden( $test ) as $pad ) {
+            $uris[] = '/' . $pad . '/(.*)';
         }
     }
     return $uris;

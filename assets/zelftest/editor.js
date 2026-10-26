@@ -22,7 +22,7 @@
 		description: 'De zelftest van dit label: start, vragen en eindscherm.',
 		category: 'widgets',
 		icon: 'yes-alt',
-		attributes: { test: { type: 'string', default: '' } },
+		attributes: { test: { type: 'string', default: '' }, taal: { type: 'string', default: '' } },
 		supports: { html: false, multiple: false },
 		edit: function (props) {
 			var keuzes = [{ value: '', label: 'Kies een test' }].concat(gegevens.tests.map(function (t) { return { value: t.test, label: t.naam || t.test }; }));
@@ -35,7 +35,13 @@
 			return el('div', blokProps,
 				InspectorControls ? el(InspectorControls, null,
 					el(PanelBody, { title: 'Zelftest', initialOpen: true },
-						el(SelectControl, { label: 'Test', value: props.attributes.test, options: keuzes, onChange: function (w) { props.setAttributes({ test: w }); } })
+						el(SelectControl, { label: 'Test', value: props.attributes.test, options: keuzes, onChange: function (w) { props.setAttributes({ test: w }); } }),
+						/* Sinds 3.11.0: een test in meer talen; leeg volgt de testpagina of de site. */
+						gekozen && gekozen.talen && gekozen.talen.length > 1 ? el(SelectControl, {
+							label: 'Taal', value: props.attributes.taal || '',
+							options: [{ value: '', label: 'Taal van de testpagina of de site' }].concat(gekozen.talen.map(function (t) { return { value: t, label: t }; })),
+							onChange: function (w) { props.setAttributes({ taal: w }); }
+						}) : null
 					)
 				) : null,
 				el('div', { style: { border: '1px dashed currentColor', borderRadius: '6px', padding: '24px', textAlign: 'center' } },

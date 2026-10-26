@@ -36,6 +36,27 @@
 		var okMail = function (m) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m); };
 		var vraag = function (nr) { return I.vragen.filter(function (v) { return v.nr === nr; })[0]; };
 
+		/*
+		 * Weergave (sinds 3.11.0, manifest.weergave): de vragen met een score
+		 * wisselen onderling van plek en hun opties van volgorde. Contextvragen
+		 * en slotvragen blijven op hun plek. De letter van een optie blijft bij
+		 * de optie, dus de score verandert niet. Eén keer per start bepaald.
+		 */
+		var W = C.weergave || { vragen: 'vast', opties: 'vast', blokkop: true, scorend: [] };
+		var schud = function (lijst) { var l = lijst.slice(); for (var i = l.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = l[i]; l[i] = l[j]; l[j] = t; } return l; };
+		var optVolg = {};
+		var schik = function (rij) {
+			optVolg = {};
+			var sc = (W.scorend || []).map(Number);
+			if (W.opties === 'willekeurig') rij.forEach(function (nr) { var v = vraag(nr); if (v && !v.meerdere && sc.indexOf(nr) >= 0) optVolg[nr] = schud(((v[C.taal] || {}).o || []).map(function (o, k) { return k; })); });
+			if (W.vragen !== 'willekeurig') return rij;
+			var plekken = [], nrs = [];
+			rij.forEach(function (nr, i) { if (sc.indexOf(nr) >= 0) { plekken.push(i); nrs.push(nr); } });
+			var gemengd = schud(nrs), uit = rij.slice();
+			plekken.forEach(function (p, i) { uit[p] = gemengd[i]; });
+			return uit;
+		};
+
 		/* ---------- Stand ---------- */
 		var params = (function () { try { return new URL(window.location.href).searchParams; } catch (e) { return null; } })();
 		var S = {
@@ -127,7 +148,12 @@
 				+ '</div></div>';
 
 			var ga = function (lengte, knop) {
-				if (S.bezig) return;
+				/*
+				 * Een klik van voor het laden kan later nog een keer binnenkomen
+				 * (WP Rocket speelt klikken opnieuw af). Staat het startscherm er
+				 * niet meer, of hoort de knop niet meer bij de pagina: niets doen.
+				 */
+				if (S.bezig || S.scherm !== 'start' || (knop && !knop.isConnected) || !$('#sfp-zt-voornaam')) return;
 				var naam = $('#sfp-zt-voornaam').value.trim(), mail = $('#sfp-zt-email').value.trim();
 				$('[data-veld="naam"]').classList.toggle('mis', !naam);
 				$('[data-veld="email"]').classList.toggle('mis', !okMail(mail));
@@ -147,10 +173,10 @@
 				var beurt = ++S.startBeurt;
 				S.sessie = '';
 				S.lengte = lengte;
-				S.volgorde = (C.lengtes[lengte] && C.lengtes[lengte].vragen ? C.lengtes[lengte].vragen : []).slice().sort(function (a, b) { return a - b; });
+				S.volgorde = schik((C.lengtes[lengte] && C.lengtes[lengte].vragen ? C.lengtes[lengte].vragen : []).slice().sort(function (a, b) { return a - b; }));
 				S.A = {}; S.i = 0; S.scherm = heeftUitleg() ? 'uitleg' : 'vraag';
 				S.startBelofte = post('start', {
-					voornaam: naam, email: mail, lengte: lengte, nieuwsbrief: S.nieuwsbrief,
+					voornaam: naam, email: mail, lengte: lengte, nieuwsbrief: S.nieuwsbrief, taal: C.taal,
 					lead_source_url: meta.bron, utm_source: meta.utm.utm_source || '', utm_medium: meta.utm.utm_medium || '',
 					utm_campaign: meta.utm.utm_campaign || '', gclid: meta.utm.gclid || '', dienst: meta.dienst,
 					website: $('#sfp-zt-website').value
@@ -197,11 +223,12 @@
 		function schermVraag() {
 			var V = I.vragenscherm, nr = S.volgorde[S.i], v = vraag(nr), tx = v[C.taal] || {}, n = S.i + 1, t = S.volgorde.length;
 			var meer = !!v.meerdere, gekozen = S.A[nr], laatste = S.i === t - 1;
-			var opties = (tx.o || []).map(function (o, k) {
-				var l = 'abcdefghi'[k], aan = meer ? (Array.isArray(gekozen) && gekozen.indexOf(l) >= 0) : gekozen === l;
+			var volg = optVolg[nr] || (tx.o || []).map(function (o, k) { return k; });
+			var opties = volg.map(function (k) {
+				var o = (tx.o || [])[k], l = 'abcdefghi'[k], aan = meer ? (Array.isArray(gekozen) && gekozen.indexOf(l) >= 0) : gekozen === l;
 				return '<button type="button" class="sfp-zt-optie' + (meer ? ' vink' : '') + (aan ? ' aan' : '') + '" data-l="' + l + '" aria-pressed="' + aan + '"><span class="sfp-zt-bol" aria-hidden="true"></span><span>' + esc(o) + '</span></button>';
 			}).join('');
-			var blok = V.blokken && V.blokken[v.blok] ? T(V.blokken[v.blok]) : '';
+			var blok = W.blokkop !== false && V.blokken && V.blokken[v.blok] ? T(V.blokken[v.blok]) : '';
 			binnen.innerHTML = '<div class="sfp-zt-scherm">'
 				+ '<div class="sfp-zt-vraagkop"><span class="sfp-zt-lab">' + esc(blok) + '</span><span class="sfp-zt-tel">' + esc(T(V.voortgang).replace('{n}', n).replace('{t}', t)) + '</span></div>'
 				+ '<div class="sfp-zt-voortgang" role="progressbar" aria-valuemin="0" aria-valuemax="' + t + '" aria-valuenow="' + n + '"><b style="width:' + Math.round(n / t * 100) + '%"></b></div>'
