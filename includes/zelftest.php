@@ -189,6 +189,10 @@ function sfp_zelftest_instellingen( $test ) {
         'cta_kop'          => '',
         'cta_zin'          => '',
         'cta_knop'         => '',
+        // Sinds 3.11.0: per extra taal van het pakket een eigen testpagina en
+        // pdf-adres: array( 'en' => array( 'testpagina' => 0, 'pdf_pad' => '' ) ).
+        // De eerste taal gebruikt testpagina en pdf_pad hierboven.
+        'talen'            => array(),
     );
     // Alleen bekende sleutels: een oude sleutel (deel_pad tot 3.4.0-beta.4) valt weg.
     return array_merge( $standaard, array_intersect_key( $eigen, $standaard ) );
@@ -245,6 +249,24 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
             $tekst          = trim( sanitize_text_field( (string) $wijzigingen[ $sleutel ] ) );
             $nu[ $sleutel ] = function_exists( 'mb_substr' ) ? mb_substr( $tekst, 0, $max ) : substr( $tekst, 0, $max );
         }
+    }
+    if ( array_key_exists( 'talen', $wijzigingen ) && is_array( $wijzigingen['talen'] ) ) {
+        $talen = array();
+        foreach ( $wijzigingen['talen'] as $taal => $waarden ) {
+            $taal = sfp_zelftest_taalcode( $taal );
+            if ( '' === $taal || ! is_array( $waarden ) ) {
+                continue;
+            }
+            $pad = sfp_zelftest_pad_schoon( isset( $waarden['pdf_pad'] ) ? $waarden['pdf_pad'] : '' );
+            if ( '' === $pad && isset( $waarden['pdf_pad'] ) && '' !== trim( (string) $waarden['pdf_pad'] ) ) {
+                return new WP_Error( 'sfp_zelftest_pad', 'Een adres bestaat uit kleine letters, cijfers, streepjes en schuine strepen, zonder domein.', array( 'status' => 400 ) );
+            }
+            $talen[ $taal ] = array(
+                'testpagina' => absint( isset( $waarden['testpagina'] ) ? $waarden['testpagina'] : 0 ),
+                'pdf_pad'    => $pad,
+            );
+        }
+        $nu['talen'] = $talen;
     }
     if ( array_key_exists( 'proefmodus', $wijzigingen ) ) {
         $w                = $wijzigingen['proefmodus'];
@@ -710,14 +732,66 @@ function sfp_zelftest_pakket_uit_zip( $pad ) {
  * ====================================================================== */
 
 /**
- * De taal waarin een test de bezoeker aanspreekt: de taal van de site als
- * het pakket die heeft, anders de eerste taal van het pakket.
+ * Een geldige taalcode (nl, en, pt, pt-br), of ''.
+ *
+ * @param  mixed $taal Ruwe code.
+ * @return string
+ */
+function sfp_zelftest_taalcode( $taal ) {
+    $taal = strtolower( trim( (string) $taal ) );
+    return preg_match( '/^[a-z]{2}(-[a-z]{2,4})?$/', $taal ) ? $taal : '';
+}
+
+/**
+ * De taal van dit verzoek of van de rij die nu wordt afgehandeld (sinds 3.11.0).
+ * Zet hem met een taalcode, lees hem zonder argument; '' wist hem.
+ *
+ * @param  string|null $taal Nieuwe taal, of null om te lezen.
+ * @return string
+ */
+function sfp_zelftest_taal_context( $taal = null ) {
+    static $nu = '';
+    if ( null !== $taal ) {
+        $nu = sfp_zelftest_taalcode( $taal );
+    }
+    return $nu;
+}
+
+/**
+ * De taal van een rij (bewaard bij de start in extra), of ''.
+ *
+ * @param  array $rij Rij.
+ * @return string
+ */
+function sfp_zelftest_rij_taal( array $rij ) {
+    $extra = isset( $rij['extra'] ) ? json_decode( (string) $rij['extra'], true ) : null;
+    return is_array( $extra ) && isset( $extra['taal'] ) ? sfp_zelftest_taalcode( $extra['taal'] ) : '';
+}
+
+/**
+ * De talen van een pakket.
+ *
+ * @param  array $pakket Pakket.
+ * @return string[]
+ */
+function sfp_zelftest_pakket_talen( array $pakket ) {
+    return isset( $pakket['manifest']['talen'] ) && is_array( $pakket['manifest']['talen'] ) ? array_values( array_map( 'strval', $pakket['manifest']['talen'] ) ) : array( 'nl' );
+}
+
+/**
+ * De taal waarin een test de bezoeker aanspreekt: de taal van het verzoek of
+ * de rij als het pakket die heeft (sinds 3.11.0), anders de taal van de site
+ * als het pakket die heeft, anders de eerste taal van het pakket.
  *
  * @param  array $pakket Pakket.
  * @return string
  */
 function sfp_zelftest_taal( array $pakket ) {
-    $talen = isset( $pakket['manifest']['talen'] ) && is_array( $pakket['manifest']['talen'] ) ? $pakket['manifest']['talen'] : array( 'nl' );
+    $talen = sfp_zelftest_pakket_talen( $pakket );
+    $nu    = sfp_zelftest_taal_context();
+    if ( '' !== $nu && in_array( $nu, $talen, true ) ) {
+        return $nu;
+    }
     $site  = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
     foreach ( $talen as $taal ) {
         if ( 0 === strpos( (string) $taal, $site ) ) {
@@ -736,7 +810,7 @@ function sfp_zelftest_taal( array $pakket ) {
  */
 function sfp_zelftest_tekst( array $pakket, $pad ) {
     $taal  = sfp_zelftest_taal( $pakket );
-    $deel  = $pakket['inhoud'];
+    $deel  = isset( $pakket['inhoud'] ) ? $pakket['inhoud'] : array();
     foreach ( explode( '.', $pad ) as $stap ) {
         if ( ! is_array( $deel ) || ! isset( $deel[ $stap ] ) ) {
             return '';
@@ -758,8 +832,7 @@ function sfp_zelftest_tekst( array $pakket, $pad ) {
  * @return string        Adres, of '' als het pad niet is ingesteld.
  */
 function sfp_zelftest_adres( $test, $soort = 'pdf', array $query = array() ) {
-    $inst = sfp_zelftest_instellingen( $test );
-    $pad  = $inst['pdf_pad'];
+    $pad = sfp_zelftest_inst_taal( $test )['pdf_pad'];
     if ( '' === $pad ) {
         return '';
     }
@@ -773,10 +846,103 @@ function sfp_zelftest_adres( $test, $soort = 'pdf', array $query = array() ) {
  * @return string
  */
 function sfp_zelftest_testpagina_url( $test ) {
-    $inst = sfp_zelftest_instellingen( $test );
-    $id   = (int) $inst['testpagina'];
+    $id = (int) sfp_zelftest_inst_taal( $test )['testpagina'];
     if ( $id && 'publish' === get_post_status( $id ) ) {
         return (string) get_permalink( $id );
     }
     return home_url( '/' );
+}
+
+/* =========================================================================
+ * Meer talen op één site (sinds 3.11.0)
+ * ====================================================================== */
+
+/**
+ * Testpagina en pdf-adres voor een taal. De eerste taal van het pakket (en
+ * elke taal zonder eigen instelling) gebruikt de gewone velden.
+ *
+ * @param  string      $test Naam.
+ * @param  string|null $taal Taal; null voor de taal van het verzoek of de rij.
+ * @return array{testpagina:int,pdf_pad:string,taal:string}
+ */
+function sfp_zelftest_inst_taal( $test, $taal = null ) {
+    $inst = sfp_zelftest_instellingen( $test );
+    $taal = null === $taal ? sfp_zelftest_taal_context() : sfp_zelftest_taalcode( $taal );
+    $eigen = '' !== $taal && isset( $inst['talen'][ $taal ] ) && is_array( $inst['talen'][ $taal ] ) ? $inst['talen'][ $taal ] : null;
+    if ( $eigen && ( ! empty( $eigen['testpagina'] ) || ! empty( $eigen['pdf_pad'] ) ) ) {
+        return array(
+            'testpagina' => ! empty( $eigen['testpagina'] ) ? (int) $eigen['testpagina'] : (int) $inst['testpagina'],
+            'pdf_pad'    => ! empty( $eigen['pdf_pad'] ) ? (string) $eigen['pdf_pad'] : (string) $inst['pdf_pad'],
+            'taal'       => $taal,
+        );
+    }
+    return array( 'testpagina' => (int) $inst['testpagina'], 'pdf_pad' => (string) $inst['pdf_pad'], 'taal' => '' );
+}
+
+/**
+ * Alle pdf-adressen van een test, per taal ('' is de eerste taal).
+ *
+ * @param  string $test Naam.
+ * @return array<string, string> taal => pad
+ */
+function sfp_zelftest_pdf_paden( $test ) {
+    $inst  = sfp_zelftest_instellingen( $test );
+    $paden = array();
+    if ( '' !== $inst['pdf_pad'] ) {
+        $paden[''] = $inst['pdf_pad'];
+    }
+    foreach ( (array) $inst['talen'] as $taal => $w ) {
+        if ( is_array( $w ) && ! empty( $w['pdf_pad'] ) ) {
+            $paden[ (string) $taal ] = (string) $w['pdf_pad'];
+        }
+    }
+    return $paden;
+}
+
+/**
+ * Alle testpagina's van een test, per taal ('' is de eerste taal).
+ *
+ * @param  string $test Naam.
+ * @return array<string, int> taal => pagina-ID
+ */
+function sfp_zelftest_testpaginas( $test ) {
+    $inst    = sfp_zelftest_instellingen( $test );
+    $paginas = array();
+    if ( (int) $inst['testpagina'] > 0 ) {
+        $paginas[''] = (int) $inst['testpagina'];
+    }
+    foreach ( (array) $inst['talen'] as $taal => $w ) {
+        if ( is_array( $w ) && ! empty( $w['testpagina'] ) ) {
+            $paginas[ (string) $taal ] = (int) $w['testpagina'];
+        }
+    }
+    return $paginas;
+}
+
+/**
+ * Een datum in de taal van de test. Is dat de taal van de site, dan zoals
+ * altijd; anders even in de taal van de test (maandnamen).
+ *
+ * @param  string $formaat Datumformaat.
+ * @param  int    $ts      Tijdstip.
+ * @param  array  $pakket  Pakket.
+ * @return string
+ */
+function sfp_zelftest_datum( $formaat, $ts, array $pakket ) {
+    $taal = sfp_zelftest_taal( $pakket );
+    $site = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
+    if ( 0 === strpos( $taal, $site ) || ! function_exists( 'switch_to_locale' ) ) {
+        return (string) wp_date( $formaat, $ts );
+    }
+    $locales = array( 'nl' => 'nl_NL', 'en' => 'en_US', 'pt' => 'pt_BR', 'pt-br' => 'pt_BR', 'pt-pt' => 'pt_PT' );
+    $doel    = isset( $locales[ $taal ] ) ? $locales[ $taal ] : ( isset( $locales[ substr( $taal, 0, 2 ) ] ) ? $locales[ substr( $taal, 0, 2 ) ] : '' );
+    if ( '' === $doel ) {
+        return (string) wp_date( $formaat, $ts );
+    }
+    $gewisseld = switch_to_locale( $doel );
+    $uit       = (string) wp_date( $formaat, $ts );
+    if ( $gewisseld ) {
+        restore_previous_locale();
+    }
+    return $uit;
 }

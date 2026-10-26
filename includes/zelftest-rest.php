@@ -285,6 +285,13 @@ function sfp_zelftest_rest_start( WP_REST_Request $verzoek ) {
         return $pakket;
     }
     $in = (array) $verzoek->get_json_params();
+    // Taal van de test op de pagina (sinds 3.11.0); alleen een taal van het pakket telt.
+    $taal = isset( $in['taal'] ) ? sfp_zelftest_taalcode( $in['taal'] ) : '';
+    if ( '' !== $taal && ! in_array( $taal, sfp_zelftest_pakket_talen( $pakket ), true ) ) {
+        $taal = '';
+    }
+    sfp_zelftest_taal_context( $taal );
+    $taal = sfp_zelftest_taal( $pakket );
 
     // Lokveld: mensen zien het niet en vullen het niet in.
     if ( ! empty( $in['website'] ) ) {
@@ -319,7 +326,7 @@ function sfp_zelftest_rest_start( WP_REST_Request $verzoek ) {
             'utm_medium'      => sfp_zelftest_veld( $in, 'utm_medium', 200 ),
             'utm_campaign'    => sfp_zelftest_veld( $in, 'utm_campaign', 200 ),
             'gclid'           => sfp_zelftest_veld( $in, 'gclid', 200 ),
-            'extra'           => wp_json_encode( array( 'dienst' => sanitize_key( sfp_zelftest_veld( $in, 'dienst', 20 ) ) ) ),
+            'extra'           => wp_json_encode( array( 'dienst' => sanitize_key( sfp_zelftest_veld( $in, 'dienst', 20 ) ), 'taal' => $taal ) ),
             'gestart_op'      => sfp_zelftest_nu(),
             'crm_start'       => 'wacht',
             'crm_volgende'    => sfp_zelftest_nu(),
@@ -350,6 +357,7 @@ function sfp_zelftest_rest_afgerond( WP_REST_Request $verzoek ) {
     if ( ! $rij || $rij['test'] !== $pakket['test'] ) {
         return sfp_zelftest_rest_fout( $pakket, 'sfp_zelftest_sessie', 'fout_versturen', 400 );
     }
+    sfp_zelftest_taal_context( sfp_zelftest_rij_taal( $rij ) );
     // Al afgerond: hetzelfde antwoord, geen nieuwe code (dubbele klik, opnieuw versturen na een netwerkfout).
     if ( ! empty( $rij['afgerond_op'] ) && ! empty( $rij['code'] ) ) {
         return rest_ensure_response( array( 'code' => $rij['code'], 'result_url' => sfp_zelftest_adres( $rij['test'], 'pdf', array( 'code' => $rij['code'] ) ) ) );
@@ -418,6 +426,9 @@ function sfp_zelftest_rest_opnieuw( WP_REST_Request $verzoek ) {
     $in     = (array) $verzoek->get_json_params();
     $sessie = isset( $in['sessie'] ) && is_string( $in['sessie'] ) && preg_match( '/^[a-f0-9]{32}$/', $in['sessie'] ) ? $in['sessie'] : '';
     $rij    = '' === $sessie ? null : sfp_zelftest_rij_op( 'sessie', $sessie );
+    if ( $rij ) {
+        sfp_zelftest_taal_context( sfp_zelftest_rij_taal( $rij ) );
+    }
     $email  = sfp_zelftest_email( $in );
     if ( ! $rij || $rij['test'] !== $pakket['test'] || empty( $rij['afgerond_op'] ) || '' === $email ) {
         return sfp_zelftest_rest_fout( $pakket, 'sfp_zelftest_ongeldig', 'fout_versturen', 400 );

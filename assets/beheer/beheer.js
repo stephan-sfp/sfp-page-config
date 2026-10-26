@@ -1066,6 +1066,11 @@
 			var I = t.instellingen;
 			var pagina = paginaKeuze(I.testpagina, 'Kies de testpagina');
 			var pdfPad = tekstInvoer(I.pdf_pad, 'presentatietest/resultaat');
+			/* Sinds 3.11.0: per extra taal van het pakket een eigen testpagina en pdf-adres. */
+			var extraTalen = (t.talen || []).slice(1).map(function (taal) {
+				var eigen = (I.talen || {})[taal] || {};
+				return { taal: taal, pagina: paginaKeuze(eigen.testpagina || 0, 'Kies de testpagina (' + taal + ')'), pdf: tekstInvoer(eigen.pdf_pad || '', 'bijvoorbeeld en/test/result') };
+			});
 			var logo = tekstInvoer(I.logo ? String(I.logo) : '', 'Media-ID');
 			var whStart = tekstInvoer('', I.webhook_start ? 'Ingesteld; laat leeg om te houden' : 'https://...', 'password');
 			var whAf = tekstInvoer('', I.webhook_afgerond ? 'Ingesteld; laat leeg om te houden' : 'https://...', 'password');
@@ -1091,6 +1096,14 @@
 				veld('Testpagina', pagina, 'De pagina met het blok Zelftest. Knoppen "Doe de test" wijzen hierheen.', 'sfpb-zt-pag-' + t.test),
 				veld('Logo op de testpagina', logo, 'Media-ID van het logo voor een witte achtergrond (versie origineel). Leeg: het logo van de site.', 'sfpb-zt-logo-' + t.test),
 				veld('Adres van de pdf-link', pdfPad, 'Zonder domein, bijvoorbeeld presentatietest/resultaat. Geen bestaande pagina.', 'sfpb-zt-pdf-' + t.test),
+				extraTalen.length ? el('h3', { text: 'Andere talen van deze test' }) : null,
+				extraTalen.length ? el('p', { class: 'sfpb-hulp', text: 'De eerste taal (' + (t.talen || [])[0] + ') gebruikt de testpagina en het adres hierboven. Leeg: ook voor deze taal de velden hierboven.' }) : null
+			].concat(extraTalen.reduce(function (l, x) {
+				return l.concat([
+					veld('Testpagina ' + x.taal, x.pagina, 'De pagina met het blok Zelftest in deze taal.', 'sfpb-zt-pag-' + t.test + '-' + x.taal),
+					veld('Adres van de pdf-link ' + x.taal, x.pdf, 'Zonder domein. Elk adres een eigen uitzondering in Cloudflare.', 'sfpb-zt-pdf-' + t.test + '-' + x.taal)
+				]);
+			}, [])).concat([
 				veld('Webhook bij de start (SureContact)', whStart, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-whs-' + t.test),
 				veld('Webhook bij het afronden (SureContact)', whAf, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-wha-' + t.test),
 				schakel(I.proefmodus, 'Proefmodus: niets naar het CRM, de gegevens komen in het logboek', function (nu) { proef.aan = nu; }),
@@ -1101,14 +1114,15 @@
 				veld('Knoptekst', ctaKnop, 'Leeg: de vaste tekst in de taal van de site.', 'sfpb-zt-ctab-' + t.test),
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.value, pdf_pad: pdfPad.value, webhook_start: whStart.value, webhook_afgerond: whAf.value, proefmodus: proef.aan, cta_kop: ctaKop.value, cta_zin: ctaZin.value, cta_knop: ctaKnop.value });
+						var talen = {}; extraTalen.forEach(function (x) { talen[x.taal] = { testpagina: x.pagina.value, pdf_pad: x.pdf.value }; });
+						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.value, pdf_pad: pdfPad.value, webhook_start: whStart.value, webhook_afgerond: whAf.value, proefmodus: proef.aan, cta_kop: ctaKop.value, cta_zin: ctaZin.value, cta_knop: ctaKnop.value, talen: talen });
 					} }),
 					t.vorige ? el('button', { class: 'sfpb-knop', type: 'button', text: 'Vorige pakketversie terugzetten', klik: function () {
 						if (window.confirm('De vorige versie van het pakket terugzetten?')) zt(this, 'zt-' + t.test, '/' + t.test + '/pakket/terug', {}, 'Teruggezet');
 					} }) : null,
 					flitsPlek('zt-' + t.test)
 				])
-			]));
+			])));
 		});
 
 		// Cloudflare.

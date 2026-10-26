@@ -284,8 +284,20 @@ function sfp_zelftest_blad_gegevens( array $rij ) {
         'antwoorden' => sfp_zelftest_json( $rij, 'antwoorden' ),
         'lengte'     => (string) $rij['lengte'],
         'code'       => (string) $rij['code'],
-        'datum'      => wp_date( 'j F Y', strtotime( $rij['afgerond_op'] . ' UTC' ) ),
+        'datum'      => sfp_zelftest_blad_datum( $rij ),
     );
+}
+
+/**
+ * De datum op het blad, in de taal van de test.
+ *
+ * @param  array $rij Rij.
+ * @return string
+ */
+function sfp_zelftest_blad_datum( array $rij ) {
+    $ts     = strtotime( $rij['afgerond_op'] . ' UTC' );
+    $pakket = sfp_zelftest_pakket( (string) $rij['test'] );
+    return $pakket ? sfp_zelftest_datum( 'j F Y', $ts, $pakket ) : (string) wp_date( 'j F Y', $ts );
 }
 
 /* =========================================================================
@@ -441,6 +453,9 @@ function sfp_zelftest_pdf_verwerk( $id, $forceer = false, $mag_wachten = true ) 
         return null;
     }
     $rij    = sfp_zelftest_rij_op( 'id', (string) (int) $id );
+    if ( $rij ) {
+        sfp_zelftest_taal_context( sfp_zelftest_rij_taal( $rij ) );
+    }
     $pakket = $rij ? sfp_zelftest_pakket( $rij['test'] ) : null;
     if ( ! $rij || ! $pakket || '' === $pakket['blad'] ) {
         if ( $rij ) {

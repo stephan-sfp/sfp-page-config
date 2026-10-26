@@ -69,6 +69,7 @@ function sfp_zelftest_stand() {
                 'cta_kop'          => $inst['cta_kop'],
                 'cta_zin'          => $inst['cta_zin'],
                 'cta_knop'         => $inst['cta_knop'],
+                'talen'            => (object) $inst['talen'],
             ),
             'cta'          => function_exists( 'sfp_zelftest_cta_gegevens' ) ? sfp_zelftest_cta_gegevens( $test ) : null,
             'tellingen'    => sfp_zelftest_tellingen( $test ),
@@ -238,6 +239,8 @@ function sfp_zelftest_rest_proef( WP_REST_Request $verzoek ) {
     }
     $g      = (array) $verzoek->get_json_params();
     $lengte = isset( $g['lengte'] ) && 'short' === $g['lengte'] ? 'short' : 'long';
+    // Proef in een andere taal van het pakket (sinds 3.11.0).
+    sfp_zelftest_taal_context( isset( $g['taal'] ) ? (string) $g['taal'] : '' );
     $ruw    = isset( $g['antwoorden'] ) ? $g['antwoorden'] : array();
     if ( is_string( $ruw ) ) {
         $tekst = $ruw;
@@ -269,7 +272,7 @@ function sfp_zelftest_rest_proef( WP_REST_Request $verzoek ) {
         'antwoorden' => $antwoorden,
         'lengte'     => $lengte,
         'code'       => isset( $g['code'] ) ? sanitize_text_field( (string) $g['code'] ) : $pakket['manifest']['code_voorvoegsel'] . '-PROE-F000-0000',
-        'datum'      => wp_date( 'j F Y' ),
+        'datum'      => sfp_zelftest_datum( 'j F Y', time(), $pakket ),
     );
     $html     = sfp_zelftest_blad_html( $pakket, $gegevens );
     $voet     = sfp_zelftest_blad_voet( $pakket, $gegevens );

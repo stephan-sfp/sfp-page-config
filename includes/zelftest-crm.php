@@ -49,7 +49,24 @@ function sfp_zelftest_payload_start( array $rij ) {
         // De payload wordt bij elke poging opnieuw gemaakt, dus ook wachtende
         // verzendingen gaan zo de deur uit.
         'newsletter'      => ! empty( $rij['nieuwsbrief'] ) ? 'true' : 'false',
-    );
+    ) + sfp_zelftest_payload_taal( $rij );
+}
+
+/**
+ * De taal van de test voor het CRM (sinds 3.11.0), alleen bij een pakket met
+ * meer dan één taal: zo kan SureContact per taal mailen. Bij één taal blijft
+ * de payload zoals hij was.
+ *
+ * @param  array $rij Rij.
+ * @return array
+ */
+function sfp_zelftest_payload_taal( array $rij ) {
+    $pakket = isset( $rij['test'] ) ? sfp_zelftest_pakket( (string) $rij['test'] ) : null;
+    if ( ! $pakket || count( sfp_zelftest_pakket_talen( $pakket ) ) < 2 ) {
+        return array();
+    }
+    $taal = sfp_zelftest_rij_taal( $rij );
+    return array( 'test_language' => '' !== $taal ? $taal : sfp_zelftest_taal( $pakket ) );
 }
 
 /**
@@ -71,7 +88,7 @@ function sfp_zelftest_payload_afgerond( array $rij, array $pakket ) {
         $payload[ $veld ] = (string) $waarde;
     }
     $payload['note'] = sfp_zelftest_notitie( $rij, $pakket );
-    return $payload;
+    return $payload + sfp_zelftest_payload_taal( $rij );
 }
 
 /**
@@ -89,7 +106,7 @@ function sfp_zelftest_notitie( array $rij, array $pakket ) {
     $regels     = array();
 
     $naam     = sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' );
-    $regels[] = ( '' !== $naam ? $naam : $pakket['test'] ) . ', ' . wp_date( 'j F Y H:i', strtotime( $rij['afgerond_op'] . ' UTC' ) );
+    $regels[] = ( '' !== $naam ? $naam : $pakket['test'] ) . ', ' . sfp_zelftest_datum( 'j F Y H:i', strtotime( $rij['afgerond_op'] . ' UTC' ), $pakket );
     foreach ( ( isset( $uitkomst['notitie'] ) ? (array) $uitkomst['notitie'] : array() ) as $regel ) {
         $regels[] = $regel[0] . ': ' . $regel[1];
     }
@@ -170,6 +187,7 @@ function sfp_zelftest_crm_verwerk( $id ) {
     if ( ! $rij ) {
         return;
     }
+    sfp_zelftest_taal_context( sfp_zelftest_rij_taal( $rij ) );
     $pakket = sfp_zelftest_pakket( $rij['test'] );
     if ( ! $pakket ) {
         // Zonder pakket kan er niets worden opgebouwd: eindstand, met een melding.

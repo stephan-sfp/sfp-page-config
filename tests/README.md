@@ -69,6 +69,14 @@ SFP_ZT_PAKKET=/pad/naar/pakket wp eval-file wp-content/plugins/sfp-page-config/t
 Runs inside a real WordPress (a local test install, never a live site) with a test package folder (manifest.json, inhoud.json, motor.js, label.js, blad.html). Reads the package in as test "proeftest" and checks: refusing broken packages and keeping the old version, the previous version, the closed work folder, settings (paths, https webhooks, secrets never returned), rights on the admin routes, the public routes (validation of answers and CRM values, honeypot, session, the same code on a double submit, a new code on a retake, the short version, the limit per e-mail address), the two CRM payloads in test mode with exactly the fields from the build note, resending to a corrected address, the prepared PDF sheet (data, no Google Fonts, colours replaced), retention (PDF removed after the link expires, anonymised after two years) and erasing by e-mail address. Removes its own rows and files at the end. Cloudflare and SureContact are not called.
 
 
+# Zelftest in meer talen (3.11.0)
+
+```sh
+SFP_ZT_PAKKET=/pad/naar/tweetalig/pakket wp eval-file wp-content/plugins/sfp-page-config/tests/zelftest-talen-wp.php
+```
+
+Runs inside a real WordPress (a local test install, never a live site) with a package in two languages (nl and en). Checks settings per language, the language kept with the row at the start, the PDF link address per language and its recognition, the CRM payloads with the language, notes, date, PDF name and footer in the language of the test, the shortcode with a language, the test page per language, the display settings in the configuration and a trial in another language. Removes its own rows, pages and files at the end.
+
 # Vormen (3.6.0, 3.7.0)
 
 ```sh

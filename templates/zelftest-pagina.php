@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$sfp_zt_sluiten = sfp_page_config_tekst( 'zelftest_sluiten' );
+$sfp_zt_sluiten = sfp_zelftest_pagina_tekst( 'zelftest_sluiten' );
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -40,10 +40,10 @@ while ( have_posts() ) {
 ?>
 </main>
 <dialog class="sfp-zt-stop" id="sfp-zt-stop" aria-labelledby="sfp-zt-stop-vraag">
-    <p id="sfp-zt-stop-vraag"><?php echo esc_html( sfp_page_config_tekst( 'zelftest_stop' ) ); ?></p>
+    <p id="sfp-zt-stop-vraag"><?php echo esc_html( sfp_zelftest_pagina_tekst( 'zelftest_stop' ) ); ?></p>
     <div class="sfp-zt-stop-knoppen">
-        <button type="button" class="sfp-zt-stop-nee" id="sfp-zt-stop-nee"><?php echo esc_html( sfp_page_config_tekst( 'zelftest_stop_nee' ) ); ?></button>
-        <button type="button" class="sfp-zt-stop-ja" id="sfp-zt-stop-ja"><?php echo esc_html( sfp_page_config_tekst( 'zelftest_stop_ja' ) ); ?></button>
+        <button type="button" class="sfp-zt-stop-nee" id="sfp-zt-stop-nee"><?php echo esc_html( sfp_zelftest_pagina_tekst( 'zelftest_stop_nee' ) ); ?></button>
+        <button type="button" class="sfp-zt-stop-ja" id="sfp-zt-stop-ja"><?php echo esc_html( sfp_zelftest_pagina_tekst( 'zelftest_stop_ja' ) ); ?></button>
     </div>
 </dialog>
 <?php wp_footer(); ?>

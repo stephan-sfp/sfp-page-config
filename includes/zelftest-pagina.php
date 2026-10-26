@@ -43,13 +43,56 @@ function sfp_zelftest_pagina_test() {
         return $test;
     }
     foreach ( sfp_zelftest_tests() as $naam ) {
-        $inst = sfp_zelftest_instellingen( $naam );
-        if ( (int) $inst['testpagina'] === $id && sfp_zelftest_pakket( $naam ) ) {
-            $test = $naam;
-            break;
+        // De testpagina van elke taal van de test (sinds 3.11.0).
+        foreach ( sfp_zelftest_testpaginas( $naam ) as $taal => $pagina ) {
+            if ( $pagina === $id && sfp_zelftest_pakket( $naam ) ) {
+                $test = $naam;
+                if ( '' !== $taal ) {
+                    sfp_zelftest_taal_context( (string) $taal );
+                }
+                break 2;
+            }
         }
     }
     return $test;
+}
+
+/**
+ * Een vaste tekst van de testpagina (kruisje, stopvraag) in de taal van de
+ * test. Is dat een andere taal dan die van de site, dan de standaardtekst van
+ * die taal (sinds 3.11.0); anders zoals altijd, met de eigen tekst van de site.
+ *
+ * @param  string $sleutel Sleutel uit teksten.php.
+ * @return string
+ */
+function sfp_zelftest_pagina_tekst( $sleutel ) {
+    $taal = substr( sfp_zelftest_taal_context(), 0, 2 );
+    if ( '' !== $taal && function_exists( 'sfp_page_config_taal' ) && $taal !== sfp_page_config_taal() && function_exists( 'sfp_page_config_tekst_standaard' ) ) {
+        $tekst = sfp_page_config_tekst_standaard( $sleutel, $taal );
+        if ( '' !== $tekst ) {
+            return $tekst;
+        }
+    }
+    return sfp_page_config_tekst( $sleutel );
+}
+
+add_filter( 'language_attributes', 'sfp_zelftest_pagina_lang', 20 );
+
+/**
+ * Op een testpagina in een andere taal dan die van de site: lang van die taal.
+ *
+ * @param  string $attributen Attributen van het html-element.
+ * @return string
+ */
+function sfp_zelftest_pagina_lang( $attributen ) {
+    if ( is_admin() || ! did_action( 'wp' ) || '' === sfp_zelftest_pagina_test() ) {
+        return $attributen;
+    }
+    $taal = sfp_zelftest_taal_context();
+    if ( '' === $taal || ( function_exists( 'sfp_page_config_taal' ) && substr( $taal, 0, 2 ) === sfp_page_config_taal() ) ) {
+        return $attributen;
+    }
+    return preg_replace( '/lang="[^"]*"/', 'lang="' . esc_attr( $taal ) . '"', (string) $attributen );
 }
 
 add_filter( 'template_include', 'sfp_zelftest_pagina_sjabloon', 99 );
