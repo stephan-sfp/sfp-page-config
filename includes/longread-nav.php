@@ -56,12 +56,7 @@ function sfp_page_config_longread_nav_enqueue() {
         return;
     }
 
-    wp_enqueue_style(
-        'sfp-longread-nav',
-        SFP_PAGE_CONFIG_URL . 'assets/longread-nav.css',
-        array(),
-        SFP_PAGE_CONFIG_VERSION
-    );
+    sfp_page_config_css_inline( 'sfp-longread-nav', 'longread-nav.css' );
 
     // Brand colours and fonts as CSS custom properties. All values come
     // from Astra via sfp_page_config_get_brand() and are validated there.

@@ -76,12 +76,7 @@ function sfp_page_config_enqueue_sales_assets() {
     }
 
     // Sales page CSS (always loaded on sales pages).
-    wp_enqueue_style(
-        'sfp-page-config-sales',
-        SFP_PAGE_CONFIG_URL . 'assets/sales-page.css',
-        array(),
-        SFP_PAGE_CONFIG_VERSION
-    );
+    sfp_page_config_css_inline( 'sfp-page-config-sales', 'sales-page.css' );
 
     // Inject brand CSS custom properties. Every value comes from Astra
     // via sfp_page_config_get_brand() and is already validated there:

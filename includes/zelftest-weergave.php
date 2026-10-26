@@ -96,7 +96,7 @@ function sfp_zelftest_stijl() {
         return;
     }
     $klaar = true;
-    wp_enqueue_style( 'sfp-zelftest', SFP_PAGE_CONFIG_URL . 'assets/zelftest/zelftest.css', array(), SFP_PAGE_CONFIG_VERSION );
+    sfp_page_config_css_inline( 'sfp-zelftest', 'zelftest/zelftest.css' );
     wp_add_inline_style( 'sfp-zelftest', sfp_zelftest_merk_css() );
 }
 

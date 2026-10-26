@@ -91,7 +91,7 @@ class SFP_Reviews_Fetcher {
 		foreach ( $result['reviews'] ?? array() as $r ) {
 			$reviews[] = array(
 				'author' => $r['author_name'] ?? '',
-				'photo'  => $r['profile_photo_url'] ?? '',
+				'photo'  => function_exists( 'sfp_page_config_reviews_foto' ) ? sfp_page_config_reviews_foto( $r['profile_photo_url'] ?? '' ) : ( $r['profile_photo_url'] ?? '' ),
 				'rating' => (int) ( $r['rating'] ?? 0 ),
 				'text'   => $r['text'] ?? '',
 				'time'   => $r['relative_time_description'] ?? '',
