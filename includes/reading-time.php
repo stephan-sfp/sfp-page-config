@@ -140,12 +140,7 @@ function sfp_page_config_scroll_progress_enqueue() {
 
     // Laadt ook met de voortgangsbalk uit: het bestand bevat de opmaak van
     // de leestijd.
-    wp_enqueue_style(
-        'sfp-reading-time',
-        SFP_PAGE_CONFIG_URL . 'assets/reading-time.css',
-        array(),
-        SFP_PAGE_CONFIG_VERSION
-    );
+    sfp_page_config_css_inline( 'sfp-reading-time', 'reading-time.css' );
 
     // De balk draagt de knopkleur van de site, uit Astra. Kleurvelden zijn
     // er sinds 3.0.0 niet meer.
@@ -165,7 +160,7 @@ add_action( 'wp_footer', 'sfp_page_config_scroll_progress_bar', 25 );
  * Sitewide on all singular posts and pages (not gated by the longread
  * toggle anymore). Uses a brand-coloured bar with requestAnimationFrame
  * throttling. Brand colour comes from the site config (CTA background).
- * CSS is loaded via wp_enqueue_style in sfp_page_config_scroll_progress_enqueue().
+ * CSS is loaded inline via sfp_page_config_css_inline() in sfp_page_config_scroll_progress_enqueue().
  */
 function sfp_page_config_scroll_progress_bar() {
 

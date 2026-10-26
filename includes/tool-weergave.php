@@ -51,7 +51,7 @@ function sfp_page_config_tool_bestanden( $soort = 'test' ) {
     static $klaar = array();
     if ( empty( $klaar['basis'] ) ) {
         $klaar['basis'] = true;
-        wp_enqueue_style( 'sfp-tool', SFP_PAGE_CONFIG_URL . 'assets/tool/tool.css', array(), SFP_PAGE_CONFIG_VERSION );
+        sfp_page_config_css_inline( 'sfp-tool', 'tool/tool.css' );
         if ( function_exists( 'sfp_page_config_blokken_css_variabelen' ) ) {
             wp_add_inline_style( 'sfp-tool', sfp_page_config_blokken_css_variabelen() );
         }

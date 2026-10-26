@@ -270,7 +270,7 @@ function sfp_page_config_reviews_laad_assets() {
     if ( wp_style_is( 'sfp-reviews', 'enqueued' ) || wp_style_is( 'sfp-reviews', 'done' ) ) {
         return;
     }
-    wp_enqueue_style( 'sfp-reviews', SFP_PAGE_CONFIG_URL . 'assets/reviews/reviews.css', array(), SFP_PAGE_CONFIG_VERSION );
+    sfp_page_config_css_inline( 'sfp-reviews', 'reviews/reviews.css' );
     wp_enqueue_script( 'sfp-reviews', SFP_PAGE_CONFIG_URL . 'assets/reviews/reviews.js', array(), SFP_PAGE_CONFIG_VERSION, true );
     wp_add_inline_script(
         'sfp-reviews',
@@ -282,6 +282,22 @@ function sfp_page_config_reviews_laad_assets() {
         ) . ';',
         'before'
     );
+}
+
+/**
+ * Maat van een profielfoto van Google: 80 pixels, twee keer de getoonde
+ * 40 bij 40. Google levert standaard 128 pixels. Andere adressen blijven
+ * zoals ze zijn.
+ *
+ * @param  string $url Adres van de foto.
+ * @return string
+ */
+function sfp_page_config_reviews_foto( $url ) {
+    $url = (string) $url;
+    if ( '' === $url || false === strpos( $url, 'googleusercontent.com/' ) ) {
+        return $url;
+    }
+    return (string) preg_replace( '/=s\d+(?=-|$)/', '=s80', $url, 1 );
 }
 
 /**

@@ -48,12 +48,7 @@ function sfp_page_config_whatsapp_enqueue() {
         return;
     }
 
-    wp_enqueue_style(
-        'sfp-whatsapp',
-        SFP_PAGE_CONFIG_URL . 'assets/whatsapp.css',
-        array(),
-        SFP_PAGE_CONFIG_VERSION
-    );
+    sfp_page_config_css_inline( 'sfp-whatsapp', 'whatsapp.css' );
 }
 
 add_action( 'wp_footer', 'sfp_page_config_whatsapp_button', 30 );

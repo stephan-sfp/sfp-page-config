@@ -4,6 +4,19 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.12.0] - 2026-10-26
+
+De opmaak van de plugin houdt het tonen van de pagina niet meer op: geen losse stijlbestanden meer op de voorkant. Proefversie 3.12.0-beta.1 op DPS: op vijf paginasoorten gelijk aan 3.11.0 (screenshots mobiel, 0 pixels verschil), geen scriptfouten.
+
+### Gewijzigd
+- Leestijd, WhatsApp-knop, reviews, dienstpagina, tools, longread-navigatie en zelftest zetten hun opmaak inline in de pagina, alleen waar het onderdeel iets toont. De losse bestanden hielden het tonen van de pagina op (render-blocking, gemeten 151 tot 507 ms op mobiel).
+- WP Rocket Remove Unused CSS laat die inline opmaak staan, zodat ook regels voor wat pas na het laden verschijnt (resultaat van een tool, staat van de WhatsApp-knop) blijven werken.
+- Reviewfoto's van Google laden op 80 pixels in plaats van 128 (getoond op 40 bij 40), ook voor reviews die al bewaard zijn.
+
+### Toegevoegd
+- Vaste regel voor nieuwe opmaak: altijd via `sfp_page_config_css_inline()`, nooit een los stijlbestand op de voorkant; boven 10 KB verkleind per onderdeel eerst voorleggen.
+- Test `tests/css-inline.php`.
+
 ## [3.11.0] - 2026-10-26
 
 De zelftest kan meer talen en meer tests aan. Een testpakket wordt nu gebouwd uit één algemene motor met de structuur en de teksten per taal uit de bron van de test; de plugin volgt daarbij de taal van de bezoeker. DPS werkt ongewijzigd.

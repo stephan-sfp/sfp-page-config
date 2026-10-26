@@ -177,7 +177,7 @@ class SFP_Reviews_Renderer {
 			$photo = ! empty( $r['photo'] )
 				? sprintf(
 					'<img class="sfp-banner__photo" src="%s" alt="%s" width="40" height="40" loading="lazy">',
-					esc_url( $r['photo'] ),
+					esc_url( function_exists( 'sfp_page_config_reviews_foto' ) ? sfp_page_config_reviews_foto( $r['photo'] ) : $r['photo'] ),
 					esc_attr( $r['author'] )
 				)
 				: '<span class="sfp-banner__photo sfp-banner__photo--fallback" aria-hidden="true">'
@@ -236,7 +236,7 @@ class SFP_Reviews_Renderer {
 			$photo = ! empty( $r['photo'] )
 				? sprintf(
 					'<img class="sfp-banner__photo" src="%s" alt="%s" width="36" height="36" loading="lazy">',
-					esc_url( $r['photo'] ),
+					esc_url( function_exists( 'sfp_page_config_reviews_foto' ) ? sfp_page_config_reviews_foto( $r['photo'] ) : $r['photo'] ),
 					esc_attr( $r['author'] )
 				)
 				: '<span class="sfp-banner__photo sfp-banner__photo--fallback" aria-hidden="true">'
@@ -287,7 +287,7 @@ class SFP_Reviews_Renderer {
 		$photo = ! empty( $r['photo'] )
 			? sprintf(
 				'<img class="sfp-review__photo" src="%s" alt="%s" width="40" height="40" loading="lazy">',
-				esc_url( $r['photo'] ),
+				esc_url( function_exists( 'sfp_page_config_reviews_foto' ) ? sfp_page_config_reviews_foto( $r['photo'] ) : $r['photo'] ),
 				esc_attr( $r['author'] )
 			)
 			: '<span class="sfp-review__photo sfp-review__photo--fallback" aria-hidden="true">'
