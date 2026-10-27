@@ -84,8 +84,16 @@ $html = render_block( array( 'blockName' => 'sfp/zelftest-cta', 'attrs' => array
 $check( 'blok toont oproep', false !== strpos( $html, 'sfp-zt-cta' ) && false !== strpos( $html, 'How strong is your presence?' ) );
 $check( 'blok standaard bron', false !== strpos( $html, 'bron=pagina-proef-training' ) );
 $check( 'blok knop van het thema', false !== strpos( $html, 'wp-block-button__link' ) );
+$check( 'blok standaard zonder icoon (3.13.0)', false === strpos( $html, '<span class="sfp-zt-cta__icoon"' ) && ! preg_match( '/<aside[^>]*sfp-zt-cta--icoon/', $html ) );
+$html = render_block( array( 'blockName' => 'sfp/zelftest-cta', 'attrs' => array( 'icoon' => true ), 'innerBlocks' => array(), 'innerHTML' => '', 'innerContent' => array() ) );
+$check( 'blok met icoon als instelling (3.13.0)', false !== strpos( $html, '<span class="sfp-zt-cta__icoon"' ) && preg_match( '/<aside[^>]*sfp-zt-cta--icoon/', $html ) );
 $html = do_shortcode( '[sfp_zelftest_cta bron="footer"]' );
 $check( 'code', false !== strpos( $html, 'bron=footer' ) );
+$check( 'code zonder icoon (3.13.0)', false === strpos( $html, '<span class="sfp-zt-cta__icoon"' ) );
+$check( 'code met icoon="ja" (3.13.0)', false !== strpos( do_shortcode( '[sfp_zelftest_cta icoon="ja"]' ), '<span class="sfp-zt-cta__icoon"' ) );
+$css = sfp_page_config_blokken_css_bestand( 'zelftest-cta' );
+$check( 'oproep-CSS zonder fontnaam of hexkleur (3.13.0)', ! preg_match( '/#[0-9a-f]{3,6}\b|Roboto|Nunito|Manrope/i', $css ) );
+$check( 'oproep-CSS kop in kapitalen en kopfont, max 760 px (3.13.0)', false !== strpos( $css, 'text-transform:uppercase;color:var(--sfp-b-primair)' ) && false !== strpos( $css, 'max-width:760px' ) && false !== strpos( $css, 'font-family:var(--sfp-b-kop)' ) );
 if ( post_type_exists( 'tool' ) ) {
     $tool = wp_insert_post( array( 'post_type' => 'tool', 'post_title' => 'Proeftool', 'post_status' => 'publish' ) );
     $opruimen[] = $tool;

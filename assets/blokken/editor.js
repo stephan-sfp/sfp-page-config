@@ -871,6 +871,7 @@
 			paneel( 'Zelftest-oproep', [
 				keuze( 'Test', a.test || '', opties, function ( v ) { props.setAttributes( { test: v } ); } ),
 				tekstveld( 'Bronlabel', a.bron, function ( v ) { props.setAttributes( { bron: v } ); }, 'Komt als ?bron= in de link, voor GA4. Leeg: het soort pagina en het adres, bijvoorbeeld pagina-presenteren-training.' ),
+				schakelaar( 'Icoon tonen', !! a.icoon, function ( v ) { props.setAttributes( { icoon: v } ); }, 'Standaard zonder icoon.' ),
 				uitleg( 'Kop, zin en knoptekst staan in SFP Beheer, Zelftest, en gelden voor elke oproep en de promokaart van een pijler. Niet voor toolpagina\'s: de zelftest is geen tool.' ),
 			] ),
 			gegeven( 'sfp/zelftest-cta', null, props, leeg )

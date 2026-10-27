@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.13.0-beta.1] - 2026-10-27
+
+De zelftest meet waar bezoekers vandaan komen, de Zelftest-oproep krijgt de vormgeving die op DPS met een snippet was gemaakt, en de knop onderaan op de telefoon dekt geen oproep meer af.
+
+### Toegevoegd
+- Zelftest: na een gelukte start en een gelukte afronding een event in de dataLayer (`zelftest_start`, `zelftest_afgerond`) met `zelftest_test`, `zelftest_lengte`, `zelftest_taal` en `zelftest_bron`. Het bronlabel komt uit `?bron` in de link van de oproep en blijft in de sessie bewaard tot de test is afgerond, ook als de bezoeker de pagina herlaadt. Geen naam, e-mail of antwoorden in de dataLayer.
+- Blok Zelftest-oproep: schakelaar Icoon tonen (standaard uit); code `[sfp_zelftest_cta icoon="ja"]`.
+
+### Gewijzigd
+- Blok Zelftest-oproep: zonder icoon, label, kop, zin en knop gecentreerd onder elkaar, zonder rand, hoogstens 760 px breed; de kop groter, in het kopfont en in kapitalen. Naast een beeld in Kolommen geen eigen kaart en links uitgelijnd (onder 600 px gecentreerd), het beeld op telefoon boven de oproep. Daarmee kan het DPS-snippet voor de oproep uit.
+- Knop onderaan (telefoon en tablet): wijkt zolang de knop van een Zelftest-oproep of een gevulde knop in de inhoud onderin beeld is, zodat de balk die knop niet meer afdekt. Omlijnde knoppen, de bovenkant en het formulier tellen niet mee.
+
 ## [3.12.0] - 2026-10-26
 
 De opmaak van de plugin houdt het tonen van de pagina niet meer op: geen losse stijlbestanden meer op de voorkant. Proefversie 3.12.0-beta.1 op DPS: op vijf paginasoorten gelijk aan 3.11.0 (screenshots mobiel, 0 pixels verschil), geen scriptfouten.

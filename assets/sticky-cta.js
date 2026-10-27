@@ -27,7 +27,9 @@
  *     4. geen bovenkant gevonden: de knop verschijnt na 400 px scrollen.
  *
  * De knop verschijnt als de bovenkant uit beeld is en verdwijnt zolang het
- * formulier in beeld is.
+ * formulier in beeld is. Sinds 3.13.0 wijkt hij ook zolang een eigen oproep
+ * in de inhoud onderin beeld is: de knop van de Zelftest-oproep of een
+ * gevulde knop (geen omlijnde), zodat de balk die niet afdekt.
  *
  * Het id van de balk (sticky-mobile-cta) en de ene link erin zijn een
  * afspraak: het snippet "LatePoint: boekkaart in merkrollen" zoekt ze op.
@@ -118,6 +120,32 @@
         return null;
     }
 
+    /**
+     * Eigen oproepen in de inhoud: de knop van de Zelftest-oproep en gevulde
+     * knoppen (core en Spectra), niet omlijnd, niet in de bovenkant of het
+     * formulier, niet in kop of voet.
+     *
+     * @param {Element|null} bovenkant Bovenkant van de pagina.
+     * @param {Element|null} formulier Formulier.
+     * @return {Element[]}
+     */
+    function vindKnoppen(bovenkant, formulier) {
+        var bak = inhoud();
+        var lijst = bak.querySelectorAll(
+            '.sfp-zt-cta__knop a, .wp-block-button:not(.is-style-outline) > .wp-block-button__link, a.uagb-buttons-repeater:not(.ast-outline-button)'
+        );
+        var uit = [];
+        for (var i = 0; i < lijst.length; i++) {
+            var k = lijst[i];
+            if (k.closest('#sticky-mobile-cta, header, footer, .site-header, .site-footer')) continue;
+            if (bovenkant && bovenkant.contains(k)) continue;
+            if (formulier && formulier.contains(k)) continue;
+            if (k.closest('.wp-block-button.is-style-outline, .ast-outline-button')) continue;
+            uit.push(k);
+        }
+        return uit;
+    }
+
     function init() {
         if (initialized) return;
         if (typeof IntersectionObserver === 'undefined') return;
@@ -166,6 +194,7 @@
         // anker, of een herladen pagina).
         var voorbijBovenkant = false;
         var formulierVisible = false;
+        var knopInBeeld = false;
 
         // Is de balk echt te zien? Een ander script (zoals het LatePoint-
         // snippet bij de boekkaart) kan hem verbergen.
@@ -181,7 +210,7 @@
 
         function updateVisibility() {
             if (!bar) return;
-            var show = voorbijBovenkant && !formulierVisible;
+            var show = voorbijBovenkant && !formulierVisible && !knopInBeeld;
             bar.classList.toggle('visible', show);
             zetKlasse();
         }
@@ -219,6 +248,25 @@
             };
             window.addEventListener('scroll', onScroll, { passive: true });
             onScroll();
+        }
+
+        // Sinds 3.13.0: eigen oproepen en gevulde knoppen in de inhoud, buiten
+        // de bovenkant en het formulier. Is er een onderin beeld (het onderste
+        // derde van het scherm), dan wijkt de balk.
+        var knoppenOnder = 0;
+        var knoppen = vindKnoppen(bovenkant, formulier);
+        if (knoppen.length) {
+            var inZone = typeof WeakSet !== 'undefined' ? new WeakSet() : null;
+            var zone = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (!inZone) return;
+                    if (e.isIntersecting && !inZone.has(e.target)) { inZone.add(e.target); knoppenOnder++; }
+                    else if (!e.isIntersecting && inZone.has(e.target)) { inZone.delete(e.target); knoppenOnder--; }
+                });
+                knopInBeeld = knoppenOnder > 0;
+                updateVisibility();
+            }, { rootMargin: '-66% 0px 0px 0px', threshold: 0 });
+            knoppen.forEach(function (k) { zone.observe(k); });
         }
 
         if (formulier) {
