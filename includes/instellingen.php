@@ -480,6 +480,20 @@ function sfp_page_config_afwijkingen() {
             'norm'   => $norm,
         );
     }
+    // Sinds 3.13.3: de schakelaar Husselen per zelftest (norm: aan).
+    if ( function_exists( 'sfp_zelftest_instellingen_alle' ) ) {
+        $zt = sfp_zelftest_instellingen_alle();
+        foreach ( (array) $zt['tests'] as $test => $inst ) {
+            if ( is_array( $inst ) && isset( $inst['husselen'] ) && '0' === (string) $inst['husselen'] ) {
+                $uit[] = array(
+                    'pad'    => 'zelftest.' . $test . '.husselen',
+                    'label'  => 'Zelftest ' . $test . ': vragen en antwoorden husselen',
+                    'waarde' => 'Uit',
+                    'norm'   => 'Aan',
+                );
+            }
+        }
+    }
     return $uit;
 }
 
@@ -713,6 +727,9 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
  * @return bool        True als er iets is teruggezet.
  */
 function sfp_page_config_instelling_naar_norm( $pad ) {
+    if ( preg_match( '/^zelftest\.([a-z0-9][a-z0-9-]{0,39})\.husselen$/', (string) $pad, $m ) ) {
+        return function_exists( 'sfp_zelftest_instellingen_bewaar' ) && true === sfp_zelftest_instellingen_bewaar( $m[1], array( 'husselen' => '1' ) );
+    }
     if ( ! array_key_exists( $pad, sfp_page_config_norm() ) ) {
         return false;
     }

@@ -193,6 +193,11 @@ function sfp_zelftest_instellingen( $test ) {
         // pdf-adres: array( 'en' => array( 'testpagina' => 0, 'pdf_pad' => '' ) ).
         // De eerste taal gebruikt testpagina en pdf_pad hierboven.
         'talen'            => array(),
+        // Sinds 3.13.3: vragen en antwoorden husselen (netwerknorm: aan).
+        // Aan: de kernvragen wisselen van plek, hun antwoorden en die van de
+        // profielvragen wisselen van volgorde, en er staat geen bloknaam boven
+        // een vraag. Uit: vaste volgorde met bloknaam.
+        'husselen'         => '1',
     );
     // Alleen bekende sleutels: een oude sleutel (deel_pad tot 3.4.0-beta.4) valt weg.
     return array_merge( $standaard, array_intersect_key( $eigen, $standaard ) );
@@ -268,9 +273,11 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
         }
         $nu['talen'] = $talen;
     }
-    if ( array_key_exists( 'proefmodus', $wijzigingen ) ) {
-        $w                = $wijzigingen['proefmodus'];
-        $nu['proefmodus'] = ( true === $w || '1' === (string) $w || 'true' === $w ) ? '1' : '0';
+    foreach ( array( 'proefmodus', 'husselen' ) as $sleutel ) {
+        if ( array_key_exists( $sleutel, $wijzigingen ) ) {
+            $w              = $wijzigingen[ $sleutel ];
+            $nu[ $sleutel ] = ( true === $w || '1' === (string) $w || 'true' === $w ) ? '1' : '0';
+        }
     }
 
     $alle['tests'][ $test ] = $nu;

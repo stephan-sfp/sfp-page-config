@@ -134,7 +134,8 @@ function sfp_zelftest_shortcode( $atts ) {
         'inhoud'   => $pakket['inhoud'],
         'privacy'  => (string) get_privacy_policy_url(),
         // Sinds 3.11.0: volgorde van vragen en opties, en of de bloknaam boven een vraag staat.
-        'weergave' => sfp_zelftest_weergave( $pakket ),
+        // Sinds 3.13.3 bepaalt de schakelaar Husselen in SFP Beheer dat.
+        'weergave' => sfp_zelftest_weergave( $pakket, $test ),
     );
 
     sfp_zelftest_stijl();
@@ -180,20 +181,58 @@ function sfp_zelftest_pagina_taal( $test, $taal = '' ) {
 }
 
 /**
- * Hoe de vragen getoond worden (manifest.weergave, sinds 3.11.0). Standaard
- * zoals altijd: vaste volgorde, bloknaam zichtbaar.
+ * Hoe de vragen getoond worden.
  *
- * @param  array $pakket Pakket.
- * @return array{vragen:string,opties:string,blokkop:bool,scorend:int[]}
+ * Sinds 3.13.3 beslist de schakelaar Husselen per test (SFP Beheer, Zelftest;
+ * netwerknorm aan). Aan: de kernvragen wisselen onderling van plek, de
+ * antwoorden van de kernvragen en van de profielvragen wisselen van volgorde,
+ * en er staat geen bloknaam boven een vraag. Uit: vaste volgorde met bloknaam.
+ *
+ * De kern is de lange versie zonder de eerste vijf en de laatste vijf vragen;
+ * de profielvragen zijn de vierde en vijfde vraag. Een pakket met een andere
+ * opbouw kan beide noemen in manifest.weergave.kern en manifest.weergave.opties
+ * (lijsten met vraagnummers). Vragen met meerdere antwoorden husselen nooit.
+ *
+ * @param  array  $pakket Pakket.
+ * @param  string $test   Naam van de test.
+ * @return array{vragen:string,opties:string,blokkop:bool,kern:int[],opties_bij:int[]}
  */
-function sfp_zelftest_weergave( array $pakket ) {
-    $w = isset( $pakket['manifest']['weergave'] ) && is_array( $pakket['manifest']['weergave'] ) ? $pakket['manifest']['weergave'] : array();
+function sfp_zelftest_weergave( array $pakket, $test = '' ) {
+    $inst = '' !== $test ? sfp_zelftest_instellingen( $test ) : array( 'husselen' => '1' );
+    if ( '1' !== (string) $inst['husselen'] ) {
+        return array(
+            'vragen'     => 'vast',
+            'opties'     => 'vast',
+            'blokkop'    => true,
+            'kern'       => array(),
+            'opties_bij' => array(),
+        );
+    }
+    $w     = isset( $pakket['manifest']['weergave'] ) && is_array( $pakket['manifest']['weergave'] ) ? $pakket['manifest']['weergave'] : array();
+    $lang  = isset( $pakket['manifest']['lengtes']['long']['vragen'] ) ? array_map( 'intval', (array) $pakket['manifest']['lengtes']['long']['vragen'] ) : array();
+    sort( $lang );
+    $lijst = function ( $sleutel, $standaard ) use ( $w ) {
+        if ( isset( $w[ $sleutel ] ) && is_array( $w[ $sleutel ] ) && $w[ $sleutel ] ) {
+            return array_values( array_unique( array_map( 'intval', $w[ $sleutel ] ) ) );
+        }
+        return $standaard;
+    };
+    $kern   = $lijst( 'kern', count( $lang ) > 10 ? array_slice( $lang, 5, count( $lang ) - 10 ) : array() );
+    $profiel = count( $lang ) > 4 ? array( $lang[3], $lang[4] ) : array();
+    $opties = $lijst( 'opties', array_values( array_unique( array_merge( $profiel, $kern ) ) ) );
+    // Vragen met meerdere antwoorden blijven staan.
+    $meerdere = array();
+    foreach ( isset( $pakket['inhoud']['vragen'] ) ? (array) $pakket['inhoud']['vragen'] : array() as $v ) {
+        if ( ! empty( $v['meerdere'] ) && isset( $v['nr'] ) ) {
+            $meerdere[] = (int) $v['nr'];
+        }
+    }
     return array(
-        'vragen'  => isset( $w['volgorde_vragen'] ) && 'willekeurig' === $w['volgorde_vragen'] ? 'willekeurig' : 'vast',
-        'opties'  => isset( $w['volgorde_opties'] ) && 'willekeurig' === $w['volgorde_opties'] ? 'willekeurig' : 'vast',
-        'blokkop' => ! ( isset( $w['blokkop'] ) && 'nee' === $w['blokkop'] ),
-        // Alleen de vragen met een score wisselen van plek en volgorde van opties; context- en slotvragen blijven staan.
-        'scorend' => array_map( 'intval', array_keys( isset( $pakket['manifest']['scoretabel'] ) ? (array) $pakket['manifest']['scoretabel'] : array() ) ),
+        'vragen'     => 'willekeurig',
+        'opties'     => 'willekeurig',
+        'blokkop'    => false,
+        'kern'       => array_values( array_diff( $kern, $meerdere ) ),
+        'opties_bij' => array_values( array_diff( $opties, $meerdere ) ),
     );
 }
 

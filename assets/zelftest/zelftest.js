@@ -43,21 +43,22 @@
 		var vraag = function (nr) { return I.vragen.filter(function (v) { return v.nr === nr; })[0]; };
 
 		/*
-		 * Weergave (sinds 3.11.0, manifest.weergave): de vragen met een score
-		 * wisselen onderling van plek en hun opties van volgorde. Contextvragen
-		 * en slotvragen blijven op hun plek. De letter van een optie blijft bij
-		 * de optie, dus de score verandert niet. Eén keer per start bepaald.
+		 * Weergave (sinds 3.11.0; sinds 3.13.3 de schakelaar Husselen in SFP
+		 * Beheer): de kernvragen wisselen onderling van plek en de opties van
+		 * de kern- en profielvragen van volgorde. De eerste en laatste vragen
+		 * blijven op hun plek. De letter van een optie blijft bij de optie, dus
+		 * de score verandert niet. Eén keer per start bepaald.
 		 */
-		var W = C.weergave || { vragen: 'vast', opties: 'vast', blokkop: true, scorend: [] };
+		var W = C.weergave || { vragen: 'vast', opties: 'vast', blokkop: true, kern: [], opties_bij: [] };
 		var schud = function (lijst) { var l = lijst.slice(); for (var i = l.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = l[i]; l[i] = l[j]; l[j] = t; } return l; };
 		var optVolg = {};
 		var schik = function (rij) {
 			optVolg = {};
-			var sc = (W.scorend || []).map(Number);
-			if (W.opties === 'willekeurig') rij.forEach(function (nr) { var v = vraag(nr); if (v && !v.meerdere && sc.indexOf(nr) >= 0) optVolg[nr] = schud(((v[C.taal] || {}).o || []).map(function (o, k) { return k; })); });
+			var kern = (W.kern || W.scorend || []).map(Number), opt = (W.opties_bij || W.scorend || []).map(Number);
+			if (W.opties === 'willekeurig') rij.forEach(function (nr) { var v = vraag(nr); if (v && !v.meerdere && opt.indexOf(nr) >= 0) optVolg[nr] = schud(((v[C.taal] || {}).o || []).map(function (o, k) { return k; })); });
 			if (W.vragen !== 'willekeurig') return rij;
 			var plekken = [], nrs = [];
-			rij.forEach(function (nr, i) { if (sc.indexOf(nr) >= 0) { plekken.push(i); nrs.push(nr); } });
+			rij.forEach(function (nr, i) { if (kern.indexOf(nr) >= 0) { plekken.push(i); nrs.push(nr); } });
 			var gemengd = schud(nrs), uit = rij.slice();
 			plekken.forEach(function (p, i) { uit[p] = gemengd[i]; });
 			return uit;
