@@ -5,7 +5,7 @@
  *   GET  /wp-json/sfp/v1/zelftest                       stand (zonder geheimen)
  *   POST /wp-json/sfp/v1/zelftest/<test>/pakket         pakket inlezen (JSON met bestanden, of een zip als 'pakket')
  *   POST /wp-json/sfp/v1/zelftest/<test>/pakket/terug   vorige versie terugzetten
- *   POST /wp-json/sfp/v1/zelftest/<test>/instellingen   adressen, webhooks, proefmodus
+ *   POST /wp-json/sfp/v1/zelftest/<test>/instellingen   adressen, webhooks, proefmodus, husselen
  *   POST /wp-json/sfp/v1/zelftest/cloudflare            account-ID en token
  *   POST /wp-json/sfp/v1/zelftest/<test>/proef          pdf voor opgegeven antwoorden (niets opgeslagen of verstuurd)
  *   POST /wp-json/sfp/v1/zelftest/wissen                alles van een e-mailadres wissen
@@ -66,6 +66,7 @@ function sfp_zelftest_stand() {
                 'webhook_start'    => '' !== $inst['webhook_start'],
                 'webhook_afgerond' => '' !== $inst['webhook_afgerond'],
                 'proefmodus'       => '1' === (string) $inst['proefmodus'],
+                'husselen'         => '1' === (string) $inst['husselen'],
                 'cta_kop'          => $inst['cta_kop'],
                 'cta_zin'          => $inst['cta_zin'],
                 'cta_knop'         => $inst['cta_knop'],

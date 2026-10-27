@@ -177,7 +177,7 @@ ztt_is( false !== strpos( $html, 'lang="en"' ), 'shortcode met taal en: test in 
 $data = wp_scripts()->get_data( 'sfp-zelftest', 'before' );
 $data = is_array( $data ) ? implode( "\n", $data ) : (string) $data;
 ztt_is( false !== strpos( $data, '"taal":"en"' ), 'configuratie met taal en' );
-ztt_is( false !== strpos( $data, '"weergave":{"vragen":"willekeurig","opties":"willekeurig","blokkop":false' ), 'configuratie met de weergave uit het manifest' );
+ztt_is( false !== strpos( $data, '"weergave":{"vragen":"willekeurig","opties":"willekeurig","blokkop":false' ), 'configuratie met de weergave van de schakelaar Husselen (standaard aan)' );
 ztt_is( 'en' === sfp_zelftest_pagina_taal( 'proeftalen', 'en' ) && '' === sfp_zelftest_pagina_taal( 'proeftalen', 'fr' ), 'taal uit het blok alleen als het pakket hem heeft' );
 $GLOBALS['wp_query'] = new WP_Query( array( 'page_id' => $en_pagina ) ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 $GLOBALS['wp_the_query'] = $GLOBALS['wp_query']; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited

@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.13.3] - 2026-10-27
+
+De zelftest toont de kernvragen en de antwoorden in willekeurige volgorde, zonder bloknaam, voor alle tests. Per test aan of uit te zetten in SFP Beheer. Proefversie 3.13.3-beta.1 op DPS: uitgelogd op desktop en telefoon twee starts met een andere volgorde in de kern, eerste en laatste vijf vragen vast, geen bloknaam, geen scriptfouten.
+
+### Toegevoegd
+- Zelftest: schakelaar "Vragen en antwoorden husselen" per test in SFP Beheer, Zelftest. Netwerknorm aan; Overzicht meldt het als hij ergens uit staat, met de knop Terug naar de norm.
+
+### Gewijzigd
+- Zelftest, schakelaar aan: de kernvragen (de lange versie zonder de eerste vijf en de laatste vijf vragen) wisselen onderling van plek, ook de vragen zonder score. De antwoorden van de kernvragen en van de vierde en vijfde vraag (profielvragen) staan in willekeurige volgorde. Boven een vraag staat geen bloknaam meer. De volgorde ligt vast per start: Vorige en de terugknop van de browser houden hem; herladen begint een nieuwe test.
+- Schakelaar uit: vaste volgorde met bloknaam, zoals voorheen. De instelling weergave in het pakket geldt niet meer; een pakket met een andere opbouw kan de kern en de vragen met gehusselde antwoorden zelf noemen (manifest.weergave.kern en manifest.weergave.opties).
+- Uitslag, resultaatblad, pdf en CRM rekenen op vraagnummer en antwoordletter en blijven gelijk. Proef met de DPS-inhoud: 13 vaste en 40 willekeurige profielen, desktop en telefoon, verzending bij het afronden gelijk met en zonder husselen.
+
 ## [3.13.2] - 2026-10-27
 
 ### Gewijzigd
