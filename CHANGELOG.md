@@ -4,9 +4,9 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.13.3-beta.1] - 2026-10-27
+## [3.13.3] - 2026-10-27
 
-Proefversie voor DPS van 3.13.3: zelftest met vragen en antwoorden in willekeurige volgorde.
+De zelftest toont de kernvragen en de antwoorden in willekeurige volgorde, zonder bloknaam, voor alle tests. Per test aan of uit te zetten in SFP Beheer. Proefversie 3.13.3-beta.1 op DPS: uitgelogd op desktop en telefoon twee starts met een andere volgorde in de kern, eerste en laatste vijf vragen vast, geen bloknaam, geen scriptfouten.
 
 ### Toegevoegd
 - Zelftest: schakelaar "Vragen en antwoorden husselen" per test in SFP Beheer, Zelftest. Netwerknorm aan; Overzicht meldt het als hij ergens uit staat, met de knop Terug naar de norm.
