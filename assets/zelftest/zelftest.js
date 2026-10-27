@@ -13,6 +13,12 @@
  * Twee verzendingen naar de site: bij de start en bij het afronden. De site
  * stuurt door naar het CRM; geen webhookadres in deze pagina.
  *
+ * Sinds 3.13.0 na elke gelukte verzending een event in de dataLayer:
+ * zelftest_start en zelftest_afgerond, met zelftest_test, zelftest_lengte,
+ * zelftest_taal en zelftest_bron. Het bronlabel komt uit ?bron (de link van
+ * de oproep) en blijft in sessionStorage staan tot de test is afgerond.
+ * Geen naam, e-mail of antwoorden in de dataLayer.
+ *
  * Knoppen werken op klik en Enter, nooit via het versturen van een formulier.
  */
 (function () {
@@ -88,6 +94,36 @@
 			var ref = document.referrer ? new URL(document.referrer) : null;
 			meta.bron = ref && ref.host === window.location.host && ref.pathname !== window.location.pathname ? ref.origin + ref.pathname : window.location.origin + window.location.pathname;
 		} catch (e) { meta.bron = window.location.origin + window.location.pathname; }
+
+		/* Sinds 3.13.0: bronlabel en events voor de dataLayer. Zelfde schoonmaak als sfp_zelftest_cta_bron(). */
+		var bronSleutel = 'sfp_zt_bron_' + String(C.test || '');
+		var schoonLabel = function (b) { return String(b == null ? '' : b).toLowerCase().trim().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40); };
+		var bronlabel = '';
+		try {
+			var bronUrl = params ? params.get('bron') : null;
+			if (bronUrl !== null && bronUrl !== '') {
+				bronlabel = schoonLabel(bronUrl);
+				if (bronlabel) window.sessionStorage.setItem(bronSleutel, bronlabel);
+			} else {
+				bronlabel = schoonLabel(window.sessionStorage.getItem(bronSleutel) || '');
+			}
+		} catch (e) { bronlabel = params ? schoonLabel(params.get('bron')) : ''; }
+		var gemeld = {};
+		function meld(naam) {
+			var sleutel = naam + ':' + S.sessie;
+			if (!S.sessie || gemeld[sleutel]) return;
+			gemeld[sleutel] = true;
+			try {
+				window.dataLayer = window.dataLayer || [];
+				window.dataLayer.push({
+					event: naam,
+					zelftest_test: String(C.test || ''),
+					zelftest_lengte: String(S.lengte || ''),
+					zelftest_taal: String(C.taal || ''),
+					zelftest_bron: bronlabel
+				});
+			} catch (e) { /* meten mag de test nooit breken */ }
+		}
 
 		function post(pad, gegevens) {
 			return fetch(C.rest + pad, {
@@ -181,7 +217,7 @@
 					utm_campaign: meta.utm.utm_campaign || '', gclid: meta.utm.gclid || '', dienst: meta.dienst,
 					website: $('#sfp-zt-website').value
 				}).then(function (j) {
-					if (beurt === S.startBeurt) S.sessie = j.sessie || '';
+					if (beurt === S.startBeurt) { S.sessie = j.sessie || ''; meld('zelftest_start'); }
 				}, function (e) {
 					if (beurt !== S.startBeurt) return;
 					S.startBelofte = null; S.sessie = '';
@@ -355,6 +391,8 @@
 				});
 			}).then(function (j) {
 				S.code = j.code || ''; S.resultUrl = j.result_url || '';
+				meld('zelftest_afgerond');
+				try { window.sessionStorage.removeItem(bronSleutel); } catch (e) { /* geen opslag */ }
 				var knop = $('#sfp-zt-open-pdf');
 				if (knop) { knop.removeAttribute('aria-disabled'); if (S.resultUrl) knop.setAttribute('href', S.resultUrl); }
 			}, function (e) {

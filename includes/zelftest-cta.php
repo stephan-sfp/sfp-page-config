@@ -14,7 +14,11 @@
  * cta_knop). Leeg: de naam van de test uit het pakket en de vaste knoptekst.
  *
  * Elke plaatsing zet een bronlabel in de link (?bron=...), zodat GA4 ziet
- * waar een bezoeker vandaan kwam.
+ * waar een bezoeker vandaan kwam. Sinds 3.13.0 leest de testpagina dat label
+ * en geeft het mee aan de events zelftest_start en zelftest_afgerond.
+ *
+ * Sinds 3.13.0: zonder icoon (een icoon kan per blok aan), gecentreerd, kop
+ * in kopfont en kapitalen. Naast een beeld in Kolommen links uitgelijnd.
  *
  * De zelftest is geen tool: op een toolpagina en het overzicht van de tools
  * verschijnt de oproep niet (besluit Stephan, 18-10-2026).
@@ -127,14 +131,16 @@ function sfp_zelftest_cta_op_tool() {
  *
  * @param  array  $g       Gegevens uit sfp_zelftest_cta_gegevens().
  * @param  string $extra   Extra attributen voor de omhulling (blok).
+ * @param  bool   $icoon   Icoon tonen (sinds 3.13.0; standaard niet).
  * @return string
  */
-function sfp_zelftest_cta_html( array $g, $extra = '' ) {
+function sfp_zelftest_cta_html( array $g, $extra = '', $icoon = false ) {
     $label = function_exists( 'sfp_page_config_artikel_tekst' ) ? sfp_page_config_artikel_tekst( 'zelftest' ) : '';
     $id    = wp_unique_id( 'sfp-zt-cta-' );
-    $attr  = '' !== $extra ? $extra : 'class="sfp-zt-cta"';
+    $attr  = '' !== $extra ? $extra : 'class="sfp-zt-cta' . ( $icoon ? ' sfp-zt-cta--icoon' : '' ) . '"';
+    $teken = $icoon && function_exists( 'sfp_page_config_artikel_icoon' ) ? sfp_page_config_artikel_icoon( 'test' ) : '';
     return '<aside ' . $attr . ' aria-labelledby="' . esc_attr( $id ) . '" data-sfp-zelftest="' . esc_attr( $g['test'] ) . '">'
-        . '<span class="sfp-zt-cta__icoon" aria-hidden="true">' . ( function_exists( 'sfp_page_config_artikel_icoon' ) ? sfp_page_config_artikel_icoon( 'test' ) : '' ) . '</span>'
+        . ( '' !== $teken ? '<span class="sfp-zt-cta__icoon" aria-hidden="true">' . $teken . '</span>' : '' )
         . '<div class="sfp-zt-cta__tekst">'
         . '<span class="sfp-blok-label">' . esc_html( $label ) . '</span>'
         . '<p class="sfp-zt-cta__kop" id="' . esc_attr( $id ) . '">' . esc_html( $g['kop'] ) . '</p>'
@@ -159,7 +165,7 @@ add_filter( 'sfp_page_config_blokken_extra', 'sfp_zelftest_cta_blok' );
 function sfp_zelftest_cta_blok( $blokken ) {
     $blokken['sfp/zelftest-cta'] = array(
         'title'        => 'Zelftest-oproep',
-        'description'  => 'Oproep om de zelftest van de site te doen: kop, één zin en knop. De tekst staat in SFP Beheer, Zelftest. Niet voor toolpagina\'s.',
+        'description'  => 'Oproep om de zelftest van de site te doen: kop, één zin en knop. De tekst staat in SFP Beheer, Zelftest. Niet voor toolpagina\'s. Naast een beeld in Kolommen staat de oproep links uitgelijnd.',
         'icon'         => 'yes-alt',
         'css'          => 'zelftest-cta',
         'zonder_basis' => true,
@@ -171,6 +177,11 @@ function sfp_zelftest_cta_blok( $blokken ) {
             'bron' => array(
                 'type'    => 'string',
                 'default' => '',
+            ),
+            // Sinds 3.13.0: standaard zonder icoon (besluit Stephan 25-10-2026).
+            'icoon' => array(
+                'type'    => 'boolean',
+                'default' => false,
             ),
         ),
         'render'       => 'sfp_zelftest_cta_render',
@@ -211,16 +222,17 @@ function sfp_zelftest_cta_render( $attrs, $content = '' ) {
     if ( ! $g ) {
         return '';
     }
+    $icoon = isset( $attrs['icoon'] ) && in_array( $attrs['icoon'], array( true, 1, '1', 'true', 'ja' ), true );
     $extra = function_exists( 'get_block_wrapper_attributes' ) && class_exists( 'WP_Block_Supports' ) && ! empty( WP_Block_Supports::$block_to_render )
-        ? sfp_page_config_blok_omhulling( array( 'sfp-zt-cta' ) )
+        ? sfp_page_config_blok_omhulling( array( 'sfp-zt-cta', $icoon ? 'sfp-zt-cta--icoon' : '' ) )
         : '';
-    return sfp_page_config_blokken_css_vangnet( 'sfp/zelftest-cta' ) . sfp_zelftest_cta_html( $g, $extra );
+    return sfp_page_config_blokken_css_vangnet( 'sfp/zelftest-cta' ) . sfp_zelftest_cta_html( $g, $extra, $icoon );
 }
 
 add_action( 'init', 'sfp_zelftest_cta_code', 20 );
 
 /**
- * De code [sfp_zelftest_cta test="" bron=""].
+ * De code [sfp_zelftest_cta test="" bron="" icoon="ja"].
  */
 function sfp_zelftest_cta_code() {
     if ( ! shortcode_exists( 'sfp_zelftest_cta' ) ) {
@@ -229,8 +241,9 @@ function sfp_zelftest_cta_code() {
             function ( $atts ) {
                 $atts = shortcode_atts(
                     array(
-                        'test' => '',
-                        'bron' => '',
+                        'test'  => '',
+                        'bron'  => '',
+                        'icoon' => '',
                     ),
                     (array) $atts,
                     'sfp_zelftest_cta'
