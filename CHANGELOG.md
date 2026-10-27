@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.13.1] - 2026-10-27
+
+### Gerepareerd
+- Zelftest-oproep: de sectie eromheen houdt onderaan weer de gewone ruimte. Sinds 3.13.0 (en daarvoor via een DPS-snippet) was die 0 px, waardoor het beeld naast de oproep direct op het blok eronder stond.
+
 ## [3.13.0] - 2026-10-27
 
 De zelftest meet waar bezoekers vandaan komen, de Zelftest-oproep krijgt de vormgeving die op DPS met een snippet was gemaakt, en de knop onderaan op de telefoon dekt geen oproep meer af. Proefversie 3.13.0-beta.1 op DPS: beide events met bronlabel in de dataLayer, de oproep op drie pagina's gelijk met en zonder het DPS-snippet (0 pixels verschil, desktop en telefoon), de balk wijkt boven de knop, geen scriptfouten.

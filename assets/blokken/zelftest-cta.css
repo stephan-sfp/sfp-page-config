@@ -18,8 +18,8 @@
 :root .sfp-zt-cta__zin{margin:0;max-width:56ch;font-size:17px;line-height:1.55;color:var(--sfp-b-body)}
 :root .sfp-zt-cta__knop{margin:4px 0 0}
 :root .sfp-zt-cta__knop a{white-space:nowrap}
-/* In een sectie: de sectie draagt de ruimte. */
-:root .sfp-sectie:has(.sfp-zt-cta){padding-top:56px;padding-bottom:0}
+/* In een sectie: de sectie draagt de ruimte; onderaan de gewone sectieruimte (3.13.1). */
+:root .sfp-sectie:has(.sfp-zt-cta){padding-top:56px}
 :root .sfp-sectie .sfp-zt-cta{margin:0 auto}
 /* Naast een beeld in Kolommen: geen kaart, links uitgelijnd. */
 :root :is(.sfp-kolommen:has(.wp-block-image) .sfp-zt-cta,.sfp-zt-cta.met-beeld){background:none;padding:0;margin:0;max-width:none;text-align:left;justify-items:start}
