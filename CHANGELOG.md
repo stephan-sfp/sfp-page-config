@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.13.2] - 2026-10-27
+
+### Gewijzigd
+- Zelftest-oproep: de sectie eromheen heeft boven en onder dezelfde ruimte, 56 px (telefoon 40 px). Zo staat een beeld naast de oproep nooit direct op het blok eronder, ook niet als dat een donker blok is.
+
 ## [3.13.1] - 2026-10-27
 
 ### Gerepareerd

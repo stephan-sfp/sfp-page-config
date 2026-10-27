@@ -18,8 +18,8 @@
 :root .sfp-zt-cta__zin{margin:0;max-width:56ch;font-size:17px;line-height:1.55;color:var(--sfp-b-body)}
 :root .sfp-zt-cta__knop{margin:4px 0 0}
 :root .sfp-zt-cta__knop a{white-space:nowrap}
-/* In een sectie: de sectie draagt de ruimte; onderaan de gewone sectieruimte (3.13.1). */
-:root .sfp-sectie:has(.sfp-zt-cta){padding-top:56px}
+/* In een sectie: de sectie draagt de ruimte, boven en onder gelijk (3.13.2, besluit Stephan 27-10-2026). */
+:root .sfp-sectie:has(.sfp-zt-cta){padding-top:56px;padding-bottom:56px}
 :root .sfp-sectie .sfp-zt-cta{margin:0 auto}
 /* Naast een beeld in Kolommen: geen kaart, links uitgelijnd. */
 :root :is(.sfp-kolommen:has(.wp-block-image) .sfp-zt-cta,.sfp-zt-cta.met-beeld){background:none;padding:0;margin:0;max-width:none;text-align:left;justify-items:start}
@@ -39,7 +39,7 @@
   :root .sfp-zt-cta{padding:28px 20px 32px;gap:16px}
   :root .sfp-zt-cta__zin{font-size:16px}
   :root .sfp-zt-cta__knop a{display:block;text-align:center;white-space:normal}
-  :root .sfp-sectie:has(.sfp-zt-cta){padding-top:40px}
+  :root .sfp-sectie:has(.sfp-zt-cta){padding-top:40px;padding-bottom:40px}
   :root :is(.sfp-kolommen:has(.wp-block-image) .sfp-zt-cta,.sfp-zt-cta.met-beeld){padding:0;text-align:center;justify-items:center}
   :root :is(.sfp-kolommen:has(.wp-block-image) .sfp-zt-cta,.sfp-zt-cta.met-beeld) .sfp-zt-cta__tekst{justify-items:center}
   :root .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image img{max-height:300px}
