@@ -162,7 +162,7 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
         if ( ! empty( $output_parts ) ) {
             // De intro staat er alleen met data, zodat een vraag als "Wanneer
             // start de volgende groep?" zonder data niet tegenstrijdig wordt.
-            $intro = '' !== trim( (string) $atts['intro'] ) ? '<span class="cursus-datum-intro">' . esc_html( $atts['intro'] ) . '</span><br><br>' : '';
+            $intro = '' !== trim( (string) $atts['intro'] ) ? '<span class="cursus-datum-intro" style="margin:0">' . esc_html( $atts['intro'] ) . '</span><br><br>' : '';
             return $intro . '<div class="cursus-data-wrapper">' . implode( '', $output_parts ) . '</div>';
         }
     }

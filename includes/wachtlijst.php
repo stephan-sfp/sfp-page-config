@@ -144,11 +144,13 @@ function sfp_page_config_wachtlijst_anker() {
  */
 function sfp_page_config_wachtlijst_html() {
     if ( ! sfp_page_config_wachtlijst_formulier_id( 'wachtlijst_formulier' ) ) {
-        return '<span class="sfp-wachtlijst-tekst">' . esc_html( sfp_page_config_tekst( 'geen_data' ) ) . '</span>';
+        return '<span class="sfp-wachtlijst-tekst" style="margin:0">' . esc_html( sfp_page_config_tekst( 'geen_data' ) ) . '</span>';
     }
     $link = '<a href="#' . esc_attr( sfp_page_config_wachtlijst_anker() ) . '">' . esc_html( sfp_page_config_tekst( 'wachtlijst_link' ) ) . '</a>';
     $zin  = sfp_page_config_tekst_f( 'wachtlijst_tekst', '%%LINK%%' );
-    return '<span class="sfp-wachtlijst-tekst">' . str_replace( '%%LINK%%', $link, esc_html( $zin ) ) . '</span>';
+    // margin:0: Spectra geeft elke span in een FAQ-antwoord een marge, dan
+    // springt deze tekst verder in dan de andere antwoorden.
+    return '<span class="sfp-wachtlijst-tekst" style="margin:0">' . str_replace( '%%LINK%%', $link, esc_html( $zin ) ) . '</span>';
 }
 
 /* =========================================================================
