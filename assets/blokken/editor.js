@@ -1019,7 +1019,7 @@
 					// Nog aan het laden, of niet meer in de mediabibliotheek: dan toont de site hem niet.
 					return el( 'li', { key: id }, null === opgehaald ? el( c.Spinner ) : el( 'span', { className: 'components-base-control__help' }, 'Logo niet meer in de mediabibliotheek' ) );
 				}
-				var maat = m.source_url;
+				var maat = m.media_details && m.media_details.sizes && m.media_details.sizes.medium ? m.media_details.sizes.medium.source_url : m.source_url;
 				return el( 'li', { key: id }, el( 'img', { className: 'sfp-logostrook__logo', src: maat, alt: m.alt_text || '' } ) );
 			} )
 		) : el( 'div', { className: 'sfp-logostrook__leeg' }, el( c.Placeholder, {

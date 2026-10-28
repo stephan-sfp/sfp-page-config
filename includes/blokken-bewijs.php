@@ -108,20 +108,22 @@ function sfp_page_config_render_logostrook( $attrs ) {
         $label = sfp_page_config_tekst( 'logostrook_label' );
     }
 
-    // Het originele bestand, zonder kleinere varianten: zo laadt de site op SwS
-    // de logo's ook nu. Een kleinere variant kwam via de keten van de host
-    // zonder transparantie binnen (wit vlak achter het logo, proef 28-10-2026).
     $items = '';
     foreach ( $ids as $id ) {
-        $bron = wp_get_attachment_image_src( $id, 'full' );
-        if ( ! $bron || empty( $bron[0] ) ) {
-            continue;
+        $img = wp_get_attachment_image(
+            $id,
+            'medium',
+            false,
+            array(
+                'class'    => 'sfp-logostrook__logo',
+                'loading'  => 'lazy',
+                'decoding' => 'async',
+                'sizes'    => '(max-width: 600px) 120px, 150px',
+            )
+        );
+        if ( '' !== $img ) {
+            $items .= '<li>' . $img . '</li>';
         }
-        $alt    = trim( wp_strip_all_tags( (string) get_post_meta( $id, '_wp_attachment_image_alt', true ) ) );
-        $items .= '<li><img class="sfp-logostrook__logo" src="' . esc_url( $bron[0] ) . '"'
-            . ( ! empty( $bron[1] ) ? ' width="' . (int) $bron[1] . '"' : '' )
-            . ( ! empty( $bron[2] ) ? ' height="' . (int) $bron[2] . '"' : '' )
-            . ' alt="' . esc_attr( $alt ) . '" loading="lazy" decoding="async"></li>';
     }
     if ( '' === $items ) {
         return '';
