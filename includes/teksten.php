@@ -547,3 +547,32 @@ function sfp_page_config_format_lestijd( $start, $eind, $separator = ' - ', $suf
     }
     return $body . $suffix;
 }
+
+/**
+ * Namen van de berichttypes begrippen en tool in de taal van de site, voor
+ * een site waar de plugin het berichttype registreert zonder dat er iets is
+ * overgenomen (sinds 3.15.0). Gelijk aan wat de snippets per taal zetten.
+ * Geen tekst op het scherm Teksten: de namen in het beheer zijn een besluit
+ * per netwerk, niet per site.
+ *
+ * @param  string      $type begrippen of tool.
+ * @param  string|null $taal nl, en of pt; null voor de taal van de site.
+ * @return array{meervoud: string, enkelvoud: string}
+ */
+function sfp_page_config_berichttype_namen( $type, $taal = null ) {
+    $taal  = null === $taal ? sfp_page_config_taal() : $taal;
+    $namen = array(
+        'begrippen' => array(
+            'nl' => array( 'meervoud' => 'Begrippen', 'enkelvoud' => 'Begrip' ),
+            'en' => array( 'meervoud' => 'Glossary', 'enkelvoud' => 'Term' ),
+            'pt' => array( 'meervoud' => 'Glossario', 'enkelvoud' => 'Termo' ),
+        ),
+        'tool'      => array(
+            'nl' => array( 'meervoud' => 'Tools', 'enkelvoud' => 'Tool' ),
+            'en' => array( 'meervoud' => 'Tools', 'enkelvoud' => 'Tool' ),
+            'pt' => array( 'meervoud' => 'Ferramentas', 'enkelvoud' => 'Ferramenta' ),
+        ),
+    );
+    $type = isset( $namen[ $type ] ) ? $type : 'tool';
+    return $namen[ $type ][ $taal ] ?? $namen[ $type ]['nl'];
+}

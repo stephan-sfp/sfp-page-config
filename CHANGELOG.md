@@ -4,6 +4,23 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.15.0-beta.1] - 2026-10-28
+
+Proefversie op DGA. Het fundament van de site gaat van snippets naar de plugin: kleurrollen, kopfont als variabele, de berichttypes begrippen en tool, en het paginabeheer voor AI. Elk onderdeel staat standaard uit; per site gaat het aan na een nameting, daarna kan het snippet uit.
+
+### Toegevoegd
+- Onderdeel Kleurrollen: zet `--sfp-rol-*` op elke pagina, per rol een kleur uit het Astra-palet. In SFP Beheer, Onderdelen, Kleurrollen, kies je per rol welke paletkleur hij draagt. Bij het aanzetten neemt de plugin de toewijzing van het snippet "Kleuren: rollen van het palet" één keer over, zodat er niets verschuift. Geen domeinnamen en geen hexcodes in de code.
+- Onderdeel Kopfont als variabele: zet `--ux-display-font` (H1) en `--ux-heading-font` (H2 tot H6) uit de Astra-instellingen in de head, zonder script. Vervangt het meetscript van het snippet "Typografie: kopfont als variabele"; kaarten en tools staan daardoor vanaf het eerste beeld in het kopfont.
+- Onderdeel Berichttypes: registreert begrippen en tool met dezelfde sleutels, adressen, namen en menu-iconen als de snippets "Begrippen: berichttype", "Tools: berichttype" (op FL Glossário en Ferramentas) en "Berichttypes: eigen menu-iconen". Adres en namen neemt de plugin bij het aanzetten over van het snippet; zonder snippet gelden de standaard in de taal van de site.
+- Onderdeel Paginabeheer voor AI: de zes abilities sfp-content (versie 1.3.0, letterlijk gelijk aan het snippet "SFP MCP paginabeheer"). Met het onderdeel aan slaat het snippet zichzelf over.
+
+### Gewijzigd
+- Editor, SFP Beheer, deelbeeld en zelftest-pdf lezen de kleurrollen uit de plugin; tot nu toe riepen ze een functie uit het snippet aan en vielen ze zonder snippet terug op Astra.
+- Editor: met Kopfont aan ook `--ux-display-font` en `--ux-heading-font`, zoals op de site.
+
+### Gerepareerd
+- Tools aan zonder snippet registreerde op FL het adres /tools/ in plaats van /ferramentas/. De plugin volgt nu de taal van de site of wat hij van het snippet overnam.
+
 ## [3.14.0] - 2026-10-28
 
 Twee nieuwe bouwstenen die in de editor hetzelfde tonen als op de site: Logostrook en Review. Ze kunnen de losse groepen met de klassen sws-logos en sws-review__kaart op SwS vervangen, waarvan de opmaak alleen aan de voorkant bestond. Daarnaast de kleuren van het reviewblok als standaard in de plugin. Proefversies 3.14.0-beta.1 tot en met beta.5 op SwS: op een conceptpagina gelijk aan de huidige strook en kaart bij 375, 768 en 1280 px (op de twee gekozen wijzigingen na), geen afgekeurde blokken in de editor, geen scriptfouten.

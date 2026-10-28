@@ -983,6 +983,47 @@
 		]);
 	}
 
+	/* ---------- Onderdeel: kleurrollen (sinds 3.15.0) ---------- */
+
+	function detailKleurrollen() {
+		var K = S.kleurrollen || { rollen: [], palet: [], bewaard: false, snippet: false };
+		var keuzes = {};
+		var rijen = K.rollen.map(function (r) {
+			var s = el('select', { id: 'sfpb-rol-' + r.rol });
+			s.appendChild(el('option', { value: '', text: 'Niet gevoerd' }));
+			K.palet.forEach(function (kleur, i) {
+				s.appendChild(el('option', { value: String(i), text: 'Paletkleur ' + (i + 1) + (kleur ? ' (' + kleur + ')' : ' (leeg)') }));
+			});
+			s.value = r.slot === null || r.slot === undefined ? '' : String(r.slot);
+			keuzes[r.rol] = s;
+			var staal = el('span', { class: 'sfpb-staal', 'aria-hidden': 'true' });
+			function kleurStaal() { var k = s.value === '' ? '' : K.palet[Number(s.value)]; staal.style.background = k || 'transparent'; staal.style.borderStyle = k ? 'solid' : 'dashed'; }
+			s.addEventListener('change', kleurStaal);
+			kleurStaal();
+			return el('div', { class: 'sfpb-rij' }, [staal, veld(r.naam, s)]);
+		});
+		var uitleg = K.bewaard
+			? 'Deze toewijzing staat in de plugin. Het snippet "Kleuren: rollen van het palet" is niet meer nodig.'
+			: (K.snippet ? 'Nu nog uit het snippet "Kleuren: rollen van het palet". Zet het onderdeel aan: de plugin neemt deze toewijzing dan over.' : 'Nog geen toewijzing. Kies per rol de kleur uit het palet van Astra.');
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Kleurrollen', 'Welke kleur van het palet in Astra elke merkrol draagt. De kleuren zelf stel je in Astra in; hier kies je alleen welke kleur bij welke rol hoort.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				el('p', { class: 'sfpb-hulp', text: uitleg }),
+				el('div', { class: 'sfpb-stapel' }, rijen),
+				el('p', { class: 'sfpb-hulp', text: 'Een rol die het merk niet voert, staat op Niet gevoerd. De merkbron zegt welke rollen een merk voert. De caches leegt de plugin niet: doe dat na opslaan.' }),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						var w = {};
+						Object.keys(keuzes).forEach(function (rol) { if (keuzes[rol].value !== '') w[rol] = Number(keuzes[rol].value); });
+						bewaarInstellingen(this, 'rollen', { kleurrollen: w });
+					} }),
+					flitsPlek('rollen')
+				])
+			])
+		]);
+	}
+
 	/* ---------- Onderdeel: tools (sinds 3.8.0) ---------- */
 
 	function detailTools() {
@@ -1490,7 +1531,7 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 

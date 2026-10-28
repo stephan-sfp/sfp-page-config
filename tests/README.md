@@ -104,3 +104,11 @@ wp eval-file wp-content/plugins/sfp-page-config/tests/bewijs-wp.php
 ```
 
 Runs inside a real WordPress (a local test install, never a live site). Checks the two blocks Logostrook and Review: registration in the Bouwstenen group, the CSS (no font name, the review star as the only fixed colour, card border like the other cards, no italics or quote marks, the space between label and logos), logos in the chosen order with alt text from the media library and nothing on the site without logos, the default label per language, the review card (stars up to the rating, paragraphs, name and the new Vermelding field, nothing on the site when no review is chosen, the review is gone or the Reviews part is off), keeping Vermelding when an own review is saved through SFP Beheer, the singular for one review, the review block colours and the data for the review choice in the editor. Creates its own attachments and reviews and restores everything at the end.
+
+# Fundament (3.15.0)
+
+```sh
+php tests/fundament.php
+```
+
+Checks the four foundation parts with small WordPress stubs: they are off by default; colour roles take over the snippet mapping once when switched on and print the same declarations under the same id; saving drops unknown roles and slots outside the palette; the font variables come from Astra (H1 falls back to headings, headings to body) and are written the way the browser reports them; post types take over slug, with_front, rest_base and the labels the snippet set, keep that address after the snippet goes, and follow the site language without a snippet (FL: /ferramentas/); menu icons; the page-management class only exists with its part switched on.

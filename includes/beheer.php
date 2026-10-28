@@ -119,10 +119,8 @@ function sfp_page_config_beheer_merk_css() {
             $vars .= '--ast-global-color-' . (int) $i . ':' . $kleur . ';';
         }
     }
-    if ( function_exists( 'sfp_kleurrollen_slots' ) ) {
-        foreach ( (array) sfp_kleurrollen_slots() as $rol => $slot ) {
-            $vars .= '--sfp-rol-' . preg_replace( '/[^a-z0-9-]/', '', (string) $rol ) . ':var(--ast-global-color-' . (int) $slot . ');';
-        }
+    if ( function_exists( 'sfp_page_config_kleurrollen_declaraties' ) ) {
+        $vars .= sfp_page_config_kleurrollen_declaraties();
     }
     $brand = sfp_page_config_get_brand();
     $vars .= '--sfpb-m-knop:' . $brand['cta_bg'] . ';--sfpb-m-knop-hover:' . $brand['cta_hover'] . ';--sfpb-m-knoptekst:' . $brand['cta_text'] . ';'
@@ -395,6 +393,8 @@ function sfp_page_config_beheer_stand() {
             'standaard' => sfp_page_config_tekst_standaard( 'whatsapp_bericht' ),
         ),
         'footer'       => $footer,
+        'kleurrollen'  => function_exists( 'sfp_page_config_kleurrollen_stand' ) ? sfp_page_config_kleurrollen_stand() : array(),
+        'berichttypes' => function_exists( 'sfp_page_config_berichttypes_stand' ) ? sfp_page_config_berichttypes_stand() : array(),
         'onderhoud'    => $onderhoud,
         'cursusdata'   => array(
             'paginas' => sfp_page_config_onderdeel_aan( 'cursusdata' ) ? sfp_page_config_cursusdata_paginas() : array(),
