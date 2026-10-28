@@ -729,10 +729,12 @@ function sfp_page_config_blokken_editor_css() {
  * de site (ontwerpregel 19). Op de site zetten twee bronnen dit in de head,
  * alleen voor bezoekers:
  *   - het koplettertype (includes/kopfont.php);
- *   - de kleurrollen --sfp-rol-* uit het snippet "Kleuren: rollen van het
- *     palet". De editor leest hetzelfde snippet mee (sfp_kleurrollen_slots),
- *     zodat er één bron blijft. Zonder dat snippet vallen de blokken terug
- *     op de Astra-kleuren, zoals op de site.
+ *   - de kleurrollen --sfp-rol-* (includes/fundament.php, onderdeel
+ *     Kleurrollen; tot 3.15.0 alleen uit het snippet "Kleuren: rollen van
+ *     het palet"). De editor gebruikt dezelfde toewijzing, zodat er één bron
+ *     blijft. Zonder toewijzing vallen de blokken terug op Astra.
+ *   - met het onderdeel Kopfont aan ook --ux-display-font en
+ *     --ux-heading-font, zoals op de site (sinds 3.15.0).
  *
  * @since 3.1.0
  * @return string
@@ -750,10 +752,11 @@ function sfp_page_config_editor_merk_css() {
             $css .= '--sfp-kopfont-gewicht:' . $weight . ';';
         }
     }
-    if ( function_exists( 'sfp_kleurrollen_slots' ) ) {
-        foreach ( (array) sfp_kleurrollen_slots() as $rol => $slot ) {
-            $css .= '--sfp-rol-' . sanitize_key( (string) $rol ) . ':var(--ast-global-color-' . (int) $slot . ');';
-        }
+    if ( function_exists( 'sfp_page_config_kleurrollen_declaraties' ) ) {
+        $css .= sfp_page_config_kleurrollen_declaraties();
+    }
+    if ( function_exists( 'sfp_page_config_onderdeel_aan' ) && sfp_page_config_onderdeel_aan( 'kopfont' ) && function_exists( 'sfp_page_config_kopfont_ux_declaraties' ) ) {
+        $css .= sfp_page_config_kopfont_ux_declaraties();
     }
     return '' === $css ? '' : ':root{' . $css . '}';
 }

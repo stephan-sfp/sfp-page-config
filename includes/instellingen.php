@@ -135,6 +135,26 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Lichte tools voor bezoekers (test, generator, rekenaar, checklist en tekstanalyse): een bericht van het type tool met een beschrijving, de motor rekent in de browser. Met pdf, Word, deellink, mail naar jezelf en duimpjes.',
             'detail' => true,
         ),
+        'kleurrollen'  => array(
+            'naam'   => 'Kleurrollen',
+            'uitleg' => 'Welke kleur van het Astra-palet elke merkrol draagt (primair, secundair, links en knoppen en de rest). Bouwstenen en opmaak gebruiken die rollen.',
+            'detail' => true,
+        ),
+        'kopfont'      => array(
+            'naam'   => 'Kopfont als variabele',
+            'uitleg' => 'Het lettertype van H1 en van de andere koppen als variabele, zodat kaarten, reviews en tools het kopfont krijgen.',
+            'detail' => false,
+        ),
+        'berichttypes' => array(
+            'naam'   => 'Berichttypes',
+            'uitleg' => 'De berichttypes begrippen en tools, met hun adres, namen en menu-icoon.',
+            'detail' => false,
+        ),
+        'paginabeheer' => array(
+            'naam'   => 'Paginabeheer voor AI',
+            'uitleg' => 'Pagina\'s, berichten, begrippen en tools lezen, bijwerken en herstellen via de MCP-koppeling, met revisiecontrole.',
+            'detail' => false,
+        ),
         'snippets'   => array(
             'naam'   => 'Snippetbeheer via REST',
             'uitleg' => 'Het serviceaccount claude-api leest, maakt, bewerkt en schakelt PHP-snippets van ASE Pro zonder browser.',
@@ -227,6 +247,12 @@ function sfp_page_config_onderdeel_standaard( $id ) {
             return false;
         case 'zelftest':
             // Verzamelt gegevens van bezoekers: alleen aan als iemand dat kiest.
+            return false;
+        case 'kleurrollen':
+        case 'kopfont':
+        case 'berichttypes':
+        case 'paginabeheer':
+            // Fundament (3.15.0): per site aan na een nameting, daarna gaat het snippet uit.
             return false;
         case 'begrip':
         case 'pijler':
@@ -698,6 +724,14 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                     }
                 }
                 $bewaard[] = $sleutel;
+                break;
+
+            case 'kleurrollen':
+                if ( ! is_array( $ruw ) ) {
+                    break;
+                }
+                $alle['kleurrollen'] = function_exists( 'sfp_page_config_kleurrollen_schoon' ) ? sfp_page_config_kleurrollen_schoon( $ruw ) : array();
+                $bewaard[]           = $sleutel;
                 break;
 
             case 'footer':

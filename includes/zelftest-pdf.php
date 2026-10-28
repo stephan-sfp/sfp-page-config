@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string
  */
 function sfp_zelftest_rol_hex( $rol ) {
-    $slots = function_exists( 'sfp_kleurrollen_slots' ) ? (array) sfp_kleurrollen_slots() : array();
+    $slots = function_exists( 'sfp_page_config_kleurrollen_slots' ) ? (array) sfp_page_config_kleurrollen_slots() : array();
     $slots = (array) apply_filters( 'sfp_page_config_deelbeeld_slots', $slots );
     $hex   = isset( $slots[ $rol ] ) && function_exists( 'sfp_page_config_deelbeeld_slot_hex' ) ? sfp_page_config_deelbeeld_slot_hex( (int) $slots[ $rol ] ) : '';
     // Wit is geen merkkleur; een merk zonder rol wit houdt wit.

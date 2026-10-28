@@ -55,58 +55,17 @@ function sfp_page_config_is_tool( $post ) {
     return $post && 'tool' === $post->post_type;
 }
 
-add_action( 'init', 'sfp_page_config_tool_posttype', 20 );
-
 /**
- * Het berichttype tool, alleen als het onderdeel Tools aan staat en geen
- * snippet het al registreerde. De instellingen zijn gelijk aan het
- * netwerksnippet "Tools: berichttype". Met Tools uit verschijnt er geen
- * nieuw berichttype en geen adres /tools/.
+ * Het berichttype tool. Sinds 3.15.0 registreert includes/fundament.php het
+ * (init 11), met het onderdeel Berichttypes of Tools aan, en alleen als geen
+ * snippet het al deed; adres en namen volgen de site (op FL /ferramentas/).
+ * Deze functie blijft bestaan voor de tests en oude aanroepen.
  */
 function sfp_page_config_tool_posttype() {
-    if ( post_type_exists( 'tool' ) || ! function_exists( 'sfp_page_config_onderdeel_aan' ) || ! sfp_page_config_onderdeel_aan( 'tools' ) ) {
-        return;
+    if ( ! post_type_exists( 'tool' ) && function_exists( 'sfp_page_config_berichttypes_registreer' ) ) {
+        sfp_page_config_berichttypes_registreer();
     }
-    $GLOBALS['sfp_page_config_tool_eigen_type'] = true;
-    register_post_type(
-        'tool',
-        array(
-            'labels'       => array(
-                'name'           => 'Tools',
-                'singular_name'  => 'Tool',
-                'menu_name'      => 'Tools',
-                'name_admin_bar' => 'Tool',
-                'all_items'      => 'Tools',
-                'archives'       => 'Tools',
-            ),
-            'public'       => true,
-            'hierarchical' => false,
-            'has_archive'  => true,
-            'show_in_rest' => true,
-            'rest_base'    => 'tool',
-            'menu_icon'    => 'dashicons-hammer',
-            'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt', 'author', 'custom-fields', 'revisions' ),
-            'rewrite'      => array(
-                'slug'       => 'tools',
-                'with_front' => false,
-            ),
-        )
-    );
-}
-
-add_action( 'init', 'sfp_page_config_tool_adressen', 99 );
-
-/**
- * Registreert de plugin het berichttype zelf, dan horen de adressen
- * (/tools/) daarbij. Verandert dat (onderdeel aan of uit), dan bouwt
- * WordPress de adresregels één keer opnieuw op.
- */
-function sfp_page_config_tool_adressen() {
-    $stand = ! empty( $GLOBALS['sfp_page_config_tool_eigen_type'] ) ? 'eigen' : 'geen';
-    if ( get_option( 'sfp_page_config_tool_adressen', 'geen' ) !== $stand ) {
-        flush_rewrite_rules( false );
-        update_option( 'sfp_page_config_tool_adressen', $stand, false );
-    }
+    $GLOBALS['sfp_page_config_tool_eigen_type'] = ! empty( $GLOBALS['sfp_page_config_eigen_berichttypes'] ) && (bool) preg_grep( '/^tool:/', (array) $GLOBALS['sfp_page_config_eigen_berichttypes'] );
 }
 
 add_action( 'init', 'sfp_page_config_tool_meta', 25 );

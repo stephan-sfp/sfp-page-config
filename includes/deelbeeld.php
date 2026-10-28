@@ -244,7 +244,7 @@ function sfp_page_config_deelbeeld_slot_hex( $slot ) {
  * @return array{primair: string, secundair: string, wit: string}|null
  */
 function sfp_page_config_deelbeeld_kleuren() {
-    $slots = function_exists( 'sfp_kleurrollen_slots' ) ? (array) sfp_kleurrollen_slots() : array();
+    $slots = function_exists( 'sfp_page_config_kleurrollen_slots' ) ? (array) sfp_page_config_kleurrollen_slots() : array();
     /**
      * De paletslots per rol voor het deelbeeld. Voor sites zonder het
      * rollensnippet.

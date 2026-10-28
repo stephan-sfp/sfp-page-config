@@ -215,3 +215,6 @@ body.toplevel_page_sfp-page-config #wpbody-content > .error { margin: 12px 24px;
 .sfpb-tabel th { font-weight: 700; border-top: 0; }
 .sfpb-tabel td.sfpb-fout { color: var(--fout); }
 .sfpb-tag { display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px; background: var(--tint, #f0f0f0); font-size: 12px; }
+
+/* Kleurrollen (3.15.0): een staaltje voor elke rol. */
+.sfpb-staal{display:inline-block;flex:0 0 auto;width:28px;height:28px;border-radius:6px;border:1px solid #c3c4c7;align-self:flex-end;margin-bottom:6px}
