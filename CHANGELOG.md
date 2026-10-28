@@ -4,9 +4,9 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.14.0-beta.3] - 2026-10-28
+## [3.14.0-beta.4] - 2026-10-28
 
-Proefversie voor SwS (beta.2: de Logostrook haalt in de editor alle logo's in één keer op; in beta.1 bleef bij zeven logo's een deel op laden staan; beta.3: geen schaduw van Astra meer achter een logo). Twee nieuwe bouwstenen die in de editor hetzelfde tonen als op de site: Logostrook en Review. Ze vervangen de losse groepen met de klassen sws-logos en sws-review__kaart op SwS, waarvan de opmaak alleen aan de voorkant bestond. Daarnaast de kleuren van het reviewblok als standaard in de plugin.
+Proefversie voor SwS (beta.2: de Logostrook haalt in de editor alle logo's in één keer op; in beta.1 bleef bij zeven logo's een deel op laden staan; beta.3: geen schaduw van Astra meer achter een logo; beta.4: de logo's laden als origineel bestand, zoals nu op SwS, want een kleinere variant kwam zonder transparantie binnen). Twee nieuwe bouwstenen die in de editor hetzelfde tonen als op de site: Logostrook en Review. Ze vervangen de losse groepen met de klassen sws-logos en sws-review__kaart op SwS, waarvan de opmaak alleen aan de voorkant bestond. Daarnaast de kleuren van het reviewblok als standaard in de plugin.
 
 ### Toegevoegd
 - Blok Logostrook: label en logo's van klanten op een rij. De logo's kies je in de strook uit de mediabibliotheek (volgorde en alt-tekst daar), het label typ je in de strook; leeg toont de standaardtekst in de taal van de site (Teksten, Logostrook). Zonder logo's toont de site niets. Tussen label en logo's 44 px, telefoon 36 px.
