@@ -4,18 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.14.0-beta.5] - 2026-10-28
+## [3.14.0] - 2026-10-28
 
-Proefversie voor SwS (beta.2: de Logostrook haalt in de editor alle logo's in één keer op; in beta.1 bleef bij zeven logo's een deel op laden staan; beta.3: geen schaduw van Astra meer achter een logo; beta.5: terug naar de kleinere varianten van beta.3, want het vlak in beta.3 was een bewaarde versie van de voorbeeldpagina, geen kapotte transparantie). Twee nieuwe bouwstenen die in de editor hetzelfde tonen als op de site: Logostrook en Review. Ze vervangen de losse groepen met de klassen sws-logos en sws-review__kaart op SwS, waarvan de opmaak alleen aan de voorkant bestond. Daarnaast de kleuren van het reviewblok als standaard in de plugin.
+Twee nieuwe bouwstenen die in de editor hetzelfde tonen als op de site: Logostrook en Review. Ze kunnen de losse groepen met de klassen sws-logos en sws-review__kaart op SwS vervangen, waarvan de opmaak alleen aan de voorkant bestond. Daarnaast de kleuren van het reviewblok als standaard in de plugin. Proefversies 3.14.0-beta.1 tot en met beta.5 op SwS: op een conceptpagina gelijk aan de huidige strook en kaart bij 375, 768 en 1280 px (op de twee gekozen wijzigingen na), geen afgekeurde blokken in de editor, geen scriptfouten.
 
 ### Toegevoegd
-- Blok Logostrook: label en logo's van klanten op een rij. De logo's kies je in de strook uit de mediabibliotheek (volgorde en alt-tekst daar), het label typ je in de strook; leeg toont de standaardtekst in de taal van de site (Teksten, Logostrook). Zonder logo's toont de site niets. Tussen label en logo's 44 px, telefoon 36 px.
+- Blok Logostrook: label en logo's van klanten op een rij. De logo's kies je in de strook uit de mediabibliotheek (volgorde en alt-tekst daar), het label typ je in de strook; leeg toont de standaardtekst in de taal van de site (Teksten, Logostrook). Zonder logo's toont de site niets. Tussen label en logo's 44 px, telefoon 36 px (op SwS nu 32 px).
 - Blok Review: één eigen review uit SFP Beheer als kaart met sterren, tekst, naam en vermelding; geen cursief en geen aanhalingstekens. Kiezen in het blok of in het blokpaneel. Geen review gekozen, review weg of onderdeel Reviews uit: de editor zegt het, de site toont niets.
 - Eigen reviews: veld Vermelding, een korte regel onder de naam (bijvoorbeeld dat de review vertaald is). Ook zichtbaar in het reviewblok, klein onder de tekst.
 
 ### Gewijzigd
 - Reviewblok: rand van de kaart en lege sterren standaard in de primaire kleur met transparantie (`color-mix(in srgb, var(--sfp-rol-primair, currentColor) 20%, transparent)`), op één plek in de plugin. Was de tint van de site.
-- Review-kaart: gevulde sterren in de reviewsterkleur van de merkbron, rand zoals de andere kaarten.
+- Review-kaart: gevulde sterren in de reviewsterkleur van de merkbron (Google-geel), rand zoals de andere kaarten.
 
 ## [3.13.3] - 2026-10-27
 
