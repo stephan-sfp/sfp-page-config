@@ -105,6 +105,9 @@ function get_post_meta( $id, $key = '', $single = false ) {
 function wp_json_encode( $v, $flags = 0 ) {
     return json_encode( $v, $flags );
 }
+function get_permalink( $id ) {
+    return 'https://voorbeeld.test/pagina-' . (int) $id . '/';
+}
 function shortcode_atts( $pairs, $atts ) {
     $atts = (array) $atts;
     $out  = array();
@@ -268,6 +271,14 @@ same( '', sfp_page_config_wachtlijst_blokken( '<p>b</p>', $zonder ), 'Met data: 
 $GLOBALS['pagina'] = 15;
 same( '<p>b</p>', sfp_page_config_wachtlijst_blokken( '<p>b</p>', $zonder ), 'Geen training: klassen doen niets' );
 same( '<p>c</p>', sfp_page_config_wachtlijst_blokken( '<p>c</p>', array( 'attrs' => array( 'className' => 'sfp-met-data-x' ) ) ), 'Alleen de exacte klasse telt' );
+
+/* ---------- Paginaadres in verborgen velden ---------- */
+
+$GLOBALS['pagina'] = 10;
+$vorm = '<input name="x-lead-source-url" value="{embed_post_url}" type="hidden"><input name="y" value="{embed_post_permalink}" type="hidden">';
+$uit  = sfp_page_config_formulier_paginaadres( $vorm, array( 'blockName' => 'srfm/form' ) );
+same( 2, substr_count( $uit, 'value="https://voorbeeld.test/pagina-10/"' ), 'Paginaadres in beide codewoorden' );
+same( $vorm, sfp_page_config_formulier_paginaadres( $vorm, array( 'blockName' => 'core/paragraph' ) ), 'Ander blok blijft' );
 
 /* ---------- Teksten ---------- */
 

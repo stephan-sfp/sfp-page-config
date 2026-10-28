@@ -214,3 +214,41 @@ function sfp_page_config_wachtlijst_blokken( $html, $block ) {
     }
     return $html;
 }
+
+/* =========================================================================
+ * Paginaadres in verborgen velden van SureForms
+ * ====================================================================== */
+
+add_filter( 'render_block', 'sfp_page_config_formulier_paginaadres', 10, 2 );
+
+/**
+ * SureForms vult {embed_post_url} (en het nooit bestaande
+ * {embed_post_permalink}) in een verborgen veld niet in: de inzending kreeg
+ * de code letterlijk mee (gemeten op DGA, SureForms 2.13.0, 28-10-2026). De
+ * plugin zet het adres van de getoonde pagina erin, zodat lead_source_url
+ * in het CRM klopt.
+ *
+ * @param  string $html  Getekend blok.
+ * @param  array  $block Blok.
+ * @return string
+ */
+function sfp_page_config_formulier_paginaadres( $html, $block ) {
+    if ( empty( $block['blockName'] ) || 'srfm/form' !== $block['blockName'] ) {
+        return $html;
+    }
+    if ( false === strpos( $html, '{embed_post_url}' ) && false === strpos( $html, '{embed_post_permalink}' ) ) {
+        return $html;
+    }
+    if ( is_admin() || ! is_singular() ) {
+        return $html;
+    }
+    $adres = get_permalink( get_queried_object_id() );
+    if ( ! $adres ) {
+        return $html;
+    }
+    return str_replace(
+        array( 'value="{embed_post_url}"', 'value="{embed_post_permalink}"' ),
+        'value="' . esc_attr( $adres ) . '"',
+        $html
+    );
+}
