@@ -979,10 +979,18 @@
 	blok( 'sfp/logostrook', function ( props ) {
 		var a = props.attributes;
 		var ids = ( a.logos || [] ).map( function ( id ) { return parseInt( id, 10 ) || 0; } ).filter( Boolean );
-		var media = wp.data.useSelect( function ( select ) {
+		// Eén opvraging voor alle logo's samen, zoals het galerijblok van
+		// WordPress; per logo apart bleef een deel op laden staan (SwS, 7 logo's).
+		var opgehaald = wp.data.useSelect( function ( select ) {
 			var kern = select( 'core' );
-			return ids.map( function ( id ) { return kern && kern.getMedia ? kern.getMedia( id, { context: 'view' } ) : null; } );
+			if ( ! ids.length || ! kern || ! kern.getEntityRecords ) {
+				return null;
+			}
+			return kern.getEntityRecords( 'postType', 'attachment', { include: ids.join( ',' ), per_page: ids.length, context: 'view' } );
 		}, [ ids.join( ',' ) ] );
+		var media = ids.map( function ( id ) {
+			return ( opgehaald || [] ).filter( function ( m ) { return m && m.id === id; } )[ 0 ] || null;
+		} );
 		var blockProps = useBlockProps( { className: 'sfp-logostrook' } );
 		var Upload = be.MediaUpload;
 		var UploadCheck = be.MediaUploadCheck || Fragment;
@@ -1008,7 +1016,8 @@
 			ids.map( function ( id, i ) {
 				var m = media[ i ];
 				if ( ! m ) {
-					return el( 'li', { key: id }, el( c.Spinner ) );
+					// Nog aan het laden, of niet meer in de mediabibliotheek: dan toont de site hem niet.
+					return el( 'li', { key: id }, null === opgehaald ? el( c.Spinner ) : el( 'span', { className: 'components-base-control__help' }, 'Logo niet meer in de mediabibliotheek' ) );
 				}
 				var maat = m.media_details && m.media_details.sizes && m.media_details.sizes.medium ? m.media_details.sizes.medium.source_url : m.source_url;
 				return el( 'li', { key: id }, el( 'img', { className: 'sfp-logostrook__logo', src: maat, alt: m.alt_text || '' } ) );
