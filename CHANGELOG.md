@@ -4,9 +4,9 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.16.0-beta.1] - 2026-10-28
+## [3.16.0] - 2026-10-28
 
-Vijf onderdelen tonen in de editor hetzelfde als op de site: de tool, het begrip (Definitie), In a talk, de uitklap en de tabs. Op de site verandert alleen de tabbalk. Wat opgeslagen is, blijft werken; geen pagina hoeft opnieuw opgeslagen.
+Vijf onderdelen tonen in de editor hetzelfde als op de site: de tool, het begrip (Definitie), In a talk, de uitklap en de tabs. Op de site verandert alleen de tabbalk. Wat opgeslagen is, blijft werken; geen pagina hoeft opnieuw opgeslagen. Proefversie 3.16.0-beta.1 op DPS (tool) en SwS (begrip, tabs, uitklap): voorkant uitgelogd bij 375, 768 en 1280 px gelijk op de tabbalk na, geen scriptfouten. Lokaal in WordPress 7.1.4: 49 voorbeeldtools door alle schermen, klikken zonder typen laat elke beschrijving gelijk, typen en opslaan op alle 49 door de controle van de site, en in 102 pagina's met eigen blokken van de acht sites geen afgekeurde blokken.
 
 Terugdraaien: versie 3.15.0 terugzetten. De editor is dan weer zoals voorheen, de tabbalk op de site ook. Er is niets omgezet in de inhoud of de toolbeschrijvingen.
 
