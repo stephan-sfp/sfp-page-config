@@ -4,9 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.15.0-beta.1] - 2026-10-28
+## [3.15.0] - 2026-10-28
 
-Proefversie op DGA. Het fundament van de site gaat van snippets naar de plugin: kleurrollen, kopfont als variabele, de berichttypes begrippen en tool, en het paginabeheer voor AI. Elk onderdeel staat standaard uit; per site gaat het aan na een nameting, daarna kan het snippet uit.
+Het fundament van de site gaat van snippets naar de plugin: kleurrollen, kopfont als variabele, de berichttypes begrippen en tool, en het paginabeheer voor AI. Elk onderdeel staat standaard uit; per site gaat het aan na een nameting, daarna kan het snippet uit. Proefversie 3.15.0-beta.1 op DGA: vier onderdelen aan, zes snippets uit, op zes paginasoorten uitgelogd dezelfde kleurrollen, fonts, berichttypes, adressen en abilities als ervoor, geen scriptfouten.
+
+Terugdraaien per site: het onderdeel uitzetten in SFP Beheer, Onderdelen, en het snippet weer aanzetten. De plugin terugzetten naar 3.14.0 zonder de snippets weer aan te zetten haalt kleurrollen, fonts en berichttypes weg.
 
 ### Toegevoegd
 - Onderdeel Kleurrollen: zet `--sfp-rol-*` op elke pagina, per rol een kleur uit het Astra-palet. In SFP Beheer, Onderdelen, Kleurrollen, kies je per rol welke paletkleur hij draagt. Bij het aanzetten neemt de plugin de toewijzing van het snippet "Kleuren: rollen van het palet" één keer over, zodat er niets verschuift. Geen domeinnamen en geen hexcodes in de code.
