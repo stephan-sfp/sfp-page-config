@@ -16,7 +16,9 @@
 	--sfp-review-primary:       var(--sfp-rol-primair, currentColor);
 	--sfp-review-primary-light: var(--sfp-rol-tint-1, color-mix(in srgb, currentColor 20%, transparent));
 	--sfp-review-bg:            var(--sfp-rol-wit, Canvas);
-	--sfp-review-border:        var(--sfp-rol-tint-2, color-mix(in srgb, currentColor 12%, transparent));
+	/* Rand en lege ster: de primaire kleur met transparantie (besluit Stephan
+	   na een screenshot op DGA; sinds 3.14.0 de standaard, op deze ene plek). */
+	--sfp-review-border:        color-mix(in srgb, var(--sfp-rol-primair, currentColor) 20%, transparent);
 	--sfp-review-shadow:        0 2px 8px color-mix(in srgb, var(--sfp-review-primary) 8%, transparent);
 	--sfp-review-text:          var(--sfp-rol-body, currentColor);
 	--sfp-review-meta:          var(--sfp-rol-body, currentColor);
@@ -24,7 +26,7 @@
 	--sfp-review-more:          var(--sfp-review-meta);
 	--sfp-review-more-hover:    var(--sfp-review-primary);
 	--sfp-review-star-fill:     #FBBC04;
-	--sfp-review-star-empty:    var(--sfp-rol-tint-2, color-mix(in srgb, currentColor 20%, transparent));
+	--sfp-review-star-empty:    color-mix(in srgb, var(--sfp-rol-primair, currentColor) 20%, transparent);
 	--sfp-review-font-size:     16px;
 	--sfp-review-card-height:   auto;
 	--sfp-slider-cols:          1;
@@ -219,6 +221,17 @@
 	background:  none !important;
 	border:      none !important;
 	box-shadow:  none !important;
+}
+
+/* Vermelding van een eigen review (sinds 3.14.0), klein onder de tekst. */
+.sfp-reviews .sfp-review .sfp-review__vermelding {
+	all:         unset;
+	display:     block !important;
+	margin-top:  8px !important;
+	font-size:   13px !important;
+	line-height: 1.45 !important;
+	color:       var(--sfp-review-meta) !important;
+	flex-shrink: 0;
 }
 
 .sfp-reviews .sfp-review.sfp-review--expanded                { height: auto !important; }

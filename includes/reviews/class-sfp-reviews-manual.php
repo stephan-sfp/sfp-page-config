@@ -8,6 +8,9 @@
  * is te bewerken. Een review van voor 3.0.0 houdt zijn tekst in `time` tot
  * hij een datum krijgt.
  *
+ * Nieuw in 3.14.0: `vermelding`, een korte regel onder de naam (bijvoorbeeld
+ * dat de review vertaald is). Leeg: geen vermelding.
+ *
  * @package SFP_Page_Config
  * @since   3.0.0
  */
@@ -48,6 +51,7 @@ class SFP_Reviews_Manual {
 			'time'   => sanitize_text_field( (string) ( $review['time'] ?? '' ) ),
 			'datum'  => $datum,
 			'text'   => sanitize_textarea_field( (string) ( $review['text'] ?? '' ) ),
+			'vermelding' => sanitize_text_field( (string) ( $review['vermelding'] ?? '' ) ),
 			'photo'  => '',
 		);
 	}

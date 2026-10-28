@@ -970,6 +970,115 @@
 		);
 	} );
 
+	/* =====================================================================
+	 * Logostrook en Review (sinds 3.14.0): in de editor gelijk aan de site
+	 * ================================================================== */
+
+	var bewijs = window.sfpBewijs || { aan: false, reviews: [], beheer: '', label: '' };
+
+	blok( 'sfp/logostrook', function ( props ) {
+		var a = props.attributes;
+		var ids = ( a.logos || [] ).map( function ( id ) { return parseInt( id, 10 ) || 0; } ).filter( Boolean );
+		var media = wp.data.useSelect( function ( select ) {
+			var kern = select( 'core' );
+			return ids.map( function ( id ) { return kern && kern.getMedia ? kern.getMedia( id, { context: 'view' } ) : null; } );
+		}, [ ids.join( ',' ) ] );
+		var blockProps = useBlockProps( { className: 'sfp-logostrook' } );
+		var Upload = be.MediaUpload;
+		var UploadCheck = be.MediaUploadCheck || Fragment;
+
+		function kiezer( tekst, variant ) {
+			return el( UploadCheck, null, el( Upload, {
+				gallery: true,
+				multiple: true,
+				allowedTypes: [ 'image' ],
+				value: ids,
+				onSelect: function ( gekozen ) {
+					props.setAttributes( { logos: ( gekozen || [] ).map( function ( m ) { return m.id; } ).filter( Boolean ) } );
+				},
+				render: function ( o ) {
+					return el( variant === 'werkbalk' ? c.ToolbarButton : c.Button, variant === 'werkbalk'
+						? { icon: 'images-alt2', label: tekst, onClick: o.open }
+						: { variant: 'primary', onClick: o.open, __next40pxDefaultSize: true }, variant === 'werkbalk' ? null : tekst );
+				},
+			} ) );
+		}
+
+		var logos = ids.length ? el( 'ul', { className: 'sfp-logostrook__logos', role: 'list' },
+			ids.map( function ( id, i ) {
+				var m = media[ i ];
+				if ( ! m ) {
+					return el( 'li', { key: id }, el( c.Spinner ) );
+				}
+				var maat = m.media_details && m.media_details.sizes && m.media_details.sizes.medium ? m.media_details.sizes.medium.source_url : m.source_url;
+				return el( 'li', { key: id }, el( 'img', { className: 'sfp-logostrook__logo', src: maat, alt: m.alt_text || '' } ) );
+			} )
+		) : el( 'div', { className: 'sfp-logostrook__leeg' }, el( c.Placeholder, {
+			icon: 'images-alt2',
+			label: 'Logostrook',
+			instructions: 'Kies de logo\'s uit de mediabibliotheek. Zonder logo\'s toont de site niets.',
+		}, kiezer( 'Logo\'s kiezen' ) ) );
+
+		return el( Fragment, null,
+			ids.length ? el( be.BlockControls, null, el( c.ToolbarGroup, null, kiezer( 'Logo\'s wijzigen', 'werkbalk' ) ) ) : null,
+			paneel( 'Logostrook', [
+				uitleg( 'Volgorde en alt-tekst kies je in de mediabibliotheek; een leeg label toont de standaardtekst.' ),
+				ids.length ? el( 'div', { key: 'wijzig' }, kiezer( 'Logo\'s wijzigen' ) ) : null,
+			] ),
+			el( 'div', blockProps,
+				el( RichText, {
+					tagName: 'p',
+					className: 'sfp-logostrook__label',
+					value: a.label || '',
+					allowedFormats: [],
+					placeholder: bewijs.label || 'Label',
+					onChange: function ( v ) { props.setAttributes( { label: v } ); },
+				} ),
+				logos
+			)
+		);
+	} );
+
+	blok( 'sfp/review', function ( props ) {
+		var a = props.attributes;
+		var opties = [ { value: '', label: 'Kies een review' } ].concat( ( bewijs.reviews || [] ).map( function ( r ) {
+			return { value: r.id, label: r.author + ( r.begin ? ': ' + r.begin : '' ) };
+		} ) );
+		var gekozen = ( bewijs.reviews || [] ).some( function ( r ) { return r.id === a.review; } );
+		var zet = function ( v ) { props.setAttributes( { review: v } ); };
+		var beheer = bewijs.beheer ? el( c.ExternalLink, { key: 'beheer', href: bewijs.beheer }, 'Reviews beheren in SFP Beheer' ) : null;
+		var blockProps = useBlockProps();
+		var inhoud;
+
+		if ( ! bewijs.aan ) {
+			inhoud = el( 'div', blockProps, el( 'div', { className: 'sfp-gegeven-leeg' }, 'Het onderdeel Reviews staat uit (SFP Beheer, Onderdelen). Bezoekers zien hier niets.' ) );
+		} else if ( ! a.review || ! gekozen ) {
+			inhoud = el( 'div', blockProps, el( c.Placeholder, {
+				icon: 'format-quote',
+				label: 'Review',
+				instructions: a.review ? 'Deze review bestaat niet meer in SFP Beheer. Kies een andere; bezoekers zien hier niets.'
+					: ( opties.length > 1 ? 'Kies een eigen review uit SFP Beheer. Bezoekers zien pas iets als er een review gekozen is.' : 'Er zijn nog geen eigen reviews. Voeg ze toe in SFP Beheer, Reviews.' ),
+			},
+				opties.length > 1 ? keuze( 'Review', gekozen ? a.review : '', opties, zet ) : null,
+				beheer
+			) );
+		} else {
+			inhoud = el( 'div', blockProps, ServerSideRender ? el( ServerSideRender, {
+				block: 'sfp/review',
+				attributes: a,
+				EmptyResponsePlaceholder: function () { return el( 'div', { className: 'sfp-gegeven-leeg' }, 'Deze review heeft geen tekst. Bezoekers zien hier niets.' ); },
+			} ) : null );
+		}
+
+		return el( Fragment, null,
+			paneel( 'Review', [
+				keuze( 'Review', gekozen ? a.review : '', opties, zet ),
+				beheer,
+			] ),
+			inhoud
+		);
+	} );
+
 	/*
 	 * Rustig ritme in artikelen: tussen twee UX-elementen horen minstens
 	 * drie alinea's. Staan er twee te dicht op elkaar, dan verschijnt een

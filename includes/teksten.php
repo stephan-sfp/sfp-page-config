@@ -272,6 +272,15 @@ function sfp_page_config_teksten_register() {
             'pt'    => '%d de 5 estrelas',
         ),
 
+        // Logostrook (sinds 3.14.0).
+        'logostrook_label'   => array(
+            'groep' => 'Logostrook',
+            'label' => 'Label boven de logo\'s, als het blok geen eigen label heeft',
+            'nl'    => 'Vertrouwd door teams van',
+            'en'    => 'Trusted by teams at',
+            'pt'    => 'Com a confiança de equipes de',
+        ),
+
         // Tooltips.
         'tooltip_toon'       => array(
             'groep' => 'Tooltips',

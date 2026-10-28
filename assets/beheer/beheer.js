@@ -884,15 +884,17 @@
 				ster.value = String(b.rating || 5);
 				var datum = el('input', { type: 'date', value: b.datum || '' });
 				var rtekst = el('textarea', { value: b.text || '' });
+				var vermelding = tekstInvoer(b.vermelding || '', 'bijvoorbeeld: Vertaald uit het Nederlands.');
 				formulier = el('div', { class: 'sfpb-groepvak' }, [
 					el('h2', { text: b.id ? 'Review bewerken' : 'Review toevoegen' }),
 					veld('Naam', naam, null, 'sfpb-rv-naam'),
 					veld('Sterren', ster, null, 'sfpb-rv-ster'),
 					veld('Datum van de review', datum, b.id && !b.datum && b.time ? 'Nu staat er: ' + b.time + '. Met een datum blijft de ouderdom vanzelf kloppen.' : 'De site toont hoe lang geleden dat is.', 'sfpb-rv-datum'),
 					veld('Tekst', rtekst, null, 'sfpb-rv-tekst'),
+					veld('Vermelding', vermelding, 'Komt klein onder de naam, bijvoorbeeld dat de review vertaald is. Leeg: geen vermelding.', 'sfpb-rv-vermelding'),
 					el('div', { class: 'sfpb-rij' }, [
 						el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: b.id ? 'Opslaan' : 'Toevoegen', klik: function () {
-							doe(this, 'rv-eigen', api('/reviews/eigen', 'POST', { id: b.id || '', author: naam.value, rating: ster.value, datum: datum.value, text: rtekst.value, time: b.time || '' }), null, function () { ui.rvBewerk = null; });
+							doe(this, 'rv-eigen', api('/reviews/eigen', 'POST', { id: b.id || '', author: naam.value, rating: ster.value, datum: datum.value, text: rtekst.value, vermelding: vermelding.value, time: b.time || '' }), null, function () { ui.rvBewerk = null; });
 						} }),
 						el('button', { class: 'sfpb-knop', type: 'button', text: 'Annuleren', klik: function () { ui.rvBewerk = null; teken(); } }),
 						b.id ? el('button', { class: 'sfpb-knop sfpb-weg', type: 'button', text: 'Weghalen', klik: function () {
