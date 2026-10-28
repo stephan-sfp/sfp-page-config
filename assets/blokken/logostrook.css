@@ -1,0 +1,25 @@
+/*
+ * Logostrook (sinds 3.14.0): label in de kopstijl, logo's van klanten op
+ * een rij, gecentreerd. Maten uit de strook op SwS (meting 28-10-2026);
+ * tussen label en logo's 44 px (telefoon 36 px), iets meer dan op SwS
+ * (besluit Stephan 28-10-2026).
+ *
+ * Geen schaduw of hoek op een logo: Astra geeft losse afbeeldingen in een
+ * artikel een schaduw (.ast-article-single img:not(figure img)).
+ *
+ * Kleuren en fonts alleen uit de rolvariabelen; geen merkkleur of fontnaam.
+ */
+:root .sfp-logostrook{margin:0}
+:root .sfp-logostrook__label{margin:0;text-align:center;font-family:var(--sfp-b-kop);font-weight:900;font-size:16px;line-height:1.25;text-transform:uppercase;color:var(--sfp-b-primair)}
+:root .sfp-logostrook__logos{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:32px 56px;margin:0;padding:0;list-style:none}
+:root .sfp-logostrook__label + .sfp-logostrook__logos{margin-top:44px}
+:root .sfp-logostrook__logos > li{margin:0;padding:0;list-style:none}
+:root .sfp-logostrook__logos > li::before{content:none}
+:root .sfp-logostrook__logo{display:block;height:40px;width:auto;max-width:150px;object-fit:contain;margin:0;box-shadow:none;border-radius:0;background:none}
+@media (max-width:600px){
+:root .sfp-logostrook__logos{gap:28px 32px}
+:root .sfp-logostrook__label + .sfp-logostrook__logos{margin-top:36px}
+:root .sfp-logostrook__logo{height:30px;max-width:120px}
+}
+/* Editor: lege strook en het laden van een logo. */
+.sfp-logostrook__leeg{margin-top:16px}

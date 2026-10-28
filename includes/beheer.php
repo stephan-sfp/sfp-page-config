@@ -707,6 +707,8 @@ function sfp_page_config_beheer_rest() {
                 'datum'  => isset( $gegevens['datum'] ) ? $gegevens['datum'] : '',
                 'text'   => isset( $gegevens['text'] ) ? $gegevens['text'] : '',
                 'time'   => isset( $gegevens['time'] ) ? $gegevens['time'] : '',
+                // Sinds 3.14.0.
+                'vermelding' => isset( $gegevens['vermelding'] ) ? $gegevens['vermelding'] : '',
             );
             if ( '' === trim( (string) $review['author'] ) || '' === trim( (string) $review['text'] ) ) {
                 return new WP_Error( 'sfp_reviews_onvolledig', 'Vul een naam en een tekst in.', array( 'status' => 400 ) );

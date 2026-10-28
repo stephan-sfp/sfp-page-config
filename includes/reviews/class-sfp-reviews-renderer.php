@@ -307,7 +307,7 @@ class SFP_Reviews_Renderer {
 				<div class="sfp-review__body">
 					<p class="sfp-review__text">%s</p>
 					<button class="sfp-review__more" aria-expanded="false">%s</button>
-				</div>
+				</div>%s
 			</div>',
 			$photo,
 			esc_html( $r['author'] ),
@@ -315,7 +315,9 @@ class SFP_Reviews_Renderer {
 			esc_attr( $this->t( 'reviews_sterren', (int) $r['rating'] ) ),
 			$stars,
 			esc_html( $r['text'] ),
-			esc_html( $this->t( 'reviews_lees_verder' ) )
+			esc_html( $this->t( 'reviews_lees_verder' ) ),
+			// Sinds 3.14.0: de vermelding van een eigen review, onder de tekst.
+			! empty( $r['vermelding'] ) ? '<p class="sfp-review__vermelding">' . esc_html( $r['vermelding'] ) . '</p>' : ''
 		);
 	}
 
