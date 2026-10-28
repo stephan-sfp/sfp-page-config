@@ -1,0 +1,37 @@
+/* SFP Page Config - De tool in het canvas van de editor (sinds 3.16.0). Alleen in de editor. */
+.sfp-tc-plek{box-sizing:border-box;width:calc(100% - 32px);max-width:760px;margin:16px auto 24px}
+/* De melding "hier komt de tool" in Komt vanzelf is overbodig nu de tool er zelf staat. */
+.sfp-met-tool-canvas #sfp-vanzelf-kop .sfp-tool__noscript{display:none}
+.sfp-tc{border:1px dashed #c3c4c7;border-radius:8px;padding:12px 16px 18px;display:grid;gap:14px}
+.sfp-tc .sfp-vanzelf__label{display:block;margin:0;font:600 11px/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#757575}
+.sfp-tc--leeg p{margin:0;font:400 13px/1.5 system-ui,sans-serif;color:#1e1e1e}
+.sfp-tc-balk{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.sfp-tc-nav{display:flex;gap:6px;align-items:center}
+.sfp-tc-nav button,.sfp-tc-nav select,.sfp-tc-kies select{font:400 13px/1.3 system-ui,sans-serif;color:#1e1e1e;background:#fff;border:1px solid #949494;border-radius:2px;min-height:30px}
+.sfp-tc-nav button{width:30px;cursor:pointer;font-size:18px;padding:0}
+.sfp-tc-nav button:disabled{opacity:.4;cursor:default}
+.sfp-tc-nav select{max-width:260px;padding:0 24px 0 8px}
+/* Op de eigen pagina van een tool staat de tool zonder kader, zoals op de site. */
+.sfp-tc-tool{margin:0}
+.sfp-tc-tool .sfp-tool__app{border:0;border-radius:0;padding:0;background:none}
+.sfp-tc-tool .sfp-tool__stap{cursor:pointer}
+.sfp-tc-tool .sfp-tool__stap.is-actief{cursor:default}
+/* Tekst om te typen: rustig zichtbaar, duidelijk bij aanwijzen en typen. */
+.sfp-tc-bewerk{outline:1px dashed transparent;outline-offset:2px;border-radius:2px;cursor:text;min-width:2ch;display:inline-block;white-space:pre-wrap}
+div.sfp-tc-bewerk,p.sfp-tc-bewerk,h2.sfp-tc-bewerk,h3.sfp-tc-bewerk{display:block}
+.sfp-tc-bewerk:hover{outline-color:#8c8f94}
+.sfp-tc-bewerk:focus{outline:2px solid var(--wp-admin-theme-color,#3858e9);background:rgba(56,88,233,.04)}
+.sfp-tc-bewerk.is-leeg:empty::before{content:attr(data-leeg);color:#949494}
+.sfp-tc-stuk{display:grid;gap:4px}
+.sfp-tc-label,.sfp-tc-soort,.sfp-tc-kies span{font:600 11px/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#757575}
+.sfp-tc-sub{display:block;font-size:.9em;opacity:.8;margin-top:2px}
+.sfp-tc-lijst{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.sfp-tc-lijst li .sfp-tc-label{display:block}
+.sfp-tc-blok,.sfp-tc-veldgroep{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--tool-lijn,#e0e0e0)}
+.sfp-tc-regel{display:grid;gap:4px;padding-left:12px;border-left:2px solid var(--sfp-b-tint2,#ddd)}
+.sfp-tc-uitslag{display:grid;gap:10px}
+.sfp-tc-kies{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sfp-tc-kies select{max-width:100%;padding:0 24px 0 8px}
+.sfp-tc-veld{display:block;min-height:3em}
+.sfp-tc-uitleg{margin:0;font:400 13px/1.5 system-ui,sans-serif;color:#757575}
+.sfp-tc .sfp-tool__optie{cursor:default}
