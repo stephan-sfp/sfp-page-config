@@ -55,11 +55,9 @@ function sfp_page_config_inject_course_data() {
      *    Used by the dropdown populator script.
      * --------------------------------------------------------------- */
 
-    $json = get_post_meta( $post_id, 'sfp_cursusdata', true );
-    $data = $json ? json_decode( $json, true ) : array();
-    if ( json_last_error() !== JSON_ERROR_NONE ) {
-        $data = array();
-    }
+    // Alleen groepen waarvan de eerste dag vandaag of later is, genummerd
+    // zoals [cursus_datum] ze toont (includes/wachtlijst.php).
+    $data = sfp_page_config_cursusdata_toekomst( $post_id );
 
     $startmomenten = array();
 

@@ -1369,6 +1369,20 @@
 		var start = el('input', { type: 'time', value: c.start, 'aria-label': 'Standaard begintijd' });
 		var eind = el('input', { type: 'time', value: c.eind, 'aria-label': 'Standaard eindtijd' });
 		var mail = tekstInvoer(S.onderhoud.cron_email, S.onderhoud.beheer_email, 'email');
+		// Wachtlijst: zonder toekomstige groep wordt het inschrijfformulier het wachtlijstformulier.
+		function formKeuze(waarde) {
+			var s = el('select');
+			s.appendChild(el('option', { value: '', text: 'Geen' }));
+			(c.formulieren || []).forEach(function (f) { s.appendChild(el('option', { value: String(f.id), text: f.titel + ' (' + f.id + ')' })); });
+			if (waarde && !(c.formulieren || []).some(function (f) { return f.id === Number(waarde); })) {
+				s.appendChild(el('option', { value: String(waarde), text: 'Dit formulier is niet meer gepubliceerd' }));
+			}
+			s.value = waarde ? String(waarde) : '';
+			if (s.selectedIndex < 0) s.selectedIndex = 0;
+			return s;
+		}
+		var inschrijf = formKeuze(c.inschrijf_formulier);
+		var wachtlijst = formKeuze(c.wachtlijst_formulier);
 		return el('section', { class: 'sfpb-scherm' }, [
 			kop('Cursusdata', 'Startmomenten van trainingen. Ze staan op de trainingspagina en in de keuzelijst van het aanmeldformulier.'),
 			!onderdeel('cursusdata').aan ? el('div', { class: 'sfpb-weet' }, [el('span', { text: 'Het onderdeel Cursusdata staat uit. Zet het aan bij Onderdelen om startmomenten te tonen.' })]) : null,
@@ -1377,9 +1391,11 @@
 				el('h2', { text: 'Voor alle trainingen' }),
 				el('div', { class: 'sfpb-veld' }, [el('span', { class: 'sfpb-label', text: 'Lestijd als een startmoment geen eigen tijd heeft' }), el('div', { class: 'sfpb-rij' }, [start, 'tot', eind]), el('span', { class: 'sfpb-hulp', text: 'Leeg: de site toont dan geen lestijd.' })]),
 				veld('Melding over ontbrekende of verlopen data gaat naar', mail, 'Leeg: het e-mailadres van de sitebeheerder.', 'sfpb-cd-mail'),
+				veld('Inschrijfformulier', inschrijf, 'Het formulier op de trainingspagina\'s.', 'sfpb-cd-inschrijf'),
+				veld('Wachtlijstformulier', wachtlijst, 'Heeft een training geen groep meer met een eerste dag vandaag of later, dan staat dit formulier op de plek van het inschrijfformulier en tonen de data de wachtlijsttekst (Teksten, Formulieren en cursusdata). Blokken met de klasse sfp-met-data staan er dan niet, blokken met sfp-zonder-data wel. Geen: de pagina blijft zoals hij is.', 'sfpb-cd-wachtlijst'),
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-						bewaarInstellingen(this, 'cd-alg', { cursus_tijd_default_start: start.value, cursus_tijd_default_eind: eind.value, cron_email: mail.value });
+						bewaarInstellingen(this, 'cd-alg', { cursus_tijd_default_start: start.value, cursus_tijd_default_eind: eind.value, cron_email: mail.value, inschrijf_formulier: inschrijf.value, wachtlijst_formulier: wachtlijst.value });
 					} }),
 					flitsPlek('cd-alg')
 				])

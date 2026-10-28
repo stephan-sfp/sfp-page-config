@@ -697,6 +697,14 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 $bewaard[]        = $sleutel;
                 break;
 
+            case 'inschrijf_formulier':
+            case 'wachtlijst_formulier':
+                // Een SureForms-formulier van deze site, of leeg.
+                $id               = absint( $ruw );
+                $alle[ $sleutel ] = $id && 'sureforms_form' === get_post_type( $id ) ? $id : '';
+                $bewaard[]        = $sleutel;
+                break;
+
             case 'cursus_tijd_default_start':
             case 'cursus_tijd_default_eind':
                 $alle[ $sleutel ] = sfp_page_config_sanitize_time( $ruw );

@@ -312,6 +312,20 @@ function sfp_page_config_teksten_register() {
             'en'    => 'Get in touch for the next start dates.',
             'pt'    => 'Entre em contato para saber as próximas datas.',
         ),
+        'wachtlijst_tekst'   => array(
+            'groep' => 'Formulieren en cursusdata',
+            'label' => 'Geen nieuwe groep, met wachtlijst (%s is de link)',
+            'nl'    => 'Er staat nog geen nieuwe groep gepland. Wil je deze training volgen? %s en je hoort het als eerste wanneer de volgende groep van start gaat!',
+            'en'    => 'No new group has been scheduled yet. Keen to join this training? %s and you will be the first to hear when the next group starts!',
+            'pt'    => 'Ainda não há nova turma agendada. Quer fazer este treinamento? %s e seja o primeiro a saber quando a próxima turma começar!',
+        ),
+        'wachtlijst_link'    => array(
+            'groep' => 'Formulieren en cursusdata',
+            'label' => 'Link naar het wachtlijstformulier',
+            'nl'    => 'Zet jezelf op de wachtlijst',
+            'en'    => 'Join the waiting list',
+            'pt'    => 'Entre na lista de espera',
+        ),
         'tijd_vanaf'         => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Lestijd met alleen een begin',

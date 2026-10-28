@@ -4,6 +4,22 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.17.0-beta.1] - 2026-10-28
+
+Een trainingspagina zonder toekomstige groep toont vanzelf de wachtlijst: een wachtlijsttekst bij de data en het wachtlijstformulier van de site op de plek van het inschrijfformulier. Komen er weer data, dan keert de pagina vanzelf terug. Daarnaast ruimte tussen een kop en de tekst eronder in de tekststroom van een Sectie. Testcase DGA, Training Effectief Communiceren.
+
+Terugdraaien per site: in SFP Beheer, Cursusdata, het wachtlijstformulier op Geen zetten; de pagina toont dan weer de oude tekst bij ontbrekende data. Verlopen groepen blijven ook dan weg; daarvoor de plugin terugzetten naar 3.16.0.
+
+### Toegevoegd
+- Wachtlijst: zonder groep met een eerste dag vandaag of later toont `[cursus_datum]` de wachtlijsttekst met een link naar het formulier, en wordt het inschrijfformulier het wachtlijstformulier. Beide formulieren kies je per site in SFP Beheer, Cursusdata. De link volgt het anker van de knop onderaan voor trainingen (standaard #inschrijven), zodat knoppen en ankers naar het formulier blijven wijzen.
+- Teksten "Geen nieuwe groep, met wachtlijst" en "Link naar het wachtlijstformulier" in nl, en en pt (SFP Beheer, Teksten, Formulieren en cursusdata).
+- Klassen `sfp-met-data` en `sfp-zonder-data`: een blok met de klasse staat er op een trainingspagina alleen met of alleen zonder toekomstige groep. De plugin laat het blok op de server weg, dus geen verborgen inhoud en geen verspringing.
+- `[cursus_datum intro="..."]`: tekst voor de data die alleen verschijnt als er data zijn, zodat een vraag als "Wanneer start de volgende groep?" zonder data niet tegenstrijdig wordt. Geldt ook voor het FAQ-schema.
+
+### Gewijzigd
+- Verlopen groepen staan nergens meer: `[cursus_datum]`, `[cursus_tijd]` en de keuzelijst van het formulier tonen alleen groepen waarvan de eerste dag vandaag of later is, genummerd vanaf Groep 1. Tot nu toe bleef een verlopen groep staan tot iemand hem weghaalde.
+- Sectie: een kop gevolgd door tekst direct in de sectie of in een leeskolom krijgt 16 px ruimte, zoals onder de paginakop. Raakte vooral bedankpagina's, verantwoording, FAQ en contact (h1 en h2 met 8 px tot de tekst). Kaarten, kolommen en stappen houden hun eigen ruimte.
+
 ## [3.16.0] - 2026-10-28
 
 Vijf onderdelen tonen in de editor hetzelfde als op de site: de tool, het begrip (Definitie), In a talk, de uitklap en de tabs. Op de site verandert alleen de tabbalk. Wat opgeslagen is, blijft werken; geen pagina hoeft opnieuw opgeslagen. Proefversie 3.16.0-beta.1 op DPS (tool) en SwS (begrip, tabs, uitklap): voorkant uitgelogd bij 375, 768 en 1280 px gelijk op de tabbalk na, geen scriptfouten. Lokaal in WordPress 7.1.4: 49 voorbeeldtools door alle schermen, klikken zonder typen laat elke beschrijving gelijk, typen en opslaan op alle 49 door de controle van de site, en in 102 pagina's met eigen blokken van de acht sites geen afgekeurde blokken.

@@ -400,6 +400,10 @@ function sfp_page_config_beheer_stand() {
             'paginas' => sfp_page_config_onderdeel_aan( 'cursusdata' ) ? sfp_page_config_cursusdata_paginas() : array(),
             'start'   => isset( $alle['cursus_tijd_default_start'] ) ? (string) $alle['cursus_tijd_default_start'] : '',
             'eind'    => isset( $alle['cursus_tijd_default_eind'] ) ? (string) $alle['cursus_tijd_default_eind'] : '',
+            // Wachtlijst (includes/wachtlijst.php): welk formulier wisselt voor welk.
+            'inschrijf_formulier'  => isset( $alle['inschrijf_formulier'] ) ? (int) $alle['inschrijf_formulier'] : 0,
+            'wachtlijst_formulier' => isset( $alle['wachtlijst_formulier'] ) ? (int) $alle['wachtlijst_formulier'] : 0,
+            'formulieren'          => sfp_page_config_beheer_formulieren(),
         ),
         'controle'     => sfp_page_config_paginas_overzicht(),
     );
@@ -762,4 +766,35 @@ function sfp_page_config_beheer_promo( array $alle, $basis ) {
         'url'       => $lees( 'url' ),
         'vorm'      => $lees( 'vorm' ),
     );
+}
+
+/**
+ * De gepubliceerde SureForms-formulieren van de site, voor de keuze van het
+ * inschrijf- en wachtlijstformulier bij Cursusdata.
+ *
+ * @return array<int, array{id: int, titel: string}>
+ */
+function sfp_page_config_beheer_formulieren() {
+    if ( ! post_type_exists( 'sureforms_form' ) ) {
+        return array();
+    }
+    $ids = get_posts(
+        array(
+            'post_type'      => 'sureforms_form',
+            'post_status'    => 'publish',
+            'posts_per_page' => 100,
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+            'fields'         => 'ids',
+            'no_found_rows'  => true,
+        )
+    );
+    $uit = array();
+    foreach ( $ids as $id ) {
+        $uit[] = array(
+            'id'    => (int) $id,
+            'titel' => html_entity_decode( get_the_title( $id ), ENT_QUOTES, 'UTF-8' ),
+        );
+    }
+    return $uit;
 }
