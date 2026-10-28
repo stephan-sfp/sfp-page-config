@@ -4,6 +4,25 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.16.0] - 2026-10-28
+
+Vijf onderdelen tonen in de editor hetzelfde als op de site: de tool, het begrip (Definitie), In a talk, de uitklap en de tabs. Op de site verandert alleen de tabbalk. Wat opgeslagen is, blijft werken; geen pagina hoeft opnieuw opgeslagen. Proefversie 3.16.0-beta.1 op DPS (tool) en SwS (begrip, tabs, uitklap): voorkant uitgelogd bij 375, 768 en 1280 px gelijk op de tabbalk na, geen scriptfouten. Lokaal in WordPress 7.1.4: 49 voorbeeldtools door alle schermen, klikken zonder typen laat elke beschrijving gelijk, typen en opslaan op alle 49 door de controle van de site, en in 102 pagina's met eigen blokken van de acht sites geen afgekeurde blokken.
+
+Terugdraaien: versie 3.15.0 terugzetten. De editor is dan weer zoals voorheen, de tabbalk op de site ook. Er is niets omgezet in de inhoud of de toolbeschrijvingen.
+
+### Toegevoegd
+- Tool: op de pagina van een tool staat de tool in de editor onder de titel, scherm voor scherm zoals de lezer hem ziet. Elke tekst die de lezer leest typ je daar: vragen, antwoorden, de schaal, stappen, velden en hints, uitslagen en hun lijsten, de onderdelen van het resultaat, de zinnen die een generator kiest, meldingen, mail en knoppen. Geldt voor elke soort (test, generator, rekenaar, checklist, tekstanalyse). De beschrijving blijft de opslag en de site controleert hem bij opslaan zoals voorheen.
+- Begrip: in de editor de makersregel bovenin de Definitie en de promokaart rechts ernaast als Komt vanzelf, zoals op de site.
+- Tabs: in de editor een plus in de tabbalk om een tab toe te voegen.
+
+### Gewijzigd
+- Paneel Deze pagina, Tool: soort (generator, rekenaar, checklist onderling) en uitkomst (hoogste, top, per dimensie een niveau, totaalscore) als keuze. Een uitkomst met eigen regels, paren of kwadranten staat er met zijn naam; wijzigen gaat onder Geavanceerd. De beschrijving zelf staat alleen nog onder Geavanceerd, zonder verwijzing naar een projectbestand.
+- Editor: Definitie, In a talk en Check your understanding krijgen hun eigen opmaak, dus dezelfde kaart en de donkere kaart als op de site. Een lege tweede regel bij een feit staat als grijze plaatshouder op een eigen regel; de feiten staan in de editor in twee kolommen.
+- Editor: een uitklapregel staat dicht met de plusknop, in de vorm die je koos, en klapt open zolang je hem of iets erin gekozen hebt. Alleen de titel is vet.
+- Editor: tabs als tabbalk zoals op de site. Klik op een tab om die inhoud te bewerken; de naam typ je in de open tab.
+- Tabs op de site: de onderlijn loopt over de volle breedte van het blok (was alleen onder de tabs) en elke tabknop heeft ruimte links en rechts (12 px, telefoon 8 px), zodat een focusrand de letters niet raakt. De ruimte tussen de tabs ging van 32 naar 8 px (telefoon 0).
+- Uitklap: de opmaak geldt ook voor de regel in de editor; met `:where()` blijft de specificiteit op de site gelijk.
+
 ## [3.15.0] - 2026-10-28
 
 Het fundament van de site gaat van snippets naar de plugin: kleurrollen, kopfont als variabele, de berichttypes begrippen en tool, en het paginabeheer voor AI. Elk onderdeel staat standaard uit; per site gaat het aan na een nameting, daarna kan het snippet uit. Proefversie 3.15.0-beta.1 op DGA: vier onderdelen aan, zes snippets uit, op zes paginasoorten uitgelogd dezelfde kleurrollen, fonts, berichttypes, adressen en abilities als ervoor, geen scriptfouten.

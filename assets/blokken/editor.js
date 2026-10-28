@@ -356,46 +356,132 @@
 			var boven = bovenId ? select( 'core/block-editor' ).getBlock( bovenId ) : null;
 			return boven && boven.attributes ? boven.attributes.variant : 'groot';
 		}, [ props.clientId ] );
-		var blockProps = useBlockProps( { className: 'sfp-editor-regel' } );
-		var inner = useInnerBlocksProps( { className: 'sfp-uitklap__inhoud' }, { template: [ [ 'core/paragraph' ] ] } );
+		// Zoals op de site: een dichte regel met de plusknop. Selecteer je de
+		// regel of iets erin, dan staat hij open om te typen (sinds 3.16.0).
+		var open = wp.data.useSelect( function ( select ) {
+			var be2 = select( 'core/block-editor' );
+			return be2.isBlockSelected( props.clientId ) || be2.hasSelectedInnerBlock( props.clientId, true );
+		}, [ props.clientId ] );
+		var blockProps = useBlockProps( { className: 'sfp-uitklap__regel' + ( open ? ' is-open' : '' ) } );
+		var inner = useInnerBlocksProps( { className: 'sfp-uitklap__inhoud', hidden: ! open }, { template: [ [ 'core/paragraph' ] ] } );
 		// Label en regel onder de titel typ je in het blok, alleen in de vorm die ze toont.
 		var metLabel = 'verhaal' === variant || a.label;
 		var metSub = 'kaart' === variant || a.sub;
+		var zetTitel = function ( v ) { props.setAttributes( { titel: v } ); };
+		var titelVeld = function ( tag ) {
+			return el( RichText, { tagName: tag, value: a.titel, placeholder: 'Titel van de regel', allowedFormats: [ 'core/bold', 'core/italic' ], onChange: zetTitel } );
+		};
+		var labelVeld = el( RichText, { tagName: 'small', className: 'sfp-blok-label', value: a.label, placeholder: 'Label boven de titel, bijvoorbeeld: Een typisch geval', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { label: v } ); } } );
+		var subVeld = el( RichText, { tagName: 'span', className: 'sfp-uitklap__sub', value: a.sub, placeholder: 'Regel onder de titel', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { sub: v } ); } } );
+		// Dezelfde opbouw als de regel op de site (render_uitklap_regel).
+		var kop;
+		if ( metLabel ) {
+			kop = el( 'span', { className: 'sfp-uitklap__titel' }, labelVeld, titelVeld( 'b' ) );
+		} else if ( metSub ) {
+			kop = el( 'span', { className: 'sfp-uitklap__titel' }, titelVeld( 'span' ), subVeld );
+		} else {
+			kop = titelVeld( 'span' );
+		}
 		return el( Fragment, null,
 			paneel( 'Uitklapregel', [
 				linkNaarBlok( props, function () { return a.titel || 'regel'; } ),
 				uitleg( 'Een link naar deze regel opent hem.' ),
 			] ),
 			el( 'div', blockProps,
-				metLabel ? el( RichText, { tagName: 'small', className: 'sfp-blok-label', value: a.label, placeholder: 'Label boven de titel, bijvoorbeeld: Een typisch geval', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { label: v } ); } } ) : null,
-				el( RichText, { tagName: 'div', value: a.titel, placeholder: 'Titel van de regel', allowedFormats: [ 'core/bold', 'core/italic' ], onChange: function ( v ) { props.setAttributes( { titel: v } ); } } ),
-				metSub ? el( RichText, { tagName: 'div', className: 'sfp-uitklap__sub', value: a.sub, placeholder: 'Regel onder de titel', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { sub: v } ); } } ) : null,
+				el( 'div', { className: 'sfp-uitklap__kop' }, kop ),
 				el( 'div', inner )
 			)
 		);
 	} );
 
-	/* sfp/tabs en sfp/tab */
+	/*
+	 * sfp/tabs en sfp/tab. Sinds 3.16.0 zoals op de site: een tabbalk met de
+	 * namen, één inhoud tegelijk, en een plus om een tab toe te voegen. Welk
+	 * tabblad open staat, onthoudt alleen de editor; het wordt niet bewaard.
+	 */
+	var TABS_STORE = 'sfp/tabs-editor';
+	if ( wp.data.createReduxStore && ! wp.data.select( TABS_STORE ) ) {
+		wp.data.register( wp.data.createReduxStore( TABS_STORE, {
+			reducer: function ( staat, actie ) {
+				staat = staat || {};
+				if ( 'ZET' === actie.type ) {
+					var nieuw = Object.assign( {}, staat );
+					nieuw[ actie.tabs ] = actie.tab;
+					return nieuw;
+				}
+				return staat;
+			},
+			actions: { zet: function ( tabs, tab ) { return { type: 'ZET', tabs: tabs, tab: tab }; } },
+			selectors: { open: function ( staat, tabs ) { return staat[ tabs ] || ''; } },
+		} ) );
+	}
+	function openTab( select, tabsId, tabIds ) {
+		var gekozen = select( TABS_STORE ) ? select( TABS_STORE ).open( tabsId ) : '';
+		return tabIds.indexOf( gekozen ) >= 0 ? gekozen : ( tabIds[ 0 ] || '' );
+	}
 	blok( 'sfp/tabs', function ( props ) {
 		var a = props.attributes;
+		var stand = wp.data.useSelect( function ( select ) {
+			var tabs = select( 'core/block-editor' ).getBlocks( props.clientId ).filter( function ( b ) { return 'sfp/tab' === b.name; } );
+			var ids = tabs.map( function ( b ) { return b.clientId; } );
+			return { tabs: tabs.map( function ( b ) { return { id: b.clientId, titel: b.attributes.titel || '' }; } ), open: openTab( select, props.clientId, ids ) };
+		}, [ props.clientId ] );
+		var zet = function ( id ) { wp.data.dispatch( TABS_STORE ).zet( props.clientId, id ); };
+		var voegToe = function () {
+			var nieuw = wp.blocks.createBlock( 'sfp/tab', {}, [ wp.blocks.createBlock( 'core/paragraph', { className: 'is-style-sfp-groot' } ), wp.blocks.createBlock( 'core/paragraph' ) ] );
+			wp.data.dispatch( 'core/block-editor' ).insertBlock( nieuw, stand.tabs.length, props.clientId );
+			zet( nieuw.clientId );
+		};
 		var blockProps = useBlockProps( { className: 'sfp-tabs' } );
-		var inner = useInnerBlocksProps( blockProps, { allowedBlocks: [ 'sfp/tab' ], template: [ [ 'sfp/tab' ], [ 'sfp/tab' ] ] } );
+		var inner = useInnerBlocksProps( { className: 'sfp-editor-tabpanelen' }, { allowedBlocks: [ 'sfp/tab' ], template: [ [ 'sfp/tab' ], [ 'sfp/tab' ] ], renderAppender: false } );
+		var balk = el( 'div', { className: 'sfp-tablijst', role: 'tablist', 'aria-label': a.label || undefined },
+			stand.tabs.map( function ( tab ) {
+				var actief = tab.id === stand.open;
+				return el( 'div', {
+					key: tab.id,
+					role: 'tab',
+					'aria-selected': actief ? 'true' : 'false',
+					tabIndex: actief ? undefined : 0,
+					onClick: actief ? undefined : function () { zet( tab.id ); },
+					onKeyDown: actief ? undefined : function ( e ) { if ( 'Enter' === e.key || ' ' === e.key ) { e.preventDefault(); zet( tab.id ); } },
+				},
+					// De naam typ je in het open tabblad zelf.
+					actief ? el( RichText, {
+						tagName: 'span',
+						value: tab.titel,
+						placeholder: 'Naam van het tabblad',
+						allowedFormats: [],
+						onChange: function ( v ) { wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( tab.id, { titel: v } ); },
+					} ) : el( 'span', { dangerouslySetInnerHTML: { __html: tab.titel || 'Naam van het tabblad' } } )
+				);
+			} ),
+			el( 'button', { type: 'button', className: 'sfp-editor-tabplus', onClick: voegToe, 'aria-label': 'Tabblad toevoegen', title: 'Tabblad toevoegen' }, '+' )
+		);
 		return el( Fragment, null,
 			paneel( 'Tabs', [
 				tekstveld( 'Naam voor schermlezers', a.label, function ( v ) { props.setAttributes( { label: v } ); }, 'Wordt voorgelezen, niet getoond. Bijvoorbeeld: Drie bronnen van overtuiging.' ),
+				uitleg( 'Klik op een tab om die inhoud te bewerken. De plus in de balk voegt een tab toe.' ),
 			] ),
-			el( 'div', inner )
+			el( 'div', blockProps, balk, el( 'div', inner ) )
 		);
 	} );
 	blok( 'sfp/tab', function ( props ) {
-		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-editor-regel' } );
-		var inner = useInnerBlocksProps( { className: 'sfp-tabpaneel' }, { template: [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ] } );
-		return el( 'div', blockProps,
-			el( 'span', { className: 'sfp-editor-label' }, 'Tabblad' ),
-			el( RichText, { tagName: 'div', value: a.titel, placeholder: 'Naam van het tabblad', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { titel: v } ); } } ),
-			el( 'div', inner )
-		);
+		var zicht = wp.data.useSelect( function ( select ) {
+			var be2 = select( 'core/block-editor' );
+			var tabsId = be2.getBlockRootClientId( props.clientId );
+			var ids = tabsId ? be2.getBlockOrder( tabsId ) : [];
+			var gekozen = be2.isBlockSelected( props.clientId ) || be2.hasSelectedInnerBlock( props.clientId, true );
+			return { tabsId: tabsId, open: openTab( select, tabsId, ids ) === props.clientId, gekozen: gekozen };
+		}, [ props.clientId ] );
+		// Kies je iets in een ander tabblad (bijvoorbeeld via de lijstweergave), dan gaat dat open.
+		wp.element.useEffect( function () {
+			if ( zicht.gekozen && ! zicht.open && zicht.tabsId ) {
+				wp.data.dispatch( TABS_STORE ).zet( zicht.tabsId, props.clientId );
+			}
+		}, [ zicht.gekozen, zicht.open, zicht.tabsId ] );
+		var blockProps = useBlockProps( { className: 'sfp-tabpaneel', role: 'tabpanel', hidden: ! zicht.open } );
+		var inner = useInnerBlocksProps( blockProps, { template: [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ] } );
+		return el( 'div', inner );
 	} );
 
 	/* sfp/lijst */
@@ -557,7 +643,9 @@
 		var teLang = n > DEFINITIE_TEKENS || w > 30;
 		var titel = wp.data.select( 'core/editor' ) ? ( wp.data.select( 'core/editor' ).getEditedPostAttribute( 'title' ) || '' ) : '';
 		var begin = titel && a.zin ? ( function () { var d = document.createElement( 'div' ); d.innerHTML = a.zin; return ( d.textContent || '' ).trim().toLowerCase().replace( /^(the|a|an|de|het|een)\s+/, '' ).indexOf( titel.trim().toLowerCase() ) === 0; } )() : true;
-		var blockProps = useBlockProps( { className: 'sfp-definitie' } );
+		var stand = useStand();
+		var begrip = ( stand && stand.begrip ) || null;
+		var blockProps = useBlockProps( { className: 'sfp-editor-definitie' + ( begrip && begrip.promo ? ' sfp-editor-definitie--promo' : '' ) } );
 		var vak = function ( sleutel, label, hint ) {
 			return el( 'div', { key: sleutel },
 				el( 'dt', null, label ),
@@ -572,19 +660,49 @@
 				uitleg( 'Eén zin die met de term begint, 15 tot 30 woorden en hoogstens 160 tekens. Deze zin staat ook in de begrippenlijst, als tooltip in artikelen en in de gegevens voor Google. Een leeg feitenvak verschijnt niet.' ),
 			] ),
 			el( 'div', blockProps,
-				el( 'span', { className: 'sfp-blok-label' }, t( 'definitie', 'Definition' ) ),
-				el( RichText, { tagName: 'p', className: 'sfp-definitie__zin', value: a.zin, placeholder: ( titel || 'De term' ) + ' is ...', allowedFormats: [ 'core/italic', 'core/bold' ], onChange: zet( 'zin' ) } ),
-				teller( w + ' woorden · ' + n + ' van ' + DEFINITIE_TEKENS + ' tekens' + ( teLang ? ' · te lang' : '' ) + ( ! begin ? ' · begint niet met de term' : '' ), teLang || ! begin ),
-				el( RichText, { tagName: 'p', className: 'sfp-definitie__uitleg', value: a.uitleg, placeholder: 'Uitleg in hoogstens twee zinnen', allowedFormats: [ 'core/italic', 'core/bold', 'core/link' ], onChange: zet( 'uitleg' ) } ),
-				el( 'dl', { className: 'sfp-definitie__feiten' },
-					vak( 'ook', t( 'ook_wel', 'Also called' ), 'Andere naam' ),
-					vak( 'herkomst', t( 'herkomst', 'Origin' ), 'Herkomst van het woord' ),
-					vak( 'eerst', t( 'eerst_beschreven', 'First described' ), 'Wie, waar' ),
-					vak( 'deel', t( 'deel_van', 'Part of' ), 'Waar het bij hoort' )
-				)
+				// Dezelfde kaart als op de site (sinds 3.16.0). Makersregel en
+				// promokaart maakt de site zelf: hier als Komt vanzelf.
+				el( 'div', { className: 'sfp-definitie' },
+					el( 'div', { className: 'sfp-definitie__maker sfp-editor-vanzelfband', contentEditable: false, 'aria-hidden': 'true' },
+						el( 'span', { className: 'sfp-vanzelf__label' }, 'Komt vanzelf' ),
+						begrip && begrip.maker
+							? el( 'div', { dangerouslySetInnerHTML: { __html: begrip.maker } } )
+							: el( 'p', { className: 'sfp-editor-uitleg' }, 'Maker, datum, leestijd, Fact-checked en de bronnen.' )
+					),
+					el( 'span', { className: 'sfp-blok-label' }, t( 'definitie', 'Definition' ) ),
+					el( RichText, { tagName: 'p', className: 'sfp-definitie__zin', value: a.zin, placeholder: ( titel || 'De term' ) + ' is ...', allowedFormats: [ 'core/italic', 'core/bold' ], onChange: zet( 'zin' ) } ),
+					teller( w + ' woorden · ' + n + ' van ' + DEFINITIE_TEKENS + ' tekens' + ( teLang ? ' · te lang' : '' ) + ( ! begin ? ' · begint niet met de term' : '' ), teLang || ! begin ),
+					el( RichText, { tagName: 'p', className: 'sfp-definitie__uitleg', value: a.uitleg, placeholder: 'Uitleg in hoogstens twee zinnen', allowedFormats: [ 'core/italic', 'core/bold', 'core/link' ], onChange: zet( 'uitleg' ) } ),
+					el( 'dl', { className: 'sfp-definitie__feiten' },
+						vak( 'ook', t( 'ook_wel', 'Also called' ), 'Andere naam' ),
+						vak( 'herkomst', t( 'herkomst', 'Origin' ), 'Herkomst van het woord' ),
+						vak( 'eerst', t( 'eerst_beschreven', 'First described' ), 'Wie, waar' ),
+						vak( 'deel', t( 'deel_van', 'Part of' ), 'Waar het bij hoort' )
+					)
+				),
+				begrip && begrip.promo ? el( 'aside', { className: 'sfp-vanzelf sfp-artikel sfp-editor-promo', contentEditable: false, 'aria-hidden': 'true' },
+					el( 'span', { className: 'sfp-vanzelf__label' }, 'Komt vanzelf' ),
+					el( 'div', { dangerouslySetInnerHTML: { __html: begrip.promo } } )
+				) : null
 			)
 		);
 	} );
+
+	/**
+	 * Wat het paneel Deze pagina over dit bericht weet (de stand van de laatste
+	 * keer opslaan). Blokken die later in beeld komen, krijgen hem ook.
+	 *
+	 * @since 3.16.0
+	 */
+	function useStand() {
+		var st = useState( window.sfpEditorStand || null );
+		wp.element.useEffect( function () {
+			var luister = function ( e ) { st[ 1 ]( ( e && e.detail ) || null ); };
+			window.addEventListener( 'sfp-editor-stand', luister );
+			return function () { window.removeEventListener( 'sfp-editor-stand', luister ); };
+		}, [] );
+		return st[ 0 ];
+	}
 	blokBegrip( 'sfp/in-een-talk', function ( props ) {
 		var a = props.attributes;
 		var blockProps = useBlockProps( { className: 'sfp-in-talk' } );

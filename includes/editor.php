@@ -302,6 +302,10 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
         $stand['begrip'] = array(
             'gebruikt'  => count( sfp_page_config_begrip_gebruikt_in( $post ) ),
             'meldingen' => sfp_page_config_begrip_controle( $post ),
+            // Wat de site vanzelf bij de Definitie zet, zodat de editor het
+            // als Komt vanzelf kan tonen (sinds 3.16.0).
+            'maker'     => sfp_page_config_editor_begrip_maker( $post ),
+            'promo'     => function_exists( 'sfp_page_config_artikel_promokaart' ) ? sfp_page_config_artikel_promokaart( 'zij', $post ) : '',
         );
     }
 
@@ -517,4 +521,70 @@ function sfp_page_config_editor_artikel_css() {
         return;
     }
     wp_enqueue_style( 'sfp-artikel-editor', SFP_PAGE_CONFIG_URL . 'assets/artikel.css', array(), SFP_PAGE_CONFIG_VERSION );
+}
+
+/**
+ * De makersregel van een begrip zoals de site hem bovenin de Definitie zet,
+ * voor de editor (Komt vanzelf). Zonder bericht of bij een fout: leeg.
+ *
+ * @since  3.16.0
+ * @param  WP_Post $post Begrip.
+ * @return string
+ */
+function sfp_page_config_editor_begrip_maker( WP_Post $post ) {
+    if ( ! function_exists( 'sfp_page_config_begrip_makersregel' ) ) {
+        return '';
+    }
+    try {
+        return sfp_page_config_begrip_makersregel( $post );
+    } catch ( Throwable $e ) {
+        return '';
+    }
+}
+
+/* =========================================================================
+ * De tool in het canvas (sinds 3.16.0)
+ * ====================================================================== */
+
+add_action( 'enqueue_block_editor_assets', 'sfp_page_config_tool_canvas_editor' );
+
+/**
+ * Op de pagina van een tool: de tool in het canvas, met de teksten om ter
+ * plekke te typen (sinds 3.16.0). De beschrijving blijft de opslag.
+ */
+function sfp_page_config_tool_canvas_editor() {
+    $scherm = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+    if ( ! $scherm || 'tool' !== $scherm->post_type || ! sfp_page_config_tool_aan() ) {
+        return;
+    }
+    wp_enqueue_script(
+        'sfp-tool-canvas',
+        SFP_PAGE_CONFIG_URL . 'assets/editor/tool-canvas.js',
+        array( 'wp-element', 'wp-data', 'wp-editor', 'wp-core-data' ),
+        SFP_PAGE_CONFIG_VERSION,
+        true
+    );
+    $teksten = array();
+    foreach ( array( 'tool_vragen', 'tool_resultaat', 'tool_context', 'tool_start', 'tool_volgende', 'tool_vorige' ) as $sleutel ) {
+        $teksten[ $sleutel ] = sfp_page_config_artikel_tekst( $sleutel );
+    }
+    wp_add_inline_script( 'sfp-tool-canvas', 'window.sfpToolCanvas=' . wp_json_encode( array( 'teksten' => $teksten ) ) . ';', 'before' );
+}
+
+add_action( 'enqueue_block_assets', 'sfp_page_config_tool_canvas_css' );
+
+/**
+ * De opmaak van de tool in het canvas van de editor, zodat hij er daar
+ * uitziet zoals op de site (sinds 3.16.0).
+ */
+function sfp_page_config_tool_canvas_css() {
+    if ( ! is_admin() ) {
+        return;
+    }
+    $scherm = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+    if ( ! $scherm || 'tool' !== $scherm->post_type || ! sfp_page_config_tool_aan() ) {
+        return;
+    }
+    wp_enqueue_style( 'sfp-tool-editor', SFP_PAGE_CONFIG_URL . 'assets/tool/tool.css', array(), SFP_PAGE_CONFIG_VERSION );
+    wp_enqueue_style( 'sfp-tool-canvas', SFP_PAGE_CONFIG_URL . 'assets/editor/tool-canvas.css', array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
 }

@@ -1,5 +1,4 @@
-/* Alleen in de blokeditor: binnenblokken van tabs en uitklap zichtbaar en herkenbaar. */
-.block-editor-block-list__layout .sfp-tabpaneel[hidden]{display:grid}
+/* Alleen in de blokeditor. */
 .sfp-editor-label{display:block;font:600 11px/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#757575;margin:0 0 6px}
 .sfp-editor-regel{border:1px dashed #c3c4c7;border-radius:6px;padding:10px 12px;margin:0 0 8px}
 .sfp-editor-regel .rich-text,.sfp-editor-vraag .rich-text{font-weight:700}
@@ -39,3 +38,25 @@
 .sfp-vormkeuze__mini--donker i{background:#3c434a;border-color:#3c434a}
 .sfp-vormkeuze__mini--rand i{border-top:3px solid var(--wp-admin-theme-color,#3858e9)}
 .sfp-linkveld .block-editor-url-input input{width:100%;min-height:36px}
+/* Sinds 3.16.0: editor gelijk aan de site. */
+/* Uitklap: de regel zoals op de site; de kop is tekst om te typen, de inhoud staat open zolang de regel gekozen is. */
+.block-editor-block-list__layout .sfp-uitklap__kop{cursor:text}
+.block-editor-block-list__layout .sfp-uitklap__inhoud[hidden]{display:none}
+/* Tabs: de tabbalk zoals op de site, met een plus om een tab toe te voegen. */
+.block-editor-block-list__layout .sfp-tablijst [role=tab]{cursor:pointer}
+.block-editor-block-list__layout .sfp-tablijst [role=tab][aria-selected=true]{cursor:text}
+.block-editor-block-list__layout .sfp-tabpaneel[hidden]{display:none}
+.sfp-editor-tabplus{flex:0 0 auto;align-self:center;width:28px;height:28px;margin:0 0 6px 8px;border:1px dashed #8c8f94;border-radius:50%;background:none;color:#1e1e1e;font:400 18px/1 system-ui,sans-serif;cursor:pointer;padding:0}
+.sfp-editor-tabplus:hover,.sfp-editor-tabplus:focus-visible{border-style:solid;border-color:var(--wp-admin-theme-color,#3858e9);color:var(--wp-admin-theme-color,#3858e9)}
+/* Definitie: dezelfde kaart; in de editor de feiten in twee kolommen en rechts de promokaart als Komt vanzelf. */
+.sfp-editor-definitie{display:grid;gap:24px;align-items:start}
+.sfp-editor-definitie>.sfp-definitie{margin:0}
+.sfp-editor-definitie .sfp-definitie__feiten{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px}
+.sfp-editor-definitie .sfp-definitie__feiten>div:nth-child(odd){padding-left:0;border-left:0}
+.sfp-editor-definitie .sfp-definitie__feiten>div:nth-child(even){padding-left:14px;border-left:2px solid var(--sfp-b-tint2)}
+.sfp-editor-definitie .sfp-definitie__feiten dd small{display:block}
+.sfp-editor-vanzelfband{position:relative;pointer-events:none;user-select:none}
+.sfp-editor-vanzelfband .sfp-vanzelf__label{display:block;margin:0 0 8px;font:600 11px/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#757575}
+.sfp-editor-vanzelfband [hidden]{display:none!important}
+.sfp-editor-definitie .sfp-editor-promo{width:auto;max-width:none;margin:0}
+@media (min-width:900px){.sfp-editor-definitie--promo{grid-template-columns:minmax(0,1fr) 260px}}

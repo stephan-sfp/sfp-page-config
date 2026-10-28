@@ -163,6 +163,8 @@
 			wasOpslaan.current = false;
 			apiFetch( { path: '/sfp/v1/editor/' + editor.id } ).then( function ( s ) {
 				standState[ 1 ]( s );
+				// Ook voor blokken die later in beeld komen (sinds 3.16.0).
+				window.sfpEditorStand = s;
 				window.dispatchEvent( new CustomEvent( 'sfp-editor-stand', { detail: s } ) );
 			} ).catch( function () {} );
 		}, [ editor.id, editor.opslaan ] );
@@ -389,13 +391,84 @@
 		var controle = controleState[ 0 ];
 		var bezigState = useState( false );
 		var bezig = bezigState[ 0 ];
+		var meerState = useState( false );
 		var stukken = [ kop( 'Tool' ) ];
 		if ( ! S.tools ) {
 			stukken.push( melding( 'Het onderdeel Tools staat uit (SFP Beheer, Onderdelen). De beschrijving kun je wel al invullen.', 'let' ) );
 		}
+		// Sinds 3.16.0: de teksten typ je in de tool in het canvas. Hier de
+		// keuzes over de vorm; de beschrijving zelf staat onder Geavanceerd.
+		var b = null;
+		try { b = tekst.trim() ? JSON.parse( tekst ) : null; } catch ( e ) { b = null; }
+		if ( b && 'object' === typeof b && ! Array.isArray( b ) ) {
+			var zetB = function ( nieuw ) {
+				var m = /^\{\s*\n([ \t]+)"/.exec( tekst );
+				props.zetMeta( 'sfp_tool', JSON.stringify( nieuw, null, m ? ( '\t' === m[ 1 ][ 0 ] ? '\t' : m[ 1 ].length ) : 0 ) );
+				controleState[ 1 ]( null );
+			};
+			var kopie = function () { return JSON.parse( JSON.stringify( b ) ); };
+			var soort = b.soort || 'test';
+			var motorGelijk = [ 'generator', 'rekenaar', 'checklist' ];
+			var soortNaam = { test: 'Test', generator: 'Generator', rekenaar: 'Rekenaar', checklist: 'Checklist', tekstanalyse: 'Tekstanalyse' };
+			if ( motorGelijk.indexOf( soort ) >= 0 ) {
+				stukken.push( el( c.SelectControl, {
+					key: 'soort',
+					label: 'Soort',
+					value: soort,
+					options: motorGelijk.map( function ( s ) { return { value: s, label: soortNaam[ s ] }; } ),
+					onChange: function ( v ) { var n = kopie(); n.soort = v; zetB( n ); },
+					help: 'Zelfde tool, ander label boven de titel. Een checklist telt wat is afgevinkt.',
+					__nextHasNoMarginBottom: true,
+					__next40pxDefaultSize: true,
+				} ) );
+			} else {
+				stukken.push( regel( 'Soort', soortNaam[ soort ] || soort ) );
+			}
+			if ( 'test' === soort ) {
+				var u = b.uitkomst || {};
+				var nu = u.regel || 'hoogste';
+				var regelNaam = { hoogste: 'De hoogste dimensie', top: 'De hoogste dimensies', drempels: 'Per dimensie een niveau', totaal: 'Eén totaalscore', profiel: 'Profiel', paar: 'De twee hoogste samen', kwadrant: 'Vier kwadranten', regels: 'Eigen regels' };
+				// Deze regels hebben geen extra gegevens nodig; de andere horen bij hun eigen uitslagen.
+				var vrij = [ 'hoogste', 'top', 'drempels', 'totaal' ].filter( function ( r ) { return ( 'drempels' !== r && 'totaal' !== r ) || ( b.labels && b.labels.length ) || ( u.labels && u.labels.length ); } );
+				if ( vrij.indexOf( nu ) >= 0 ) {
+					stukken.push( el( c.SelectControl, {
+						key: 'uitkomst',
+						label: 'Uitkomst',
+						value: nu,
+						options: vrij.map( function ( r ) { return { value: r, label: regelNaam[ r ] }; } ),
+						onChange: function ( v ) { var n = kopie(); n.uitkomst = Object.assign( {}, n.uitkomst || {}, { regel: v } ); zetB( n ); },
+						help: 'Hoe de antwoorden tot een uitslag leiden.',
+						__nextHasNoMarginBottom: true,
+						__next40pxDefaultSize: true,
+					} ) );
+				} else {
+					var aantal = 'regels' === nu || 'profiel' === nu ? ( u.regels || [] ).length : 0;
+					stukken.push( regel( 'Uitkomst', ( regelNaam[ nu ] || nu ) + ( aantal ? ' (' + aantal + ')' : '' ) ) );
+					stukken.push( el( 'div', { key: 'uitkomst-hulp' }, hulp( 'Hoort bij de uitslagen van deze test. Wijzigen gaat onder Geavanceerd.' ) ) );
+				}
+			} else if ( ( b.reken || [] ).length ) {
+				stukken.push( regel( 'Berekening', b.reken.length + ( 1 === b.reken.length ? ' formule' : ' formules' ) + ', onder Geavanceerd' ) );
+			}
+			stukken.push( el( 'div', { key: 'canvas-hulp' }, hulp( 'Vragen, antwoorden en uitslagteksten typ je in de tool zelf, onder de titel.' ) ) );
+		}
+		stukken.push( el( c.Button, {
+			key: 'meer',
+			variant: 'tertiary',
+			icon: meerState[ 0 ] ? 'arrow-up-alt2' : 'arrow-down-alt2',
+			onClick: function () { meerState[ 1 ]( ! meerState[ 0 ] ); },
+			'aria-expanded': meerState[ 0 ],
+		}, 'Geavanceerd' ) );
+		if ( ! meerState[ 0 ] && ! ( b && 'object' === typeof b ) && tekst.trim() ) {
+			stukken.push( melding( 'De beschrijving is niet te lezen. Open Geavanceerd om hem te herstellen.', 'fout' ) );
+		}
+		if ( ! meerState[ 0 ] ) {
+			// Wat niet klopt, blijft zichtbaar, ook met Geavanceerd dicht.
+			( ( controle || tool || {} ).fouten || [] ).forEach( function ( f, i ) { stukken.push( el( 'div', { key: 'f' + i }, melding( f, 'fout' ) ) ); } );
+			return el( 'div', { className: 'sfp-dp-deel' }, stukken );
+		}
 		stukken.push( el( c.TextareaControl, {
-			label: 'Beschrijving (JSON)',
-			help: 'De soort, de vragen, de rekenregel en de uitslagteksten. Formaat: claude/tools-motor-ontwerp-test-2026-10-19.md. Claude schrijft dit veld via REST; teksten pas je hier aan.',
+			label: 'Beschrijving',
+			help: 'De hele tool als tekst: soort, vragen, rekenregel en uitslagen. Claude vult en wijzigt dit; vragen of uitslagen toevoegen en schrappen gaat hier.',
 			value: tekst,
 			rows: 14,
 			className: 'sfp-dp-json',
