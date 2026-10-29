@@ -2,6 +2,13 @@
 .sfp-tc-plek{box-sizing:border-box;width:calc(100% - 32px);max-width:760px;margin:16px auto 24px}
 /* De melding "hier komt de tool" in Komt vanzelf is overbodig nu de tool er zelf staat. */
 .sfp-met-tool-canvas #sfp-vanzelf-kop .sfp-tool__noscript{display:none}
+/* Sinds 3.18.0: de ondertitel typ je onder de titel, dus niet nog eens in Komt vanzelf. */
+.sfp-met-tool-ondertitel #sfp-vanzelf-kop .sfp-tool-lead{display:none}
+.sfp-tc-plek .sfp-tc-ondertitel{display:block;margin:0 0 20px}
+/* Voortgangsbalk onder de voortgangsregel en Hoe deze test rekent onder de tool, zoals op de eigen pagina van een tool. */
+.sfp-tc-tool .sfp-tc-voortgangsbalk{margin:0 0 4px}
+.sfp-tc-tool .sfp-tool__hoe{margin-top:26px;padding:18px 0 0;border-top:1px solid var(--tool-lijn,#e0e0e0)}
+.sfp-tc-tool .sfp-tool__hoe summary{pointer-events:auto}
 .sfp-tc{border:1px dashed #c3c4c7;border-radius:8px;padding:12px 16px 18px;display:grid;gap:14px}
 .sfp-tc .sfp-vanzelf__label{display:block;margin:0;font:600 11px/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#757575}
 .sfp-tc--leeg p{margin:0;font:400 13px/1.5 system-ui,sans-serif;color:#1e1e1e}
