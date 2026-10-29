@@ -346,7 +346,7 @@ function sfp_page_config_banner_toon() {
         . '.sfp-banner .sfp-banner__link:focus-visible,.sfp-banner .sfp-banner__sluit:focus-visible{outline:2px solid currentColor;outline-offset:2px}'
         . '.sfp-banner .sfp-banner__sluit,.sfp-banner .sfp-banner__sluit:hover,.sfp-banner .sfp-banner__sluit:focus{position:absolute;top:50%;right:12px;transform:translateY(-50%);width:36px;height:36px;min-height:0;padding:0;margin:0;border:0;border-radius:3px;background:transparent;box-shadow:none;color:inherit;font-size:24px;line-height:36px;text-align:center;cursor:pointer;text-transform:none}'
         . 'body.ast-theme-transparent-header #masthead{top:var(--sfp-banner-h,0px)}'
-        . '@media (max-width:600px){.sfp-banner{font-size:14px}.sfp-banner__inner{padding:8px 48px 8px 16px}.sfp-banner .sfp-banner__extra{display:none}.sfp-banner .sfp-banner__link{display:block;margin:2px 0 0}.sfp-banner .sfp-banner__sluit,.sfp-banner .sfp-banner__sluit:hover,.sfp-banner .sfp-banner__sluit:focus{right:6px}}';
+        . '@media (max-width:600px){.sfp-banner{font-size:14px}.sfp-banner__inner{padding:8px 48px 8px 16px}.sfp-banner .sfp-banner__extra{display:none}.sfp-banner .sfp-banner__sluit,.sfp-banner .sfp-banner__sluit:hover,.sfp-banner .sfp-banner__sluit:focus{right:6px}}';
 
     $items = '';
     foreach ( $kandidaten as $i => $k ) {
