@@ -129,11 +129,16 @@ $same( true, $s['focus'], 'Uitsnede: er is een gekozen punt' );
 
 /* ---------- Gegevens als blok ---------- */
 
+// Sinds 3.17.0 tonen blokken en keuzelijst alleen groepen van vandaag of
+// later: vanaf hier een groep in de toekomst.
+$jaar = (string) ( (int) wp_date( 'Y' ) + 1 );
+update_post_meta( $pagina, 'sfp_cursusdata', wp_json_encode( array( array( 'data' => array( $jaar . '-01-06', $jaar . '-01-13' ), 'start' => '09:30', 'eind' => '16:30' ) ) ) );
+
 $GLOBALS['post'] = get_post( $pagina );
 setup_postdata( $GLOBALS['post'] );
 $html = do_blocks( '<!-- wp:sfp/cursusdatum {"toon":"eerste"} /-->' );
 $waar( false !== strpos( $html, 'sfp-gegeven--cursusdatum' ), 'Blok startmomenten toont iets' );
-$waar( false !== strpos( $html, '2020' ) || false !== strpos( $html, 'januari' ) || false !== strpos( $html, 'jan' ), 'Blok startmomenten toont de datum' );
+$waar( false !== strpos( $html, $jaar ) || false !== strpos( $html, 'januari' ) || false !== strpos( $html, 'jan' ), 'Blok startmomenten toont de datum' );
 $html = do_blocks( '<!-- wp:sfp/lestijd /-->' );
 $waar( false !== strpos( $html, '09:30' ), 'Blok lestijd toont de tijd' );
 $html = do_blocks( '<!-- wp:sfp/leestijd /-->' );
@@ -176,6 +181,9 @@ $waar( false !== strpos( $js, '09:30' ), 'Keuzelijst toont de lestijd van de gro
 wp_reset_query();
 
 /* ---------- Mail over cursusdata met links ---------- */
+
+// De mail gaat over verlopen data: terug naar de groep van 2020.
+update_post_meta( $pagina, 'sfp_cursusdata', wp_json_encode( array( array( 'data' => array( '2020-01-06', '2020-01-13' ), 'start' => '09:30', 'eind' => '16:30' ) ) ) );
 
 $mail = null;
 add_filter(

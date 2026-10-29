@@ -75,6 +75,29 @@ $dp = $lees( 'assets/editor/deze-pagina.js' );
 check( false === strpos( $dp, 'claude/tools-motor-ontwerp' ), 'geen verwijzing naar een projectbestand in het paneel' );
 check( false !== strpos( $dp, "'Geavanceerd'" ), 'beschrijving onder Geavanceerd' );
 
+/* Restpunten 3.18.0. */
+// Elk CSS-bestand van de blokken staat in de editorlijst (zelftest-cta ontbrak).
+preg_match( "/function sfp_page_config_blokken_editor_css\(\).*?foreach \( array\(([^)]*)\)/s", $blokken, $lijst );
+$in_lijst = isset( $lijst[1] ) ? array_map( function ( $x ) { return trim( $x, " '\t\n" ); }, explode( ',', $lijst[1] ) ) : array();
+foreach ( glob( $map . 'assets/blokken/*.css' ) as $bestand ) {
+    $naam = basename( $bestand, '.css' );
+    check( in_array( $naam, $in_lijst, true ), "editor laadt $naam.css" );
+}
+$ec = preg_replace( '#/\*.*?\*/#s', '', $lees( 'assets/blokken/editor.css' ) );
+check( false !== strpos( $ec, '.editor-styles-wrapper .is-root-container .sfp-art-maker a{text-decoration:none}' ), 'makersregel: geen onderstreping in de editor, zwaarder dan Astra (0,3,1)' );
+check( false !== strpos( $ec, '.editor-styles-wrapper .is-root-container .sfp-art-maker a:is(:hover,:focus){text-decoration:underline}' ), 'makersregel: onderstreping bij aanwijzen zoals op de site' );
+check( false === strpos( $lees( 'assets/blokken/definitie.css' ), 'editor-styles-wrapper' ), 'site-CSS van de makersregel ongewijzigd' );
+check( false !== strpos( $tc, "className: 'sfp-tool__balk sfp-tc-voortgangsbalk'" ) && false !== strpos( $tc, 'function balkDeel(' ), 'canvas: voortgangsbalk bij een vraag' );
+check( false !== strpos( $tc, "'alles' === W.modus ) { return -1; }" ), 'canvas: geen balk bij alles op één pagina' );
+check( false !== strpos( $tc, "el( 'details', { className: 'sfp-tool__hoe' }" ) && false === strpos( $tc, "'details', { className: 'sfp-tool__hoe', open" ), 'canvas: Hoe deze test rekent, dicht' );
+check( false !== strpos( $tc, "'test' === ( b.soort || 'test' ) ? el( Hoe ) : null" ), 'canvas: Hoe deze test rekent alleen bij een test' );
+check( false !== strpos( $tc, "editPost( { excerpt: nieuw } )" ), 'ondertitel schrijft naar de samenvatting' );
+check( false !== strpos( $tc, 'S.ondertitel ? el( Ondertitel ) : null' ), 'ondertitel alleen met de vorm Tool' );
+$tcc = $lees( 'assets/editor/tool-canvas.css' );
+check( false !== strpos( $tcc, '.sfp-met-tool-ondertitel #sfp-vanzelf-kop .sfp-tool-lead{display:none}' ), 'ondertitel niet dubbel in Komt vanzelf' );
+check( (bool) preg_match( "/function sfp_page_config_tool_canvas_hoe\( WP_Post \\\$post \).*?'test' !== \\\$b\['soort'\].*?\\\$controle\['fouten'\] \? ''/s", $tw ), 'uitleg alleen bij een goedgekeurde test' );
+check( (bool) preg_match( "/'ondertitel' => .*?sfp_page_config_is_tool_vorm\( \\\$post \)/s", $tw ), 'vlag ondertitel volgt de vorm Tool' );
+
 /* Versie op twee plekken gelijk. */
 $hoofd = $lees( 'sfp-page-config.php' );
 preg_match( '/\* Version:\s+(\S+)/', $hoofd, $a );

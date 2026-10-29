@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.18.0-beta.1] - 2026-10-29
+
+Vier restpunten na de controle van de editor op 29 oktober: in de editor staat de Zelftest-oproep, de makersregel van een begrip en de tool nu ook zoals op de site, en de ondertitel van een tool typ je in de tool zelf. Op de site verandert niets.
+
+Terugdraaien: versie 3.17.0 terugzetten. Er is niets omgezet in inhoud of toolbeschrijvingen.
+
+### Gerepareerd
+- Zelftest-oproep: de kop staat in de editor in het kopfont, vet en in kapitalen, zoals op de site. De editor laadde de opmaak van dit blok niet.
+- Makersregel van een begrip: in de editor geen onderstreping meer onder de links en de punt ervoor. De regel van Astra in de editor woog even zwaar en won; de regel van de plugin weegt nu zwaarder. Bij aanwijzen komt de onderstreping, zoals op de site.
+
+### Toegevoegd
+- Tool in de editor: de voortgangsbalk onder de voortgangsregel bij elke vraag van een test, even vol als op de site (per vraag of per groep; niet bij alles op één pagina).
+- Tool in de editor: "Hoe deze test rekent" onder een test, dicht zoals op de site. De uitleg komt uit de beschrijving zoals bij de laatste keer opslaan.
+- Tool in de editor: de ondertitel staat onder de titel en typ je daar. Hij gaat naar de samenvatting, net als het veld in het zijpaneel; die twee blijven gelijk. In Komt vanzelf staat hij niet meer, dus niet dubbel. Alleen op sites waar de vorm Tool aan staat (Artikelen en Tools aan), want alleen daar toont de site de samenvatting als ondertitel.
+
 ## [3.17.0] - 2026-10-29
 
 Een trainingspagina zonder toekomstige groep toont vanzelf de wachtlijst: een wachtlijsttekst bij de data en het wachtlijstformulier van de site op de plek van het inschrijfformulier. Komen er weer data, dan keert de pagina vanzelf terug. Een nieuwe banner boven de header kondigt vanzelf de eerstvolgende groep aan, of een boek of e-course met voorrang. Daarnaast ruimte tussen een kop en de tekst eronder in de tekststroom van een Sectie. Proefversies 3.17.0-beta.1 tot en met beta.5 op DGA (wachtlijst, Training Effectief Communiceren, testinschrijving goed in SureContact) en CVD (banner voor Train de Trainer), uitgelogd op desktop en telefoon, geen scriptfouten.

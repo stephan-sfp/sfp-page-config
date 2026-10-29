@@ -565,10 +565,46 @@ function sfp_page_config_tool_canvas_editor() {
         true
     );
     $teksten = array();
-    foreach ( array( 'tool_vragen', 'tool_resultaat', 'tool_context', 'tool_start', 'tool_volgende', 'tool_vorige' ) as $sleutel ) {
+    foreach ( array( 'tool_vragen', 'tool_resultaat', 'tool_context', 'tool_start', 'tool_volgende', 'tool_vorige', 'tool_hoe_rekent' ) as $sleutel ) {
         $teksten[ $sleutel ] = sfp_page_config_artikel_tekst( $sleutel );
     }
-    wp_add_inline_script( 'sfp-tool-canvas', 'window.sfpToolCanvas=' . wp_json_encode( array( 'teksten' => $teksten ) ) . ';', 'before' );
+    $post = get_post();
+    wp_add_inline_script(
+        'sfp-tool-canvas',
+        'window.sfpToolCanvas=' . wp_json_encode(
+            array(
+                'teksten'    => $teksten,
+                'hoe'        => $post instanceof WP_Post ? sfp_page_config_tool_canvas_hoe( $post ) : '',
+                'ondertitel' => $post instanceof WP_Post && function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post ),
+            )
+        ) . ';',
+        'before'
+    );
+}
+
+/**
+ * De inhoud van "Hoe deze test rekent" voor het canvas, uit de beschrijving
+ * zoals bij de laatste keer opslaan (sinds 3.18.0). Alleen bij een test die
+ * de controle van de site doorstaat; anders leeg.
+ *
+ * @since  3.18.0
+ * @param  WP_Post $post Tool.
+ * @return string HTML.
+ */
+function sfp_page_config_tool_canvas_hoe( WP_Post $post ) {
+    if ( ! function_exists( 'sfp_page_config_tool_beschrijving' ) || ! function_exists( 'sfp_page_config_tool_hoe_rekent' ) ) {
+        return '';
+    }
+    try {
+        $b = sfp_page_config_tool_beschrijving( $post );
+        if ( ! $b || 'test' !== $b['soort'] ) {
+            return '';
+        }
+        $controle = sfp_page_config_tool_controleer( $b );
+        return $controle['fouten'] ? '' : (string) sfp_page_config_tool_hoe_rekent( $b );
+    } catch ( Throwable $e ) {
+        return '';
+    }
 }
 
 add_action( 'enqueue_block_assets', 'sfp_page_config_tool_canvas_css' );

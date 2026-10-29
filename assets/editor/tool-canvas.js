@@ -11,6 +11,10 @@
  * toevoegen en schrappen gaat onder Geavanceerd in het paneel Deze pagina.
  * De site controleert de beschrijving bij elke opslag, zoals voorheen.
  *
+ * Sinds 3.18.0 ook de voortgangsbalk onder de voortgangsregel, de uitklap
+ * "Hoe deze test rekent" (dicht, zoals op de site) en de ondertitel onder
+ * de titel: die typ je hier en hij gaat naar de samenvatting.
+ *
  * Geen buildstap: gewone JavaScript met wp.element.createElement.
  */
 ( function ( wp ) {
@@ -225,6 +229,28 @@
 		);
 	}
 
+	/**
+	 * Hoe vol de voortgangsbalk bij deze vraag staat, zoals op de site: per
+	 * scorende vraag, of per groep als de test per groep loopt. Geen balk bij
+	 * alles op één pagina en bij een vraag die niet meetelt (context, tekst).
+	 */
+	function balkDeel( b, i ) {
+		var W = b.weergave || {};
+		if ( 'alles' === W.modus ) { return -1; }
+		var soortVan = function ( v ) { var t = v.type || 'likert'; return 'ab' === t || 'janee' === t ? 'keuze' : t; };
+		var voor = ( b.vragen || [] ).filter( function ( v ) { return ! ( 'tekst' === v.type && v.na_uitslag ); } );
+		var v = ( b.vragen || [] )[ i ];
+		if ( ! v || voor.indexOf( v ) < 0 ) { return -1; }
+		if ( 'per-groep' === W.modus ) {
+			var groepen = voor.map( function ( x ) { return x.groep || ''; } ).filter( function ( g, k, a ) { return a.indexOf( g ) === k; } );
+			var gi = groepen.indexOf( v.groep || '' );
+			return groepen.length && gi >= 0 ? ( gi + 1 ) / groepen.length : -1;
+		}
+		var scorend = voor.filter( function ( x ) { var t = soortVan( x ); return 'likert' === t || 'keuze' === t; } );
+		var qi = scorend.indexOf( v );
+		return qi >= 0 ? ( qi + 1 ) / scorend.length : -1;
+	}
+
 	/* Test: één vraag. */
 	function Vraag( p ) {
 		var b = p.b, z = p.zet, i = p.i, v = ( b.vragen || [] )[ i ] || {};
@@ -254,9 +280,11 @@
 		} else {
 			veldDeel = el( 'div', { className: 'sfp-tool__veld sfp-tc-veld' }, 'string' === typeof v.voorbeeld ? el( Bewerk, { b: b, zet: z, pad: [ 'vragen', i, 'voorbeeld' ], naam: 'Voorbeeld in het veld', leeg: 'Voorbeeld in het veld' } ) : ' ' );
 		}
+		var deel = balkDeel( b, i );
 		return el( 'div', { className: 'sfp-tool__scherm' },
 			'string' === typeof v.intro ? el( Bewerk, { b: b, zet: z, pad: [ 'vragen', i, 'intro' ], naam: 'Inleiding', meer: true, tag: 'div', className: 'sfp-tool__intro-tekst' } ) : null,
 			'string' === typeof v.groep ? el( 'p', { className: 'sfp-tool__voortgang' }, el( Groep, { b: b, zet: p.zetHeel, i: i } ), ' · ' + p.naam ) : el( 'p', { className: 'sfp-tool__voortgang' }, p.naam ),
+			deel >= 0 ? el( 'div', { className: 'sfp-tool__balk sfp-tc-voortgangsbalk' }, el( 'div', { className: 'sfp-tool__balk-vul', style: { width: Math.round( deel * 100 ) + '%' } } ) ) : null,
 			'string' === typeof W.vraagkop ? el( Bewerk, { b: b, zet: z, pad: [ 'weergave', 'vraagkop' ], naam: 'Kop boven elke vraag', tag: 'p', className: 'sfp-tool__vraagkop' } ) : null,
 			el( Bewerk, { b: b, zet: z, pad: [ 'vragen', i, 'tekst' ], naam: 'Vraag', tag: 'p', className: 'sfp-tool__vraag' } ),
 			veldDeel,
@@ -409,6 +437,58 @@
 		);
 	}
 
+	/**
+	 * "Hoe deze test rekent" onder de tool, dicht zoals op de site. De inhoud
+	 * komt uit de beschrijving zoals bij de laatste keer opslaan.
+	 */
+	function Hoe() {
+		var naam = tekst( 'tool_hoe_rekent', 'Hoe deze test rekent' );
+		var inhoud = 'string' === typeof S.hoe && S.hoe ? S.hoe : '';
+		return el( 'details', { className: 'sfp-tool__hoe' },
+			el( 'summary', null, naam ),
+			inhoud ? el( 'div', { className: 'sfp-tc-hoe', dangerouslySetInnerHTML: { __html: inhoud } } ) : el( 'p', { className: 'sfp-tc-uitleg' }, 'De uitleg komt uit de beschrijving en staat hier na opslaan.' )
+		);
+	}
+
+	/**
+	 * De ondertitel onder de titel, zoals de site hem toont: de samenvatting,
+	 * hoogstens één zin. Typen hier past de samenvatting aan; het veld in het
+	 * zijpaneel blijft werken.
+	 */
+	function Ondertitel() {
+		var ref = useRef( null );
+		var zin = data.useSelect( function ( select ) { return select( 'core/editor' ).getEditedPostAttribute( 'excerpt' ) || ''; }, [] );
+		useEffect( function () {
+			var n = ref.current;
+			if ( n && n.ownerDocument.activeElement !== n && tekstVan( n ) !== zin ) { n.textContent = zin; }
+		}, [ zin ] );
+		return el( 'p', {
+			ref: ref,
+			className: 'sfp-art-lead sfp-tool-lead sfp-tc-bewerk sfp-tc-ondertitel' + ( zin ? '' : ' is-leeg' ),
+			contentEditable: 'plaintext-only',
+			suppressContentEditableWarning: true,
+			spellCheck: true,
+			role: 'textbox',
+			'aria-multiline': 'false',
+			'aria-label': 'Ondertitel (samenvatting)',
+			'data-leeg': 'Ondertitel: één zin onder de titel',
+			onKeyDown: function ( e ) {
+				e.stopPropagation();
+				if ( 'Enter' === e.key ) { e.preventDefault(); e.target.blur(); }
+				if ( 'Escape' === e.key ) { e.target.textContent = zin; e.target.blur(); }
+			},
+			onBlur: function ( e ) {
+				var nieuw = tekstVan( e.target ).replace( /\s*\n+\s*/g, ' ' ).trim();
+				if ( nieuw !== zin.trim() ) { data.dispatch( 'core/editor' ).editPost( { excerpt: nieuw } ); }
+				if ( ! nieuw ) { e.target.textContent = ''; }
+			},
+		} );
+	}
+
+	function Geheel() {
+		return el( wp.element.Fragment, null, S.ondertitel ? el( Ondertitel ) : null, el( ToolCanvas ) );
+	}
+
 	/* ---------- Vangnet ---------- */
 
 	function Vangnet( props ) { wp.element.Component.call( this, props ); this.state = { fout: null }; }
@@ -496,7 +576,8 @@
 						}, s.pad ? el( Bewerk, { b: b, zet: zetTekst, pad: s.pad, naam: 'Naam van de stap' } ) : s.vast );
 					} ) ) : null,
 					el( 'div', { className: 'sfp-tool__paneel is-actief' }, el( Vangnet, { sleutel: i + ':' + json.length }, inhoud ) )
-				)
+				),
+				'test' === ( b.soort || 'test' ) ? el( Hoe ) : null
 			)
 		);
 	}
@@ -523,8 +604,9 @@
 			plek.className = 'sfp-tc-plek sfp-artikel';
 			plek.setAttribute( 'contenteditable', 'false' );
 			wortel = wp.element.createRoot( plek );
-			wortel.render( el( ToolCanvas ) );
+			wortel.render( el( Geheel ) );
 			doc.body.classList.add( 'sfp-met-tool-canvas' );
+			doc.body.classList.toggle( 'sfp-met-tool-ondertitel', !! S.ondertitel );
 		}
 		var anker = doc.getElementById( 'sfp-vanzelf-kop' ) || titel;
 		if ( anker.nextSibling !== plek ) {

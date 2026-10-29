@@ -48,6 +48,9 @@
 .block-editor-block-list__layout .sfp-tabpaneel[hidden]{display:none}
 .sfp-editor-tabplus{flex:0 0 auto;align-self:center;width:28px;height:28px;margin:0 0 6px 8px;border:1px dashed #8c8f94;border-radius:50%;background:none;color:#1e1e1e;font:400 18px/1 system-ui,sans-serif;cursor:pointer;padding:0}
 .sfp-editor-tabplus:hover,.sfp-editor-tabplus:focus-visible{border-style:solid;border-color:var(--wp-admin-theme-color,#3858e9);color:var(--wp-admin-theme-color,#3858e9)}
+/* Makersregel van een begrip: Astra onderstreept in de editor elke link (.editor-styles-wrapper .is-root-container a, 0,2,1); hier wint de regel van de site, ook voor de punt ervoor. */
+.editor-styles-wrapper .is-root-container .sfp-art-maker a{text-decoration:none}
+.editor-styles-wrapper .is-root-container .sfp-art-maker a:is(:hover,:focus){text-decoration:underline}
 /* Definitie: dezelfde kaart; in de editor de feiten in twee kolommen en rechts de promokaart als Komt vanzelf. */
 .sfp-editor-definitie{display:grid;gap:24px;align-items:start}
 .sfp-editor-definitie>.sfp-definitie{margin:0}

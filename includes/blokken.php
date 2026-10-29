@@ -718,8 +718,9 @@ function sfp_page_config_blokken_editor_css() {
     $css = sfp_page_config_editor_merk_css() . sfp_page_config_blokken_css_variabelen();
     // Sinds 3.16.0 ook definitie (Definitie, In a talk en Check your
     // understanding bij een begrip): zonder die opmaak stonden ze in de
-    // editor als losse regels.
-    foreach ( array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'editor' ) as $bestand ) {
+    // editor als losse regels. Sinds 3.18.0 ook zelftest-cta: zonder die
+    // opmaak stond de kop van de Zelftest-oproep als gewone tekst.
+    foreach ( array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'editor' ) as $bestand ) {
         $css .= sfp_page_config_blokken_css_bestand( $bestand );
     }
     wp_register_style( 'sfp-blokken-editor', false, array(), SFP_PAGE_CONFIG_VERSION );
