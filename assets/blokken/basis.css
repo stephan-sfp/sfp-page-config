@@ -34,6 +34,8 @@
 :root .sfp-sectie__binnen>.sfp-kolommen+.sfp-kaart{margin-top:32px}
 /* paginakop binnen een sectie (bedankpagina, contact): ruimte tot de tekst; knoppen na tekst los van de laatste alinea */
 :root .sfp-sectie__binnen>h1:not(.is-style-sfp-paginatitel){margin-bottom:16px}
+/* kop gevolgd door tekst in de tekststroom (direct in de sectie of in een leeskolom): 16 px ruimte, zoals onder de paginakop; kaarten, kolommen en stappen houden hun eigen ruimte */
+:root .sfp-sectie :is(.sfp-sectie__binnen,.sfp-leeskolom,.sfp-leeskolom>.wp-block-group)>:is(h1,h2,h3)+:is(p,ul,ol){margin-top:16px}
 :root .sfp-sectie__binnen>p+.wp-block-buttons{margin-top:32px}
 @media (min-width:981px){:root .sfp-sectie__binnen>h2:first-child{max-width:none}}
 

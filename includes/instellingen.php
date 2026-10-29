@@ -155,6 +155,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Pagina\'s, berichten, begrippen en tools lezen, bijwerken en herstellen via de MCP-koppeling, met revisiecontrole.',
             'detail' => false,
         ),
+        'banner'     => array(
+            'naam'   => 'Banner',
+            'uitleg' => 'Eén regel boven de header: een boek of e-course in een periode die je kiest, anders vanzelf de eerstvolgende groep uit de cursusdata.',
+            'detail' => true,
+        ),
         'snippets'   => array(
             'naam'   => 'Snippetbeheer via REST',
             'uitleg' => 'Het serviceaccount claude-api leest, maakt, bewerkt en schakelt PHP-snippets van ASE Pro zonder browser.',
@@ -244,6 +249,9 @@ function sfp_page_config_onderdeel_standaard( $id ) {
             return is_array( $eigen ) && ! empty( $eigen );
         case 'snippets':
             // Schrijft code die de site uitvoert: alleen aan als iemand dat kiest.
+            return false;
+        case 'banner':
+            // Verschijnt op elke pagina: per site aan na het overzetten van de Astra-layout.
             return false;
         case 'zelftest':
             // Verzamelt gegevens van bezoekers: alleen aan als iemand dat kiest.
@@ -408,6 +416,14 @@ function sfp_page_config_norm() {
     $norm['words_per_minute'] = array(
         'label' => 'Leessnelheid voor de leestijd',
         'norm'  => '250',
+    );
+    $norm['banner.kleur']       = array(
+        'label' => 'Kleur van de banner',
+        'norm'  => 'links',
+    );
+    $norm['banner.tekst_kleur'] = array(
+        'label' => 'Tekstkleur van de banner',
+        'norm'  => 'wit',
     );
     $norm['update_kanaal']    = array(
         'label' => 'Soort versies die deze site krijgt',
@@ -694,6 +710,19 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
             case 'cron_email':
             case 'tool_feedback_mail':
                 $alle[ $sleutel ] = sanitize_email( (string) $ruw );
+                $bewaard[]        = $sleutel;
+                break;
+
+            case 'banner':
+                $alle['banner'] = function_exists( 'sfp_page_config_banner_schoon' ) ? sfp_page_config_banner_schoon( $ruw ) : array();
+                $bewaard[]      = $sleutel;
+                break;
+
+            case 'inschrijf_formulier':
+            case 'wachtlijst_formulier':
+                // Een SureForms-formulier van deze site, of leeg.
+                $id               = absint( $ruw );
+                $alle[ $sleutel ] = $id && 'sureforms_form' === get_post_type( $id ) ? $id : '';
                 $bewaard[]        = $sleutel;
                 break;
 

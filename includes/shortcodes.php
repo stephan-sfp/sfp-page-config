@@ -4,7 +4,8 @@
  *
  * [training_naam]  - Returns the training name from post meta.
  * [cursus_datum]   - Flexible date display from sfp_cursusdata JSON,
- *                    with fallback to legacy startdatum field.
+ *                    with fallback to legacy startdatum field. Only future
+ *                    groups (first day today or later) since 3.17.0.
  *
  * @package SFP_Page_Config
  */
@@ -49,6 +50,10 @@ if ( ! shortcode_exists( 'cursus_datum' ) ) {
  *   show      - 'all' (default) or 'first' (only the first date per groep).
  *   layout    - 'inline' (default) or 'list' (each groep on its own line
  *               with a label like "Groep 1:").
+ *   intro     - Text shown before the dates, only when there are dates.
+ *
+ * Only groups whose first day is today or later are shown (3.17.0). Without
+ * such a group a training page shows the waitlist text (includes/wachtlijst.php).
  *
  * Outputs Dutch day and month names regardless of WP locale setting.
  *
@@ -77,6 +82,7 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
         'separator' => ' &bull; ',
         'show'      => 'all',
         'layout'    => 'inline',
+        'intro'     => '',
     ), $atts, 'cursus_datum' );
 
     // Backwards compatibility: accept old 'startmoment' attribute as alias.
@@ -93,25 +99,20 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
         $post_id = $queried ? $queried : intval( get_the_ID() );
     }
 
-    // Request-level caching for cursusdata meta lookups.
-    static $cache = array();
-    if ( isset( $cache[ $post_id ] ) ) {
-        $data = $cache[ $post_id ];
-    } else {
-        $json = get_post_meta( $post_id, 'sfp_cursusdata', true );
-        $data = $json ? json_decode( $json, true ) : array();
-        if ( json_last_error() !== JSON_ERROR_NONE ) {
-            $data = array();
-        }
-        $cache[ $post_id ] = $data;
-    }
+    // Alleen groepen waarvan de eerste dag vandaag of later is
+    // (includes/wachtlijst.php). Verlopen groepen staan nergens meer.
+    $data = sfp_page_config_cursusdata_toekomst( $post_id );
 
     if ( ! empty( $data ) && is_array( $data ) ) {
 
         // Optionally filter to a single groep.
         if ( '' !== $atts['groep'] ) {
             $idx  = intval( $atts['groep'] ) - 1;
-            $data = isset( $data[ $idx ] ) ? array( $data[ $idx ] ) : array();
+            if ( ! isset( $data[ $idx ] ) ) {
+                // Er is wel een toekomstige groep, alleen niet deze.
+                return '';
+            }
+            $data = array( $data[ $idx ] );
         }
 
         $output_parts = array();
@@ -159,20 +160,19 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
         }
 
         if ( ! empty( $output_parts ) ) {
-            return '<div class="cursus-data-wrapper">' . implode( '', $output_parts ) . '</div>';
+            // De intro staat er alleen met data, zodat een vraag als "Wanneer
+            // start de volgende groep?" zonder data niet tegenstrijdig wordt.
+            $intro = '' !== trim( (string) $atts['intro'] ) ? '<span class="cursus-datum-intro" style="margin:0">' . esc_html( $atts['intro'] ) . '</span><br><br>' : '';
+            return $intro . '<div class="cursus-data-wrapper">' . implode( '', $output_parts ) . '</div>';
         }
     }
 
-    // Fallback: legacy startdatum field.
-    $datum_raw = get_post_meta( $post_id, 'startdatum', true );
-    if ( empty( $datum_raw ) ) {
-        return '';
+    // Geen toekomstige groep. Op een trainingspagina de wachtlijsttekst (het
+    // oude veld startdatum telt al mee in sfp_page_config_cursusdata_toekomst()).
+    if ( 'training' === get_post_meta( $post_id, 'sfp_page_type', true ) && sfp_page_config_onderdeel_aan( 'cursusdata' ) ) {
+        return sfp_page_config_wachtlijst_html();
     }
-
-    $formatted = sfp_page_config_format_datum( $datum_raw, $atts['format'] );
-    return $formatted
-        ? '<span class="cursus-datum">' . esc_html( $formatted ) . '</span>'
-        : '';
+    return '';
 }
 
 /* =========================================================================
@@ -234,18 +234,9 @@ function sfp_page_config_shortcode_cursus_tijd( $atts ) {
         $post_id = $queried ? $queried : intval( get_the_ID() );
     }
 
-    // Request-level caching for cursusdata meta lookups.
-    static $cache = array();
-    if ( isset( $cache[ $post_id ] ) ) {
-        $data = $cache[ $post_id ];
-    } else {
-        $json = get_post_meta( $post_id, 'sfp_cursusdata', true );
-        $data = $json ? json_decode( $json, true ) : array();
-        if ( json_last_error() !== JSON_ERROR_NONE ) {
-            $data = array();
-        }
-        $cache[ $post_id ] = $data;
-    }
+    // Dezelfde groepen en nummering als [cursus_datum]: alleen groepen
+    // waarvan de eerste dag vandaag of later is.
+    $data = sfp_page_config_cursusdata_toekomst( $post_id );
 
     $sep    = $atts['separator'];
     $suffix = $atts['suffix'];
