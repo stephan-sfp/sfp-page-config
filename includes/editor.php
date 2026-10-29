@@ -184,7 +184,7 @@ function sfp_page_config_editor_paneel() {
     wp_enqueue_script(
         'sfp-deze-pagina',
         SFP_PAGE_CONFIG_URL . 'assets/editor/deze-pagina.js',
-        array( 'wp-plugins', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data', 'wp-api-fetch', 'wp-url', 'wp-blocks', 'wp-block-editor', 'wp-editor', 'wp-edit-post' ),
+        array( 'wp-plugins', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data', 'wp-api-fetch', 'wp-url', 'wp-blocks', 'wp-block-editor', 'wp-editor', 'wp-edit-post', 'wp-dom-ready' ),
         SFP_PAGE_CONFIG_VERSION,
         true
     );
@@ -243,6 +243,8 @@ function sfp_page_config_editor_gegevens( $post_type ) {
         'pijler'         => function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan(),
         'begrip'         => function_exists( 'sfp_page_config_begrip_aan' ) && sfp_page_config_begrip_aan(),
         'tools'          => function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan(),
+        // Alleen deze alineastijlen in een artikel, begrip of tool (sinds 3.19.0).
+        'alineastijlen'  => sfp_page_config_editor_is_vorm( $post_type ) ? sfp_page_config_vorm_alineastijlen() : null,
         'beheer'         => admin_url( 'admin.php?page=sfp-page-config' ),
         'home'           => home_url( '/' ),
     );
@@ -625,4 +627,101 @@ function sfp_page_config_tool_canvas_css() {
     }
     wp_enqueue_style( 'sfp-tool-editor', SFP_PAGE_CONFIG_URL . 'assets/tool/tool.css', array(), SFP_PAGE_CONFIG_VERSION );
     wp_enqueue_style( 'sfp-tool-canvas', SFP_PAGE_CONFIG_URL . 'assets/editor/tool-canvas.css', array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
+}
+
+/* =========================================================================
+ * Artikel, begrip en tool: alleen de stijlen van de vorm (sinds 3.19.0)
+ * ====================================================================== */
+
+/**
+ * De alineastijlen die bij een artikel, begrip of tool horen. De andere
+ * stijlen (Getal, Prijs, Mailregel, Naam met portret ...) betekenen alleen
+ * iets op een dienstpagina.
+ *
+ * @return string[]
+ */
+function sfp_page_config_vorm_alineastijlen() {
+    return array( 'sfp-lead', 'sfp-pijl', 'sfp-klein' );
+}
+
+/**
+ * Staat dit soort bericht in de editor in een vorm van de plugin (artikel,
+ * begrip, tool)? Alleen met het onderdeel Artikelen aan: zonder die
+ * opmaak is een bericht een gewone pagina en houdt het alle keuzes.
+ *
+ * @param  string $post_type Soort bericht.
+ * @return bool
+ */
+function sfp_page_config_editor_is_vorm( $post_type ) {
+    if ( ! function_exists( 'sfp_page_config_artikel_aan' ) || ! sfp_page_config_artikel_aan() ) {
+        return false;
+    }
+    $types = function_exists( 'sfp_page_config_artikel_posttypes' ) ? sfp_page_config_artikel_posttypes() : array( 'post' );
+    return in_array( (string) $post_type, $types, true );
+}
+
+add_filter( 'block_editor_settings_all', 'sfp_page_config_editor_vorm_instellingen', 20, 2 );
+
+/**
+ * In een artikel, begrip of tool geen vrije kleur, achtergrond, verloop of
+ * lettergrootte (ontwerpregel 21): het merk komt uit de vorm. Wat al is
+ * opgeslagen, blijft op de site staan; alleen de keuze verdwijnt.
+ *
+ * @param  array                   $instellingen Instellingen van de editor.
+ * @param  WP_Block_Editor_Context $context      Context.
+ * @return array
+ */
+function sfp_page_config_editor_vorm_instellingen( $instellingen, $context ) {
+    $post = ( is_object( $context ) && isset( $context->post ) ) ? $context->post : null;
+    if ( ! $post instanceof WP_Post || ! sfp_page_config_editor_is_vorm( $post->post_type ) ) {
+        return $instellingen;
+    }
+    return sfp_page_config_editor_zonder_kleur( $instellingen );
+}
+
+/**
+ * Haal kleur, achtergrond, verloop en lettergrootte uit de instellingen van
+ * de editor, ook per blok.
+ *
+ * @param  array $instellingen Instellingen van de editor.
+ * @return array
+ */
+function sfp_page_config_editor_zonder_kleur( array $instellingen ) {
+    $uit = function ( array $f ) {
+        if ( ! isset( $f['color'] ) || ! is_array( $f['color'] ) ) {
+            $f['color'] = array();
+        }
+        $f['color']['text']             = false;
+        $f['color']['background']       = false;
+        $f['color']['link']             = false;
+        $f['color']['custom']           = false;
+        $f['color']['customGradient']   = false;
+        $f['color']['defaultGradients'] = false;
+        $f['color']['defaultPalette']   = false;
+        $f['color']['gradients']        = array();
+        if ( ! isset( $f['typography'] ) || ! is_array( $f['typography'] ) ) {
+            $f['typography'] = array();
+        }
+        $f['typography']['customFontSize']   = false;
+        $f['typography']['defaultFontSizes'] = false;
+        $f['typography']['fontSizes']        = array();
+        return $f;
+    };
+    if ( isset( $instellingen['__experimentalFeatures'] ) && is_array( $instellingen['__experimentalFeatures'] ) ) {
+        $instellingen['__experimentalFeatures'] = $uit( $instellingen['__experimentalFeatures'] );
+        if ( isset( $instellingen['__experimentalFeatures']['blocks'] ) && is_array( $instellingen['__experimentalFeatures']['blocks'] ) ) {
+            foreach ( $instellingen['__experimentalFeatures']['blocks'] as $blok => $f ) {
+                if ( is_array( $f ) && ( isset( $f['color'] ) || isset( $f['typography'] ) ) ) {
+                    $instellingen['__experimentalFeatures']['blocks'][ $blok ] = $uit( $f );
+                }
+            }
+        }
+    }
+    // De oudere sleutels, voor thema's zonder theme.json (Astra).
+    $instellingen['disableCustomColors']    = true;
+    $instellingen['disableCustomGradients'] = true;
+    $instellingen['disableCustomFontSizes'] = true;
+    $instellingen['gradients']              = array();
+    $instellingen['fontSizes']              = array();
+    return $instellingen;
 }

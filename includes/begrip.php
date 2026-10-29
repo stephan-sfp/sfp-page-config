@@ -160,6 +160,49 @@ function sfp_page_config_begrip_samenvatting( $samenvatting, $post = null ) {
 }
 
 /* =========================================================================
+ * Sjabloon voor een nieuw begrip (sinds 3.19.0)
+ * ====================================================================== */
+
+add_action( 'init', 'sfp_page_config_begrip_sjabloon', 20 );
+
+/**
+ * Een nieuw begrip begint met Definitie (vast bovenaan), In een presentatie
+ * en Check je begrip (ontwerpregel 13). Geldt voor wie het berichttype ook
+ * registreerde; bestaande begrippen veranderen niet.
+ */
+function sfp_page_config_begrip_sjabloon() {
+    if ( ! sfp_page_config_begrip_aan() ) {
+        return;
+    }
+    $type = get_post_type_object( 'begrippen' );
+    if ( ! $type || ! empty( $type->template ) ) {
+        return;
+    }
+    $type->template = sfp_page_config_begrip_sjabloon_blokken();
+}
+
+/**
+ * De blokken van het sjabloon.
+ *
+ * @return array
+ */
+function sfp_page_config_begrip_sjabloon_blokken() {
+    return array(
+        array(
+            'sfp/definitie',
+            array(
+                'lock' => array(
+                    'move'   => true,
+                    'remove' => true,
+                ),
+            ),
+        ),
+        array( 'sfp/in-een-talk' ),
+        array( 'sfp/begrip-check', array(), array( array( 'sfp/begrip-vraag' ) ) ),
+    );
+}
+
+/* =========================================================================
  * Blokken
  * ====================================================================== */
 
@@ -197,7 +240,9 @@ function sfp_page_config_begrip_blokken( $blokken ) {
         'render'       => 'sfp_page_config_render_definitie',
     );
     $blokken['sfp/in-een-talk'] = array(
-        'title'        => 'In a talk',
+        // Nederlandse naam in de editor (besluit Stephan 29-10-2026); het
+        // label voor de bezoeker volgt de taal van de site.
+        'title'        => 'In een presentatie',
         'description'  => 'Eén voorbeeldzin uit een echte presentatie, met één regel uitleg. Hoogstens één per begrip.',
         'icon'         => 'format-chat',
         'css'          => 'definitie',
@@ -208,10 +253,10 @@ function sfp_page_config_begrip_blokken( $blokken ) {
         ),
         'render'       => 'sfp_page_config_render_in_een_talk',
     );
-    // Check your understanding (sinds 3.7.1, besluit Stephan 19-10-2026):
+    // Check je begrip (sinds 3.7.1, besluit Stephan 19-10-2026):
     // één tot drie meerkeuzevragen met directe uitleg. Optioneel.
     $blokken['sfp/begrip-check'] = array(
-        'title'        => 'Check your understanding',
+        'title'        => 'Check je begrip',
         'description'  => 'Eén tot drie meerkeuzevragen over het begrip, met directe uitleg na elk antwoord. Optioneel; niets wordt bewaard.',
         'icon'         => 'welcome-learn-more',
         'css'          => 'definitie',
@@ -744,8 +789,8 @@ function sfp_page_config_begrip_controle( $post ) {
     if ( substr_count( (string) $post->post_content, '<!-- wp:sfp/in-een-talk' ) > 1 ) {
         $meldingen[] = array(
             'code'  => 'begrip-talk',
-            'kort'  => 'Meer dan één In a talk',
-            'tekst' => 'Een begrip heeft hoogstens één blok In a talk.',
+            'kort'  => 'Meer dan één blok In een presentatie',
+            'tekst' => 'Een begrip heeft hoogstens één blok In een presentatie.',
             'actie' => 'editor',
         );
     }

@@ -74,9 +74,10 @@ function sfp_page_config_artikel_teksten() {
             'vorige'           => 'Previous articles',
             'volgende'         => 'Next articles',
             'pagina_van'       => '%1$d / %2$d',
-            'zelftest'         => 'Self-test',
-            'zelftest_n'       => 'Self-test: %d questions',
-            'doe_zelftest'     => 'Take the self-test',
+            // Sinds 3.19.0 Self-assessment (besluit Stephan 28-10-2026).
+            'zelftest'         => 'Self-assessment',
+            'zelftest_n'       => 'Self-assessment: %d questions',
+            'doe_zelftest'     => 'Take the self-assessment',
             'verder_lezen'     => 'Go deeper',
             'onderdeel'        => 'Part of %s',
             'onderdeel_in'     => 'Part of %1$s in %2$s',
@@ -139,7 +140,8 @@ function sfp_page_config_artikel_teksten() {
             // Tools (sinds 3.8.0).
             'tool_in'               => '%1$s in %2$s',
             'tools'                 => 'Tools',
-            'tool_test'             => 'Self-test',
+            // Sinds 3.19.0 Test: de zelftest is geen tool (besluit Stephan 29-10-2026).
+            'tool_test'             => 'Test',
             'tool_generator'        => 'Generator',
             'tool_rekenaar'         => 'Calculator',
             'tool_slim'             => 'Smart tool',
@@ -331,7 +333,7 @@ function sfp_page_config_artikel_teksten() {
             // Tools (sinds 3.8.0).
             'tool_in'               => '%1$s in %2$s',
             'tools'                 => 'Tools',
-            'tool_test'             => 'Zelftest',
+            'tool_test'             => 'Test',
             'tool_generator'        => 'Generator',
             'tool_rekenaar'         => 'Rekenaar',
             'tool_slim'             => 'Slimme tool',
@@ -524,7 +526,7 @@ function sfp_page_config_artikel_teksten() {
             // Tools (sinds 3.8.0).
             'tool_in'               => '%1$s em %2$s',
             'tools'                 => 'Ferramentas',
-            'tool_test'             => 'Autoteste',
+            'tool_test'             => 'Teste',
             'tool_generator'        => 'Gerador',
             'tool_rekenaar'         => 'Calculadora',
             'tool_slim'             => 'Ferramenta inteligente',

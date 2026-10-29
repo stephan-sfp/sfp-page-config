@@ -3,7 +3,7 @@
  * SFP Page Config - Vorm Tool
  *
  * De pagina van een tool in de artikelopmaak (concept 6, besluiten S15 en
- * S19): regel boven de titel (Self-test in <pijler>), de regel onder de
+ * S19): regel boven de titel (Test in <pijler>), de regel onder de
  * titel (samenvatting, hoogstens één zin), de tool zelf boven de tekst,
  * de makerskaart Made by onderaan vóór het vervolg, Andere tools, en de
  * gegevens voor Google (WebApplication, gratis, isBasedOn naar "Hoe deze
@@ -40,7 +40,7 @@ function sfp_page_config_tool_soortnaam( $b ) {
 }
 
 /**
- * De regel boven de titel: Self-test in <pijler>, of alleen de soort met een
+ * De regel boven de titel: Test in <pijler> (Generator in <pijler> ...), of alleen de soort met een
  * link naar het toolsoverzicht.
  *
  * @param  WP_Post $post Tool.

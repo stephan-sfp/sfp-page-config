@@ -32,6 +32,22 @@
 	}
 
 	/* =====================================================================
+	 * Artikel, begrip en tool: alleen de alineastijlen van de vorm
+	 * (sinds 3.19.0). De rest betekent alleen iets op een dienstpagina.
+	 * =================================================================== */
+
+	if ( S.alineastijlen && wp.blocks && wp.domReady ) {
+		wp.domReady( function () {
+			var mag = S.alineastijlen;
+			( wp.data.select( 'core/blocks' ).getBlockStyles( 'core/paragraph' ) || [] ).forEach( function ( stijl ) {
+				if ( 0 === stijl.name.indexOf( 'sfp-' ) && mag.indexOf( stijl.name ) < 0 ) {
+					wp.blocks.unregisterBlockStyle( 'core/paragraph', stijl.name );
+				}
+			} );
+		} );
+	}
+
+	/* =====================================================================
 	 * Hulp
 	 * =================================================================== */
 
@@ -168,6 +184,12 @@
 				window.dispatchEvent( new CustomEvent( 'sfp-editor-stand', { detail: s } ) );
 			} ).catch( function () {} );
 		}, [ editor.id, editor.opslaan ] );
+
+		// De pijler van een artikel kies je hier: paneel Categorieën uit beeld.
+		var artikelPijler = !! S.artikel && 'post' === editor.type;
+		useEffect( function () {
+			if ( artikelPijler ) { verbergCategorieen(); }
+		}, [ artikelPijler ] );
 
 		var soortId = meta.sfp_page_type || '';
 		var soort = ( S.soorten || [] ).filter( function ( s ) { return s.id === soortId; } )[ 0 ] || ( S.soorten || [] )[ 0 ] || { id: '', naam: 'Gewone pagina', uitleg: '' };
@@ -314,8 +336,9 @@
 
 		// Begrip en tool: bij welke pijler hoort dit?
 		if ( 'post' !== editor.type ) {
+			var isBegrip = 'begrippen' === editor.type;
 			var stukken = [
-				kop( 'begrippen' === editor.type ? 'Begrip' : 'Pijler' ),
+				kop( isBegrip ? 'Bij dit begrip' : 'Bij deze tool' ),
 				stuk( 'Hoort bij de pijler', 'Bepaalt de regel boven de titel, de kaart van de pijler en het vervolg. Leeg: bij geen pijler.', 'sfp_pijler',
 					[ { value: '0', label: 'Geen pijler' } ].concat( catOpties ), true )
 			];
@@ -328,6 +351,15 @@
 						stukken.push( el( 'div', { key: 'bm' + i }, melding( m.tekst, 'let' ) ) );
 					} );
 				}
+			}
+			// Sinds 3.19.0 hier ook wat er vanzelf bij komt, zonder de
+			// artikelzaken (onderwerpen, warming-up).
+			if ( S.artikel ) {
+				stukken.push( el( 'div', { key: 'bij', className: 'sfp-dp-lijst' },
+					stand.vervolg ? regel( 'Vervolg', stand.vervolg ) : null,
+					regel( 'Uitgelichte afbeelding', editor.beeld ? 'ingesteld' : 'ontbreekt', ! editor.beeld ),
+					stand.promo ? regel( 'Promokaart', isBegrip ? 'naast de definitie' : 'naast de tool' ) : null
+				) );
 			}
 			return el( 'div', { className: 'sfp-dp-deel' }, stukken );
 		}
@@ -394,7 +426,7 @@
 		var meerState = useState( false );
 		var stukken = [ kop( 'Tool' ) ];
 		if ( ! S.tools ) {
-			stukken.push( melding( 'Het onderdeel Tools staat uit (SFP Beheer, Onderdelen). De beschrijving kun je wel al invullen.', 'let' ) );
+			stukken.push( melding( 'Het onderdeel Online tools staat uit (SFP Beheer, Onderdelen). De beschrijving kun je wel al invullen.', 'let' ) );
 		}
 		// Sinds 3.16.0: de teksten typ je in de tool in het canvas. Hier de
 		// keuzes over de vorm; de beschrijving zelf staat onder Geavanceerd.
@@ -650,28 +682,100 @@
 
 	/* ---------- Bij dit artikel ---------- */
 
+	/**
+	 * Bij dit artikel, of bij dit begrip of deze tool: per vorm alleen wat
+	 * bij die vorm hoort (sinds 3.19.0). Een begrip en een tool hebben geen
+	 * onderwerpen en geen warming-up; hun pijler kies je hierboven.
+	 */
 	function BijArtikel( props ) {
 		var editor = props.editor;
 		var stand = props.stand || {};
 		var blokken = alleBlokken( editor.blokken );
-		var vragen = blokken.filter( function ( b ) { return 'sfp/warming-up-vraag' === b.name; } ).length;
 		var heeftDeelbeeld = blokken.some( function ( b ) { return 'sfp/inzicht' === b.name || 'sfp/samenvatting' === b.name; } );
 
+		if ( 'post' !== editor.type ) {
+			// Begrip en tool: deze regels staan bij de pijlerkeuze (Vorm).
+			return null;
+		}
+
+		var vragen = blokken.filter( function ( b ) { return 'sfp/warming-up-vraag' === b.name; } ).length;
 		return el( Fragment, null,
 			el( 'div', { className: 'sfp-dp-deel' },
 				kop( 'Bij dit artikel' ),
+				el( PijlerVanArtikel, { key: 'pijler' } ),
 				el( 'div', { className: 'sfp-dp-lijst' },
-					regel( 'Pijler', stand.pijler || 'geen', ! stand.pijler ),
 					regel( 'Onderwerpen', stand.onderwerpen && stand.onderwerpen.length ? stand.onderwerpen.join( ', ' ) : 'geen' ),
 					regel( 'Warming-up', vragen ? ( 1 === vragen ? '1 vraag' : vragen + ' vragen' ) : 'geen' ),
 					regel( 'Vervolg', stand.vervolg || 'geen' ),
 					regel( 'Uitgelichte afbeelding', editor.beeld ? 'ingesteld' : 'ontbreekt', ! editor.beeld ),
 					stand.promo ? regel( 'Promokaart', 'naast het artikel' ) : null
 				),
-				hulp( 'Pijler en onderwerpen kies je bij Categorieën en Tags.' )
+				hulp( 'Onderwerpen kies je bij Tags.' )
 			),
 			heeftDeelbeeld ? el( Deelbeeld, { id: editor.id, vuil: editor.vuil, opslaan: editor.opslaan } ) : null
 		);
+	}
+
+	/**
+	 * De pijler van een artikel kies je hier, niet in het paneel
+	 * Categorieën (sinds 3.19.0). De keuze zet precies die ene categorie;
+	 * de pijler van een artikel is zijn categorie.
+	 */
+	function PijlerVanArtikel() {
+		var st = data.useSelect( function ( select ) {
+			var kern = select( 'core' );
+			return {
+				gekozen: select( 'core/editor' ).getEditedPostAttribute( 'categories' ) || [],
+				lijst: kern.getEntityRecords( 'taxonomy', 'category', { per_page: 100, orderby: 'name', order: 'asc', _fields: 'id,name,parent' } ),
+			};
+		}, [] );
+		var lijst = st.lijst || [];
+		var namen = {};
+		lijst.forEach( function ( t ) { namen[ t.id ] = t; } );
+		// Bij meer categorieën (van vroeger): de diepste, zoals de site.
+		var diepte = function ( id ) {
+			var d = 0;
+			var t = namen[ id ];
+			while ( t && t.parent && d < 10 ) { d++; t = namen[ t.parent ]; }
+			return d;
+		};
+		var waarde = '';
+		st.gekozen.forEach( function ( id ) {
+			if ( '' === waarde || diepte( id ) > diepte( parseInt( waarde, 10 ) ) ) { waarde = String( id ); }
+		} );
+		var opties = lijst.map( function ( t ) {
+			return { value: String( t.id ), label: ( t.parent ? '  ' : '' ) + tekstVan( t.name ) };
+		} );
+		if ( '' === waarde ) {
+			opties = [ { value: '', label: 'Kies de pijler' } ].concat( opties );
+		}
+		return el( Fragment, null,
+			el( c.SelectControl, {
+				label: 'Hoort bij de pijler',
+				value: waarde,
+				options: opties,
+				onChange: function ( v ) {
+					var id = parseInt( v, 10 );
+					data.dispatch( 'core/editor' ).editPost( { categories: id ? [ id ] : [] } );
+				},
+				help: 'Bepaalt de regel boven de titel, de kaart van de pijler en het vervolg. Dit is ook de categorie van het artikel.',
+				__nextHasNoMarginBottom: true,
+				__next40pxDefaultSize: true,
+			} ),
+			st.gekozen.length > 1 ? melding( 'Dit artikel heeft ' + st.gekozen.length + ' categorieën. Een keuze hier laat er één over.', 'let' ) : null
+		);
+	}
+
+	/**
+	 * Het paneel Categorieën gaat uit beeld waar je de pijler in Deze pagina
+	 * kiest: een artikel in de artikelopmaak (sinds 3.19.0).
+	 */
+	function verbergCategorieen() {
+		var weg = ( data.dispatch( 'core/editor' ) && data.dispatch( 'core/editor' ).removeEditorPanel ) ||
+			( data.dispatch( 'core/edit-post' ) && data.dispatch( 'core/edit-post' ).removeEditorPanel );
+		if ( weg ) {
+			weg( 'taxonomy-panel-category' );
+		}
 	}
 
 	/* ---------- Beeld om te delen ---------- */

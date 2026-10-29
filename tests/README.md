@@ -112,3 +112,11 @@ php tests/fundament.php
 ```
 
 Checks the four foundation parts with small WordPress stubs: they are off by default; colour roles take over the snippet mapping once when switched on and print the same declarations under the same id; saving drops unknown roles and slots outside the palette; the font variables come from Astra (H1 falls back to headings, headings to body) and are written the way the browser reports them; post types take over slug, with_front, rest_base and the labels the snippet set, keep that address after the snippet goes, and follow the site language without a snippet (FL: /ferramentas/); menu icons; the page-management class only exists with its part switched on.
+
+# Editor-panelen en beheer (3.19.0)
+
+```sh
+php tests/editor-panelen.php
+```
+
+Checks with small WordPress stubs: own reviews (input schema, updating without losing fields, 400 and 404, the four abilities and the explicit approval for deleting), the pdf address the plugin builds from the test page (equal to the live addresses on DPS and SwS), the network norm for the address of a post type with the 301 redirect of the old address, the Dutch names in the admin, the editor without free colour and font size in an article, begrip or tool, an own-site link shown as a page, the begrip template and the new texts. It does not replace a run in a real WordPress with a browser.

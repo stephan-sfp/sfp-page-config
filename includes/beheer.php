@@ -47,6 +47,34 @@ function sfp_page_config_beheer_menu() {
     );
 }
 
+add_action( 'admin_menu', 'sfp_page_config_beheer_menu_naam', PHP_INT_MAX );
+
+/**
+ * Het menu heet SFP Beheer (besluit Stephan 10-10-2026), ook als een oud
+ * snippet het menu aanmaakte of een menu-indeling (zoals die van ASE Pro)
+ * de oude naam bewaarde. Staat het er twee keer, dan blijft er één over
+ * (sinds 3.19.0). Als laatste, zodat geen andere indeling het terugzet.
+ */
+function sfp_page_config_beheer_menu_naam() {
+    global $menu;
+    if ( ! is_array( $menu ) ) {
+        return;
+    }
+    $gezien = false;
+    foreach ( $menu as $plek => $item ) {
+        if ( ! isset( $item[2] ) || 'sfp-page-config' !== $item[2] ) {
+            continue;
+        }
+        if ( $gezien ) {
+            unset( $menu[ $plek ] ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- het menu van WordPress zelf.
+            continue;
+        }
+        $gezien              = true;
+        $menu[ $plek ][0] = 'SFP Beheer'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+        $menu[ $plek ][3] = 'SFP Beheer'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+    }
+}
+
 // Pas na de toegangscontrole van WordPress: wie het item eerder uit het menu
 // haalt, maakt het scherm zelf onbereikbaar.
 add_action( 'admin_head', 'sfp_page_config_beheer_menu_opruimen' );
@@ -179,6 +207,23 @@ function sfp_page_config_beheer_fonts_url() {
  * ====================================================================== */
 
 /**
+ * De gepubliceerde pagina van deze site achter een link, of 0.
+ *
+ * @since  3.19.0
+ * @param  string $url Link.
+ * @return int
+ */
+function sfp_page_config_beheer_eigen_pagina( $url ) {
+    $thuis = wp_parse_url( home_url( '/' ), PHP_URL_HOST );
+    $host  = wp_parse_url( (string) $url, PHP_URL_HOST );
+    if ( ! $host || strtolower( (string) $host ) !== strtolower( (string) $thuis ) ) {
+        return 0;
+    }
+    $id = (int) url_to_postid( (string) $url );
+    return ( $id && 'page' === get_post_type( $id ) && 'publish' === get_post_status( $id ) ) ? $id : 0;
+}
+
+/**
  * De gepubliceerde pagina's van de site, om uit te kiezen.
  *
  * @return array<int, array{id: int, titel: string}>
@@ -300,9 +345,17 @@ function sfp_page_config_beheer_stand() {
         'voorbeeld'     => sfp_page_config_beheer_artikel_voorbeeld(),
     );
     foreach ( array( 'factcheck', 'redactie', 'bibliografie' ) as $link ) {
+        $pagina = isset( $alle[ 'artikel_' . $link . '_pagina' ] ) ? (int) $alle[ 'artikel_' . $link . '_pagina' ] : 0;
+        $url    = isset( $alle[ 'artikel_' . $link . '_url' ] ) ? (string) $alle[ 'artikel_' . $link . '_url' ] : '';
+        // Sinds 3.19.0: een bewaarde link naar een pagina van deze site staat
+        // in de keuzelijst als die pagina. Opgeslagen blijft wat er was tot
+        // iemand opslaat; de site toont in beide gevallen dezelfde pagina.
+        if ( ! $pagina && '' !== $url ) {
+            $pagina = sfp_page_config_beheer_eigen_pagina( $url );
+        }
         $artikel['links'][ $link ] = array(
-            'pagina' => isset( $alle[ 'artikel_' . $link . '_pagina' ] ) ? (int) $alle[ 'artikel_' . $link . '_pagina' ] : 0,
-            'url'    => isset( $alle[ 'artikel_' . $link . '_url' ] ) ? (string) $alle[ 'artikel_' . $link . '_url' ] : '',
+            'pagina' => $pagina,
+            'url'    => $url,
         );
     }
 
@@ -697,49 +750,48 @@ function sfp_page_config_beheer_rest() {
         }
     );
 
-    // Eigen reviews: toevoegen of bijwerken.
-    $route(
-        '/reviews/eigen',
-        'POST',
-        function ( WP_REST_Request $verzoek ) use ( $json ) {
-            if ( ! class_exists( 'SFP_Reviews_Manual' ) || ! method_exists( 'SFP_Reviews_Manual', 'schoon' ) ) {
-                return new WP_Error( 'sfp_reviews_oude_plugin', 'Eigen reviews beheer je hier zodra de oude plugin SFP Google Reviews uit staat.', array( 'status' => 409 ) );
-            }
-            $gegevens = $json( $verzoek );
-            $review   = array(
-                'author' => isset( $gegevens['author'] ) ? $gegevens['author'] : '',
-                'rating' => isset( $gegevens['rating'] ) ? $gegevens['rating'] : 5,
-                'datum'  => isset( $gegevens['datum'] ) ? $gegevens['datum'] : '',
-                'text'   => isset( $gegevens['text'] ) ? $gegevens['text'] : '',
-                'time'   => isset( $gegevens['time'] ) ? $gegevens['time'] : '',
-                // Sinds 3.14.0.
-                'vermelding' => isset( $gegevens['vermelding'] ) ? $gegevens['vermelding'] : '',
-            );
-            if ( '' === trim( (string) $review['author'] ) || '' === trim( (string) $review['text'] ) ) {
-                return new WP_Error( 'sfp_reviews_onvolledig', 'Vul een naam en een tekst in.', array( 'status' => 400 ) );
-            }
-            if ( ! empty( $gegevens['id'] ) ) {
-                SFP_Reviews_Manual::update( (string) $gegevens['id'], $review );
-            } else {
-                SFP_Reviews_Manual::add( $review );
-            }
-            delete_transient( 'sfp_pc_in_gebruik' );
-            return rest_ensure_response( sfp_page_config_beheer_stand() );
-        }
+    // Eigen reviews: toevoegen of bijwerken. Sinds 3.19.0 met een
+    // invoerschema: een onvolledig verzoek krijgt 400 voordat er iets gebeurt.
+    register_rest_route(
+        'sfp/v1',
+        '/beheer/reviews/eigen',
+        array(
+            'methods'             => 'POST',
+            'permission_callback' => $mag,
+            'args'                => sfp_page_config_reviews_eigen_args(),
+            'callback'            => function ( WP_REST_Request $verzoek ) {
+                $uit = sfp_page_config_reviews_eigen_bewaar( (array) $verzoek->get_params() );
+                if ( is_wp_error( $uit ) ) {
+                    return $uit;
+                }
+                return rest_ensure_response( sfp_page_config_beheer_stand() );
+            },
+        )
     );
 
     // Eigen reviews: weghalen.
-    $route(
-        '/reviews/eigen/weg',
-        'POST',
-        function ( WP_REST_Request $verzoek ) use ( $json ) {
-            if ( ! class_exists( 'SFP_Reviews_Manual' ) ) {
-                return new WP_Error( 'sfp_reviews_geen_class', 'Reviews zijn op deze site niet beschikbaar.', array( 'status' => 500 ) );
-            }
-            $gegevens = $json( $verzoek );
-            SFP_Reviews_Manual::delete( isset( $gegevens['id'] ) ? (string) $gegevens['id'] : '' );
-            return rest_ensure_response( sfp_page_config_beheer_stand() );
-        }
+    register_rest_route(
+        'sfp/v1',
+        '/beheer/reviews/eigen/weg',
+        array(
+            'methods'             => 'POST',
+            'permission_callback' => $mag,
+            'args'                => array(
+                'id' => array(
+                    'description' => 'Het id van de review (begint met mr_).',
+                    'type'        => 'string',
+                    'required'    => true,
+                    'minLength'   => 1,
+                ),
+            ),
+            'callback'            => function ( WP_REST_Request $verzoek ) {
+                $uit = sfp_page_config_reviews_eigen_weg( (string) $verzoek->get_param( 'id' ) );
+                if ( is_wp_error( $uit ) ) {
+                    return $uit;
+                }
+                return rest_ensure_response( sfp_page_config_beheer_stand() );
+            },
+        )
     );
 }
 
@@ -798,4 +850,137 @@ function sfp_page_config_beheer_formulieren() {
         );
     }
     return $uit;
+}
+
+/* =========================================================================
+ * Eigen reviews: invoerschema en bewaren (sinds 3.19.0)
+ * ====================================================================== */
+
+/**
+ * Het invoerschema van een eigen review, voor REST en de abilities.
+ *
+ * @param  bool $bijwerken Voor bijwerken via een ability: id verplicht, de rest niet.
+ * @return array
+ */
+function sfp_page_config_reviews_eigen_args( $bijwerken = false ) {
+    return array(
+        'id'         => array(
+            'description' => 'Leeg of weglaten: een nieuwe review. Met een id: die review bijwerken.',
+            'type'        => 'string',
+            'required'    => $bijwerken,
+            'minLength'   => $bijwerken ? 1 : 0,
+        ),
+        'author'     => array(
+            'description' => 'De naam van wie de review schreef.',
+            'type'        => 'string',
+            'required'    => ! $bijwerken,
+            'maxLength'   => 120,
+        ),
+        'text'       => array(
+            'description' => 'De tekst van de review.',
+            'type'        => 'string',
+            'required'    => ! $bijwerken,
+            'maxLength'   => 5000,
+        ),
+        'rating'     => array(
+            'description' => 'Aantal sterren, 1 tot en met 5.',
+            'type'        => 'integer',
+            'minimum'     => 1,
+            'maximum'     => 5,
+        ),
+        'datum'      => array(
+            'description' => 'Datum van de review als JJJJ-MM-DD, of leeg.',
+            'type'        => 'string',
+            'pattern'     => '^(\\d{4}-\\d{2}-\\d{2})?$',
+        ),
+        'time'       => array(
+            'description' => 'Oude vrije tekst voor de ouderdom (van voor 3.0.0). Alleen bewaren, niet nieuw invullen.',
+            'type'        => 'string',
+            'maxLength'   => 60,
+        ),
+        'vermelding' => array(
+            'description' => 'Korte regel onder de naam, bijvoorbeeld dat de review vertaald is. Leeg: geen vermelding.',
+            'type'        => 'string',
+            'maxLength'   => 160,
+        ),
+    );
+}
+
+/**
+ * Een eigen review toevoegen of bijwerken.
+ *
+ * @param  array $gegevens   Velden (zie het invoerschema).
+ * @param  bool  $samenvoegen Bijwerken: wat ontbreekt, blijft zoals het was (ability). Zonder: wat ontbreekt wordt leeg (het beheer stuurt altijd alles).
+ * @return array|WP_Error De bewaarde review.
+ */
+function sfp_page_config_reviews_eigen_bewaar( array $gegevens, $samenvoegen = false ) {
+    if ( ! class_exists( 'SFP_Reviews_Manual' ) || ! method_exists( 'SFP_Reviews_Manual', 'schoon' ) ) {
+        return new WP_Error( 'sfp_reviews_oude_plugin', 'Eigen reviews beheer je hier zodra de oude plugin SFP Google Reviews uit staat.', array( 'status' => 409 ) );
+    }
+    $id       = isset( $gegevens['id'] ) ? trim( (string) $gegevens['id'] ) : '';
+    $bestaand = null;
+    if ( '' !== $id ) {
+        foreach ( SFP_Reviews_Manual::get_all() as $r ) {
+            if ( isset( $r['id'] ) && (string) $r['id'] === $id ) {
+                $bestaand = $r;
+                break;
+            }
+        }
+        if ( null === $bestaand ) {
+            return new WP_Error( 'sfp_reviews_onbekend', 'Deze review bestaat niet (meer).', array( 'status' => 404 ) );
+        }
+    }
+    $velden = array( 'author', 'rating', 'datum', 'text', 'time', 'vermelding' );
+    $review = array();
+    foreach ( $velden as $veld ) {
+        if ( array_key_exists( $veld, $gegevens ) ) {
+            $review[ $veld ] = $gegevens[ $veld ];
+        } elseif ( $samenvoegen && $bestaand && array_key_exists( $veld, $bestaand ) ) {
+            $review[ $veld ] = $bestaand[ $veld ];
+        } else {
+            $review[ $veld ] = 'rating' === $veld ? 5 : '';
+        }
+    }
+    if ( '' === trim( (string) $review['author'] ) || '' === trim( (string) $review['text'] ) ) {
+        return new WP_Error( 'sfp_reviews_onvolledig', 'Vul een naam en een tekst in.', array( 'status' => 400 ) );
+    }
+    if ( $bestaand ) {
+        SFP_Reviews_Manual::update( $id, $review );
+    } else {
+        $lijst = SFP_Reviews_Manual::add( $review );
+        $id    = (string) ( end( $lijst )['id'] ?? '' );
+    }
+    delete_transient( 'sfp_pc_in_gebruik' );
+    foreach ( SFP_Reviews_Manual::get_all() as $r ) {
+        if ( isset( $r['id'] ) && (string) $r['id'] === $id ) {
+            return $r;
+        }
+    }
+    return new WP_Error( 'sfp_reviews_niet_bewaard', 'De review is niet bewaard.', array( 'status' => 500 ) );
+}
+
+/**
+ * Een eigen review weghalen.
+ *
+ * @param  string $id Id.
+ * @return true|WP_Error
+ */
+function sfp_page_config_reviews_eigen_weg( $id ) {
+    if ( ! class_exists( 'SFP_Reviews_Manual' ) ) {
+        return new WP_Error( 'sfp_reviews_geen_class', 'Reviews zijn op deze site niet beschikbaar.', array( 'status' => 500 ) );
+    }
+    $id = trim( (string) $id );
+    $er = false;
+    foreach ( SFP_Reviews_Manual::get_all() as $r ) {
+        if ( isset( $r['id'] ) && (string) $r['id'] === $id ) {
+            $er = true;
+            break;
+        }
+    }
+    if ( ! $er ) {
+        return new WP_Error( 'sfp_reviews_onbekend', 'Deze review bestaat niet (meer).', array( 'status' => 404 ) );
+    }
+    SFP_Reviews_Manual::delete( $id );
+    delete_transient( 'sfp_pc_in_gebruik' );
+    return true;
 }

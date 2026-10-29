@@ -19,8 +19,9 @@
 	wp.blocks.registerBlockType('sfp/zelftest', {
 		apiVersion: 3,
 		title: 'Zelftest',
-		description: 'De zelftest van dit label: start, vragen en eindscherm.',
-		category: 'widgets',
+		description: 'De zelftest van de site: start, vragen en eindscherm. Hoort op de testpagina.',
+		category: 'sfp-bouwstenen',
+		example: { attributes: {} },
 		icon: 'yes-alt',
 		attributes: { test: { type: 'string', default: '' }, taal: { type: 'string', default: '' } },
 		supports: { html: false, multiple: false },

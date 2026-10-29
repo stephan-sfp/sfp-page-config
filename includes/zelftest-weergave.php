@@ -31,7 +31,10 @@ function sfp_zelftest_registreer() {
             array(
                 'api_version'     => 3,
                 'title'           => 'Zelftest',
-                'category'        => 'widgets',
+                'description'     => 'De zelftest van de site: start, vragen en eindscherm. Hoort op de testpagina.',
+                // Sinds 3.19.0 in de eigen groep, zoals de andere blokken (ontwerpregel 11).
+                'category'        => 'sfp-bouwstenen',
+                'example'         => array( 'attributes' => new stdClass() ),
                 'editor_script'   => 'sfp-zelftest-editor',
                 'attributes'      => array(
                     'test' => array(

@@ -520,10 +520,175 @@ function sfp_page_config_berichttypes_stand() {
         $uit[] = array(
             'type'    => $type,
             'naam'    => $obj ? (string) $obj->labels->name : '',
+            // Sinds 3.19.0 heet het berichttype in het beheer Nederlands; dit is de naam voor de bezoeker.
+            'naam_site' => isset( $GLOBALS['sfp_page_config_site_namen'][ $type ] ) ? $GLOBALS['sfp_page_config_site_namen'][ $type ] : ( $obj ? (string) $obj->labels->name : '' ),
+            'afwijking' => sfp_page_config_berichttype_afwijking( $type ),
             'adres'   => $obj ? (string) get_post_type_archive_link( $type ) : '',
             'bewaard' => null !== $reg,
             'bron'    => ! $obj ? 'geen' : ( $eigen ? 'plugin' : 'snippet' ),
         );
     }
     return $uit;
+}
+
+/* =========================================================================
+ * Namen in het beheer en de netwerknorm voor het adres (sinds 3.19.0)
+ * ====================================================================== */
+
+add_action( 'init', 'sfp_page_config_berichttypes_beheer', 99 );
+add_action( 'rest_api_init', 'sfp_page_config_berichttypes_beheer_namen' );
+
+/**
+ * In het beheer heten de berichttypes in het Nederlands (ontwerpregel 12):
+ * Begrip en Online tool. Voor de bezoeker blijft de naam die van de site.
+ * Online tools staan alleen in het menu als het onderdeel aan staat; hun
+ * adressen blijven werken.
+ */
+function sfp_page_config_berichttypes_beheer() {
+    if ( ! is_admin() ) {
+        return;
+    }
+    sfp_page_config_berichttypes_beheer_namen();
+    $tool = get_post_type_object( 'tool' );
+    if ( $tool && function_exists( 'sfp_page_config_onderdeel_aan' ) && ! sfp_page_config_onderdeel_aan( 'tools' ) ) {
+        $tool->show_in_menu      = false;
+        $tool->show_in_admin_bar = false;
+    }
+}
+
+/**
+ * Zet de Nederlandse namen op de berichttypes, voor het beheer en de editor
+ * (die leest het berichttype via REST). Alleen de namen; adres en sleutels
+ * blijven gelijk.
+ */
+function sfp_page_config_berichttypes_beheer_namen() {
+    foreach ( sfp_page_config_berichttypes_beheer_labels() as $type => $labels ) {
+        $obj = get_post_type_object( $type );
+        if ( ! $obj || ! is_object( $obj->labels ) ) {
+            continue;
+        }
+        if ( ! isset( $GLOBALS['sfp_page_config_site_namen'][ $type ] ) ) {
+            $GLOBALS['sfp_page_config_site_namen'][ $type ] = (string) $obj->labels->name;
+        }
+        foreach ( $labels as $sleutel => $waarde ) {
+            $obj->labels->$sleutel = $waarde;
+        }
+        $obj->label = $labels['name'];
+    }
+}
+
+/**
+ * De Nederlandse namen van de berichttypes in het beheer.
+ *
+ * @return array<string, array<string, string>>
+ */
+function sfp_page_config_berichttypes_beheer_labels() {
+    $set = function ( $meer, $een, $lidwoord ) {
+        $klein = strtolower( $een );
+        $meerk = strtolower( $meer );
+        return array(
+            'name'                  => $meer,
+            'singular_name'         => $een,
+            'menu_name'             => $meer,
+            'name_admin_bar'        => $een,
+            'all_items'             => 'Alle ' . $meerk,
+            'archives'              => $meer,
+            'add_new'               => 'Nieuw' . ( 'het' === $lidwoord ? '' : 'e' ) . ' ' . $klein,
+            'add_new_item'          => 'Nieuw' . ( 'het' === $lidwoord ? '' : 'e' ) . ' ' . $klein . ' toevoegen',
+            'edit_item'             => ucfirst( $klein ) . ' bewerken',
+            'new_item'              => 'Nieuw' . ( 'het' === $lidwoord ? '' : 'e' ) . ' ' . $klein,
+            'view_item'             => ucfirst( $klein ) . ' bekijken',
+            'view_items'            => ucfirst( $meerk ) . ' bekijken',
+            'search_items'          => ucfirst( $meerk ) . ' zoeken',
+            'not_found'             => 'Geen ' . $meerk . ' gevonden',
+            'not_found_in_trash'    => 'Geen ' . $meerk . ' in de prullenbak',
+            'item_published'        => ucfirst( $klein ) . ' gepubliceerd',
+            'item_updated'          => ucfirst( $klein ) . ' bijgewerkt',
+            'item_scheduled'        => ucfirst( $klein ) . ' ingepland',
+            'item_reverted_to_draft' => ucfirst( $klein ) . ' terug naar concept',
+        );
+    };
+    return array(
+        'begrippen' => $set( 'Begrippen', 'Begrip', 'het' ),
+        'tool'      => $set( 'Online tools', 'Online tool', 'de' ),
+    );
+}
+
+/**
+ * Wijkt het adres van een berichttype af van de standaard in de taal van de
+ * site? Alleen het adres telt: namen mogen per site verschillen.
+ *
+ * @param  string $type Sleutel.
+ * @return array|null array( 'nu' => slug, 'norm' => slug ), of null.
+ */
+function sfp_page_config_berichttype_afwijking( $type ) {
+    $reg = sfp_page_config_berichttype_bewaard( $type );
+    if ( null === $reg ) {
+        return null;
+    }
+    $norm = sfp_page_config_berichttype_standaard( $type );
+    return $reg['slug'] !== $norm['slug'] ? array( 'nu' => $reg['slug'], 'norm' => $norm['slug'] ) : null;
+}
+
+/**
+ * Zet een berichttype terug op de standaard in de taal van de site: adres en
+ * namen. Het oude adres stuurt daarna door (301).
+ *
+ * @param  string $type Sleutel.
+ * @return bool
+ */
+function sfp_page_config_berichttype_naar_norm( $type ) {
+    $types = sfp_page_config_berichttypes();
+    if ( ! isset( $types[ $type ] ) || null === sfp_page_config_berichttype_afwijking( $type ) ) {
+        return false;
+    }
+    $alle  = sfp_page_config_instellingen();
+    $oud   = sfp_page_config_berichttype_bewaard( $type );
+    $nieuw = sfp_page_config_berichttype_standaard( $type );
+    // Het menu-icoon en de REST-basis blijven zoals ze waren.
+    $nieuw['rest_base'] = '' !== $oud['rest_base'] ? $oud['rest_base'] : $nieuw['rest_base'];
+    $vorig              = isset( $alle['berichttypes_vorig'][ $type ] ) ? (array) $alle['berichttypes_vorig'][ $type ] : array();
+    $vorig[]            = $oud['slug'];
+    $alle['berichttypes_vorig'][ $type ] = array_values( array_diff( array_unique( array_map( 'sanitize_title', $vorig ) ), array( $nieuw['slug'] ) ) );
+    $alle['berichttypes'][ $type ]       = $nieuw;
+    update_option( 'sfp_settings', $alle );
+    // Bij het volgende verzoek registreert de plugin het nieuwe adres en
+    // maakt hij de adressen opnieuw.
+    delete_option( 'sfp_page_config_berichttypes_adressen' );
+    return true;
+}
+
+add_action( 'template_redirect', 'sfp_page_config_berichttypes_doorsturen', 1 );
+
+/**
+ * Een oud adres van een berichttype stuurt door naar het nieuwe (301), met
+ * de rest van het pad: /begrippen/spreekangst/ wordt /glossary/spreekangst/.
+ */
+function sfp_page_config_berichttypes_doorsturen() {
+    if ( ! is_404() ) {
+        return;
+    }
+    $alle = sfp_page_config_instellingen();
+    if ( empty( $alle['berichttypes_vorig'] ) || ! is_array( $alle['berichttypes_vorig'] ) ) {
+        return;
+    }
+    $pad = isset( $GLOBALS['wp']->request ) ? trim( (string) $GLOBALS['wp']->request, '/' ) : '';
+    if ( '' === $pad ) {
+        return;
+    }
+    foreach ( $alle['berichttypes_vorig'] as $type => $oude ) {
+        $obj = get_post_type_object( $type );
+        if ( ! $obj || empty( $obj->rewrite['slug'] ) ) {
+            continue;
+        }
+        foreach ( (array) $oude as $oud ) {
+            $oud = sanitize_title( (string) $oud );
+            if ( '' === $oud || ( $pad !== $oud && 0 !== strpos( $pad, $oud . '/' ) ) ) {
+                continue;
+            }
+            $rest = (string) substr( $pad, strlen( $oud ) );
+            wp_safe_redirect( home_url( '/' . $obj->rewrite['slug'] . $rest . '/' ), 301 );
+            exit;
+        }
+    }
 }
