@@ -4,14 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.18.0-beta.1] - 2026-10-29
+## [3.18.0-beta.2] - 2026-10-29
 
 Vier restpunten na de controle van de editor op 29 oktober: in de editor staat de Zelftest-oproep, de makersregel van een begrip en de tool nu ook zoals op de site, en de ondertitel van een tool typ je in de tool zelf. Op de site verandert niets.
 
 Terugdraaien: versie 3.17.0 terugzetten. Er is niets omgezet in inhoud of toolbeschrijvingen.
 
 ### Gerepareerd
-- Zelftest-oproep: de kop staat in de editor in het kopfont, vet en in kapitalen, zoals op de site. De editor laadde de opmaak van dit blok niet.
+- Zelftest-oproep: de kop staat in de editor in het kopfont, vet en in kapitalen, zoals op de site. De editor laadde de opmaak van dit blok niet. Ook de ruimte tussen kop en zin is in de editor gelijk aan de site: Astra gaf daar elke alinea 1.6em ruimte eronder.
 - Makersregel van een begrip: in de editor geen onderstreping meer onder de links en de punt ervoor. De regel van Astra in de editor woog even zwaar en won; de regel van de plugin weegt nu zwaarder. Bij aanwijzen komt de onderstreping, zoals op de site.
 
 ### Toegevoegd

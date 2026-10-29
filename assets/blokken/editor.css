@@ -51,6 +51,8 @@
 /* Makersregel van een begrip: Astra onderstreept in de editor elke link (.editor-styles-wrapper .is-root-container a, 0,2,1); hier wint de regel van de site, ook voor de punt ervoor. */
 .editor-styles-wrapper .is-root-container .sfp-art-maker a{text-decoration:none}
 .editor-styles-wrapper .is-root-container .sfp-art-maker a:is(:hover,:focus){text-decoration:underline}
+/* Zelftest-oproep: Astra geeft in de editor elke alinea 1.6em ruimte eronder (0,4,1); op de site staan kop en zin zonder marge. */
+.editor-styles-wrapper .block-editor-block-list__layout.is-root-container .sfp-zt-cta p{margin-bottom:0}
 /* Definitie: dezelfde kaart; in de editor de feiten in twee kolommen en rechts de promokaart als Komt vanzelf. */
 .sfp-editor-definitie{display:grid;gap:24px;align-items:start}
 .sfp-editor-definitie>.sfp-definitie{margin:0}

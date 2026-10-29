@@ -86,6 +86,7 @@ foreach ( glob( $map . 'assets/blokken/*.css' ) as $bestand ) {
 $ec = preg_replace( '#/\*.*?\*/#s', '', $lees( 'assets/blokken/editor.css' ) );
 check( false !== strpos( $ec, '.editor-styles-wrapper .is-root-container .sfp-art-maker a{text-decoration:none}' ), 'makersregel: geen onderstreping in de editor, zwaarder dan Astra (0,3,1)' );
 check( false !== strpos( $ec, '.editor-styles-wrapper .is-root-container .sfp-art-maker a:is(:hover,:focus){text-decoration:underline}' ), 'makersregel: onderstreping bij aanwijzen zoals op de site' );
+check( false !== strpos( $ec, '.editor-styles-wrapper .block-editor-block-list__layout.is-root-container .sfp-zt-cta p{margin-bottom:0}' ), 'zelftest-oproep: geen Astra-marge onder de alinea in de editor (0,5,1)' );
 check( false === strpos( $lees( 'assets/blokken/definitie.css' ), 'editor-styles-wrapper' ), 'site-CSS van de makersregel ongewijzigd' );
 check( false !== strpos( $tc, "className: 'sfp-tool__balk sfp-tc-voortgangsbalk'" ) && false !== strpos( $tc, 'function balkDeel(' ), 'canvas: voortgangsbalk bij een vraag' );
 check( false !== strpos( $tc, "'alles' === W.modus ) { return -1; }" ), 'canvas: geen balk bij alles op één pagina' );
