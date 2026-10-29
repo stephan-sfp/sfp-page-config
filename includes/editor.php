@@ -575,7 +575,9 @@ function sfp_page_config_tool_canvas_editor() {
             array(
                 'teksten'    => $teksten,
                 'hoe'        => $post instanceof WP_Post ? sfp_page_config_tool_canvas_hoe( $post ) : '',
-                'ondertitel' => $post instanceof WP_Post && function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post ),
+                // De site toont de samenvatting als ondertitel: in de vorm Tool,
+                // en op DPS via de Astra-layout van de tools.
+                'ondertitel' => true,
             )
         ) . ';',
         'before'

@@ -93,11 +93,11 @@ check( false !== strpos( $tc, "'alles' === W.modus ) { return -1; }" ), 'canvas:
 check( false !== strpos( $tc, "el( 'details', { className: 'sfp-tool__hoe' }" ) && false === strpos( $tc, "'details', { className: 'sfp-tool__hoe', open" ), 'canvas: Hoe deze test rekent, dicht' );
 check( false !== strpos( $tc, "'test' === ( b.soort || 'test' ) ? el( Hoe ) : null" ), 'canvas: Hoe deze test rekent alleen bij een test' );
 check( false !== strpos( $tc, "editPost( { excerpt: nieuw } )" ), 'ondertitel schrijft naar de samenvatting' );
-check( false !== strpos( $tc, 'S.ondertitel ? el( Ondertitel ) : null' ), 'ondertitel alleen met de vorm Tool' );
+check( false !== strpos( $tc, 'S.ondertitel ? el( Ondertitel ) : null' ), 'ondertitel in het canvas' );
 $tcc = $lees( 'assets/editor/tool-canvas.css' );
 check( false !== strpos( $tcc, '.sfp-met-tool-ondertitel #sfp-vanzelf-kop .sfp-tool-lead{display:none}' ), 'ondertitel niet dubbel in Komt vanzelf' );
 check( (bool) preg_match( "/function sfp_page_config_tool_canvas_hoe\( WP_Post \\\$post \).*?'test' !== \\\$b\['soort'\].*?\\\$controle\['fouten'\] \? ''/s", $tw ), 'uitleg alleen bij een goedgekeurde test' );
-check( (bool) preg_match( "/'ondertitel' => .*?sfp_page_config_is_tool_vorm\( \\\$post \)/s", $tw ), 'vlag ondertitel volgt de vorm Tool' );
+check( false !== strpos( $tw, "'ondertitel' => true," ), 'ondertitel op elke toolpagina' );
 
 /* Versie op twee plekken gelijk. */
 $hoofd = $lees( 'sfp-page-config.php' );

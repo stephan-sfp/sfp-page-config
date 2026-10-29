@@ -4,7 +4,7 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.18.0-beta.2] - 2026-10-29
+## [3.18.0-beta.3] - 2026-10-29
 
 Vier restpunten na de controle van de editor op 29 oktober: in de editor staat de Zelftest-oproep, de makersregel van een begrip en de tool nu ook zoals op de site, en de ondertitel van een tool typ je in de tool zelf. Op de site verandert niets.
 
@@ -17,7 +17,7 @@ Terugdraaien: versie 3.17.0 terugzetten. Er is niets omgezet in inhoud of toolbe
 ### Toegevoegd
 - Tool in de editor: de voortgangsbalk onder de voortgangsregel bij elke vraag van een test, even vol als op de site (per vraag of per groep; niet bij alles op één pagina).
 - Tool in de editor: "Hoe deze test rekent" onder een test, dicht zoals op de site. De uitleg komt uit de beschrijving zoals bij de laatste keer opslaan.
-- Tool in de editor: de ondertitel staat onder de titel en typ je daar. Hij gaat naar de samenvatting, net als het veld in het zijpaneel; die twee blijven gelijk. In Komt vanzelf staat hij niet meer, dus niet dubbel. Alleen op sites waar de vorm Tool aan staat (Artikelen en Tools aan), want alleen daar toont de site de samenvatting als ondertitel.
+- Tool in de editor: de ondertitel staat onder de titel en typ je daar. Hij gaat naar de samenvatting, net als het veld in het zijpaneel; die twee blijven gelijk. In Komt vanzelf staat hij niet meer, dus niet dubbel. Op elke toolpagina: met de vorm Tool toont de plugin de samenvatting als ondertitel, op DPS doet de Astra-layout van de tools dat.
 
 ## [3.17.0] - 2026-10-29
 
