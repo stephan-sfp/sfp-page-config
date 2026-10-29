@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.19.1] - 2026-10-29
+
+### Gerepareerd
+- Zelftest-oproep op een telefoon: weer 4 px ruimte boven de knop, zoals de vormgeving die met de DPS- en SwS-snippets werd vastgelegd (25-10). In een Sectie zette de regel voor knoppen van de plugin die ruimte onder 600 px op 0. Gemeten op SwS en DPS: de oproep heeft nu met en zonder de opmaak van de oude snippets dezelfde maten.
+
+Terugdraaien: versie 3.19.0 terugzetten.
+
 ## [3.19.0] - 2026-10-29
 
 Het paneel Deze pagina, de editor en SFP Beheer zijn per vorm begrijpelijker: alleen wat bij een artikel, begrip of tool hoort, Nederlandse namen in het beheer, het scherm Zelftest gesplitst en eigen reviews met een invoerschema en abilities. Op de site veranderen alleen drie Engelse teksten van de zelftest-oproep en de regel boven een test-tool. Wat opgeslagen is, blijft werken; slugs, sleutels, route-adressen en codes zijn gelijk gebleven. Proefversie 3.19.0-beta.1 op DPS en SwS: uitgelogd 14 pagina's op desktop en telefoon gelijk aan de nulmeting op het nieuwe label Self-assessment na (op DPS ook de nieuwe footerruimte van een andere klus), geen scriptfouten; review-abilities via de MCP-koppeling, een onvolledig verzoek 400. Lokaal in WordPress 7.1.4 met Astra: paneel per vorm, nieuw begrip met de drie blokken, drie alineastijlen en geen vrije kleur in een artikel; SFP Beheer doorgelopen in een browser.
