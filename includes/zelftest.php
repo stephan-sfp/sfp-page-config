@@ -262,8 +262,13 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
             if ( '' === $taal || ! is_array( $waarden ) ) {
                 continue;
             }
-            $pad = sfp_zelftest_pad_schoon( isset( $waarden['pdf_pad'] ) ? $waarden['pdf_pad'] : '' );
-            if ( '' === $pad && isset( $waarden['pdf_pad'] ) && '' !== trim( (string) $waarden['pdf_pad'] ) ) {
+            // Zonder pdf_pad in het verzoek blijft het bewaarde adres staan
+            // (sinds 3.19.0: het scherm stuurt alleen de testpagina).
+            if ( ! array_key_exists( 'pdf_pad', $waarden ) ) {
+                $waarden['pdf_pad'] = isset( $nu['talen'][ $taal ]['pdf_pad'] ) ? $nu['talen'][ $taal ]['pdf_pad'] : '';
+            }
+            $pad = sfp_zelftest_pad_schoon( $waarden['pdf_pad'] );
+            if ( '' === $pad && '' !== trim( (string) $waarden['pdf_pad'] ) ) {
                 return new WP_Error( 'sfp_zelftest_pad', 'Een adres bestaat uit kleine letters, cijfers, streepjes en schuine strepen, zonder domein.', array( 'status' => 400 ) );
             }
             $talen[ $taal ] = array(
@@ -876,14 +881,17 @@ function sfp_zelftest_inst_taal( $test, $taal = null ) {
     $inst = sfp_zelftest_instellingen( $test );
     $taal = null === $taal ? sfp_zelftest_taal_context() : sfp_zelftest_taalcode( $taal );
     $eigen = '' !== $taal && isset( $inst['talen'][ $taal ] ) && is_array( $inst['talen'][ $taal ] ) ? $inst['talen'][ $taal ] : null;
+    // Het pdf-adres: bewaard, of door de plugin gemaakt (sinds 3.19.0).
+    $paden = sfp_zelftest_pdf_paden( $test );
+    $eerst = isset( $paden[''] ) ? $paden[''] : '';
     if ( $eigen && ( ! empty( $eigen['testpagina'] ) || ! empty( $eigen['pdf_pad'] ) ) ) {
         return array(
             'testpagina' => ! empty( $eigen['testpagina'] ) ? (int) $eigen['testpagina'] : (int) $inst['testpagina'],
-            'pdf_pad'    => ! empty( $eigen['pdf_pad'] ) ? (string) $eigen['pdf_pad'] : (string) $inst['pdf_pad'],
+            'pdf_pad'    => isset( $paden[ $taal ] ) ? $paden[ $taal ] : $eerst,
             'taal'       => $taal,
         );
     }
-    return array( 'testpagina' => (int) $inst['testpagina'], 'pdf_pad' => (string) $inst['pdf_pad'], 'taal' => '' );
+    return array( 'testpagina' => (int) $inst['testpagina'], 'pdf_pad' => $eerst, 'taal' => '' );
 }
 
 /**
@@ -895,15 +903,53 @@ function sfp_zelftest_inst_taal( $test, $taal = null ) {
 function sfp_zelftest_pdf_paden( $test ) {
     $inst  = sfp_zelftest_instellingen( $test );
     $paden = array();
-    if ( '' !== $inst['pdf_pad'] ) {
-        $paden[''] = $inst['pdf_pad'];
+    // Sinds 3.19.0 maakt de plugin het adres zelf als er geen bewaard is:
+    // <adres van de testpagina>/resultaat (en: result, pt: resultado). Een
+    // bewaard adres blijft werken, ook voor links in verstuurde mails.
+    $pakket = function_exists( 'sfp_zelftest_pakket' ) ? sfp_zelftest_pakket( $test ) : null;
+    $talen  = $pakket ? sfp_zelftest_pakket_talen( $pakket ) : array();
+    $eerste = $talen ? (string) $talen[0] : '';
+    $pad    = '' !== $inst['pdf_pad'] ? $inst['pdf_pad'] : sfp_zelftest_pdf_pad_vanzelf( (int) $inst['testpagina'], $eerste );
+    if ( '' !== $pad ) {
+        $paden[''] = $pad;
     }
     foreach ( (array) $inst['talen'] as $taal => $w ) {
-        if ( is_array( $w ) && ! empty( $w['pdf_pad'] ) ) {
-            $paden[ (string) $taal ] = (string) $w['pdf_pad'];
+        if ( ! is_array( $w ) ) {
+            continue;
+        }
+        $eigen = ! empty( $w['pdf_pad'] ) ? (string) $w['pdf_pad'] : sfp_zelftest_pdf_pad_vanzelf( isset( $w['testpagina'] ) ? (int) $w['testpagina'] : 0, (string) $taal );
+        if ( '' !== $eigen && ! in_array( $eigen, $paden, true ) ) {
+            $paden[ (string) $taal ] = $eigen;
         }
     }
     return $paden;
+}
+
+/**
+ * Het adres van de pdf-link dat de plugin zelf maakt: het adres van de
+ * testpagina met het woord voor resultaat in de taal van de test. Zonder
+ * testpagina: leeg.
+ *
+ * @since  3.19.0
+ * @param  int    $pagina Testpagina.
+ * @param  string $taal   Taal van de test (nl, en, pt); leeg: de taal van de site.
+ * @return string
+ */
+function sfp_zelftest_pdf_pad_vanzelf( $pagina, $taal = '' ) {
+    if ( $pagina <= 0 || ! function_exists( 'get_page_uri' ) ) {
+        return '';
+    }
+    $uri = (string) get_page_uri( $pagina );
+    if ( '' === $uri ) {
+        return '';
+    }
+    $taal  = '' !== $taal ? substr( strtolower( $taal ), 0, 2 ) : ( function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl' );
+    $woord = array(
+        'nl' => 'resultaat',
+        'en' => 'result',
+        'pt' => 'resultado',
+    );
+    return sfp_zelftest_pad_schoon( $uri . '/' . ( isset( $woord[ $taal ] ) ? $woord[ $taal ] : 'result' ) );
 }
 
 /**

@@ -344,7 +344,8 @@
 			paneel( 'Uitklap', [
 				vormkeuze( 'Vorm', a.variant, uitklapVormen, function ( v ) { props.setAttributes( { variant: v } ); } ),
 				uitleg( uitklapUitleg[ a.variant ] || '' ),
-				schakelaar( 'Eén regel tegelijk open', a.eenTegelijk, function ( v ) { props.setAttributes( { eenTegelijk: v } ); } ),
+				// Een verhaal is één regel: daar doet de schakelaar niets (sinds 3.19.0 alleen bij de andere vormen).
+				'verhaal' !== a.variant ? schakelaar( 'Eén regel tegelijk open', a.eenTegelijk, function ( v ) { props.setAttributes( { eenTegelijk: v } ); } ) : null,
 			] ),
 			el( 'div', inner )
 		);
@@ -615,7 +616,7 @@
 	} );
 
 	/* sfp/definitie en sfp/in-een-talk: alleen bij een begrip in de blokkenlijst (ontwerpregel 4). */
-	var bijBegrip = 'begrippen' === window.typenow;
+	var bijBegrip = 'begrippen' === window.typenow || ( document.body && document.body.classList.contains( 'post-type-begrippen' ) );
 	function blokBegrip( naam, edit ) {
 		var bestaand = wp.blocks.getBlockType( naam );
 		if ( bestaand ) {
@@ -707,7 +708,7 @@
 		var a = props.attributes;
 		var blockProps = useBlockProps( { className: 'sfp-in-talk' } );
 		return el( Fragment, null,
-			paneel( 'In a talk', [ uitleg( 'Eén voorbeeldzin uit een echte presentatie en één regel uitleg. Hoogstens één per begrip.' ) ] ),
+			paneel( 'In een presentatie', [ uitleg( 'Eén voorbeeldzin uit een echte presentatie en één regel uitleg. Hoogstens één per begrip.' ) ] ),
 			el( 'aside', blockProps,
 				el( 'span', { className: 'sfp-blok-label' }, t( 'in_een_talk', 'In a talk' ) ),
 				el( RichText, { tagName: 'p', className: 'sfp-in-talk__zin', value: a.zin, placeholder: 'De voorbeeldzin', allowedFormats: [ 'core/italic' ], onChange: function ( v ) { props.setAttributes( { zin: v } ); } } ),
@@ -729,7 +730,7 @@
 				var blockProps = useBlockProps( { className: 'sfp-check' } );
 				var inner = useInnerBlocksProps( {}, { allowedBlocks: [ 'sfp/begrip-vraag' ], template: [ [ 'sfp/begrip-vraag' ] ], renderAppender: aantal < 3 ? InnerBlocks.ButtonBlockAppender : false } );
 				return el( Fragment, null,
-					paneel( 'Check your understanding', [ uitleg( 'Eén tot drie vragen over dit begrip. De lezer kiest een antwoord en ziet direct of het klopt, met jouw uitleg. Gebruik het bij termen die vaak verkeerd begrepen worden. Niets wordt bewaard.' ) ] ),
+					paneel( 'Check je begrip', [ uitleg( 'Eén tot drie vragen over dit begrip. De lezer kiest een antwoord en ziet direct of het klopt, met jouw uitleg. Gebruik het bij termen die vaak verkeerd begrepen worden. Niets wordt bewaard.' ) ] ),
 					el( 'aside', blockProps,
 						el( 'span', { className: 'sfp-blok-label' }, t( 'check', 'Check your understanding' ) ),
 						el( 'div', inner ),
@@ -1004,7 +1005,7 @@
 		var a = props.attributes;
 		var tl = window.sfpTools || { tools: [], aan: false };
 		var opties = [ { value: '0', label: 'Kies een tool' } ].concat( ( tl.tools || [] ).map( function ( x ) { return { value: String( x.id ), label: x.naam + ( x.soort ? ' (' + x.soort + ')' : '' ) }; } ) );
-		var leeg = ! tl.aan ? 'Het onderdeel Tools staat uit (SFP Beheer, Onderdelen).' : 'Kies een tool. Bezoekers zien hier niets zolang er geen tool gekozen is.';
+		var leeg = ! tl.aan ? 'Het onderdeel Online tools staat uit (SFP Beheer, Onderdelen).' : 'Kies een tool. Bezoekers zien hier niets zolang er geen tool gekozen is.';
 		return el( Fragment, null,
 			paneel( 'Tool', [
 				keuze( 'Tool', String( a.tool || 0 ), opties, function ( v ) { props.setAttributes( { tool: parseInt( v, 10 ) || 0 } ); } ),

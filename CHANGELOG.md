@@ -4,6 +4,36 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.19.0-beta.1] - 2026-10-29
+
+Het paneel Deze pagina, de editor en SFP Beheer zijn per vorm begrijpelijker: alleen wat bij een artikel, begrip of tool hoort, Nederlandse namen in het beheer, het scherm Zelftest gesplitst en eigen reviews met een invoerschema en abilities. Op de site veranderen alleen drie Engelse teksten van de zelftest-oproep en de regel boven een test-tool. Wat opgeslagen is, blijft werken; slugs, sleutels, route-adressen en codes zijn gelijk gebleven.
+
+Terugdraaien: versie 3.18.0 terugzetten. Er is niets omgezet in inhoud. Is op een site het adres van een berichttype teruggezet naar de norm (SLB), dan blijft dat staan; het oude adres stuurt door zolang 3.19.0 of hoger draait.
+
+### Gewijzigd
+- Paneel Deze pagina bij een begrip of tool: kop Bij dit begrip of Bij deze tool, met pijler, verwante begrippen, gebruikt in, vervolg, uitgelichte afbeelding en promokaart. Geen onderwerpen, warming-up en de verwijzing naar Categorieën en Tags meer.
+- Artikel in de artikelopmaak: de pijler kies je in Deze pagina, bij Bij dit artikel. Die keuze is de categorie van het artikel; het paneel Categorieën staat niet meer in beeld. Tags blijft.
+- Artikel, begrip en tool (met Artikelen aan): bij een alinea alleen de stijlen Lead, Pijllink en Klein. Geen keuze voor kleur, achtergrond, verloop of lettergrootte. Wat al is opgeslagen, blijft op de site staan. Pagina's houden alle stijlen.
+- Bloknamen in de editor Nederlands: In een presentatie en Check je begrip. Het label voor de bezoeker volgt de taal van de site.
+- Berichttypes heten in het beheer en de editor Begrip en Online tool, op elke site. Voor de bezoeker blijft de naam die van de site. Online tools staan alleen in het menu als het onderdeel aan staat; hun adressen blijven werken.
+- Het menu heet altijd SFP Beheer, ook als een oude menu-indeling de naam SFP Page Config bewaarde.
+- Scherm Zelftest: bij Onderdelen alleen testpagina, oproeptekst, husselen, proefmodus en het logo, dat je nu uit de mediabibliotheek kiest. Pakket inlezen en terugzetten, de webhooks, de pdf-maker, gegevens wissen en het logboek staan bij Onderhoud, Zelftest.
+- Het adres van de pdf-link maakt de plugin zelf: het adres van de testpagina met /resultaat (en: /result, pt: /resultado). Een bewaard adres blijft werken; op DPS en SwS is het al zo.
+- Snippetbeheer staat bij Onderhoud in plaats van bij Onderdelen. Teksten van Online tools en Snippets in gewone taal; de zin over de duimpjes van de oude snippets is weg.
+- Reviews: de uitleg verwijst naar het blok Reviews in plaats van naar een code. De codes blijven werken.
+- Artikelen: een opgeslagen link naar een pagina van de eigen site staat in de keuzelijst als die pagina (factchecken, verantwoording, bibliografie).
+- Uitklap: de schakelaar Eén regel tegelijk open alleen bij Grote regels, Lees meer en Kaarten, niet bij Verhaal.
+- Blok Zelftest in de groep Bouwstenen, zoals de andere blokken.
+- Zelftest-oproep in het Engels: Self-assessment, Self-assessment: %d questions, Take the self-assessment.
+- Regel boven een tool van de soort test: Test in <pijler> (pt: Teste em <pijler>) in plaats van Self-test, Zelftest of Autoteste.
+
+### Toegevoegd
+- Sjabloon voor een nieuw begrip: Definitie (vast bovenaan), In een presentatie en Check je begrip met een vraag. Bestaande begrippen veranderen niet.
+- Voorbeeld in de blokkenlijst bij Thermometer, Zelftest-oproep, Tool, Zelftest, Definitie, In een presentatie en Check je begrip.
+- Eigen reviews: invoerschema op POST /sfp/v1/beheer/reviews/eigen en /eigen/weg. Zonder naam, tekst of id geeft de route 400; een onbekend id 404.
+- Abilities sfp-reviews/list, update, add en delete (groep sfp-reviews, aan met het onderdeel Reviews). Bijwerken verandert alleen de meegestuurde velden. Weghalen vraagt het veld akkoord_stephan: alleen na akkoord van Stephan per review.
+- Netwerknorm voor het adres van een berichttype: Overzicht toont het als het afwijkt van de standaard in de taal van de site, met Terug naar de norm. Het oude adres stuurt daarna door (301), ook met de rest van het pad.
+
 ## [3.18.0] - 2026-10-29
 
 Vier restpunten na de controle van de editor op 29 oktober: in de editor staat de Zelftest-oproep, de makersregel van een begrip en de tool nu ook zoals op de site, en de ondertitel van een tool typ je in de tool zelf. Op de site verandert niets. Proefversies 3.18.0-beta.1 tot en met beta.3 op DPS (tool 29457) en SwS (begrip 863, home 377): in de editor en uitgelogd op de voorkant dezelfde kop, ruimte, makersregel, voortgangsbalk en uitklap; typen in de ondertitel past de samenvatting aan; geen scriptfouten.

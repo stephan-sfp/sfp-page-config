@@ -474,6 +474,39 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
         'sfp/lestijd'      => array(),
         'sfp/leestijd'     => array(),
         'sfp/reviews'      => array( 'attributes' => array( 'weergave' => 'cijfer' ) ),
+        // Sinds 3.19.0 ook de blokken die zich los registreren (ontwerpregel 23).
+        'sfp/thermometer'  => array(
+            'attributes'  => array(
+                'kop'    => 'Hoe zenuwachtig word jij van een presentatie?',
+                'links'  => 'Klopt niet',
+                'rechts' => 'Klopt helemaal',
+            ),
+            'innerBlocks' => array(
+                array( 'name' => 'sfp/thermometer-stelling', 'attributes' => array( 'tekst' => 'Ik slaap slecht voor een presentatie.' ) ),
+                array( 'name' => 'sfp/thermometer-stelling', 'attributes' => array( 'tekst' => 'Ik zie op tegen vragen uit de zaal.' ) ),
+            ),
+        ),
+        'sfp/zelftest-cta' => array(),
+        'sfp/tool'         => array(),
+        'sfp/definitie'    => array(
+            'attributes' => array(
+                'zin'      => 'Spreekangst is de angst om voor een groep te spreken, die zich uit in spanning voor en tijdens het spreken.',
+                'uitleg'   => 'Bijna iedereen kent het in een lichte vorm.',
+                'ook'      => 'Podiumvrees',
+                'herkomst' => 'Uit spreken en angst',
+            ),
+        ),
+        'sfp/in-een-talk'  => array(
+            'attributes' => array(
+                'zin'    => 'Ik merk dat mijn handen trillen. Dat mag.',
+                'uitleg' => 'Benoemen haalt de spanning eraf.',
+            ),
+        ),
+        'sfp/begrip-check' => array(
+            'innerBlocks' => array(
+                array( 'name' => 'sfp/begrip-vraag', 'attributes' => array( 'vraag' => 'Wanneer is spanning voor een presentatie een probleem?', 'optie1' => 'Altijd', 'optie2' => 'Als je erdoor gaat vermijden', 'optie3' => 'Nooit', 'juist' => 2 ) ),
+            ),
+        ),
     );
     if ( ! isset( $voorbeelden[ $naam ] ) ) {
         return null;

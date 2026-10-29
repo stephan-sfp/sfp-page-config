@@ -62,7 +62,16 @@ function sfp_zelftest_stand() {
                 'testpagina'       => (int) $inst['testpagina'],
                 'testpagina_url'   => sfp_zelftest_testpagina_url( $test ),
                 'logo'             => (int) $inst['logo'],
+                // Sinds 3.19.0: een voorbeeld van het logo bij de keuze uit de mediabibliotheek.
+                'logo_url'         => (int) $inst['logo'] ? (string) wp_get_attachment_image_url( (int) $inst['logo'], 'medium' ) : '',
                 'pdf_pad'          => $inst['pdf_pad'],
+                // Sinds 3.19.0 maakt de plugin het adres zelf; hier wat geldt, per taal.
+                'pdf_adressen'     => (object) array_map(
+                    function ( $pad ) {
+                        return home_url( '/' . $pad . '/' );
+                    },
+                    sfp_zelftest_pdf_paden( $test )
+                ),
                 'webhook_start'    => '' !== $inst['webhook_start'],
                 'webhook_afgerond' => '' !== $inst['webhook_afgerond'],
                 'proefmodus'       => '1' === (string) $inst['proefmodus'],

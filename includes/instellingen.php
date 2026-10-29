@@ -131,8 +131,8 @@ function sfp_page_config_onderdelen() {
             'detail' => false,
         ),
         'tools'      => array(
-            'naam'   => 'Tools',
-            'uitleg' => 'Lichte tools voor bezoekers (test, generator, rekenaar, checklist en tekstanalyse): een bericht van het type tool met een beschrijving, de motor rekent in de browser. Met pdf, Word, deellink, mail naar jezelf en duimpjes.',
+            'naam'   => 'Online tools',
+            'uitleg' => 'Kleine online tools voor bezoekers: tests, generatoren, rekenaars, checklists en tekstanalyses. Met pdf, Word, deellink, mail naar jezelf en duimpjes.',
             'detail' => true,
         ),
         'kleurrollen'  => array(
@@ -147,7 +147,7 @@ function sfp_page_config_onderdelen() {
         ),
         'berichttypes' => array(
             'naam'   => 'Berichttypes',
-            'uitleg' => 'De berichttypes begrippen en tools, met hun adres, namen en menu-icoon.',
+            'uitleg' => 'Begrippen en online tools als eigen soort bericht, met hun adres, namen en menu-icoon.',
             'detail' => false,
         ),
         'paginabeheer' => array(
@@ -161,8 +161,8 @@ function sfp_page_config_onderdelen() {
             'detail' => true,
         ),
         'snippets'   => array(
-            'naam'   => 'Snippetbeheer via REST',
-            'uitleg' => 'Het serviceaccount claude-api leest, maakt, bewerkt en schakelt PHP-snippets van ASE Pro zonder browser.',
+            'naam'   => 'Snippets beheren op afstand',
+            'uitleg' => 'Claude leest, maakt en wijzigt de codefragmenten van ASE Pro en zet ze aan of uit, zonder browser. Alleen voor onderhoud.',
             'detail' => false,
         ),
     );
@@ -536,6 +536,21 @@ function sfp_page_config_afwijkingen() {
             }
         }
     }
+    // Sinds 3.19.0: het adres van een berichttype (norm: de standaard in de
+    // taal van de site, zoals /glossary/ op een Engelse site).
+    if ( function_exists( 'sfp_page_config_berichttype_afwijking' ) ) {
+        foreach ( array_keys( sfp_page_config_berichttypes() ) as $type ) {
+            $af = sfp_page_config_berichttype_afwijking( $type );
+            if ( $af ) {
+                $uit[] = array(
+                    'pad'    => 'berichttypes.' . $type,
+                    'label'  => 'Adres en namen van ' . ( 'tool' === $type ? 'de online tools' : 'de begrippen' ) . ' (de oude adressen sturen door)',
+                    'waarde' => '/' . $af['nu'] . '/',
+                    'norm'   => '/' . $af['norm'] . '/',
+                );
+            }
+        }
+    }
     return $uit;
 }
 
@@ -790,6 +805,9 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
  * @return bool        True als er iets is teruggezet.
  */
 function sfp_page_config_instelling_naar_norm( $pad ) {
+    if ( preg_match( '/^berichttypes\.(begrippen|tool)$/', (string) $pad, $m ) ) {
+        return function_exists( 'sfp_page_config_berichttype_naar_norm' ) && sfp_page_config_berichttype_naar_norm( $m[1] );
+    }
     if ( preg_match( '/^zelftest\.([a-z0-9][a-z0-9-]{0,39})\.husselen$/', (string) $pad, $m ) ) {
         return function_exists( 'sfp_zelftest_instellingen_bewaar' ) && true === sfp_zelftest_instellingen_bewaar( $m[1], array( 'husselen' => '1' ) );
     }

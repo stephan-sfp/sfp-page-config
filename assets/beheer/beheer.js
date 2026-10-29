@@ -469,6 +469,8 @@
 	function schermOnderdelen() {
 		var raster = el('div', { class: 'sfpb-raster' });
 		S.onderdelen.forEach(function (o) {
+			// Snippetbeheer staat sinds 3.19.0 bij Onderhoud: geen onderdeel voor een redacteur.
+			if (o.id === 'snippets') return;
 			var sw = schakel(o.aan, o.aan ? 'Aan' : 'Uit', function (nu, knop) {
 				var w = {}; w[o.id] = nu;
 				bewaarInstellingen(knop, 'od-' + o.id, { onderdelen: w });
@@ -859,7 +861,7 @@
 				vormen,
 				veld('Toon reviews vanaf', min, null, 'sfpb-rv-min'),
 				schakel(r.opties.summary, 'Toon het cijfer boven de reviews', function (nu) { keuze.summary = nu; tekenVoorbeeld(); }),
-				el('p', { class: 'sfpb-hulp', text: 'Je plaatst reviews met de code [google_reviews] in een pagina. Bestaande codes blijven werken.' }),
+				el('p', { class: 'sfpb-hulp', text: 'Je plaatst reviews met het blok Reviews.' }),
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
 						doe(this, 'rv-weergave', api('/reviews', 'POST', { layout: keuze.layout, min_stars: min.value, summary: keuze.summary }));
@@ -1139,15 +1141,15 @@
 			]);
 		});
 		var tabel = el('table', { class: 'sfpb-tabel' }, [
-			el('thead', {}, [el('tr', {}, [el('th', { text: 'Tool' }), el('th', { text: 'Motor' }), el('th', { text: 'Meldingen' }), el('th', { text: 'Duimpjes' })])]),
-			el('tbody', {}, rijen.length ? rijen : [el('tr', {}, [el('td', { text: T.bestaat ? 'Nog geen tools.' : 'Het berichttype tool bestaat niet op deze site.', colspan: '4' })])])
+			el('thead', {}, [el('tr', {}, [el('th', { text: 'Tool' }), el('th', { text: 'Soort' }), el('th', { text: 'Meldingen' }), el('th', { text: 'Duimpjes' })])]),
+			el('tbody', {}, rijen.length ? rijen : [el('tr', {}, [el('td', { text: T.bestaat ? 'Nog geen tools.' : 'Online tools bestaan nog niet op deze site.', colspan: '4' })])])
 		]);
 		var log = T.log.length ? el('ul', { class: 'sfpb-lijst' }, T.log.map(function (r) {
 			return el('li', { text: r.tijd + ' · ' + r.tool + ' · duim ' + r.stem + ': ' + r.tekst + (r.email ? ' (' + r.email + ')' : '') });
 		})) : el('p', { class: 'sfpb-hulp', text: 'Nog geen tekstfeedback.' });
 		return el('section', { class: 'sfpb-scherm' }, [
 			terugKnop(),
-			kop('Tools', 'Lichte tools voor bezoekers. Elke tool is een bericht van het type tool met een beschrijving; de motor rekent in de browser en bewaart niets op de server.'),
+			kop('Online tools', 'Kleine online tools voor bezoekers: tests, generatoren, rekenaars, checklists en tekstanalyses. De tool rekent in de browser van de bezoeker; de site bewaart niets.'),
 			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
 				veld('Adres voor tekstfeedback', adres, 'Waar de tekst bij een duimpje heen gaat. Leeg: het beheerdersadres van de site.', 'sfpb-tool-adres'),
 				el('div', { class: 'sfpb-rij' }, [
@@ -1158,7 +1160,7 @@
 				]),
 				el('h2', { text: 'Tools op deze site' }),
 				tabel,
-				el('p', { class: 'sfpb-hulp', text: 'De duimpjes tellen door op de tellingen van de oude snippets. De beschrijving van een tool bewerk je in de editor, paneel Deze pagina.' }),
+				el('p', { class: 'sfpb-hulp', text: 'De tekst van een tool typ je in de editor, in de tool zelf.' }),
 				el('h2', { text: 'Laatste tekstfeedback' }),
 				log
 			])
@@ -1179,18 +1181,128 @@
 		}), klaarTekst);
 	}
 
+	/**
+	 * Logo kiezen uit de mediabibliotheek (sinds 3.19.0): een knop met een
+	 * voorbeeld, geen getypt nummer. Geeft { node, waarde() }.
+	 */
+	function logoKeuze(id, url, sleutel) {
+		var beeld = { id: id || 0, url: url || '' };
+		var klein = el('img', { class: 'sfpb-logo-voorb', alt: '' });
+		var kies = el('button', { class: 'sfpb-knop', type: 'button' });
+		var weg = el('button', { class: 'sfpb-knop sfpb-zacht', type: 'button', text: 'Geen eigen logo' });
+		function ververs() {
+			if (beeld.url) klein.src = beeld.url; else klein.removeAttribute('src');
+			klein.hidden = !beeld.url;
+			kies.textContent = beeld.id ? 'Kies een ander logo' : 'Kies een logo';
+			weg.hidden = !beeld.id;
+		}
+		kies.addEventListener('click', function () {
+			if (!window.wp || !wp.media) return;
+			var kader = wp.media({ title: 'Kies het logo', library: { type: 'image' }, multiple: false, button: { text: 'Gebruik dit logo' } });
+			kader.on('select', function () {
+				var keuze = kader.state().get('selection').first().toJSON();
+				beeld.id = keuze.id;
+				beeld.url = (keuze.sizes && keuze.sizes.medium ? keuze.sizes.medium.url : keuze.url);
+				ververs();
+			});
+			kader.open();
+		});
+		weg.addEventListener('click', function () { beeld.id = 0; beeld.url = ''; ververs(); });
+		ververs();
+		return {
+			node: el('div', { class: 'sfpb-veld' }, [
+				el('label', { text: 'Logo op de testpagina' }),
+				el('div', { class: 'sfpb-rij' }, [klein, kies, weg]),
+				el('span', { class: 'sfpb-hulp', text: 'Het logo voor een witte achtergrond. Geen eigen logo: het logo van de site.' })
+			]),
+			waarde: function () { return beeld.id; }
+		};
+	}
+
+	/* Zelftest bij Onderdelen: alleen wat een redacteur gebruikt (sinds 3.19.0).
+	 * Pakket, koppelingen, pdf-maker, wissen en logboek staan bij Onderhoud. */
 	function detailZelftest() {
+		var Z = S.zelftest || { tests: [], cloudflare: {}, log: [] };
+		var delen = [];
+
+		Z.tests.forEach(function (t) {
+			var I = t.instellingen;
+			var pagina = paginaKeuze(I.testpagina, 'Kies de testpagina');
+			/* Per extra taal van het pakket een eigen testpagina (sinds 3.11.0). */
+			var extraTalen = (t.talen || []).slice(1).map(function (taal) {
+				var eigen = (I.talen || {})[taal] || {};
+				return { taal: taal, pagina: paginaKeuze(eigen.testpagina || 0, 'Dezelfde testpagina') };
+			});
+			var logo = logoKeuze(I.logo, I.logo_url, t.test);
+			var proef = { aan: I.proefmodus };
+			var hussel = { aan: I.husselen !== false };
+			var ctaKop = tekstInvoer(I.cta_kop || '', t.naam || 'Naam van de test');
+			var ctaZin = tekstInvoer(I.cta_zin || '', 'Eén zin: wat levert de test op?');
+			var ctaKnop = tekstInvoer(I.cta_knop || '', 'Vaste tekst: Doe de zelftest');
+			var c = t.tellingen;
+			var adressen = I.pdf_adressen || {};
+			var waarschuwing = [];
+			if (!I.testpagina) waarschuwing.push('Kies de testpagina. Zonder testpagina verschijnt er nergens een oproep en werkt de link naar de pdf niet.');
+			if (!I.proefmodus && (!I.webhook_start || !I.webhook_afgerond)) waarschuwing.push('Proefmodus staat uit, maar de koppeling met het CRM is niet compleet (Onderhoud, Zelftest).');
+			if (c.crm_mislukt || c.pdf_mislukt) waarschuwing.push('Er ging iets mis bij het versturen. Zie het logboek bij Onderhoud, Zelftest.');
+
+			delen.push(el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				el('h2', { text: t.naam || t.test }),
+				el('p', { class: 'sfpb-hulp', text: 'Gestart: ' + c.gestart + ' (laatste 30 dagen ' + c.gestart_30 + '). Afgerond: ' + c.afgerond + ' (laatste 30 dagen ' + c.afgerond_30 + ').' }),
+				waarschuwing.length ? el('div', { class: 'sfpb-let' }, waarschuwing.map(function (w) { return el('span', { text: w }); })) : null,
+				veld('Testpagina', pagina, 'De pagina met het blok Zelftest. Knoppen "Doe de test" wijzen hierheen.', 'sfpb-zt-pag-' + t.test),
+				adressen[''] ? el('p', { class: 'sfpb-hulp', text: 'De link naar de pdf in de mail: ' + adressen[''] }) : null
+			].concat(extraTalen.reduce(function (l, x) {
+				return l.concat([
+					veld('Testpagina ' + x.taal, x.pagina, adressen[x.taal] ? 'Link naar de pdf: ' + adressen[x.taal] : 'De pagina met het blok Zelftest in deze taal.', 'sfpb-zt-pag-' + t.test + '-' + x.taal)
+				]);
+			}, [])).concat([
+				logo.node,
+				schakel(I.proefmodus, 'Proefmodus: niets naar het CRM, de gegevens komen in het logboek', function (nu) { proef.aan = nu; }),
+				schakel(I.husselen !== false, 'Vragen en antwoorden husselen: de kernvragen en hun antwoorden in willekeurige volgorde, zonder bloknaam (netwerknorm: aan)', function (nu) { hussel.aan = nu; }),
+				el('h3', { text: 'Oproep om de test te doen' }),
+				el('p', { class: 'sfpb-hulp', text: 'Eén tekst voor het blok Zelftest-oproep en voor de promokaart en kopkaart van een pijler.' + (Z.site_test === t.test ? ' Dit is de test van de site.' : (Z.site_test ? '' : ' Er is nog geen test van de site: die heeft een gepubliceerde testpagina nodig.')) }),
+				veld('Kop', ctaKop, 'Leeg: de naam van de test.', 'sfpb-zt-ctak-' + t.test),
+				veld('Zin', ctaZin, 'Hoogstens 220 tekens. Leeg: geen zin.', 'sfpb-zt-ctaz-' + t.test),
+				veld('Knoptekst', ctaKnop, 'Leeg: de vaste tekst in de taal van de site.', 'sfpb-zt-ctab-' + t.test),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						var talen = {}; extraTalen.forEach(function (x) { talen[x.taal] = { testpagina: x.pagina.value }; });
+						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.waarde(), proefmodus: proef.aan, husselen: hussel.aan, cta_kop: ctaKop.value, cta_zin: ctaZin.value, cta_knop: ctaKnop.value, talen: talen });
+					} }),
+					flitsPlek('zt-' + t.test)
+				])
+			])));
+		});
+
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Zelftest', 'Een zelftest voor bezoekers. Het resultaat gaat als pdf per e-mail.'),
+			Z.aan ? null : el('div', { class: 'sfpb-let' }, [el('span', { text: 'Het onderdeel staat uit. Zet het aan bij Onderdelen.' })]),
+			Z.tests.length ? null : el('p', { text: 'Er is nog geen test op deze site. Een test lees je in bij Onderhoud, Zelftest.' }),
+			el('div', { class: 'sfpb-stapel', style: 'gap:40px' }, delen),
+			el('p', { class: 'sfpb-hulp' }, [
+				'Pakket inlezen, koppeling met het CRM, pdf-maker, gegevens wissen en logboek: ',
+				el('a', { href: '#onderhoud', text: 'Onderhoud, Zelftest', klik: function (e) { e.preventDefault(); ui.open.zelftest = true; ga('onderhoud'); } }),
+				'.'
+			])
+		]);
+	}
+
+	/* Zelftest bij Onderhoud (sinds 3.19.0): pakket, koppelingen, pdf-maker,
+	 * wissen en logboek. Geeft de inhoud voor een uitklapvak. */
+	function zelftestOnderhoud() {
 		var Z = S.zelftest || { tests: [], cloudflare: {}, log: [] };
 		var delen = [];
 
 		// Pakket inlezen (nieuw of een nieuwe versie).
 		var naamInvoer = tekstInvoer('', 'Bijvoorbeeld dps');
 		var bestand = el('input', { type: 'file', accept: '.zip,application/zip' });
-		var inlezen = el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
-			el('h2', { text: Z.tests.length ? 'Nieuwe versie of een andere test inlezen' : 'Een testpakket inlezen' }),
-			el('p', { text: 'Een testpakket is een zip met manifest.json, inhoud.json, motor.js, label.js en blad.html. De vorige versie blijft bewaard.' }),
+		delen.push(el('div', { class: 'sfpb-stapel' }, [
+			el('h3', { text: Z.tests.length ? 'Nieuwe versie of een andere test inlezen' : 'Een testpakket inlezen' }),
+			el('p', { class: 'sfpb-hulp', text: 'Het pakket is een zip met de vragen, de uitslagen en het pdf-blad. De vorige versie blijft bewaard.' }),
 			Z.zip ? null : el('div', { class: 'sfpb-let' }, [el('span', { text: 'Deze server kan geen zip openen. Lees het pakket in via REST.' })]),
-			veld('Naam van de test', naamInvoer, 'Zoals in het manifest: kleine letters, bijvoorbeeld dps.', 'sfpb-zt-naam'),
+			veld('Naam van de test', naamInvoer, 'Zoals in het pakket: kleine letters, bijvoorbeeld dps.', 'sfpb-zt-naam'),
 			veld('Zip met het pakket', bestand, null, 'sfpb-zt-zip'),
 			el('div', { class: 'sfpb-rij' }, [
 				el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Inlezen', klik: function () {
@@ -1203,81 +1315,46 @@
 				} }),
 				flitsPlek('zt-inlezen')
 			])
-		]);
+		]));
 
+		// Per test: pakket en koppeling met het CRM.
 		Z.tests.forEach(function (t) {
 			var I = t.instellingen;
-			var pagina = paginaKeuze(I.testpagina, 'Kies de testpagina');
-			var pdfPad = tekstInvoer(I.pdf_pad, 'presentatietest/resultaat');
-			/* Sinds 3.11.0: per extra taal van het pakket een eigen testpagina en pdf-adres. */
-			var extraTalen = (t.talen || []).slice(1).map(function (taal) {
-				var eigen = (I.talen || {})[taal] || {};
-				return { taal: taal, pagina: paginaKeuze(eigen.testpagina || 0, 'Kies de testpagina (' + taal + ')'), pdf: tekstInvoer(eigen.pdf_pad || '', 'bijvoorbeeld en/test/result') };
-			});
-			var logo = tekstInvoer(I.logo ? String(I.logo) : '', 'Media-ID');
+			var c = t.tellingen;
 			var whStart = tekstInvoer('', I.webhook_start ? 'Ingesteld; laat leeg om te houden' : 'https://...', 'password');
 			var whAf = tekstInvoer('', I.webhook_afgerond ? 'Ingesteld; laat leeg om te houden' : 'https://...', 'password');
 			[whStart, whAf].forEach(function (w) { w.setAttribute('autocomplete', 'off'); });
-			var proef = { aan: I.proefmodus };
-			var hussel = { aan: I.husselen !== false };
-			var ctaKop = tekstInvoer(I.cta_kop || '', t.naam || 'Naam van de test');
-			var ctaZin = tekstInvoer(I.cta_zin || '', 'Eén zin: wat levert de test op?');
-			var ctaKnop = tekstInvoer(I.cta_knop || '', 'Vaste tekst: Doe de zelftest');
-			var c = t.tellingen;
 			var waarschuwing = [];
 			if (!t.blad) waarschuwing.push('Dit pakket heeft geen pdf-blad: er komt geen pdf.');
-			if (!I.pdf_pad) waarschuwing.push('Het adres van de pdf-link ontbreekt: de link in mail 1 werkt nog niet.');
-			if (!I.proefmodus && (!I.webhook_start || !I.webhook_afgerond)) waarschuwing.push('Proefmodus staat uit, maar niet beide webhookadressen zijn ingesteld.');
 			if (c.crm_mislukt) waarschuwing.push(c.crm_mislukt + ' verzending(en) naar het CRM zijn mislukt. Zie het logboek.');
 			if (c.pdf_mislukt) waarschuwing.push(c.pdf_mislukt + ' pdf(s) zijn niet gemaakt. Zie het logboek.');
-
-			delen.push(el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
-				el('h2', { text: (t.naam || t.test) + ' (' + t.test + ')' }),
-				el('p', { class: 'sfpb-hulp', text: 'Pakket ' + t.versie + ', ingelezen ' + t.ingelezen + '. ' + t.vragen + ' vragen; lang ' + (t.lengtes.long || 0) + (t.lengtes.short ? ', kort ' + t.lengtes.short : '') + '.' }),
+			delen.push(el('div', { class: 'sfpb-stapel' }, [
+				el('h3', { text: (t.naam || t.test) + ' (' + t.test + ')' }),
+				el('p', { class: 'sfpb-hulp', text: 'Pakket ' + t.versie + ', ingelezen ' + t.ingelezen + '. ' + t.vragen + ' vragen; lang ' + (t.lengtes.long || 0) + (t.lengtes.short ? ', kort ' + t.lengtes.short : '') + '. Pdf klaar: ' + c.pdf_klaar + '. In de wachtrij: CRM ' + c.crm_wacht + ', pdf ' + c.pdf_wacht + '.' }),
 				waarschuwing.length ? el('div', { class: 'sfpb-let' }, waarschuwing.map(function (w) { return el('span', { text: w }); })) : null,
 				t.let_op.length ? el('div', { class: 'sfpb-weet' }, t.let_op.map(function (w) { return el('span', { text: w }); })) : null,
-				el('p', { text: 'Gestart: ' + c.gestart + ' (laatste 30 dagen ' + c.gestart_30 + '). Afgerond: ' + c.afgerond + ' (laatste 30 dagen ' + c.afgerond_30 + '). Pdf klaar: ' + c.pdf_klaar + '. In de wachtrij: CRM ' + c.crm_wacht + ', pdf ' + c.pdf_wacht + '.' }),
-				veld('Testpagina', pagina, 'De pagina met het blok Zelftest. Knoppen "Doe de test" wijzen hierheen.', 'sfpb-zt-pag-' + t.test),
-				veld('Logo op de testpagina', logo, 'Media-ID van het logo voor een witte achtergrond (versie origineel). Leeg: het logo van de site.', 'sfpb-zt-logo-' + t.test),
-				veld('Adres van de pdf-link', pdfPad, 'Zonder domein, bijvoorbeeld presentatietest/resultaat. Geen bestaande pagina.', 'sfpb-zt-pdf-' + t.test),
-				extraTalen.length ? el('h3', { text: 'Andere talen van deze test' }) : null,
-				extraTalen.length ? el('p', { class: 'sfpb-hulp', text: 'De eerste taal (' + (t.talen || [])[0] + ') gebruikt de testpagina en het adres hierboven. Leeg: ook voor deze taal de velden hierboven.' }) : null
-			].concat(extraTalen.reduce(function (l, x) {
-				return l.concat([
-					veld('Testpagina ' + x.taal, x.pagina, 'De pagina met het blok Zelftest in deze taal.', 'sfpb-zt-pag-' + t.test + '-' + x.taal),
-					veld('Adres van de pdf-link ' + x.taal, x.pdf, 'Zonder domein. Elk adres een eigen uitzondering in Cloudflare.', 'sfpb-zt-pdf-' + t.test + '-' + x.taal)
-				]);
-			}, [])).concat([
 				veld('Webhook bij de start (SureContact)', whStart, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-whs-' + t.test),
 				veld('Webhook bij het afronden (SureContact)', whAf, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-wha-' + t.test),
-				schakel(I.proefmodus, 'Proefmodus: niets naar het CRM, de gegevens komen in het logboek', function (nu) { proef.aan = nu; }),
-				schakel(I.husselen !== false, 'Vragen en antwoorden husselen: de kernvragen en hun antwoorden in willekeurige volgorde, zonder bloknaam (netwerknorm: aan)', function (nu) { hussel.aan = nu; }),
-				el('h3', { text: 'Oproep om de test te doen' }),
-				el('p', { class: 'sfpb-hulp', text: 'Eén tekst voor het blok Zelftest-oproep, de code [sfp_zelftest_cta] en de promokaart en kopkaart van een pijler.' + (Z.site_test === t.test ? ' Dit is de test van de site.' : (Z.site_test ? '' : ' Er is nog geen test van de site: die heeft een gepubliceerde testpagina nodig.')) }),
-				veld('Kop', ctaKop, 'Leeg: de naam van de test.', 'sfpb-zt-ctak-' + t.test),
-				veld('Zin', ctaZin, 'Hoogstens 220 tekens. Leeg: geen zin.', 'sfpb-zt-ctaz-' + t.test),
-				veld('Knoptekst', ctaKnop, 'Leeg: de vaste tekst in de taal van de site.', 'sfpb-zt-ctab-' + t.test),
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-						var talen = {}; extraTalen.forEach(function (x) { talen[x.taal] = { testpagina: x.pagina.value, pdf_pad: x.pdf.value }; });
-						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.value, pdf_pad: pdfPad.value, webhook_start: whStart.value, webhook_afgerond: whAf.value, proefmodus: proef.aan, husselen: hussel.aan, cta_kop: ctaKop.value, cta_zin: ctaZin.value, cta_knop: ctaKnop.value, talen: talen });
+						zt(this, 'zt-wh-' + t.test, '/' + t.test + '/instellingen', { webhook_start: whStart.value, webhook_afgerond: whAf.value });
 					} }),
 					t.vorige ? el('button', { class: 'sfpb-knop', type: 'button', text: 'Vorige pakketversie terugzetten', klik: function () {
-						if (window.confirm('De vorige versie van het pakket terugzetten?')) zt(this, 'zt-' + t.test, '/' + t.test + '/pakket/terug', {}, 'Teruggezet');
+						if (window.confirm('De vorige versie van het pakket terugzetten?')) zt(this, 'zt-wh-' + t.test, '/' + t.test + '/pakket/terug', {}, 'Teruggezet');
 					} }) : null,
-					flitsPlek('zt-' + t.test)
+					flitsPlek('zt-wh-' + t.test)
 				])
-			])));
+			]));
 		});
 
-		// Cloudflare.
+		// Pdf-maker: Cloudflare Browser Run.
 		var cf = Z.cloudflare || {};
 		var account = tekstInvoer('', cf.account ? 'Ingesteld; laat leeg om te houden' : '32 tekens');
 		var token = tekstInvoer('', cf.token ? 'Ingesteld; laat leeg om te houden' : 'Token met Browser Run - Edit', 'password');
 		token.setAttribute('autocomplete', 'off');
-		var cloudflare = el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
-			el('h2', { text: 'Pdf maken: Cloudflare Browser Run' }),
-			el('p', { text: (cf.account && cf.token ? 'Ingesteld.' : 'Nog niet ingesteld: de site maakt nog geen pdf.') + (cf.pauze ? ' Cloudflare vroeg om te wachten tot ' + cf.pauze + '.' : '') }),
+		delen.push(el('div', { class: 'sfpb-stapel' }, [
+			el('h3', { text: 'Pdf maken: Cloudflare Browser Run' }),
+			el('p', { class: 'sfpb-hulp', text: (cf.account && cf.token ? 'Ingesteld.' : 'Nog niet ingesteld: de site maakt nog geen pdf.') + (cf.pauze ? ' Cloudflare vroeg om te wachten tot ' + cf.pauze + '.' : '') }),
 			veld('Account-ID', account, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-cfa'),
 			veld('Token', token, 'Wordt nooit getoond. Typ - om te wissen.', 'sfpb-zt-cft'),
 			el('div', { class: 'sfpb-rij' }, [
@@ -1286,13 +1363,13 @@
 				} }),
 				flitsPlek('zt-cf')
 			])
-		]);
+		]));
 
-		// Gegevens van een bezoeker wissen.
+		// Gegevens van een deelnemer wissen.
 		var wisMail = tekstInvoer('', 'naam@voorbeeld.nl', 'email');
-		var wissen = el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
-			el('h2', { text: 'Gegevens van een deelnemer wissen' }),
-			el('p', { text: 'Voor een verwijderverzoek: wist alle tests, pdf\'s en deelafbeeldingen van dit e-mailadres op deze site. Het contact in het CRM blijft staan.' }),
+		delen.push(el('div', { class: 'sfpb-stapel' }, [
+			el('h3', { text: 'Gegevens van een deelnemer wissen' }),
+			el('p', { class: 'sfpb-hulp', text: 'Voor een verwijderverzoek: wist alle tests, pdf\'s en deelafbeeldingen van dit e-mailadres op deze site. Het contact in het CRM blijft staan.' }),
 			veld('E-mailadres', wisMail, null, 'sfpb-zt-wis'),
 			el('div', { class: 'sfpb-rij' }, [
 				el('button', { class: 'sfpb-knop', type: 'button', text: 'Wissen', klik: function () {
@@ -1302,24 +1379,19 @@
 				} }),
 				flitsPlek('zt-wis')
 			])
-		]);
+		]));
 
 		// Logboek.
 		var log = (Z.log || []).map(function (r) {
-			var kop = r.tijd + ' UTC · ' + r.test + ' · ' + r.tekst;
+			var regel = r.tijd + ' UTC · ' + r.test + ' · ' + r.tekst;
 			return r.gegevens && Object.keys(r.gegevens).length
-				? el('details', { class: 'sfpb-vouw' }, [el('summary', { text: kop }), el('pre', { style: 'white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px', text: JSON.stringify(r.gegevens, null, 2) })])
-				: el('p', { class: r.soort === 'fout' ? 'sfpb-mis' : 'sfpb-hulp', text: kop });
+				? el('details', { class: 'sfpb-vouw' }, [el('summary', { text: regel }), el('pre', { style: 'white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px', text: JSON.stringify(r.gegevens, null, 2) })])
+				: el('p', { class: r.soort === 'fout' ? 'sfpb-mis' : 'sfpb-hulp', text: regel });
 		});
+		delen.push(el('div', { class: 'sfpb-stapel' }, [el('h3', { text: 'Logboek (laatste 20)' })].concat(log.length ? log : [el('p', { class: 'sfpb-hulp', text: 'Nog niets.' })])));
 
-		return el('section', { class: 'sfpb-scherm' }, [
-			terugKnop(),
-			kop('Zelftest', 'Een zelftest voor bezoekers. De inhoud per label is een testpakket; het resultaat gaat als pdf per e-mail via het CRM.'),
-			Z.aan ? null : el('div', { class: 'sfpb-let' }, [el('span', { text: 'Het onderdeel staat uit. Zet het aan bij Onderdelen.' })]),
-			el('div', { class: 'sfpb-stapel', style: 'gap:40px' }, delen.concat([inlezen, cloudflare, wissen,
-				el('div', { class: 'sfpb-stapel' }, [el('h2', { text: 'Logboek (laatste 20)' })].concat(log.length ? log : [el('p', { class: 'sfpb-hulp', text: 'Nog niets.' })]))
-			]))
-		]);
+		var mis = Z.tests.some(function (t) { return t.tellingen.crm_mislukt || t.tellingen.pdf_mislukt; });
+		return vouw('zelftest', 'Zelftest', status(mis ? false : (Z.tests.length ? true : null), mis ? 'Vraagt aandacht' : (Z.tests.length ? Z.tests.length + (1 === Z.tests.length ? ' test' : ' tests') : 'Geen test')), [el('div', { class: 'sfpb-stapel', style: 'gap:32px' }, delen)]);
 	}
 
 	/* ---------- Onderdeel: footerlinks ---------- */
@@ -1630,9 +1702,22 @@
 			])
 		]);
 
+		// Zelftest: pakket, koppelingen en logboek (sinds 3.19.0 hier, niet bij Onderdelen).
+		var zelftest = (S.zelftest && (S.zelftest.aan || (S.zelftest.tests || []).length)) ? zelftestOnderhoud() : null;
+
+		// Snippetbeheer via REST (sinds 3.19.0 hier, niet bij Onderdelen).
+		var snip = S.onderdelen.filter(function (x) { return x.id === 'snippets'; })[0];
+		var snippets = snip ? vouw('snippets', snip.naam, status(snip.aan ? true : null, snip.aan ? 'Aan' : 'Uit'), [
+			el('p', { text: snip.uitleg }),
+			el('div', { class: 'sfpb-rij' }, [
+				schakel(snip.aan, snip.aan ? 'Aan' : 'Uit', function (nu, knop) { bewaarInstellingen(knop, 'oh-snippets', { onderdelen: { snippets: nu } }); }),
+				flitsPlek('oh-snippets')
+			])
+		]) : null;
+
 		return el('section', { class: 'sfpb-scherm' }, [
 			kop('Onderhoud', 'Voor onderhoud aan de site. Om de site te beheren hoef je hier niets te doen.'),
-			el('div', null, [versie, resten, sneller, beelden, google])
+			el('div', null, [versie, resten, sneller, beelden, google, zelftest, snippets])
 		]);
 	}
 
