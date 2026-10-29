@@ -4,9 +4,9 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.18.0-beta.3] - 2026-10-29
+## [3.18.0] - 2026-10-29
 
-Vier restpunten na de controle van de editor op 29 oktober: in de editor staat de Zelftest-oproep, de makersregel van een begrip en de tool nu ook zoals op de site, en de ondertitel van een tool typ je in de tool zelf. Op de site verandert niets.
+Vier restpunten na de controle van de editor op 29 oktober: in de editor staat de Zelftest-oproep, de makersregel van een begrip en de tool nu ook zoals op de site, en de ondertitel van een tool typ je in de tool zelf. Op de site verandert niets. Proefversies 3.18.0-beta.1 tot en met beta.3 op DPS (tool 29457) en SwS (begrip 863, home 377): in de editor en uitgelogd op de voorkant dezelfde kop, ruimte, makersregel, voortgangsbalk en uitklap; typen in de ondertitel past de samenvatting aan; geen scriptfouten.
 
 Terugdraaien: versie 3.17.0 terugzetten. Er is niets omgezet in inhoud of toolbeschrijvingen.
 
