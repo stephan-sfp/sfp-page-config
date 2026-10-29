@@ -1024,6 +1024,106 @@
 		]);
 	}
 
+	/* ---------- Onderdeel: banner (sinds 3.17.0) ---------- */
+
+	function detailBanner() {
+		var B = S.banner || { instelling: { kleur: '', tekst_kleur: '', cursus: { aan: '1', waar: 'overal', ook: [], niet: [] }, aanbod: [] }, rollen: [], cursussen: [], nu: '', cursusdata: false };
+		if (!ui.banner) ui.banner = JSON.parse(JSON.stringify(B.instelling));
+		var I = ui.banner;
+		var namen = { primair: 'Primair', secundair: 'Secundair', tertiair: 'Tertiair', links: 'Links en knoppen', hover: 'Hover', 'tint-1': 'Tint 1', 'tint-2': 'Tint 2', 'tint-3': 'Tint 3', wit: 'Wit', body: 'Bodytekst' };
+		function rolKeuze(waarde, norm, bij) {
+			var s = el('select');
+			B.rollen.forEach(function (r) { s.appendChild(el('option', { value: r, text: (namen[r] || r) + (r === norm ? ' (norm)' : '') })); });
+			s.value = waarde || norm;
+			s.addEventListener('change', function () { bij(s.value === norm ? '' : s.value); });
+			return s;
+		}
+		function paginas(lijst, label) {
+			var s = el('select', { multiple: true, size: 6, 'aria-label': label });
+			S.paginakeuze.forEach(function (p) { s.appendChild(el('option', { value: String(p.id), text: p.titel, selected: lijst.indexOf(p.id) > -1 })); });
+			s.addEventListener('change', function () {
+				lijst.length = 0;
+				[].forEach.call(s.selectedOptions, function (o) { lijst.push(Number(o.value)); });
+			});
+			return s;
+		}
+		function plaats(p, sleutel) {
+			return el('div', { class: 'sfpb-stapel' }, [
+				el('span', { class: 'sfpb-label', text: 'Waar' }),
+				pillen([['overal', 'Overal'], ['inhoud', 'Homepage, artikelen en begrippen']], p.waar, function (w) { p.waar = w; teken(); }, 'Waar'),
+				p.waar === 'inhoud' ? veld('Ook op deze pagina\'s', paginas(p.ook, 'Ook op deze pagina\'s'), 'Ctrl of Cmd ingedrukt om meer te kiezen.', 'sfpb-bn-ook-' + sleutel) : null,
+				veld('Niet op deze pagina\'s', paginas(p.niet, 'Niet op deze pagina\'s'), 'Bijvoorbeeld bedankpagina\'s. De pagina waar de banner naartoe wijst slaat hij zelf over.', 'sfpb-bn-niet-' + sleutel)
+			]);
+		}
+		var kaarten = I.aanbod.map(function (a, i) {
+			function invoer(veldnaam, plaatshouder, type) {
+				var x = tekstInvoer(a[veldnaam], plaatshouder, type);
+				x.addEventListener('input', function () { a[veldnaam] = x.value; });
+				return x;
+			}
+			var doel = paginaKeuze(a.pagina, 'Een ander adres');
+			doel.addEventListener('change', function () { a.pagina = Number(doel.value) || 0; teken(); });
+			return el('div', { class: 'sfpb-sm sfpb-stapel' }, [
+				el('div', { class: 'sfpb-rij sfpb-tussen' }, [
+					el('h3', { text: (i + 1) + '. ' + (a.titel || 'Nieuw aanbod') }),
+					el('div', { class: 'sfpb-rij' }, [
+						i > 0 ? el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Hoger', klik: function () { I.aanbod.splice(i - 1, 0, I.aanbod.splice(i, 1)[0]); teken(); } }) : null,
+						el('button', { class: 'sfpb-knop sfpb-klein sfpb-weg', type: 'button', text: 'Weghalen', klik: function () { I.aanbod.splice(i, 1); teken(); } })
+					])
+				]),
+				veld('Soort', invoer('label', 'Nieuw boek'), 'Voor de dubbele punt.', 'sfpb-bn-label-' + i),
+				veld('Titel', invoer('titel', 'De FASTER-methode'), 'Vet in de banner.', 'sfpb-bn-titel-' + i),
+				veld('Extra', invoer('extra', 'Presale begint 1 december.'), 'Valt op een telefoon weg.', 'sfpb-bn-extra-' + i),
+				veld('Linktekst', invoer('linktekst', 'Zet jezelf op de wachtlijst'), null, 'sfpb-bn-linktekst-' + i),
+				veld('Naar', doel, null, 'sfpb-bn-doel-' + i),
+				!a.pagina ? veld('Adres', invoer('link', 'https://', 'url'), null, 'sfpb-bn-link-' + i) : null,
+				el('div', { class: 'sfpb-rij' }, [
+					veld('Vanaf', invoer('van', '', 'date'), 'Leeg: nu al.', 'sfpb-bn-van-' + i),
+					veld('Tot en met', invoer('tot', '', 'date'), 'Leeg: tot je hem weghaalt.', 'sfpb-bn-tot-' + i)
+				]),
+				plaats(a, 'a' + i)
+			]);
+		});
+		var cursusUitleg = !B.cursusdata
+			? 'Het onderdeel Cursusdata staat uit: er is geen cursusbanner.'
+			: (B.cursussen.length ? 'Nu: ' + B.cursussen[0].titel + ', start ' + B.cursussen[0].dag + '.' : 'Nu geen groep met een startdatum vandaag of later: geen cursusbanner.');
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Banner', 'Eén regel boven de header. Een lopend aanbod (boek, e-course) gaat voor; anders staat er vanzelf de eerstvolgende groep uit de cursusdata, tot en met de eerste lesdag.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				el('p', { class: 'sfpb-hulp', text: B.nu ? 'Op de homepage staat vandaag: ' + B.nu : 'Op de homepage staat vandaag geen banner.' }),
+				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [
+					el('h2', { text: 'Kleur' }),
+					el('div', { class: 'sfpb-rij' }, [
+						veld('Achtergrond', rolKeuze(I.kleur, 'links', function (v) { I.kleur = v; }), null, 'sfpb-bn-kleur'),
+						veld('Tekst', rolKeuze(I.tekst_kleur, 'wit', function (v) { I.tekst_kleur = v; }), null, 'sfpb-bn-tekstkleur')
+					]),
+					el('p', { class: 'sfpb-hulp', text: 'Kleurrollen uit het onderdeel Kleurrollen. Een andere keuze dan de norm verschijnt in Overzicht.' })
+				]),
+				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [
+					el('h2', { text: 'Aanbod' }),
+					el('p', { class: 'sfpb-hulp', text: 'Staan er meer tegelijk in hun periode, dan geldt de bovenste.' }),
+					el('div', { class: 'sfpb-stapel' }, kaarten),
+					I.aanbod.length < 10 ? el('button', { class: 'sfpb-knop', type: 'button', style: 'align-self:flex-start', text: 'Aanbod toevoegen', klik: function () { I.aanbod.push({ label: '', titel: '', extra: '', linktekst: '', pagina: 0, link: '', van: '', tot: '', waar: 'overal', ook: [], niet: [] }); teken(); } }) : null
+				]),
+				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [
+					el('h2', { text: 'Cursus' }),
+					schakel(I.cursus.aan === '1', 'Cursusbanner uit de cursusdata', function (aan) { I.cursus.aan = aan ? '1' : '0'; }),
+					el('p', { class: 'sfpb-hulp', text: cursusUitleg + ' De tekst staat bij Teksten, Banner.' }),
+					plaats(I.cursus, 'c')
+				]),
+				el('p', { class: 'sfpb-hulp', text: 'De caches leegt de plugin niet: doe dat na opslaan.' }),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						bewaarInstellingen(this, 'banner', { banner: I }, null, function () { ui.banner = null; });
+					} }),
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Annuleren', klik: function () { ui.banner = null; teken(); } }),
+					flitsPlek('banner')
+				])
+			])
+		]);
+	}
+
 	/* ---------- Onderdeel: tools (sinds 3.8.0) ---------- */
 
 	function detailTools() {
@@ -1547,11 +1647,12 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 
 		if (ui.detail !== 'footer') ui.footer = null;
+		if (ui.detail !== 'banner') ui.banner = null;
 
 		var y = window.pageYOffset;
 		wortel.innerHTML = '';

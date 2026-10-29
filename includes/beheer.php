@@ -405,6 +405,7 @@ function sfp_page_config_beheer_stand() {
             'wachtlijst_formulier' => isset( $alle['wachtlijst_formulier'] ) ? (int) $alle['wachtlijst_formulier'] : 0,
             'formulieren'          => sfp_page_config_beheer_formulieren(),
         ),
+        'banner'       => function_exists( 'sfp_page_config_banner_stand' ) ? sfp_page_config_banner_stand() : array(),
         'controle'     => sfp_page_config_paginas_overzicht(),
     );
 }

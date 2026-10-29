@@ -4,13 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.17.0-beta.3] - 2026-10-28
+## [3.17.0-beta.4] - 2026-10-29
 
-Een trainingspagina zonder toekomstige groep toont vanzelf de wachtlijst: een wachtlijsttekst bij de data en het wachtlijstformulier van de site op de plek van het inschrijfformulier. Komen er weer data, dan keert de pagina vanzelf terug. Daarnaast ruimte tussen een kop en de tekst eronder in de tekststroom van een Sectie. Testcase DGA, Training Effectief Communiceren.
+Een trainingspagina zonder toekomstige groep toont vanzelf de wachtlijst, en een nieuwe banner boven de header kondigt vanzelf de eerstvolgende groep aan, of een boek of e-course met voorrang: een wachtlijsttekst bij de data en het wachtlijstformulier van de site op de plek van het inschrijfformulier. Komen er weer data, dan keert de pagina vanzelf terug. Daarnaast ruimte tussen een kop en de tekst eronder in de tekststroom van een Sectie. Testcase DGA, Training Effectief Communiceren.
 
 Terugdraaien per site: in SFP Beheer, Cursusdata, het wachtlijstformulier op Geen zetten; de pagina toont dan weer de oude tekst bij ontbrekende data. Verlopen groepen blijven ook dan weg; daarvoor de plugin terugzetten naar 3.16.0.
 
 ### Toegevoegd
+- Onderdeel Banner: één regel boven de header. Een aanbod (boek, e-course) met tekst, link en periode stel je per site in bij SFP Beheer, Onderdelen, Banner; een lopend aanbod gaat voor. Anders toont de banner vanzelf de eerstvolgende groep uit de cursusdata ("Nog plekken vrij: Presentatietraining, start 26 november. Schrijf je in"), tot en met de eerste lesdag; geen groep, dan geen banner. Per banner: overal, of alleen op homepage, artikelen en begrippen plus gekozen pagina's, met uitgezonderde pagina's; de doelpagina zelf slaat hij over. Kleur en tekstkleur kies je uit de kleurrollen (norm: Links en knoppen met Wit). Komt een pagina uit de cache, dan kiest een klein script met de datum van vandaag opnieuw, zodat een verlopen banner niet blijft staan. Wegklikken onthoudt de browser per banner. Vervangt de Astra-layouts met een vaste tekst op DGA, CVD, DPS en SwS. Staat standaard uit.
 - Wachtlijst: zonder groep met een eerste dag vandaag of later toont `[cursus_datum]` de wachtlijsttekst met een link naar het formulier, en wordt het inschrijfformulier het wachtlijstformulier. Beide formulieren kies je per site in SFP Beheer, Cursusdata. De link volgt het anker van de knop onderaan voor trainingen (standaard #inschrijven), zodat knoppen en ankers naar het formulier blijven wijzen.
 - Teksten "Geen nieuwe groep, met wachtlijst" en "Link naar het wachtlijstformulier" in nl, en en pt (SFP Beheer, Teksten, Formulieren en cursusdata).
 - Klassen `sfp-met-data` en `sfp-zonder-data`: een blok met de klasse staat er op een trainingspagina alleen met of alleen zonder toekomstige groep. De plugin laat het blok op de server weg, dus geen verborgen inhoud en geen verspringing.
