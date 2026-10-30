@@ -281,6 +281,105 @@ function sfp_page_config_teksten_register() {
             'pt'    => 'Com a confiança de equipes de',
         ),
 
+        // Kopieerblok (sinds 3.20.0).
+        'kopieer_knop'       => array(
+            'groep' => 'Kopieerblok',
+            'label' => 'Knop',
+            'nl'    => 'Kopieer',
+            'en'    => 'Copy',
+            'pt'    => 'Copiar',
+        ),
+        'kopieer_klaar'      => array(
+            'groep' => 'Kopieerblok',
+            'label' => 'Na het kopiëren',
+            'nl'    => 'Gekopieerd',
+            'en'    => 'Copied',
+            'pt'    => 'Copiado',
+        ),
+        'kopieer_mislukt'    => array(
+            'groep' => 'Kopieerblok',
+            'label' => 'Als kopiëren niet lukt',
+            'nl'    => 'De tekst is geselecteerd. Druk op Ctrl+C (Mac: Cmd+C) om te kopiëren.',
+            'en'    => 'The text is selected. Press Ctrl+C (Mac: Cmd+C) to copy.',
+            'pt'    => 'O texto está selecionado. Pressione Ctrl+C (Mac: Cmd+C) para copiar.',
+        ),
+        'kopieer_meer'       => array(
+            'groep' => 'Kopieerblok',
+            'label' => 'Lange tekst openen',
+            'nl'    => 'Toon alles',
+            'en'    => 'Show all',
+            'pt'    => 'Mostrar tudo',
+        ),
+        'kopieer_minder'     => array(
+            'groep' => 'Kopieerblok',
+            'label' => 'Lange tekst inklappen',
+            'nl'    => 'Toon minder',
+            'en'    => 'Show less',
+            'pt'    => 'Mostrar menos',
+        ),
+
+        // Bronnenlijst (sinds 3.20.0; teksten gelijk aan het snippet v1.11).
+        'bronnen_intro_een'  => array(
+            'groep' => 'Bronnenlijst',
+            'label' => 'Inleiding bij één bron (%1$s is de site, %2$s het aantal)',
+            'nl'    => 'De content van %1$s is gebaseerd op <strong>%2$s</strong> bron. Deze pagina toont die bron en de artikelen waarin hij voorkomt.',
+            'en'    => 'The content of %1$s is based on <strong>%2$s</strong> source. This page shows that source and the articles that cite it.',
+            'pt'    => 'O conteúdo de %1$s se baseia em <strong>%2$s</strong> fonte. Esta página mostra essa fonte e os artigos em que ela aparece.',
+            'lang'  => true,
+        ),
+        'bronnen_intro_meer' => array(
+            'groep' => 'Bronnenlijst',
+            'label' => 'Inleiding bij meer bronnen (%1$s is de site, %2$s het aantal)',
+            'nl'    => 'De content van %1$s is gebaseerd op <strong>%2$s</strong> voornamelijk academische bronnen. Deze pagina bevat een overzicht van al deze bronnen en de artikelen waarin ze voorkomen.',
+            'en'    => 'The content of %1$s is based on <strong>%2$s</strong> sources, most of them academic. This page lists every source and the articles that cite it.',
+            'pt'    => 'O conteúdo de %1$s se baseia em <strong>%2$s</strong> fontes, em sua maioria acadêmicas. Esta página lista todas as fontes e os artigos em que elas aparecem.',
+            'lang'  => true,
+        ),
+        'bronnen_zoek'       => array(
+            'groep' => 'Bronnenlijst',
+            'label' => 'Zoekveld',
+            'nl'    => 'Zoek op auteur of titel',
+            'en'    => 'Search by author or title',
+            'pt'    => 'Busque por autor ou título',
+        ),
+        'bronnen_geen'       => array(
+            'groep' => 'Bronnenlijst',
+            'label' => 'Niets gevonden',
+            'nl'    => 'Geen bron gevonden.',
+            'en'    => 'No source found.',
+            'pt'    => 'Nenhuma fonte encontrada.',
+        ),
+        'bronnen_nav'        => array(
+            'groep' => 'Bronnenlijst',
+            'label' => 'Letters (voor schermlezers)',
+            'nl'    => 'Navigeer op beginletter',
+            'en'    => 'Jump to letter',
+            'pt'    => 'Ir para a letra',
+        ),
+        'bronnen_geciteerd'  => array(
+            'groep' => 'Bronnenlijst',
+            'label' => 'Geciteerd in',
+            'nl'    => 'Geciteerd in:',
+            'en'    => 'Cited in:',
+            'pt'    => 'Citado em:',
+        ),
+        'bronnen_schema'     => array(
+            'groep' => 'Bronnenlijst',
+            'label' => 'Naam voor Google',
+            'nl'    => 'Bibliografie',
+            'en'    => 'Bibliography',
+            'pt'    => 'Bibliografia',
+        ),
+
+        // Praktijkblok (sinds 3.20.0).
+        'praktijkblok_kop'   => array(
+            'groep' => 'Praktijkblok',
+            'label' => 'Kop van een nieuw praktijkblok',
+            'nl'    => 'Uit de trainingspraktijk',
+            'en'    => 'From the training room',
+            'pt'    => 'Da prática de treinamento',
+        ),
+
         // Tooltips.
         'tooltip_toon'       => array(
             'groep' => 'Tooltips',

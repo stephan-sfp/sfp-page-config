@@ -160,6 +160,26 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Eén regel boven de header: een boek of e-course in een periode die je kiest, anders vanzelf de eerstvolgende groep uit de cursusdata.',
             'detail' => true,
         ),
+        'kopieerblok'  => array(
+            'naam'   => 'Kopieerblok',
+            'uitleg' => 'Tekst die de lezer met één klik kopieert, zoals een prompt. Lange tekst staat ingeklapt met Toon alles.',
+            'detail' => false,
+        ),
+        'bronnenlijst' => array(
+            'naam'   => 'Bronnenlijst',
+            'uitleg' => 'Alle bronnen uit de tooltips op alfabet, met een zoekveld en de artikelen waarin ze staan. Voor de bibliografiepagina.',
+            'detail' => false,
+        ),
+        'praktijkblok' => array(
+            'naam'   => 'Praktijkblok',
+            'uitleg' => 'Een citaat in de stijl Uit de trainingspraktijk: een ervaring van de trainer, met naam en merk eronder.',
+            'detail' => false,
+        ),
+        'auteursbio'   => array(
+            'naam'   => 'Auteursbio',
+            'uitleg' => 'Opmaak en links in de biografie van een auteur, en regels die met een vinkje beginnen als lijst met vinkjes.',
+            'detail' => false,
+        ),
         'snippets'   => array(
             'naam'   => 'Snippets beheren op afstand',
             'uitleg' => 'Claude leest, maakt en wijzigt de codefragmenten van ASE Pro en zet ze aan of uit, zonder browser. Alleen voor onderhoud.',
@@ -261,6 +281,12 @@ function sfp_page_config_onderdeel_standaard( $id ) {
         case 'berichttypes':
         case 'paginabeheer':
             // Fundament (3.15.0): per site aan na een nameting, daarna gaat het snippet uit.
+            return false;
+        case 'kopieerblok':
+        case 'bronnenlijst':
+        case 'praktijkblok':
+        case 'auteursbio':
+            // Inhoudsbouwstenen (3.20.0): per site aan na een nameting, daarna gaat het snippet uit.
             return false;
         case 'begrip':
         case 'pijler':

@@ -4,6 +4,25 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.20.0-beta.1] - 2026-10-30
+
+Proefversie van 3.20.0 voor SwS en DPS. Inhoud gelijk aan 3.20.0 hieronder.
+
+## [3.20.0] - 2026-10-30
+
+Inhoud die tot nu toe alleen in ASE-snippets stond, zit nu in de plugin: kopieerblok, bronnenlijst, praktijkblok en de vinkjeslijst in de auteursbio, plus de oude codes voor datums, de dynamische CTA en de koppelcode van de tools. Elk nieuw onderdeel staat standaard uit en gaat per site aan na een nameting; daarna kan het snippet uit. Staat een onderdeel uit, dan blijft het snippet het doen. Is het snippet er niet meer, dan neemt de plugin het over, zodat bestaande inhoud blijft werken. Besluiten Stephan 26-10, 29-10 en 30-10-2026 (klus shortcodes-naar-plugin), na een UX-check als bezoeker.
+
+Terugdraaien: versie 3.19.1 terugzetten en de onderdelen uitzetten. Er is niets omgezet in inhoud; het kopieerblok bewaart in dezelfde vorm als het snippet.
+
+### Toegevoegd
+- Onderdeel Kopieerblok: het blok `sfp/copy` (dezelfde naam en opslag als het snippet). Werkt bij de eerste klik (het script wordt niet uitgesteld door WP Rocket), één knop Kopieer van minstens 44 px, bevestiging Gekopieerd met een vinkje, zichtbare focus. Lange tekst staat ingeklapt op ongeveer acht regels met Toon alles; kopiëren pakt altijd de hele tekst. Lukt kopiëren niet, dan selecteert het blok de tekst en zegt hoe je kopieert. Teksten in de taal van de site. Opmaak op rol, hoeken en randen zoals de andere bouwstenen; de kleurkeuzes vervallen. Opgeslagen blokken blijven geldig, ook die met oude standaardkleuren in de opgeslagen HTML.
+- Onderdeel Bronnenlijst: blok Bronnenlijst en de code `[bronnenlijst]`, met de logica van het snippet v1.11 (letters, Geciteerd in, gegevens voor Google, drie talen). Nieuw: een zoekveld dat de lijst filtert terwijl je typt. Met het onderdeel aan haalt de plugin de stijl en de gegevens voor Google van het snippet van de pagina, zodat ze er niet twee keer staan.
+- Onderdeel Praktijkblok: blokstijl Uit de trainingspraktijk op Citaat en een patroon met kop, tekst en ondertekening. Opmaak gelijk aan het DPS-snippet (variant A, op rol); bestaande blokken met de klasse praktijkblok houden hun opmaak.
+- Onderdeel Auteursbio: opmaak en links in de biografie blijven bewaard en worden alinea's; regels die met √ beginnen worden een lijst met vinkjes, gelijk aan het snippet.
+- De codes `[publicatiedatum]`, `[bewerkingsdatum]`, `[dynamische_cta]`, `[dynamische_pijlerlink]`, `[dynamische_zelftest]` en `[sfp_tool_auto]`, `[dps_tool_auto]`, `[dga_tool_auto]`, `[cvd_tool_auto]`, `[dst_tool_auto]`, `[fl_tool_auto]` werken ook zonder snippet, met dezelfde uitvoer.
+- Documentoverzicht in de editor: Sectie, Kolommen en Kaart heten naar hun anker of eerste kop, bijvoorbeeld Sectie: Wat je leert. De opgeslagen inhoud verandert niet.
+- Voorbeelden in de blokkenlijst bij Logostrook (neutrale logo's), Review (een verzonnen review), Kopieerblok en Bronnenlijst.
+
 ## [3.19.1] - 2026-10-29
 
 ### Gerepareerd

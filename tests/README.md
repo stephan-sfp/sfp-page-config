@@ -120,3 +120,11 @@ php tests/editor-panelen.php
 ```
 
 Checks with small WordPress stubs: own reviews (input schema, updating without losing fields, 400 and 404, the four abilities and the explicit approval for deleting), the pdf address the plugin builds from the test page (equal to the live addresses on DPS and SwS), the network norm for the address of a post type with the 301 redirect of the old address, the Dutch names in the admin, the editor without free colour and font size in an article, begrip or tool, an own-site link shown as a page, the begrip template and the new texts. It does not replace a run in a real WordPress with a browser.
+
+# Inhoudsbouwstenen (3.20.0)
+
+```sh
+php tests/bouwstenen-inhoud.php
+```
+
+Checks with small WordPress stubs: sources from tooltips as the snippet v1.11 reads them (page numbers and access dates stripped, duplicates merged, bare links clickable in a new tab, markdown stars, grouping per letter with numbers under #), the copy block (the stored wrapper and label of the snippet removed, long text detected, colours read back from the stored HTML), the author bio checklist, that old codes are only added when no snippet registered them, and that the bibliography code is only taken over with the part on or when the snippet is gone. Block validity of stored copy blocks from the sites was checked in a local WordPress 7.1 with a browser.
