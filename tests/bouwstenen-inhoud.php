@@ -30,6 +30,8 @@ function esc_url( $u ) { return (string) $u; }
 function esc_html( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); }
 function esc_attr( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); }
 function is_admin() { return false; }
+function doing_action() { return false; }
+function is_singular() { return false; }
 function wp_is_json_request() { return false; }
 function sfp_page_config_onderdeel_aan( $id ) { return ! empty( $GLOBALS['aan'][ $id ] ); }
 function sfp_page_config_blokken_css_bestand( $naam ) { return '/*' . $naam . '*/'; }

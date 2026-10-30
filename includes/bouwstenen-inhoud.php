@@ -427,6 +427,9 @@ function sfp_page_config_bronnen_registreer() {
     add_shortcode( 'bronnenlijst', 'sfp_page_config_bronnen_code' );
     if ( $aan ) {
         sfp_page_config_bronnen_snippet_uit();
+        // Nog een keer vlak voor de head geprint wordt: op DPS (beta.1, 30-10)
+        // stonden de hooks van het snippet er na init nog.
+        add_action( 'wp_head', 'sfp_page_config_bronnen_snippet_uit', 0 );
     }
 }
 
@@ -437,16 +440,24 @@ function sfp_page_config_bronnen_registreer() {
  */
 function sfp_page_config_bronnen_snippet_uit() {
     global $wp_filter;
+    $moment = doing_action( 'wp_head' ) ? 'head' : 'init';
     if ( empty( $wp_filter['wp_head'] ) || ! is_object( $wp_filter['wp_head'] ) ) {
+        $GLOBALS['sfp_pc_bronnen_diag'][ $moment ] = 'geen wp_head';
         return;
     }
+    $weg = array();
     foreach ( $wp_filter['wp_head']->callbacks as $prioriteit => $functies ) {
         foreach ( $functies as $functie ) {
             $naam = is_string( $functie['function'] ) ? $functie['function'] : '';
             if ( '' !== $naam && 0 !== strpos( $naam, 'sfp_page_config_' ) && preg_match( '/(bronnenlijst_css|bibliografie_schema)$/', $naam ) ) {
-                remove_action( 'wp_head', $naam, $prioriteit );
+                $weg[] = $naam . '@' . $prioriteit . ( remove_action( 'wp_head', $naam, $prioriteit ) ? '' : '(mislukt)' );
             }
         }
+    }
+    // Tijdelijk (3.20.0-beta.2): wat er op welk moment weg ging.
+    $GLOBALS['sfp_pc_bronnen_diag'][ $moment ] = $weg ? implode( ',', $weg ) : 'niets';
+    if ( 'head' === $moment && is_singular() ) {
+        echo '<!-- sfp-bronnen diag: init=' . esc_html( isset( $GLOBALS['sfp_pc_bronnen_diag']['init'] ) ? $GLOBALS['sfp_pc_bronnen_diag']['init'] : '-' ) . ' head=' . esc_html( $GLOBALS['sfp_pc_bronnen_diag']['head'] ) . ' -->' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped.
     }
 }
 
