@@ -48,11 +48,13 @@ function sfp_page_config_bewijs_blokken( $blokken ) {
         'zonder_basis' => true,
         'attributes'   => array(
             'label' => array( 'type' => 'string', 'default' => '' ),
-            'logos' => array(
+            'logos'     => array(
                 'type'    => 'array',
                 'default' => array(),
                 'items'   => array( 'type' => 'integer' ),
             ),
+            // Alleen voor het voorbeeld in de blokkenlijst (sinds 3.20.0).
+            'voorbeeld' => array( 'type' => 'boolean', 'default' => false ),
         ),
         'render'       => 'sfp_page_config_render_logostrook',
     );
@@ -64,7 +66,9 @@ function sfp_page_config_bewijs_blokken( $blokken ) {
         'zonder_basis' => true,
         'inserter'     => $reviews,
         'attributes'   => array(
-            'review' => array( 'type' => 'string', 'default' => '' ),
+            'review'    => array( 'type' => 'string', 'default' => '' ),
+            // Alleen voor het voorbeeld in de blokkenlijst (sinds 3.20.0).
+            'voorbeeld' => array( 'type' => 'boolean', 'default' => false ),
         ),
         'render'       => 'sfp_page_config_render_review_kaart',
     );

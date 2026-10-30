@@ -502,6 +502,11 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
                 'uitleg' => 'Benoemen haalt de spanning eraf.',
             ),
         ),
+        // Sinds 3.20.0: Logostrook en Review met een voorbeeld dat alleen in
+        // de blokkenlijst staat (neutrale logo's, een verzonnen review).
+        'sfp/logostrook'   => array( 'attributes' => array( 'voorbeeld' => true ) ),
+        'sfp/review'       => array( 'attributes' => array( 'voorbeeld' => true ) ),
+        'sfp/bronnenlijst' => array( 'attributes' => array( 'voorbeeld' => true ) ),
         'sfp/begrip-check' => array(
             'innerBlocks' => array(
                 array( 'name' => 'sfp/begrip-vraag', 'attributes' => array( 'vraag' => 'Wanneer is spanning voor een presentatie een probleem?', 'optie1' => 'Altijd', 'optie2' => 'Als je erdoor gaat vermijden', 'optie3' => 'Nooit', 'juist' => 2 ) ),
@@ -753,7 +758,7 @@ function sfp_page_config_blokken_editor_css() {
     // understanding bij een begrip): zonder die opmaak stonden ze in de
     // editor als losse regels. Sinds 3.18.0 ook zelftest-cta: zonder die
     // opmaak stond de kop van de Zelftest-oproep als gewone tekst.
-    foreach ( array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'editor' ) as $bestand ) {
+    foreach ( array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'editor' ) as $bestand ) {
         $css .= sfp_page_config_blokken_css_bestand( $bestand );
     }
     wp_register_style( 'sfp-blokken-editor', false, array(), SFP_PAGE_CONFIG_VERSION );

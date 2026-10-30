@@ -195,16 +195,53 @@
 	 * @param {string}   naam Bloknaam.
 	 * @param {Function} edit Bewerkcomponent.
 	 */
-	function blok( naam, edit ) {
+	function blok( naam, edit, extra ) {
 		var bestaand = wp.blocks.getBlockType( naam );
 		if ( bestaand ) {
 			wp.blocks.unregisterBlockType( naam );
 		}
-		wp.blocks.registerBlockType( naam, {
+		var instellingen = {
 			apiVersion: 3,
 			edit: edit,
 			save: opslaan,
+		};
+		Object.keys( extra || {} ).forEach( function ( k ) {
+			instellingen[ k ] = extra[ k ];
 		} );
+		wp.blocks.registerBlockType( naam, instellingen );
+	}
+
+	/*
+	 * Naam in het documentoverzicht (sinds 3.20.0): het anker als dat er is,
+	 * anders de eerste kop in het blok. Alleen in de editor; de opgeslagen
+	 * inhoud verandert niet. WordPress geeft hier alleen de attributen mee,
+	 * dus het blok zoeken we op via die attributen.
+	 */
+	function overzichtsnaam( basis ) {
+		return function ( attrs, info ) {
+			if ( ! info || 'list-view' !== info.context ) {
+				return undefined;
+			}
+			if ( attrs && attrs.metadata && attrs.metadata.name ) {
+				return attrs.metadata.name;
+			}
+			var naam = attrs && attrs.anker ? attrs.anker : '';
+			if ( ! naam ) {
+				var be2 = wp.data.select( 'core/block-editor' );
+				var ids = be2.getClientIdsWithDescendants ? be2.getClientIdsWithDescendants() : [];
+				for ( var i = 0; i < ids.length; i++ ) {
+					if ( be2.getBlockAttributes( ids[ i ] ) === attrs ) {
+						naam = eersteKop( ids[ i ] );
+						break;
+					}
+				}
+			}
+			naam = String( naam || '' ).replace( /<[^>]+>/g, '' ).replace( /&nbsp;/g, ' ' ).trim();
+			if ( naam.length > 48 ) {
+				naam = naam.slice( 0, 46 ).trim() + '\u2026';
+			}
+			return naam ? basis + ': ' + naam : basis;
+		};
 	}
 
 	/** De eerste kop binnen een blok, voor een anker. */
@@ -232,7 +269,7 @@
 			] ),
 			el( 'section', blockProps, el( 'div', inner ) )
 		);
-	} );
+	}, { __experimentalLabel: overzichtsnaam( 'Sectie' ) } );
 
 	/* sfp/held */
 	blok( 'sfp/held', function ( props ) {
@@ -276,7 +313,7 @@
 			] ),
 			el( 'div', inner )
 		);
-	} );
+	}, { __experimentalLabel: overzichtsnaam( 'Kolommen' ) } );
 
 	/* sfp/kolom */
 	blok( 'sfp/kolom', function () {
@@ -309,7 +346,7 @@
 			] ),
 			el( 'div', inner )
 		);
-	} );
+	}, { __experimentalLabel: overzichtsnaam( 'Kaart' ) } );
 
 	/* sfp/stappen en sfp/stap */
 	blok( 'sfp/stappen', function () {
@@ -1095,8 +1132,27 @@
 
 	var bewijs = window.sfpBewijs || { aan: false, reviews: [], beheer: '', label: '' };
 
+	/* Voorbeeld in de blokkenlijst: drie neutrale logo's, geen echte merken. */
+	function voorbeeldLogo( i ) {
+		var vormen = [
+			el( 'circle', { cx: 18, cy: 20, r: 12 } ),
+			el( 'rect', { x: 6, y: 8, width: 24, height: 24, rx: 5 } ),
+			el( 'path', { d: 'M18 7l13 26H5z' } ),
+		];
+		return el( 'svg', { className: 'sfp-logostrook__logo', viewBox: '0 0 140 40', width: 140, height: 40, 'aria-hidden': true, style: { fill: 'currentColor', opacity: 0.55 } },
+			vormen[ i % 3 ],
+			el( 'rect', { x: 40, y: 14, width: 88, height: 12, rx: 6 } )
+		);
+	}
+
 	blok( 'sfp/logostrook', function ( props ) {
 		var a = props.attributes;
+		if ( a.voorbeeld ) {
+			return el( 'div', useBlockProps( { className: 'sfp-logostrook' } ),
+				el( 'p', { className: 'sfp-logostrook__label' }, bewijs.label || 'Vertrouwd door teams van' ),
+				el( 'ul', { className: 'sfp-logostrook__logos', role: 'list' }, [ 0, 1, 2 ].map( function ( i ) { return el( 'li', { key: i }, voorbeeldLogo( i ) ); } ) )
+			);
+		}
 		var ids = ( a.logos || [] ).map( function ( id ) { return parseInt( id, 10 ) || 0; } ).filter( Boolean );
 		// Eén opvraging voor alle logo's samen, zoals het galerijblok van
 		// WordPress; per logo apart bleef een deel op laden staan (SwS, 7 logo's).
@@ -1169,6 +1225,17 @@
 
 	blok( 'sfp/review', function ( props ) {
 		var a = props.attributes;
+		if ( a.voorbeeld ) {
+			var ster = function ( i ) {
+				return el( 'svg', { key: i, className: 'sfp-review-kaart__ster is-vol', viewBox: '0 0 24 24', width: 22, height: 22, 'aria-hidden': true }, el( 'path', { d: 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' } ) );
+			};
+			return el( 'div', useBlockProps( { className: 'sfp-review-kaart' } ),
+				el( 'div', { className: 'sfp-review-kaart__sterren' }, [ 0, 1, 2, 3, 4 ].map( ster ) ),
+				el( 'div', { className: 'sfp-review-kaart__tekst' }, el( 'p', null, 'Voorbeeld: na twee sessies presenteerde ik rustig en met een duidelijke boodschap.' ) ),
+				el( 'p', { className: 'sfp-review-kaart__naam' }, 'Voorbeeldnaam' ),
+				el( 'p', { className: 'sfp-review-kaart__bron' }, 'Je kiest een eigen review uit SFP Beheer' )
+			);
+		}
 		var opties = [ { value: '', label: 'Kies een review' } ].concat( ( bewijs.reviews || [] ).map( function ( r ) {
 			return { value: r.id, label: r.author + ( r.begin ? ': ' + r.begin : '' ) };
 		} ) );
@@ -1206,6 +1273,69 @@
 			inhoud
 		);
 	} );
+
+	/*
+	 * Kopieerblok (sfp/copy, sinds 3.20.0). Alleen als de plugin het blok
+	 * heeft (onderdeel aan, of geen snippet meer); anders laat de editor het
+	 * snippet zijn werk doen. Opslaan is precies gelijk aan het snippet:
+	 * omhulling met de oude data-attributen, het label en de tekst. Zo blijft
+	 * elk opgeslagen blok geldig. Kleur kies je niet meer: het blok volgt het
+	 * merk van de site.
+	 */
+	var inhoud = window.sfpInhoud || {};
+	if ( inhoud.kopieer ) {
+		blok( 'sfp/copy', function ( props ) {
+			var a = props.attributes;
+			var blockProps = useBlockProps( { className: 'sfp-kopieer' } );
+			var inner = useInnerBlocksProps( { className: 'sfp-kopieer__tekst' }, { template: [ [ 'core/paragraph', { placeholder: 'Typ of plak hier de tekst die de lezer kopieert' } ] ] } );
+			return el( Fragment, null,
+				paneel( 'Kopieerblok', [
+					uitleg( 'De lezer kopieert met één klik de hele tekst. Lange tekst staat op de site ingeklapt op ongeveer acht regels, met Toon alles.' ),
+				] ),
+				el( 'div', blockProps,
+					el( 'div', { className: 'sfp-kopieer__kop' },
+						el( RichText, { tagName: 'p', className: 'sfp-kopieer__label', value: a.lang || '', allowedFormats: [], placeholder: 'Label, bijvoorbeeld Kopieer deze prompt', onChange: function ( v ) { props.setAttributes( { lang: v } ); } } ),
+						el( 'span', { className: 'sfp-kopieer__knop', 'aria-hidden': true }, ( inhoud.knop || 'Kopieer' ) )
+					),
+					el( 'div', inner )
+				)
+			);
+		}, {
+			// Zoals het snippet: de klasse wp-block-sfp-copy hoort in de opgeslagen HTML.
+			supports: { html: false, className: true, customClassName: true },
+			save: function ( props ) {
+				var a = props.attributes;
+				// useBlockProps.save zet de klasse wp-block-sfp-copy en een eigen klasse,
+				// in dezelfde volgorde als het snippet (data-attributen eerst).
+				return el( 'div', useBlockProps.save( {
+					'data-header-bg': a.headerBg,
+					'data-header-color': a.headerColor,
+					'data-border-color': a.borderColor,
+					'data-content-bg': a.contentBg,
+					'data-content-color': a.contentColor,
+					'data-done-color': a.doneColor,
+				} ),
+					a.lang ? el( RichText.Content, { tagName: 'span', className: 'sfp-copy__lang-saved', value: a.lang } ) : null,
+					el( InnerBlocks.Content )
+				);
+			},
+		} );
+	}
+
+	/* Bronnenlijst (sinds 3.20.0): de echte lijst van de site, zoals bezoekers hem zien. */
+	blok( 'sfp/bronnenlijst', function ( props ) {
+		var blockProps = useBlockProps();
+		return el( Fragment, null,
+			paneel( 'Bronnenlijst', [
+				uitleg( 'De lijst vult zich vanzelf met de bronnen uit de tooltips van alle artikelen, begrippen en pagina\'s. Een bron voeg je toe in een tooltip, met een regel die begint met Bron:.' ),
+			] ),
+			el( 'div', blockProps, ServerSideRender ? el( ServerSideRender, {
+				block: 'sfp/bronnenlijst',
+				attributes: props.attributes,
+				EmptyResponsePlaceholder: function () { return el( 'div', { className: 'sfp-gegeven-leeg' }, 'Nog geen bronnen: geen tooltip op de site heeft een regel die begint met Bron:. Bezoekers zien hier niets.' ); },
+			} ) : null )
+		);
+	}, { save: function () { return null; } } );
 
 	/*
 	 * Rustig ritme in artikelen: tussen twee UX-elementen horen minstens

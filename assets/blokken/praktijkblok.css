@@ -1,0 +1,14 @@
+/*
+ * Praktijkblok "Uit de trainingspraktijk" (sinds 3.20.0): Citaat met klasse
+ * praktijkblok of de blokstijl. Variant A, besluit Stephan 18-10-2026,
+ * gelijk aan het DPS-snippet v1.1: vlak tint 3, streep links 4 px
+ * secundair, kop in kopfont en kapitalen, tekst niet cursief, hoeken 6 px
+ * rechts. Kleuren op rol.
+ */
+body .entry-content blockquote.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok),.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok){font-style:normal;margin:32px 0;padding:20px 24px;border:0;border-left:4px solid var(--sfp-b-secundair);border-radius:0 6px 6px 0;background:var(--sfp-b-tint3);quotes:none}
+.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok)::before,.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok)::after{content:none}
+.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok) p,.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok) cite{font-style:normal;color:var(--sfp-b-body)}
+.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok) p{margin:0 0 12px;font-size:inherit}
+.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok) p.praktijkblok-kop{font-family:var(--sfp-kopfont,inherit);font-weight:var(--sfp-kopfont-gewicht,900);text-transform:uppercase;letter-spacing:.02em;font-size:15px;color:var(--sfp-b-primair);margin-bottom:8px}
+.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok) cite{display:block;margin-top:4px;font-size:14px;font-weight:700;color:var(--sfp-b-primair)}
+.wp-block-quote:is(.praktijkblok,.is-style-praktijkblok) cite::before{content:none}

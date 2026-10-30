@@ -1,0 +1,21 @@
+/*
+ * Bronnenlijst (sinds 3.20.0): inleiding, zoekveld, letters en per letter
+ * de bronnen met de artikelen waarin ze staan. Klassen sfp-bib-* en
+ * sfp-bron-* gelijk aan het snippet, zodat bestaande links blijven werken.
+ */
+:root .sfp-bronnen .sfp-bib-intro{margin:0 0 24px}
+:root .sfp-bronnen__zoek{display:grid;gap:6px;margin:0 0 18px}
+:root .sfp-bronnen__zoek label{font-weight:700;font-size:15px;color:var(--sfp-b-primair)}
+:root .sfp-bronnen__zoek input{width:100%;max-width:520px;min-height:48px;box-sizing:border-box;padding:10px 14px;font-size:16px;border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-wit);color:var(--sfp-b-body)}
+:root .sfp-bronnen__zoek input:focus-visible{outline:3px solid var(--sfp-b-links);outline-offset:1px}
+:root .sfp-bronnen .sfp-bib-nav{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 32px}
+:root .sfp-bronnen .sfp-bib-nav a{display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;padding:0 8px;box-sizing:border-box;font-weight:700;text-decoration:none;color:var(--sfp-b-primair);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-wit)}
+:root .sfp-bronnen .sfp-bib-nav a:hover{border-color:var(--sfp-b-primair)}
+:root .sfp-bronnen .sfp-bib-nav a.is-leeg{opacity:.35;pointer-events:none}
+:root .sfp-bronnen__geen{margin:0 0 24px;font-weight:700;color:var(--sfp-b-primair)}
+:root .sfp-bronnen__groep{scroll-margin-top:120px}
+:root .sfp-bronnen__groep h2{scroll-margin-top:120px}
+:root .sfp-bronnen .sfp-bron-item{margin-top:24px;margin-bottom:1.75rem}
+:root .sfp-bronnen .sfp-bron-citaat{font-weight:700;overflow-wrap:anywhere}
+:root .sfp-bronnen .sfp-bron-geciteerd{margin-top:.35rem;font-size:.875rem}
+:root .sfp-bronnen .sfp-bron-geciteerd a{display:block;line-height:1.6}
