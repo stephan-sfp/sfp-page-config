@@ -4,25 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.20.0-beta.4] - 2026-10-30
-
-Proefversie. Bronnenlijst: de stijl en de gegevens voor Google van het snippet gaan nu echt van de pagina. ASE Pro zet de hooks van een snippet in een eigen closure onder de oorspronkelijke functienaam; de plugin zoekt nu op die naam. Tijdelijke notities weg.
-
-## [3.20.0-beta.3] - 2026-10-30
-
-Proefversie met een tijdelijke notitie in de HTML van de bronnenlijstpagina: welke onderdelen van de head over bronnen gaan.
-
-## [3.20.0-beta.2] - 2026-10-30
-
-Proefversie. Bronnenlijst: eerste bron weer met de bovenmarge van het snippet; stijl en gegevens voor Google van het snippet ook vlak voor de head weggehaald, met een tijdelijke notitie in de HTML om te zien wat er weg ging.
-
-## [3.20.0-beta.1] - 2026-10-30
-
-Proefversie van 3.20.0 voor SwS en DPS. Inhoud gelijk aan 3.20.0 hieronder.
-
 ## [3.20.0] - 2026-10-30
 
 Inhoud die tot nu toe alleen in ASE-snippets stond, zit nu in de plugin: kopieerblok, bronnenlijst, praktijkblok en de vinkjeslijst in de auteursbio, plus de oude codes voor datums, de dynamische CTA en de koppelcode van de tools. Elk nieuw onderdeel staat standaard uit en gaat per site aan na een nameting; daarna kan het snippet uit. Staat een onderdeel uit, dan blijft het snippet het doen. Is het snippet er niet meer, dan neemt de plugin het over, zodat bestaande inhoud blijft werken. Besluiten Stephan 26-10, 29-10 en 30-10-2026 (klus shortcodes-naar-plugin), na een UX-check als bezoeker.
+
+Proef 3.20.0-beta.1 tot en met beta.4 op SwS en DPS: met de onderdelen uit 36 pagina's op desktop en telefoon gelijk aan de nulmeting; met de onderdelen aan en de snippets nog aan alleen het nieuwe kopieerblok en het zoekveld anders, praktijkblok, auteursbio, datums en FAQ gelijk. Onderweg gevonden: ASE Pro zet de hooks van een snippet in een eigen closure onder de oorspronkelijke functienaam; de plugin zoekt die naam nu, zodat de stijl en de gegevens voor Google van het bronnenlijst-snippet niet dubbel op de pagina staan.
 
 Terugdraaien: versie 3.19.1 terugzetten en de onderdelen uitzetten. Er is niets omgezet in inhoud; het kopieerblok bewaart in dezelfde vorm als het snippet.
 

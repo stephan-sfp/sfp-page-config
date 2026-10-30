@@ -15,7 +15,7 @@
 :root .sfp-bronnen__geen{margin:0 0 24px;font-weight:700;color:var(--sfp-b-primair)}
 :root .sfp-bronnen__groep{scroll-margin-top:120px}
 :root .sfp-bronnen__groep h2{scroll-margin-top:120px}
-:root .sfp-bronnen .sfp-bron-item{margin-bottom:1.75rem}
+:root .sfp-bronnen .sfp-bron-item{margin-top:24px;margin-bottom:1.75rem}
 :root .sfp-bronnen .sfp-bron-citaat{font-weight:700;overflow-wrap:anywhere}
 :root .sfp-bronnen .sfp-bron-geciteerd{margin-top:.35rem;font-size:.875rem}
 :root .sfp-bronnen .sfp-bron-geciteerd a{display:block;line-height:1.6}
