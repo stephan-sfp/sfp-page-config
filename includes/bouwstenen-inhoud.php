@@ -457,6 +457,27 @@ function sfp_page_config_bronnen_snippet_uit() {
     // Tijdelijk (3.20.0-beta.2): wat er op welk moment weg ging.
     $GLOBALS['sfp_pc_bronnen_diag'][ $moment ] = $weg ? implode( ',', $weg ) : 'niets';
     if ( 'head' === $moment && is_singular() ) {
+        $alle = array();
+        foreach ( $wp_filter['wp_head']->callbacks as $prioriteit => $functies ) {
+            foreach ( $functies as $sleutel => $functie ) {
+                $f = $functie['function'];
+                if ( is_string( $f ) ) {
+                    $naam = $f;
+                } elseif ( is_array( $f ) ) {
+                    $naam = ( is_object( $f[0] ) ? get_class( $f[0] ) : (string) $f[0] ) . '::' . $f[1];
+                } elseif ( $f instanceof Closure ) {
+                    $r    = new ReflectionFunction( $f );
+                    $naam = 'closure:' . basename( (string) $r->getFileName() ) . ':' . $r->getStartLine();
+                } else {
+                    $naam = gettype( $f );
+                }
+                if ( false !== stripos( $naam, 'bron' ) || false !== stripos( $naam, 'biblio' ) || false !== stripos( (string) $sleutel, 'bron' ) || 0 === strpos( $naam, 'closure:' ) ) {
+                    $alle[] = $prioriteit . ':' . $naam . '[' . $sleutel . ']';
+                }
+            }
+        }
+        echo '<!-- sfp-bronnen hooks: ' . esc_html( implode( ' | ', $alle ) ) . ' -->' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped.
+
         echo '<!-- sfp-bronnen diag: init=' . esc_html( isset( $GLOBALS['sfp_pc_bronnen_diag']['init'] ) ? $GLOBALS['sfp_pc_bronnen_diag']['init'] : '-' ) . ' head=' . esc_html( $GLOBALS['sfp_pc_bronnen_diag']['head'] ) . ' -->' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped.
     }
 }

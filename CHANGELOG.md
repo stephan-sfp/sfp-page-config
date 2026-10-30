@@ -4,6 +4,10 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.20.0-beta.3] - 2026-10-30
+
+Proefversie met een tijdelijke notitie in de HTML van de bronnenlijstpagina: welke onderdelen van de head over bronnen gaan.
+
 ## [3.20.0-beta.2] - 2026-10-30
 
 Proefversie. Bronnenlijst: eerste bron weer met de bovenmarge van het snippet; stijl en gegevens voor Google van het snippet ook vlak voor de head weggehaald, met een tijdelijke notitie in de HTML om te zien wat er weg ging.
