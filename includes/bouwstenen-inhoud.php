@@ -427,58 +427,33 @@ function sfp_page_config_bronnen_registreer() {
     add_shortcode( 'bronnenlijst', 'sfp_page_config_bronnen_code' );
     if ( $aan ) {
         sfp_page_config_bronnen_snippet_uit();
-        // Nog een keer vlak voor de head geprint wordt: op DPS (beta.1, 30-10)
-        // stonden de hooks van het snippet er na init nog.
+        // Nog een keer vlak voor de head: een snippet dat later laadt, komt zo ook weg.
         add_action( 'wp_head', 'sfp_page_config_bronnen_snippet_uit', 0 );
     }
 }
 
 /**
  * Haal de head-hooks van het snippet weg (stijl en CollectionPage). Het
- * functieprefix verschilt per site (sfp_, dps_ enz.); de naam eindigt
+ * functieprefix verschilt per site (sfp_, dps_, sws_); de naam eindigt
  * altijd op bronnenlijst_css of bibliografie_schema.
+ *
+ * ASE Pro (Code Snippets Manager) zet elke hook van een snippet in een
+ * eigen closure, onder de naam van de oorspronkelijke functie als sleutel
+ * (gemeten op DPS, 30-10-2026). Daarom zoeken op de sleutel, niet op de
+ * functie zelf. remove_action met die naam verwijdert precies die sleutel.
  */
 function sfp_page_config_bronnen_snippet_uit() {
     global $wp_filter;
-    $moment = doing_action( 'wp_head' ) ? 'head' : 'init';
     if ( empty( $wp_filter['wp_head'] ) || ! is_object( $wp_filter['wp_head'] ) ) {
-        $GLOBALS['sfp_pc_bronnen_diag'][ $moment ] = 'geen wp_head';
         return;
     }
-    $weg = array();
     foreach ( $wp_filter['wp_head']->callbacks as $prioriteit => $functies ) {
-        foreach ( $functies as $functie ) {
-            $naam = is_string( $functie['function'] ) ? $functie['function'] : '';
-            if ( '' !== $naam && 0 !== strpos( $naam, 'sfp_page_config_' ) && preg_match( '/(bronnenlijst_css|bibliografie_schema)$/', $naam ) ) {
-                $weg[] = $naam . '@' . $prioriteit . ( remove_action( 'wp_head', $naam, $prioriteit ) ? '' : '(mislukt)' );
+        foreach ( $functies as $sleutel => $functie ) {
+            $naam = is_string( $functie['function'] ) ? $functie['function'] : (string) $sleutel;
+            if ( '' !== $naam && 0 !== strpos( $naam, 'sfp_page_config_' ) && preg_match( '/^[a-z0-9_]+_(bronnenlijst_css|bibliografie_schema)$/', $naam ) ) {
+                remove_action( 'wp_head', $naam, $prioriteit );
             }
         }
-    }
-    // Tijdelijk (3.20.0-beta.2): wat er op welk moment weg ging.
-    $GLOBALS['sfp_pc_bronnen_diag'][ $moment ] = $weg ? implode( ',', $weg ) : 'niets';
-    if ( 'head' === $moment && is_singular() ) {
-        $alle = array();
-        foreach ( $wp_filter['wp_head']->callbacks as $prioriteit => $functies ) {
-            foreach ( $functies as $sleutel => $functie ) {
-                $f = $functie['function'];
-                if ( is_string( $f ) ) {
-                    $naam = $f;
-                } elseif ( is_array( $f ) ) {
-                    $naam = ( is_object( $f[0] ) ? get_class( $f[0] ) : (string) $f[0] ) . '::' . $f[1];
-                } elseif ( $f instanceof Closure ) {
-                    $r    = new ReflectionFunction( $f );
-                    $naam = 'closure:' . basename( (string) $r->getFileName() ) . ':' . $r->getStartLine();
-                } else {
-                    $naam = gettype( $f );
-                }
-                if ( false !== stripos( $naam, 'bron' ) || false !== stripos( $naam, 'biblio' ) || false !== stripos( (string) $sleutel, 'bron' ) || 0 === strpos( $naam, 'closure:' ) ) {
-                    $alle[] = $prioriteit . ':' . $naam . '[' . $sleutel . ']';
-                }
-            }
-        }
-        echo '<!-- sfp-bronnen hooks: ' . esc_html( implode( ' | ', $alle ) ) . ' -->' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped.
-
-        echo '<!-- sfp-bronnen diag: init=' . esc_html( isset( $GLOBALS['sfp_pc_bronnen_diag']['init'] ) ? $GLOBALS['sfp_pc_bronnen_diag']['init'] : '-' ) . ' head=' . esc_html( $GLOBALS['sfp_pc_bronnen_diag']['head'] ) . ' -->' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped.
     }
 }
 

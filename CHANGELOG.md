@@ -4,6 +4,10 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.20.0-beta.4] - 2026-10-30
+
+Proefversie. Bronnenlijst: de stijl en de gegevens voor Google van het snippet gaan nu echt van de pagina. ASE Pro zet de hooks van een snippet in een eigen closure onder de oorspronkelijke functienaam; de plugin zoekt nu op die naam. Tijdelijke notities weg.
+
 ## [3.20.0-beta.3] - 2026-10-30
 
 Proefversie met een tijdelijke notitie in de HTML van de bronnenlijstpagina: welke onderdelen van de head over bronnen gaan.

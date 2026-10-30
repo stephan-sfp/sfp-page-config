@@ -121,4 +121,25 @@ $GLOBALS['aan']['bronnenlijst'] = false;
 sfp_page_config_bronnen_registreer();
 same( 'sfp_page_config_bronnen_code', $GLOBALS['shortcode_tags']['bronnenlijst'], 'geen snippet: plugin vangt op' );
 
+/* ---------- Snippet-hooks in een closure van ASE ---------- */
+
+$GLOBALS['verwijderd'] = array();
+function remove_action( $hook, $naam, $prio ) { $GLOBALS['verwijderd'][] = $hook . ':' . $naam . '@' . $prio; return true; }
+$GLOBALS['wp_filter'] = array(
+    'wp_head' => (object) array(
+        'callbacks' => array(
+            10 => array(
+                'dps_bronnenlijst_css'    => array( 'function' => function () {}, 'accepted_args' => 1 ),
+                'dps_bibliografie_schema' => array( 'function' => function () {}, 'accepted_args' => 1 ),
+                'sfp_gtm_container'       => array( 'function' => function () {}, 'accepted_args' => 1 ),
+            ),
+            21 => array(
+                'sfp_page_config_inhoud_head' => array( 'function' => 'sfp_page_config_inhoud_head', 'accepted_args' => 1 ),
+            ),
+        ),
+    ),
+);
+sfp_page_config_bronnen_snippet_uit();
+same( array( 'wp_head:dps_bronnenlijst_css@10', 'wp_head:dps_bibliografie_schema@10' ), $GLOBALS['verwijderd'], 'ASE-closures van het snippet weg, andere en eigen hooks blijven' );
+
 echo "OK: $checks checks\n";
