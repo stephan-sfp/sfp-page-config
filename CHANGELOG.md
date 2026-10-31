@@ -4,6 +4,31 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.21.0-beta.1] - 2026-10-31
+
+Proefversie van 3.21.0 voor DPS (Vervolg per pijler in [dynamische_cta]) en SwS (kaartweergave van de toolmotor, artikelopmaak). Inhoud zoals bij 3.21.0 hieronder.
+
+## [3.21.0] - 2026-10-31
+
+Drie onderdelen in één release, besluit Stephan 31-10-2026 (klus page-config-3-21-0): Vervolg per pijler in de oude CTA-code, een kaartweergave voor de toolmotor (nodig voor de FAST-tool op SwS) en punten uit de artikelopmaak. Bestaande inhoud, tools, codes en blokken werken zoals ze werkten.
+
+Terugdraaien: versie 3.20.0 terugzetten. Er is niets omgezet in inhoud of instellingen.
+
+### Toegevoegd
+- Toolmotor, kaartweergave: een tool met `weergave.modus` "kaart" toont een compacte kaart met alleen de vraag van dit moment. Keuzes zijn tegels met een icoon (sleutel `icoon` per optie, vaste set lijntekeningen) en gaan vanzelf door, zonder knop Volgende; alleen bij typen staan Volgende en Enter. De laatste keuze gaat direct naar de uitslag. Bovenaan staan de letters van het model (sleutel `weergave.groepen`, bijvoorbeeld F A S T) met de naam van de stap; afgeronde letters zijn klikbaar, plus de link Terug. De kaart houdt tijdens de vragen dezelfde hoogte en groeit pas bij de uitslag; de pagina gaat dan naar de kop van de uitslag. Andere tools blijven zoals ze waren.
+- Toolmotor: een keuze als kwadrant, 2x2 met assen (`tegels` "kwadrant" met `assen.kolommen` en `assen.rijen`). De controle meldt een kwadrant zonder vier opties of zonder twee assen als fout.
+- Toolmotor, uitslag in de kaartweergave: de kop staat in gewone letters; elk deel van de uitslag is een dicht uitklapblok met een notitieveld. Notities blijven in de browser bewaard en komen mee in PDF, Word en Kopieer, niet in de deellink. Knop PDF met de tekstlinks Kopieer, Word, Deellink en Opnieuw in één rij.
+- Held met een tool: staat het blok Tool in de held, dan staat de tool als kaart in de tweede kolom op de primaire kleur; op tablet en telefoon onder de tekst over de volle breedte.
+- [dynamische_cta] toont op een bericht het vervolg van de pijler als die een gepubliceerd vervolg heeft, in plaats van alles wat aan de actie dynamische_cta hangt. Niet op begrippen, tools en pagina's. Staat het onderdeel Artikelen aan, dan staat het vervolg al onder het artikel en geeft de code niets. Zonder vervolg blijven de layouts staan zoals nu.
+- Teksten voor de kaartweergave (Terug, Voortgang, stap van, letter afgerond) in het Nederlands, Engels en Portugees.
+
+### Gewijzigd
+- Het blok Tool toont een concepttool aan wie hem mag bewerken, zodat een pagina met de tool in de voorvertoning te beoordelen is. Bezoekers zien niets tot de tool gepubliceerd is.
+- Artikel: de H2 in de artikelinhoud loopt terug met pretty in plaats van balance (besluit Stephan 31-10). Balance blijft op de held-H1 en op koppen in secties.
+- Artikel, kopkaart: de lijn boven het geopende paneel is weg; de lijn onder de auteursregel blijft, met 20 px ruimte boven de lijst. Onderstreping en focusring bij Delen, Warming-up en Bronnen alleen bij het toetsenbord, niet na een muisklik of tik.
+- Artikel: een kale URL of DOI in de bronnenlijst wordt een link, in het paneel en in de zijbalk; een DOI zonder adres linkt naar doi.org. Bestaande links blijven zoals ze zijn.
+- Auteursbio en makerskaart: het linklabel is beschrijvend: About Stephan, Over Stephan, Sobre Stephan (was More about, Meer over, Mais sobre).
+
 ## [3.20.0] - 2026-10-30
 
 Inhoud die tot nu toe alleen in ASE-snippets stond, zit nu in de plugin: kopieerblok, bronnenlijst, praktijkblok en de vinkjeslijst in de auteursbio, plus de oude codes voor datums, de dynamische CTA en de koppelcode van de tools. Elk nieuw onderdeel staat standaard uit en gaat per site aan na een nameting; daarna kan het snippet uit. Staat een onderdeel uit, dan blijft het snippet het doen. Is het snippet er niet meer, dan neemt de plugin het over, zodat bestaande inhoud blijft werken. Besluiten Stephan 26-10, 29-10 en 30-10-2026 (klus shortcodes-naar-plugin), na een UX-check als bezoeker.

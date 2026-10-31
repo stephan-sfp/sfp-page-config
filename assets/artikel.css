@@ -23,7 +23,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 .sfp-artikel__raster{max-width:1180px;margin:0 auto;padding:40px 24px 72px;display:grid;grid-template-columns:minmax(0,680px) 300px;gap:72px;justify-content:space-between}
 .sfp-artikel--zonder-zij .sfp-artikel__raster{grid-template-columns:minmax(0,680px);justify-content:center}
 .sfp-artikel__kolom{min-width:0;font-size:17px;line-height:1.75;color:var(--sfp-b-body)}
-.sfp-artikel :focus-visible,.sfp-art-balk :focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}
+.sfp-artikel :focus-visible,.sfp-art-balk :focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}:root :is(.sfp-art-kop,.sfp-art-zijbron) :is(button,a):focus:not(:focus-visible){outline:none;box-shadow:none}:root :is(.sfp-art-kop,.sfp-art-zijbron) :is(button,a){-webkit-tap-highlight-color:transparent}
 .sfp-artikel img{max-width:100%;height:auto}
 /* Astra geeft beelden in een bericht een schaduw (.ast-article-single figure, img); de artikelopmaak heeft die niet */
 :root .sfp-artikel figure,:root .sfp-artikel img{box-shadow:none}
@@ -72,12 +72,12 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 /* acties */
 .sfp-art-acties{display:flex;flex-wrap:wrap;gap:0 12px;justify-content:space-between;align-items:center;padding:4px 0}
 :root .sfp-art-kop .sfp-art-actie{display:inline-flex;align-items:center;justify-content:flex-start;gap:8px;min-height:44px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);text-decoration:none;text-align:left}
-:root .sfp-art-kop .sfp-art-actie:is(:hover,:focus){color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:4px}
+:root .sfp-art-kop .sfp-art-actie:is(:hover,:focus-visible){color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:4px}
 .sfp-art-actie svg{width:16px;height:16px;flex:0 0 auto;color:var(--sfp-b-secundair)}
 .sfp-art-actie .sfp-kort{display:none}
 
 /* panelen in de kopkaart */
-.sfp-art-paneel{border-top:1px solid var(--sfp-b-lijn);padding:14px 0 16px}
+.sfp-art-paneel{padding:20px 0 16px}
 .sfp-art-deel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 :root .sfp-art-deel :is(a,button){display:flex;align-items:center;justify-content:flex-start;gap:10px;padding:0 12px;min-height:42px;width:100%;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);text-decoration:none}
 :root .sfp-art-deel :is(a,button):is(:hover,:focus){color:var(--sfp-b-primair);background:var(--sfp-b-wit);border-color:var(--sfp-b-primair)}
@@ -142,7 +142,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-art-inhoud>p{margin:0 0 20px}
 /* scroll-margin met !important: de Customizer-CSS van het netwerk zet [id]{scroll-margin-top:16px!important} */
 :root .sfp-art-inhoud :is(h2,h3,h4){scroll-margin-top:calc(var(--sfp-art-kop-offset,0px) + 24px)!important;padding:8px 0}
-:root .sfp-art-inhoud>h2{margin:32px 0 4px;text-wrap:balance}
+:root .sfp-art-inhoud>h2{margin:32px 0 4px;text-wrap:pretty}
 :root .sfp-art-inhoud>h3{margin:20px 0 0}
 :root .sfp-art-inhoud>h4{margin:16px 0 0}
 :root .sfp-art-inhoud>:is(ul,ol){margin:0 0 20px 1.2em;padding:0}

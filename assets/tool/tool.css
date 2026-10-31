@@ -276,3 +276,95 @@ ol.sfp-tool__lijst>li::before{content:counter(sfp-lijst);position:absolute;left:
 .sfp-tool__tekstvak-teller{margin:6px 0 0;font-size:13px;color:var(--sfp-b-body)}
 .sfp-tool--tekstanalyse .sfp-tool__scherm--resultaat{margin-top:28px;padding-top:22px;border-top:1px solid var(--tool-lijn)}
 .sfp-tool--tekstanalyse .sfp-tool__legenda{margin:0 0 18px}
+
+/* =====================================================================
+   Kaartweergave (3.21.0): een compacte kaart met de vraag van dit moment.
+   Alleen als de beschrijving weergave.modus "kaart" heeft; andere tools blijven zoals ze waren.
+   Kleuren uit de rollen van de site, geen merkkleur en geen fontnaam.
+   ===================================================================== */
+.sfp-tool.sfp-tool--kaart .sfp-tool__app,.single-tool .sfp-tool.sfp-tool--kaart:not(.sfp-tool--compact) .sfp-tool__app{container-type:inline-size;padding:0;border:1px solid var(--tool-lijn);border-radius:var(--tool-r);background:var(--sfp-b-wit,#fff);overflow:hidden;text-align:left}
+.sfp-held .sfp-tool.sfp-tool--kaart .sfp-tool__app{border-color:transparent;box-shadow:0 18px 48px color-mix(in srgb,var(--sfp-b-primair) 60%,#000 40%)}
+.sfp-tool--kaart .sfp-tool__kaartkop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 24px 0}
+.sfp-tool--kaart .sfp-tool__letters{display:flex;gap:8px;margin:0;padding:0;list-style:none}
+.sfp-tool--kaart .sfp-tool__letters li{margin:0;padding:0}
+:root .sfp-tool--kaart .sfp-tool__letter{width:40px;height:40px;min-height:0;padding:0;display:grid;place-items:center;border-radius:50%;border:2px solid var(--sfp-b-tint2);background:var(--sfp-b-wit,#fff);color:var(--sfp-b-primair);font-family:var(--sfp-b-kop);font-weight:900;font-size:16px;line-height:1;letter-spacing:0;text-transform:none;cursor:default;box-shadow:none}
+:root .sfp-tool--kaart .sfp-tool__letter.is-klaar{border-color:var(--sfp-b-secundair);background:color-mix(in srgb,var(--sfp-b-secundair) 15%,var(--sfp-b-wit,#fff));cursor:pointer}
+:root .sfp-tool--kaart .sfp-tool__letter.is-klaar:hover{border-color:var(--sfp-b-primair);background:color-mix(in srgb,var(--sfp-b-secundair) 15%,var(--sfp-b-wit,#fff));color:var(--sfp-b-primair)}
+:root .sfp-tool--kaart .sfp-tool__letter.is-actief{border-color:var(--sfp-b-primair);background:var(--sfp-b-primair);color:var(--sfp-b-wit,#fff)}
+.sfp-tool--kaart .sfp-tool__letter:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}
+.sfp-tool--kaart .sfp-tool__terug{min-height:40px}
+.sfp-tool--kaart .sfp-tool__terug::after{content:none}
+:root .sfp-tool--kaart .sfp-tool__groepnaam{margin:18px 24px 0;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1.3;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-primair)}
+.sfp-tool--kaart .sfp-tool__balk--kaart{margin:12px 24px 0;height:4px}
+.sfp-tool--kaart .sfp-tool__balk--kaart .sfp-tool__balk-vul{background:var(--sfp-b-secundair)}
+:root .sfp-tool--kaart .sfp-tool__melding{margin:12px 24px 0}
+/* Alle vragen op dezelfde plek: de hoogste vraag bepaalt de hoogte van de kaart. */
+.sfp-tool--kaart .sfp-tool__schermen{display:grid}
+.sfp-tool--kaart .sfp-tool__schermen>.sfp-tool__scherm{grid-area:1/1;padding:28px 24px 24px;display:flex;flex-direction:column;gap:20px}
+.sfp-tool--kaart .sfp-tool__schermen>.sfp-tool__scherm.is-weg{visibility:hidden}
+.sfp-tool--kaart .sfp-tool__schermen.is-uitslag>.sfp-tool__scherm:not(.sfp-tool__scherm--resultaat){display:none}
+.sfp-tool--kaart .sfp-tool__veldgroep{display:flex;flex-direction:column;gap:16px;margin:0}
+:root .sfp-tool--kaart .sfp-tool__vraag{margin:0;font-family:var(--sfp-b-kop);font-weight:900;font-size:22px;line-height:1.3;text-transform:none;color:var(--sfp-b-primair);text-wrap:pretty}
+.sfp-tool--kaart .sfp-tool__nav{margin:0}
+.sfp-tool--kaart .sfp-tool__nav[hidden]{display:none}
+/* Tegels: grote vlakken met een woord en een icoon. De radioknop zelf is onzichtbaar maar bereikbaar met het toetsenbord. */
+.sfp-tool--kaart .sfp-tool__tegels{display:grid;gap:10px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.sfp-tool--kaart .sfp-tool__tegels--1{grid-template-columns:minmax(0,1fr)}
+.sfp-tool--kaart .sfp-tool__tegels--2{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.sfp-tool--kaart .sfp-tool__tegels--4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.sfp-tool--kaart .sfp-tool__tegel{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:72px;margin:0;padding:12px 8px;border:1.5px solid color-mix(in srgb,var(--sfp-b-primair) 22%,transparent);border-radius:12px;background:var(--sfp-b-wit,#fff);color:var(--sfp-b-primair);text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.sfp-tool--kaart .sfp-tool__tegel .sfp-tool__radio{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.sfp-tool--kaart .sfp-tool__tegel:hover,.sfp-tool--kaart .sfp-tool__tegel:has(:checked){border-color:var(--sfp-b-primair);background:color-mix(in srgb,var(--sfp-b-primair) 4%,var(--sfp-b-wit,#fff))}
+.sfp-tool--kaart .sfp-tool__tegel:has(:checked){box-shadow:inset 0 0 0 1px var(--sfp-b-primair)}
+.sfp-tool--kaart .sfp-tool__tegel:has(:focus-visible){outline:2px solid var(--sfp-b-primair);outline-offset:2px}
+.sfp-tool--kaart .sfp-tool__tegel b{font-family:var(--sfp-b-tekst,inherit);font-weight:700;font-size:16px;line-height:1.2}
+.sfp-tool--kaart .sfp-tool__tegel small{font-size:13px;line-height:1.35;color:var(--sfp-b-body)}
+.sfp-tool--kaart .sfp-tool__icoon{display:block;width:22px;height:22px;color:var(--sfp-b-secundair);pointer-events:none}
+.sfp-tool--kaart .sfp-tool__icoon svg{display:block;width:100%;height:100%}
+/* Twee kolommen: icoon links, tekst rechts. */
+.sfp-tool--kaart .sfp-tool__tegels--2 .sfp-tool__tegel{display:grid;grid-template-columns:minmax(0,1fr);row-gap:2px;align-items:center;justify-items:start;text-align:left;min-height:60px;padding:8px 12px}
+.sfp-tool--kaart .sfp-tool__tegels--2 .sfp-tool__tegel.met-icoon{grid-template-columns:22px minmax(0,1fr);column-gap:10px}
+.sfp-tool--kaart .sfp-tool__tegels--2 .sfp-tool__tegel.met-icoon .sfp-tool__icoon{grid-row:span 2}
+.sfp-tool--kaart .sfp-tool__tegels--2 .sfp-tool__tegel.met-icoon small{grid-column:2}
+/* Kwadrant: 2x2 met assen. */
+.sfp-tool--kaart .sfp-tool__tegels--kwadrant{grid-template-columns:auto repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}
+.sfp-tool--kaart .sfp-tool__tegels--kwadrant .sfp-tool__tegel{justify-items:center;text-align:center;min-height:60px;padding:8px}
+.sfp-tool--kaart .sfp-tool__as{display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1.2;color:var(--sfp-b-body);text-align:center}
+.sfp-tool--kaart .sfp-tool__as--rij{writing-mode:vertical-rl;transform:rotate(180deg)}
+/* Typen: een groot veld en de knop Verder. */
+.sfp-tool--kaart .sfp-tool__veld{font-size:18px;min-height:56px;padding:14px 16px}
+.sfp-tool--kaart .sfp-tool__veld--notitie{font-size:15px;min-height:72px;padding:10px 12px;resize:vertical}
+/* Uitslag: kop in gewone letters (de doelzin), dichte uitklapblokken met een notitieveld. */
+.sfp-tool--kaart .sfp-tool__scherm--resultaat{padding:24px 24px 8px;gap:14px}
+:root .sfp-tool--kaart .sfp-tool__kop--resultaat{margin:0;scroll-margin-top:110px;font-family:var(--sfp-b-kop);font-weight:900;font-size:24px;line-height:1.3;letter-spacing:0;text-transform:none;color:var(--sfp-b-primair);text-wrap:pretty}
+.sfp-tool--kaart .sfp-tool__uitvoer{display:grid;gap:8px;margin:4px 0 0}
+.sfp-tool--kaart .sfp-tool__blok{margin:0;border:1px solid color-mix(in srgb,var(--sfp-b-primair) 18%,transparent);border-radius:12px;background:var(--sfp-b-wit,#fff)}
+.sfp-tool--kaart .sfp-tool__blok>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px;padding:14px 18px;font-family:var(--sfp-b-kop);font-weight:900;font-size:15px;line-height:1.3;text-transform:uppercase;color:var(--sfp-b-primair)}
+.sfp-tool--kaart .sfp-tool__blok>summary::-webkit-details-marker{display:none}
+.sfp-tool--kaart .sfp-tool__blok>summary::after{content:"+";flex:0 0 auto;font-family:var(--sfp-b-tekst,inherit);font-weight:400;font-size:22px;line-height:1}
+.sfp-tool--kaart .sfp-tool__blok[open]>summary::after{content:"\2212"}
+.sfp-tool--kaart .sfp-tool__blok>summary:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px;border-radius:12px}
+.sfp-tool--kaart .sfp-tool__blokin{display:grid;gap:10px;padding:0 18px 18px}
+.sfp-tool--kaart .sfp-tool__blokin>.sfp-tool__tekst{margin:0}
+.sfp-tool--kaart .sfp-tool__notitie{display:grid;gap:6px;margin:0;padding-top:10px;border-top:1px solid var(--tool-lijn)}
+.sfp-tool--kaart .sfp-tool__notitie>span{font-weight:700;font-size:14px;line-height:1.3;color:var(--sfp-b-primair)}
+.sfp-tool--kaart .sfp-tool__acties--uitslag{margin-top:6px}
+@container (max-width:460px){
+  .sfp-tool--kaart .sfp-tool__kaartkop{padding:16px 16px 0}
+  :root .sfp-tool--kaart .sfp-tool__groepnaam{margin:16px 16px 0}
+  .sfp-tool--kaart .sfp-tool__balk--kaart{margin:12px 16px 0}
+  :root .sfp-tool--kaart .sfp-tool__melding{margin:12px 16px 0}
+  .sfp-tool--kaart .sfp-tool__schermen>.sfp-tool__scherm{padding:24px 16px 20px;gap:18px}
+  .sfp-tool--kaart .sfp-tool__scherm--resultaat{padding:20px 16px 8px}
+  :root .sfp-tool--kaart .sfp-tool__letter{width:36px;height:36px;font-size:14px}
+  :root .sfp-tool--kaart .sfp-tool__vraag{font-size:20px}
+  :root .sfp-tool--kaart .sfp-tool__kop--resultaat{font-size:21px}
+  .sfp-tool--kaart .sfp-tool__tegel{min-height:64px}
+  .sfp-tool--kaart .sfp-tool__tegels:not(.sfp-tool__tegels--2):not(.sfp-tool__tegels--kwadrant) .sfp-tool__tegel small{display:none}
+  .sfp-tool--kaart .sfp-tool__tegels--2 .sfp-tool__tegel{min-height:52px;padding:8px 10px}
+  .sfp-tool--kaart .sfp-tool__tegels--2 .sfp-tool__tegel b{font-size:14px}
+  .sfp-tool--kaart .sfp-tool__tegels--2 .sfp-tool__tegel small{display:none}
+  .sfp-tool--kaart .sfp-tool__tegels--2 .sfp-tool__tegel.met-icoon .sfp-tool__icoon{grid-row:auto;width:20px;height:20px}
+  .sfp-tool--kaart .sfp-tool__tegels--kwadrant .sfp-tool__tegel{min-height:52px;padding:6px}
+  .sfp-tool--kaart .sfp-tool__tegels--kwadrant .sfp-tool__tegel small{display:none}
+}
