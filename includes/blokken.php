@@ -945,6 +945,10 @@ function sfp_page_config_render_sectie( $attrs, $content ) {
 function sfp_page_config_render_held( $attrs, $content ) {
     $variant = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'variant', 'recht' ), array( 'recht', 'breed' ) );
     $klassen = array( 'sfp-held', 'sfp-held--recht', 'breed' === $variant ? 'sfp-held--breed' : '' );
+    // Een tool in de held staat in de tweede kolom (3.21.0).
+    if ( false !== strpos( (string) $content, 'class="sfp-tool ' ) ) {
+        $klassen[] = 'sfp-held--tool';
+    }
     return sfp_page_config_blokken_css_vangnet( 'sfp/held' )
         . '<section ' . sfp_page_config_blok_omhulling( $klassen, sfp_page_config_blok_attr( $attrs, 'anker' ) ) . '><div class="sfp-held__binnen">' . $content . '</div></section>';
 }

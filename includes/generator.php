@@ -204,6 +204,7 @@ function sfp_page_config_generator_normaliseer( array $b ) {
         );
     }
     $uit['live'] = ! empty( $b['live'] );
+    $uit['weergave'] = sfp_page_config_generator_weergave_schoon( isset( $b['weergave'] ) ? $b['weergave'] : null, $stappen, $genegeerd );
 
     $uit['teksten']   = isset( $b['teksten'] ) && is_array( $b['teksten'] ) ? array_map( 'strval', array_filter( $b['teksten'], 'is_scalar' ) ) : array();
     $uit['genegeerd'] = $genegeerd;
@@ -232,6 +233,9 @@ function sfp_page_config_generator_veld_schoon( array $v, $reserve ) {
                 'tekst'  => isset( $o['tekst'] ) && is_scalar( $o['tekst'] ) ? (string) $o['tekst'] : '',
                 'uitleg' => isset( $o['uitleg'] ) && is_scalar( $o['uitleg'] ) ? (string) $o['uitleg'] : '',
             );
+            if ( isset( $o['icoon'] ) && is_scalar( $o['icoon'] ) && in_array( (string) $o['icoon'], sfp_page_config_generator_iconen(), true ) ) {
+                $optie['icoon'] = (string) $o['icoon'];
+            }
             if ( isset( $o['getallen'] ) && is_array( $o['getallen'] ) ) {
                 $getallen = array();
                 foreach ( $o['getallen'] as $kolom => $g ) {
@@ -288,11 +292,75 @@ function sfp_page_config_generator_veld_schoon( array $v, $reserve ) {
     if ( isset( $v['eenheid'] ) && is_scalar( $v['eenheid'] ) ) {
         $uit['eenheid'] = (string) $v['eenheid'];
     }
+    // Kaartweergave (3.21.0): tegels in een raster of als kwadrant met assen.
+    if ( isset( $v['tegels'] ) && in_array( $v['tegels'], array( 'raster', 'kwadrant' ), true ) ) {
+        $uit['tegels'] = (string) $v['tegels'];
+    }
+    if ( isset( $v['kolommen'] ) && is_numeric( $v['kolommen'] ) ) {
+        $uit['kolommen'] = max( 1, min( 4, (int) $v['kolommen'] ) );
+    }
+    if ( isset( $v['assen'] ) && is_array( $v['assen'] ) ) {
+        $assen = array();
+        foreach ( array( 'kolommen', 'rijen' ) as $as ) {
+            $lijst = isset( $v['assen'][ $as ] ) && is_array( $v['assen'][ $as ] ) ? array_values( array_map( 'strval', array_filter( $v['assen'][ $as ], 'is_scalar' ) ) ) : array();
+            $assen[ $as ] = array_slice( $lijst, 0, 2 );
+        }
+        $uit['assen'] = $assen;
+    }
     if ( isset( $v['standaard'] ) ) {
         if ( is_array( $v['standaard'] ) ) {
             $uit['standaard'] = array_values( array_map( 'strval', array_filter( $v['standaard'], 'is_scalar' ) ) );
         } elseif ( is_scalar( $v['standaard'] ) ) {
             $uit['standaard'] = (string) $v['standaard'];
+        }
+    }
+    return $uit;
+}
+
+/**
+ * De iconen die een optie in de kaartweergave kan hebben (3.21.0). De
+ * tekening zelf staat in assets/tool/generator.js.
+ *
+ * @return string[]
+ */
+function sfp_page_config_generator_iconen() {
+    return array( 'info', 'lijst', 'vinkje', 'pijl', 'ster', 'duo', 'persoon', 'groep', 'wereld', 'lagen', 'klok', 'doel', 'vraag', 'boek' );
+}
+
+/**
+ * De weergave van een generator (3.21.0). Zonder modus "kaart" blijft alles
+ * zoals het was. Groepen geven de letters bovenaan (bijvoorbeeld F A S T):
+ * elke groep heeft een letter, een naam en het aantal stappen dat erbij
+ * hoort, in volgorde.
+ *
+ * @param  mixed $w         Ruwe weergave.
+ * @param  array $stappen   De stappen (al opgeschoond).
+ * @param  array $genegeerd Meldingen over wat genegeerd wordt.
+ * @return array
+ */
+function sfp_page_config_generator_weergave_schoon( $w, array $stappen, array &$genegeerd ) {
+    $w   = is_array( $w ) ? $w : array();
+    $uit = array(
+        'modus'   => isset( $w['modus'] ) && 'kaart' === $w['modus'] ? 'kaart' : '',
+        'groepen' => array(),
+    );
+    if ( isset( $w['groepen'] ) && is_array( $w['groepen'] ) ) {
+        $totaal = 0;
+        foreach ( $w['groepen'] as $g ) {
+            if ( ! is_array( $g ) ) {
+                continue;
+            }
+            $aantal           = isset( $g['stappen'] ) && is_numeric( $g['stappen'] ) ? max( 1, (int) $g['stappen'] ) : 1;
+            $totaal          += $aantal;
+            $uit['groepen'][] = array(
+                'letter'  => isset( $g['letter'] ) && is_scalar( $g['letter'] ) ? mb_substr( (string) $g['letter'], 0, 3 ) : '',
+                'naam'    => isset( $g['naam'] ) && is_scalar( $g['naam'] ) ? (string) $g['naam'] : '',
+                'stappen' => $aantal,
+            );
+        }
+        if ( $uit['groepen'] && count( $stappen ) !== $totaal ) {
+            $genegeerd[]    = 'De groepen bij weergave tellen ' . $totaal . ' stappen, de tool heeft er ' . count( $stappen ) . '. De groepen worden genegeerd.';
+            $uit['groepen'] = array();
         }
     }
     return $uit;
@@ -476,6 +544,14 @@ function sfp_page_config_generator_controleer( array $b ) {
             }
             if ( '' === trim( $v['label'] ) ) {
                 $let_op[] = 'Het veld "' . $v['id'] . '" heeft geen label.';
+            }
+            if ( isset( $v['tegels'] ) && 'kwadrant' === $v['tegels'] ) {
+                if ( 'keuze' !== $v['type'] || 4 !== count( $v['opties'] ) ) {
+                    $fouten[] = 'Het veld "' . $v['id'] . '" is een kwadrant: dat is een keuze met precies vier opties.';
+                }
+                if ( ! isset( $v['assen'] ) || 2 !== count( $v['assen']['kolommen'] ) || 2 !== count( $v['assen']['rijen'] ) ) {
+                    $fouten[] = 'Het veld "' . $v['id'] . '" is een kwadrant: geef bij assen twee kolommen en twee rijen.';
+                }
             }
         }
     }

@@ -48,3 +48,19 @@
   .sfp-held__binnen{padding-left:16px;padding-right:16px}
   :root .sfp-held__binnen>.wp-block-image{width:calc(100% + 32px);margin:20px -16px 0}
 }
+
+/* Held met een tool (3.21.0): tekst links, de tool als kaart in de tweede kolom op de primaire kleur.
+   Tablet en telefoon: de tool onder de tekst over de volle breedte; de intro blijft staan. */
+:root .sfp-held--tool .sfp-held__binnen{grid-template-areas:none;grid-template-columns:minmax(0,1fr);column-gap:72px;row-gap:0;padding-bottom:56px}
+:root .sfp-held--tool .sfp-held__binnen>*{grid-area:auto}
+:root .sfp-held--tool .sfp-held__binnen>p{display:block}
+:root .sfp-held--tool .sfp-held__binnen>.sfp-tool{margin:28px 0 0;color:var(--sfp-b-body);text-shadow:none}
+@media (min-width:981px){
+  :root .sfp-held--tool{min-height:0}
+  :root .sfp-held--tool .sfp-held__binnen{grid-template-columns:minmax(0,1fr) minmax(0,480px);grid-auto-flow:row dense;align-items:center;padding-top:88px;padding-bottom:96px}
+  :root .sfp-held--tool .sfp-held__binnen>:not(.sfp-tool){grid-column:1}
+  :root .sfp-held--tool .sfp-held__binnen>.sfp-tool{grid-column:2;grid-row:1 / span 8;align-self:center;margin:0}
+}
+@media (max-width:600px){
+  :root .sfp-held--tool .sfp-held__binnen{padding-top:44px}
+}

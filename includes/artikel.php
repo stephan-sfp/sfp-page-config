@@ -377,10 +377,67 @@ function sfp_page_config_artikel_bronnen( $content ) {
         }
         $sleutel = strtolower( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $bron ) ) );
         if ( ! isset( $bronnen[ $sleutel ] ) ) {
-            $bronnen[ $sleutel ] = preg_replace( '/<a /', '<a target="_blank" rel="noopener" ', $bron );
+            $bronnen[ $sleutel ] = preg_replace( '/<a /', '<a target="_blank" rel="noopener" ', sfp_page_config_artikel_bron_links( $bron ) );
         }
     }
     return array_values( $bronnen );
+}
+
+/**
+ * Maak van een kale URL of DOI in een bron een link (3.21.0). Tekst die al
+ * in een link staat blijft zoals hij is. Een DOI zonder adres
+ * ("doi:10.1037/..." of "10.1037/...") linkt naar doi.org.
+ *
+ * @param  string $bron Bron als veilige HTML.
+ * @return string
+ */
+function sfp_page_config_artikel_bron_links( $bron ) {
+    $delen = preg_split( '/(<[^>]+>)/', (string) $bron, -1, PREG_SPLIT_DELIM_CAPTURE );
+    $in_a  = 0;
+    $uit   = '';
+    foreach ( $delen as $deel ) {
+        if ( '' === $deel ) {
+            continue;
+        }
+        if ( '<' === $deel[0] ) {
+            if ( preg_match( '#^<a[\s>]#i', $deel ) ) {
+                ++$in_a;
+            } elseif ( preg_match( '#^</a\s*>#i', $deel ) ) {
+                $in_a = max( 0, $in_a - 1 );
+            }
+            $uit .= $deel;
+            continue;
+        }
+        if ( $in_a > 0 ) {
+            $uit .= $deel;
+            continue;
+        }
+        $uit .= preg_replace_callback(
+            '#\b(?:(https?://[^\s<>"]+)|(?:doi:\s*)?(10\.\d{4,9}/[^\s<>"]+))#iu',
+            function ( $m ) {
+                $tekst = $m[0];
+                // Leestekens aan het eind horen bij de zin, niet bij het adres.
+                $staart = '';
+                if ( preg_match( '/[.,;:!?)\]]+$/u', $tekst, $s ) ) {
+                    $staart = $s[0];
+                    $tekst  = substr( $tekst, 0, -strlen( $staart ) );
+                }
+                if ( '' !== $m[1] ) {
+                    $adres = substr( $m[1], 0, strlen( $m[1] ) - strlen( $staart ) );
+                } else {
+                    $doi   = substr( $m[2], 0, max( 0, strlen( $m[2] ) - strlen( $staart ) ) );
+                    $adres = 'https://doi.org/' . $doi;
+                }
+                $adres = esc_url( html_entity_decode( $adres, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+                if ( '' === $adres ) {
+                    return $m[0];
+                }
+                return '<a href="' . $adres . '">' . $tekst . '</a>' . $staart;
+            },
+            $deel
+        );
+    }
+    return $uit;
 }
 
 /**

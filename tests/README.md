@@ -128,3 +128,13 @@ php tests/bouwstenen-inhoud.php
 ```
 
 Checks with small WordPress stubs: sources from tooltips as the snippet v1.11 reads them (page numbers and access dates stripped, duplicates merged, bare links clickable in a new tab, markdown stars, grouping per letter with numbers under #), the copy block (the stored wrapper and label of the snippet removed, long text detected, colours read back from the stored HTML), the author bio checklist, that old codes are only added when no snippet registered them, and that the bibliography code is only taken over with the part on or when the snippet is gone. Block validity of stored copy blocks from the sites was checked in a local WordPress 7.1 with a browser.
+
+# 3.21.0: Vervolg in [dynamische_cta], kaartweergave van de toolmotor, artikelopmaak
+
+```sh
+wp eval-file wp-content/plugins/sfp-page-config/tests/vervolg-cta-wp.php
+wp eval-file wp-content/plugins/sfp-page-config/tests/tool-kaart-wp.php [pad-naar-json]
+wp eval-file wp-content/plugins/sfp-page-config/tests/artikelopmaak-wp.php
+```
+
+Run inside a real WordPress (a local test install, never a live site). vervolg-cta-wp checks that a post whose pillar has a published follow-up shows it instead of the layouts on the dynamische_cta action, and that pages, terms (begrippen), drafts, posts without a follow-up and archives keep the layouts; with the Artikelen component on the code gives nothing; a follow-up that contains the code does not repeat itself. tool-kaart-wp checks the card display keys (groups, icons, tiles, quadrant with axes, example from a bank), the checks on a broken quadrant or groups that do not add up, the card class, that tools without it are unchanged, the hero with a tool, a draft tool in the block only for editors, and the new texts in three languages. artikelopmaak-wp checks links for URLs and DOIs in the source list, the heading wrap, the panel line and focus rules, and the bio link label in three languages. The browser walk-through of the card (tiles, letters, fixed height, quadrant, result, notes in PDF, Word and copy, not in the share link) is in the report.

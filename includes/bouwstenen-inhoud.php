@@ -989,9 +989,51 @@ function sfp_page_config_code_dynamisch( $atts, $content = null, $tag = '' ) {
     if ( ! in_array( $tag, array( 'dynamische_cta', 'dynamische_pijlerlink', 'dynamische_zelftest' ), true ) ) {
         return '';
     }
+    if ( 'dynamische_cta' === $tag ) {
+        $vervolg = sfp_page_config_code_cta_vervolg();
+        if ( null !== $vervolg ) {
+            return $vervolg;
+        }
+    }
     ob_start();
     do_action( $tag );
     return (string) ob_get_clean();
+}
+
+/**
+ * Vervolg per pijler in plaats van de CTA-layouts (3.21.0, besluit Stephan
+ * 31-10). Op een bericht waarvan de pijler een gepubliceerd vervolg heeft,
+ * toont [dynamische_cta] dat vervolg in plaats van alles wat aan de actie
+ * dynamische_cta hangt. Niet op begrippen, tools of pagina's. Staat het
+ * onderdeel Artikelen aan, dan staat het vervolg al onder het artikel: de
+ * code geeft dan niets, zodat het er niet dubbel staat.
+ *
+ * @return string|null Uitvoer, of null als de oude layouts gelden.
+ */
+function sfp_page_config_code_cta_vervolg() {
+    static $bezig = false;
+    if ( $bezig || ! is_singular( 'post' ) || ! function_exists( 'sfp_page_config_vervolg_voor' ) ) {
+        return null;
+    }
+    $post = get_post();
+    if ( ! $post || 'post' !== $post->post_type ) {
+        return null;
+    }
+    if ( function_exists( 'sfp_page_config_is_begrip' ) && sfp_page_config_is_begrip( $post ) ) {
+        return null;
+    }
+    $vervolg = sfp_page_config_vervolg_voor( $post );
+    if ( ! $vervolg ) {
+        return null;
+    }
+    if ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() ) {
+        return '';
+    }
+    // Een vervolg dat zelf [dynamische_cta] bevat, toont zichzelf niet nog eens.
+    $bezig = true;
+    $html  = sfp_page_config_vervolg_html( $vervolg );
+    $bezig = false;
+    return $html;
 }
 
 /**

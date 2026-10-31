@@ -148,7 +148,8 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
     $id       = 'sfp-tool-' . (int) $post->ID . ( $geteld[ $post->ID ] > 1 ? '-' . $geteld[ $post->ID ] : '' );
     $titel    = sfp_page_config_tool_platte_titel( $post );
 
-    $html  = '<div class="sfp-tool sfp-tool--' . esc_attr( $b['soort'] ) . ' sfp-tool--' . $weergave . '" id="' . esc_attr( $id ) . '" data-tool="' . (int) $post->ID . '" data-slug="' . esc_attr( $post->post_name ) . '" data-titel="' . esc_attr( $titel ) . '" data-weergave="' . $weergave . '">';
+    $kaart = isset( $b['weergave']['modus'] ) && 'kaart' === $b['weergave']['modus'] ? ' sfp-tool--kaart' : '';
+    $html  = '<div class="sfp-tool sfp-tool--' . esc_attr( $b['soort'] ) . ' sfp-tool--' . $weergave . $kaart . '" id="' . esc_attr( $id ) . '" data-tool="' . (int) $post->ID . '" data-slug="' . esc_attr( $post->post_name ) . '" data-titel="' . esc_attr( $titel ) . '" data-weergave="' . $weergave . '">';
     $html .= '<script type="application/json" class="sfp-tool__data">' . wp_json_encode( sfp_page_config_tool_voor_browser( $b ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . '</script>';
     $html .= '<noscript><p class="sfp-tool__noscript">' . esc_html( $t( 'tool_geen_script' ) ) . '</p></noscript>';
     $html .= '<div class="sfp-tool__app" hidden></div>';
@@ -327,7 +328,9 @@ function sfp_page_config_render_tool_blok( $attrs ) {
         return current_user_can( 'edit_posts' ) && ( is_admin() || wp_is_json_request() ) ? '<p class="sfp-tool__noscript">Tool: kies een tool in het blok.</p>' : '';
     }
     $post = get_post( $id );
-    if ( ! $post || 'publish' !== $post->post_status ) {
+    // Een concepttool toont het blok alleen aan wie hem mag bewerken, zodat
+    // een pagina met de tool in de voorvertoning te beoordelen is (3.21.0).
+    if ( ! $post || ( 'publish' !== $post->post_status && ( is_admin() || wp_is_json_request() || ! current_user_can( 'edit_post', $post->ID ) ) ) ) {
         return current_user_can( 'edit_posts' ) && ( is_admin() || wp_is_json_request() ) ? '<p class="sfp-tool__noscript">Tool: deze tool is niet gepubliceerd.</p>' : '';
     }
     return sfp_page_config_tool_html( $post, isset( $attrs['weergave'] ) ? (string) $attrs['weergave'] : 'volledig' );

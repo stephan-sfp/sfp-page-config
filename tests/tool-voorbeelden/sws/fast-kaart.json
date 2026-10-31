@@ -1,0 +1,398 @@
+{
+ "versie": 1,
+ "soort": "generator",
+ "resultaat_kop": "{verb} {relatie|bank:wie|anders:your audience}, so that {res|anders:[what changes]}.",
+ "resultaat_intro": "Your objective, built with FAST: the first four steps of the FASTER Method.",
+ "stappen": [
+  {
+   "titel": "F · Objective",
+   "velden": [
+    {
+     "id": "verb",
+     "type": "keuze",
+     "verder": true,
+     "verplicht": true,
+     "label": "What should your talk do?",
+     "opties": [
+      {
+       "waarde": "Inform",
+       "tekst": "Inform",
+       "icoon": "info"
+      },
+      {
+       "waarde": "Instruct",
+       "tekst": "Instruct",
+       "icoon": "lijst"
+      },
+      {
+       "waarde": "Persuade",
+       "tekst": "Persuade",
+       "icoon": "vinkje"
+      },
+      {
+       "waarde": "Activate",
+       "tekst": "Activate",
+       "icoon": "pijl"
+      },
+      {
+       "waarde": "Inspire",
+       "tekst": "Inspire",
+       "icoon": "ster"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "F · Topic",
+   "velden": [
+    {
+     "id": "tema",
+     "type": "kort",
+     "verplicht": true,
+     "label": "What is your talk about?",
+     "voorbeeld": "e.g. quarterly results"
+    }
+   ]
+  },
+  {
+   "titel": "F · Change",
+   "velden": [
+    {
+     "id": "res",
+     "type": "kort",
+     "verplicht": true,
+     "label": "If it goes well, what changes?",
+     "voorbeeld": "{verb|bank:resvoorbeeld|anders:e.g. they approve the pilot}"
+    }
+   ]
+  },
+  {
+   "titel": "A · Audience",
+   "velden": [
+    {
+     "id": "kwadrant",
+     "type": "keuze",
+     "verder": true,
+     "verplicht": true,
+     "label": "Which audience do you face?",
+     "opties": [
+      {
+       "waarde": "bystanders",
+       "tekst": "Bystanders",
+       "uitleg": "Not keen, know little"
+      },
+      {
+       "waarde": "sceptics",
+       "tekst": "Sceptics",
+       "uitleg": "Not keen, know a lot"
+      },
+      {
+       "waarde": "learners",
+       "tekst": "Learners",
+       "uitleg": "Keen, know little"
+      },
+      {
+       "waarde": "experts",
+       "tekst": "Experts",
+       "uitleg": "Keen, know a lot"
+      }
+     ],
+     "tegels": "kwadrant",
+     "assen": {
+      "kolommen": [
+       "Know little",
+       "Know a lot"
+      ],
+      "rijen": [
+       "Not keen",
+       "Keen"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "titel": "A · Relation",
+   "velden": [
+    {
+     "id": "relatie",
+     "type": "keuze",
+     "verder": true,
+     "verplicht": true,
+     "label": "What is your relation to the audience?",
+     "opties": [
+      {
+       "waarde": "peer",
+       "tekst": "Peers",
+       "uitleg": "Colleagues at my level",
+       "icoon": "duo"
+      },
+      {
+       "waarde": "boven",
+       "tekst": "Decision-makers",
+       "uitleg": "They decide over me or my topic",
+       "icoon": "persoon"
+      },
+      {
+       "waarde": "team",
+       "tekst": "Employees",
+       "uitleg": "People who report to me",
+       "icoon": "groep"
+      },
+      {
+       "waarde": "buiten",
+       "tekst": "Outsiders",
+       "uitleg": "Clients or a conference",
+       "icoon": "wereld"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "S · Structure",
+   "velden": [
+    {
+     "id": "estr",
+     "type": "keuze",
+     "verder": true,
+     "verplicht": true,
+     "label": "Which structure fits your talk?",
+     "opties": [
+      {
+       "waarde": "problem",
+       "tekst": "Problem, analysis, solution",
+       "icoon": "lagen"
+      },
+      {
+       "waarde": "time",
+       "tekst": "Past, present, future",
+       "icoon": "lagen"
+      },
+      {
+       "waarde": "why",
+       "tekst": "Why, how, what",
+       "icoon": "lagen"
+      },
+      {
+       "waarde": "wsn",
+       "tekst": "What, so what, now what",
+       "icoon": "lagen"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "titel": "T · Time",
+   "velden": [
+    {
+     "id": "tijd",
+     "type": "keuze",
+     "verder": true,
+     "verplicht": true,
+     "label": "How much time is left before you speak?",
+     "opties": [
+      {
+       "waarde": "hour",
+       "tekst": "An hour",
+       "icoon": "klok"
+      },
+      {
+       "waarde": "day",
+       "tekst": "One day",
+       "icoon": "klok"
+      },
+      {
+       "waarde": "days",
+       "tekst": "A few days",
+       "icoon": "klok"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "waarden": {
+  "prompt": "Create the structure of a slide deck for my talk on {tema|anders:[topic]}.\nObjective: {verb} {relatie|bank:wie|anders:your audience}, so that {res|anders:[what changes]}.\nAudience: {kwadrant|label|klein|anders:-} ({kwadrant|bank:kort|anders:-}).\nStructure: {estr|bank:b1}, {estr|bank:b2}, {estr|bank:b3}.\n\nRules: one slide per idea, 8 to 12 slides, a short title per slide. Follow the 5/5/5 rule: at most five words per line, five lines per slide and five text-heavy slides in a row. Suggest a visual for each slide. Do not invent data; mark any figure as [data to add]."
+ },
+ "banken": {
+  "wie": {
+   "peer": "your colleagues",
+   "boven": "your managers",
+   "team": "your team",
+   "buiten": "your audience"
+  },
+  "relatieadvies": {
+   "peer": "You speak to peers: you can be direct, but earn their attention with what they gain, not with your position.",
+   "boven": "They decide over your topic: lead with your conclusion and the decision you need, then the support.",
+   "team": "They report to you: say why this matters and what you expect of them, then invite their questions.",
+   "buiten": "They do not know you yet: say in one sentence who you are and why this matters to them, before the content."
+  },
+  "kort": {
+   "bystanders": "not keen, know little",
+   "sceptics": "not keen, know a lot",
+   "learners": "keen, know little",
+   "experts": "keen, know a lot"
+  },
+  "advies": {
+   "bystanders": "They are not keen and know little. Win their attention first: open with what is in it for them. Avoid jargon and give one example per idea.",
+   "sceptics": "They are not keen but know the subject. Open with what is in it for them, then bring depth: data, nuance and an answer to the objection you expect.",
+   "learners": "They want to listen but the subject is new to them. Go straight in, build up from the basics and keep the terms simple.",
+   "experts": "They want to listen and know the subject well. Skip the basics and bring depth, data and nuance."
+  },
+  "b1": {
+   "problem": "The problem",
+   "time": "The past",
+   "why": "The why",
+   "wsn": "What"
+  },
+  "b2": {
+   "problem": "The analysis",
+   "time": "The present",
+   "why": "The how",
+   "wsn": "So what"
+  },
+  "b3": {
+   "problem": "The solution",
+   "time": "The future",
+   "why": "The what",
+   "wsn": "Now what"
+  },
+  "t1": {
+   "problem": "What pain does your audience feel today?",
+   "time": "How did we get here? Only what they need to follow you.",
+   "why": "Why does this matter to your audience?",
+   "wsn": "What happened, or what is the situation?"
+  },
+  "t2": {
+   "problem": "Which two or three causes are behind it?",
+   "time": "Where do things stand today?",
+   "why": "How does it work, in a few clear steps?",
+   "wsn": "Why does it matter to your audience?"
+  },
+  "t3": {
+   "problem": "What do you propose, and what is the first step?",
+   "time": "What comes next, and what do we do now?",
+   "why": "What will be done or decided, and by whom?",
+   "wsn": "What should happen next, and who does what?"
+  },
+  "plan": {
+   "hour": "1. Read your opening and closing aloud three times.\n2. Run through the three blocks once, out loud, with a timer.",
+   "day": "1. Memorize your full introduction and conclusion.\n2. Two run-throughs out loud, with a timer.\n3. Rehearse the moves between the blocks separately.",
+   "days": "1. Memorize your full introduction and conclusion.\n2. One run-through out loud each day, with a timer.\n3. Practise once for a colleague and ask what they remember."
+  },
+  "resvoorbeeld": {
+   "Inform": "e.g. they know where the project stands",
+   "Instruct": "e.g. they can log a ticket in the new system",
+   "Persuade": "e.g. the pilot gets approved",
+   "Activate": "e.g. they sign up for the pilot",
+   "Inspire": "e.g. they believe the new strategy can work"
+  }
+ },
+ "uitvoer": [
+  {
+   "type": "tekst",
+   "kop": "F · Your objective",
+   "tekst": "Topic: {tema|anders:-}\nEverything you say should serve your objective. If a slide, a piece of information or a story does not serve it, cut it."
+  },
+  {
+   "type": "vragen",
+   "items": [
+    "Your notes on the objective"
+   ],
+   "lijnen": 3,
+   "nummers": false
+  },
+  {
+   "type": "tekst",
+   "kop": "A · Your audience",
+   "tekst": "{kwadrant|label|anders:-} ({kwadrant|bank:kort|anders:-}). {kwadrant|bank:advies}\n{relatie|bank:relatieadvies}"
+  },
+  {
+   "type": "vragen",
+   "items": [
+    "Your notes on the audience"
+   ],
+   "lijnen": 3,
+   "nummers": false
+  },
+  {
+   "type": "tekst",
+   "kop": "S · Your structure",
+   "tekst": "Opening. Write your first sentence word for word: a question, a fact or a short story.\n{estr|bank:b1}. {estr|bank:t1}\n{estr|bank:b2}. {estr|bank:t2}\n{estr|bank:b3}. {estr|bank:t3}\nClosing. Sum up in one sentence, then name the next step."
+  },
+  {
+   "type": "vragen",
+   "items": [
+    "Your notes on the structure"
+   ],
+   "lijnen": 3,
+   "nummers": false
+  },
+  {
+   "type": "tekst",
+   "kop": "T · Your rehearsal",
+   "tekst": "{tijd|bank:plan|anders:-}"
+  },
+  {
+   "type": "vragen",
+   "items": [
+    "Your notes on the rehearsal"
+   ],
+   "lijnen": 3,
+   "nummers": false
+  },
+  {
+   "type": "tekst",
+   "kop": "Slide prompt",
+   "tekst": "Paste this into any AI assistant to turn your outline into slides.\n\n{prompt}"
+  }
+ ],
+ "acties": {
+  "pdf": true,
+  "word": true,
+  "kopieer": true,
+  "deellink": true,
+  "mail": false,
+  "duimpjes": true,
+  "pdf_bestandsnaam": "fast-plan-{tema|slug|anders:presentation}"
+ },
+ "teksten": {
+  "tool_resultaat": "Your plan",
+  "tool_volgende": "Next",
+  "tool_vorige": "Back",
+  "tool_maak": "Show my plan",
+  "tool_pdf": "Download PDF",
+  "tool_word": "Download Word",
+  "tool_kopieer": "Copy plan",
+  "tool_gekopieerd": "Copied",
+  "tool_opnieuw": "Start again"
+ },
+ "weergave": {
+  "modus": "kaart",
+  "groepen": [
+   {
+    "letter": "F",
+    "naam": "Formulate your objective",
+    "stappen": 3
+   },
+   {
+    "letter": "A",
+    "naam": "Analyse your audience",
+    "stappen": 2
+   },
+   {
+    "letter": "S",
+    "naam": "Structure your ideas",
+    "stappen": 1
+   },
+   {
+    "letter": "T",
+    "naam": "Train your techniques",
+    "stappen": 1
+   }
+  ]
+ }
+}
