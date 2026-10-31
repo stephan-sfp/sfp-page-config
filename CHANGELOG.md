@@ -4,13 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.21.0-beta.1] - 2026-10-31
-
-Proefversie van 3.21.0 voor DPS (Vervolg per pijler in [dynamische_cta]) en SwS (kaartweergave van de toolmotor, artikelopmaak). Inhoud zoals bij 3.21.0 hieronder.
-
 ## [3.21.0] - 2026-10-31
 
 Drie onderdelen in één release, besluit Stephan 31-10-2026 (klus page-config-3-21-0): Vervolg per pijler in de oude CTA-code, een kaartweergave voor de toolmotor (nodig voor de FAST-tool op SwS) en punten uit de artikelopmaak. Bestaande inhoud, tools, codes en blokken werken zoals ze werkten.
+
+Proef 3.21.0-beta.1 op DPS: vier pagina's uitgelogd op desktop en telefoon gelijk aan de nulmeting, zonder scriptfouten. De kaartweergave en de artikelopmaak zijn getest in een lokale WordPress met Astra (browserproef op 1280, 768 en 375 px).
 
 Terugdraaien: versie 3.20.0 terugzetten. Er is niets omgezet in inhoud of instellingen.
 
