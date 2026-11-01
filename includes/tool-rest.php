@@ -194,6 +194,7 @@ function sfp_page_config_tool_feedback_adres() {
  * @return WP_REST_Response
  */
 function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
+    sfp_page_config_tool_motor();
     $t = 'sfp_page_config_artikel_tekst';
     if ( '' !== trim( (string) $verzoek->get_param( 'website' ) ) ) {
         // Honeypot: doen alsof het lukte.
@@ -282,6 +283,7 @@ function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
  * @return WP_REST_Response
  */
 function sfp_page_config_generator_rest_mail( $post, array $b, $email, array $antwoorden ) {
+    sfp_page_config_tool_motor();
     $t = 'sfp_page_config_artikel_tekst';
     foreach ( $b['stappen'] as $stap ) {
         if ( sfp_page_config_generator_ontbreekt( $b, $antwoorden, $stap ) ) {
@@ -488,6 +490,7 @@ function sfp_page_config_tool_rest_feedback() {
  * @return WP_REST_Response
  */
 function sfp_page_config_tool_rest_controle_route( WP_REST_Request $verzoek ) {
+    sfp_page_config_tool_motor();
     $tekst    = (string) $verzoek->get_param( 'tekst' );
     $uitkomst = sfp_page_config_tool_controleer_tekst( $tekst );
     unset( $uitkomst['beschrijving'] );

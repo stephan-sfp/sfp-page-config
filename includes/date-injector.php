@@ -2,12 +2,10 @@
 /**
  * SFP Page Config - Date Injector
  *
- * Injects two JavaScript objects on training pages:
- *
- *   1. window.sfpCoursePromo  - Next upcoming course date (for Convert Pro
- *      popups/banners).
- *   2. window.sfpCourseData   - All startmomenten with formatted dates for
- *      the current page (for SureForms dropdown population).
+ * Injects window.sfpCourseData on training pages: all startmomenten with
+ * formatted dates for the current page (for SureForms dropdown population).
+ * window.sfpCoursePromo (for Convert Pro) is gone since 3.22.0: Convert Pro
+ * runs on none of the eight sites and no snippet reads it (31-10-2026).
  *
  * Also enqueues a small script that fills the dropdown with the startmomenten
  * from window.sfpCourseData. Since 3.0.0 the script finds the dropdown itself;
@@ -97,53 +95,6 @@ function sfp_page_config_inject_course_data() {
             'window.sfpCourseData=%s;',
             wp_json_encode( $startmomenten )
         );
-    }
-
-    /* -----------------------------------------------------------------
-     * 2. sfpCoursePromo: next upcoming course date (site-wide).
-     *    Used by Convert Pro popups and banners.
-     * --------------------------------------------------------------- */
-
-    $cache_key = 'sfp_next_course_' . $post_id;
-    $next_course = get_transient( $cache_key );
-
-    if ( false === $next_course ) {
-        $courses = get_posts( array(
-            'post_type'      => 'page',
-            'posts_per_page' => 1,
-            'post_status'    => 'publish',
-            'meta_key'       => 'startdatum',
-            'meta_value'     => current_time( 'Y-m-d' ),
-            'meta_compare'   => '>=',
-            'meta_type'      => 'DATE',
-            'orderby'        => 'meta_value',
-            'order'          => 'ASC',
-        ) );
-
-        $next_course = ! empty( $courses ) ? $courses[0] : 'none';
-        set_transient( $cache_key, $next_course ?: 'none', HOUR_IN_SECONDS );
-    }
-
-    if ( 'none' === $next_course ) {
-        $next_course = false;
-    }
-
-    if ( ! empty( $next_course ) ) {
-        $promo_post = $next_course;
-        $date_raw   = get_post_meta( $promo_post->ID, 'startdatum', true );
-
-        if ( $date_raw ) {
-            $output .= sprintf(
-                'window.sfpCoursePromo=%s;',
-                wp_json_encode( array(
-                    'title'         => get_the_title( $promo_post->ID ),
-                    'url'           => get_permalink( $promo_post->ID ),
-                    'dateRaw'       => $date_raw,
-                    'dateFormatted' => sfp_page_config_format_datum( $date_raw, 'short' ),
-                    'postId'        => $promo_post->ID,
-                ) )
-            );
-        }
     }
 
     if ( $output ) {

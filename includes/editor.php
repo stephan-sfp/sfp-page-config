@@ -286,6 +286,7 @@ function sfp_page_config_editor_rest() {
  * @return array
  */
 function sfp_page_config_editor_stand( WP_Post $post ) {
+    sfp_page_config_tool_motor();
     $stand = array(
         'cursusdata' => sfp_page_config_editor_cursusdata( $post->ID ),
         'pijler'     => '',
@@ -596,6 +597,7 @@ function sfp_page_config_tool_canvas_editor() {
  * @return string HTML.
  */
 function sfp_page_config_tool_canvas_hoe( WP_Post $post ) {
+    sfp_page_config_tool_motor();
     if ( ! function_exists( 'sfp_page_config_tool_beschrijving' ) || ! function_exists( 'sfp_page_config_tool_hoe_rekent' ) ) {
         return '';
     }

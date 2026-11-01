@@ -55,19 +55,6 @@ function sfp_page_config_is_tool( $post ) {
     return $post && 'tool' === $post->post_type;
 }
 
-/**
- * Het berichttype tool. Sinds 3.15.0 registreert includes/fundament.php het
- * (init 11), met het onderdeel Berichttypes of Tools aan, en alleen als geen
- * snippet het al deed; adres en namen volgen de site (op FL /ferramentas/).
- * Deze functie blijft bestaan voor de tests en oude aanroepen.
- */
-function sfp_page_config_tool_posttype() {
-    if ( ! post_type_exists( 'tool' ) && function_exists( 'sfp_page_config_berichttypes_registreer' ) ) {
-        sfp_page_config_berichttypes_registreer();
-    }
-    $GLOBALS['sfp_page_config_tool_eigen_type'] = ! empty( $GLOBALS['sfp_page_config_eigen_berichttypes'] ) && (bool) preg_grep( '/^tool:/', (array) $GLOBALS['sfp_page_config_eigen_berichttypes'] );
-}
-
 add_action( 'init', 'sfp_page_config_tool_meta', 25 );
 
 /**
@@ -127,6 +114,7 @@ add_filter( 'rest_pre_insert_tool', 'sfp_page_config_tool_rest_controle', 10, 2 
  * @return stdClass|WP_Error
  */
 function sfp_page_config_tool_rest_controle( $post, $verzoek ) {
+    sfp_page_config_tool_motor();
     if ( ! sfp_page_config_tool_aan() ) {
         return $post;
     }
@@ -217,6 +205,7 @@ function sfp_page_config_tool_beschrijving_wis( $meta_id, $post_id, $sleutel ) {
  * @return array|null
  */
 function sfp_page_config_tool_beschrijving_vers( $post ) {
+    sfp_page_config_tool_motor();
     $post = get_post( $post );
     if ( ! $post ) {
         return null;

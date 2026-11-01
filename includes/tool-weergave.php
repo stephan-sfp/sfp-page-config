@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function sfp_page_config_tool_config() {
     $teksten = array();
     $alle    = function_exists( 'sfp_page_config_artikel_teksten' ) ? sfp_page_config_artikel_teksten() : array();
-    $taal    = function_exists( 'sfp_page_config_artikel_taal' ) ? sfp_page_config_artikel_taal() : 'en';
+    $taal    = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'en';
     $basis   = isset( $alle['en'] ) ? $alle['en'] : array();
     $eigen   = isset( $alle[ $taal ] ) ? $alle[ $taal ] : array();
     foreach ( $basis as $sleutel => $waarde ) {
@@ -48,6 +48,7 @@ function sfp_page_config_tool_config() {
  * @param string $soort Soort tool (bepaalt welk soortscript meegaat).
  */
 function sfp_page_config_tool_bestanden( $soort = 'test', $kaart = false ) {
+    sfp_page_config_tool_motor();
     static $klaar = array();
     if ( empty( $klaar['basis'] ) ) {
         $klaar['basis'] = true;
@@ -88,13 +89,14 @@ function sfp_page_config_tool_bestanden( $soort = 'test', $kaart = false ) {
     if ( ! isset( sfp_page_config_tool_soorten()[ $soort ] ) ) {
         return;
     }
-    // Rekenaar en checklist draaien op de motor van de generator; de
-    // tekstanalyse gebruikt daarnaast de rekentaal uit dat script.
+    // Rekenaar en checklist draaien op de motor van de generator. Sinds
+    // 3.22.0 staan bouwen en rekentaal los (generator-bouw.js): de
+    // tekstanalyse laadt alleen dat deel, niet het scherm van de generator.
     $scripts = array( $soort );
     if ( sfp_page_config_tool_op_generator( $soort ) ) {
-        $scripts = array( 'generator' );
+        $scripts = array( 'generator-bouw', 'generator' );
     } elseif ( 'tekstanalyse' === $soort ) {
-        $scripts = array( 'generator', 'tekstanalyse' );
+        $scripts = array( 'generator-bouw', 'tekstanalyse' );
     }
     $vorige = 'sfp-tool-motor';
     foreach ( $scripts as $script ) {
@@ -167,6 +169,7 @@ function sfp_page_config_tool_is_kaart( array $b ) {
  * @return string
  */
 function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
+    sfp_page_config_tool_motor();
     static $geteld = array();
     $post = get_post( $post );
     if ( ! $post || 'tool' !== $post->post_type || ! sfp_page_config_tool_aan() ) {

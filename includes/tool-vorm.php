@@ -229,6 +229,7 @@ function sfp_page_config_tool_schema() {
  * @return array
  */
 function sfp_page_config_tool_controle( $post ) {
+    sfp_page_config_tool_motor();
     $meldingen = array();
     if ( ! sfp_page_config_is_tool( $post ) || ! sfp_page_config_tool_aan() ) {
         return $meldingen;

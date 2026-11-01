@@ -163,6 +163,7 @@ const fs = require('fs');
 global.window = global; global.document = { readyState: 'loading', addEventListener(){}, querySelectorAll(){ return []; } };
 window.sfpToolConfig = { teksten: JSON.parse(fs.readFileSync(process.argv[5], 'utf8')) };
 eval(fs.readFileSync(process.argv[2] + 'motor.js', 'utf8'));
+eval(fs.readFileSync(process.argv[2] + 'generator-bouw.js', 'utf8'));
 eval(fs.readFileSync(process.argv[2] + 'generator.js', 'utf8'));
 const b = JSON.parse(fs.readFileSync(process.argv[3], 'utf8'));
 const sets = JSON.parse(fs.readFileSync(process.argv[4], 'utf8'));

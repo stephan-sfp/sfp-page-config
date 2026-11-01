@@ -179,42 +179,6 @@ function sfp_page_config_cursusdata_bewaar( $post_id, $data ) {
     );
 }
 
-/* =========================================================================
- * AJAX (blijft bestaan voor oude aanroepen)
- * ====================================================================== */
-
-// Alleen als een oud ASE-snippet deze actie niet al afhandelt.
-if ( ! has_action( 'wp_ajax_sfp_save_cursusdata' ) ) {
-    add_action( 'wp_ajax_sfp_save_cursusdata', 'sfp_page_config_ajax_save' );
-}
-
-/**
- * AJAX: bewaar de startmomenten van één pagina.
- */
-function sfp_page_config_ajax_save() {
-
-    check_ajax_referer( 'sfp_cursusdata_nonce', 'nonce' );
-
-    $post_id = isset( $_POST['post_id'] ) ? intval( $_POST['post_id'] ) : 0;
-    if ( ! $post_id ) {
-        wp_send_json_error( 'Ongeldig post ID.' );
-    }
-    if ( ! current_user_can( 'edit_page', $post_id ) ) {
-        wp_send_json_error( 'Geen rechten.' );
-    }
-
-    $raw    = isset( $_POST['cursusdata'] ) ? wp_unslash( $_POST['cursusdata'] ) : '[]'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- opgeschoond in sfp_page_config_cursusdata_schoon().
-    $result = sfp_page_config_cursusdata_bewaar( $post_id, json_decode( (string) $raw, true ) );
-
-    wp_send_json_success(
-        array(
-            'clean'         => $result['clean'],
-            'cursusdata'    => $result['clean'],
-            'eerstvolgende' => $result['eerstvolgende'],
-        )
-    );
-}
-
 /**
  * Is dit een bestaande datum in de vorm JJJJ-MM-DD? strtotime() neemt ook
  * 2026-02-31 aan (en rolt door naar maart); checkdate() niet.

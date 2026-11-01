@@ -1256,7 +1256,7 @@ function sfp_page_config_artikel_rest_lees() {
     return rest_ensure_response(
         array(
             'versie'       => SFP_PAGE_CONFIG_VERSION,
-            'taal'         => sfp_page_config_artikel_taal(),
+            'taal'         => sfp_page_config_taal(),
             'instellingen' => $uit,
             'affiliate'    => function_exists( 'sfp_page_config_affiliate_teksten' ) ? sfp_page_config_affiliate_teksten() : null,
             'deelbeeld'    => function_exists( 'sfp_page_config_deelbeeld_stand' ) ? sfp_page_config_deelbeeld_stand() : null,

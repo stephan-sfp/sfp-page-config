@@ -32,15 +32,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Draait de oude plugin SFP Tooltip nog op deze site?
- *
- * @return bool
- */
-function sfp_page_config_tooltips_oude_plugin() {
-    return defined( 'SFP_TOOLTIP_VERSION' );
-}
-
-/**
  * Verzorgt dit onderdeel de tooltips op deze site?
  *
  * Pas betrouwbaar vanaf `plugins_loaded`: de oude plugin laadt na deze.
@@ -48,7 +39,7 @@ function sfp_page_config_tooltips_oude_plugin() {
  * @return bool
  */
 function sfp_page_config_tooltips_actief() {
-    return ! sfp_page_config_tooltips_oude_plugin() && sfp_page_config_onderdeel_aan( 'tooltips' );
+    return sfp_page_config_onderdeel_aan( 'tooltips' );
 }
 
 add_filter( 'wp_kses_allowed_html', 'sfp_page_config_tooltips_kses', 10, 2 );

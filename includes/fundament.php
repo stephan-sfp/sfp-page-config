@@ -270,21 +270,7 @@ function sfp_page_config_kopfont_ux_declaraties() {
     return $css;
 }
 
-add_action( 'wp_head', 'sfp_page_config_kopfont_ux_head', 4 );
-
-/**
- * De fontvariabelen in de head, voor bezoekers.
- */
-function sfp_page_config_kopfont_ux_head() {
-    if ( is_admin() || ! sfp_page_config_onderdeel_aan( 'kopfont' ) ) {
-        return;
-    }
-    $css = sfp_page_config_kopfont_ux_declaraties();
-    if ( '' === $css ) {
-        return;
-    }
-    echo '<style id="sfp-kopfont-ux">:root{' . $css . '}</style>' . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gevalideerd in sfp_page_config_sanitize_font_family().
-}
+// De fontvariabelen staan sinds 3.22.0 in het blok sfp-kopfont (kopfont.php).
 
 /* =========================================================================
  * Berichttypes begrippen en tool

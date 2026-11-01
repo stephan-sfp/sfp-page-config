@@ -257,26 +257,6 @@ function sfp_page_config_get_brand() {
     return $resolved;
 }
 
-/**
- * The nine longread colour keys. Until 2.12.0 a site could override them;
- * since 3.0.0 they always follow Astra.
- *
- * @return string[]
- */
-function sfp_page_config_longread_color_keys() {
-    return array(
-        'lr_brand',
-        'lr_bar_bg',
-        'lr_bar_text',
-        'lr_drawer_bg',
-        'lr_drawer_text',
-        'lr_sidebar_text',
-        'lr_sidebar_muted',
-        'lr_sidebar_active',
-        'lr_sidebar_h3',
-    );
-}
-
 /* =========================================================================
  * Supported post types
  * ====================================================================== */
@@ -442,39 +422,6 @@ function sfp_page_config_sanitize_time( $value ) {
     return sprintf( '%02d:%02d', $hours, $minutes );
 }
 
-/**
- * Format a start/end time pair into a Dutch lestijd string.
- *
- * Examples:
- *   ("09:00", "17:00")               -> "09:00 - 17:00 uur"
- *   ("09:00", "")                    -> "vanaf 09:00 uur"
- *   ("", "17:00")                    -> "tot 17:00 uur"
- *   ("", "")                         -> ""
- *
- * @param  string $start     Sanitised "HH:MM" start time (may be empty).
- * @param  string $eind      Sanitised "HH:MM" end time (may be empty).
- * @param  string $separator Separator between start and end. Default " - ".
- * @param  string $suffix    Trailing text. Default " uur".
- * @return string            Formatted string or "" when both times are empty.
- */
-function sfp_page_config_format_cursus_tijd( $start, $eind, $separator = ' - ', $suffix = ' uur' ) {
-
-    $start = sfp_page_config_sanitize_time( $start );
-    $eind  = sfp_page_config_sanitize_time( $eind );
-
-    if ( '' !== $start && '' !== $eind ) {
-        $body = $start . $separator . $eind;
-    } elseif ( '' !== $start ) {
-        $body = 'vanaf ' . $start;
-    } elseif ( '' !== $eind ) {
-        $body = 'tot ' . $eind;
-    } else {
-        return '';
-    }
-
-    return $body . $suffix;
-}
-
 /* =========================================================================
  * WP Rocket delay-JS exclusions
  *
@@ -528,16 +475,11 @@ $sfp_includes = array(
     'includes/voorbeeld.php',
     'includes/editor.php',
     'includes/wp-rocket.php',
-    'includes/autoloaded-options.php',
     'includes/ajax-lean.php',
     'includes/vervolg.php',
     'includes/vormen.php',
     'includes/begrip.php',
     'includes/tool.php',
-    'includes/tool-beschrijving.php',
-    'includes/generator.php',
-    'includes/tekstanalyse.php',
-    'includes/tool-eerste-scherm.php',
     'includes/tool-weergave.php',
     'includes/tool-rest.php',
     'includes/tool-vorm.php',
@@ -547,8 +489,6 @@ $sfp_includes = array(
     'includes/onderdeel-tooltips.php',
     'includes/onderdeel-reviews.php',
     'includes/beheer-paginas.php',
-    'includes/beheer.php',
-    'includes/snippets.php',
     'includes/zelftest.php',
     'includes/zelftest-opslag.php',
     'includes/zelftest-rest.php',
@@ -559,14 +499,56 @@ $sfp_includes = array(
     'includes/zelftest-pagina.php',
     'includes/zelftest-privacy.php',
     'includes/zelftest-cta.php',
-    'includes/zelftest-beheer.php',
     'includes/updater.php',
 );
 
+// Sinds 3.22.0 in drie lijsten. Een ontbrekend bestand is een kapotte
+// release en geeft een fout, in plaats van stil overgeslagen te worden.
 foreach ( $sfp_includes as $sfp_file ) {
-    $sfp_path = SFP_PAGE_CONFIG_DIR . $sfp_file;
-    if ( file_exists( $sfp_path ) ) {
-        require_once $sfp_path;
+    require_once SFP_PAGE_CONFIG_DIR . $sfp_file;
+}
+
+/**
+ * Alleen in wp-admin en bij een REST-verzoek (en in WP-CLI): het beheer, de
+ * autoload-analyzer, snippetbeheer en het zelftestbeheer. Op een gewone
+ * pagina laden ze niet. Bij REST laden ze op rest_api_init met prioriteit 0,
+ * vóór hun eigen routes (prioriteit 10).
+ *
+ * @return string[]
+ */
+function sfp_page_config_includes_beheer() {
+    return array(
+        'includes/autoloaded-options.php',
+        'includes/beheer.php',
+        'includes/snippets.php',
+        'includes/zelftest-beheer.php',
+    );
+}
+
+/**
+ * Laad de beheerbestanden (één keer).
+ */
+function sfp_page_config_laad_beheer() {
+    foreach ( sfp_page_config_includes_beheer() as $sfp_file ) {
+        require_once SFP_PAGE_CONFIG_DIR . $sfp_file;
+    }
+}
+
+if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+    sfp_page_config_laad_beheer();
+} else {
+    add_action( 'rest_api_init', 'sfp_page_config_laad_beheer', 0 );
+}
+
+/**
+ * De toolmotor op de server (beschrijving, generator, rekentaal,
+ * tekstanalyse, eerste scherm) laadt pas als een tool erom vraagt: een
+ * toolpagina, het blok Tool, de REST-routes van de tools, de editor of het
+ * beheer. Op andere pagina's niet.
+ */
+function sfp_page_config_tool_motor() {
+    foreach ( array( 'includes/tool-beschrijving.php', 'includes/generator.php', 'includes/reken.php', 'includes/tekstanalyse.php', 'includes/tool-eerste-scherm.php' ) as $sfp_file ) {
+        require_once SFP_PAGE_CONFIG_DIR . $sfp_file;
     }
 }
 

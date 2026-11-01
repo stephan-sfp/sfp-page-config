@@ -65,7 +65,7 @@ foreach ( glob( SFP_PAGE_CONFIG_DIR . 'tests/tool-voorbeelden/*/*.json' ) as $pa
     $kaart = isset( $b['weergave']['modus'] ) && 'kaart' === $b['weergave']['modus'];
     if ( $kaart ) { $c .= css( 'tool/tool-kaart.css' ); }
     $scripts = array( 'motor' );
-    if ( sfp_page_config_tool_op_generator( $soort ) ) { $scripts[] = 'generator'; } elseif ( 'tekstanalyse' === $soort ) { $scripts[] = 'generator'; $scripts[] = 'tekstanalyse'; } else { $scripts[] = $soort; }
+    if ( sfp_page_config_tool_op_generator( $soort ) ) { $scripts[] = 'generator-bouw'; $scripts[] = 'generator'; } elseif ( 'tekstanalyse' === $soort ) { $scripts[] = 'generator-bouw'; $scripts[] = 'tekstanalyse'; } else { $scripts[] = $soort; }
     $js = '';
     foreach ( $scripts as $s ) { $js .= '<script src="' . SFP_PAGE_CONFIG_DIR . 'assets/tool/' . $s . '.js"></script>'; }
     unset( $b['mail'], $b['genegeerd'] );

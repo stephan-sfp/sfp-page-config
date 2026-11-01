@@ -232,7 +232,8 @@ function stub_functies( $bestand, array $namen ) {
         eval( substr( $code, $start, $i - $start + 1 ) ); // phpcs:ignore Squiz.PHP.Eval.Discouraged -- alleen in de test.
     }
 }
-stub_functies( 'beheer.php', array( 'sfp_page_config_reviews_eigen_args', 'sfp_page_config_reviews_eigen_bewaar', 'sfp_page_config_reviews_eigen_weg', 'sfp_page_config_beheer_eigen_pagina' ) );
+stub_functies( 'onderdeel-reviews.php', array( 'sfp_page_config_reviews_eigen_args', 'sfp_page_config_reviews_eigen_bewaar', 'sfp_page_config_reviews_eigen_weg' ) );
+stub_functies( 'beheer.php', array( 'sfp_page_config_beheer_eigen_pagina' ) );
 stub_functies( 'editor.php', array( 'sfp_page_config_vorm_alineastijlen', 'sfp_page_config_editor_is_vorm', 'sfp_page_config_editor_zonder_kleur', 'sfp_page_config_editor_vorm_instellingen' ) );
 stub_functies( 'zelftest.php', array( 'sfp_zelftest_pad_schoon', 'sfp_zelftest_pdf_pad_vanzelf' ) );
 stub_functies( 'begrip.php', array( 'sfp_page_config_begrip_sjabloon_blokken' ) );

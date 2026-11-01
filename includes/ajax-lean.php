@@ -51,8 +51,6 @@ function sfp_ajax_lean_default_skip() {
         'sureforms-pro',
         'wp-rocket',
         'cloudflare',
-        'sfp-google-reviews',
-        'sfp-tooltip',
     );
 }
 

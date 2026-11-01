@@ -44,7 +44,7 @@ $s       = is_array( $bewaard ) ? $bewaard : array();
 $s['onderdelen']['tools'] = '1';
 update_option( 'sfp_settings', $s );
 if ( ! post_type_exists( 'tool' ) ) {
-    sfp_page_config_tool_posttype();
+    sfp_page_config_berichttypes_registreer();
     sfp_page_config_tool_meta();
 }
 

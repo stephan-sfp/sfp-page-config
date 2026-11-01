@@ -22,15 +22,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Taal van de artikelopmaak: nl, en of pt.
- *
- * @return string
- */
-function sfp_page_config_artikel_taal() {
-    return sfp_page_config_taal();
-}
-
-/**
  * Alle teksten.
  *
  * @return array<string, array<string, string>>
@@ -642,7 +633,7 @@ function sfp_page_config_artikel_tekst( $sleutel ) {
     if ( null === $teksten ) {
         $teksten = sfp_page_config_artikel_teksten();
     }
-    $taal   = sfp_page_config_artikel_taal();
+    $taal   = sfp_page_config_taal();
     $waarde = isset( $teksten[ $taal ][ $sleutel ] ) ? $teksten[ $taal ][ $sleutel ] : ( isset( $teksten['en'][ $sleutel ] ) ? $teksten['en'][ $sleutel ] : '' );
 
     /**

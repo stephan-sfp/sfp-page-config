@@ -39,15 +39,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * De onderdelen van dit bestand.
- *
- * @return string[]
- */
-function sfp_page_config_inhoud_onderdelen() {
-    return array( 'kopieerblok', 'bronnenlijst', 'praktijkblok', 'auteursbio' );
-}
-
-/**
  * Staat een onderdeel van dit bestand aan?
  *
  * @param  string $id Onderdeel.
@@ -88,10 +79,16 @@ function sfp_page_config_inhoud_css( $naam ) {
         return '';
     }
     $geplaatst = sfp_page_config_inhoud_geplaatst();
-    if ( ! empty( $geplaatst[ 'css-' . $naam ] ) ) {
+    // Eén register met de blokken (3.22.0): staat dit bestand al via het
+    // vangnet van de blokken op de pagina, dan niet nog een keer.
+    $blokken_al = function_exists( 'sfp_page_config_blokken_geplaatst' ) ? sfp_page_config_blokken_geplaatst() : array();
+    if ( ! empty( $geplaatst[ 'css-' . $naam ] ) || ! empty( $blokken_al[ $naam ] ) ) {
         return '';
     }
     sfp_page_config_inhoud_geplaatst( 'css-' . $naam );
+    if ( function_exists( 'sfp_page_config_blokken_geplaatst' ) ) {
+        sfp_page_config_blokken_geplaatst( $naam );
+    }
     $css = '';
     if ( function_exists( 'sfp_page_config_blokken_geplaatst' ) ) {
         $blokken = sfp_page_config_blokken_geplaatst();
