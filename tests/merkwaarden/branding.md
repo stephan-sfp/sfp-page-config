@@ -130,7 +130,7 @@ We spreken je rechtstreeks aan en maken je nieuwsgierig met inhoud die de moeite
 
 **Grens:** We trekken je aandacht zonder te schreeuwen, te versieren of te joviaal te worden.
 
-#### Samen
+#### In samenhang
 
 Denk aan LEGO: losse blokken die precies op elkaar passen, waarmee je zonder bouwtekening aan de slag kunt en die uitnodigen om iets te maken.
 

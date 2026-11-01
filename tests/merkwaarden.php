@@ -201,9 +201,9 @@ $bron        = sfp_page_config_merkwaarden_bronnen();
 /* ---------- 1. De lezer ---------- */
 
 $verwacht = array(
-    'nl' => array( 'Onze merkwaarden', array( 'Robuust', 'Eenvoudig', 'Aansprekend' ), 'Samen', $branding ),
-    'en' => array( 'Our brand values', array( 'Robust', 'Simple', 'Appealing' ), 'Together', $merkwaarden ),
-    'pt' => array( 'Nossos valores de marca', array( 'Robusto', 'Simples', 'Cativante' ), 'Juntos', $merkwaarden ),
+    'nl' => array( 'Onze merkwaarden', array( 'Robuust', 'Eenvoudig', 'Aansprekend' ), 'In samenhang', $branding ),
+    'en' => array( 'Our brand values', array( 'Robust', 'Simple', 'Appealing' ), 'As a whole', $merkwaarden ),
+    'pt' => array( 'Nossos valores de marca', array( 'Robusto', 'Simples', 'Cativante' ), 'Em conjunto', $merkwaarden ),
 );
 foreach ( $verwacht as $taal => $v ) {
     $t = sfp_page_config_merkwaarden_lees( $v[3], $taal );
@@ -246,6 +246,11 @@ check( is_wp_error( sfp_page_config_merkwaarden_lees( str_replace( '**Question:*
 $twee = sfp_page_config_merkwaarden_lees( preg_replace( '/#### Eenvoudig.*?(?=#### Aansprekend)/s', '', $branding ), 'nl' );
 check( is_wp_error( $twee ) && false !== strpos( $twee->get_error_message(), 'drie waarden' ), 'twee waarden: fout met uitleg' );
 check( is_wp_error( sfp_page_config_merkwaarden_lees( $branding, 'de' ) ), 'onbekende taal: fout' );
+// De oude kop (#### Samen, Together, Juntos) blijft herkend.
+$oud = sfp_page_config_merkwaarden_lees( str_replace( '#### In samenhang', '#### Samen', $branding ), 'nl' );
+check( is_array( $oud ) && 'Samen' === $oud['samen']['kop'] && 3 === count( $oud['waarden'] ), 'oude kop Samen: geen vierde waarde' );
+$oud = sfp_page_config_merkwaarden_lees( str_replace( '#### Em conjunto', '#### Juntos', $merkwaarden ), 'pt' );
+check( is_array( $oud ) && 3 === count( $oud['waarden'] ), 'oude kop Juntos herkend' );
 
 /* ---------- 2. Ophalen en terugvallen ---------- */
 
@@ -353,6 +358,7 @@ check( false !== strpos( $html, 'href="#sfp-mw-robuust"' ) && false !== strpos( 
 check( 3 === substr_count( $html, 'class="sfp-mw__grens"' ) && false !== strpos( $html, '<strong>Grens:</strong>' ), 'weergave: grens in een vlak met label' );
 check( false !== strpos( $html, 'Meer over robuust' ), 'weergave: tekstlink in de kaart' );
 check( false !== strpos( $html, 'alignfull' ), 'weergave: volle breedte' );
+check( 3 === substr_count( $html, 'class="sfp-mw__waarde"' ) && 1 === substr_count( $html, 'class="sfp-mw__samen"' ), 'In samenhang is geen vierde waarde: eigen band' );
 check( false === strpos( $html, 'sfp-mw__slot' ) && false === strpos( $html, 'class="sfp-mw-melding"' ), 'zonder slot: bezoeker ziet niets' );
 $GLOBALS['beheerder'] = true;
 check( false !== strpos( sfp_page_config_merkwaarden_render( array( 'taal' => 'nl' ) ), 'Alleen voor beheerders: vul de slotzin' ), 'zonder slot: beheerder ziet een melding' );

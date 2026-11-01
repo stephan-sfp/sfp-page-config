@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.23.0-beta.2] - 2026-11-01
+
+Tweede proefversie van het blok Merkwaarden.
+
+Terugdraaien: versie 3.22.2 terugzetten (zip uit de tag v3.22.2, map sfp-page-config).
+
+### Gewijzigd
+- Merkwaarden: het slot is geen vierde merkwaarde meer (besluit Stephan 1-11). Geen witte kaart met bovenrand, maar een eigen band in tint 2 over de breedte, met de kop, de LEGO-zin, de slotzin en de knop.
+- Merkwaarden: de kop van het slot heet in de merkbron In samenhang (As a whole, Em conjunto). De oude kop (Samen, Together, Juntos) wordt ook nog herkend.
+
 ## [3.23.0-beta.1] - 2026-11-01
 
 Nieuw blok Merkwaarden. De tekst staat in de merkbron en komt daar live vandaan; de plugin bevat alleen de vorm. Voor bezoekers verandert er niets tot een pagina het blok krijgt.

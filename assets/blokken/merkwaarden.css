@@ -19,7 +19,7 @@
 :root .sfp-mw .sfp-mw__inleiding{margin:0;max-width:66ch;color:var(--sfp-b-wit)}
 
 /* inhoud */
-:root .sfp-mw__inhoud{display:flex;flex-direction:column;gap:40px;padding-bottom:64px}
+:root .sfp-mw__inhoud{display:flex;flex-direction:column;gap:40px;padding-bottom:56px}
 
 /* kaarten: als geheel klikbaar, tekstlink met pijl als aanwijzing */
 :root .sfp-mw .sfp-mw__kaarten{list-style:none;margin:-88px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
@@ -38,6 +38,12 @@
 :root .sfp-mw .sfp-mw__kop{margin:0;padding:0;color:var(--sfp-b-primair);text-transform:uppercase;line-height:1.15;text-wrap:balance;hyphens:manual}
 :root .sfp-mw .sfp-mw__grens{background:var(--sfp-b-tint1);border-radius:var(--sfp-b-r-kaart);padding:14px 18px}
 :root .sfp-mw .sfp-mw__grens strong{color:var(--sfp-b-primair)}
+
+/* in samenhang: geen vierde waarde, een eigen band in tint 2 met het slot */
+:root .sfp-mw__samen{background:var(--sfp-b-tint2)}
+:root .sfp-mw__samen .sfp-mw__binnen{display:flex;flex-direction:column;gap:20px;padding-top:56px;padding-bottom:64px}
+:root .sfp-mw__samen .sfp-mw__binnen > *{max-width:66ch;margin:0}
+:root .sfp-mw__samen .sfp-mw__kop{margin:0}
 
 /* slot: zin die naar de actie leidt, één knop */
 :root .sfp-mw .sfp-mw__slot{display:flex;flex-direction:column;align-items:flex-start;gap:20px}

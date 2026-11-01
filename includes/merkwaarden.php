@@ -11,7 +11,8 @@
  *   pt  merkwaarden.md, ### Para visitantes
  *
  * De lezer leest op de vaste labels in vet (Titel, Kernzin, Inleiding, Vraag,
- * Grens en hun vertalingen) en op de koppen (#### per waarde, #### Samen),
+ * Grens en hun vertalingen) en op de koppen (#### per waarde, #### In
+ * samenhang; de oude kop #### Samen blijft herkend),
  * niet op regelnummers. Besluit Stephan 1-11-2026.
  *
  * Gedrag:
@@ -100,7 +101,8 @@ function sfp_page_config_merkwaarden_labels() {
             'inleiding' => 'Inleiding',
             'vraag'     => 'Vraag',
             'grens'     => 'Grens',
-            'samen'     => 'Samen',
+            'samen'     => 'In samenhang',
+            'samen_oud' => 'Samen',
         ),
         'en' => array(
             'titel'     => 'Title',
@@ -108,7 +110,8 @@ function sfp_page_config_merkwaarden_labels() {
             'inleiding' => 'Introduction',
             'vraag'     => 'Question',
             'grens'     => 'Boundary',
-            'samen'     => 'Together',
+            'samen'     => 'As a whole',
+            'samen_oud' => 'Together',
         ),
         'pt' => array(
             'titel'     => 'Título',
@@ -116,7 +119,8 @@ function sfp_page_config_merkwaarden_labels() {
             'inleiding' => 'Introdução',
             'vraag'     => 'Pergunta',
             'grens'     => 'Limite',
-            'samen'     => 'Juntos',
+            'samen'     => 'Em conjunto',
+            'samen_oud' => 'Juntos',
         ),
     );
 }
@@ -239,7 +243,9 @@ function sfp_page_config_merkwaarden_lees( $markdown, $taal ) {
     foreach ( $blokken as $blok ) {
         if ( preg_match( '/^####\s+(.+)$/u', $blok, $m ) ) {
             $naam = trim( $m[1] );
-            if ( 0 === strcasecmp( $naam, $l['samen'] ) ) {
+            // Het slot heet sinds 1-11-2026 In samenhang (As a whole, Em
+            // conjunto); de oude kop blijft herkend.
+            if ( 0 === strcasecmp( $naam, $l['samen'] ) || 0 === strcasecmp( $naam, $l['samen_oud'] ) ) {
                 $huidig              = 'samen';
                 $uit['samen']['kop'] = $naam;
             } else {
@@ -705,8 +711,12 @@ function sfp_page_config_merkwaarden_render( $attrs = array() ) {
         $h .= '</section>';
     }
 
+    $h .= '</div>';
+
+    // In samenhang is geen vierde merkwaarde (Stephan 1-11-2026): geen kaart
+    // met bovenrand, maar een eigen band over de breedte met het slot erin.
     $samen_kop = '' !== (string) ( $tekst['samen']['kop'] ?? '' ) ? $tekst['samen']['kop'] : sfp_page_config_merkwaarden_labels()[ $taal ]['samen'];
-    $h        .= '<section class="sfp-mw__waarde sfp-mw__samen" aria-labelledby="sfp-mw-samen-kop">';
+    $h        .= '<section class="sfp-mw__samen" aria-labelledby="sfp-mw-samen-kop"><div class="sfp-mw__binnen">';
     $h        .= '<h2 class="sfp-mw__kop" id="sfp-mw-samen-kop">' . esc_html( $samen_kop ) . '</h2>';
     foreach ( (array) $tekst['samen']['tekst'] as $alinea ) {
         $h .= '<p>' . sfp_page_config_merkwaarden_inline( $alinea ) . '</p>';
@@ -721,12 +731,10 @@ function sfp_page_config_merkwaarden_render( $attrs = array() ) {
     } elseif ( current_user_can( 'edit_posts' ) ) {
         $h .= '<p class="sfp-mw-melding">' . esc_html( sprintf( sfp_page_config_merkwaarden_vast( 'merkwaarden_geen_slot', $taal ), strtoupper( $taal ) ) ) . '</p>';
     }
-    $h .= '</section>';
-
     if ( 'bron' !== $data['herkomst'] && current_user_can( 'edit_posts' ) ) {
         $h .= '<p class="sfp-mw-melding">' . esc_html( sfp_page_config_merkwaarden_vast( 'merkwaarden_terugval', $taal ) ) . '</p>';
     }
-    $h .= '</div></div>';
+    $h .= '</div></section></div>';
 
     $css = function_exists( 'sfp_page_config_blokken_css_vangnet' ) ? sfp_page_config_blokken_css_vangnet( 'sfp/merkwaarden' ) : '';
     return $css . $h;

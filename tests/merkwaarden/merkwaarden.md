@@ -122,7 +122,7 @@ We address you directly and make you curious with content worth your time. Image
 
 **Boundary:** We draw your attention without being loud, overly decorative or overfamiliar.
 
-#### Together
+#### As a whole
 
 Think of LEGO: separate bricks that fit together precisely, that you can start building with without instructions and that invite you to make something.
 
@@ -246,6 +246,6 @@ Falamos diretamente com você e despertamos sua curiosidade com conteúdo que va
 
 **Limite:** Chamamos a sua atenção sem gritar, sem enfeitar e sem ficar informais demais.
 
-#### Juntos
+#### Em conjunto
 
 Pense em LEGO: peças soltas que se encaixam com precisão, com as quais você começa a montar sem manual e que convidam a criar algo.

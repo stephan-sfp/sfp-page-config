@@ -31,12 +31,12 @@
             }
         ],
         "samen": {
-            "kop": "Samen",
+            "kop": "In samenhang",
             "tekst": [
                 "Denk aan LEGO: losse blokken die precies op elkaar passen, waarmee je zonder bouwtekening aan de slag kunt en die uitnodigen om iets te maken."
             ]
         },
-        "hash": "10da78c111"
+        "hash": "2708d8ded7"
     },
     "en": {
         "taal": "en",
@@ -70,12 +70,12 @@
             }
         ],
         "samen": {
-            "kop": "Together",
+            "kop": "As a whole",
             "tekst": [
                 "Think of LEGO: separate bricks that fit together precisely, that you can start building with without instructions and that invite you to make something."
             ]
         },
-        "hash": "71708a1cff"
+        "hash": "ddcdbc2980"
     },
     "pt": {
         "taal": "pt",
@@ -109,11 +109,11 @@
             }
         ],
         "samen": {
-            "kop": "Juntos",
+            "kop": "Em conjunto",
             "tekst": [
                 "Pense em LEGO: peças soltas que se encaixam com precisão, com as quais você começa a montar sem manual e que convidam a criar algo."
             ]
         },
-        "hash": "2e9869f974"
+        "hash": "7ad0cabf94"
     }
 }
