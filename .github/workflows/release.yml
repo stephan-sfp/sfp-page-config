@@ -113,6 +113,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          npm install --prefix bouw --no-save --no-audit --no-fund
           som=$(bash bouw/pakket.sh dist | tail -n1)
           echo "som=$som" >> "$GITHUB_OUTPUT"
           unzip -l dist/sfp-page-config.zip | tail -n1

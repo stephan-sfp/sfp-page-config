@@ -43,6 +43,10 @@ function bestanden( map ) {
 		} else {
 			klein = lightning.transform( { filename: pad, code: Buffer.from( bron ), minify: true } ).code.toString();
 		}
+		if ( pad.endsWith( '.js' ) ) {
+			// Controle: de verkleinde code moet nog te lezen zijn.
+			new ( require( 'vm' ).Script )( klein, { filename: pad } );
+		}
 		fs.writeFileSync( pad.replace( /\.(js|css)$/, '.min.$1' ), klein );
 		voor += Buffer.byteLength( bron ); na += Buffer.byteLength( klein ); n++;
 	}
