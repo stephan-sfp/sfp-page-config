@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<ruleset name="SFP Page Config">
+    <description>WordPress-codestandaard voor SFP Page Config (sinds 3.22.0).</description>
+    <file>.</file>
+    <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/node_modules/*</exclude-pattern>
+    <exclude-pattern>/bouw/node_modules/*</exclude-pattern>
+    <exclude-pattern>/dist/*</exclude-pattern>
+    <exclude-pattern>*.min.js</exclude-pattern>
+    <exclude-pattern>*.min.css</exclude-pattern>
+    <exclude-pattern>/assets/*</exclude-pattern>
+    <arg name="extensions" value="php"/>
+    <arg value="sp"/>
+    <config name="minimum_supported_wp_version" value="6.4"/>
+    <config name="testVersion" value="8.0-"/>
+    <rule ref="WordPress">
+        <!-- Nederlandse bestandsnamen en functienamen met het voorvoegsel sfp_. -->
+        <exclude name="WordPress.Files.FileName"/>
+        <!-- Vier spaties in plaats van tabs: zo is de bron geschreven. -->
+        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
+    </rule>
+    <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="sfp"/>
+                <element value="SFP"/>
+            </property>
+        </properties>
+    </rule>
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="sfp-page-config"/>
+            </property>
+        </properties>
+    </rule>
+</ruleset>

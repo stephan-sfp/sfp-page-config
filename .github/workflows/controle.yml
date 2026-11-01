@@ -24,3 +24,23 @@ jobs:
           node-version: '20'
       - name: Controles
         run: bash bouw/controle.sh
+
+  codestandaard:
+    # Rapport volgens phpcs.xml.dist. Nog niet blokkerend: de bron is nog
+    # niet in één keer opgeschoond (zie CHANGELOG 3.22.0).
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer
+      - name: WordPress-codestandaard installeren
+        run: |
+          composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer global require --no-interaction wp-coding-standards/wpcs:^3.1 phpcompatibility/phpcompatibility-wp:^2.1
+      - name: phpcs
+        run: "$(composer global config bin-dir --absolute --quiet)/phpcs" --report=summary
