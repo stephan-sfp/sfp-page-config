@@ -2,8 +2,9 @@
  * SFP Page Config - Sales Page Styles
  *
  * Brand colours are injected as CSS custom properties via PHP:
- *   --brand-cta-bg, --brand-cta-hover, --brand-cta-text,
- *   --brand-heading-font, --brand-button-weight.
+ *   --sfp-b-links, --sfp-b-hover, --sfp-b-knoptekst, --sfp-b-kop
+ *   (de rollen van de plugin) en --sfp-b-knopgewicht (sinds 3.22.0;
+ *   daarvoor --brand-cta-*, die de plugin niet meer zet).
  *
  * Branding komt uit Astra, zie sfp_page_config_get_brand().
  * Per pagina kan alleen de CTA-tekst en -link worden aangepast.
@@ -45,10 +46,10 @@
         width: 100%;
         text-align: center;
         text-decoration: none;
-        color: var(--brand-cta-text);
-        background: var(--brand-cta-bg);
-        font-family: var(--brand-heading-font, inherit);
-        font-weight: var(--brand-button-weight, inherit);
+        color: var(--sfp-b-knoptekst);
+        background: var(--sfp-b-links);
+        font-family: var(--sfp-b-kop, inherit);
+        font-weight: var(--sfp-b-knopgewicht, inherit);
         text-transform: uppercase;
         /* Size, padding, border and radius come from Astra's .button. */
         cursor: pointer;
@@ -57,8 +58,8 @@
 
     .sticky-mobile-cta a:hover,
     .sticky-mobile-cta a:focus {
-        color: var(--brand-cta-text);
-        background: var(--brand-cta-hover);
+        color: var(--sfp-b-knoptekst);
+        background: var(--sfp-b-hover);
     }
 
 }
@@ -68,8 +69,8 @@
  * =================================================================== */
 
 .is-sales-page .wp-block-button .wp-block-button__link {
-    font-family: var(--brand-heading-font, inherit);
-    font-weight: var(--brand-button-weight, inherit);
+    font-family: var(--sfp-b-kop, inherit);
+    font-weight: var(--sfp-b-knopgewicht, inherit);
 }
 
 /* Tablet: centre buttons */

@@ -205,6 +205,9 @@
 		if ( ! this.b || ! this.app ) { return false; }
 		var fabriek = SOORTEN[ this.b.soort ];
 		if ( ! fabriek ) { return false; }
+		/* Het eerste scherm uit de HTML (3.22.0) maakt plaats voor de echte tool, in hetzelfde frame. */
+		var voorlopig = this.app.querySelector( '.sfp-tool__voorlopig' );
+		if ( voorlopig ) { voorlopig.parentNode.removeChild( voorlopig ); }
 		this.app.hidden = false;
 		this.app.appendChild( this.sr );
 		this.motor = fabriek( this );

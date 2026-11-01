@@ -137,4 +137,23 @@ same( '', sfp_page_config_reviews_foto( '' ), 'empty stays empty' );
 $renderer = file_get_contents( SFP_PAGE_CONFIG_DIR . 'includes/reviews/class-sfp-reviews-renderer.php' );
 same( 0, substr_count( $renderer, "esc_url( \$r['photo'] )" ), 'renderer always resizes' );
 
+// Grens van 10 KB verkleind per voorkantbestand (projectregel). De bekende
+// uitzonderingen mogen niet groeien; een nieuw bestand boven 10 KB faalt.
+$grens        = 10 * 1024;
+$uitzondering = array(
+    'tool/tool.css'         => 21000,
+    'artikel.css'           => 30000,
+    'zelftest/zelftest.css' => 26000,
+    'reviews/reviews.css'   => 15000,
+);
+$voorkant = array_merge( array_values( $bestanden ), array_map( function ( $p ) { return 'blokken/' . basename( $p ); }, glob( SFP_PAGE_CONFIG_DIR . 'assets/blokken/*.css' ) ) );
+foreach ( $voorkant as $bestand ) {
+    if ( 'blokken/editor.css' === $bestand ) {
+        continue;
+    }
+    $max = isset( $uitzondering[ $bestand ] ) ? $uitzondering[ $bestand ] : $grens;
+    $n   = strlen( sfp_page_config_css_bestand( $bestand ) );
+    same( true, $n <= $max, "10 KB-grens: $bestand is $n bytes (max $max)" );
+}
+
 echo "OK: {$checks} checks\n";

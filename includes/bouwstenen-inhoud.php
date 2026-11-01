@@ -116,7 +116,13 @@ function sfp_page_config_inhoud_head() {
         return;
     }
     $uit = '';
-    if ( sfp_page_config_inhoud_aan( 'auteursbio' ) && ( is_singular() || is_author() ) ) {
+    // Auteursbio: alleen op artikelen, auteurspagina's en waar het blok in de
+    // inhoud staat (3.22.0; daarvoor op elke pagina, ook tools). Staat de bio
+    // in een Astra-layout op een andere pagina, dan zet het tonen de opmaak
+    // alsnog neer (sfp_page_config_auteursbio_vinkjes).
+    $bio_post = get_queried_object();
+    if ( sfp_page_config_inhoud_aan( 'auteursbio' ) && ( is_author() || is_singular( 'post' )
+        || ( is_singular() && $bio_post instanceof WP_Post && false !== strpos( (string) $bio_post->post_content, 'wp:post-author-biography' ) ) ) ) {
         $uit .= sfp_page_config_inhoud_css( 'auteursbio' );
     }
     if ( is_singular() ) {

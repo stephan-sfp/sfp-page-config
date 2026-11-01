@@ -116,6 +116,7 @@ function sfp_page_config_shortcode_reading_time() {
     }
 
     $bezig = true;
+    sfp_page_config_reading_time_css();
     try {
         $result = '<div class="custom-read-meter">'
             . sfp_page_config_calculate_reading_time( $post->post_content )
@@ -137,19 +138,48 @@ function sfp_page_config_scroll_progress_enqueue() {
     if ( ! is_singular( sfp_page_config_post_types() ) ) {
         return;
     }
+    // Sinds 3.22.0 alleen waar de balk of de leestijd iets toont. Staat de
+    // leestijd in een Astra-layout, dan zet het tonen de opmaak alsnog neer.
+    $post   = get_queried_object();
+    $inhoud = $post instanceof WP_Post ? (string) $post->post_content : '';
+    if ( sfp_page_config_scroll_progress_toont() || false !== strpos( $inhoud, '[mijn_leestijd' ) || false !== strpos( $inhoud, '<!-- wp:sfp/leestijd' ) ) {
+        sfp_page_config_reading_time_css();
+    }
+}
 
-    // Laadt ook met de voortgangsbalk uit: het bestand bevat de opmaak van
-    // de leestijd.
+/**
+ * De opmaak van de leestijd en de balk, met de rollen van de plugin. Mag
+ * vaker worden aangeroepen; staat één keer op de pagina.
+ */
+function sfp_page_config_reading_time_css() {
+    if ( wp_style_is( 'sfp-reading-time', 'enqueued' ) || wp_style_is( 'sfp-reading-time', 'done' ) ) {
+        return;
+    }
     sfp_page_config_css_inline( 'sfp-reading-time', 'reading-time.css' );
-
-    // De balk draagt de knopkleur van de site, uit Astra. Kleurvelden zijn
-    // er sinds 3.0.0 niet meer.
+    // De balk draagt de knopkleur van de site, uit Astra.
     $brand = sfp_page_config_get_brand();
+    $vars  = function_exists( 'sfp_page_config_blokken_css_variabelen' ) ? sfp_page_config_blokken_css_variabelen() : '';
+    wp_add_inline_style( 'sfp-reading-time', $vars . ':root{--sfp-bar-color:' . $brand['cta_bg'] . ';}' );
+}
 
-    wp_add_inline_style(
-        'sfp-reading-time',
-        ':root{--sfp-bar-color:' . $brand['cta_bg'] . ';}'
-    );
+/**
+ * Toont deze pagina de voortgangsbalk?
+ *
+ * @return bool
+ */
+function sfp_page_config_scroll_progress_toont() {
+    if ( ! is_singular( sfp_page_config_post_types() ) || ! sfp_page_config_onderdeel_aan( 'voortgang' ) ) {
+        return false;
+    }
+    // De testpagina van de zelftest heeft een eigen voortgang per vraag.
+    if ( function_exists( 'sfp_zelftest_pagina_test' ) && '' !== sfp_zelftest_pagina_test() ) {
+        return false;
+    }
+    // Een tool heeft een eigen voortgang per vraag.
+    if ( function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan() && is_singular( 'tool' ) ) {
+        return false;
+    }
+    return true;
 }
 
 add_action( 'wp_footer', 'sfp_page_config_scroll_progress_bar', 25 );
@@ -164,16 +194,7 @@ add_action( 'wp_footer', 'sfp_page_config_scroll_progress_bar', 25 );
  */
 function sfp_page_config_scroll_progress_bar() {
 
-    if ( ! is_singular( sfp_page_config_post_types() ) || ! sfp_page_config_onderdeel_aan( 'voortgang' ) ) {
-        return;
-    }
-    // De testpagina van de zelftest heeft een eigen voortgang per vraag.
-    if ( function_exists( 'sfp_zelftest_pagina_test' ) && '' !== sfp_zelftest_pagina_test() ) {
-        return;
-    }
-    // Een tool heeft een eigen voortgang per vraag; de leesbalk zou daar
-    // dubbelop zijn.
-    if ( function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan() && is_singular( 'tool' ) ) {
+    if ( ! sfp_page_config_scroll_progress_toont() ) {
         return;
     }
 

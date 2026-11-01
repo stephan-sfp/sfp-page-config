@@ -175,6 +175,9 @@ function sfp_page_config_render_leestijd( $attrs, $content = '', $blok = null ) 
     if ( ! $post || ! function_exists( 'sfp_page_config_calculate_reading_time' ) ) {
         return '';
     }
+    if ( function_exists( 'sfp_page_config_reading_time_css' ) ) {
+        sfp_page_config_reading_time_css();
+    }
     return sfp_page_config_gegeven_omhulling( 'leestijd', '<div class="custom-read-meter">' . sfp_page_config_calculate_reading_time( $post->post_content ) . '</div>' );
 }
 

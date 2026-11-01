@@ -78,23 +78,12 @@ function sfp_page_config_enqueue_sales_assets() {
     // Sales page CSS (always loaded on sales pages).
     sfp_page_config_css_inline( 'sfp-page-config-sales', 'sales-page.css' );
 
-    // Inject brand CSS custom properties. Every value comes from Astra
-    // via sfp_page_config_get_brand() and is already validated there:
-    // colours by sfp_page_config_sanitize_css_color() (hex, var(), rgb/hsl),
-    // fonts by sfp_page_config_sanitize_font_family(). esc_attr() is not
-    // used because wp_add_inline_style() outputs raw CSS and esc_attr()
-    // would turn the quotes in a font stack into entities.
-    $brand      = sfp_page_config_get_brand();
-    $inline_css = sprintf(
-        ':root{--brand-cta-bg:%s;--brand-cta-hover:%s;--brand-cta-text:%s;--brand-heading-font:%s;--brand-button-weight:%s;}',
-        $brand['cta_bg'],
-        $brand['cta_hover'],
-        $brand['cta_text'],
-        $brand['font'],
-        $brand['weight']
-    );
-
-    wp_add_inline_style( 'sfp-page-config-sales', $inline_css );
+    // De rollen van de plugin (kleuren en kopfont uit Astra) plus het
+    // knopgewicht. Sinds 3.22.0 geen --brand-* meer: die zet de site zelf
+    // (Aanvullende CSS en knopsnippets), en de plugin mag ze niet overschrijven.
+    $brand = sfp_page_config_get_brand();
+    $css   = function_exists( 'sfp_page_config_blokken_css_variabelen' ) ? sfp_page_config_blokken_css_variabelen() : '';
+    wp_add_inline_style( 'sfp-page-config-sales', $css . ':root{--sfp-b-knopgewicht:' . $brand['weight'] . '}' );
 
     // De knop onderaan.
     if ( ! sfp_page_config_onderdeel_aan( 'knop' ) ) {

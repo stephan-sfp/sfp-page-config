@@ -200,7 +200,11 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
     $html  = '<div class="sfp-tool sfp-tool--' . esc_attr( $b['soort'] ) . ' sfp-tool--' . $weergave . $kaart . '" id="' . esc_attr( $id ) . '" data-tool="' . (int) $post->ID . '" data-slug="' . esc_attr( $post->post_name ) . '" data-titel="' . esc_attr( $titel ) . '" data-weergave="' . $weergave . '">';
     $html .= '<script type="application/json" class="sfp-tool__data">' . wp_json_encode( sfp_page_config_tool_voor_browser( $b ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . '</script>';
     $html .= '<noscript><p class="sfp-tool__noscript">' . esc_html( $t( 'tool_geen_script' ) ) . '</p></noscript>';
-    $html .= '<div class="sfp-tool__app" hidden></div>';
+    // Het eerste scherm staat al in de HTML (3.22.0), zodat er niets
+    // verspringt als de motor de tool bouwt. Kan dat voor deze vorm niet,
+    // dan blijft de app leeg en verborgen tot de motor er is.
+    $eerste = function_exists( 'sfp_page_config_tool_eerste_scherm' ) ? sfp_page_config_tool_eerste_scherm( $b, (int) $post->ID, $titel ) : '';
+    $html  .= '' !== $eerste ? '<div class="sfp-tool__app">' . $eerste . '</div>' : '<div class="sfp-tool__app" hidden></div>';
     if ( $b['acties']['formulier'] > 0 && shortcode_exists( 'sureforms' ) ) {
         $html .= '<div class="sfp-tool__formulier" hidden>' . do_shortcode( '[sureforms id="' . (int) $b['acties']['formulier'] . '"]' ) . '</div>';
     }
