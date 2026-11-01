@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.23.0] - 2026-11-01
+
+Nieuw blok Merkwaarden. De tekst staat in de merkbron en komt daar live vandaan; de plugin bevat alleen de vorm. Voor bezoekers verandert er niets tot een pagina het blok krijgt.
+
+Terugdraaien: versie 3.22.2 terugzetten (zip uit de tag v3.22.2, map sfp-page-config).
+
+### Toegevoegd
+- Blok Merkwaarden en de code [sfp_merkwaarden taal="nl|en|pt"]: held met titel, kernzin en inleiding, drie klikbare kaarten (vraag en tekstlink met pijl), per waarde de tekst en de grens in een vlak, en een eigen band In samenhang met de LEGO-zin, de slotzin en één knop. Volgens de dummy Kernwaarden en branding.md; kleuren via de merkrollen, fonts via Astra, radius 6 px.
+- De tekst komt uit sfp-brand-source op main: branding.md (## Merkwaarden, ### Voor bezoekers) en merkwaarden.md (### For visitors, ### Para visitantes). De plugin leest op de vaste labels en koppen, niet op regelnummers.
+- Bewaren en terugvallen: 12 uur in een transient per taal; de laatst gelukte versie apart. Is de bron onbereikbaar of de opbouw onherkenbaar, dan toont het blok die versie en komt er een melding in het log van het onderdeel. Is er nooit iets gelukt, dan de kopie die met de plugin meekomt. Het blok is nooit leeg.
+- SFP Beheer, Onderdelen, Merkwaarden: per taal wanneer de tekst is opgehaald, een knop Nu opnieuw ophalen (via de GitHub-API, dus meteen de nieuwste tekst), de laatste meldingen, en per taal de slotzin en de knop (pagina of adres). Zonder slot ziet een beheerder een melding en een bezoeker niets.
+- Abilities sfp-merkwaarden/ververs en sfp-merkwaarden/stand voor de MCP-koppeling.
+- Vaste teksten van het blok in het Nederlands, Engels en Portugees (scherm Teksten, groep Merkwaarden).
+- Eigen blokken kunnen breed of volle breedte uitlijnen als hun definitie dat zegt.
+
 ## [3.23.0-beta.2] - 2026-11-01
 
 Tweede proefversie van het blok Merkwaarden.
