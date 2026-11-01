@@ -213,3 +213,17 @@ function sfp_page_config_ajax_save() {
         )
     );
 }
+
+/**
+ * Is dit een bestaande datum in de vorm JJJJ-MM-DD? strtotime() neemt ook
+ * 2026-02-31 aan (en rolt door naar maart); checkdate() niet.
+ *
+ * @param  string $d Datum.
+ * @return bool
+ */
+function sfp_page_config_geldige_datum( $d ) {
+    if ( ! is_string( $d ) || ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $d, $m ) ) {
+        return false;
+    }
+    return checkdate( (int) $m[2], (int) $m[3], (int) $m[1] );
+}

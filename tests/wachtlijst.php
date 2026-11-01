@@ -84,6 +84,9 @@ function sanitize_key( $s ) {
 function absint( $n ) {
     return abs( (int) $n );
 }
+function wp_kses( $s ) {
+    return strip_tags( (string) $s );
+}
 function esc_html( $s ) {
     return htmlspecialchars( (string) $s, ENT_QUOTES, 'UTF-8' );
 }
