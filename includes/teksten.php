@@ -475,6 +475,37 @@ function sfp_page_config_teksten_register() {
             'pt'    => '',
         ),
 
+        // Feitencodes (3.22.0): [sfp_reviews] en [sfp_publicaties] in de
+        // taal van de site.
+        'feiten_reviews_geen'        => array(
+            'groep' => 'Feitencodes',
+            'label' => '[sfp_reviews] zonder meting',
+            'nl'    => 'ons actuele cijfer lees je op ons Google-bedrijfsprofiel',
+            'en'    => 'you can find our current rating on our Google Business Profile',
+            'pt'    => 'nossa nota atual está no nosso Perfil da Empresa no Google',
+        ),
+        'feiten_reviews_een'         => array(
+            'groep' => 'Feitencodes',
+            'label' => '[sfp_reviews] met één review (%1$s is het cijfer, %2$s het aantal)',
+            'nl'    => '%1$s op basis van %2$s review',
+            'en'    => '%1$s based on %2$s review',
+            'pt'    => '%1$s com base em %2$s avaliação',
+        ),
+        'feiten_reviews_meer'        => array(
+            'groep' => 'Feitencodes',
+            'label' => '[sfp_reviews] met meer reviews (%1$s is het cijfer, %2$s het aantal)',
+            'nl'    => '%1$s op basis van %2$s reviews',
+            'en'    => '%1$s based on %2$s reviews',
+            'pt'    => '%1$s com base em %2$s avaliações',
+        ),
+        'feiten_publicaties_terugval' => array(
+            'groep' => 'Feitencodes',
+            'label' => '[sfp_publicaties] als er nog niet geteld is',
+            'nl'    => 'ruim 200',
+            'en'    => 'more than 200',
+            'pt'    => 'mais de 200',
+        ),
+
         // WhatsApp.
         'whatsapp_bericht'   => array(
             'groep' => 'WhatsApp',

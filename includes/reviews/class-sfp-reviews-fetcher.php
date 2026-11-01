@@ -28,12 +28,14 @@ class SFP_Reviews_Fetcher {
 
 	/**
 	 * Haal reviews en het cijfer op voor een Place ID, bewaard in een transient.
+	 * Met $vers (3.22.0, de dagelijkse taak) zonder de bewaarde gegevens te
+	 * lezen; mislukt het, dan blijven de bewaarde gegevens staan.
 	 *
 	 * @return array{reviews: array, meta: array}|WP_Error
 	 */
-	public function get( string $place_id ): array|WP_Error {
+	public function get( string $place_id, bool $vers = false ): array|WP_Error {
 		$cache_key = 'sfp_reviews_' . md5( $place_id );
-		$cached    = get_transient( $cache_key );
+		$cached    = $vers ? false : get_transient( $cache_key );
 
 		if ( false !== $cached ) {
 			return $cached;
@@ -41,7 +43,7 @@ class SFP_Reviews_Fetcher {
 
 		// Na een mislukte aanvraag tien minuten niet opnieuw proberen: anders
 		// wacht elke pagina met reviews op een antwoord dat niet komt.
-		$fout = get_transient( $cache_key . '_fout' );
+		$fout = $vers ? '' : get_transient( $cache_key . '_fout' );
 		if ( is_string( $fout ) && '' !== $fout ) {
 			return new WP_Error( 'sfp_reviews_geen_gegevens', $fout );
 		}
@@ -102,7 +104,9 @@ class SFP_Reviews_Fetcher {
 			'reviews' => $reviews,
 			'meta'    => $meta,
 		);
-		set_transient( $cache_key, $data, $this->ttl );
+		// Vers opgehaald door de dagelijkse taak (3.22.0): een dag langer
+		// bewaren dan het interval, zodat een pagina nooit zelf hoeft te wachten.
+		set_transient( $cache_key, $data, $vers ? $this->ttl + DAY_IN_SECONDS : $this->ttl );
 		delete_transient( $cache_key . '_fout' );
 
 		return $data;

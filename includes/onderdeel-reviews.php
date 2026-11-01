@@ -339,3 +339,22 @@ function sfp_page_config_reviews_stand() {
         'basis'     => $teksten['basis'],
     );
 }
+
+add_action( 'sfp_page_config_daily_check', 'sfp_page_config_reviews_achtergrond' );
+
+/**
+ * De dagelijkse taak (3.22.0): Google-reviews vers ophalen, zodat een
+ * pagina met reviews nooit op Google wacht. Mislukt het, dan blijven de
+ * bewaarde reviews staan.
+ */
+function sfp_page_config_reviews_achtergrond() {
+    if ( ! class_exists( 'SFP_Reviews_Fetcher' ) ) {
+        return;
+    }
+    $opts = sfp_page_config_reviews_opties();
+    if ( '' === (string) $opts['place_id'] || '' === (string) $opts['api_key'] ) {
+        return;
+    }
+    $fetcher = new SFP_Reviews_Fetcher( (string) $opts['api_key'], max( HOUR_IN_SECONDS, (int) $opts['cache_ttl'] ) );
+    $fetcher->get( (string) $opts['place_id'], true );
+}

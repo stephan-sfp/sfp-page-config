@@ -411,6 +411,12 @@ function sfp_page_config_beheer_stand() {
         'plugins'     => $plugins,
         'deelbeeld'   => function_exists( 'sfp_page_config_deelbeeld_stand' ) ? sfp_page_config_deelbeeld_stand() : null,
         'cron_email'  => isset( $alle['cron_email'] ) ? (string) $alle['cron_email'] : '',
+        // Kennisbanken voor [sfp_publicaties] (3.22.0).
+        'publicaties' => array(
+            'sites' => function_exists( 'sfp_feiten_publicaties_sites' ) ? sfp_feiten_publicaties_sites() : array(),
+            'eigen' => '' !== (string) ( $alle['publicaties_sites'] ?? '' ),
+            'stand' => get_option( 'sfp_feiten_publicaties_stand', null ),
+        ),
         'beheer_email' => (string) get_option( 'admin_email' ),
     );
 
@@ -450,7 +456,7 @@ function sfp_page_config_beheer_stand() {
         'berichttypes' => function_exists( 'sfp_page_config_berichttypes_stand' ) ? sfp_page_config_berichttypes_stand() : array(),
         'onderhoud'    => $onderhoud,
         'cursusdata'   => array(
-            'paginas' => sfp_page_config_onderdeel_aan( 'cursusdata' ) ? sfp_page_config_cursusdata_paginas() : array(),
+            'paginas' => null,
             'start'   => isset( $alle['cursus_tijd_default_start'] ) ? (string) $alle['cursus_tijd_default_start'] : '',
             'eind'    => isset( $alle['cursus_tijd_default_eind'] ) ? (string) $alle['cursus_tijd_default_eind'] : '',
             // Wachtlijst (includes/wachtlijst.php): welk formulier wisselt voor welk.
@@ -459,7 +465,10 @@ function sfp_page_config_beheer_stand() {
             'formulieren'          => sfp_page_config_beheer_formulieren(),
         ),
         'banner'       => function_exists( 'sfp_page_config_banner_stand' ) ? sfp_page_config_banner_stand() : array(),
-        'controle'     => sfp_page_config_paginas_overzicht(),
+        // Sinds 3.22.0 alleen wat het overzicht nodig heeft: de pagina's die
+        // aandacht vragen en per soort een voorbeeld. De hele lijst haalt het
+        // scherm Pagina's zelf op, per 50.
+        'controle'     => sfp_page_config_paginas_samenvatting(),
     );
 }
 
@@ -612,11 +621,29 @@ function sfp_page_config_beheer_rest() {
     );
 
     // Pagina's: de controle opnieuw doen.
+    // Sinds 3.22.0 per blok van 50 (pagina, per); opnieuw=1 controleert
+    // opnieuw in plaats van de bewaarde controle te lezen.
     $route(
         '/paginas',
         'GET',
+        function ( WP_REST_Request $verzoek ) {
+            $alles  = sfp_page_config_paginas_overzicht( ! empty( $verzoek['opnieuw'] ) );
+            $per    = max( 1, min( 500, (int) ( $verzoek['per'] ? $verzoek['per'] : 50 ) ) );
+            $pagina = max( 1, (int) ( $verzoek['pagina'] ? $verzoek['pagina'] : 1 ) );
+            $alles['totaal'] = count( $alles['paginas'] );
+            $alles['per']    = $per;
+            $alles['pagina'] = $pagina;
+            $alles['paginas'] = array_slice( $alles['paginas'], ( $pagina - 1 ) * $per, $per );
+            return rest_ensure_response( $alles );
+        }
+    );
+
+    // Cursusdata van alle trainingspagina's (3.22.0: niet meer in de stand).
+    $route(
+        '/cursusdata',
+        'GET',
         function () {
-            return rest_ensure_response( sfp_page_config_paginas_overzicht( true ) );
+            return rest_ensure_response( array( 'paginas' => sfp_page_config_onderdeel_aan( 'cursusdata' ) ? sfp_page_config_cursusdata_paginas() : array() ) );
         }
     );
 

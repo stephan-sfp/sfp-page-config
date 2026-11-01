@@ -726,6 +726,25 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 $bewaard[]        = $sleutel;
                 break;
 
+            case 'publicaties_sites':
+                // Kennisbanken voor [sfp_publicaties]: alleen https-adressen,
+                // bewaard als basisadres per regel.
+                $regels = is_array( $ruw ) ? $ruw : preg_split( '/\r\n|\r|\n|,/', (string) $ruw );
+                $sites  = array();
+                foreach ( $regels as $regel ) {
+                    $regel = trim( (string) $regel );
+                    if ( '' === $regel ) {
+                        continue;
+                    }
+                    $host = (string) wp_parse_url( false === strpos( $regel, '://' ) ? 'https://' . $regel : $regel, PHP_URL_HOST );
+                    if ( '' !== $host && preg_match( '/^[a-z0-9.-]+\.[a-z]{2,}$/i', $host ) ) {
+                        $sites[] = 'https://' . strtolower( $host );
+                    }
+                }
+                $alle[ $sleutel ] = implode( "\n", array_values( array_unique( $sites ) ) );
+                $bewaard[]        = $sleutel;
+                break;
+
             case 'affiliate_patronen':
                 $regels           = is_array( $ruw ) ? $ruw : preg_split( '/\r\n|\r|\n/', (string) $ruw );
                 $regels           = array_values( array_unique( array_filter( array_map( 'sanitize_text_field', array_map( 'trim', array_map( 'strval', $regels ) ) ), 'strlen' ) ) );

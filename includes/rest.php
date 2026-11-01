@@ -88,3 +88,26 @@ function sfp_page_config_json_ld( array $gegevens, $id = '' ) {
     return '<script type="application/ld+json"' . ( '' !== $id ? ' id="' . esc_attr( $id ) . '"' : '' ) . '>' . $json . "</script>\n";
 }
 
+
+/**
+ * Een browser-user-agent met de actuele stabiele Chrome-versie, voor
+ * verzoeken naar de sites van het netwerk (SiteGround blokkeert een
+ * verouderde versie, Cloudflare een verzoek zonder user-agent). De versie
+ * komt van Google en staat een week bewaard; er staat nergens een vast
+ * versienummer.
+ *
+ * @return string Leeg als de versie niet op te halen is.
+ */
+function sfp_page_config_browser_agent() {
+    $versie = get_transient( 'sfp_pc_chrome_versie' );
+    if ( false === $versie ) {
+        $antwoord = wp_remote_get( 'https://versionhistory.googleapis.com/v1/chrome/platforms/mac/channels/stable/versions?pageSize=1', array( 'timeout' => 5 ) );
+        $data     = is_wp_error( $antwoord ) ? null : json_decode( (string) wp_remote_retrieve_body( $antwoord ), true );
+        $versie   = isset( $data['versions'][0]['version'] ) && preg_match( '/^\d+(\.\d+){1,3}$/', (string) $data['versions'][0]['version'] ) ? (string) $data['versions'][0]['version'] : '';
+        set_transient( 'sfp_pc_chrome_versie', $versie, '' !== $versie ? WEEK_IN_SECONDS : HOUR_IN_SECONDS );
+    }
+    if ( '' === $versie ) {
+        return '';
+    }
+    return 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/' . $versie . ' Safari/537.36';
+}

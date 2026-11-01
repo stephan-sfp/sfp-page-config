@@ -151,7 +151,7 @@ function sfp_page_config_shortcode_reviews() {
     $data = sfp_feiten_reviews_data();
 
     if ( empty( $data['rating'] ) ) {
-        return esc_html__( 'ons actuele cijfer lees je op ons Google-bedrijfsprofiel', 'sfp-page-config' );
+        return esc_html( sfp_page_config_tekst( 'feiten_reviews_geen' ) );
     }
 
     $rating = number_format_i18n( (float) $data['rating'], 1 );
@@ -161,12 +161,12 @@ function sfp_page_config_shortcode_reviews() {
         return esc_html( $rating );
     }
 
-    /* translators: 1: cijfer, 2: aantal reviews. */
+    // strtr in plaats van sprintf: een eigen tekst met een verkeerde
+    // plaatshouder geeft zo geen fout op de pagina.
     return esc_html(
-        sprintf(
-            _n( '%1$s op basis van %2$s review', '%1$s op basis van %2$s reviews', $aantal, 'sfp-page-config' ),
-            $rating,
-            number_format_i18n( $aantal )
+        strtr(
+            sfp_page_config_tekst( 1 === $aantal ? 'feiten_reviews_een' : 'feiten_reviews_meer' ),
+            array( '%1$s' => $rating, '%2$s' => number_format_i18n( $aantal ), '%s' => $rating )
         )
     );
 }
@@ -177,62 +177,96 @@ add_shortcode( 'sfp_reviews', 'sfp_page_config_shortcode_reviews' );
  * ====================================================================== */
 
 /**
- * Telt de artikelen in de kennisbanken van het netwerk.
+ * De kennisbanken die meetellen: de instelling publicaties_sites in SFP
+ * Beheer (Onderhoud), een adres per regel. Leeg: de vijf Nederlandse sites
+ * van het netwerk (besluit Stephan 31-10-2026: alleen die tellen mee).
  *
- * Telt de eigen site met een directe query en de andere netwerksites via hun
- * REST API. De uitkomst staat 24 uur in een transient, zodat een paginaweergave
- * nooit op een externe call wacht die niet gecacht is.
- *
- * @return int
+ * @return string[] Basisadressen met https.
  */
-function sfp_feiten_publicaties_aantal() {
-    $cache = get_transient( 'sfp_feiten_publicaties' );
-
-    if ( false !== $cache ) {
-        return (int) $cache;
-    }
-
-    $eigen = (int) wp_count_posts( 'post' )->publish;
-
-    $netwerk = apply_filters(
-        'sfp_feiten_publicaties_sites',
-        array(
+function sfp_feiten_publicaties_sites() {
+    $ruw   = function_exists( 'sfp_page_config_get_setting' ) ? (string) sfp_page_config_get_setting( 'publicaties_sites', '' ) : '';
+    $sites = array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $ruw ) ), 'strlen' ) );
+    if ( ! $sites ) {
+        $sites = array(
+            'https://schoolforprofessionals.com',
             'https://depresenteerschool.nl',
             'https://degespreksacademie.nl',
             'https://centrumvoordidactiek.nl',
             'https://deschrijftrainers.nl',
-            'https://schoolforprofessionals.com',
-        )
-    );
-
-    $eigen_host = wp_parse_url( home_url(), PHP_URL_HOST );
-    $totaal     = $eigen;
-
-    foreach ( $netwerk as $basis ) {
-        if ( wp_parse_url( $basis, PHP_URL_HOST ) === $eigen_host ) {
-            continue;
-        }
-
-        $antwoord = wp_remote_get(
-            $basis . '/wp-json/wp/v2/posts?per_page=1&status=publish&_fields=id',
-            array( 'timeout' => 5 )
         );
+    }
+    return (array) apply_filters( 'sfp_feiten_publicaties_sites', $sites );
+}
 
-        if ( is_wp_error( $antwoord ) ) {
+/**
+ * Telt de artikelen opnieuw: de eigen site met een directe telling, de
+ * andere kennisbanken via hun REST API, met een browser-user-agent (anders
+ * weigeren Cloudflare en SiteGround). Draait in de dagelijkse taak (3.22.0),
+ * niet meer bij het tonen van een pagina. Lukt een site niet, dan telt zijn
+ * vorige aantal mee in plaats van nul.
+ *
+ * @return array{totaal: int, per_site: array<string,int>, tijd: int}
+ */
+function sfp_feiten_publicaties_tel() {
+    $vorige     = get_option( 'sfp_feiten_publicaties_stand', array() );
+    $vorige     = is_array( $vorige ) && isset( $vorige['per_site'] ) && is_array( $vorige['per_site'] ) ? $vorige['per_site'] : array();
+    $eigen_host = (string) wp_parse_url( home_url(), PHP_URL_HOST );
+    $per_site   = array();
+    $agent      = function_exists( 'sfp_page_config_browser_agent' ) ? sfp_page_config_browser_agent() : '';
+    foreach ( sfp_feiten_publicaties_sites() as $basis ) {
+        $host = (string) wp_parse_url( $basis, PHP_URL_HOST );
+        if ( '' === $host ) {
             continue;
         }
-
-        $aantal = (int) wp_remote_retrieve_header( $antwoord, 'x-wp-total' );
-
-        if ( $aantal > 0 ) {
-            $totaal += $aantal;
+        if ( $host === $eigen_host ) {
+            $per_site[ $host ] = (int) wp_count_posts( 'post' )->publish;
+            continue;
         }
+        $antwoord = wp_remote_get(
+            'https://' . $host . '/wp-json/wp/v2/posts?per_page=1&status=publish&_fields=id',
+            array(
+                'timeout'    => 10,
+                'user-agent' => '' !== $agent ? $agent : 'SFP-Page-Config/' . SFP_PAGE_CONFIG_VERSION,
+            )
+        );
+        $aantal = is_wp_error( $antwoord ) || 200 !== (int) wp_remote_retrieve_response_code( $antwoord ) ? -1 : (int) wp_remote_retrieve_header( $antwoord, 'x-wp-total' );
+        if ( $aantal < 0 ) {
+            $aantal = isset( $vorige[ $host ] ) ? (int) $vorige[ $host ] : 0;
+        }
+        $per_site[ $host ] = $aantal;
     }
-
-    set_transient( 'sfp_feiten_publicaties', $totaal, DAY_IN_SECONDS );
-
-    return $totaal;
+    $stand = array(
+        'totaal'   => (int) array_sum( $per_site ),
+        'per_site' => $per_site,
+        'tijd'     => time(),
+    );
+    update_option( 'sfp_feiten_publicaties_stand', $stand, false );
+    delete_transient( 'sfp_feiten_publicaties' );
+    return $stand;
 }
+
+/**
+ * Het aantal artikelen in de kennisbanken: de laatste telling van de
+ * dagelijkse taak. Is er nog nooit geteld (net bijgewerkt), dan een keer
+ * later in de achtergrond; de pagina wacht nooit op andere sites.
+ *
+ * @return int
+ */
+function sfp_feiten_publicaties_aantal() {
+    $stand = get_option( 'sfp_feiten_publicaties_stand', array() );
+    if ( is_array( $stand ) && isset( $stand['totaal'] ) ) {
+        return (int) $stand['totaal'];
+    }
+    // Overgang: de oude telling uit 3.21.0 zolang die nog bestaat.
+    $oud = get_transient( 'sfp_feiten_publicaties' );
+    if ( ! wp_next_scheduled( 'sfp_feiten_publicaties_tel_nu' ) ) {
+        wp_schedule_single_event( time() + 60, 'sfp_feiten_publicaties_tel_nu' );
+    }
+    return false !== $oud ? (int) $oud : 0;
+}
+
+add_action( 'sfp_feiten_publicaties_tel_nu', 'sfp_feiten_publicaties_tel' );
+add_action( 'sfp_page_config_daily_check', 'sfp_feiten_publicaties_tel' );
 
 /**
  * Rendert het aantal artikelen in de kennisbanken van het netwerk.
@@ -243,7 +277,7 @@ function sfp_page_config_shortcode_publicaties() {
     $aantal = sfp_feiten_publicaties_aantal();
 
     if ( $aantal < 1 ) {
-        return esc_html__( 'ruim 200', 'sfp-page-config' );
+        return esc_html( sfp_page_config_tekst( 'feiten_publicaties_terugval' ) );
     }
 
     return esc_html( number_format_i18n( $aantal ) );

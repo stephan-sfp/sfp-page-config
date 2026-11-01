@@ -254,16 +254,18 @@ function sfp_page_config_paginas_overzicht( $force = false ) {
         }
     }
 
-    $query = new WP_Query(
+    // Eerst alleen de ids; daarna per honderd de berichten zelf, zodat het
+    // geheugen niet meegroeit met de site (3.22.0).
+    $ids = get_posts(
         array(
-            'post_type'              => sfp_page_config_post_types(),
-            'post_status'            => 'publish',
-            'posts_per_page'         => -1,
-            'orderby'                => 'title',
-            'order'                  => 'ASC',
-            'no_found_rows'          => true,
-            'update_post_term_cache' => false,
-            'suppress_filters'       => true,
+            'post_type'        => sfp_page_config_post_types(),
+            'post_status'      => 'publish',
+            'posts_per_page'   => -1,
+            'orderby'          => 'title',
+            'order'            => 'ASC',
+            'fields'           => 'ids',
+            'no_found_rows'    => true,
+            'suppress_filters' => true,
         )
     );
 
@@ -274,7 +276,13 @@ function sfp_page_config_paginas_overzicht( $force = false ) {
     $voorpagina = (int) get_option( 'page_on_front' );
     $artikel_op = sfp_page_config_onderdeel_aan( 'artikel' );
 
-    foreach ( $query->posts as $post ) {
+    foreach ( array_chunk( array_map( 'intval', $ids ), 100 ) as $blok ) {
+        _prime_post_caches( $blok, false, true );
+        foreach ( $blok as $id ) {
+        $post = get_post( $id );
+        if ( ! $post ) {
+            continue;
+        }
         $soort     = (string) get_post_meta( $post->ID, 'sfp_page_type', true );
         $soort     = isset( $soorten[ $soort ] ) ? $soort : '';
         $meldingen = sfp_page_config_controleer_pagina( $post );
@@ -317,6 +325,11 @@ function sfp_page_config_paginas_overzicht( $force = false ) {
         } else {
             $overig[] = $rij;
         }
+        }
+        // Wat in dit blok gelezen is, hoeft niet in het geheugen te blijven.
+        foreach ( $blok as $id ) {
+            wp_cache_delete( $id, 'posts' );
+        }
     }
 
     $in_orde = 0;
@@ -339,6 +352,34 @@ function sfp_page_config_paginas_overzicht( $force = false ) {
     );
     set_transient( 'sfp_pc_paginas', $uit, HOUR_IN_SECONDS );
     return $uit;
+}
+
+/**
+ * Een lichte versie van de controle voor de stand van het beheer: de
+ * pagina's met meldingen en per soort de eerste pagina, plus de tellingen.
+ *
+ * @return array
+ */
+function sfp_page_config_paginas_samenvatting() {
+    $alles   = sfp_page_config_paginas_overzicht();
+    $rijen   = array();
+    $soorten = array();
+    foreach ( $alles['paginas'] as $rij ) {
+        $voorbeeld = '' !== $rij['soort'] && ! isset( $soorten[ $rij['soort'] ] );
+        if ( $voorbeeld ) {
+            $soorten[ $rij['soort'] ] = true;
+        }
+        if ( $rij['meldingen'] || $voorbeeld ) {
+            $rijen[] = $rij;
+        }
+    }
+    return array(
+        'paginas'        => $rijen,
+        'overig_in_orde' => $alles['overig_in_orde'],
+        'aandacht'       => $alles['aandacht'],
+        'totaal'         => count( $alles['paginas'] ),
+        'licht'          => true,
+    );
 }
 
 add_action( 'save_post', 'sfp_page_config_paginas_wis' );

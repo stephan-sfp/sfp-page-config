@@ -151,20 +151,55 @@ function sfp_page_config_banner_cursussen( $max = 3 ) {
     if ( ! sfp_page_config_onderdeel_aan( 'cursusdata' ) || ! function_exists( 'sfp_page_config_cursusdata_toekomst' ) ) {
         return array();
     }
+    // Sinds 3.22.0 uit één bewaarde lijst (bijgewerkt bij elke opslag van
+    // cursusdata en dagelijks), niet meer per weergave alle trainingen langs:
+    // de kosten per pagina blijven gelijk, ook bij veel trainingen.
+    $vandaag = wp_date( 'Y-m-d' );
+    $uit     = array();
+    foreach ( sfp_page_config_komende_cursussen() as $groep ) {
+        if ( isset( $groep['pagina'], $groep['dag'] ) && (string) $groep['dag'] >= $vandaag ) {
+            $uit[] = array( 'pagina' => (int) $groep['pagina'], 'dag' => (string) $groep['dag'] );
+        }
+    }
+    return array_slice( $uit, 0, max( 1, (int) $max ) );
+}
+
+/**
+ * Alle komende startmomenten van de site, op volgorde van de eerste dag:
+ * de bewaarde lijst, of een keer opnieuw berekend als die er nog niet is.
+ *
+ * @return array<int, array{pagina: int, dag: string}>
+ */
+function sfp_page_config_komende_cursussen() {
+    $lijst = get_option( 'sfp_pc_komende_cursussen', null );
+    if ( is_array( $lijst ) ) {
+        return $lijst;
+    }
+    return sfp_page_config_komende_cursussen_bouw();
+}
+
+/**
+ * Bereken en bewaar de lijst komende startmomenten. Klein (pagina en dag per
+ * groep), en laadt mee omdat de banner hem op elke pagina kan lezen.
+ *
+ * @return array<int, array{pagina: int, dag: string}>
+ */
+function sfp_page_config_komende_cursussen_bouw() {
+    $uit = array();
     $ids = get_transient( 'sfp_dashboard_pages_training' );
     if ( ! is_array( $ids ) && function_exists( 'sfp_page_config_cursusdata_paginas' ) ) {
         $ids = array_column( sfp_page_config_cursusdata_paginas(), 'id' );
     }
-    $uit = array();
-    foreach ( (array) $ids as $id ) {
-        if ( 'publish' !== get_post_status( (int) $id ) ) {
-            continue;
-        }
-        foreach ( sfp_page_config_cursusdata_toekomst( (int) $id ) as $groep ) {
-            $uit[] = array(
-                'pagina' => (int) $id,
-                'dag'    => $groep['data'][0],
-            );
+    if ( function_exists( 'sfp_page_config_cursusdata_toekomst' ) ) {
+        foreach ( (array) $ids as $id ) {
+            if ( 'publish' !== get_post_status( (int) $id ) ) {
+                continue;
+            }
+            foreach ( sfp_page_config_cursusdata_toekomst( (int) $id ) as $groep ) {
+                if ( ! empty( $groep['data'][0] ) ) {
+                    $uit[] = array( 'pagina' => (int) $id, 'dag' => (string) $groep['data'][0] );
+                }
+            }
         }
     }
     usort(
@@ -173,7 +208,45 @@ function sfp_page_config_banner_cursussen( $max = 3 ) {
             return strcmp( $a['dag'], $b['dag'] );
         }
     );
-    return array_slice( $uit, 0, max( 1, (int) $max ) );
+    $uit = array_slice( $uit, 0, 50 );
+    update_option( 'sfp_pc_komende_cursussen', $uit, true );
+    return $uit;
+}
+
+/**
+ * Na een opslag die de lijst kan veranderen: opnieuw berekenen bij de
+ * volgende vraag.
+ */
+function sfp_page_config_komende_cursussen_wis() {
+    delete_option( 'sfp_pc_komende_cursussen' );
+}
+
+add_action( 'sfp_page_config_daily_check', 'sfp_page_config_komende_cursussen_bouw' );
+add_action( 'transition_post_status', 'sfp_page_config_komende_cursussen_status', 10, 3 );
+foreach ( array( 'added_post_meta', 'updated_post_meta', 'deleted_post_meta' ) as $sfp_haak ) {
+    add_action( $sfp_haak, 'sfp_page_config_komende_cursussen_meta', 10, 3 );
+}
+
+/**
+ * @param int    $meta_id Meta.
+ * @param int    $post_id Pagina.
+ * @param string $sleutel Metasleutel.
+ */
+function sfp_page_config_komende_cursussen_meta( $meta_id, $post_id, $sleutel ) {
+    if ( in_array( $sleutel, array( 'sfp_cursusdata', 'sfp_page_type', 'startdatum' ), true ) ) {
+        sfp_page_config_komende_cursussen_wis();
+    }
+}
+
+/**
+ * @param string  $nieuw Nieuwe status.
+ * @param string  $oud   Oude status.
+ * @param WP_Post $post  Bericht.
+ */
+function sfp_page_config_komende_cursussen_status( $nieuw, $oud, $post ) {
+    if ( $nieuw !== $oud && $post instanceof WP_Post && 'page' === $post->post_type ) {
+        sfp_page_config_komende_cursussen_wis();
+    }
 }
 
 /**

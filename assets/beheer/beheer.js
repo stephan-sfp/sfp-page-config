@@ -30,6 +30,10 @@
 
 	/** Wat het scherm onthoudt tussen twee keer opbouwen. */
 	var ui = {
+		// Sinds 3.22.0 haalt elk scherm zijn eigen lijst op (paginas per 50, cursusdata).
+		paginas: null,
+		paginasBezig: false,
+		cursusdata: null,
 		scherm: 'overzicht',
 		detail: '',
 		filter: 'alles',
@@ -106,6 +110,8 @@
 			if (antwoord && antwoord.stand) S = antwoord.stand;
 			else if (antwoord && antwoord.onderdelen) S = antwoord;
 			ui.flits = { sleutel: sleutel, tekst: klaarTekst || 'Opgeslagen', tijd: Date.now(), fout: false };
+			if (ui.paginas) ui.paginas.oud = true;
+			if (ui.cursusdata) ui.cursusdata.oud = true;
 			if (na) na(antwoord);
 			teken();
 			return antwoord;
@@ -344,8 +350,31 @@
 
 	/* ---------- Pagina's ---------- */
 
+	/** De paginalijst per 50; bij een verouderde lijst opnieuw tot hetzelfde aantal. */
+	function laadPaginas(opnieuw, meer) {
+		if (ui.paginasBezig) return Promise.resolve();
+		var nu = ui.paginas && !ui.paginas.oud ? ui.paginas : null;
+		var per = 50;
+		var pagina = meer && nu ? nu.pagina + 1 : 1;
+		if (!meer && ui.paginas && ui.paginas.rijen.length > 50) per = ui.paginas.rijen.length;
+		ui.paginasBezig = true;
+		return api('/paginas?per=' + per + '&pagina=' + pagina + (opnieuw ? '&opnieuw=1' : '')).then(function (c) {
+			var rijen = meer && nu ? nu.rijen.concat(c.paginas) : c.paginas;
+			ui.paginas = { rijen: rijen, totaal: c.totaal, pagina: meer && nu ? pagina : Math.max(1, Math.ceil(rijen.length / 50)), aandacht: c.aandacht, overig_in_orde: c.overig_in_orde, oud: false };
+			ui.paginasBezig = false;
+			return null;
+		}, function (e) { ui.paginasBezig = false; throw e; });
+	}
+
 	function schermPaginas() {
-		var alle = S.controle.paginas;
+		if (!ui.paginas || ui.paginas.oud) {
+			laadPaginas(false).then(function () { teken(); }, function () {});
+			if (!ui.paginas) {
+				return el('section', { class: 'sfpb-scherm' }, [kop('Pagina\'s', 'Wat er per pagina is ingesteld, en wat er nog ontbreekt.'), el('p', { class: 'sfpb-hulp', text: 'Pagina\'s laden…' })]);
+			}
+		}
+		var P = ui.paginas;
+		var alle = P.rijen;
 		var aandacht = alle.filter(function (p) { return p.meldingen.length; });
 		var toon = ui.filter === 'let' ? aandacht : alle;
 		var lijst = el('div', { class: 'sfpb-lijst' });
@@ -366,19 +395,20 @@
 		var scherm = el('section', { class: 'sfpb-scherm' }, [
 			kop('Pagina\'s', 'Wat er per pagina is ingesteld, en wat er nog ontbreekt.'),
 			el('div', { class: 'sfpb-rij sfpb-tussen' }, [
-				pillen([['alles', 'Alles (' + alle.length + ')'], ['let', 'Vraagt aandacht (' + aandacht.length + ')']], ui.filter, function (f) { ui.filter = f; teken(); }, 'Filter'),
+				pillen([['alles', 'Alles (' + P.totaal + ')'], ['let', 'Vraagt aandacht (' + P.aandacht + ')']], ui.filter, function (f) { ui.filter = f; teken(); }, 'Filter'),
 				el('div', { class: 'sfpb-rij' }, [
 					flitsPlek('opnieuw'),
 					el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Controleer opnieuw', klik: function () {
-						doe(this, 'opnieuw', api('/paginas').then(function (c) { S.controle = c; return null; }), 'Gecontroleerd');
+						doe(this, 'opnieuw', laadPaginas(true), 'Gecontroleerd');
 					} })
 				])
 			]),
 			el('div', { class: 'sfpb-kaart' }, [lijst]),
-			S.controle.overig_in_orde ? el('p', { class: 'sfpb-hulp', text: meervoud(S.controle.overig_in_orde, 'bericht of begrip is', 'berichten en begrippen zijn') + ' in orde en ' + (S.controle.overig_in_orde === 1 ? 'staat' : 'staan') + ' niet in deze lijst.' }) : null
+			alle.length < P.totaal ? el('div', { class: 'sfpb-rij' }, [el('button', { class: 'sfpb-knop', type: 'button', text: 'Meer laden (' + alle.length + ' van ' + P.totaal + ')', klik: function () { this.disabled = true; laadPaginas(false, true).then(function () { teken(); }); } })]) : null,
+			P.overig_in_orde ? el('p', { class: 'sfpb-hulp', text: meervoud(P.overig_in_orde, 'bericht of begrip is', 'berichten en begrippen zijn') + ' in orde en ' + (P.overig_in_orde === 1 ? 'staat' : 'staan') + ' niet in deze lijst.' }) : null
 		]);
 		if (ui.lade) {
-			var pagina = alle.filter(function (p) { return p.id === ui.lade; })[0];
+			var pagina = alle.concat(S.controle.paginas).filter(function (p) { return p.id === ui.lade; })[0];
 			if (pagina) scherm.appendChild(lade(pagina));
 		}
 		return scherm;
@@ -1485,7 +1515,17 @@
 	}
 
 	function schermCursusdata() {
-		var c = S.cursusdata;
+		var c = Object.assign({}, S.cursusdata);
+		if (!ui.cursusdata || ui.cursusdata.oud) {
+			if (!ui.cursusdata || !ui.cursusdata.bezig) {
+				ui.cursusdata = Object.assign(ui.cursusdata || {}, { bezig: true });
+				api('/cursusdata').then(function (d) { ui.cursusdata = { paginas: d.paginas || [], oud: false }; teken(); }, function () { ui.cursusdata.bezig = false; });
+			}
+			if (!ui.cursusdata.paginas) {
+				return el('section', { class: 'sfpb-scherm' }, [kop('Cursusdata', 'Startmomenten van trainingen.'), el('p', { class: 'sfpb-hulp', text: 'Trainingen laden…' })]);
+			}
+		}
+		c.paginas = ui.cursusdata.paginas;
 		var lijst = el('div', { class: 'sfpb-lijst' });
 		c.paginas.forEach(function (p) {
 			var open = ui.cdOpen === p.id;
@@ -1702,6 +1742,19 @@
 			])
 		]);
 
+		// Kennisbanken voor [sfp_publicaties] (sinds 3.22.0).
+		var pub = o.publicaties || { sites: [], stand: null };
+		var pubVeld = el('textarea', { value: (pub.sites || []).join('\n'), rows: '5' });
+		var pubStand = pub.stand && pub.stand.per_site ? Object.keys(pub.stand.per_site).map(function (h) { return h + ': ' + pub.stand.per_site[h]; }).join(' · ') : '';
+		var publicaties = vouw('publicaties', 'Kennisbanken voor [sfp_publicaties]', status(pub.stand ? true : null, pub.stand ? pub.stand.totaal + ' artikelen' : 'Nog niet geteld'), [
+			el('p', { text: 'Welke sites meetellen in het aantal artikelen. Eén adres per regel. Leeg: de vijf Nederlandse sites. De site telt één keer per dag, niet bij het tonen van een pagina.' }),
+			veld('Sites', pubVeld, pubStand ? 'Laatste telling: ' + pubStand : 'Nog niet geteld.', 'sfpb-oh-publicaties'),
+			el('div', { class: 'sfpb-rij' }, [
+				el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () { bewaarInstellingen(this, 'oh-publicaties', { publicaties_sites: pubVeld.value }); } }),
+				flitsPlek('oh-publicaties')
+			])
+		]);
+
 		// Zelftest: pakket, koppelingen en logboek (sinds 3.19.0 hier, niet bij Onderdelen).
 		var zelftest = (S.zelftest && (S.zelftest.aan || (S.zelftest.tests || []).length)) ? zelftestOnderhoud() : null;
 
@@ -1717,7 +1770,7 @@
 
 		return el('section', { class: 'sfpb-scherm' }, [
 			kop('Onderhoud', 'Voor onderhoud aan de site. Om de site te beheren hoef je hier niets te doen.'),
-			el('div', null, [versie, resten, sneller, beelden, google, zelftest, snippets])
+			el('div', null, [versie, resten, sneller, beelden, google, publicaties, zelftest, snippets])
 		]);
 	}
 

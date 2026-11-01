@@ -31,6 +31,7 @@ add_action( 'save_post_page', 'sfp_page_config_cursusdata_wis_lijst' );
  */
 function sfp_page_config_cursusdata_wis_lijst() {
     delete_transient( 'sfp_dashboard_pages_training' );
+    delete_option( 'sfp_pc_komende_cursussen' );
     // Oude sleutel van voor 1.9.10.
     delete_transient( 'sfp_dashboard_pages' );
 }
