@@ -4,9 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.22.0-beta.1] - 2026-11-01
+## [3.22.0] - 2026-11-01
 
-Grote update na de stresstest van 31-10-2026: alle 32 punten en de vijf FAST-punten in één release (werk page-config-grote-update). Bestaande inhoud, codes, blokken en routes werken zoals ze werkten. Proefversie voor SwS, DPS en SFP.
+Grote update na de stresstest van 31-10-2026: alle 32 punten en de vijf FAST-punten in één release (werk page-config-grote-update). Bestaande inhoud, codes, blokken en routes werken zoals ze werkten.
+
+Proef 3.22.0-beta.1 op SwS, DPS en SFP, uitgelogd gemeten tegen de nulmeting: toolpagina's mobiel van 82-89 naar 96-98, verspringen van 0,20-0,35 naar 0; andere pagina's gelijk binnen de meetruis. Geen scriptfouten op telefoon en desktop.
 
 Terugdraaien: versie 3.21.0 terugzetten (zip uit de tag v3.21.0, map sfp-page-config). Eenmalig omgezet: eigen reviews staan niet meer in autoload (gaat bij 3.21.0 vanzelf goed) en de oude mappen tests/ en .github/ zijn uit de pluginmap weg.
 
