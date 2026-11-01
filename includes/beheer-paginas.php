@@ -162,7 +162,7 @@ function sfp_page_config_controleer_pagina( $post ) {
             $meldingen[] = array(
                 'code'  => 'data',
                 'kort'  => 'Startmomenten zijn voorbij',
-                'tekst' => 'De laatste dag van deze training was ' . sfp_page_config_format_date_nl( $laatst, 'long' ) . '. Alle startmomenten zijn voorbij.',
+                'tekst' => 'De laatste dag van deze training was ' . sfp_page_config_format_datum( $laatst, 'long' ) . '. Alle startmomenten zijn voorbij.',
                 'actie' => 'cursusdata',
             );
         }

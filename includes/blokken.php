@@ -425,53 +425,60 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
         );
     };
 
+    // Sinds 3.22.0 neutraal en in de taal van de site (punt 27): geen
+    // onderwerp van een merk, zodat de voorbeelden op elke site passen.
+    $taal = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
+    $t    = function ( $nl, $en, $pt ) use ( $taal ) {
+        return 'en' === $taal ? $en : ( 'pt' === $taal ? $pt : $nl );
+    };
+
     $voorbeelden = array(
-        'sfp/sectie'       => array( 'innerBlocks' => array( $kop( 'Wat je leert' ), $alinea( 'Een band over de volle breedte van de pagina, met een eigen onderwerp.' ) ) ),
-        'sfp/held'         => array( 'innerBlocks' => array( $kop( 'Presenteren met impact', 1 ), $alinea( 'Je kent je onderwerp. Samen zorgen we dat je publiek het onthoudt.', 'is-style-sfp-intro' ) ) ),
+        'sfp/sectie'       => array( 'innerBlocks' => array( $kop( $t( 'Wat je leert', 'What you learn', 'O que você aprende' ) ), $alinea( $t( 'Een band over de volle breedte van de pagina, met een eigen onderwerp.', 'A band across the full width of the page, with its own topic.', 'Uma faixa na largura total da página, com um tema próprio.' ) ) ) ),
+        'sfp/held'         => array( 'innerBlocks' => array( $kop( $t( 'Een duidelijke titel', 'A clear title', 'Um título claro' ), 1 ), $alinea( $t( 'Eén zin die zegt wat de bezoeker hier vindt.', 'One sentence that says what the visitor finds here.', 'Uma frase que diz o que o visitante encontra aqui.' ), 'is-style-sfp-intro' ) ) ),
         'sfp/kolommen'     => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/kolom', 'innerBlocks' => array( $alinea( 'Eerste kolom met tekst.' ) ) ),
-                array( 'name' => 'sfp/kolom', 'innerBlocks' => array( $alinea( 'Tweede kolom met tekst.' ) ) ),
+                array( 'name' => 'sfp/kolom', 'innerBlocks' => array( $alinea( $t( 'Eerste kolom met tekst.', 'First column with text.', 'Primeira coluna com texto.' ) ) ) ),
+                array( 'name' => 'sfp/kolom', 'innerBlocks' => array( $alinea( $t( 'Tweede kolom met tekst.', 'Second column with text.', 'Segunda coluna com texto.' ) ) ) ),
             ),
         ),
-        'sfp/kaart'        => array( 'innerBlocks' => array( $kop( 'Persoonlijke coaching', 3 ), $alinea( 'Eén op één, rond je volgende presentatie.' ) ) ),
+        'sfp/kaart'        => array( 'innerBlocks' => array( $kop( $t( 'Persoonlijke begeleiding', 'Personal guidance', 'Acompanhamento individual' ), 3 ), $alinea( $t( 'Eén op één, rond je eigen vraag.', 'One to one, around your own question.', 'Individual, em torno da sua pergunta.' ) ) ) ),
         'sfp/stappen'      => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/stap', 'innerBlocks' => array( $kop( 'Kennismaken', 3 ), $alinea( 'We bespreken je doel.' ) ) ),
-                array( 'name' => 'sfp/stap', 'innerBlocks' => array( $kop( 'Oefenen', 3 ), $alinea( 'Met je eigen materiaal.' ) ) ),
+                array( 'name' => 'sfp/stap', 'innerBlocks' => array( $kop( $t( 'Kennismaken', 'Getting to know you', 'Conversa inicial' ), 3 ), $alinea( $t( 'We bespreken je doel.', 'We discuss your goal.', 'Conversamos sobre o seu objetivo.' ) ) ) ),
+                array( 'name' => 'sfp/stap', 'innerBlocks' => array( $kop( $t( 'Oefenen', 'Practice', 'Prática' ), 3 ), $alinea( $t( 'Met je eigen materiaal.', 'With your own material.', 'Com o seu próprio material.' ) ) ) ),
             ),
         ),
         'sfp/uitklap'      => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/uitklap-regel', 'attributes' => array( 'titel' => 'Hoe lang duurt de training?' ), 'innerBlocks' => array( $alinea( 'Twee dagen.' ) ) ),
-                array( 'name' => 'sfp/uitklap-regel', 'attributes' => array( 'titel' => 'Waar vindt hij plaats?' ), 'innerBlocks' => array( $alinea( 'In Utrecht.' ) ) ),
+                array( 'name' => 'sfp/uitklap-regel', 'attributes' => array( 'titel' => $t( 'Hoe lang duurt de training?', 'How long is the training?', 'Quanto tempo dura o treinamento?' ) ), 'innerBlocks' => array( $alinea( $t( 'Twee dagen.', 'Two days.', 'Dois dias.' ) ) ) ),
+                array( 'name' => 'sfp/uitklap-regel', 'attributes' => array( 'titel' => $t( 'Waar vindt hij plaats?', 'Where does it take place?', 'Onde acontece?' ) ), 'innerBlocks' => array( $alinea( $t( 'Op locatie of online.', 'On location or online.', 'Presencial ou online.' ) ) ) ),
             ),
         ),
         'sfp/tabs'         => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/tab', 'attributes' => array( 'titel' => 'Inhoud' ), 'innerBlocks' => array( $alinea( 'Wat je leert.' ) ) ),
-                array( 'name' => 'sfp/tab', 'attributes' => array( 'titel' => 'Vorm' ), 'innerBlocks' => array( $alinea( 'Hoe het gaat.' ) ) ),
+                array( 'name' => 'sfp/tab', 'attributes' => array( 'titel' => $t( 'Inhoud', 'Content', 'Conteúdo' ) ), 'innerBlocks' => array( $alinea( $t( 'Wat je leert.', 'What you learn.', 'O que você aprende.' ) ) ) ),
+                array( 'name' => 'sfp/tab', 'attributes' => array( 'titel' => $t( 'Vorm', 'Format', 'Formato' ) ), 'innerBlocks' => array( $alinea( $t( 'Hoe het gaat.', 'How it works.', 'Como funciona.' ) ) ) ),
             ),
         ),
-        'sfp/lijst'        => array( 'innerBlocks' => array( $lijst( array( 'Je oefent met je eigen materiaal', 'Je krijgt direct feedback' ) ) ) ),
+        'sfp/lijst'        => array( 'innerBlocks' => array( $lijst( array( $t( 'Je oefent met je eigen materiaal', 'You practise with your own material', 'Você pratica com o seu próprio material' ), $t( 'Je krijgt direct feedback', 'You get direct feedback', 'Você recebe feedback na hora' ) ) ) ) ),
         'sfp/faq'          => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/faq-vraag', 'attributes' => array( 'vraag' => 'Voor wie is deze training?' ), 'innerBlocks' => array( $alinea( 'Voor iedereen die vaker presenteert.' ) ) ),
+                array( 'name' => 'sfp/faq-vraag', 'attributes' => array( 'vraag' => $t( 'Voor wie is dit bedoeld?', 'Who is this for?', 'Para quem é?' ) ), 'innerBlocks' => array( $alinea( $t( 'Voor iedereen die er in het werk mee te maken heeft.', 'For anyone who deals with it at work.', 'Para quem lida com isso no trabalho.' ) ) ) ),
             ),
         ),
-        'sfp/samenvatting' => array( 'innerBlocks' => array( $lijst( array( 'Je publiek ziet minder dan je denkt.', 'Een pauze klinkt als nadruk.', 'Richt je op één luisteraar.' ) ) ) ),
-        'sfp/kader'        => array( 'attributes' => array( 'soort' => 'wist-je-dat' ), 'innerBlocks' => array( $alinea( 'De meeste luisteraars onthouden vooral het begin en het einde.' ) ) ),
-        'sfp/citaat'       => array( 'attributes' => array( 'bijschrift' => 'Een deelnemer over de eerste sessie', 'portret' => false ), 'innerBlocks' => array( $alinea( 'Na twee sessies stond ik anders op het podium.' ) ) ),
-        'sfp/inzicht'      => array( 'attributes' => array( 'tekst' => 'Je publiek ziet je fouten <em>minder</em> dan je denkt.' ) ),
-        'sfp/lees-ook'     => array( 'attributes' => array( 'titel' => 'Zo begin je een presentatie' ) ),
+        'sfp/samenvatting' => array( 'innerBlocks' => array( $lijst( array( $t( 'Begin met de kern.', 'Start with the core.', 'Comece pelo essencial.' ), $t( 'Eén punt per alinea.', 'One point per paragraph.', 'Um ponto por parágrafo.' ), $t( 'Sluit af met een vervolgstap.', 'End with a next step.', 'Termine com um próximo passo.' ) ) ) ) ),
+        'sfp/kader'        => array( 'attributes' => array( 'soort' => 'wist-je-dat' ), 'innerBlocks' => array( $alinea( $t( 'De meeste lezers onthouden vooral het begin en het einde.', 'Most readers mainly remember the beginning and the end.', 'A maioria dos leitores lembra sobretudo do início e do fim.' ) ) ) ),
+        'sfp/citaat'       => array( 'attributes' => array( 'bijschrift' => $t( 'Een deelnemer over de eerste sessie', 'A participant about the first session', 'Um participante sobre a primeira sessão' ), 'portret' => false ), 'innerBlocks' => array( $alinea( $t( 'Na twee sessies pakte ik het anders aan.', 'After two sessions I approached it differently.', 'Depois de duas sessões, passei a fazer diferente.' ) ) ) ),
+        'sfp/inzicht'      => array( 'attributes' => array( 'tekst' => $t( 'Een kleine fout valt <em>minder</em> op dan je denkt.', 'A small mistake stands out <em>less</em> than you think.', 'Um pequeno erro chama <em>menos</em> atenção do que você pensa.' ) ) ),
+        'sfp/lees-ook'     => array( 'attributes' => array( 'titel' => $t( 'Zo begin je sterk', 'How to start strong', 'Como começar bem' ) ) ),
         'sfp/vervolg'      => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/vervolg-vlak', 'attributes' => array( 'label' => 'Coaching' ), 'innerBlocks' => array( $kop( 'Klaar voor je volgende presentatie?', 3 ), $alinea( 'Werk er een op een aan.' ) ) ),
+                array( 'name' => 'sfp/vervolg-vlak', 'attributes' => array( 'label' => $t( 'Begeleiding', 'Guidance', 'Acompanhamento' ) ), 'innerBlocks' => array( $kop( $t( 'Klaar voor de volgende stap?', 'Ready for the next step?', 'Pronto para o próximo passo?' ), 3 ), $alinea( $t( 'Werk er een op een aan.', 'Work on it one to one.', 'Trabalhe nisso individualmente.' ) ) ) ),
             ),
         ),
         'sfp/warming-up'   => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/warming-up-vraag', 'attributes' => array( 'vraag' => 'Hoeveel mensen zien een kleine fout?', 'optie1' => 'Bijna iedereen', 'optie2' => 'De helft', 'optie3' => 'Heel weinig' ) ),
+                array( 'name' => 'sfp/warming-up-vraag', 'attributes' => array( 'vraag' => $t( 'Hoeveel mensen zien een kleine fout?', 'How many people notice a small mistake?', 'Quantas pessoas percebem um pequeno erro?' ), 'optie1' => $t( 'Bijna iedereen', 'Almost everyone', 'Quase todos' ), 'optie2' => $t( 'De helft', 'Half', 'Metade' ), 'optie3' => $t( 'Heel weinig', 'Very few', 'Muito poucas' ) ) ),
             ),
         ),
         'sfp/cursusdatum'  => array(),
@@ -481,29 +488,29 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
         // Sinds 3.19.0 ook de blokken die zich los registreren (ontwerpregel 23).
         'sfp/thermometer'  => array(
             'attributes'  => array(
-                'kop'    => 'Hoe zenuwachtig word jij van een presentatie?',
-                'links'  => 'Klopt niet',
-                'rechts' => 'Klopt helemaal',
+                'kop'    => $t( 'Hoe herkenbaar is dit voor jou?', 'How familiar is this to you?', 'O quanto isso é familiar para você?' ),
+                'links'  => $t( 'Klopt niet', 'Not true', 'Não é verdade' ),
+                'rechts' => $t( 'Klopt helemaal', 'Completely true', 'Totalmente verdade' ),
             ),
             'innerBlocks' => array(
-                array( 'name' => 'sfp/thermometer-stelling', 'attributes' => array( 'tekst' => 'Ik slaap slecht voor een presentatie.' ) ),
-                array( 'name' => 'sfp/thermometer-stelling', 'attributes' => array( 'tekst' => 'Ik zie op tegen vragen uit de zaal.' ) ),
+                array( 'name' => 'sfp/thermometer-stelling', 'attributes' => array( 'tekst' => $t( 'Ik zie er de dag ervoor al tegen op.', 'I dread it the day before.', 'Já fico apreensivo no dia anterior.' ) ) ),
+                array( 'name' => 'sfp/thermometer-stelling', 'attributes' => array( 'tekst' => $t( 'Ik zie op tegen onverwachte vragen.', 'I dread unexpected questions.', 'Tenho receio de perguntas inesperadas.' ) ) ),
             ),
         ),
         'sfp/zelftest-cta' => array(),
         'sfp/tool'         => array(),
         'sfp/definitie'    => array(
             'attributes' => array(
-                'zin'      => 'Spreekangst is de angst om voor een groep te spreken, die zich uit in spanning voor en tijdens het spreken.',
-                'uitleg'   => 'Bijna iedereen kent het in een lichte vorm.',
-                'ook'      => 'Podiumvrees',
-                'herkomst' => 'Uit spreken en angst',
+                'zin'      => $t( 'Een begrip is een woord met een vaste betekenis binnen een vakgebied.', 'A term is a word with a fixed meaning within a field.', 'Um termo é uma palavra com significado fixo dentro de uma área.' ),
+                'uitleg'   => $t( 'Eén zin uitleg, in gewone taal.', 'One sentence of explanation, in plain language.', 'Uma frase de explicação, em linguagem simples.' ),
+                'ook'      => $t( 'Vakterm', 'Technical term', 'Termo técnico' ),
+                'herkomst' => $t( 'Uit het Latijn', 'From Latin', 'Do latim' ),
             ),
         ),
         'sfp/in-een-talk'  => array(
             'attributes' => array(
-                'zin'    => 'Ik merk dat mijn handen trillen. Dat mag.',
-                'uitleg' => 'Benoemen haalt de spanning eraf.',
+                'zin'    => $t( 'Ik merk dat ik even zoek. Dat mag.', 'I notice I am searching for a moment. That is fine.', 'Percebo que estou procurando as palavras. Tudo bem.' ),
+                'uitleg' => $t( 'Benoemen haalt de spanning eraf.', 'Naming it takes the tension away.', 'Dizer em voz alta tira a tensão.' ),
             ),
         ),
         // Sinds 3.20.0: Logostrook en Review met een voorbeeld dat alleen in
@@ -513,7 +520,7 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
         'sfp/bronnenlijst' => array( 'attributes' => array( 'voorbeeld' => true ) ),
         'sfp/begrip-check' => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/begrip-vraag', 'attributes' => array( 'vraag' => 'Wanneer is spanning voor een presentatie een probleem?', 'optie1' => 'Altijd', 'optie2' => 'Als je erdoor gaat vermijden', 'optie3' => 'Nooit', 'juist' => 2 ) ),
+                array( 'name' => 'sfp/begrip-vraag', 'attributes' => array( 'vraag' => $t( 'Wanneer wordt een gewoonte een probleem?', 'When does a habit become a problem?', 'Quando um hábito vira um problema?' ), 'optie1' => $t( 'Altijd', 'Always', 'Sempre' ), 'optie2' => $t( 'Als je erdoor gaat vermijden', 'When it makes you avoid things', 'Quando faz você evitar coisas' ), 'optie3' => $t( 'Nooit', 'Never', 'Nunca' ), 'juist' => 2 ) ),
             ),
         ),
     );

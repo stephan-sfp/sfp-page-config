@@ -8,7 +8,7 @@
  *   sfp-reviews/list    alle eigen reviews lezen;
  *   sfp-reviews/update  een review bijwerken (alleen de meegestuurde velden);
  *   sfp-reviews/add     een review toevoegen;
- *   sfp-reviews/delete  een review weghalen. Alleen na akkoord van Stephan
+ *   sfp-reviews/delete  een review weghalen. Alleen na akkoord van de eigenaar
  *                       per actie (besluit 28-10-2026): de aanroep vraagt dat
  *                       akkoord expliciet als veld.
  *
@@ -93,14 +93,14 @@ function sfp_page_config_reviews_abilities() {
     sfp_page_config_reviews_ability(
         'delete',
         'Eigen review weghalen',
-        'Haal één eigen review weg op id. Alleen uitvoeren na uitdrukkelijk akkoord van Stephan voor deze ene review; zet dan akkoord_stephan op true. Niet terug te draaien behalve door de review opnieuw toe te voegen.',
+        'Haal één eigen review weg op id. Alleen uitvoeren na uitdrukkelijk akkoord van de eigenaar van de site voor deze ene review; zet dan akkoord_stephan op true (de naam van het veld blijft voor bestaande koppelingen). Niet terug te draaien behalve door de review opnieuw toe te voegen.',
         'sfp_page_config_reviews_ability_weg',
         array(
             'id'              => $velden['id'],
             'akkoord_stephan' => array(
                 'type'        => 'boolean',
                 'enum'        => array( true ),
-                'description' => 'Alleen true als Stephan voor deze review akkoord gaf.',
+                'description' => 'Alleen true als de eigenaar van de site voor deze review akkoord gaf.',
             ),
         ),
         array( 'id', 'akkoord_stephan' ),
@@ -262,7 +262,7 @@ function sfp_page_config_reviews_ability_weg( $invoer = array() ) {
     }
     $invoer = (array) $invoer;
     if ( true !== ( $invoer['akkoord_stephan'] ?? null ) ) {
-        return new WP_Error( 'sfp_reviews_geen_akkoord', 'Weghalen kan alleen na akkoord van Stephan voor deze review.', array( 'status' => 403 ) );
+        return new WP_Error( 'sfp_reviews_geen_akkoord', 'Weghalen kan alleen na akkoord van de eigenaar van de site voor deze review.', array( 'status' => 403 ) );
     }
     $uit = sfp_page_config_reviews_eigen_weg( (string) ( $invoer['id'] ?? '' ) );
     return is_wp_error( $uit ) ? $uit : array( 'weggehaald' => (string) $invoer['id'] );

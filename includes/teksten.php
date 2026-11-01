@@ -84,6 +84,13 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Artikelen: een keuze uit de labels van de artikelopmaak.
+        // Begrip (3.22.0): het label van het blok "In een presentatie"
+        // past niet op elke site (DST, CVD); per site aan te passen.
+        'artikel_in_een_talk' => array(
+            'groep'   => 'Artikelen',
+            'label'   => 'Label van het blok "In een presentatie" bij een begrip',
+            'artikel' => 'in_een_talk',
+        ),
         'artikel_samenvatting' => array(
             'groep'   => 'Artikelen',
             'label'   => 'Samenvatting',
@@ -466,6 +473,22 @@ function sfp_page_config_teksten_register() {
             'nl'    => 'tot %s',
             'en'    => 'until %s',
             'pt'    => 'até %s',
+        ),
+        // Ankers van het formulier (3.22.0): per taal, en per site aan te
+        // passen. De Nederlandse ankers blijven daarnaast altijd werken.
+        'anker_inschrijven'  => array(
+            'groep' => 'Formulieren en cursusdata',
+            'label' => 'Anker van het inschrijfformulier (zonder #)',
+            'nl'    => 'inschrijven',
+            'en'    => 'register',
+            'pt'    => 'inscricao',
+        ),
+        'anker_aanvragen'    => array(
+            'groep' => 'Formulieren en cursusdata',
+            'label' => 'Anker van het aanvraagformulier (zonder #)',
+            'nl'    => 'aanvragen',
+            'en'    => 'request',
+            'pt'    => 'solicitar',
         ),
         'tijd_uur'           => array(
             'groep' => 'Formulieren en cursusdata',

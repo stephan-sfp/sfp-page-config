@@ -132,6 +132,9 @@ function sfp_page_config_wachtlijst_anker() {
     $alle  = sfp_page_config_instellingen();
     $eigen = isset( $alle['sticky_cta']['training']['anchor'] ) ? (string) $alle['sticky_cta']['training']['anchor'] : '';
     $anker = '' !== $eigen && function_exists( 'sfp_page_config_anker_schoon' ) ? sfp_page_config_anker_schoon( $eigen ) : '';
+    if ( '' === $anker && function_exists( 'sfp_page_config_tekst' ) && function_exists( 'sfp_page_config_anker_schoon' ) ) {
+        $anker = sfp_page_config_anker_schoon( sfp_page_config_tekst( 'anker_inschrijven' ) );
+    }
     return '' !== $anker ? $anker : 'inschrijven';
 }
 

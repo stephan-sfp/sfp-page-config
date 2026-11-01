@@ -175,7 +175,7 @@ function sfp_page_config_cursusdata_bewaar( $post_id, $data ) {
 
     return array(
         'clean'         => $clean,
-        'eerstvolgende' => $closest ? sfp_page_config_format_date_nl( $closest, 'short' ) : '-',
+        'eerstvolgende' => $closest ? sfp_page_config_format_datum( $closest, 'short' ) : '-',
     );
 }
 

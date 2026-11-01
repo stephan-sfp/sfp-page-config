@@ -39,6 +39,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Tekst voor een blokvoorbeeld in de taal van de site (sinds 3.22.0).
+ *
+ * @param  string $nl Nederlands.
+ * @param  string $en Engels.
+ * @param  string $pt Portugees.
+ * @return string
+ */
+function sfp_page_config_bouwsteen_t( $nl, $en, $pt ) {
+    $taal = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
+    return 'en' === $taal ? $en : ( 'pt' === $taal ? $pt : $nl );
+}
+
+/**
  * Staat een onderdeel van dit bestand aan?
  *
  * @param  string $id Onderdeel.
@@ -241,9 +254,9 @@ function sfp_page_config_kopieer_registreer() {
             'editor_script'   => 'sfp-blokken-editor',
             'render_callback' => 'sfp_page_config_kopieer_render',
             'example'         => array(
-                'attributes'  => array( 'lang' => 'Kopieer deze prompt', 'voorbeeld' => true ),
+                'attributes'  => array( 'lang' => sfp_page_config_bouwsteen_t( 'Kopieer deze prompt', 'Copy this prompt', 'Copie este prompt' ), 'voorbeeld' => true ),
                 'innerBlocks' => array(
-                    array( 'name' => 'core/paragraph', 'attributes' => array( 'content' => 'Jij bent een ervaren presentatiecoach. Geef drie concrete tips voor een sterke opening.' ), 'innerBlocks' => array() ),
+                    array( 'name' => 'core/paragraph', 'attributes' => array( 'content' => sfp_page_config_bouwsteen_t( 'Jij bent een ervaren redacteur. Geef drie concrete tips voor een sterke opening.', 'You are an experienced editor. Give three concrete tips for a strong opening.', 'Você é um editor experiente. Dê três dicas concretas para uma abertura forte.' ) ), 'innerBlocks' => array() ),
                 ),
             ),
         )
@@ -674,8 +687,8 @@ function sfp_page_config_bronnen_render( $attrs ) {
     if ( $voorbeeld ) {
         list( , $groepen, $totaal ) = sfp_page_config_bronnen_verzamel(
             array(
-                array( '#', 'Spreekangst overwinnen', '<span data-tooltip="Angst neemt af door herhaling.<br>Bron: Barlow, D. H. (2002). Anxiety and its disorders. Guilford Press.">x</span>' ),
-                array( '#', 'Presenteren met impact', '<span data-tooltip="Bron: Cialdini, R. B. (2006). Influence. Harper Business.">x</span>' ),
+                array( '#', sfp_page_config_bouwsteen_t( 'Een eerste artikel', 'A first article', 'Um primeiro artigo' ), '<span data-tooltip="Angst neemt af door herhaling.<br>Bron: Barlow, D. H. (2002). Anxiety and its disorders. Guilford Press.">x</span>' ),
+                array( '#', sfp_page_config_bouwsteen_t( 'Een tweede artikel', 'A second article', 'Um segundo artigo' ), '<span data-tooltip="Bron: Cialdini, R. B. (2006). Influence. Harper Business.">x</span>' ),
             )
         );
     } else {
@@ -912,7 +925,9 @@ function sfp_page_config_oude_codes() {
         'dynamische_pijlerlink' => 'sfp_page_config_code_dynamisch',
         'dynamische_zelftest'   => 'sfp_page_config_code_dynamisch',
     );
-    foreach ( array( 'sfp', 'dps', 'dga', 'cvd', 'dst', 'fl' ) as $site ) {
+    // Eén code voor alle sites (3.22.0): [sfp_tool_auto]. De codes met een
+    // sitenaam blijven als alias werken, nu voor alle acht.
+    foreach ( array( 'sfp', 'dps', 'dga', 'cvd', 'dst', 'slb', 'sws', 'fl' ) as $site ) {
         $codes[ $site . '_tool_auto' ] = 'sfp_page_config_code_tool_auto';
     }
     foreach ( $codes as $code => $functie ) {
@@ -1018,7 +1033,13 @@ function sfp_page_config_code_tool_auto( $atts, $content = null, $tag = '' ) {
     }
     $slug  = (string) get_post_field( 'post_name', get_the_ID() );
     $site  = preg_replace( '/_tool_auto$/', '', (string) $tag );
-    $codes = array( $site . '_tool_' . str_replace( '-', '_', $slug ), $site . '_tool_' . $slug );
+    // Eerst de sitenaam uit de code, dan de andere sitenamen: zo vindt ook
+    // [sfp_tool_auto] op een andere site de oude code van die site.
+    $codes = array();
+    foreach ( array_unique( array_merge( array( $site ), array( 'sfp', 'dps', 'dga', 'cvd', 'dst', 'slb', 'sws', 'fl' ) ) ) as $voor ) {
+        $codes[] = $voor . '_tool_' . str_replace( '-', '_', $slug );
+        $codes[] = $voor . '_tool_' . $slug;
+    }
     foreach ( $codes as $code ) {
         if ( '' !== $slug && shortcode_exists( $code ) ) {
             return do_shortcode( '[' . $code . ']' );

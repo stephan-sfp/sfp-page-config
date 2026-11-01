@@ -179,7 +179,7 @@ function sfp_page_config_run_daily_check() {
                 $message_line  = sprintf(
                     '- %s (laatste datum was %s, %d dagen geleden)',
                     $page->post_title,
-                    sfp_page_config_format_date_nl( $latest_date, 'short' ) ?: $latest_date,
+                    sfp_page_config_format_datum( $latest_date, 'short' ) ?: $latest_date,
                     abs( $days_left )
                 );
                 $needs_new_dates[] = $message_line . $regel_link;
@@ -189,7 +189,7 @@ function sfp_page_config_run_daily_check() {
                 $message_line  = sprintf(
                     '- %s (laatste datum: %s, nog %d dagen)',
                     $page->post_title,
-                    sfp_page_config_format_date_nl( $latest_date, 'short' ) ?: $latest_date,
+                    sfp_page_config_format_datum( $latest_date, 'short' ) ?: $latest_date,
                     $days_left
                 );
                 $upcoming[] = $message_line . $regel_link;

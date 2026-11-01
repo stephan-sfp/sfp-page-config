@@ -1004,11 +1004,11 @@
 			paneel( 'Thermometer', [
 				uitleg( 'Drie tot acht stellingen. De lezer kiest per stelling Klopt, Soms of Klopt niet. Daarna volgt de uitslag op een schaal met twee uiteinden, met de naam en tekst die jij per uitslag geeft en een link naar het hoofdstuk dat erbij past. Schrijf alle stellingen in dezelfde richting: Klopt telt naar het rechteruiteinde. Niets wordt bewaard.' ),
 				tekstveld( 'Schaal: linkeruiteinde', a.links, function ( v ) { props.setAttributes( { links: v } ); }, 'Weinig herkenning, bijvoorbeeld: Rustig.' ),
-				tekstveld( 'Schaal: rechteruiteinde', a.rechts, function ( v ) { props.setAttributes( { rechts: v } ); }, 'Veel herkenning, bijvoorbeeld: Zenuwen nemen het over.' ),
-			].concat( band( 'laag', 'bij weinig herkenning', 'Bij weinig herkenning.', 'Je aanwezigheid draagt je' ), band( 'midden', 'in het midden', null, 'Je aanwezigheid wisselt' ), band( 'hoog', 'bij veel herkenning', 'Bij veel herkenning.', 'Je zenuwen gaan voor' ) ) ),
+				tekstveld( 'Schaal: rechteruiteinde', a.rechts, function ( v ) { props.setAttributes( { rechts: v } ); }, 'Veel herkenning, bijvoorbeeld: Sterk aanwezig.' ),
+			].concat( band( 'laag', 'bij weinig herkenning', 'Bij weinig herkenning.', 'Het gaat vanzelf' ), band( 'midden', 'in het midden', null, 'Het wisselt' ), band( 'hoog', 'bij veel herkenning', 'Bij veel herkenning.', 'Het speelt sterk' ) ) ),
 			el( 'div', blockProps,
 				el( 'span', { className: 'sfp-editor-label' }, 'Thermometer · staat op de site als knop in de kopkaart van de pijler, niet op deze plek' ),
-				el( RichText, { tagName: 'div', className: 'sfp-editor-warm__vraag', value: a.kop, placeholder: 'De vraag boven de stellingen, bijvoorbeeld: Hoe groot is jouw spreekangst?', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { kop: v } ); } } ),
+				el( RichText, { tagName: 'div', className: 'sfp-editor-warm__vraag', value: a.kop, placeholder: 'De vraag boven de stellingen, bijvoorbeeld: Hoe herkenbaar is dit voor jou?', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { kop: v } ); } } ),
 				el( 'div', inner ),
 				aantal < 3 ? el( 'span', { className: 'sfp-blokmelding' }, 'Een Thermometer heeft minstens drie stellingen. Zonder die verschijnt hij niet op de site.' ) : null,
 				aantal > 8 ? el( 'span', { className: 'sfp-blokmelding' }, 'Hoogstens acht stellingen; de rest valt weg.' ) : null,
@@ -1021,7 +1021,7 @@
 	blok( 'sfp/thermometer-stelling', function ( props ) {
 		var blockProps = useBlockProps( { className: 'sfp-editor-vlak sfp-editor-thermo__stelling' } );
 		return el( 'div', blockProps,
-			el( RichText, { tagName: 'div', value: props.attributes.tekst, placeholder: 'Stelling, bijvoorbeeld: Ik slaap slecht de nacht voor een presentatie.', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { tekst: v } ); } } )
+			el( RichText, { tagName: 'div', value: props.attributes.tekst, placeholder: 'Stelling, bijvoorbeeld: Ik zie er de dag ervoor al tegen op.', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { tekst: v } ); } } )
 		);
 	} );
 

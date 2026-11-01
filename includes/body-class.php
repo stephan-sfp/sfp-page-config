@@ -131,7 +131,12 @@ function sfp_page_config_knop_voor_pagina( $post_id, $type ) {
     // pagina telt nog mee voor sites die daar iets eigens hadden ingevuld.
     // Een training heeft een inschrijfformulier, coaching en incompany een
     // aanvraagformulier: dat anker wordt eerst gezocht.
-    $ankers = 'training' === $type ? array( 'inschrijven', 'aanvragen' ) : array( 'aanvragen', 'inschrijven' );
+    // Sinds 3.22.0 eerst de ankers in de taal van de site (scherm Teksten),
+    // dan de Nederlandse, die altijd blijven werken.
+    $in     = sfp_page_config_anker_schoon( sfp_page_config_tekst( 'anker_inschrijven' ) );
+    $aan    = sfp_page_config_anker_schoon( sfp_page_config_tekst( 'anker_aanvragen' ) );
+    $ankers = 'training' === $type ? array( $in, $aan, 'inschrijven', 'aanvragen' ) : array( $aan, $in, 'aanvragen', 'inschrijven' );
+    $ankers = array_values( array_unique( array_filter( $ankers ) ) );
     $alle   = sfp_page_config_instellingen();
     $eigen  = isset( $alle['sticky_cta'][ $type ] ) && is_array( $alle['sticky_cta'][ $type ] ) ? $alle['sticky_cta'][ $type ] : array();
     if ( ! empty( $eigen['anchor'] ) ) {
