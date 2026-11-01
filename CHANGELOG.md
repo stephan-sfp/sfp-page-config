@@ -4,6 +4,40 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.24.0] - 2026-11-01
+
+Drie onderdelen in één release (fase A, besluiten Stephan 1-11): meten van toolgebruik, de boekkaart in Kolommen met indeling boeking, en het onderdeel Formulierbewaking. Proef op SwS, DPS en SFP: events gemeten op drie tools, DPS-kaart ongewijzigd, logroute ongewijzigd.
+
+Terugdraaien: versie 3.23.0 terugzetten (zip uit de tag v3.23.0, map sfp-page-config).
+
+### Toegevoegd
+- Toolmotor: events voor GTM. Elke tool op de motor pusht `sfp_tool` naar window.dataLayer (alleen als die bestaat) met actie (start, stap, afgerond, kopieren, download_pdf, download_word, slides_prompt, opnieuw), tool_id, tool_slug, stap_nummer, stap_totaal en weergave (kaart of lijst). Geen GA-code, geen toestemmingslogica, geen antwoorden of tekst. Start bij de eerste interactie, afgerond een keer per sessie per tool. Beschreven in assets/tool/LEESMIJ.md.
+- Toolmotor: een sectie van de uitvoer kan `"meet": "slides_prompt"` krijgen; tekst kopiëren uit dat deel geeft die actie.
+- Kolommen, indeling boeking: de boekkaart van DPS in de plugin. Kaart met rand en schaduw, kolommen 45/55 vanaf 768 px, tekst in Tint 2 met kop in hoofdletters, vinkjes in de pijlrol, naam met portret onderaan en een rol als tweede regel, kalender zonder schaduw en verticaal gecentreerd, mobiel een kolom met bovenrand in de pijlrol en zonder introtekst. Radius 6 px. Alleen merkrollen.
+- De kaart draagt de vaste klasse `sfp-boekkaart`, zodat het LatePoint-snippet er later de eerstvolgende plek, het Google-cijfer en de mobiele knop aan kan koppelen.
+- Blokstijl Label (boven een kop) op de alinea: kopfont, 12 px, hoofdletters, in de kleur van links.
+- Onderdeel Formulierbewaking: de route GET /sfp/v1/logs (zelfde adres, parameters, rechten en antwoord) en de dagelijkse controle (testinzending afschermen en opruimen, mail bij een formulierfout van een bezoeker), overgenomen uit de snippets "Formulieren: logs uitlezen voor de cloudcontrole" en "Formulieren: dagelijkse controle". Zolang die snippets aan staan, doen zij het werk en registreert de plugin niets dubbel.
+
+### Gewijzigd
+- Kolommen, indeling boeking: twee kolommen vanaf 768 px (was 981 px), zoals de DPS-kaart.
+
+## [3.24.0-beta.1] - 2026-11-01
+
+Proefversie met drie onderdelen in één release (fase A, besluiten Stephan 1-11): meten van toolgebruik, de boekkaart in Kolommen met indeling boeking, en het onderdeel Formulierbewaking. Proef op SwS, DPS en SFP.
+
+Terugdraaien: versie 3.23.0 terugzetten (zip uit de tag v3.23.0, map sfp-page-config).
+
+### Toegevoegd
+- Toolmotor: events voor GTM. Elke tool op de motor pusht `sfp_tool` naar window.dataLayer (alleen als die bestaat) met actie (start, stap, afgerond, kopieren, download_pdf, download_word, slides_prompt, opnieuw), tool_id, tool_slug, stap_nummer, stap_totaal en weergave (kaart of lijst). Geen GA-code, geen toestemmingslogica, geen antwoorden of tekst. Start bij de eerste interactie, afgerond een keer per sessie per tool. Beschreven in assets/tool/LEESMIJ.md.
+- Toolmotor: een sectie van de uitvoer kan `"meet": "slides_prompt"` krijgen; tekst kopiëren uit dat deel geeft die actie.
+- Kolommen, indeling boeking: de boekkaart van DPS in de plugin. Kaart met rand en schaduw, kolommen 45/55 vanaf 768 px, tekst in Tint 2 met kop in hoofdletters, vinkjes in de pijlrol, naam met portret onderaan en een rol als tweede regel, kalender zonder schaduw en verticaal gecentreerd, mobiel een kolom met bovenrand in de pijlrol en zonder introtekst. Radius 6 px. Alleen merkrollen.
+- De kaart draagt de vaste klasse `sfp-boekkaart`, zodat het LatePoint-snippet er later de eerstvolgende plek, het Google-cijfer en de mobiele knop aan kan koppelen.
+- Blokstijl Label (boven een kop) op de alinea: kopfont, 12 px, hoofdletters, in de kleur van links.
+- Onderdeel Formulierbewaking: de route GET /sfp/v1/logs (zelfde adres, parameters, rechten en antwoord) en de dagelijkse controle (testinzending afschermen en opruimen, mail bij een formulierfout van een bezoeker), overgenomen uit de snippets "Formulieren: logs uitlezen voor de cloudcontrole" en "Formulieren: dagelijkse controle". Zolang die snippets aan staan, doen zij het werk en registreert de plugin niets dubbel.
+
+### Gewijzigd
+- Kolommen, indeling boeking: twee kolommen vanaf 768 px (was 981 px), zoals de DPS-kaart.
+
 ## [3.23.0] - 2026-11-01
 
 Nieuw blok Merkwaarden. De tekst staat in de merkbron en komt daar live vandaan; de plugin bevat alleen de vorm. Voor bezoekers verandert er niets tot een pagina het blok krijgt.

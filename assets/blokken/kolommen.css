@@ -11,12 +11,35 @@
 :root .sfp-kolommen--tekst-beeld{gap:clamp(28px,4vw,56px);align-items:center}
 :root .sfp-kolommen--tekst-boek{gap:clamp(32px,6vw,96px);align-items:center}
 :root .sfp-kolommen--tekst-boek>.sfp-kolom{row-gap:18px;max-width:620px}
-:root .sfp-kolommen--boeking{border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);overflow:hidden;background:var(--sfp-b-wit);gap:0}
+
+/* Indeling boeking: de boekkaart (3.24.0), gelijk aan de DPS-kaart uit het snippet "LatePoint: boekkaart in
+   merkrollen" v1.6, met radius 6 px. Tekst links in Tint 2, LatePoint rechts. Kolommen 45/55 vanaf 768 px.
+   De kaart draagt ook de klasse sfp-boekkaart: daar haakt het LatePoint-snippet op in. */
+:root .sfp-kolommen--boeking{max-width:1140px;margin:0 auto;gap:0;background:var(--sfp-b-wit);border:1px solid color-mix(in srgb,var(--sfp-b-primair) 8%,transparent);border-radius:var(--sfp-b-r-kaart);box-shadow:0 14px 40px color-mix(in srgb,var(--sfp-b-primair) 7%,transparent);overflow:hidden}
 :root .sfp-kolommen--boeking>*{align-self:stretch;height:auto}
-:root .sfp-kolommen--boeking>:first-child{background:var(--sfp-b-tint2);padding:32px;row-gap:18px}
-:root .sfp-kolommen--boeking>:not(:first-child){padding:28px 32px;display:block}
-.sfp-kolommen--boeking .latepoint-book-form-wrapper{margin:0}
-:root .sfp-kolommen--boeking .sfp-kolom>p+p{margin-top:0}
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{display:flex;flex-direction:column;gap:16px;background:var(--sfp-b-tint2);color:var(--sfp-b-primair);padding:40px 40px 32px;overflow-wrap:normal;word-break:normal;hyphens:manual}
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>*{margin:0}
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>:is(h2,h3){font-family:var(--sfp-b-kop);font-weight:var(--sfp-kopfont-gewicht,900);text-transform:uppercase;color:var(--sfp-b-primair);font-size:26px;line-height:1.15;padding:0;text-wrap:balance}
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>p:not([class*="is-style-"]){font-size:15px;line-height:1.55;color:var(--sfp-b-body)}
+/* Vinkjes in de pijlrol, zonder cirkel; een vetgedrukt begin blijft vet. */
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>:is(ul,ol){list-style:none;padding:0;display:grid;gap:8px}
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>:is(ul,ol)>li{list-style:none;position:relative;padding-left:24px;margin:0;font-size:15px;line-height:1.45;color:var(--sfp-b-body)}
+.sfp-kolommen--boeking>.sfp-kolom:first-child>:is(ul,ol)>li::marker{content:""}
+.sfp-kolommen--boeking>.sfp-kolom:first-child>:is(ul,ol)>li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--sfp-rol-pijl,var(--sfp-b-primair));font-size:15px;line-height:inherit;font-weight:900}
+/* Naam met portret onderaan de kolom; de rol als tweede regel (na een regeleinde of in een span na de naam). */
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>.is-style-sfp-wie{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:12px;align-items:center;margin-top:auto;padding-top:4px;font-size:13px;line-height:1.35;color:color-mix(in srgb,var(--sfp-b-body) 75%,transparent)}
+.sfp-kolommen--boeking .is-style-sfp-wie img{grid-column:1;grid-row:1/span 2;width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 4px 14px color-mix(in srgb,var(--sfp-b-primair) 15%,transparent)}
+.sfp-kolommen--boeking .is-style-sfp-wie:not(:has(br,span)) img{grid-row:auto}
+.sfp-kolommen--boeking .is-style-sfp-wie :is(strong,span){grid-column:2;display:block}
+:root .sfp-kolommen--boeking .is-style-sfp-wie strong{font-size:15px;line-height:1.35;color:var(--sfp-b-primair)}
+.sfp-kolommen--boeking .is-style-sfp-wie br{display:none}
+/* Kalender: zonder eigen schaduw, verticaal gecentreerd, kop in het kopfont. */
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:not(:first-child){display:flex;flex-direction:column;justify-content:center;padding:12px 0}
+.sfp-kolommen--boeking :is(.latepoint-book-form-wrapper,.wp-block-latepoint-book-form){margin:0;width:100%}
+.sfp-kolommen--boeking .latepoint-w{margin:0 !important;width:100%}
+.sfp-kolommen--boeking .latepoint-w.latepoint-w .latepoint-booking-form-element{box-shadow:none !important;border-radius:0;margin:0 !important;width:100%}
+.sfp-kolommen--boeking .latepoint-w.latepoint-w .latepoint-form-w{width:100% !important;flex:1 1 auto !important;max-width:none}
+.sfp-kolommen--boeking .latepoint-w.latepoint-w .latepoint-heading-w .os-heading-text{font-family:var(--sfp-b-kop) !important;font-size:28px !important;line-height:1.15 !important;letter-spacing:0;text-transform:uppercase}
 :root .sfp-kolommen--breed-smal{gap:28px;align-items:center}
 .sfp-kolommen--breed-smal .sfp-lijst{justify-self:start;width:100%}
 
@@ -34,7 +57,6 @@
   :root .sfp-kolommen--drie{grid-template-columns:repeat(3,minmax(0,1fr))}
   :root .sfp-kolommen--tekst-beeld{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
   :root .sfp-kolommen--tekst-boek{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
-  :root .sfp-kolommen--boeking{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
   :root .sfp-kolommen--breed-smal{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:56px}
 }
 @media (max-width:980px){
@@ -42,8 +64,23 @@
   :root .sfp-kolommen--breed-smal>.sfp-kolom:first-child{display:contents}
   :root .sfp-kolommen--breed-smal .is-style-sfp-wachtlijst{order:2;margin-top:0}
 }
-@media (max-width:600px){
-  :root .sfp-kolommen--boeking>:first-child,:root .sfp-kolommen--boeking>:not(:first-child){padding:22px}
+@media (min-width:768px){
+  :root .sfp-kolommen--boeking{grid-template-columns:minmax(0,45fr) minmax(0,55fr)}
+}
+@media (min-width:768px) and (max-width:1024px){
+  :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{padding:32px 28px}
+}
+@media (max-width:767px){
+  :root .sfp-sectie:has(>.sfp-sectie__binnen>.sfp-kolommen--boeking){padding:24px 0}
+  :root .sfp-sectie>.sfp-sectie__binnen:has(>.sfp-kolommen--boeking){padding:0 16px}
+  :root .sfp-kolommen--boeking{border-top:3px solid var(--sfp-rol-pijl,var(--sfp-b-primair))}
+  :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{background:transparent;padding:24px 20px;gap:10px;border-bottom:1px solid color-mix(in srgb,var(--sfp-b-primair) 12%,transparent)}
+  :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>:is(h2,h3){font-size:18px;line-height:1.25}
+  :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>p:not([class*="is-style-"]){display:none}
+  :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:not(:first-child){padding:0}
+  .sfp-kolommen--boeking .latepoint-w.latepoint-w .latepoint-booking-form-element{background:transparent !important}
+  .sfp-kolommen--boeking .latepoint-w .latepoint-heading-w{padding-top:24px !important;padding-bottom:8px !important;border-bottom:0 !important}
+  .sfp-kolommen--boeking .latepoint-w.latepoint-w .latepoint-heading-w .os-heading-text{font-size:18px !important;line-height:1.25 !important}
 }
 
 /* wachtlijst: e-mailveld en knop op één lijn, even hoog; veld altijd wit */

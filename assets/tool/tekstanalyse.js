@@ -229,6 +229,7 @@
 		function toon( an ) {
 			resultaat.innerHTML = '';
 			resultaat.hidden = false;
+			tool.afgerond();
 			var tot = an.totaal;
 			resultaat.appendChild( el( 'h3', { class: 'sfp-tool__kop sfp-tool__kop--resultaat', tabindex: '-1', text: b.resultaat_kop ? R.vul( b, b.resultaat_kop, tot ) : tool.titel } ) );
 			if ( b.resultaat_intro ) { M.alineas( R.vul( b, b.resultaat_intro, tot ) ).forEach( function ( x ) { resultaat.appendChild( el( 'p', { class: 'sfp-tool__tekst', text: x } ) ); } ); }
@@ -278,11 +279,11 @@
 			var naam = acties.pdf_bestandsnaam ? R.vul( b, acties.pdf_bestandsnaam, tot ).replace( /[\\\/:*?"<>|]+/g, '' ).trim().slice( 0, 80 ) || tool.bestandsnaam() : tool.bestandsnaam();
 			if ( acties.pdf !== false ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_pdf' ), onclick: function () { bestand( this, tool.pdf( blokken( an ), naam ) ); } } ) ); }
 			if ( acties.word !== false ) { links.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_word' ), onclick: function () { bestand( this, tool.word( blokken( an ), naam ) ); } } ) ); }
-			if ( acties.kopieer ) { links.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_kopieer' ), onclick: function () { var tk = R.platteTekst( tool.titel, blokken( an ).slice( 1 ), {}, false ); if ( navigator.clipboard ) { navigator.clipboard.writeText( tk ).then( function () { dm.textContent = tx( 'tool_gekopieerd' ); dm.hidden = false; } ); } } } ) ); }
+			if ( acties.kopieer ) { links.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_kopieer' ), onclick: function () { var tk = R.platteTekst( tool.titel, blokken( an ).slice( 1 ), {}, false ); if ( navigator.clipboard ) { navigator.clipboard.writeText( tk ).then( function () { dm.textContent = tx( 'tool_gekopieerd' ); dm.hidden = false; tool.meet( 'kopieren' ); } ); } } } ) ); }
 			rij.appendChild( links );
 			resultaat.appendChild( rij );
 			resultaat.appendChild( dm );
-			resultaat.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink sfp-tool__opnieuw', text: tx( 'tool_opnieuw' ), onclick: function () { veld.value = ''; teller.textContent = tx( 'tool_tekens', 0, inv.max_tekens || 5000 ); resultaat.hidden = true; resultaat.innerHTML = ''; veld.focus(); } } ) );
+			resultaat.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink sfp-tool__opnieuw', text: tx( 'tool_opnieuw' ), onclick: function () { tool.meet( 'opnieuw' ); veld.value = ''; teller.textContent = tx( 'tool_tekens', 0, inv.max_tekens || 5000 ); resultaat.hidden = true; resultaat.innerHTML = ''; veld.focus(); } } ) );
 			if ( acties.duimpjes !== false ) { resultaat.appendChild( tool.duimWidget() ); }
 			if ( tool.formulier ) { tool.formulier.hidden = false; }
 			var kop = resultaat.querySelector( '.sfp-tool__kop' );

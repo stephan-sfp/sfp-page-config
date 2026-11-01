@@ -625,7 +625,12 @@
 			if ( 'alineas' === type ) { lijst.forEach( function ( x ) { blokken.push( { type: 'tekst', tekst: x } ); } ); return; }
 			blokken.push( { type: 'lijst', items: lijst, nummers: !! s.nummers } );
 		}
-		( b.uitvoer || [] ).forEach( function ( s, i ) { sectie( s, null, String( i ) ); } );
+		( b.uitvoer || [] ).forEach( function ( s, i ) {
+			var voor = blokken.length;
+			sectie( s, null, String( i ) );
+			/* Een deel met een eigen actie voor het meten (3.24.0), bijvoorbeeld meet "slides_prompt". */
+			if ( s && 'string' === typeof s.meet && s.meet ) { for ( var k = voor; k < blokken.length; k++ ) { blokken[ k ].meet = s.meet; } }
+		} );
 		return blokken;
 	}
 

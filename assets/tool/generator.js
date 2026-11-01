@@ -208,6 +208,7 @@
 		}
 		function toon( i ) {
 			huidig = i;
+			if ( i < stappen.length ) { tool.stap( i + 1, stappen.length ); } else { tool.afgerond(); }
 			toonMelding( '' );
 			if ( kaart ) {
 				/* Alle vragen liggen op dezelfde plek; de hoogste bepaalt de hoogte, dus niets verspringt. */
@@ -282,6 +283,7 @@
 			inhoud.innerHTML = '';
 			blokken = blokken || huidigeBlokken();
 			if ( b.live && ontbreekt( b, antwoorden, stappen[ 0 ] || { velden: [] } ).length ) { return; }
+			if ( b.live ) { tool.afgerond(); }
 			var voortgang = null, totaalVink = 0;
 			function telVink() { if ( ! voortgang ) { return; } var n = vinkjes( antwoorden ).filter( function ( id ) { return alleIds.indexOf( id ) >= 0; } ).length; voortgang.textContent = tx( 'tool_afgevinkt', n, totaalVink ); }
 			var alleIds = [];
@@ -290,6 +292,16 @@
 			if ( 'checklist' === b.soort && totaalVink ) { voortgang = el( 'p', { class: 'sfp-tool__voortgang sfp-tool__voortgang--vink', 'aria-live': 'polite' } ); inhoud.appendChild( voortgang ); telVink(); }
 			var doel = inhoud;
 			blokken.forEach( function ( bl, bi ) {
+				/* Een deel met een eigen actie (sleutel meet): alles wat dit blok toevoegt krijgt data-sfp-meet. */
+				var plek = doel, voor = doel.childNodes.length, plekInhoud = inhoud.childNodes.length;
+				toonBlok( bl, bi );
+				if ( bl.meet ) {
+					[ [ plek, voor ], [ inhoud, plekInhoud ] ].forEach( function ( p ) {
+						for ( var k = p[ 1 ]; k < p[ 0 ].childNodes.length; k++ ) { if ( 1 === p[ 0 ].childNodes[ k ].nodeType ) { p[ 0 ].childNodes[ k ].setAttribute( 'data-sfp-meet', bl.meet ); } }
+					} );
+				}
+			} );
+			function toonBlok( bl, bi ) {
 				if ( kaart && 'subkop' === bl.type ) {
 					var blokIn = el( 'div', { class: 'sfp-tool__blokin' } );
 					inhoud.appendChild( el( 'details', { class: 'sfp-tool__blok' }, [ el( 'summary', null, [ el( 'span', { text: bl.tekst } ) ] ), blokIn ] ) );
@@ -349,7 +361,7 @@
 					lijst.appendChild( li );
 				} );
 				doel.appendChild( lijst );
-			} );
+			}
 		}
 		function toonActies() {
 			var rij = el( 'div', { class: 'sfp-tool__acties sfp-tool__acties--uitslag' } );
@@ -362,7 +374,7 @@
 			if ( aan( 'kopieer' ) ) { rijLinks.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_kopieer' ), onclick: function () {
 				var kopTekst = b.resultaat_kop ? vul( b.resultaat_kop, b, antwoorden ) : tool.titel;
 				var tekst = platteTekst( kopTekst, ( ! acties.kopieer_kaal && b.resultaat_intro ? [ { type: 'tekst', tekst: vul( b.resultaat_intro, b, antwoorden ) } ] : [] ).concat( huidigeBlokken() ), invul, !! acties.kopieer_kaal );
-				if ( navigator.clipboard && navigator.clipboard.writeText ) { navigator.clipboard.writeText( tekst ).then( function () { kort( tx( 'tool_gekopieerd' ) ); tool.zeg( tx( 'tool_gekopieerd' ) ); }, function () { kort( tx( 'tool_bestand_fout' ) ); } ); } else { kort( tx( 'tool_bestand_fout' ) ); }
+				if ( navigator.clipboard && navigator.clipboard.writeText ) { navigator.clipboard.writeText( tekst ).then( function () { kort( tx( 'tool_gekopieerd' ) ); tool.zeg( tx( 'tool_gekopieerd' ) ); tool.meet( 'kopieren' ); }, function () { kort( tx( 'tool_bestand_fout' ) ); } ); } else { kort( tx( 'tool_bestand_fout' ) ); }
 			} } ) ); }
 			if ( aan( 'word' ) ) { rijLinks.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_word' ), onclick: function () { bestand( this, tool.word( voorBestand(), naam() ) ); } } ) ); }
 			var mailbox = null;
@@ -433,6 +445,7 @@
 			return a;
 		}
 		function opnieuw() {
+			tool.meet( 'opnieuw' );
 			tool.wisBewaard();
 			invul = {}; bewerkt = null;
 			Array.prototype.forEach.call( app.querySelectorAll( 'input[type=radio], input[type=checkbox]' ), function ( i ) { i.checked = false; } );
