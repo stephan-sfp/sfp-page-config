@@ -274,7 +274,11 @@
 	/* sfp/held */
 	blok( 'sfp/held', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-held sfp-held--recht' + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) } );
+		/* Zoals op de site (3.22.0): met een tool erin krijgt de held de klasse sfp-held--tool, dus tekst links en de tool rechts. */
+		var metTool = wp.data.useSelect( function ( select ) {
+			return ( select( 'core/block-editor' ).getBlocks( props.clientId ) || [] ).some( function ( x ) { return 'sfp/tool' === x.name; } );
+		}, [ props.clientId ] );
+		var blockProps = useBlockProps( { className: 'sfp-held sfp-held--recht' + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) + ( metTool ? ' sfp-held--tool' : '' ) } );
 		var inner = useInnerBlocksProps( { className: 'sfp-held__binnen' }, {
 			template: [
 				[ 'core/heading', { level: 1 } ],
@@ -1532,5 +1536,35 @@
 				);
 			};
 		}, 'sfpLijstMarkeren' ) );
+	}() );
+
+	/*
+	 * Paginatitel in de editor (3.22.0): verborgen waar hij op de site ook
+	 * niet staat. Astra bewaart "titel uit" als meta site-post-title =
+	 * disabled; een pagina die met de held begint, toont de titel in de held.
+	 */
+	( function () {
+		if ( ! wp.data || ! wp.data.subscribe ) {
+			return;
+		}
+		var vorige = null;
+		function canvasBody() {
+			var f = document.querySelector( 'iframe[name="editor-canvas"]' );
+			try { return f && f.contentDocument ? f.contentDocument.body : document.body; } catch ( e ) { return document.body; }
+		}
+		wp.data.subscribe( function () {
+			var ed = wp.data.select( 'core/editor' );
+			var be2 = wp.data.select( 'core/block-editor' );
+			if ( ! ed || ! be2 ) { return; }
+			var meta = ed.getEditedPostAttribute ? ( ed.getEditedPostAttribute( 'meta' ) || {} ) : {};
+			var eerste = ( be2.getBlocks() || [] )[ 0 ];
+			var uit = 'disabled' === meta[ 'site-post-title' ] || !! ( eerste && 'sfp/held' === eerste.name );
+			var body = canvasBody();
+			if ( body && ( uit !== vorige || ! body.classList.contains( 'sfp-titel-uit' ) === uit ) ) {
+				body.classList.toggle( 'sfp-titel-uit', uit );
+				if ( body !== document.body ) { document.body.classList.toggle( 'sfp-titel-uit', uit ); }
+				vorige = uit;
+			}
+		} );
 	}() );
 }( window.wp ) );

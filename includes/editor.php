@@ -622,14 +622,19 @@ function sfp_page_config_tool_canvas_css() {
         return;
     }
     $scherm = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-    if ( ! $scherm || 'tool' !== $scherm->post_type || ! sfp_page_config_tool_aan() ) {
+    if ( ! $scherm || ! $scherm->is_block_editor() || ! sfp_page_config_tool_aan() ) {
         return;
     }
+    // Sinds 3.22.0 in elke blokeditor: het blok Tool toont zijn eerste
+    // scherm ook op een pagina (bijvoorbeeld in de held), niet alleen op de
+    // pagina van de tool zelf.
     wp_enqueue_style( 'sfp-tool-editor', sfp_page_config_asset_url( 'tool/tool.css' ), array(), SFP_PAGE_CONFIG_VERSION );
     foreach ( array( 'generator', 'tekstanalyse', 'kaart' ) as $sfp_deel ) {
         wp_enqueue_style( 'sfp-tool-editor-' . $sfp_deel, sfp_page_config_asset_url( 'tool/tool-' . $sfp_deel . '.css' ), array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
     }
-    wp_enqueue_style( 'sfp-tool-canvas', sfp_page_config_asset_url( 'editor/tool-canvas.css' ), array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
+    if ( 'tool' === $scherm->post_type ) {
+        wp_enqueue_style( 'sfp-tool-canvas', sfp_page_config_asset_url( 'editor/tool-canvas.css' ), array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
+    }
 }
 
 /* =========================================================================
