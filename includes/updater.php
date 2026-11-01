@@ -307,16 +307,19 @@ class SFP_Page_Config_Updater {
             $this->github_repo
         );
 
-        $response = wp_remote_get( $url, array(
-            'timeout' => 15,
-            'headers' => array(
-                'Accept'     => 'application/vnd.github.v3+json',
-                // GitHub's API requires a User-Agent. Without it the
-                // response is 403. Using the plugin slug + version makes
-                // the request identifiable in rate-limit diagnostics.
-                'User-Agent' => 'SFP-Page-Config/' . $this->plugin_version . ' (+https://schoolforprofessionals.com)',
-            ),
-        ) );
+        $response = wp_remote_get(
+            $url,
+            array(
+                'timeout' => 15,
+                'headers' => array(
+                    'Accept'     => 'application/vnd.github.v3+json',
+                    // GitHub's API requires a User-Agent. Without it the
+                    // response is 403. Using the plugin slug + version makes
+                    // the request identifiable in rate-limit diagnostics.
+                    'User-Agent' => 'SFP-Page-Config/' . $this->plugin_version . ' (+https://schoolforprofessionals.com)',
+                ),
+            )
+        );
 
         if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
             set_transient( $key . '_fout', 1, 15 * MINUTE_IN_SECONDS );
@@ -448,8 +451,8 @@ class SFP_Page_Config_Updater {
             'homepage'      => 'https://github.com/' . $this->github_user . '/' . $this->github_repo,
             'download_link' => $release->download_url,
             'sections'      => array(
-                'description'  => 'Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.',
-                'changelog'    => nl2br( esc_html( $release->body ) ),
+                'description' => 'Centrale paginaconfiguratie, cursusdata, sales-page styling, longread-modus en shortcodes voor het School for Professionals netwerk.',
+                'changelog'   => nl2br( esc_html( $release->body ) ),
             ),
         );
 
@@ -521,10 +524,10 @@ function sfp_page_config_updater_rest() {
                 $aanbod  = is_object( $updates ) && isset( $updates->response[ $slug ] ) ? $updates->response[ $slug ] : null;
                 return rest_ensure_response(
                     array(
-                        'kanaal'      => '' === SFP_Page_Config_Updater::kanaal() ? 'gewoon' : 'proef',
+                        'kanaal'        => '' === SFP_Page_Config_Updater::kanaal() ? 'gewoon' : 'proef',
                         'geinstalleerd' => SFP_PAGE_CONFIG_VERSION,
-                        'aangeboden'  => $aanbod ? $aanbod->new_version : '',
-                        'pakket'      => $aanbod ? $aanbod->package : '',
+                        'aangeboden'    => $aanbod ? $aanbod->new_version : '',
+                        'pakket'        => $aanbod ? $aanbod->package : '',
                     )
                 );
             },

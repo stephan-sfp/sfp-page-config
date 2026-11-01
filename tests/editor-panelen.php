@@ -38,7 +38,12 @@ $GLOBALS['types']      = array();
 $GLOBALS['paginas']    = array(); // id => array( uri, status, type )
 $GLOBALS['redirect']   = null;
 $GLOBALS['is404']      = false;
-$GLOBALS['aan']        = array( 'reviews' => true, 'berichttypes' => true, 'tools' => false, 'artikel' => true );
+$GLOBALS['aan']        = array(
+    'reviews'      => true,
+    'berichttypes' => true,
+    'tools'        => false,
+    'artikel'      => true
+);
 
 class WP_Error {
     public $code;
@@ -215,10 +220,10 @@ function stub_functies( $bestand, array $namen ) {
         if ( false === $start ) {
             throw new Exception( "$naam niet gevonden in $bestand" );
         }
-        $open  = strpos( $code, '{', $start );
-        $diep  = 0;
-        $i     = $open;
-        $len   = strlen( $code );
+        $open = strpos( $code, '{', $start );
+        $diep = 0;
+        $i    = $open;
+        $len  = strlen( $code );
         for ( ; $i < $len; $i++ ) {
             if ( '{' === $code[ $i ] ) {
                 $diep++;
@@ -245,8 +250,24 @@ function sfp_page_config_artikel_posttypes() {
 
 SFP_Reviews_Manual::save_all(
     array(
-        array( 'id' => 'mr_1', 'author' => 'Anne', 'rating' => 5, 'time' => '', 'datum' => '2026-01-02', 'text' => 'Goed.', 'vermelding' => 'Vertaald', 'photo' => '' ),
-        array( 'id' => 'mr_2', 'author' => 'Bas', 'rating' => 4, 'time' => '6 maanden geleden', 'text' => 'Fijn.', 'photo' => '' ),
+        array(
+            'id'         => 'mr_1',
+            'author'     => 'Anne',
+            'rating'     => 5,
+            'time'       => '',
+            'datum'      => '2026-01-02',
+            'text'       => 'Goed.',
+            'vermelding' => 'Vertaald',
+            'photo'      => ''
+        ),
+        array(
+            'id'     => 'mr_2',
+            'author' => 'Bas',
+            'rating' => 4,
+            'time'   => '6 maanden geleden',
+            'text'   => 'Fijn.',
+            'photo'  => ''
+        ),
     )
 );
 
@@ -258,24 +279,54 @@ same( 1, preg_match( '#' . $args['datum']['pattern'] . '#', '' ), 'datumpatroon 
 same( 0, preg_match( '#' . $args['datum']['pattern'] . '#', '29-10-2026' ), 'datumpatroon weigert een andere vorm' );
 same( true, sfp_page_config_reviews_eigen_args( true )['id']['required'], 'bijwerken: id verplicht' );
 
-$r = sfp_page_config_reviews_eigen_bewaar( array( 'id' => 'mr_1', 'text' => 'Heel goed.' ), true );
+$r = sfp_page_config_reviews_eigen_bewaar(
+    array(
+        'id'   => 'mr_1',
+        'text' => 'Heel goed.'
+    ),
+    true
+);
 same( 'Heel goed.', $r['text'], 'samenvoegen: tekst bijgewerkt' );
 same( 'Vertaald', $r['vermelding'], 'samenvoegen: vermelding blijft' );
 same( '2026-01-02', $r['datum'], 'samenvoegen: datum blijft' );
 same( 5, $r['rating'], 'samenvoegen: sterren blijven' );
 
-$r = sfp_page_config_reviews_eigen_bewaar( array( 'id' => 'mr_2', 'author' => 'Bas', 'text' => 'Fijn.', 'rating' => '3' ) );
+$r = sfp_page_config_reviews_eigen_bewaar(
+    array(
+        'id'     => 'mr_2',
+        'author' => 'Bas',
+        'text'   => 'Fijn.',
+        'rating' => '3'
+    )
+);
 same( 3, $r['rating'], 'beheer: sterren als tekst worden een getal' );
 same( '', $r['time'], 'beheer stuurt alles: zonder time is time leeg' );
 
-$e = sfp_page_config_reviews_eigen_bewaar( array( 'id' => 'mr_bestaat_niet', 'author' => 'X', 'text' => 'Y' ) );
+$e = sfp_page_config_reviews_eigen_bewaar(
+    array(
+        'id'     => 'mr_bestaat_niet',
+        'author' => 'X',
+        'text'   => 'Y'
+    )
+);
 same( 404, is_wp_error( $e ) ? $e->get_error_data()['status'] : 0, 'onbekend id: 404' );
 same( 2, count( SFP_Reviews_Manual::get_all() ), 'onbekend id: niets toegevoegd' );
 
-$e = sfp_page_config_reviews_eigen_bewaar( array( 'author' => '  ', 'text' => 'Y' ) );
+$e = sfp_page_config_reviews_eigen_bewaar(
+    array(
+        'author' => '  ',
+        'text'   => 'Y'
+    )
+);
 same( 400, is_wp_error( $e ) ? $e->get_error_data()['status'] : 0, 'lege naam: 400' );
 
-$nieuw = sfp_page_config_reviews_eigen_bewaar( array( 'author' => 'Cor', 'text' => 'Top.', 'rating' => 5 ) );
+$nieuw = sfp_page_config_reviews_eigen_bewaar(
+    array(
+        'author' => 'Cor',
+        'text'   => 'Top.',
+        'rating' => 5
+    )
+);
 same( true, is_array( $nieuw ) && 0 === strpos( $nieuw['id'], 'mr_' ), 'toevoegen geeft de nieuwe review met id' );
 same( 3, count( SFP_Reviews_Manual::get_all() ), 'toevoegen: drie reviews' );
 
@@ -300,13 +351,23 @@ same( true, $GLOBALS['registratie']['sfp-reviews/list']['meta']['annotations']['
 
 $l = sfp_page_config_reviews_ability_lijst();
 same( 3, $l['aantal'], 'list: drie' );
-$u = sfp_page_config_reviews_ability_bijwerken( array( 'id' => 'mr_1', 'vermelding' => '' ) );
+$u = sfp_page_config_reviews_ability_bijwerken(
+    array(
+        'id'         => 'mr_1',
+        'vermelding' => ''
+    )
+);
 same( 'Heel goed.', $u['review']['text'], 'ability update: tekst blijft' );
 same( '', $u['review']['vermelding'], 'ability update: vermelding leeg gemaakt' );
 $w = sfp_page_config_reviews_ability_weg( array( 'id' => $nieuw['id'] ) );
 same( 'sfp_reviews_geen_akkoord', is_wp_error( $w ) ? $w->get_error_code() : '', 'delete zonder akkoord weigert' );
 same( 3, count( SFP_Reviews_Manual::get_all() ), 'delete zonder akkoord: niets weg' );
-$w = sfp_page_config_reviews_ability_weg( array( 'id' => $nieuw['id'], 'akkoord_stephan' => true ) );
+$w = sfp_page_config_reviews_ability_weg(
+    array(
+        'id'              => $nieuw['id'],
+        'akkoord_stephan' => true
+    )
+);
 same( $nieuw['id'], $w['weggehaald'] ?? '', 'delete met akkoord' );
 same( 2, count( SFP_Reviews_Manual::get_all() ), 'delete met akkoord: twee over' );
 same( 404, sfp_page_config_reviews_eigen_weg( 'mr_weg' )->get_error_data()['status'], 'weg: onbekend id 404' );
@@ -321,9 +382,21 @@ zet_aan( 'reviews', true );
 
 /* ---------- Pdf-adres ---------- */
 
-$GLOBALS['paginas'][964]   = array( 'uri' => 'presentation-self-assessment', 'status' => 'publish', 'type' => 'page' );
-$GLOBALS['paginas'][32218] = array( 'uri' => 'presentatietest', 'status' => 'publish', 'type' => 'page' );
-$GLOBALS['paginas'][77]    = array( 'uri' => 'ouder/teste', 'status' => 'publish', 'type' => 'page' );
+$GLOBALS['paginas'][964]   = array(
+    'uri'    => 'presentation-self-assessment',
+    'status' => 'publish',
+    'type'   => 'page'
+);
+$GLOBALS['paginas'][32218] = array(
+    'uri'    => 'presentatietest',
+    'status' => 'publish',
+    'type'   => 'page'
+);
+$GLOBALS['paginas'][77]    = array(
+    'uri'    => 'ouder/teste',
+    'status' => 'publish',
+    'type'   => 'page'
+);
 same( 'presentation-self-assessment/result', sfp_zelftest_pdf_pad_vanzelf( 964, 'en' ), 'SwS: gelijk aan het huidige adres' );
 same( 'presentatietest/resultaat', sfp_zelftest_pdf_pad_vanzelf( 32218, 'nl' ), 'DPS: gelijk aan het huidige adres' );
 same( 'ouder/teste/resultado', sfp_zelftest_pdf_pad_vanzelf( 77, 'pt' ), 'pt en een onderliggende pagina' );
@@ -332,21 +405,27 @@ same( 'presentatietest/result', sfp_zelftest_pdf_pad_vanzelf( 32218, '' ), 'zond
 
 /* ---------- Berichttypes: namen in het beheer, norm en doorsturen ---------- */
 
-$GLOBALS['types']['begrippen'] = (object) array(
+$GLOBALS['types']['begrippen']               = (object) array(
     'name'    => 'begrippen',
     'label'   => 'Begrippen',
-    'labels'  => (object) array( 'name' => 'Begrippen', 'singular_name' => 'Begrip' ),
+    'labels'  => (object) array(
+        'name'          => 'Begrippen',
+        'singular_name' => 'Begrip'
+    ),
     'rewrite' => array( 'slug' => 'glossary' ),
 );
-$GLOBALS['types']['tool'] = (object) array(
+$GLOBALS['types']['tool']                    = (object) array(
     'name'         => 'tool',
     'label'        => 'Tools',
-    'labels'       => (object) array( 'name' => 'Tools', 'singular_name' => 'Tool' ),
+    'labels'       => (object) array(
+        'name'          => 'Tools',
+        'singular_name' => 'Tool'
+    ),
     'rewrite'      => array( 'slug' => 'tools' ),
     'show_in_menu' => true,
 );
 $GLOBALS['types']['begrippen']->labels->name = 'Glossary';
-$GLOBALS['admin'] = true;
+$GLOBALS['admin']                            = true;
 sfp_page_config_berichttypes_beheer();
 same( 'Begrippen', $GLOBALS['types']['begrippen']->labels->name, 'beheer: begrippen in het Nederlands' );
 same( 'Nieuw begrip toevoegen', $GLOBALS['types']['begrippen']->labels->add_new_item, 'beheer: het begrip' );
@@ -360,17 +439,44 @@ $GLOBALS['admin'] = false;
 update_option(
     'sfp_settings',
     array(
-        'berichttypes' => array(
-            'begrippen' => array( 'slug' => 'begrippen', 'with_front' => false, 'rest_base' => 'begrippen', 'labels' => array( 'name' => 'Begrippen', 'singular_name' => 'Begrip' ) ),
-            'tool'      => array( 'slug' => 'tools', 'with_front' => false, 'rest_base' => 'tool', 'labels' => array( 'name' => 'Tools' ) ),
+        'berichttypes'  => array(
+            'begrippen' => array(
+                'slug'       => 'begrippen',
+                'with_front' => false,
+                'rest_base'  => 'begrippen',
+                'labels'     => array(
+                    'name'          => 'Begrippen',
+                    'singular_name' => 'Begrip'
+                )
+            ),
+            'tool'      => array(
+                'slug'       => 'tools',
+                'with_front' => false,
+                'rest_base'  => 'tool',
+                'labels'     => array( 'name' => 'Tools' )
+            ),
         ),
         'eigen_sleutel' => 'blijft',
         'onderdelen'    => get_option( 'sfp_settings' )['onderdelen'],
     )
 );
-same( array( 'nu' => 'begrippen', 'norm' => 'glossary' ), sfp_page_config_berichttype_afwijking( 'begrippen' ), 'SLB: adres wijkt af' );
+same(
+    array(
+        'nu'   => 'begrippen',
+        'norm' => 'glossary'
+    ),
+    sfp_page_config_berichttype_afwijking( 'begrippen' ),
+    'SLB: adres wijkt af'
+);
 same( null, sfp_page_config_berichttype_afwijking( 'tool' ), 'tools: geen afwijking' );
-$af = array_values( array_filter( sfp_page_config_afwijkingen(), function ( $a ) { return 'berichttypes.begrippen' === $a['pad']; } ) );
+$af = array_values(
+    array_filter(
+        sfp_page_config_afwijkingen(),
+        function ( $a ) {
+            return 'berichttypes.begrippen' === $a['pad'];
+        }
+    )
+);
 same( '/glossary/', $af[0]['norm'] ?? '', 'Overzicht toont de afwijking met de norm' );
 same( true, sfp_page_config_instelling_naar_norm( 'berichttypes.begrippen' ), 'terug naar de norm' );
 $alle = get_option( 'sfp_settings' );
@@ -383,8 +489,8 @@ same( false, sfp_page_config_instelling_naar_norm( 'berichttypes.begrippen' ), '
 
 // Doorsturen van het oude adres.
 $GLOBALS['types']['begrippen']->rewrite = array( 'slug' => 'glossary' );
-$GLOBALS['wp'] = (object) array( 'request' => 'begrippen/spreekangst' );
-$GLOBALS['is404'] = true;
+$GLOBALS['wp']                          = (object) array( 'request' => 'begrippen/spreekangst' );
+$GLOBALS['is404']                       = true;
 try {
     sfp_page_config_berichttypes_doorsturen();
 } catch ( StubRedirect $x ) {
@@ -408,8 +514,15 @@ $GLOBALS['is404'] = false;
 
 $instellingen = array(
     '__experimentalFeatures' => array(
-        'color'      => array( 'text' => true, 'background' => true, 'palette' => array( 'theme' => array( 1 ) ) ),
-        'typography' => array( 'fontSizes' => array( 'theme' => array( 1 ) ), 'customFontSize' => true ),
+        'color'      => array(
+            'text'       => true,
+            'background' => true,
+            'palette'    => array( 'theme' => array( 1 ) )
+        ),
+        'typography' => array(
+            'fontSizes'      => array( 'theme' => array( 1 ) ),
+            'customFontSize' => true
+        ),
         'blocks'     => array( 'core/button' => array( 'color' => array( 'text' => true ) ) ),
     ),
     'fontSizes'              => array( 1 ),
@@ -433,8 +546,16 @@ same( array( 'sfp-lead', 'sfp-pijl', 'sfp-klein' ), sfp_page_config_vorm_alineas
 
 /* ---------- Beheer: link van de eigen site als pagina ---------- */
 
-$GLOBALS['paginas'][31] = array( 'uri' => 'facts', 'status' => 'publish', 'type' => 'page' );
-$GLOBALS['paginas'][32] = array( 'uri' => 'oud', 'status' => 'draft', 'type' => 'page' );
+$GLOBALS['paginas'][31] = array(
+    'uri'    => 'facts',
+    'status' => 'publish',
+    'type'   => 'page'
+);
+$GLOBALS['paginas'][32] = array(
+    'uri'    => 'oud',
+    'status' => 'draft',
+    'type'   => 'page'
+);
 same( 31, sfp_page_config_beheer_eigen_pagina( 'https://example.test/facts/' ), 'eigen link wordt de pagina' );
 same( 0, sfp_page_config_beheer_eigen_pagina( 'https://elders.test/facts/' ), 'link van een andere site blijft een link' );
 same( 0, sfp_page_config_beheer_eigen_pagina( 'https://example.test/oud/' ), 'concept blijft een link' );
@@ -443,7 +564,14 @@ same( 0, sfp_page_config_beheer_eigen_pagina( 'https://example.test/oud/' ), 'co
 
 $sjabloon = sfp_page_config_begrip_sjabloon_blokken();
 same( array( 'sfp/definitie', 'sfp/in-een-talk', 'sfp/begrip-check' ), array_column( $sjabloon, 0 ), 'sjabloon: drie blokken in volgorde' );
-same( array( 'move' => true, 'remove' => true ), $sjabloon[0][1]['lock'], 'Definitie vast bovenaan' );
+same(
+    array(
+        'move'   => true,
+        'remove' => true
+    ),
+    $sjabloon[0][1]['lock'],
+    'Definitie vast bovenaan'
+);
 
 /* ---------- Teksten ---------- */
 

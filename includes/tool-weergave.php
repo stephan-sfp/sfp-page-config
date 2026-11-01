@@ -171,7 +171,7 @@ function sfp_page_config_tool_is_kaart( array $b ) {
 function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
     sfp_page_config_tool_motor();
     static $geteld = array();
-    $post = get_post( $post );
+    $post          = get_post( $post );
     if ( ! $post || 'tool' !== $post->post_type || ! sfp_page_config_tool_aan() ) {
         return '';
     }
@@ -196,8 +196,8 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
     $weergave = 'compact' === $weergave ? 'compact' : 'volledig';
     // Dezelfde tool twee keer op een pagina: de tweede krijgt een eigen id.
     $geteld[ $post->ID ] = isset( $geteld[ $post->ID ] ) ? $geteld[ $post->ID ] + 1 : 1;
-    $id       = 'sfp-tool-' . (int) $post->ID . ( $geteld[ $post->ID ] > 1 ? '-' . $geteld[ $post->ID ] : '' );
-    $titel    = sfp_page_config_tool_platte_titel( $post );
+    $id                  = 'sfp-tool-' . (int) $post->ID . ( $geteld[ $post->ID ] > 1 ? '-' . $geteld[ $post->ID ] : '' );
+    $titel               = sfp_page_config_tool_platte_titel( $post );
 
     $kaart = isset( $b['weergave']['modus'] ) && 'kaart' === $b['weergave']['modus'] ? ' sfp-tool--kaart' : '';
     $html  = '<div class="sfp-tool sfp-tool--' . esc_attr( $b['soort'] ) . ' sfp-tool--' . $weergave . $kaart . '" id="' . esc_attr( $id ) . '" data-tool="' . (int) $post->ID . '" data-slug="' . esc_attr( $post->post_name ) . '" data-titel="' . esc_attr( $titel ) . '" data-weergave="' . $weergave . '">';
@@ -298,7 +298,14 @@ function sfp_page_config_tool_shortcode() {
  * @return string
  */
 function sfp_page_config_tool_shortcode_render( $atts ) {
-    $atts = shortcode_atts( array( 'id' => 0, 'weergave' => 'volledig' ), (array) $atts, 'sfp_tool' );
+    $atts = shortcode_atts(
+        array(
+            'id'       => 0,
+            'weergave' => 'volledig'
+        ),
+        (array) $atts,
+        'sfp_tool'
+    );
     $id   = (int) $atts['id'];
     // Zonder id op de pagina van een tool: die tool zelf.
     if ( ! $id && sfp_page_config_is_tool( get_post() ) ) {
@@ -409,5 +416,14 @@ function sfp_page_config_tool_editor_lijst() {
             'soort' => $b ? $b['soort'] : '',
         );
     }
-    wp_add_inline_script( 'sfp-blokken-editor', 'window.sfpTools=' . wp_json_encode( array( 'tools' => $lijst, 'aan' => sfp_page_config_tool_aan() ) ) . ';', 'before' );
+    wp_add_inline_script(
+        'sfp-blokken-editor',
+        'window.sfpTools=' . wp_json_encode(
+            array(
+                'tools' => $lijst,
+                'aan'   => sfp_page_config_tool_aan()
+            )
+        ) . ';',
+        'before'
+    );
 }

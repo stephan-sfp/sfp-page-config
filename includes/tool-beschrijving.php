@@ -50,15 +50,15 @@ function sfp_page_config_tool_normaliseer( array $b ) {
     $b['versie'] = isset( $b['versie'] ) ? (int) $b['versie'] : 1;
     $b['soort']  = isset( $b['soort'] ) ? (string) $b['soort'] : '';
 
-    $weergave       = isset( $b['weergave'] ) && is_array( $b['weergave'] ) ? $b['weergave'] : array();
-    $intro          = isset( $weergave['intro'] ) && is_array( $weergave['intro'] ) ? $weergave['intro'] : array();
-    $b['weergave']  = array(
-        'modus'           => isset( $weergave['modus'] ) && in_array( $weergave['modus'], array( 'alles', 'per-groep' ), true ) ? $weergave['modus'] : 'per-vraag',
-        'stappen'         => isset( $weergave['stappen'] ) && is_array( $weergave['stappen'] ) ? array_values( array_map( 'strval', $weergave['stappen'] ) ) : array(),
-        'schaal'          => isset( $weergave['schaal'] ) && is_array( $weergave['schaal'] ) ? $weergave['schaal'] : array(),
+    $weergave      = isset( $b['weergave'] ) && is_array( $b['weergave'] ) ? $b['weergave'] : array();
+    $intro         = isset( $weergave['intro'] ) && is_array( $weergave['intro'] ) ? $weergave['intro'] : array();
+    $b['weergave'] = array(
+        'modus'            => isset( $weergave['modus'] ) && in_array( $weergave['modus'], array( 'alles', 'per-groep' ), true ) ? $weergave['modus'] : 'per-vraag',
+        'stappen'          => isset( $weergave['stappen'] ) && is_array( $weergave['stappen'] ) ? array_values( array_map( 'strval', $weergave['stappen'] ) ) : array(),
+        'schaal'           => isset( $weergave['schaal'] ) && is_array( $weergave['schaal'] ) ? $weergave['schaal'] : array(),
         'likert_als_tekst' => ! empty( $weergave['likert_als_tekst'] ),
-        'vraagkop'        => isset( $weergave['vraagkop'] ) ? (string) $weergave['vraagkop'] : '',
-        'intro'           => array(
+        'vraagkop'         => isset( $weergave['vraagkop'] ) ? (string) $weergave['vraagkop'] : '',
+        'intro'            => array(
             'tekst' => isset( $intro['tekst'] ) ? (string) $intro['tekst'] : '',
             'knop'  => isset( $intro['knop'] ) ? (string) $intro['knop'] : '',
         ),
@@ -71,7 +71,7 @@ function sfp_page_config_tool_normaliseer( array $b ) {
             if ( is_string( $d ) ) {
                 $d = array( 'naam' => $d );
             }
-            $d = is_array( $d ) ? $d : array();
+            $d                = is_array( $d ) ? $d : array();
             $dimensies[ $id ] = array(
                 'naam'     => isset( $d['naam'] ) ? (string) $d['naam'] : $id,
                 'volledig' => isset( $d['volledig'] ) ? (string) $d['volledig'] : ( isset( $d['naam'] ) ? (string) $d['naam'] : $id ),
@@ -96,20 +96,20 @@ function sfp_page_config_tool_normaliseer( array $b ) {
             if ( 'ab' === $v['type'] || 'janee' === $v['type'] ) {
                 $v['type'] = 'keuze';
             }
-            $v['tekst']     = isset( $v['tekst'] ) ? (string) $v['tekst'] : '';
-            $v['groep']     = isset( $v['groep'] ) ? (string) $v['groep'] : '';
-            $v['intro']     = isset( $v['intro'] ) ? (string) $v['intro'] : '';
-            $v['omgekeerd'] = ! empty( $v['omgekeerd'] );
-            $v['dimensie']  = isset( $v['dimensie'] ) ? (string) $v['dimensie'] : '';
-            $v['optioneel'] = ! empty( $v['optioneel'] );
+            $v['tekst']      = isset( $v['tekst'] ) ? (string) $v['tekst'] : '';
+            $v['groep']      = isset( $v['groep'] ) ? (string) $v['groep'] : '';
+            $v['intro']      = isset( $v['intro'] ) ? (string) $v['intro'] : '';
+            $v['omgekeerd']  = ! empty( $v['omgekeerd'] );
+            $v['dimensie']   = isset( $v['dimensie'] ) ? (string) $v['dimensie'] : '';
+            $v['optioneel']  = ! empty( $v['optioneel'] );
             $v['na_uitslag'] = ! empty( $v['na_uitslag'] );
-            $opties = array();
+            $opties          = array();
             if ( isset( $v['opties'] ) && is_array( $v['opties'] ) ) {
                 foreach ( $v['opties'] as $j => $o ) {
                     if ( is_string( $o ) ) {
                         $o = array( 'tekst' => $o );
                     }
-                    $o = is_array( $o ) ? $o : array();
+                    $o      = is_array( $o ) ? $o : array();
                     $punten = array();
                     if ( isset( $o['punten'] ) && is_array( $o['punten'] ) ) {
                         foreach ( $o['punten'] as $dim => $p ) {
@@ -144,7 +144,7 @@ function sfp_page_config_tool_normaliseer( array $b ) {
             if ( is_string( $u ) ) {
                 $u = array( 'tekst' => $u );
             }
-            $u = is_array( $u ) ? $u : array();
+            $u       = is_array( $u ) ? $u : array();
             $lijsten = array();
             if ( isset( $u['lijsten'] ) && is_array( $u['lijsten'] ) ) {
                 foreach ( $u['lijsten'] as $naam => $lijst ) {
@@ -178,19 +178,30 @@ function sfp_page_config_tool_normaliseer( array $b ) {
         }
     }
     if ( ! $uitvoer ) {
-        $uitvoer = array( array( 'type' => 'profiel', 'kop' => '', 'bron' => '' ), array( 'type' => 'balken', 'kop' => '', 'bron' => '' ) );
+        $uitvoer = array(
+            array(
+                'type' => 'profiel',
+                'kop'  => '',
+                'bron' => ''
+            ),
+            array(
+                'type' => 'balken',
+                'kop'  => '',
+                'bron' => ''
+            )
+        );
     }
     $b['uitvoer'] = $uitvoer;
 
     $acties      = isset( $b['acties'] ) && is_array( $b['acties'] ) ? $b['acties'] : array();
     $b['acties'] = array(
         'pdf_bestandsnaam' => isset( $acties['pdf_bestandsnaam'] ) ? (string) $acties['pdf_bestandsnaam'] : '',
-        'pdf'       => ! isset( $acties['pdf'] ) || ! empty( $acties['pdf'] ),
-        'word'      => ! isset( $acties['word'] ) || ! empty( $acties['word'] ),
-        'deellink'  => ! isset( $acties['deellink'] ) || ! empty( $acties['deellink'] ),
-        'mail'      => ! isset( $acties['mail'] ) || ! empty( $acties['mail'] ),
-        'duimpjes'  => ! isset( $acties['duimpjes'] ) || ! empty( $acties['duimpjes'] ),
-        'formulier' => isset( $acties['formulier'] ) ? (int) $acties['formulier'] : 0,
+        'pdf'              => ! isset( $acties['pdf'] ) || ! empty( $acties['pdf'] ),
+        'word'             => ! isset( $acties['word'] ) || ! empty( $acties['word'] ),
+        'deellink'         => ! isset( $acties['deellink'] ) || ! empty( $acties['deellink'] ),
+        'mail'             => ! isset( $acties['mail'] ) || ! empty( $acties['mail'] ),
+        'duimpjes'         => ! isset( $acties['duimpjes'] ) || ! empty( $acties['duimpjes'] ),
+        'formulier'        => isset( $acties['formulier'] ) ? (int) $acties['formulier'] : 0,
     );
 
     $mail      = isset( $b['mail'] ) && is_array( $b['mail'] ) ? $b['mail'] : array();
@@ -199,8 +210,8 @@ function sfp_page_config_tool_normaliseer( array $b ) {
         'intro'     => isset( $mail['intro'] ) ? (string) $mail['intro'] : '',
     );
 
-    $bron      = isset( $b['bron'] ) && is_array( $b['bron'] ) ? $b['bron'] : array();
-    $link      = isset( $bron['link'] ) && is_scalar( $bron['link'] ) ? (string) $bron['link'] : '';
+    $bron = isset( $b['bron'] ) && is_array( $b['bron'] ) ? $b['bron'] : array();
+    $link = isset( $bron['link'] ) && is_scalar( $bron['link'] ) ? (string) $bron['link'] : '';
     if ( '' !== trim( $link ) && '' === sfp_page_config_tool_url( $link ) ) {
         $genegeerd[] = 'De link bij bron is geen gewoon webadres en wordt genegeerd.';
     }
@@ -503,8 +514,8 @@ function sfp_page_config_tool_controleer_tekst( $tekst ) {
             'samenvatting' => array(),
         );
     }
-    $b        = sfp_page_config_tool_normaliseer( $data );
-    $uitkomst = sfp_page_config_tool_controleer( $b );
+    $b                        = sfp_page_config_tool_normaliseer( $data );
+    $uitkomst                 = sfp_page_config_tool_controleer( $b );
     $uitkomst['beschrijving'] = $b;
     $uitkomst['samenvatting'] = sfp_page_config_tool_samenvatting( $b );
     return $uitkomst;
@@ -518,8 +529,8 @@ function sfp_page_config_tool_controleer_tekst( $tekst ) {
  * @return array{fouten: string[], let_op: string[]}
  */
 function sfp_page_config_tool_controleer( array $b ) {
-    $fouten = array();
-    $let_op = array();
+    $fouten  = array();
+    $let_op  = array();
     $soorten = sfp_page_config_tool_soorten();
     if ( ! isset( $soorten[ $b['soort'] ] ) ) {
         $fouten[] = 'Onbekende soort "' . $b['soort'] . '". Bekend: ' . implode( ', ', array_keys( $soorten ) ) . '.';
@@ -838,14 +849,14 @@ function sfp_page_config_tool_samenvatting( array $b ) {
  * }
  */
 function sfp_page_config_tool_reken( array $b, array $antwoorden ) {
-    $dims    = sfp_page_config_tool_dims( $b );
-    $som     = array_fill_keys( $dims, 0.0 );
-    $n       = array_fill_keys( $dims, 0 );
-    $maxsom  = array_fill_keys( $dims, 0.0 );
-    $telling = array_fill_keys( $dims, 0 );
-    $telmax  = array_fill_keys( $dims, 0 );
-    $cent    = array_fill_keys( $dims, 0.0 );
-    $gewicht = $b['score']['gewicht'];
+    $dims      = sfp_page_config_tool_dims( $b );
+    $som       = array_fill_keys( $dims, 0.0 );
+    $n         = array_fill_keys( $dims, 0 );
+    $maxsom    = array_fill_keys( $dims, 0.0 );
+    $telling   = array_fill_keys( $dims, 0 );
+    $telmax    = array_fill_keys( $dims, 0 );
+    $cent      = array_fill_keys( $dims, 0.0 );
+    $gewicht   = $b['score']['gewicht'];
     $bijdragen = array();
     $context   = array();
     $teksten   = array();
@@ -888,8 +899,8 @@ function sfp_page_config_tool_reken( array $b, array $antwoorden ) {
             if ( $v['omgekeerd'] ) {
                 $waarde = 6 - $waarde;
             }
-            $som[ $dim ]  += $waarde;
-            $cent[ $dim ] += ( $waarde - 3 ) * $g;
+            $som[ $dim ]     += $waarde;
+            $cent[ $dim ]    += ( $waarde - 3 ) * $g;
             $bijdragen[ $id ] = array( $dim => (float) $waarde );
             continue;
         }
@@ -992,7 +1003,7 @@ function sfp_page_config_tool_reken( array $b, array $antwoorden ) {
         );
     }
 
-    $stand = array(
+    $stand   = array(
         'waarden'    => $waarden,
         'volgorde'   => $volgorde,
         'totaal'     => $totaal,
@@ -1047,7 +1058,12 @@ function sfp_page_config_tool_uitkomst( array $b, array $uitkomst, array $stand 
     $volgorde = $stand['volgorde'];
     $regel    = isset( $uitkomst['regel'] ) ? (string) $uitkomst['regel'] : 'hoogste';
     $labels   = isset( $uitkomst['labels'] ) && is_array( $uitkomst['labels'] ) && $uitkomst['labels'] ? $uitkomst['labels'] : $b['labels'];
-    $uit      = array( 'uitslag' => '', 'top' => array_slice( $volgorde, 0, 1 ), 'niveaus' => array(), 'assen' => array() );
+    $uit      = array(
+        'uitslag' => '',
+        'top'     => array_slice( $volgorde, 0, 1 ),
+        'niveaus' => array(),
+        'assen'   => array()
+    );
     $anders   = function () use ( $b, $uitkomst, $stand, $uit ) {
         if ( isset( $uitkomst['anders'] ) && is_array( $uitkomst['anders'] ) ) {
             return sfp_page_config_tool_uitkomst( $b, $uitkomst['anders'], $stand );
@@ -1055,7 +1071,7 @@ function sfp_page_config_tool_uitkomst( array $b, array $uitkomst, array $stand 
         $uit['uitslag'] = isset( $uitkomst['anders'] ) ? (string) $uitkomst['anders'] : '';
         return $uit;
     };
-    $klaar = function ( $sleutel, $uit ) use ( $uitkomst ) {
+    $klaar    = function ( $sleutel, $uit ) use ( $uitkomst ) {
         if ( ! empty( $uitkomst['vertaal'] ) && is_array( $uitkomst['vertaal'] ) && isset( $uitkomst['vertaal'][ $sleutel ] ) ) {
             $sleutel = (string) $uitkomst['vertaal'][ $sleutel ];
         }
@@ -1121,16 +1137,16 @@ function sfp_page_config_tool_uitkomst( array $b, array $uitkomst, array $stand 
                 foreach ( isset( $def['min'] ) ? (array) $def['min'] : array() as $d ) {
                     $min += isset( $waarden[ $d ] ) ? $waarden[ $d ] : 0;
                 }
-                $w   = $plus - $min;
-                $nul = isset( $uitkomst['nul'] ) ? $uitkomst['nul'] : '+';
-                $nul = is_array( $nul ) ? ( isset( $nul[ $as ] ) ? $nul[ $as ] : '+' ) : $nul;
-                $teken = $w > 0 ? '+' : ( $w < 0 ? '-' : ( '-' === $nul ? '-' : '+' ) );
+                $w                   = $plus - $min;
+                $nul                 = isset( $uitkomst['nul'] ) ? $uitkomst['nul'] : '+';
+                $nul                 = is_array( $nul ) ? ( isset( $nul[ $as ] ) ? $nul[ $as ] : '+' ) : $nul;
+                $teken               = $w > 0 ? '+' : ( $w < 0 ? '-' : ( '-' === $nul ? '-' : '+' ) );
                 $uit['assen'][ $as ] = array(
                     'waarde' => $w,
                     'naam'   => isset( $def['naam'] ) ? (string) $def['naam'] : $as,
                     'teken'  => $teken,
                 );
-                $sleutel .= $as . $teken;
+                $sleutel            .= $as . $teken;
             }
             $kw = isset( $uitkomst['kwadranten'] ) && is_array( $uitkomst['kwadranten'] ) ? $uitkomst['kwadranten'] : array();
             return isset( $kw[ $sleutel ] ) ? $klaar( (string) $kw[ $sleutel ], $uit ) : $anders();
@@ -1276,7 +1292,10 @@ function sfp_page_config_tool_rond( $w ) {
 function sfp_page_config_tool_label( array $b, $waarde, $max, $procent = false, $labels = null ) {
     $labels = null === $labels ? $b['labels'] : $labels;
     if ( ! $labels ) {
-        return array( 'tekst' => '', 'sleutel' => '' );
+        return array(
+            'tekst'   => '',
+            'sleutel' => ''
+        );
     }
     $op = $waarde;
     if ( ! empty( $b['labels_percentage'] ) || ( $procent && 'percentage' !== $b['score']['per_dimensie'] ) ) {
@@ -1284,11 +1303,17 @@ function sfp_page_config_tool_label( array $b, $waarde, $max, $procent = false, 
     }
     foreach ( $labels as $l ) {
         if ( $op >= $l['vanaf'] ) {
-            return array( 'tekst' => $l['tekst'], 'sleutel' => $l['sleutel'] );
+            return array(
+                'tekst'   => $l['tekst'],
+                'sleutel' => $l['sleutel']
+            );
         }
     }
     $laatste = $labels[ count( $labels ) - 1 ];
-    return array( 'tekst' => $laatste['tekst'], 'sleutel' => $laatste['sleutel'] );
+    return array(
+        'tekst'   => $laatste['tekst'],
+        'sleutel' => $laatste['sleutel']
+    );
 }
 
 /* =========================================================================
@@ -1306,7 +1331,13 @@ function sfp_page_config_tool_uitslagtekst( array $b, $sleutel ) {
     if ( '' !== $sleutel && isset( $b['uitslagen'][ $sleutel ] ) ) {
         return $b['uitslagen'][ $sleutel ];
     }
-    return array( 'kop' => '', 'titel' => '', 'tekst' => '', 'lijsten' => array(), 'artikel' => '' );
+    return array(
+        'kop'     => '',
+        'titel'   => '',
+        'tekst'   => '',
+        'lijsten' => array(),
+        'artikel' => ''
+    );
 }
 
 /**
@@ -1465,8 +1496,8 @@ function sfp_page_config_tool_tekst_uitvoer( array $b, array $r, $titel ) {
                 }
                 $koppen = isset( $u['koppen'] ) && is_array( $u['koppen'] ) ? $u['koppen'] : array();
                 foreach ( $keuze as $i => $d ) {
-                    $ut   = sfp_page_config_tool_uitslagtekst( $b, $d );
-                    $naam = '' !== $ut['titel'] ? $ut['titel'] : $b['dimensies'][ $d ]['volledig'];
+                    $ut       = sfp_page_config_tool_uitslagtekst( $b, $d );
+                    $naam     = '' !== $ut['titel'] ? $ut['titel'] : $b['dimensies'][ $d ]['volledig'];
                     $regels[] = ( isset( $koppen[ $i ] ) ? $koppen[ $i ] . ': ' : '' ) . $naam . ( $d === $r['uitslag'] && ! empty( $u['markeer'] ) ? ' ' . $u['markeer'] : '' );
                     if ( '' !== $ut['tekst'] ) {
                         $regels[] = sfp_page_config_tool_vul( $ut['tekst'], $b, $r );
@@ -1486,9 +1517,9 @@ function sfp_page_config_tool_tekst_uitvoer( array $b, array $r, $titel ) {
                 $regels[] = '' !== $u['kop'] ? $u['kop'] : $t( 'tool_scores' );
                 // Zelfde volgorde als op het scherm: vast of van hoog naar laag.
                 foreach ( ( isset( $u['sorteer'] ) && 'vast' === $u['sorteer'] ) ? sfp_page_config_tool_dims( $b ) : $r['volgorde'] as $d ) {
-                    $dim   = $r['dimensies'][ $d ];
-                    $label = '' !== $dim['label']['tekst'] ? ' (' . $dim['label']['tekst'] . ')' : '';
-                    $eenh  = 'percentage' === $b['score']['per_dimensie'] ? '%' : ( $dim['max'] > 0 ? ' / ' . sfp_page_config_tool_getal( $dim['max'] ) : '' );
+                    $dim      = $r['dimensies'][ $d ];
+                    $label    = '' !== $dim['label']['tekst'] ? ' (' . $dim['label']['tekst'] . ')' : '';
+                    $eenh     = 'percentage' === $b['score']['per_dimensie'] ? '%' : ( $dim['max'] > 0 ? ' / ' . sfp_page_config_tool_getal( $dim['max'] ) : '' );
                     $regels[] = '- ' . $b['dimensies'][ $d ]['volledig'] . ': ' . sfp_page_config_tool_getal( $dim['waarde'] ) . $eenh . $label;
                     if ( 'niveaus' === $u['type'] ) {
                         $nt = sfp_page_config_tool_uitslagtekst( $b, $d . ':' . $dim['label']['sleutel'] );
@@ -1532,8 +1563,8 @@ function sfp_page_config_tool_tekst_uitvoer( array $b, array $r, $titel ) {
                     $regels[] = $u['kop'];
                 }
                 foreach ( $laag as $d ) {
-                    $ut   = sfp_page_config_tool_uitslagtekst( $b, $d );
-                    $tip  = isset( $ut['lijsten'][ $naam ][0] ) ? sfp_page_config_tool_item( $ut['lijsten'][ $naam ][0] ) : '';
+                    $ut       = sfp_page_config_tool_uitslagtekst( $b, $d );
+                    $tip      = isset( $ut['lijsten'][ $naam ][0] ) ? sfp_page_config_tool_item( $ut['lijsten'][ $naam ][0] ) : '';
                     $regels[] = '- ' . $b['dimensies'][ $d ]['volledig'] . ( '' !== $tip ? ': ' . $tip : '' );
                 }
                 $regels[] = '';
@@ -1598,7 +1629,14 @@ function sfp_page_config_tool_selectie( array $r, $selectie, $aantal = 0, $zonde
     };
     if ( $zonder_hoogste ) {
         $max = $w( $v[0] );
-        $v   = array_values( array_filter( $v, function ( $d ) use ( $w, $max ) { return $w( $d ) !== $max; } ) );
+        $v   = array_values(
+            array_filter(
+                $v,
+                function ( $d ) use ( $w, $max ) {
+                    return $w( $d ) !== $max;
+                }
+            )
+        );
         if ( ! $v ) {
             return array();
         }
@@ -1606,10 +1644,24 @@ function sfp_page_config_tool_selectie( array $r, $selectie, $aantal = 0, $zonde
     switch ( $selectie ) {
         case 'hoogste':
             $max = $w( $v[0] );
-            return array_values( array_filter( $v, function ( $d ) use ( $w, $max ) { return $w( $d ) === $max; } ) );
+            return array_values(
+                array_filter(
+                    $v,
+                    function ( $d ) use ( $w, $max ) {
+                        return $w( $d ) === $max;
+                    }
+                )
+            );
         case 'laagste':
             $min = $w( $v[ count( $v ) - 1 ] );
-            return array_values( array_filter( $v, function ( $d ) use ( $w, $min ) { return $w( $d ) === $min; } ) );
+            return array_values(
+                array_filter(
+                    $v,
+                    function ( $d ) use ( $w, $min ) {
+                        return $w( $d ) === $min;
+                    }
+                )
+            );
         case 'top':
             return array_slice( $v, 0, max( 1, $aantal ) );
         case 'oplopend':

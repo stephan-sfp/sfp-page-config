@@ -327,7 +327,7 @@ function sfp_page_config_artikel_bronnen( $content ) {
         'strong' => array(),
         'b'      => array(),
     );
-    $bronnen = array();
+    $bronnen    = array();
     foreach ( $treffers[2] as $tooltip ) {
         $tooltip = html_entity_decode( $tooltip, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
         if ( ! preg_match( '/(?:^|>|\s)(?:Bron|Source|Fonte):\s*(.+?)(?:<br[\s\/]*>|\n|$)/isu', $tooltip, $m ) ) {
@@ -466,7 +466,10 @@ function sfp_page_config_artikel_hoofdstukken( $html, $alleen = null ) {
                 $attrs .= ' id="' . esc_attr( $anker ) . '"';
             }
             $gebruikt[ $anker ] = true;
-            $hoofdstukken[]     = array( 'id' => $anker, 'titel' => html_entity_decode( $titel, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+            $hoofdstukken[]     = array(
+                'id'    => $anker,
+                'titel' => html_entity_decode( $titel, ENT_QUOTES | ENT_HTML5, 'UTF-8' )
+            );
             return '<h2' . $attrs . '>' . $m[2] . '</h2>';
         },
         (string) $html
@@ -740,7 +743,7 @@ function sfp_page_config_artikel_pijlerregel( $post ) {
     if ( ! $keuze || ( (int) $keuze->term_id === $standaard && 'uncategorized' === $keuze->slug ) ) {
         return '';
     }
-    $link = function ( $term ) {
+    $link  = function ( $term ) {
         $url = get_term_link( $term );
         return is_wp_error( $url ) ? esc_html( $term->name ) : '<a href="' . esc_url( $url ) . '">' . esc_html( $term->name ) . '</a>';
     };
@@ -787,7 +790,16 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     $foto = '';
     $wie  = '';
     if ( $auteur && '' !== (string) $naam ) {
-        $foto = get_avatar( $auteur, 44, '', $naam, array( 'class' => 'sfp-art-kop__foto', 'loading' => 'eager' ) );
+        $foto = get_avatar(
+            $auteur,
+            44,
+            '',
+            $naam,
+            array(
+                'class'   => 'sfp-art-kop__foto',
+                'loading' => 'eager'
+            )
+        );
         $wie  = '<div class="sfp-art-kop__naam">' . sprintf( esc_html( $t( 'door' ) ), '<a href="' . esc_url( sfp_page_config_artikel_auteur_url( $auteur ) ) . '">' . esc_html( $naam ) . '</a>' )
             . ( '' !== $rol ? '<span class="sfp-art-kop__rol">' . esc_html( $rol ) . '</span>' : '' ) . '</div>';
     }
@@ -801,7 +813,7 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     if ( ! $bijgewerkt ) {
         $bijgewerkt = $gepubliceerd;
     }
-    $meta         = '<span><time datetime="' . esc_attr( wp_date( 'c', $gepubliceerd ) ) . '">' . esc_html( sprintf( $t( 'gepubliceerd' ), wp_date( 'j M Y', $gepubliceerd ) ) ) . '</time></span>';
+    $meta = '<span><time datetime="' . esc_attr( wp_date( 'c', $gepubliceerd ) ) . '">' . esc_html( sprintf( $t( 'gepubliceerd' ), wp_date( 'j M Y', $gepubliceerd ) ) ) . '</time></span>';
     if ( wp_date( 'Ymd', $bijgewerkt ) > wp_date( 'Ymd', $gepubliceerd ) ) {
         $meta .= '<span><time datetime="' . esc_attr( wp_date( 'c', $bijgewerkt ) ) . '">' . esc_html( sprintf( $t( 'bijgewerkt' ), wp_date( 'j M Y', $bijgewerkt ) ) ) . '</time></span>';
     }
@@ -977,8 +989,8 @@ function sfp_page_config_artikel_auteurskaart( $post ) {
         'strong' => array(),
         'br'     => array(),
     );
-    $alineas = array();
-    $feiten  = array();
+    $alineas    = array();
+    $feiten     = array();
     foreach ( preg_split( '/\r\n|\r|\n|<br\s*\/?>/i', $bio ) as $regel ) {
         $regel = trim( $regel );
         if ( '' === $regel ) {
@@ -1018,7 +1030,10 @@ function sfp_page_config_artikel_auteurskaart( $post ) {
 function sfp_page_config_artikel_voetregels( $post ) {
     $t     = 'sfp_page_config_artikel_tekst';
     $links = '';
-    foreach ( array( 'artikel_redactie' => 'redactiebeleid', 'artikel_bibliografie' => 'bibliografie' ) as $sleutel => $tekst ) {
+    foreach ( array(
+        'artikel_redactie'     => 'redactiebeleid',
+        'artikel_bibliografie' => 'bibliografie'
+    ) as $sleutel => $tekst ) {
         $url = sfp_page_config_link_instelling( $sleutel );
         if ( '' !== $url ) {
             $links .= '<a href="' . esc_url( $url ) . '">' . esc_html( $t( $tekst ) ) . '</a>';
@@ -1064,7 +1079,7 @@ function sfp_page_config_artikel_render( $post ) {
     }
 
     list( $inhoud, $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ) );
-    $inhoud = sfp_page_config_artikel_promo_in_tekst( $inhoud, sfp_page_config_artikel_promokaart( 'inline', $post ) );
+    $inhoud                        = sfp_page_config_artikel_promo_in_tekst( $inhoud, sfp_page_config_artikel_promokaart( 'inline', $post ) );
     if ( function_exists( 'sfp_page_config_vorm' ) && 'pijler' === sfp_page_config_vorm( $post ) ) {
         $inhoud = sfp_page_config_gids_na_lead( $inhoud, sfp_page_config_gids_kaart( $post ) );
     }
@@ -1083,12 +1098,12 @@ function sfp_page_config_artikel_render( $post ) {
     $affiliate = function_exists( 'sfp_page_config_affiliate_uitleg' ) ? sfp_page_config_affiliate_uitleg( $post ) : '';
     // Een begrip is geen artikel: geen kopkaart, inhoudsopgave, hoofdstukbalk
     // of auteurskaart; de maker staat in de definitie (vorm Begrip, 3.7.0).
-    $begrip    = function_exists( 'sfp_page_config_is_begrip' ) && sfp_page_config_is_begrip( $post );
+    $begrip = function_exists( 'sfp_page_config_is_begrip' ) && sfp_page_config_is_begrip( $post );
     // Een tool (vorm Tool, 3.8.0): de tool zelf boven de tekst, geen kopkaart,
     // inhoudsopgave, promokaart of zijkolom; de makerskaart Made by onderaan,
     // daarna Andere tools en het vervolg.
-    $tool      = function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post );
-    $zij       = $tool ? '' : ( $begrip ? sfp_page_config_artikel_promokaart( 'zij', $post ) : sfp_page_config_artikel_zijkolom( $post, $hoofdstukken ) );
+    $tool = function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post );
+    $zij  = $tool ? '' : ( $begrip ? sfp_page_config_artikel_promokaart( 'zij', $post ) : sfp_page_config_artikel_zijkolom( $post, $hoofdstukken ) );
     if ( $begrip && '' !== $zij ) {
         $zij = '<aside class="sfp-artikel__zij" aria-label="' . esc_attr( sfp_page_config_artikel_tekst( 'zij_label' ) ) . '">' . $zij . '</aside>';
     }
@@ -1164,10 +1179,10 @@ function sfp_page_config_artikel_instellingen() {
  * @return array        Alleen de sleutels van de artikelopmaak.
  */
 function sfp_page_config_artikel_sanitize( $input ) {
-    $schoon    = array();
-    $input     = is_array( $input ) ? $input : array();
-    $bewaard   = get_option( 'sfp_settings', array() );
-    $bewaard   = is_array( $bewaard ) ? $bewaard : array();
+    $schoon  = array();
+    $input   = is_array( $input ) ? $input : array();
+    $bewaard = get_option( 'sfp_settings', array() );
+    $bewaard = is_array( $bewaard ) ? $bewaard : array();
     // Het instellingenformulier stuurt een niet-aangevinkt vakje niet mee;
     // daar betekent ontbreken "uit". Elders (REST, een andere opslag van
     // sfp_settings) betekent ontbreken: laat de bewaarde waarde staan.
@@ -1192,8 +1207,8 @@ function sfp_page_config_artikel_sanitize( $input ) {
                 $schoon[ $sleutel ] = sanitize_textarea_field( (string) $ruw );
                 break;
             case 'regels':
-                $regels = is_array( $ruw ) ? $ruw : preg_split( '/\r\n|\r|\n/', (string) $ruw );
-                $regels = array_values( array_unique( array_filter( array_map( 'sanitize_text_field', array_map( 'trim', $regels ) ), 'strlen' ) ) );
+                $regels             = is_array( $ruw ) ? $ruw : preg_split( '/\r\n|\r|\n/', (string) $ruw );
+                $regels             = array_values( array_unique( array_filter( array_map( 'sanitize_text_field', array_map( 'trim', $regels ) ), 'strlen' ) ) );
                 $schoon[ $sleutel ] = implode( "\n", $regels );
                 break;
             case 'kanaal':
@@ -1271,11 +1286,11 @@ function sfp_page_config_artikel_rest_lees() {
  * @return WP_REST_Response
  */
 function sfp_page_config_artikel_rest_schrijf( WP_REST_Request $verzoek ) {
-    $alle    = get_option( 'sfp_settings', array() );
-    $alle    = is_array( $alle ) ? $alle : array();
-    $bekend  = sfp_page_config_artikel_instellingen();
-    $invoer  = array();
-    $gewoon  = (array) $verzoek->get_json_params() + (array) $verzoek->get_body_params();
+    $alle   = get_option( 'sfp_settings', array() );
+    $alle   = is_array( $alle ) ? $alle : array();
+    $bekend = sfp_page_config_artikel_instellingen();
+    $invoer = array();
+    $gewoon = (array) $verzoek->get_json_params() + (array) $verzoek->get_body_params();
     foreach ( $bekend as $sleutel => $soort ) {
         $invoer[ $sleutel ] = array_key_exists( $sleutel, $gewoon ) ? $gewoon[ $sleutel ] : ( isset( $alle[ $sleutel ] ) ? $alle[ $sleutel ] : '' );
     }

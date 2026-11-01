@@ -105,11 +105,11 @@ function sfp_page_config_tool_eerste_scherm( array $b, $id, $titel = '' ) {
  * @return string
  */
 function sfp_page_config_tool_es_test( array $b, $id ) {
-    $w        = isset( $b['weergave'] ) && is_array( $b['weergave'] ) ? $b['weergave'] : array();
-    $modus    = isset( $w['modus'] ) ? (string) $w['modus'] : 'per-vraag';
+    $w         = isset( $b['weergave'] ) && is_array( $b['weergave'] ) ? $b['weergave'] : array();
+    $modus     = isset( $w['modus'] ) ? (string) $w['modus'] : 'per-vraag';
     $per_groep = 'per-groep' === $modus;
     $per_vraag = 'alles' !== $modus;
-    $vragen   = array();
+    $vragen    = array();
     foreach ( isset( $b['vragen'] ) && is_array( $b['vragen'] ) ? $b['vragen'] : array() as $v ) {
         if ( ! is_array( $v ) ) {
             continue;
@@ -141,7 +141,10 @@ function sfp_page_config_tool_es_test( array $b, $id ) {
     $schermen = array();
     if ( ! empty( $w['intro']['tekst'] ) ) {
         $knop       = ! empty( $w['intro']['knop'] ) ? (string) $w['intro']['knop'] : sfp_page_config_tool_es_tekst( $b, 'tool_start' );
-        $schermen[] = array( 'intro' => true, 'html' => '<div class="sfp-tool__scherm sfp-tool__scherm--intro" data-intro="1">' . sfp_page_config_tool_es_alineas( $w['intro']['tekst'] ) . '<button type="button" class="sfp-tool__knop sfp-tool__knop--primair">' . esc_html( $knop ) . '</button></div>' );
+        $schermen[] = array(
+            'intro' => true,
+            'html'  => '<div class="sfp-tool__scherm sfp-tool__scherm--intro" data-intro="1">' . sfp_page_config_tool_es_alineas( $w['intro']['tekst'] ) . '<button type="button" class="sfp-tool__knop sfp-tool__knop--primair">' . esc_html( $knop ) . '</button></div>'
+        );
     }
     if ( $per_groep ) {
         $groepen = array();
@@ -149,7 +152,10 @@ function sfp_page_config_tool_es_test( array $b, $id ) {
             $naam = isset( $v['groep'] ) ? (string) $v['groep'] : '';
             $n    = count( $groepen );
             if ( ! $n || $groepen[ $n - 1 ]['naam'] !== $naam ) {
-                $groepen[] = array( 'naam' => $naam, 'vragen' => array() );
+                $groepen[] = array(
+                    'naam'   => $naam,
+                    'vragen' => array()
+                );
                 $n++;
             }
             $groepen[ $n - 1 ]['vragen'][ $i ] = $v;
@@ -163,7 +169,10 @@ function sfp_page_config_tool_es_test( array $b, $id ) {
                 $in .= sfp_page_config_tool_es_vraag( $b, $v, $i, $vragen, $per_vraag, $per_groep, true, $id );
             }
             $in        .= '<button type="button" class="sfp-tool__knop sfp-tool__knop--primair">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_volgende' ) ) . '</button>';
-            $schermen[] = array( 'groep' => $g, 'html' => '<div class="sfp-tool__scherm sfp-tool__scherm--groep">' . $in . '</div>' );
+            $schermen[] = array(
+                'groep' => $g,
+                'html'  => '<div class="sfp-tool__scherm sfp-tool__scherm--groep">' . $in . '</div>'
+            );
         }
     } else {
         foreach ( $vragen as $i => $v ) {
@@ -175,7 +184,11 @@ function sfp_page_config_tool_es_test( array $b, $id ) {
                         : '<div class="sfp-tool__scherm sfp-tool__intro-tekst is-alles">' . sfp_page_config_tool_es_alineas( $v['intro'] ) . '</div>',
                 );
             }
-            $schermen[] = array( 'vraag' => $v, 'index' => $i, 'html' => sfp_page_config_tool_es_vraag( $b, $v, $i, $vragen, $per_vraag, $per_groep, ! $per_vraag, $id ) );
+            $schermen[] = array(
+                'vraag' => $v,
+                'index' => $i,
+                'html'  => sfp_page_config_tool_es_vraag( $b, $v, $i, $vragen, $per_vraag, $per_groep, ! $per_vraag, $id )
+            );
         }
     }
 
@@ -198,7 +211,14 @@ function sfp_page_config_tool_es_test( array $b, $id ) {
             $breedte   = round( 1 / max( 1, $gn ) * 100 ) . '%';
             $zonder    = false;
         } elseif ( isset( $eerste['vraag'] ) && ( 'likert' === $eerste['vraag']['type'] || 'keuze' === $eerste['vraag']['type'] ) ) {
-            $groepen = array_unique( array_map( function ( $v ) { return isset( $v['groep'] ) ? (string) $v['groep'] : ''; }, $scorend ) );
+            $groepen   = array_unique(
+                array_map(
+                    function ( $v ) {
+                        return isset( $v['groep'] ) ? (string) $v['groep'] : '';
+                    },
+                    $scorend
+                )
+            );
             $voortgang = ( count( $groepen ) > 1 && ! empty( $eerste['vraag']['groep'] ) ? $eerste['vraag']['groep'] . ' · ' : '' ) . sfp_page_config_tool_es_tekst( $b, 'tool_vraag_van', true, 1, count( $scorend ) );
             $breedte   = round( 1 / max( 1, count( $scorend ) ) * 100 ) . '%';
             $zonder    = false;
@@ -253,9 +273,9 @@ function sfp_page_config_tool_es_vraag( array $b, array $v, $index, array $vrage
     $tekst    = '<p class="sfp-tool__vraag">' . esc_html( isset( $v['tekst'] ) ? $v['tekst'] : '' ) . '</p>';
     $veld     = '';
     if ( 'likert' === $v['type'] ) {
-        $schaal   = ! empty( $v['schaal'] ) && is_array( $v['schaal'] ) ? $v['schaal'] : ( isset( $w['schaal'] ) && is_array( $w['schaal'] ) ? $w['schaal'] : array() );
+        $schaal    = ! empty( $v['schaal'] ) && is_array( $v['schaal'] ) ? $v['schaal'] : ( isset( $w['schaal'] ) && is_array( $w['schaal'] ) ? $w['schaal'] : array() );
         $als_tekst = ! empty( $w['likert_als_tekst'] );
-        $vakjes   = '';
+        $vakjes    = '';
         for ( $n = 1; $n <= 5; $n++ ) {
             $label   = $als_tekst ? ( isset( $schaal[ (string) $n ] ) ? $schaal[ (string) $n ] : (string) $n ) : (string) $n;
             $vakjes .= '<label class="sfp-tool__optie sfp-tool__optie--likert"><input type="radio" class="sfp-tool__radio" disabled><span class="sfp-tool__optie-tekst">' . esc_html( $label ) . '</span></label>';
@@ -286,14 +306,14 @@ function sfp_page_config_tool_es_vraag( array $b, array $v, $index, array $vrage
  * @return string
  */
 function sfp_page_config_tool_es_tekstanalyse( array $b ) {
-    $inv  = isset( $b['invoer'] ) && is_array( $b['invoer'] ) ? $b['invoer'] : array();
-    $max  = ! empty( $inv['max_tekens'] ) ? (int) $inv['max_tekens'] : 5000;
-    $in   = '<label class="sfp-tool__vraag">' . esc_html( isset( $inv['label'] ) ? $inv['label'] : '' ) . '</label>';
-    $in  .= ! empty( $inv['hint'] ) ? '<p class="sfp-tool__hint">' . esc_html( $inv['hint'] ) . '</p>' : '';
-    $in  .= '<textarea class="sfp-tool__veld" rows="9" disabled placeholder="' . esc_attr( isset( $inv['voorbeeld'] ) ? $inv['voorbeeld'] : '' ) . '"></textarea>';
-    $in  .= '<p class="sfp-tool__tekstvak-teller">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_tekens', true, 0, $max ) ) . '</p>';
-    $in  .= '<p class="sfp-tool__melding is-fout" role="alert" hidden></p>';
-    $in  .= '<div class="sfp-tool__nav"><button type="button" class="sfp-tool__knop sfp-tool__knop--primair">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_analyseer' ) ) . '</button></div>';
+    $inv = isset( $b['invoer'] ) && is_array( $b['invoer'] ) ? $b['invoer'] : array();
+    $max = ! empty( $inv['max_tekens'] ) ? (int) $inv['max_tekens'] : 5000;
+    $in  = '<label class="sfp-tool__vraag">' . esc_html( isset( $inv['label'] ) ? $inv['label'] : '' ) . '</label>';
+    $in .= ! empty( $inv['hint'] ) ? '<p class="sfp-tool__hint">' . esc_html( $inv['hint'] ) . '</p>' : '';
+    $in .= '<textarea class="sfp-tool__veld" rows="9" disabled placeholder="' . esc_attr( isset( $inv['voorbeeld'] ) ? $inv['voorbeeld'] : '' ) . '"></textarea>';
+    $in .= '<p class="sfp-tool__tekstvak-teller">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_tekens', true, 0, $max ) ) . '</p>';
+    $in .= '<p class="sfp-tool__melding is-fout" role="alert" hidden></p>';
+    $in .= '<div class="sfp-tool__nav"><button type="button" class="sfp-tool__knop sfp-tool__knop--primair">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_analyseer' ) ) . '</button></div>';
     return '<div class="sfp-tool__schermen"><div class="sfp-tool__scherm">' . $in . '</div></div>';
 }
 
@@ -368,7 +388,10 @@ function sfp_page_config_tool_es_generator( array $b, $id, $titel = '' ) {
         $groepen = ! empty( $b['weergave']['groepen'] ) && is_array( $b['weergave']['groepen'] ) ? $b['weergave']['groepen'] : array();
         if ( ! $groepen ) {
             foreach ( $stappen as $k => $s ) {
-                $groepen[] = array( 'letter' => (string) ( $k + 1 ), 'naam' => isset( $s['titel'] ) ? (string) $s['titel'] : '' );
+                $groepen[] = array(
+                    'letter' => (string) ( $k + 1 ),
+                    'naam'   => isset( $s['titel'] ) ? (string) $s['titel'] : ''
+                );
             }
         }
         $letters = '';
@@ -382,7 +405,7 @@ function sfp_page_config_tool_es_generator( array $b, $id, $titel = '' ) {
             . '<p class="sfp-tool__melding" role="alert" hidden></p><div class="sfp-tool__schermen">' . $schermen . '</div>';
     }
     // Gewoon: de stappen bovenaan, dan het eerste scherm.
-    $balk = '';
+    $balk  = '';
     $namen = array();
     foreach ( $stappen as $s ) {
         $namen[] = isset( $s['titel'] ) ? (string) $s['titel'] : '';
@@ -424,7 +447,7 @@ function sfp_page_config_tool_es_veld( array $b, $v, array $a, $kaart ) {
     $opties    = isset( $v['opties'] ) && is_array( $v['opties'] ) ? $v['opties'] : array();
     $vb        = isset( $v['voorbeeld'] ) ? sfp_page_config_generator_vul( $v['voorbeeld'], $b, $a ) : '';
     if ( 'keuze' === $type && $kaart ) {
-        $kw        = 'kwadrant' === ( $v['tegels'] ?? '' ) && 4 === count( $opties ) && isset( $v['assen']['kolommen'], $v['assen']['rijen'] ) && 2 === count( (array) $v['assen']['kolommen'] ) && 2 === count( (array) $v['assen']['rijen'] );
+        $kw         = 'kwadrant' === ( $v['tegels'] ?? '' ) && 4 === count( $opties ) && isset( $v['assen']['kolommen'], $v['assen']['rijen'] ) && 2 === count( (array) $v['assen']['kolommen'] ) && 2 === count( (array) $v['assen']['rijen'] );
         $met_uitleg = false;
         foreach ( $opties as $o ) {
             if ( ! empty( $o['uitleg'] ) ) {
@@ -433,10 +456,11 @@ function sfp_page_config_tool_es_veld( array $b, $v, array $a, $kaart ) {
         }
         $kol   = ! empty( $v['kolommen'] ) ? (int) $v['kolommen'] : ( $kw || 4 === count( $opties ) || $met_uitleg ? 2 : 3 );
         $tegel = function ( $o ) {
-            $icoon = ! empty( $o['icoon'] ) ? '<span class="sfp-tool__icoon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>' : '';
+            $iconen = sfp_page_config_tool_iconen();
+            $icoon  = ! empty( $o['icoon'] ) && isset( $iconen[ $o['icoon'] ] ) ? '<span class="sfp-tool__icoon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">' . $iconen[ $o['icoon'] ] . '</svg></span>' : '';
             return '<label class="sfp-tool__tegel' . ( '' !== $icoon ? ' met-icoon' : '' ) . '"><input type="radio" class="sfp-tool__radio" disabled>' . $icoon . '<b>' . esc_html( $o['tekst'] ?? '' ) . '</b>' . ( ! empty( $o['uitleg'] ) ? '<small>' . esc_html( $o['uitleg'] ) . '</small>' : '' ) . '</label>';
         };
-        $veld = '<div class="sfp-tool__tegels sfp-tool__tegels--' . $kol . ( $kw ? ' sfp-tool__tegels--kwadrant' : '' ) . ( $met_uitleg ? ' sfp-tool__tegels--uitleg' : '' ) . '" role="radiogroup">';
+        $veld  = '<div class="sfp-tool__tegels sfp-tool__tegels--' . $kol . ( $kw ? ' sfp-tool__tegels--kwadrant' : '' ) . ( $met_uitleg ? ' sfp-tool__tegels--uitleg' : '' ) . '" role="radiogroup">';
         if ( $kw ) {
             $veld .= '<span class="sfp-tool__as sfp-tool__as--hoek" aria-hidden="true"></span>';
             foreach ( $v['assen']['kolommen'] as $c ) {
@@ -489,4 +513,35 @@ function sfp_page_config_tool_es_slot( array $b ) {
         $html .= '<div class="sfp-tool__duim"><p class="sfp-tool__duim-vraag">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_duim_vraag' ) ) . '</p><div class="sfp-tool__duim-knoppen"><button type="button" class="sfp-tool__duim-knop">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_duim_ja' ) ) . '</button><button type="button" class="sfp-tool__duim-knop">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_duim_nee' ) ) . '</button></div></div>';
     }
     return $html;
+}
+
+/**
+ * De pictogrammen van de toolmotor (sinds 3.22.1), gelezen uit
+ * assets/tool/generator-bouw.js zodat er één bron is. Het eerste scherm en
+ * de editor tonen zo dezelfde lijntekening als de motor.
+ *
+ * @return array<string,string> Naam naar SVG-inhoud.
+ */
+function sfp_page_config_tool_iconen() {
+    static $iconen = null;
+    if ( null !== $iconen ) {
+        return $iconen;
+    }
+    $iconen = array();
+    $bron   = @file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/tool/generator-bouw.js' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors, WordPress.WP.AlternativeFunctions
+    if ( ! is_string( $bron ) || ! preg_match( '/var ICONEN = \{(.*?)\n\s*\};/s', $bron, $blok ) ) {
+        return $iconen;
+    }
+    preg_match_all( "/^\s*([a-z]+): '([^']*)'/m", $blok[1], $m, PREG_SET_ORDER );
+    foreach ( $m as $r ) {
+        // Alleen SVG-vormen, geen andere opmaak.
+        $iconen[ $r[1] ] = wp_kses(
+            $r[2],
+            array(
+                'path'   => array( 'd' => true ),
+                'circle' => array( 'cx' => true, 'cy' => true, 'r' => true ),
+            )
+        );
+    }
+    return $iconen;
 }

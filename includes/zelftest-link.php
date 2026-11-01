@@ -41,7 +41,10 @@ function sfp_zelftest_link_herken() {
         // Eén adres per taal van de test (sinds 3.11.0); '' is de eerste taal.
         foreach ( sfp_zelftest_pdf_paden( $test ) as $taal => $eigen ) {
             if ( $pad === $eigen ) {
-                return array( 'test' => $test, 'taal' => (string) $taal );
+                return array(
+                    'test' => $test,
+                    'taal' => (string) $taal
+                );
             }
         }
     }
@@ -127,7 +130,13 @@ function sfp_zelftest_link_pdf( array $pakket ) {
     if ( '' === $pad ) {
         if ( 'klaar' === $rij['pdf_status'] ) {
             // Bestand weg terwijl de link nog geldt: opnieuw maken.
-            sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'wacht', 'pdf_bestand' => '' ) );
+            sfp_zelftest_rij_bij(
+                (int) $rij['id'],
+                array(
+                    'pdf_status'  => 'wacht',
+                    'pdf_bestand' => ''
+                )
+            );
         }
         // Nog niet klaar: nu maken, zonder de bezoeker op een vorige aanvraag te laten wachten.
         sfp_zelftest_pdf_verwerk( (int) $rij['id'], true, false );
@@ -160,14 +169,14 @@ function sfp_zelftest_link_pdf( array $pakket ) {
  * @return array{utf8:string,ascii:string}
  */
 function sfp_zelftest_pdf_bestandsnaam( array $pakket, $code ) {
-    $m     = isset( $pakket['manifest'] ) ? $pakket['manifest'] : array();
-    $voor  = isset( $m['code_voorvoegsel'] ) ? strtoupper( (string) $m['code_voorvoegsel'] ) : strtoupper( (string) $pakket['test'] );
+    $m    = isset( $pakket['manifest'] ) ? $pakket['manifest'] : array();
+    $voor = isset( $m['code_voorvoegsel'] ) ? strtoupper( (string) $m['code_voorvoegsel'] ) : strtoupper( (string) $pakket['test'] );
     // De naam in de taal van de test (sinds 3.11.0), anders die uit het manifest.
-    $naam  = trim( (string) sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' ) );
+    $naam = trim( (string) sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' ) );
     if ( '' === $naam ) {
         $naam = isset( $m['naam'] ) && '' !== trim( (string) $m['naam'] ) ? trim( (string) $m['naam'] ) : (string) $pakket['test'];
     }
-    $code  = strtoupper( $code );
+    $code = strtoupper( $code );
     if ( '' !== $voor && 0 === strpos( $code, $voor . '-' ) ) {
         $code = substr( $code, strlen( $voor ) + 1 );
     }
@@ -175,11 +184,14 @@ function sfp_zelftest_pdf_bestandsnaam( array $pakket, $code ) {
     $schoon = function ( $s ) {
         return trim( preg_replace( '/[^\p{L}\p{N} .\-]+/u', '', (string) $s ) );
     };
-    $delen = array_values( array_filter( array( $schoon( $voor ), $schoon( $naam ), $schoon( $code ) ), 'strlen' ) );
-    $utf8  = implode( " \u{2022} ", $delen ) . '.pdf';
-    $ascii = function_exists( 'remove_accents' ) ? remove_accents( implode( ' - ', $delen ) ) : implode( ' - ', $delen );
-    $ascii = preg_replace( '/[^A-Za-z0-9 .\-]+/', '', $ascii ) . '.pdf';
-    return array( 'utf8' => $utf8, 'ascii' => $ascii );
+    $delen  = array_values( array_filter( array( $schoon( $voor ), $schoon( $naam ), $schoon( $code ) ), 'strlen' ) );
+    $utf8   = implode( " \u{2022} ", $delen ) . '.pdf';
+    $ascii  = function_exists( 'remove_accents' ) ? remove_accents( implode( ' - ', $delen ) ) : implode( ' - ', $delen );
+    $ascii  = preg_replace( '/[^A-Za-z0-9 .\-]+/', '', $ascii ) . '.pdf';
+    return array(
+        'utf8'  => $utf8,
+        'ascii' => $ascii
+    );
 }
 
 /**
@@ -201,7 +213,7 @@ function sfp_zelftest_link_pagina( array $pakket, $soort, $status ) {
         $tekst = sfp_zelftest_tekst( $pakket, $soort . '.tekst' );
         $knop  = sfp_zelftest_tekst( $pakket, $soort . '.knop' );
     }
-    $inhoud = '<div class="sfp-zt-melding"><h1>' . esc_html( $kop ) . '</h1><p>' . esc_html( $tekst ) . '</p>'
+    $inhoud    = '<div class="sfp-zt-melding"><h1>' . esc_html( $kop ) . '</h1><p>' . esc_html( $tekst ) . '</p>'
         . ( '' !== $knop ? '<p><a class="sfp-zt-knop" href="' . esc_url( sfp_zelftest_testpagina_url( $pakket['test'] ) ) . '">' . esc_html( $knop ) . '</a></p>' : '' )
         . '</div>';
     $extra_kop = 'wachten' === $soort ? '<meta http-equiv="refresh" content="8">' : '';
@@ -230,12 +242,12 @@ function sfp_zelftest_kale_pagina( $titel, $inhoud, $status, $extra_kop = '' ) {
             $vars .= '--sfp-rol-' . $rol . ':' . $hex . ';';
         }
     }
-    $css     = (string) file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/zelftest/zelftest.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- eigen pluginbestand.
-    $kop     = function_exists( 'sfp_page_config_sanitize_font_family' ) ? sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'headings-font-family' ) ) : '';
-    $tekst   = function_exists( 'sfp_page_config_sanitize_font_family' ) ? sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'body-font-family' ) ) : '';
-    $fonts   = is_readable( trailingslashit( WP_CONTENT_DIR ) . 'astra-local-fonts/astra-local-fonts.css' ) ? '<link rel="stylesheet" href="' . esc_url( content_url( 'astra-local-fonts/astra-local-fonts.css' ) ) . '">' : '';
-    $taal    = '' !== sfp_zelftest_taal_context() ? sfp_zelftest_taal_context() : ( function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl' );
-    $basis   = ':root{' . $vars . '}' . sfp_zelftest_merk_css()
+    $css   = (string) file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/zelftest/zelftest.css' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- eigen pluginbestand.
+    $kop   = function_exists( 'sfp_page_config_sanitize_font_family' ) ? sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'headings-font-family' ) ) : '';
+    $tekst = function_exists( 'sfp_page_config_sanitize_font_family' ) ? sfp_page_config_sanitize_font_family( sfp_page_config_astra_option( 'body-font-family' ) ) : '';
+    $fonts = is_readable( trailingslashit( WP_CONTENT_DIR ) . 'astra-local-fonts/astra-local-fonts.css' ) ? '<link rel="stylesheet" href="' . esc_url( content_url( 'astra-local-fonts/astra-local-fonts.css' ) ) . '">' : '';
+    $taal  = '' !== sfp_zelftest_taal_context() ? sfp_zelftest_taal_context() : ( function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl' );
+    $basis = ':root{' . $vars . '}' . sfp_zelftest_merk_css()
         . ':root{--sfp-b-kop:' . ( '' !== $kop ? $kop : 'inherit' ) . ';--sfp-b-tekst:' . ( '' !== $tekst ? $tekst : 'system-ui,sans-serif' ) . '}'
         . 'html,body{margin:0;background:var(--sfp-b-wit,#fff)}body{font-family:var(--sfp-b-tekst);color:var(--sfp-b-body)}';
     // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste HTML, ge-escapete titel en inhoud.

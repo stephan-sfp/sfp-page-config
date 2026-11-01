@@ -132,9 +132,9 @@ function sfp_page_config_tool_rest_controle( $post, $verzoek ) {
             'sfp_tool_ongeldig',
             'De beschrijving van de tool klopt niet: ' . implode( ' ', $uitkomst['fouten'] ),
             array(
-                'status'  => 400,
-                'fouten'  => $uitkomst['fouten'],
-                'let_op'  => $uitkomst['let_op'],
+                'status' => 400,
+                'fouten' => $uitkomst['fouten'],
+                'let_op' => $uitkomst['let_op'],
             )
         );
     }
@@ -166,7 +166,7 @@ function sfp_page_config_tool_posttypes( $types ) {
  */
 function sfp_page_config_tool_beschrijving( $post, $vernieuw = false ) {
     static $geheugen = array();
-    $post = get_post( $post );
+    $post            = get_post( $post );
     if ( ! $post || 'tool' !== $post->post_type ) {
         return null;
     }
@@ -223,7 +223,7 @@ function sfp_page_config_tool_beschrijving_vers( $post ) {
  */
 function sfp_page_config_tool_soorten() {
     return array(
-        'test'      => 'tool_test',
+        'test'         => 'tool_test',
         'generator'    => 'tool_generator',
         'rekenaar'     => 'tool_rekenaar',
         'checklist'    => 'tool_checklist',

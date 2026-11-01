@@ -38,8 +38,8 @@ $check  = function ( $naam, $ok, $detail = '' ) use ( &$fouten, &$goed ) {
 $check( 'code bestaat', shortcode_exists( 'dynamische_cta' ) );
 $check( 'code is van de plugin', isset( $GLOBALS['shortcode_tags']['dynamische_cta'] ) && 'sfp_page_config_code_dynamisch' === $GLOBALS['shortcode_tags']['dynamische_cta'] );
 
-$bewaard = get_option( 'sfp_settings', array() );
-$s       = is_array( $bewaard ) ? $bewaard : array();
+$bewaard     = get_option( 'sfp_settings', array() );
+$s           = is_array( $bewaard ) ? $bewaard : array();
 $zet_artikel = function ( $aan ) use ( $s ) {
     $x                = $s;
     $x['artikel_aan'] = $aan ? '1' : '';
@@ -54,32 +54,32 @@ $oud = function () {
 add_action( 'dynamische_cta', $oud );
 delete_transient( 'sfp_pc_vervolg_layouts' );
 
-$maak_term = function ( $naam, $ouder = 0 ) {
+$maak_term      = function ( $naam, $ouder = 0 ) {
     $r = wp_insert_term( $naam . ' ' . wp_generate_password( 6, false ), 'category', array( 'parent' => $ouder ) );
     return is_wp_error( $r ) ? 0 : (int) $r['term_id'];
 };
-$pijler_met   = $maak_term( 'Pijler met vervolg' );
-$pijler_zonder = $maak_term( 'Pijler zonder vervolg' );
-$sub          = $maak_term( 'Subpijler', $pijler_met );
+$pijler_met     = $maak_term( 'Pijler met vervolg' );
+$pijler_zonder  = $maak_term( 'Pijler zonder vervolg' );
+$sub            = $maak_term( 'Subpijler', $pijler_met );
 $pijler_concept = $maak_term( 'Pijler met concept' );
-$pijler_zelf  = $maak_term( 'Pijler met code in vervolg' );
-$termen       = array( $pijler_met, $pijler_zonder, $sub, $pijler_concept, $pijler_zelf );
+$pijler_zelf    = $maak_term( 'Pijler met code in vervolg' );
+$termen         = array( $pijler_met, $pijler_zonder, $sub, $pijler_concept, $pijler_zelf );
 $check( 'pijlers gemaakt', 5 === count( array_filter( $termen ) ) );
 
-$berichten = array();
-$vervolg_maak = function ( $term_id, $inhoud, $status ) use ( &$berichten ) {
-    $id = sfp_page_config_vervolg_maak( $term_id, $inhoud, $status );
+$berichten      = array();
+$vervolg_maak   = function ( $term_id, $inhoud, $status ) use ( &$berichten ) {
+    $id          = sfp_page_config_vervolg_maak( $term_id, $inhoud, $status );
     $berichten[] = (int) $id;
     return (int) $id;
 };
 $inhoud_vervolg = '<!-- wp:sfp/vervolg --><!-- wp:sfp/vervolg-vlak {"label":"Volgende stap"} --><!-- wp:paragraph --><p>VERVOLG-TEKST</p><!-- /wp:paragraph --><!-- /wp:sfp/vervolg-vlak --><!-- /wp:sfp/vervolg -->';
-$v1 = $vervolg_maak( $pijler_met, $inhoud_vervolg, 'publish' );
-$v2 = $vervolg_maak( $pijler_concept, $inhoud_vervolg, 'draft' );
-$v3 = $vervolg_maak( $pijler_zelf, '<!-- wp:paragraph --><p>ZELF</p><!-- /wp:paragraph --><!-- wp:shortcode -->[dynamische_cta]<!-- /wp:shortcode -->', 'publish' );
+$v1             = $vervolg_maak( $pijler_met, $inhoud_vervolg, 'publish' );
+$v2             = $vervolg_maak( $pijler_concept, $inhoud_vervolg, 'draft' );
+$v3             = $vervolg_maak( $pijler_zelf, '<!-- wp:paragraph --><p>ZELF</p><!-- /wp:paragraph --><!-- wp:shortcode -->[dynamische_cta]<!-- /wp:shortcode -->', 'publish' );
 $check( 'vervolgen gemaakt', $v1 && $v2 && $v3 );
 
 $bericht = function ( $type, $term = 0 ) use ( &$berichten ) {
-    $id = wp_insert_post(
+    $id          = wp_insert_post(
         array(
             'post_type'     => $type,
             'post_status'   => 'publish',
@@ -94,8 +94,13 @@ $bericht = function ( $type, $term = 0 ) use ( &$berichten ) {
 // Toon een bericht zoals een bezoeker: de hoofdquery staat op dat bericht.
 $toon = function ( $id ) {
     global $wp_query, $post;
-    $type = get_post_type( $id );
-    $wp_query = new WP_Query( 'page' === $type ? array( 'page_id' => $id ) : array( 'p' => $id, 'post_type' => $type ) );
+    $type                    = get_post_type( $id );
+    $wp_query                = new WP_Query(
+        'page' === $type ? array( 'page_id' => $id ) : array(
+            'p'         => $id,
+            'post_type' => $type
+        )
+    );
     $GLOBALS['wp_the_query'] = $wp_query;
     $wp_query->the_post();
     $post = get_post( $id );
@@ -134,7 +139,13 @@ $check( 'pagina: oude layout', false !== strpos( $uit, 'OUDE-LAYOUT' ) && false 
 
 // 7. Begrip: de oude layout, ook als het begrip een pijler heeft.
 if ( ! post_type_exists( 'begrippen' ) ) {
-    register_post_type( 'begrippen', array( 'public' => true, 'taxonomies' => array( 'category' ) ) );
+    register_post_type(
+        'begrippen',
+        array(
+            'public'     => true,
+            'taxonomies' => array( 'category' )
+        )
+    );
 }
 $begrip = $bericht( 'begrippen' );
 update_post_meta( $begrip, 'sfp_pijler', $pijler_met );
@@ -151,15 +162,25 @@ $zet_artikel( false );
 
 // 9. Buiten een bericht (archief, zonder hoofdquery op een bericht): de oude layout.
 global $wp_query;
-$wp_query = new WP_Query( array( 'post_type' => 'post', 'posts_per_page' => 1 ) );
+$wp_query                = new WP_Query(
+    array(
+        'post_type'      => 'post',
+        'posts_per_page' => 1
+    )
+);
 $GLOBALS['wp_the_query'] = $wp_query;
 $check( 'archief: oude layout', false !== strpos( do_shortcode( '[dynamische_cta]' ), 'OUDE-LAYOUT' ) );
 wp_reset_query();
 
 // 10. De andere twee codes blijven de actie volgen.
-add_action( 'dynamische_pijlerlink', function () { echo 'PIJLERLINK'; } );
-$id = $bericht( 'post', $pijler_met );
-$wp_query = new WP_Query( array( 'p' => $id ) );
+add_action(
+    'dynamische_pijlerlink',
+    function () {
+        echo 'PIJLERLINK';
+    }
+);
+$id                      = $bericht( 'post', $pijler_met );
+$wp_query                = new WP_Query( array( 'p' => $id ) );
 $GLOBALS['wp_the_query'] = $wp_query;
 $wp_query->the_post();
 $check( 'pijlerlink ongewijzigd', 'PIJLERLINK' === do_shortcode( '[dynamische_pijlerlink]' ) );

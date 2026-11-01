@@ -29,13 +29,13 @@ $check  = function ( $naam, $ok ) use ( &$fouten, &$goed ) {
     echo "FOUT: $naam\n";
 };
 
-$bewaard = get_option( 'sfp_settings', array() );
-$s       = is_array( $bewaard ) ? $bewaard : array();
-$s['artikel_aan']                 = '1';
-$s['onderdelen']                  = isset( $s['onderdelen'] ) && is_array( $s['onderdelen'] ) ? $s['onderdelen'] : array();
-$s['onderdelen']['pijler']        = '1';
-$s['onderdelen']['begrip']        = '1';
-$s['kop_leestekens']              = '1';
+$bewaard                   = get_option( 'sfp_settings', array() );
+$s                         = is_array( $bewaard ) ? $bewaard : array();
+$s['artikel_aan']          = '1';
+$s['onderdelen']           = isset( $s['onderdelen'] ) && is_array( $s['onderdelen'] ) ? $s['onderdelen'] : array();
+$s['onderdelen']['pijler'] = '1';
+$s['onderdelen']['begrip'] = '1';
+$s['kop_leestekens']       = '1';
 update_option( 'sfp_settings', $s );
 if ( function_exists( 'sfp_page_config_instellingen_vergeet' ) ) {
     sfp_page_config_instellingen_vergeet();
@@ -62,9 +62,9 @@ for ( $i = 0; $i < 6; $i++ ) {
         )
     );
 }
-$opruimen = array_merge( $opruimen, $artikelen );
-$lead     = trim( str_repeat( 'woord ', 60 ) );
-$gids     = wp_insert_post(
+$opruimen   = array_merge( $opruimen, $artikelen );
+$lead       = trim( str_repeat( 'woord ', 60 ) );
+$gids       = wp_insert_post(
     array(
         'post_title'    => 'Gids: een test-titel, klaar.',
         'post_status'   => 'publish',
@@ -87,10 +87,27 @@ $check( 'eigen adres', get_permalink( $gids ) !== get_term_link( $pijler['term_i
 delete_post_meta( $gids, 'sfp_eigen_adres' );
 
 // Verzoek op het categorieadres wordt de gids.
-$term   = get_term( $pijler['term_id'], 'category' );
-$vars   = sfp_page_config_gids_verzoek( array( 'category_name' => get_term_parents_list( $term->term_id, 'category', array( 'format' => 'slug', 'separator' => '/', 'link' => false ) ) ) );
+$term = get_term( $pijler['term_id'], 'category' );
+$vars = sfp_page_config_gids_verzoek(
+    array(
+        'category_name' => get_term_parents_list(
+            $term->term_id,
+            'category',
+            array(
+                'format'    => 'slug',
+                'separator' => '/',
+                'link'      => false
+            )
+        )
+    )
+);
 $check( 'verzoek categorie wordt gids', isset( $vars['p'] ) && (int) $vars['p'] === $gids );
-$vars = sfp_page_config_gids_verzoek( array( 'category_name' => $term->slug, 'feed' => 'feed' ) );
+$vars = sfp_page_config_gids_verzoek(
+    array(
+        'category_name' => $term->slug,
+        'feed'          => 'feed'
+    )
+);
 $check( 'feed blijft categorie', ! isset( $vars['p'] ) );
 
 // Volgorde in de kaart: eerst wat de gids noemt (link, dan Lees ook), dan nieuwste eerst.
@@ -128,7 +145,7 @@ if ( post_type_exists( 'begrippen' ) ) {
 }
 
 // Hoofdpijler gegroepeerd.
-$hoofdgids = wp_insert_post(
+$hoofdgids  = wp_insert_post(
     array(
         'post_title'    => 'Hoofdgids',
         'post_status'   => 'publish',
@@ -146,7 +163,7 @@ $check( 'pijlerregel hoofdpijler', false !== strpos( sfp_page_config_artikel_pij
 $check( 'pijlerregel pijler in', 1 === preg_match( '#(Guide in|Gids in|Guia em) <a#', sfp_page_config_artikel_pijlerregel( get_post( $gids ) ) ) );
 
 // Een concept-pijler toont zijn kaart (voorbeeldlink), maar houdt zijn eigen adres.
-$concept = wp_insert_post(
+$concept    = wp_insert_post(
     array(
         'post_title'    => 'Concept pijler',
         'post_status'   => 'draft',
@@ -166,7 +183,7 @@ $html = sfp_page_config_gids_na_lead( '<h2>Kop</h2><p>Meer</p>', '<nav>K</nav>' 
 $check( 'kaart bovenaan zonder lead', 0 === strpos( $html, '<nav>K</nav>' ) );
 
 // Twee gidsen voor één categorie: de oudste telt, de controle meldt het.
-$tweede = wp_insert_post(
+$tweede     = wp_insert_post(
     array(
         'post_title'    => 'Tweede gids',
         'post_status'   => 'publish',
@@ -191,7 +208,7 @@ update_post_meta( $tweede, 'sfp_gids_van', $ander['term_id'] );
 $check( 'gekozen categorie', $tweede === sfp_page_config_gids_van_term( $ander['term_id'] ) );
 
 // Promokaart per vorm.
-$s = get_option( 'sfp_settings' );
+$s                         = get_option( 'sfp_settings' );
 $s['artikel_promo_titel']  = 'Het boek';
 $s['artikel_promo_url']    = 'https://example.com/boek';
 $s['artikel_promo2_titel'] = 'Discovery call';
@@ -210,24 +227,56 @@ $check( 'tool: standaard geen kaart', 'geen' === sfp_page_config_promo_keuze( 't
 // De zelftest op de pijlerkaart: zie tests/zelftest-cta-wp.php.
 
 // Thermometer (pijler).
-$stel  = function ( $t ) {
+$stel   = function ( $t ) {
     return '<!-- wp:sfp/thermometer-stelling ' . wp_json_encode( array( 'tekst' => $t ) ) . ' /-->';
 };
-$thermo = '<!-- wp:sfp/thermometer ' . wp_json_encode( array( 'kop' => 'How nervous are you?', 'links' => 'Calm', 'rechts' => 'Nervous', 'hoog_label' => 'Nerves lead', 'laag' => 'Calm.', 'midden' => 'Some nerves.', 'hoog' => 'Nerves rule.', 'hoog_anker' => 'nerves' ) ) . ' -->'
+$thermo = '<!-- wp:sfp/thermometer ' . wp_json_encode(
+    array(
+        'kop'        => 'How nervous are you?',
+        'links'      => 'Calm',
+        'rechts'     => 'Nervous',
+        'hoog_label' => 'Nerves lead',
+        'laag'       => 'Calm.',
+        'midden'     => 'Some nerves.',
+        'hoog'       => 'Nerves rule.',
+        'hoog_anker' => 'nerves'
+    )
+) . ' -->'
     . $stel( 'I sleep badly before a talk.' ) . $stel( 'My hands shake.' ) . $stel( 'I avoid speaking.' ) . $stel( 'My mind goes blank.' )
     . '<!-- /wp:sfp/thermometer -->';
 $check( 'pijler zonder thermometer: melding', in_array( 'pijler-thermometer', wp_list_pluck( sfp_page_config_pijler_controle( get_post( $gids ) ), 'code' ), true ) );
-wp_update_post( array( 'ID' => $gids, 'post_content' => get_post( $gids )->post_content . $thermo ) );
+wp_update_post(
+    array(
+        'ID'           => $gids,
+        'post_content' => get_post( $gids )->post_content . $thermo
+    )
+);
 $check( 'pijler met thermometer: geen melding', ! in_array( 'pijler-thermometer', wp_list_pluck( sfp_page_config_pijler_controle( get_post( $gids ) ), 'code' ), true ) );
 sfp_page_config_thermometer( false );
 $check( 'thermometer niet in de tekst', '' === trim( do_blocks( $thermo ) ) );
 $th = sfp_page_config_thermometer();
 $check( 'thermometer verzameld', is_array( $th ) && 4 === count( $th['stellingen'] ) && 'How nervous are you?' === $th['kop'] );
-$paneel = sfp_page_config_thermometer_paneel( $th, array( array( 'id' => 'nerves', 'titel' => 'Start with your nerves' ) ) );
+$paneel = sfp_page_config_thermometer_paneel(
+    $th,
+    array(
+        array(
+            'id'    => 'nerves',
+            'titel' => 'Start with your nerves'
+        )
+    )
+);
 $check( 'paneel: vier stellingen, drie knoppen elk', 4 === substr_count( $paneel, 'sfp-art-thermo__stelling' ) && 12 === substr_count( $paneel, 'data-punt=' ) );
 $check( 'paneel: eigen naam en schaaleinden, geen algemeen woord', false !== strpos( $paneel, 'Nerves lead' ) && false !== strpos( $paneel, '<span>Calm</span><span>Nervous</span>' ) && 1 === substr_count( $paneel, 'sfp-art-thermo__stand' ) );
 $check( 'paneel: drie uitslagen, link bij hoog', 3 === substr_count( $paneel, 'data-band=' ) && false !== strpos( $paneel, 'href="#nerves"' ) );
-$kop = sfp_page_config_artikel_kopkaart( get_post( $gids ), array( array( 'id' => 'nerves', 'titel' => 'Start with your nerves' ) ) );
+$kop = sfp_page_config_artikel_kopkaart(
+    get_post( $gids ),
+    array(
+        array(
+            'id'    => 'nerves',
+            'titel' => 'Start with your nerves'
+        )
+    )
+);
 $check( 'kopkaart pijler: thermometer', false !== strpos( $kop, 'sfp-art-paneel-thermo' ) );
 $check( 'kopkaart pijler: geen zelftest', false === strpos( $kop, 'zelftest' ) && false === strpos( $kop, 'sfp-art-paneel-warm' ) );
 sfp_page_config_thermometer( false );
@@ -246,12 +295,38 @@ $check( 'attribuut blijft heel', '<h1 class="a-b">x<span class="sfp-lt">.</span>
 // Begrip (3.7.0).
 if ( post_type_exists( 'begrippen' ) && function_exists( 'sfp_page_config_begrip_aan' ) ) {
     $check( 'begrip aan', sfp_page_config_begrip_aan() );
-    $zin  = 'Testterm is the credibility an audience grants a speaker: the sense that this person knows the subject and can be trusted.';
-    $def  = '<!-- wp:sfp/definitie ' . wp_json_encode( array( 'zin' => $zin, 'uitleg' => 'Uitleg.' ) ) . ' /-->';
-    $talk = '<!-- wp:sfp/in-een-talk {"zin":"Zin.","uitleg":"Uitleg."} /-->';
-    $b1   = wp_insert_post( array( 'post_type' => 'begrippen', 'post_status' => 'publish', 'post_title' => 'Testterm', 'post_content' => $def . $talk ) );
-    $b2   = wp_insert_post( array( 'post_type' => 'begrippen', 'post_status' => 'publish', 'post_title' => 'Testterm zonder', 'post_content' => '<!-- wp:paragraph --><p>Los.</p><!-- /wp:paragraph -->' ) );
-    $b3   = wp_insert_post( array( 'post_type' => 'begrippen', 'post_status' => 'draft', 'post_title' => 'Testterm concept', 'post_content' => $def ) );
+    $zin      = 'Testterm is the credibility an audience grants a speaker: the sense that this person knows the subject and can be trusted.';
+    $def      = '<!-- wp:sfp/definitie ' . wp_json_encode(
+        array(
+            'zin'    => $zin,
+            'uitleg' => 'Uitleg.'
+        )
+    ) . ' /-->';
+    $talk     = '<!-- wp:sfp/in-een-talk {"zin":"Zin.","uitleg":"Uitleg."} /-->';
+    $b1       = wp_insert_post(
+        array(
+            'post_type'    => 'begrippen',
+            'post_status'  => 'publish',
+            'post_title'   => 'Testterm',
+            'post_content' => $def . $talk
+        )
+    );
+    $b2       = wp_insert_post(
+        array(
+            'post_type'    => 'begrippen',
+            'post_status'  => 'publish',
+            'post_title'   => 'Testterm zonder',
+            'post_content' => '<!-- wp:paragraph --><p>Los.</p><!-- /wp:paragraph -->'
+        )
+    );
+    $b3       = wp_insert_post(
+        array(
+            'post_type'    => 'begrippen',
+            'post_status'  => 'draft',
+            'post_title'   => 'Testterm concept',
+            'post_content' => $def
+        )
+    );
     $opruimen = array_merge( $opruimen, array( $b1, $b2, $b3 ) );
     update_post_meta( $b1, 'sfp_pijler', $pijler['term_id'] );
     update_post_meta( $b2, 'sfp_pijler', $pijler['term_id'] );
@@ -273,9 +348,16 @@ if ( post_type_exists( 'begrippen' ) && function_exists( 'sfp_page_config_begrip
     };
     $check( 'controle schoon', array() === $codes( $b1 ) );
     $check( 'controle geen definitie', array( 'begrip-definitie' ) === $codes( $b2 ) );
-    $kort = wp_insert_post( array( 'post_type' => 'begrippen', 'post_status' => 'publish', 'post_title' => 'Anders', 'post_content' => '<!-- wp:sfp/definitie {"zin":"Te kort."} /-->' . $talk . $talk . '<!-- wp:sfp/faq-vraag /-->' ) );
+    $kort       = wp_insert_post(
+        array(
+            'post_type'    => 'begrippen',
+            'post_status'  => 'publish',
+            'post_title'   => 'Anders',
+            'post_content' => '<!-- wp:sfp/definitie {"zin":"Te kort."} /-->' . $talk . $talk . '<!-- wp:sfp/faq-vraag /-->'
+        )
+    );
     $opruimen[] = $kort;
-    $c = $codes( $kort );
+    $c          = $codes( $kort );
     $check( 'controle begin', in_array( 'begrip-begin', $c, true ) );
     $check( 'controle lengte', in_array( 'begrip-lengte', $c, true ) );
     $check( 'controle faq', in_array( 'begrip-faq', $c, true ) );
@@ -286,26 +368,67 @@ if ( post_type_exists( 'begrippen' ) && function_exists( 'sfp_page_config_begrip
     $check( 'verwant via pijler', 3 === count( $verwant ) && ! in_array( $b1, $verwant, true ) );
     update_post_meta( $b1, 'sfp_verwant', array( $kort, $b3 ) );
     $check( 'verwant gekozen, concept niet', array( $kort ) === wp_list_pluck( sfp_page_config_begrip_verwant( get_post( $b1 ) ), 'ID' ) );
-    $noemer = wp_insert_post( array( 'post_title' => 'Noemt testterm', 'post_status' => 'publish', 'post_content' => '<!-- wp:paragraph --><p><span class="sfp-begrip" data-sfp-begrip="' . $b1 . '">x</span></p><!-- /wp:paragraph -->' ) );
+    $noemer     = wp_insert_post(
+        array(
+            'post_title'   => 'Noemt testterm',
+            'post_status'  => 'publish',
+            'post_content' => '<!-- wp:paragraph --><p><span class="sfp-begrip" data-sfp-begrip="' . $b1 . '">x</span></p><!-- /wp:paragraph -->'
+        )
+    );
     $opruimen[] = $noemer;
     $check( 'gebruikt in', in_array( $noemer, wp_list_pluck( sfp_page_config_begrip_gebruikt_in( get_post( $b1 ) ), 'ID' ), true ) );
     list( $vorige, $volgende ) = sfp_page_config_begrip_buren( get_post( $b1 ) );
     $check( 'volgende term', $volgende && (int) $b2 === (int) $volgende->ID );
 
     // Check your understanding (3.7.1).
-    $vr = function ( $a ) {
+    $vr           = function ( $a ) {
         return '<!-- wp:sfp/begrip-vraag ' . wp_json_encode( $a ) . ' /-->';
     };
-    $goed1 = array( 'vraag' => 'What is ethos?', 'optie1' => 'Credibility.', 'optie2' => 'Emotion', 'optie3' => 'Logic', 'juist' => 1, 'uitleg' => 'Ethos is about the speaker.' );
+    $goed1        = array(
+        'vraag'  => 'What is ethos?',
+        'optie1' => 'Credibility.',
+        'optie2' => 'Emotion',
+        'optie3' => 'Logic',
+        'juist'  => 1,
+        'uitleg' => 'Ethos is about the speaker.'
+    );
     $zonder_stijl = function ( $html ) {
         return preg_replace( '#<style[^>]*>.*?</style>#s', '', $html );
     };
-    $check_html = $zonder_stijl( do_blocks( '<!-- wp:sfp/begrip-check -->' . $vr( $goed1 ) . '<!-- /wp:sfp/begrip-check -->' ) );
+    $check_html   = $zonder_stijl( do_blocks( '<!-- wp:sfp/begrip-check -->' . $vr( $goed1 ) . '<!-- /wp:sfp/begrip-check -->' ) );
     $check( 'check: kaart met label', false !== strpos( $check_html, 'class="sfp-check' ) && false !== strpos( $check_html, sfp_page_config_artikel_tekst( 'check' ) ) );
     $check( 'check: juiste antwoord gemarkeerd', 1 === substr_count( $check_html, 'data-juist' ) && 3 === substr_count( $check_html, 'aria-pressed' ) );
     $check( 'check: fout-tekst noemt het juiste antwoord zonder dubbele punt', false !== strpos( $check_html, 'Credibility.' ) && false === strpos( $check_html, 'Credibility..' ) );
-    $check( 'check: zonder juist antwoord niets', '' === trim( do_blocks( '<!-- wp:sfp/begrip-check -->' . $vr( array( 'vraag' => 'Q', 'optie1' => 'a', 'optie2' => 'b', 'juist' => 0 ) ) . '<!-- /wp:sfp/begrip-check -->' ) ) );
-    $check( 'check: juist antwoord leeg telt niet', '' === trim( do_blocks( '<!-- wp:sfp/begrip-check -->' . $vr( array( 'vraag' => 'Q', 'optie1' => 'a', 'optie2' => 'b', 'juist' => 3 ) ) . '<!-- /wp:sfp/begrip-check -->' ) ) );
+    $check(
+        'check: zonder juist antwoord niets',
+        '' === trim(
+            do_blocks(
+                '<!-- wp:sfp/begrip-check -->' . $vr(
+                    array(
+                        'vraag'  => 'Q',
+                        'optie1' => 'a',
+                        'optie2' => 'b',
+                        'juist'  => 0
+                    )
+                ) . '<!-- /wp:sfp/begrip-check -->'
+            )
+        )
+    );
+    $check(
+        'check: juist antwoord leeg telt niet',
+        '' === trim(
+            do_blocks(
+                '<!-- wp:sfp/begrip-check -->' . $vr(
+                    array(
+                        'vraag'  => 'Q',
+                        'optie1' => 'a',
+                        'optie2' => 'b',
+                        'juist'  => 3
+                    )
+                ) . '<!-- /wp:sfp/begrip-check -->'
+            )
+        )
+    );
     $vier = do_blocks( '<!-- wp:sfp/begrip-check -->' . $vr( $goed1 ) . $vr( $goed1 ) . $vr( $goed1 ) . $vr( $goed1 ) . '<!-- /wp:sfp/begrip-check -->' );
     $check( 'check: hoogstens drie vragen', 3 === substr_count( $vier, 'class="sfp-check__vraag"' ) );
     $check( 'check: blok bekend', isset( sfp_page_config_blokken()['sfp/begrip-check'], sfp_page_config_blokken()['sfp/begrip-vraag'] ) );
@@ -316,7 +439,12 @@ if ( post_type_exists( 'begrippen' ) && function_exists( 'sfp_page_config_begrip
     $blokken = sfp_page_config_blokken();
     $check( 'blokken definitie en talk', isset( $blokken['sfp/definitie'], $blokken['sfp/in-een-talk'] ) );
     $check( 'definitie rendert', false !== strpos( render_block( parse_blocks( $def )[0] ), $zin ) );
-    $GLOBALS['wp_query'] = new WP_Query( array( 'p' => $b1, 'post_type' => 'begrippen' ) );
+    $GLOBALS['wp_query']     = new WP_Query(
+        array(
+            'p'         => $b1,
+            'post_type' => 'begrippen'
+        )
+    );
     $GLOBALS['wp_the_query'] = $GLOBALS['wp_query'];
     ob_start();
     sfp_page_config_begrip_schema();
@@ -326,7 +454,7 @@ if ( post_type_exists( 'begrippen' ) && function_exists( 'sfp_page_config_begrip
 }
 
 // Uit: geen gids, gewoon adres.
-$s = get_option( 'sfp_settings' );
+$s                         = get_option( 'sfp_settings' );
 $s['onderdelen']['pijler'] = '0';
 update_option( 'sfp_settings', $s );
 if ( function_exists( 'sfp_page_config_instellingen_vergeet' ) ) {

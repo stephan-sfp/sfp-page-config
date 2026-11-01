@@ -76,17 +76,17 @@ if ( preg_match( '/^[a-f0-9]{24}$/', $sfp_zt_geheim ) ) {
     $sfp_zt_uploads = wp_upload_dir( null, false );
     $sfp_zt_mappen  = array( dirname( untrailingslashit( ABSPATH ) ) . '/sfp-zelftest-' . $sfp_zt_geheim, trailingslashit( $sfp_zt_uploads['basedir'] ) . 'sfp-zelftest-' . $sfp_zt_geheim );
     foreach ( $sfp_zt_mappen as $sfp_zt_map ) {
-    if ( is_dir( $sfp_zt_map ) ) {
-        $sfp_zt_items = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $sfp_zt_map, FilesystemIterator::SKIP_DOTS ), RecursiveIteratorIterator::CHILD_FIRST );
-        foreach ( $sfp_zt_items as $sfp_zt_item ) {
-            if ( $sfp_zt_item->isDir() ) {
-                rmdir( $sfp_zt_item->getPathname() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
-            } else {
-                wp_delete_file( $sfp_zt_item->getPathname() );
+        if ( is_dir( $sfp_zt_map ) ) {
+            $sfp_zt_items = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $sfp_zt_map, FilesystemIterator::SKIP_DOTS ), RecursiveIteratorIterator::CHILD_FIRST );
+            foreach ( $sfp_zt_items as $sfp_zt_item ) {
+                if ( $sfp_zt_item->isDir() ) {
+                    rmdir( $sfp_zt_item->getPathname() ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
+                } else {
+                    wp_delete_file( $sfp_zt_item->getPathname() );
+                }
             }
+            rmdir( $sfp_zt_map ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
         }
-        rmdir( $sfp_zt_map ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir
-    }
     }
 }
 foreach ( array( 'sfp_zelftest', 'sfp_zelftest_db', 'sfp_zelftest_map', 'sfp_zelftest_log' ) as $sfp_zt_optie ) {

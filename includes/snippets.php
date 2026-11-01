@@ -88,9 +88,14 @@ function sfp_page_config_snippets_ase() {
         'rebuild_snippets_tree'           => class_exists( 'Code_Snippets_Manager' ) && method_exists( 'Code_Snippets_Manager', 'rebuild_snippets_tree' ),
         'update_php_snippet_validated_hash_after_file_write' => class_exists( 'Code_Snippets_Manager' ) && method_exists( 'Code_Snippets_Manager', 'update_php_snippet_validated_hash_after_file_write' ),
     );
-    $mist = array_keys( array_filter( $nodig, function ( $er ) {
-        return ! $er;
-    } ) );
+    $mist  = array_keys(
+        array_filter(
+            $nodig,
+            function ( $er ) {
+                return ! $er;
+            }
+        )
+    );
     if ( $mist ) {
         return new WP_Error( 'sfp_snippets_ase_ontbreekt', 'ASE Pro mist wat het snippetbeheer nodig heeft: ' . implode( ', ', $mist ) . '. Er is niets opgeslagen.', array( 'status' => 503 ) );
     }
@@ -336,8 +341,8 @@ function sfp_page_config_snippets_invoer( array $invoer ) {
  * @return true|WP_Error
  */
 function sfp_page_config_snippets_naar_ase( $id ) {
-    $post    = get_post( $id );
-    $map     = (string) CSM_UPLOAD_DIR;
+    $post = get_post( $id );
+    $map  = (string) CSM_UPLOAD_DIR;
     sfp_page_config_snippets_log( $id, (string) $post->post_content );
     $bestand = sfp_page_config_snippets_bestand( $id, 'php' );
     if ( ! is_dir( $map ) ) {
@@ -541,14 +546,14 @@ add_action( 'rest_api_init', 'sfp_page_config_snippets_rest' );
  * De routes onder /sfp/v1/snippets.
  */
 function sfp_page_config_snippets_rest() {
-    $mag = function () {
+    $mag      = function () {
         $toegang = sfp_page_config_snippets_mag();
         if ( true !== $toegang ) {
             return $toegang;
         }
         return sfp_page_config_snippets_ase();
     };
-    $json = function ( WP_REST_Request $verzoek ) {
+    $json     = function ( WP_REST_Request $verzoek ) {
         $gegevens = $verzoek->get_json_params();
         return is_array( $gegevens ) ? $gegevens : (array) $verzoek->get_body_params();
     };

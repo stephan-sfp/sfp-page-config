@@ -39,8 +39,8 @@ $json = (string) file_get_contents( $pad );
 $ruw  = json_decode( $json, true );
 $check( 'voorbeeld gelezen', is_array( $ruw ) );
 
-$bewaard = get_option( 'sfp_settings', array() );
-$s       = is_array( $bewaard ) ? $bewaard : array();
+$bewaard                  = get_option( 'sfp_settings', array() );
+$s                        = is_array( $bewaard ) ? $bewaard : array();
 $s['onderdelen']['tools'] = '1';
 update_option( 'sfp_settings', $s );
 if ( ! post_type_exists( 'tool' ) ) {
@@ -79,7 +79,7 @@ foreach ( $fout['stappen'] as $i => $st ) {
 $x = sfp_page_config_tool_controleer( sfp_page_config_tool_normaliseer( $fout ) );
 $check( 'kwadrant met drie opties is een fout', (bool) preg_grep( '/kwadrant/', $x['fouten'] ) );
 
-$fout = $ruw;
+$fout                                      = $ruw;
 $fout['weergave']['groepen'][0]['stappen'] = 2;
 $x = sfp_page_config_tool_normaliseer( $fout );
 $check( 'groepen die niet kloppen: genegeerd met melding', array() === $x['weergave']['groepen'] && (bool) preg_grep( '/groepen/', $x['genegeerd'] ) );
@@ -90,7 +90,7 @@ $x = sfp_page_config_tool_normaliseer( $zonder );
 $check( 'zonder weergave: geen kaart', '' === $x['weergave']['modus'] );
 
 /* Weergave in de pagina. */
-$maak = function ( $json, $status = 'publish' ) {
+$maak    = function ( $json, $status = 'publish' ) {
     return (int) wp_insert_post(
         array(
             'post_type'    => 'tool',

@@ -115,14 +115,14 @@ function sfp_page_config_generator_normaliseer( array $b ) {
     $acties        = isset( $b['acties'] ) && is_array( $b['acties'] ) ? $b['acties'] : array();
     $uit['acties'] = array(
         'pdf_bestandsnaam' => isset( $acties['pdf_bestandsnaam'] ) ? (string) $acties['pdf_bestandsnaam'] : '',
-        'pdf'       => ! isset( $acties['pdf'] ) || ! empty( $acties['pdf'] ),
-        'word'      => ! isset( $acties['word'] ) || ! empty( $acties['word'] ),
-        'kopieer'   => ! isset( $acties['kopieer'] ) || ! empty( $acties['kopieer'] ),
-        'deellink'  => ! isset( $acties['deellink'] ) || ! empty( $acties['deellink'] ),
-        'mail'      => ! isset( $acties['mail'] ) || ! empty( $acties['mail'] ),
-        'duimpjes'  => ! isset( $acties['duimpjes'] ) || ! empty( $acties['duimpjes'] ),
-        'formulier' => isset( $acties['formulier'] ) ? (int) $acties['formulier'] : 0,
-        'kopieer_kaal' => ! empty( $acties['kopieer_kaal'] ),
+        'pdf'              => ! isset( $acties['pdf'] ) || ! empty( $acties['pdf'] ),
+        'word'             => ! isset( $acties['word'] ) || ! empty( $acties['word'] ),
+        'kopieer'          => ! isset( $acties['kopieer'] ) || ! empty( $acties['kopieer'] ),
+        'deellink'         => ! isset( $acties['deellink'] ) || ! empty( $acties['deellink'] ),
+        'mail'             => ! isset( $acties['mail'] ) || ! empty( $acties['mail'] ),
+        'duimpjes'         => ! isset( $acties['duimpjes'] ) || ! empty( $acties['duimpjes'] ),
+        'formulier'        => isset( $acties['formulier'] ) ? (int) $acties['formulier'] : 0,
+        'kopieer_kaal'     => ! empty( $acties['kopieer_kaal'] ),
         'formulier_velden' => new stdClass(),
     );
     if ( isset( $acties['formulier_velden'] ) && is_array( $acties['formulier_velden'] ) ) {
@@ -203,7 +203,7 @@ function sfp_page_config_generator_normaliseer( array $b ) {
             'labels' => $labels,
         );
     }
-    $uit['live'] = ! empty( $b['live'] );
+    $uit['live']     = ! empty( $b['live'] );
     $uit['weergave'] = sfp_page_config_generator_weergave_schoon( isset( $b['weergave'] ) ? $b['weergave'] : null, $stappen, $genegeerd );
 
     $uit['teksten']   = isset( $b['teksten'] ) && is_array( $b['teksten'] ) ? array_map( 'strval', array_filter( $b['teksten'], 'is_scalar' ) ) : array();
@@ -302,7 +302,7 @@ function sfp_page_config_generator_veld_schoon( array $v, $reserve ) {
     if ( isset( $v['assen'] ) && is_array( $v['assen'] ) ) {
         $assen = array();
         foreach ( array( 'kolommen', 'rijen' ) as $as ) {
-            $lijst = isset( $v['assen'][ $as ] ) && is_array( $v['assen'][ $as ] ) ? array_values( array_map( 'strval', array_filter( $v['assen'][ $as ], 'is_scalar' ) ) ) : array();
+            $lijst        = isset( $v['assen'][ $as ] ) && is_array( $v['assen'][ $as ] ) ? array_values( array_map( 'strval', array_filter( $v['assen'][ $as ], 'is_scalar' ) ) ) : array();
             $assen[ $as ] = array_slice( $lijst, 0, 2 );
         }
         $uit['assen'] = $assen;
@@ -558,7 +558,7 @@ function sfp_page_config_generator_controleer( array $b ) {
     if ( ! $b['uitvoer'] ) {
         $fouten[] = 'Geen uitvoer.';
     }
-    $formule = function ( $f, $plek ) use ( &$fouten ) {
+    $formule  = function ( $f, $plek ) use ( &$fouten ) {
         if ( '' !== trim( (string) $f ) && null === sfp_page_config_reken_boom( $f ) ) {
             $fouten[] = $plek . ': de formule "' . $f . '" klopt niet.';
         }
@@ -585,7 +585,7 @@ function sfp_page_config_generator_controleer( array $b ) {
             $fouten[] = 'Oordeel zonder labels.';
         }
     }
-    $banken = is_array( $b['banken'] ) ? $b['banken'] : array();
+    $banken            = is_array( $b['banken'] ) ? $b['banken'] : array();
     $controleer_sectie = function ( $s, $plek ) use ( &$controleer_sectie, &$fouten, &$let_op, $velden, $banken, $formule ) {
         if ( ! in_array( $s['type'], sfp_page_config_generator_sectietypen(), true ) ) {
             $fouten[] = 'Uitvoer ' . $plek . ': onbekend type "' . $s['type'] . '". Bekend: ' . implode( ', ', sfp_page_config_generator_sectietypen() ) . '.';
@@ -599,7 +599,11 @@ function sfp_page_config_generator_controleer( array $b ) {
         foreach ( isset( $s['delen'] ) ? $s['delen'] : array() as $d ) {
             $formule( $d['waarde'], 'Uitvoer ' . $plek . ' (delen)' );
         }
-        foreach ( array( 'voorkeur' => 'formule', 'terugval' => 'filter', 'groeperen' => 'per' ) as $sleutel => $deel ) {
+        foreach ( array(
+            'voorkeur'  => 'formule',
+            'terugval'  => 'filter',
+            'groeperen' => 'per'
+        ) as $sleutel => $deel ) {
             if ( isset( $s[ $sleutel ][ $deel ] ) ) {
                 $formule( $s[ $sleutel ][ $deel ], 'Uitvoer ' . $plek . ' (' . $sleutel . ')' );
             }
@@ -935,8 +939,8 @@ function sfp_page_config_generator_waarde( array $b, array $a, $naam, $ctx ) {
         if ( ! isset( $velden[ $voor ] ) ) {
             return null;
         }
-        $v = $velden[ $voor ];
-        $w = sfp_page_config_generator_antwoord( $b, $a, $voor );
+        $v   = $velden[ $voor ];
+        $w   = sfp_page_config_generator_antwoord( $b, $a, $voor );
         $som = null;
         foreach ( is_array( $w ) ? $w : array( $w ) as $x ) {
             $o = sfp_page_config_generator_optie( $v, $x );
@@ -959,7 +963,16 @@ function sfp_page_config_generator_waarde( array $b, array $a, $naam, $ctx ) {
     }
     foreach ( $b['reken'] as $r ) {
         if ( $r['id'] === $naam ) {
-            return sfp_page_config_generator_reken( $b, $a, $r['formule'], array( 'item' => $item, 'diepte' => $diepte + 1, 'extra' => $ctx && isset( $ctx['extra'] ) ? $ctx['extra'] : null ) );
+            return sfp_page_config_generator_reken(
+                $b,
+                $a,
+                $r['formule'],
+                array(
+                    'item'   => $item,
+                    'diepte' => $diepte + 1,
+                    'extra'  => $ctx && isset( $ctx['extra'] ) ? $ctx['extra'] : null
+                )
+            );
         }
     }
     if ( 'oordeel' === $naam || 'oordeel_tekst' === $naam ) {
@@ -968,7 +981,16 @@ function sfp_page_config_generator_waarde( array $b, array $a, $naam, $ctx ) {
     }
     $waarden = is_array( $b['waarden'] ) ? $b['waarden'] : array();
     if ( array_key_exists( $naam, $waarden ) ) {
-        return sfp_page_config_generator_vul( $waarden[ $naam ], $b, $a, array( 'item' => $item, 'diepte' => $diepte + 1, 'extra' => $ctx && isset( $ctx['extra'] ) ? $ctx['extra'] : null ) );
+        return sfp_page_config_generator_vul(
+            $waarden[ $naam ],
+            $b,
+            $a,
+            array(
+                'item'   => $item,
+                'diepte' => $diepte + 1,
+                'extra'  => $ctx && isset( $ctx['extra'] ) ? $ctx['extra'] : null
+            )
+        );
     }
     return null;
 }
@@ -987,7 +1009,17 @@ function sfp_page_config_generator_oordeel( array $b, array $a, $ctx = null ) {
         return null;
     }
     $diepte = $ctx && isset( $ctx['diepte'] ) ? $ctx['diepte'] : 0;
-    $n      = sfp_page_config_reken_getal( sfp_page_config_generator_reken( $b, $a, $b['oordeel']['op'], array( 'diepte' => $diepte + 1, 'extra' => $ctx && isset( $ctx['extra'] ) ? $ctx['extra'] : null ) ) );
+    $n      = sfp_page_config_reken_getal(
+        sfp_page_config_generator_reken(
+            $b,
+            $a,
+            $b['oordeel']['op'],
+            array(
+                'diepte' => $diepte + 1,
+                'extra'  => $ctx && isset( $ctx['extra'] ) ? $ctx['extra'] : null
+            )
+        )
+    );
     if ( null === $n ) {
         return null;
     }
@@ -1006,7 +1038,7 @@ function sfp_page_config_generator_oordeel( array $b, array $a, $ctx = null ) {
  * @return string[]
  */
 function sfp_page_config_generator_vinkjes( array $a ) {
-    $w = isset( $a['_vink'] ) && is_array( $a['_vink'] ) && array_values( $a['_vink'] ) === $a['_vink'] ? $a['_vink'] : array();
+    $w   = isset( $a['_vink'] ) && is_array( $a['_vink'] ) && array_values( $a['_vink'] ) === $a['_vink'] ? $a['_vink'] : array();
     $uit = array();
     foreach ( $w as $x ) {
         if ( is_string( $x ) ) {
@@ -1053,12 +1085,22 @@ function sfp_page_config_generator_kaarten( array $b, array $a, array $s, $ctx )
         $aantal = null === $n ? 0 : (int) max( 0, min( 200, floor( $n ) ) );
     }
     $test = function ( $formule, $obj ) use ( $b, $a, $extra ) {
-        return sfp_page_config_reken_waar( sfp_page_config_generator_reken( $b, $a, $formule, array( 'item' => array( 'obj' => $obj ), 'extra' => $extra ) ) );
+        return sfp_page_config_reken_waar(
+            sfp_page_config_generator_reken(
+                $b,
+                $a,
+                $formule,
+                array(
+                    'item'  => array( 'obj' => $obj ),
+                    'extra' => $extra
+                )
+            )
+        );
     };
     if ( isset( $s['om_en_om'] ) ) {
-        $w     = sfp_page_config_generator_antwoord( $b, $a, $s['om_en_om']['veld'] );
-        $cats  = is_array( $w ) ? $w : ( sfp_page_config_generator_leeg( $w ) ? array() : array( $w ) );
-        $per   = array();
+        $w    = sfp_page_config_generator_antwoord( $b, $a, $s['om_en_om']['veld'] );
+        $cats = is_array( $w ) ? $w : ( sfp_page_config_generator_leeg( $w ) ? array() : array( $w ) );
+        $per  = array();
         foreach ( $cats as $c ) {
             $per[ $c ] = array();
             foreach ( $alle as $x ) {
@@ -1082,16 +1124,37 @@ function sfp_page_config_generator_kaarten( array $b, array $a, array $s, $ctx )
     }
     $lijst = $alle;
     if ( isset( $s['filter'] ) && '' !== $s['filter'] ) {
-        $lijst = array_values( array_filter( $lijst, function ( $x ) use ( $test, $s ) { return $test( $s['filter'], $x ); } ) );
+        $lijst = array_values(
+            array_filter(
+                $lijst,
+                function ( $x ) use ( $test, $s ) {
+                    return $test( $s['filter'], $x );
+                }
+            )
+        );
     }
     if ( isset( $s['voorkeur'] ) ) {
-        $voorkeur = array_values( array_filter( $lijst, function ( $x ) use ( $test, $s ) { return $test( $s['voorkeur']['formule'], $x ); } ) );
+        $voorkeur = array_values(
+            array_filter(
+                $lijst,
+                function ( $x ) use ( $test, $s ) {
+                    return $test( $s['voorkeur']['formule'], $x );
+                }
+            )
+        );
         if ( count( $voorkeur ) >= $s['voorkeur']['minimaal'] ) {
             $lijst = $voorkeur;
         }
     }
     if ( ! $lijst && isset( $s['terugval'] ) ) {
-        $lijst = '' !== $s['terugval']['filter'] ? array_values( array_filter( $alle, function ( $x ) use ( $test, $s ) { return $test( $s['terugval']['filter'], $x ); } ) ) : $alle;
+        $lijst = '' !== $s['terugval']['filter'] ? array_values(
+            array_filter(
+                $alle,
+                function ( $x ) use ( $test, $s ) {
+                    return $test( $s['terugval']['filter'], $x );
+                }
+            )
+        ) : $alle;
         if ( $s['terugval']['aantal'] > 0 ) {
             $lijst = array_slice( $lijst, 0, $s['terugval']['aantal'] );
         }
@@ -1099,7 +1162,17 @@ function sfp_page_config_generator_kaarten( array $b, array $a, array $s, $ctx )
     if ( isset( $s['sorteer'] ) && '' !== $s['sorteer'] ) {
         $sleutels = array();
         foreach ( $lijst as $i => $x ) {
-            $n            = sfp_page_config_reken_getal( sfp_page_config_generator_reken( $b, $a, $s['sorteer'], array( 'item' => array( 'obj' => $x ), 'extra' => $extra ) ) );
+            $n              = sfp_page_config_reken_getal(
+                sfp_page_config_generator_reken(
+                    $b,
+                    $a,
+                    $s['sorteer'],
+                    array(
+                        'item'  => array( 'obj' => $x ),
+                        'extra' => $extra
+                    )
+                )
+            );
             $sleutels[ $i ] = array( null === $n ? INF : $n, $i );
         }
         $aflopend = ! empty( $s['aflopend'] );
@@ -1117,7 +1190,12 @@ function sfp_page_config_generator_kaarten( array $b, array $a, array $s, $ctx )
                 return $c ? $c : $x <=> $y;
             }
         );
-        $lijst = array_map( function ( $i ) use ( $lijst ) { return $lijst[ $i ]; }, $volgorde );
+        $lijst = array_map(
+            function ( $i ) use ( $lijst ) {
+                return $lijst[ $i ];
+            },
+            $volgorde
+        );
     }
     if ( null !== $aantal ) {
         $lijst = array_slice( $lijst, 0, $aantal );
@@ -1514,7 +1592,10 @@ function sfp_page_config_generator_bouw( array $b, array $a ) {
                 );
                 $ik = isset( $s['kop'] ) && '' !== $s['kop'] ? sfp_page_config_generator_trim( sfp_page_config_generator_vul( $s['kop'], $b, $a, $c ) ) : '';
                 if ( '' !== $ik ) {
-                    $blokken[] = array( 'type' => 'subkop', 'tekst' => $ik );
+                    $blokken[] = array(
+                        'type'  => 'subkop',
+                        'tekst' => $ik
+                    );
                 }
                 foreach ( isset( $s['inhoud'] ) ? $s['inhoud'] : array() as $j => $x ) {
                     $sectie( $x, $c, $pad . '.' . $w . '.' . $j );
@@ -1527,14 +1608,23 @@ function sfp_page_config_generator_bouw( array $b, array $a ) {
             if ( ! $lijst ) {
                 if ( ! empty( $s['leeg'] ) ) {
                     if ( '' !== $kop ) {
-                        $blokken[] = array( 'type' => 'subkop', 'tekst' => $kop );
+                        $blokken[] = array(
+                            'type'  => 'subkop',
+                            'tekst' => $kop
+                        );
                     }
-                    $blokken[] = array( 'type' => 'tekst', 'tekst' => sfp_page_config_generator_vul( $s['leeg'], $b, $a, $ctx ) );
+                    $blokken[] = array(
+                        'type'  => 'tekst',
+                        'tekst' => sfp_page_config_generator_vul( $s['leeg'], $b, $a, $ctx )
+                    );
                 }
                 return;
             }
             if ( '' !== $kop ) {
-                $blokken[] = array( 'type' => 'subkop', 'tekst' => $kop );
+                $blokken[] = array(
+                    'type'  => 'subkop',
+                    'tekst' => $kop
+                );
             }
             $extra = $ctx && isset( $ctx['extra'] ) ? $ctx['extra'] : null;
             $per   = 0;
@@ -1558,13 +1648,19 @@ function sfp_page_config_generator_bouw( array $b, array $a ) {
                 if ( $per > 0 && 0 === $k % $per ) {
                     $gk = sfp_page_config_generator_trim( sfp_page_config_generator_vul( $s['groeperen']['kop'], $b, $a, $c ) );
                     if ( '' !== $gk ) {
-                        $blokken[] = array( 'type' => 'subkop', 'tekst' => $gk );
+                        $blokken[] = array(
+                            'type'  => 'subkop',
+                            'tekst' => $gk
+                        );
                     }
                 }
                 if ( ! empty( $s['kaartkop'] ) ) {
                     $kk = sfp_page_config_generator_trim( sfp_page_config_generator_vul( $s['kaartkop'], $b, $a, $c ) );
                     if ( '' !== $kk ) {
-                        $blokken[] = array( 'type' => 'subkop', 'tekst' => $kk );
+                        $blokken[] = array(
+                            'type'  => 'subkop',
+                            'tekst' => $kk
+                        );
                     }
                 }
                 foreach ( isset( $s['inhoud'] ) ? $s['inhoud'] : array() as $j => $x ) {
@@ -1584,7 +1680,10 @@ function sfp_page_config_generator_bouw( array $b, array $a ) {
                 $t = is_array( $t ) ? implode( ', ', $t ) : (string) $t;
             }
             if ( '' !== $kop ) {
-                $blokken[] = array( 'type' => 'subkop', 'tekst' => $kop );
+                $blokken[] = array(
+                    'type'  => 'subkop',
+                    'tekst' => $kop
+                );
             }
             $blokken[] = array(
                 'type'  => 'getal',
@@ -1615,9 +1714,15 @@ function sfp_page_config_generator_bouw( array $b, array $a ) {
                 $rijen[] = array( $d[0], $t, (int) sfp_page_config_reken_afronden( $d[1] / $totaal * 100, 0 ) );
             }
             if ( '' !== $kop ) {
-                $blokken[] = array( 'type' => 'subkop', 'tekst' => $kop );
+                $blokken[] = array(
+                    'type'  => 'subkop',
+                    'tekst' => $kop
+                );
             }
-            $blokken[] = array( 'type' => 'verdeling', 'rijen' => $rijen );
+            $blokken[] = array(
+                'type'  => 'verdeling',
+                'rijen' => $rijen
+            );
             return;
         }
         if ( 'tekst' === $type ) {
@@ -1626,10 +1731,16 @@ function sfp_page_config_generator_bouw( array $b, array $a ) {
                 return;
             }
             if ( '' !== $kop ) {
-                $blokken[] = array( 'type' => 'subkop', 'tekst' => $kop );
+                $blokken[] = array(
+                    'type'  => 'subkop',
+                    'tekst' => $kop
+                );
             }
             if ( '' !== $tekst ) {
-                $blokken[] = array( 'type' => 'tekst', 'tekst' => $tekst );
+                $blokken[] = array(
+                    'type'  => 'tekst',
+                    'tekst' => $tekst
+                );
             }
             return;
         }
@@ -1648,9 +1759,15 @@ function sfp_page_config_generator_bouw( array $b, array $a ) {
                 return;
             }
             if ( '' !== $kop ) {
-                $blokken[] = array( 'type' => 'subkop', 'tekst' => $kop );
+                $blokken[] = array(
+                    'type'  => 'subkop',
+                    'tekst' => $kop
+                );
             }
-            $blokken[] = array( 'type' => 'tabel', 'rijen' => $rijen );
+            $blokken[] = array(
+                'type'  => 'tabel',
+                'rijen' => $rijen
+            );
             return;
         }
         $ids   = array();
@@ -1658,14 +1775,23 @@ function sfp_page_config_generator_bouw( array $b, array $a ) {
         if ( ! $lijst ) {
             if ( ! empty( $s['leeg'] ) ) {
                 if ( '' !== $kop ) {
-                    $blokken[] = array( 'type' => 'subkop', 'tekst' => $kop );
+                    $blokken[] = array(
+                        'type'  => 'subkop',
+                        'tekst' => $kop
+                    );
                 }
-                $blokken[] = array( 'type' => 'tekst', 'tekst' => sfp_page_config_generator_vul( $s['leeg'], $b, $a, $ctx ) );
+                $blokken[] = array(
+                    'type'  => 'tekst',
+                    'tekst' => sfp_page_config_generator_vul( $s['leeg'], $b, $a, $ctx )
+                );
             }
             return;
         }
         if ( '' !== $kop ) {
-            $blokken[] = array( 'type' => 'subkop', 'tekst' => $kop );
+            $blokken[] = array(
+                'type'  => 'subkop',
+                'tekst' => $kop
+            );
         }
         if ( 'afvink' === $type ) {
             $gezet     = sfp_page_config_generator_vinkjes( $a );
@@ -1694,7 +1820,10 @@ function sfp_page_config_generator_bouw( array $b, array $a ) {
         }
         if ( 'alineas' === $type ) {
             foreach ( $lijst as $x ) {
-                $blokken[] = array( 'type' => 'tekst', 'tekst' => $x );
+                $blokken[] = array(
+                    'type'  => 'tekst',
+                    'tekst' => $x
+                );
             }
             return;
         }
@@ -1727,7 +1856,13 @@ function sfp_page_config_generator_ontbreekt( array $b, array $a, array $stap ) 
             $uit[] = $v['id'];
             continue;
         }
-        if ( 'regels' === $v['type'] && $zichtbaar && ( isset( $v['min'] ) ? $v['min'] : 0 ) > count( array_filter( preg_split( '/\r?\n/', (string) $w ), function ( $r ) { return '' !== sfp_page_config_generator_trim( $r ); } ) ) ) {
+        if ( 'regels' === $v['type'] && $zichtbaar && ( isset( $v['min'] ) ? $v['min'] : 0 ) > count(
+            array_filter(
+                preg_split( '/\r?\n/', (string) $w ),
+                function ( $r ) {
+                    return '' !== sfp_page_config_generator_trim( $r ); }
+            )
+        ) ) {
             $uit[] = $v['id'];
             continue;
         }

@@ -201,14 +201,25 @@ $GLOBALS['checks'] = 0;
 /* Een pakket met de opbouw van DPS: 40 vragen, 39 met meerdere antwoorden. */
 $vragen = array();
 for ( $n = 1; $n <= 40; $n++ ) {
-    $vragen[] = array( 'nr' => $n, 'blok' => 'A', 'meerdere' => 39 === $n ? true : null );
+    $vragen[] = array(
+        'nr'       => $n,
+        'blok'     => 'A',
+        'meerdere' => 39 === $n ? true : null
+    );
 }
-$lang   = range( 1, 40 );
+$lang = range( 1, 40 );
 shuffle( $lang ); // Volgorde in het manifest doet er niet toe.
 $pakket = array(
     'manifest' => array(
-        'lengtes'  => array( 'long' => array( 'vragen' => $lang ), 'short' => array( 'vragen' => array( 3, 4, 5, 7, 9, 15, 16, 18, 20, 30, 31, 33, 10, 12, 38, 39 ) ) ),
-        'weergave' => array( 'volgorde_vragen' => 'vast', 'volgorde_opties' => 'vast', 'blokkop' => 'ja' ),
+        'lengtes'  => array(
+            'long'  => array( 'vragen' => $lang ),
+            'short' => array( 'vragen' => array( 3, 4, 5, 7, 9, 15, 16, 18, 20, 30, 31, 33, 10, 12, 38, 39 ) )
+        ),
+        'weergave' => array(
+            'volgorde_vragen' => 'vast',
+            'volgorde_opties' => 'vast',
+            'blokkop'         => 'ja'
+        ),
     ),
     'inhoud'   => array( 'vragen' => $vragen ),
 );
@@ -246,7 +257,7 @@ same( '0', sfp_zelftest_instellingen( 'sws' )['husselen'], 'iets anders is uit' 
 /* Pakket met eigen lijsten. */
 $pakket['manifest']['weergave']['kern']   = array( 10, 11, 12 );
 $pakket['manifest']['weergave']['opties'] = array( 1, 39, 10 );
-$w = sfp_zelftest_weergave( $pakket, 'eigen' );
+$w                                        = sfp_zelftest_weergave( $pakket, 'eigen' );
 same( array( 10, 11, 12 ), $w['kern'], 'kern uit het pakket' );
 same( array( 1, 10 ), $w['opties_bij'], 'opties uit het pakket, zonder meerdere' );
 

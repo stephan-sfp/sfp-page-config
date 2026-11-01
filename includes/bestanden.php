@@ -26,7 +26,7 @@ if ( function_exists( 'sfp_page_config_css_lees' ) ) {
  */
 function sfp_page_config_css_lees( $bestand ) {
     static $cache = array();
-    $bestand = ltrim( str_replace( '..', '', (string) $bestand ), '/' );
+    $bestand      = ltrim( str_replace( '..', '', (string) $bestand ), '/' );
     if ( isset( $cache[ $bestand ] ) ) {
         return $cache[ $bestand ];
     }
@@ -35,11 +35,11 @@ function sfp_page_config_css_lees( $bestand ) {
         $cache[ $bestand ] = trim( (string) file_get_contents( $min ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
         return $cache[ $bestand ];
     }
-    $pad = SFP_PAGE_CONFIG_DIR . 'assets/' . $bestand;
-    $css = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
-    $css = preg_replace( '#/\*.*?\*/#s', '', $css );
-    $css = preg_replace( '/\s+/', ' ', $css );
-    $css = trim( str_replace( array( ' {', '{ ', ' }', '; ', ': ', ', ', ';}' ), array( '{', '{', '}', ';', ':', ',', '}' ), $css ) );
+    $pad               = SFP_PAGE_CONFIG_DIR . 'assets/' . $bestand;
+    $css               = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
+    $css               = preg_replace( '#/\*.*?\*/#s', '', $css );
+    $css               = preg_replace( '/\s+/', ' ', $css );
+    $css               = trim( str_replace( array( ' {', '{ ', ' }', '; ', ': ', ', ', ';}' ), array( '{', '{', '}', ';', ':', ',', '}' ), $css ) );
     $cache[ $bestand ] = $css;
     return $css;
 }

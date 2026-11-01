@@ -50,7 +50,10 @@ function sfp_page_config_kader_soorten() {
  * @return array<string, array>
  */
 function sfp_page_config_blokken_artikel() {
-    $tekst = array( 'type' => 'string', 'default' => '' );
+    $tekst = array(
+        'type'    => 'string',
+        'default' => ''
+    );
 
     return array(
         'sfp/samenvatting'     => array(
@@ -73,7 +76,11 @@ function sfp_page_config_blokken_artikel() {
             'css'          => 'kader',
             'zonder_basis' => true,
             'attributes'   => array(
-                'soort' => array( 'type' => 'string', 'default' => 'wist-je-dat', 'enum' => sfp_page_config_kader_soorten() ),
+                'soort' => array(
+                    'type'    => 'string',
+                    'default' => 'wist-je-dat',
+                    'enum'    => sfp_page_config_kader_soorten()
+                ),
                 'label' => $tekst,
                 'anker' => $tekst,
             ),
@@ -87,7 +94,10 @@ function sfp_page_config_blokken_artikel() {
             'zonder_basis' => true,
             'attributes'   => array(
                 'bijschrift' => $tekst,
-                'portret'    => array( 'type' => 'boolean', 'default' => true ),
+                'portret'    => array(
+                    'type'    => 'boolean',
+                    'default' => true
+                ),
             ),
             'render'       => 'sfp_page_config_render_citaat',
         ),
@@ -111,7 +121,10 @@ function sfp_page_config_blokken_artikel() {
             'css'          => 'lees-ook',
             'zonder_basis' => true,
             'attributes'   => array(
-                'postId' => array( 'type' => 'integer', 'default' => 0 ),
+                'postId' => array(
+                    'type'    => 'integer',
+                    'default' => 0
+                ),
                 'url'    => $tekst,
                 'titel'  => $tekst,
             ),
@@ -179,7 +192,7 @@ function sfp_page_config_blokken_artikel() {
  */
 function sfp_page_config_blok_volgnummer( $soort ) {
     static $tellers = array();
-    $post_id = (int) get_the_ID();
+    $post_id        = (int) get_the_ID();
     if ( ! isset( $tellers[ $post_id ][ $soort ] ) ) {
         $tellers[ $post_id ][ $soort ] = 0;
     }
@@ -350,7 +363,7 @@ function sfp_page_config_render_inzicht( $attrs, $content ) {
     $post_id = (int) get_the_ID();
     $kaal    = wp_strip_all_tags( $tekst );
     // Alleen het beeld dat bij deze zin hoort; anders de kaart in HTML.
-    $beeld   = function_exists( 'sfp_page_config_deelbeeld_voor' ) ? sfp_page_config_deelbeeld_voor( $post_id, 'inzicht', $nr, sfp_page_config_deelbeeld_controle( $kaal ) ) : null;
+    $beeld = function_exists( 'sfp_page_config_deelbeeld_voor' ) ? sfp_page_config_deelbeeld_voor( $post_id, 'inzicht', $nr, sfp_page_config_deelbeeld_controle( $kaal ) ) : null;
 
     if ( $beeld ) {
         // In het artikel de lichtere versie waar die past; het JPG op volle maat blijft voor delen en downloaden.
@@ -385,10 +398,10 @@ function sfp_page_config_render_inzicht( $attrs, $content ) {
  * @return string
  */
 function sfp_page_config_render_lees_ook( $attrs, $content ) {
-    $post_id = isset( $attrs['postId'] ) ? (int) $attrs['postId'] : 0;
-    $titel   = sfp_page_config_blok_attr( $attrs, 'titel' );
-    $url     = esc_url( sfp_page_config_blok_attr( $attrs, 'url' ) );
-    $beeld   = '';
+    $post_id  = isset( $attrs['postId'] ) ? (int) $attrs['postId'] : 0;
+    $titel    = sfp_page_config_blok_attr( $attrs, 'titel' );
+    $url      = esc_url( sfp_page_config_blok_attr( $attrs, 'url' ) );
+    $beeld    = '';
     $label    = sfp_page_config_artikel_tekst( 'lees_ook' );
     $leestijd = '';
 
@@ -401,7 +414,14 @@ function sfp_page_config_render_lees_ook( $attrs, $content ) {
             $titel = get_the_title( $doel );
         }
         $url   = get_permalink( $doel );
-        $beeld = get_the_post_thumbnail( $doel, 'medium', array( 'loading' => 'lazy', 'alt' => '' ) );
+        $beeld = get_the_post_thumbnail(
+            $doel,
+            'medium',
+            array(
+                'loading' => 'lazy',
+                'alt'     => ''
+            )
+        );
         // Op een pijler: een artikel van deze pijler krijgt Go deeper en de leestijd.
         $hier = get_post();
         if ( $hier && function_exists( 'sfp_page_config_vorm' ) && 'pijler' === sfp_page_config_vorm( $hier ) ) {

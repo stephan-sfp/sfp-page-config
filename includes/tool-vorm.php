@@ -175,28 +175,28 @@ function sfp_page_config_tool_schema() {
     if ( ! $post instanceof WP_Post || post_password_required( $post ) ) {
         return;
     }
-    $b   = sfp_page_config_tool_beschrijving( $post );
-    $url = get_permalink( $post );
+    $b        = sfp_page_config_tool_beschrijving( $post );
+    $url      = get_permalink( $post );
     $gegevens = array(
-        '@context'             => 'https://schema.org',
-        '@type'                => 'WebApplication',
-        '@id'                  => $url . '#tool',
-        'name'                 => sfp_page_config_tool_platte_titel( $post ),
-        'url'                  => $url,
-        'applicationCategory'  => 'EducationalApplication',
-        'operatingSystem'      => 'Any',
-        'browserRequirements'  => 'Requires JavaScript',
-        'isAccessibleForFree'  => true,
-        'offers'               => array(
+        '@context'            => 'https://schema.org',
+        '@type'               => 'WebApplication',
+        '@id'                 => $url . '#tool',
+        'name'                => sfp_page_config_tool_platte_titel( $post ),
+        'url'                 => $url,
+        'applicationCategory' => 'EducationalApplication',
+        'operatingSystem'     => 'Any',
+        'browserRequirements' => 'Requires JavaScript',
+        'isAccessibleForFree' => true,
+        'offers'              => array(
             '@type'         => 'Offer',
             'price'         => '0',
             'priceCurrency' => 'EUR',
         ),
-        'inLanguage'           => get_bloginfo( 'language' ),
-        'datePublished'        => wp_date( 'c', (int) get_post_timestamp( $post ) ),
-        'dateModified'         => wp_date( 'c', (int) get_post_timestamp( $post, 'modified' ) ),
+        'inLanguage'          => get_bloginfo( 'language' ),
+        'datePublished'       => wp_date( 'c', (int) get_post_timestamp( $post ) ),
+        'dateModified'        => wp_date( 'c', (int) get_post_timestamp( $post, 'modified' ) ),
     );
-    $zin = trim( html_entity_decode( wp_strip_all_tags( (string) $post->post_excerpt ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+    $zin      = trim( html_entity_decode( wp_strip_all_tags( (string) $post->post_excerpt ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
     if ( '' !== $zin ) {
         $gegevens['description'] = $zin;
     }
@@ -333,7 +333,13 @@ function sfp_page_config_tool_beheer_stand() {
                 'status'    => $p->post_status,
                 'soort'     => $b ? $b['soort'] : '',
                 'motor'     => '' !== $tekst,
-                'fouten'    => count( array_filter( $meldingen, function ( $m ) { return 'tool-fout' === $m['code']; } ) ),
+                'fouten'    => count(
+                    array_filter(
+                        $meldingen,
+                        function ( $m ) {
+                            return 'tool-fout' === $m['code']; }
+                    )
+                ),
                 'meldingen' => count( $meldingen ),
                 'omhoog'    => isset( $tellingen[ $slug ]['omhoog'] ) ? (int) $tellingen[ $slug ]['omhoog'] : 0,
                 'omlaag'    => isset( $tellingen[ $slug ]['omlaag'] ) ? (int) $tellingen[ $slug ]['omlaag'] : 0,
@@ -344,10 +350,10 @@ function sfp_page_config_tool_beheer_stand() {
     }
     $log = get_option( 'sfp_page_config_tool_feedback_log', array() );
     return array(
-        'bestaat'  => post_type_exists( 'tool' ),
-        'tools'    => $lijst,
-        'adres'    => (string) sfp_page_config_get_setting( 'tool_feedback_mail', '' ),
-        'beheer'   => (string) get_option( 'admin_email' ),
-        'log'      => is_array( $log ) ? array_slice( array_reverse( $log ), 0, 20 ) : array(),
+        'bestaat' => post_type_exists( 'tool' ),
+        'tools'   => $lijst,
+        'adres'   => (string) sfp_page_config_get_setting( 'tool_feedback_mail', '' ),
+        'beheer'  => (string) get_option( 'admin_email' ),
+        'log'     => is_array( $log ) ? array_slice( array_reverse( $log ), 0, 20 ) : array(),
     );
 }

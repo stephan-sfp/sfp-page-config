@@ -76,7 +76,7 @@ function sfp_page_config_inject_course_data() {
             if ( ! empty( $dates_formatted ) ) {
                 // De lestijd van dit startmoment, als die is ingevuld. De
                 // standaardtijd van de site komt hier niet: die staat al op de pagina.
-                $tijd = sfp_page_config_format_lestijd(
+                $tijd            = sfp_page_config_format_lestijd(
                     isset( $sm['start'] ) ? $sm['start'] : '',
                     isset( $sm['eind'] ) ? $sm['eind'] : ''
                 );
@@ -132,11 +132,15 @@ function sfp_page_config_enqueue_dropdown_script() {
 
     // Pass brand colour to JS for the no-data fallback message.
     $brand = sfp_page_config_get_brand();
-    wp_localize_script( 'sfp-page-config-dropdown', 'sfpDropdownConfig', array(
-        'ctaColor'  => $brand['cta_bg'],
-        // Teksten in de taal van de site (includes/teksten.php).
-        'kiesGroep' => sfp_page_config_tekst( 'kies_groep' ),
-        'geenData'  => sfp_page_config_tekst( 'geen_data' ),
-        'groep'     => sfp_page_config_tekst( 'groep' ),
-    ) );
+    wp_localize_script(
+        'sfp-page-config-dropdown',
+        'sfpDropdownConfig',
+        array(
+            'ctaColor'  => $brand['cta_bg'],
+            // Teksten in de taal van de site (includes/teksten.php).
+            'kiesGroep' => sfp_page_config_tekst( 'kies_groep' ),
+            'geenData'  => sfp_page_config_tekst( 'geen_data' ),
+            'groep'     => sfp_page_config_tekst( 'groep' ),
+        )
+    );
 }

@@ -95,7 +95,10 @@ function sfp_page_config_tool_limiet( $sleutel, $max, $venster ) {
     $nu      = time();
     $stand   = get_transient( $sleutel );
     if ( ! is_array( $stand ) || ! isset( $stand['n'], $stand['tot'] ) || (int) $stand['tot'] <= $nu ) {
-        $stand = array( 'n' => 0, 'tot' => $nu + $venster );
+        $stand = array(
+            'n'   => 0,
+            'tot' => $nu + $venster
+        );
     }
     if ( (int) $stand['n'] >= $max ) {
         return false;
@@ -166,7 +169,13 @@ function sfp_page_config_tool_platte_titel( $post ) {
  * @return string
  */
 function sfp_page_config_tool_deellink( $post, array $antwoorden ) {
-    $json = wp_json_encode( array( 'id' => (int) $post->ID, 'a' => (object) $antwoorden ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+    $json = wp_json_encode(
+        array(
+            'id' => (int) $post->ID,
+            'a'  => (object) $antwoorden
+        ),
+        JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+    );
     $code = rtrim( strtr( base64_encode( (string) $json ), '+/', '-_' ), '=' );
     return add_query_arg( 't', $code, get_permalink( $post ) );
 }
@@ -203,35 +212,83 @@ function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
     // Eerst de goedkope grenzen: de omvang van het verzoek en de limiet per
     // IP, voordat er iets met de antwoorden gebeurt.
     if ( strlen( (string) $verzoek->get_body() ) > SFP_PAGE_CONFIG_TOOL_MAX_BODY ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Verzoek te groot.' ), 413 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Verzoek te groot.'
+            ),
+            413
+        );
     }
     if ( ! sfp_page_config_tool_limiet( 'mail-ip-' . sfp_page_config_tool_ip(), 20, HOUR_IN_SECONDS ) ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Te veel verzoeken. Probeer het later opnieuw.' ), 429 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Te veel verzoeken. Probeer het later opnieuw.'
+            ),
+            429
+        );
     }
     if ( ! sfp_page_config_tool_aan() ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Tools staan uit.' ), 404 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Tools staan uit.'
+            ),
+            404
+        );
     }
     $post = get_post( (int) $verzoek->get_param( 'tool' ) );
     if ( ! $post || 'tool' !== $post->post_type || 'publish' !== $post->post_status || post_password_required( $post ) ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Onbekende tool.' ), 404 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Onbekende tool.'
+            ),
+            404
+        );
     }
     $b = sfp_page_config_tool_beschrijving( $post );
     if ( ! $b || ! $b['acties']['mail'] ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Mail staat bij deze tool uit.' ), 400 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Mail staat bij deze tool uit.'
+            ),
+            400
+        );
     }
     $email = sanitize_email( (string) $verzoek->get_param( 'email' ) );
     if ( ! is_email( $email ) ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => $t( 'tool_mail_fout' ) ), 400 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => $t( 'tool_mail_fout' )
+            ),
+            400
+        );
     }
     $antwoorden = $verzoek->get_param( 'antwoorden' );
     if ( ! is_array( $antwoorden ) || count( $antwoorden ) > 300 ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Geen antwoorden.' ), 400 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Geen antwoorden.'
+            ),
+            400
+        );
     }
     if ( sfp_page_config_tool_op_generator( $b['soort'] ) ) {
         return sfp_page_config_generator_rest_mail( $post, $b, $email, $antwoorden );
     }
     if ( 'test' !== $b['soort'] ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => $t( 'tool_mail_fout' ) ), 400 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => $t( 'tool_mail_fout' )
+            ),
+            400
+        );
     }
     // Alleen antwoorden op vragen van deze tool, op hun eigen id (Q1 blijft
     // Q1). Vrije tekst gaat niet mee: dan zou iedereen eigen tekst naar elk
@@ -247,25 +304,43 @@ function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
         }
     }
     if ( ! sfp_page_config_tool_mail_plafond( $email ) ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Te veel verzoeken. Probeer het later opnieuw.' ), 429 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Te veel verzoeken. Probeer het later opnieuw.'
+            ),
+            429
+        );
     }
     $r = sfp_page_config_tool_reken( $b, $schoon );
     if ( ! $r['compleet'] ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => sprintf( $t( 'tool_ontbreekt' ), count( $r['ontbreekt'] ) ) ), 400 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => sprintf( $t( 'tool_ontbreekt' ), count( $r['ontbreekt'] ) )
+            ),
+            400
+        );
     }
     $titel     = sfp_page_config_tool_platte_titel( $post );
     $onderwerp = '' !== $b['mail']['onderwerp'] ? sfp_page_config_tool_vul( $b['mail']['onderwerp'], $b, $r ) : $titel;
     $onderwerp = sanitize_text_field( $onderwerp );
     $eigen     = (string) wp_parse_url( home_url(), PHP_URL_HOST );
     $link      = sfp_page_config_tool_deellink( $post, $schoon );
-    $body  = '' !== $b['mail']['intro'] ? sfp_page_config_tool_vul( $b['mail']['intro'], $b, $r ) . "\n\n" : '';
-    $body .= sfp_page_config_tool_tekst_uitvoer( $b, $r, $titel );
-    $body .= "\n" . sprintf( $t( 'tool_mail_slot' ), $link ) . "\n\n";
-    $body .= sprintf( $t( 'tool_mail_afzender' ), $eigen ) . "\n";
-    $body  = wp_strip_all_tags( wp_check_invalid_utf8( $body, true ) );
-    $ok    = wp_mail( $email, $onderwerp, $body, array( 'Content-Type: text/plain; charset=UTF-8' ) );
+    $body      = '' !== $b['mail']['intro'] ? sfp_page_config_tool_vul( $b['mail']['intro'], $b, $r ) . "\n\n" : '';
+    $body     .= sfp_page_config_tool_tekst_uitvoer( $b, $r, $titel );
+    $body     .= "\n" . sprintf( $t( 'tool_mail_slot' ), $link ) . "\n\n";
+    $body     .= sprintf( $t( 'tool_mail_afzender' ), $eigen ) . "\n";
+    $body      = wp_strip_all_tags( wp_check_invalid_utf8( $body, true ) );
+    $ok        = wp_mail( $email, $onderwerp, $body, array( 'Content-Type: text/plain; charset=UTF-8' ) );
     if ( ! $ok ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => $t( 'tool_mail_fout' ) ), 500 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => $t( 'tool_mail_fout' )
+            ),
+            500
+        );
     }
     return new WP_REST_Response( array( 'ok' => true ), 200 );
 }
@@ -287,11 +362,23 @@ function sfp_page_config_generator_rest_mail( $post, array $b, $email, array $an
     $t = 'sfp_page_config_artikel_tekst';
     foreach ( $b['stappen'] as $stap ) {
         if ( sfp_page_config_generator_ontbreekt( $b, $antwoorden, $stap ) ) {
-            return new WP_REST_Response( array( 'ok' => false, 'message' => sprintf( $t( 'tool_vul_in' ), $stap['titel'] ) ), 400 );
+            return new WP_REST_Response(
+                array(
+                    'ok'      => false,
+                    'message' => sprintf( $t( 'tool_vul_in' ), $stap['titel'] )
+                ),
+                400
+            );
         }
     }
     if ( ! sfp_page_config_tool_mail_plafond( $email ) ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Te veel verzoeken. Probeer het later opnieuw.' ), 429 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Te veel verzoeken. Probeer het later opnieuw.'
+            ),
+            429
+        );
     }
     $schoon    = sfp_page_config_generator_mail_antwoorden( $b, $antwoorden );
     $titel     = sfp_page_config_tool_platte_titel( $post );
@@ -306,7 +393,13 @@ function sfp_page_config_generator_rest_mail( $post, array $b, $email, array $an
     $body      = wp_strip_all_tags( wp_check_invalid_utf8( $body, true ) );
     $ok        = wp_mail( $email, $onderwerp, $body, array( 'Content-Type: text/plain; charset=UTF-8' ) );
     if ( ! $ok ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => $t( 'tool_mail_fout' ) ), 500 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => $t( 'tool_mail_fout' )
+            ),
+            500
+        );
     }
     return new WP_REST_Response( array( 'ok' => true ), 200 );
 }
@@ -338,7 +431,10 @@ function sfp_page_config_tool_feedback_tellingen() {
                 continue;
             }
             if ( ! isset( $tellingen[ $slug ] ) ) {
-                $tellingen[ $slug ] = array( 'omhoog' => 0, 'omlaag' => 0 );
+                $tellingen[ $slug ] = array(
+                    'omhoog' => 0,
+                    'omlaag' => 0
+                );
             }
             $tellingen[ $slug ]['omhoog'] += isset( $stand['omhoog'] ) ? (int) $stand['omhoog'] : 0;
             $tellingen[ $slug ]['omlaag'] += isset( $stand['omlaag'] ) ? (int) $stand['omlaag'] : 0;
@@ -363,29 +459,47 @@ function sfp_page_config_tool_rest_duim( WP_REST_Request $verzoek ) {
         return new WP_REST_Response( array( 'ok' => false ), 404 );
     }
     if ( ! sfp_page_config_tool_limiet( 'duim-ip-' . sfp_page_config_tool_ip(), 10, HOUR_IN_SECONDS ) ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Te veel verzoeken. Probeer het later opnieuw.' ), 429 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Te veel verzoeken. Probeer het later opnieuw.'
+            ),
+            429
+        );
     }
     $slug   = sanitize_title( (string) $verzoek->get_param( 'tool' ) );
     $stem   = (string) $verzoek->get_param( 'stem' );
     $vorige = (string) $verzoek->get_param( 'vorige' );
-    $tekst = mb_substr( sanitize_textarea_field( (string) $verzoek->get_param( 'tekst' ) ), 0, 600 );
-    $email = sanitize_email( (string) $verzoek->get_param( 'email' ) );
+    $tekst  = mb_substr( sanitize_textarea_field( (string) $verzoek->get_param( 'tekst' ) ), 0, 600 );
+    $email  = sanitize_email( (string) $verzoek->get_param( 'email' ) );
     if ( ! is_email( $email ) ) {
         $email = '';
     }
     if ( '' === $slug || mb_strlen( $slug ) > 80 || ! in_array( $stem, array( 'omhoog', 'omlaag' ), true ) ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Ongeldige aanvraag.' ), 400 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Ongeldige aanvraag.'
+            ),
+            400
+        );
     }
     // Alleen een gepubliceerde tool met duimpjes aan; anders vult elke
     // verzonnen naam de tellingen.
     $tool = get_page_by_path( $slug, OBJECT, 'tool' );
     $b    = $tool && 'publish' === $tool->post_status ? sfp_page_config_tool_beschrijving( $tool ) : null;
     if ( ! $b || empty( $b['acties']['duimpjes'] ) ) {
-        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Onbekende tool.' ), 404 );
+        return new WP_REST_Response(
+            array(
+                'ok'      => false,
+                'message' => 'Onbekende tool.'
+            ),
+            404
+        );
     }
     if ( '' !== $tekst ) {
-        $log = get_option( 'sfp_page_config_tool_feedback_log', array() );
-        $log = is_array( $log ) ? $log : array();
+        $log   = get_option( 'sfp_page_config_tool_feedback_log', array() );
+        $log   = is_array( $log ) ? $log : array();
         $log[] = array(
             'tijd'  => wp_date( 'Y-m-d H:i:s' ),
             'tool'  => $slug,
@@ -410,7 +524,10 @@ function sfp_page_config_tool_rest_duim( WP_REST_Request $verzoek ) {
     }
     $tellingen = sfp_page_config_tool_feedback_tellingen();
     if ( ! isset( $tellingen[ $slug ] ) || ! is_array( $tellingen[ $slug ] ) ) {
-        $tellingen[ $slug ] = array( 'omhoog' => 0, 'omlaag' => 0 );
+        $tellingen[ $slug ] = array(
+            'omhoog' => 0,
+            'omlaag' => 0
+        );
     }
     $tellingen[ $slug ][ $stem ] = (int) $tellingen[ $slug ][ $stem ] + 1;
     // Van gedachten veranderd: de vorige stem eraf, niet onder nul, en alleen
@@ -421,7 +538,13 @@ function sfp_page_config_tool_rest_duim( WP_REST_Request $verzoek ) {
         $tellingen[ $slug ][ $vorige ] = max( 0, (int) $tellingen[ $slug ][ $vorige ] - 1 );
     }
     update_option( 'sfp_page_config_tool_feedback', $tellingen, false );
-    return new WP_REST_Response( array( 'ok' => true, 'bewijs' => sfp_page_config_tool_duim_bewijs( $slug, $stem ) ), 200 );
+    return new WP_REST_Response(
+        array(
+            'ok'     => true,
+            'bewijs' => sfp_page_config_tool_duim_bewijs( $slug, $stem )
+        ),
+        200
+    );
 }
 
 /**
@@ -539,7 +662,12 @@ function sfp_page_config_tool_privacy_wisser( $wissers ) {
                 $log = array_values( array_diff_key( (array) get_option( 'sfp_page_config_tool_feedback_log', array() ), $weg ) );
                 update_option( 'sfp_page_config_tool_feedback_log', $log, false );
             }
-            return array( 'items_removed' => (bool) $weg, 'items_retained' => false, 'messages' => array(), 'done' => true );
+            return array(
+                'items_removed'  => (bool) $weg,
+                'items_retained' => false,
+                'messages'       => array(),
+                'done'           => true
+            );
         },
     );
     return $wissers;
@@ -560,14 +688,29 @@ function sfp_page_config_tool_privacy_exporteur( $exporteurs ) {
                     'group_label' => 'Toolfeedback',
                     'item_id'     => 'sfp-tool-feedback-' . (int) $i,
                     'data'        => array(
-                        array( 'name' => 'Tijd', 'value' => (string) ( $regel['tijd'] ?? '' ) ),
-                        array( 'name' => 'Tool', 'value' => (string) ( $regel['tool'] ?? '' ) ),
-                        array( 'name' => 'Feedback', 'value' => (string) ( $regel['tekst'] ?? '' ) ),
-                        array( 'name' => 'E-mailadres', 'value' => (string) ( $regel['email'] ?? '' ) ),
+                        array(
+                            'name'  => 'Tijd',
+                            'value' => (string) ( $regel['tijd'] ?? '' )
+                        ),
+                        array(
+                            'name'  => 'Tool',
+                            'value' => (string) ( $regel['tool'] ?? '' )
+                        ),
+                        array(
+                            'name'  => 'Feedback',
+                            'value' => (string) ( $regel['tekst'] ?? '' )
+                        ),
+                        array(
+                            'name'  => 'E-mailadres',
+                            'value' => (string) ( $regel['email'] ?? '' )
+                        ),
                     ),
                 );
             }
-            return array( 'data' => $data, 'done' => true );
+            return array(
+                'data' => $data,
+                'done' => true
+            );
         },
     );
     return $exporteurs;

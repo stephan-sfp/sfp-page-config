@@ -12,9 +12,11 @@ if ( 'cli' !== PHP_SAPI ) {
     exit( 1 );
 }
 error_reporting( E_ALL );
-set_error_handler( function ( $severity, $message, $file, $line ) {
-    throw new ErrorException( $message, 0, $severity, $file, $line );
-} );
+set_error_handler(
+    function ( $severity, $message, $file, $line ) {
+        throw new ErrorException( $message, 0, $severity, $file, $line );
+    }
+);
 
 define( 'ABSPATH', __DIR__ . '/' );
 define( 'SFP_PAGE_CONFIG_DIR', dirname( __DIR__ ) . '/' );
@@ -23,8 +25,10 @@ define( 'SFP_PAGE_CONFIG_VERSION', 'test' );
 
 $GLOBALS['filters'] = array();
 $GLOBALS['styles']  = array();
-function add_filter( $hook, $cb ) { $GLOBALS['filters'][ $hook ][] = $cb; }
-function add_action( $hook, $cb ) { add_filter( $hook, $cb ); }
+function add_filter( $hook, $cb ) {
+    $GLOBALS['filters'][ $hook ][] = $cb; }
+function add_action( $hook, $cb ) {
+    add_filter( $hook, $cb ); }
 function apply_filters( $hook, $value ) {
     foreach ( $GLOBALS['filters'][ $hook ] ?? array() as $cb ) {
         $value = $cb( $value );
@@ -39,10 +43,15 @@ function wp_style_is( $handle, $list ) {
     return null !== $s && ! empty( $s[ $list ] );
 }
 function wp_register_style( $handle, $src ) {
-    $GLOBALS['styles'][ $handle ] = array( 'src' => $src, 'inline' => array() );
+    $GLOBALS['styles'][ $handle ] = array(
+        'src'    => $src,
+        'inline' => array()
+    );
 }
-function wp_enqueue_style( $handle ) { $GLOBALS['styles'][ $handle ]['enqueued'] = true; }
-function wp_add_inline_style( $handle, $css ) { $GLOBALS['styles'][ $handle ]['inline'][] = $css; }
+function wp_enqueue_style( $handle ) {
+    $GLOBALS['styles'][ $handle ]['enqueued'] = true; }
+function wp_add_inline_style( $handle, $css ) {
+    $GLOBALS['styles'][ $handle ]['inline'][] = $css; }
 
 require SFP_PAGE_CONFIG_DIR . 'includes/wp-rocket.php';
 
@@ -94,7 +103,7 @@ same( false, isset( $GLOBALS['filters']['rocket_rucss_external_exclusions'] ), '
 
 // Minified output keeps every selector and contains no comments or newlines.
 foreach ( $bestanden as $handle => $bestand ) {
-    $bron = file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/' . $bestand );
+    $bron  = file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/' . $bestand );
     $klein = sfp_page_config_css_bestand( $bestand );
     same( false, strpos( $klein, '/*' ), 'no comment in ' . $bestand );
     same( false, strpos( $klein, "\n" ), 'no newline in ' . $bestand );
@@ -126,7 +135,7 @@ foreach ( glob( SFP_PAGE_CONFIG_DIR . 'includes/*.php' ) as $pad ) {
 }
 
 // Review photos at 80 pixels.
-$src = file_get_contents( SFP_PAGE_CONFIG_DIR . 'includes/onderdeel-reviews.php' );
+$src   = file_get_contents( SFP_PAGE_CONFIG_DIR . 'includes/onderdeel-reviews.php' );
 $start = strpos( $src, 'function sfp_page_config_reviews_foto(' );
 $eind  = strpos( $src, "\n}\n", $start );
 eval( substr( $src, $start, $eind - $start + 2 ) );
@@ -146,7 +155,15 @@ $uitzondering = array(
     'zelftest/zelftest.css' => 26000,
     'reviews/reviews.css'   => 15000,
 );
-$voorkant = array_merge( array_values( $bestanden ), array_map( function ( $p ) { return 'blokken/' . basename( $p ); }, glob( SFP_PAGE_CONFIG_DIR . 'assets/blokken/*.css' ) ) );
+$voorkant     = array_merge(
+    array_values( $bestanden ),
+    array_map(
+        function ( $p ) {
+            return 'blokken/' . basename( $p );
+        },
+        glob( SFP_PAGE_CONFIG_DIR . 'assets/blokken/*.css' )
+    )
+);
 foreach ( $voorkant as $bestand ) {
     if ( 'blokken/editor.css' === $bestand ) {
         continue;

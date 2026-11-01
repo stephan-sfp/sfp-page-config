@@ -170,11 +170,11 @@ function sfp_zelftest_cta_blok( $blokken ) {
         'css'          => 'zelftest-cta',
         'zonder_basis' => true,
         'attributes'   => array(
-            'test' => array(
+            'test'  => array(
                 'type'    => 'string',
                 'default' => '',
             ),
-            'bron' => array(
+            'bron'  => array(
                 'type'    => 'string',
                 'default' => '',
             ),

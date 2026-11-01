@@ -44,7 +44,10 @@ function sfp_zelftest_dagelijks_plannen() {
  */
 function sfp_zelftest_dagelijks() {
     global $wpdb;
-    $uit = array( 'pdf' => 0, 'geanonimiseerd' => 0 );
+    $uit = array(
+        'pdf'            => 0,
+        'geanonimiseerd' => 0
+    );
     if ( ! sfp_zelftest_tabel_klaar() ) {
         return $uit;
     }
@@ -62,7 +65,13 @@ function sfp_zelftest_dagelijks() {
             if ( '' !== $pad ) {
                 wp_delete_file( $pad );
             }
-            sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_bestand' => '', 'pdf_status' => 'gewist' ) );
+            sfp_zelftest_rij_bij(
+                (int) $rij['id'],
+                array(
+                    'pdf_bestand' => '',
+                    'pdf_status'  => 'gewist'
+                )
+            );
             ++$uit['pdf'];
         }
     }
@@ -252,21 +261,54 @@ function sfp_zelftest_privacy_exporteur( $exporteurs ) {
                         'group_label' => 'Zelftest',
                         'item_id'     => 'sfp-zelftest-' . (int) $rij['id'],
                         'data'        => array(
-                            array( 'name' => 'Test', 'value' => $rij['test'] ),
-                            array( 'name' => 'Voornaam', 'value' => $rij['voornaam'] ),
-                            array( 'name' => 'E-mailadres', 'value' => $rij['email'] ),
-                            array( 'name' => 'Versie', 'value' => $rij['lengte'] ),
-                            array( 'name' => 'Gestart', 'value' => (string) $rij['gestart_op'] ),
-                            array( 'name' => 'Afgerond', 'value' => (string) $rij['afgerond_op'] ),
-                            array( 'name' => 'Resultaatcode', 'value' => (string) $rij['code'] ),
-                            array( 'name' => 'Antwoorden', 'value' => (string) $rij['antwoorden'] ),
-                            array( 'name' => 'Nieuwsbrief', 'value' => $rij['nieuwsbrief'] ? 'ja' : 'nee' ),
-                            array( 'name' => 'Herkomstpagina', 'value' => $rij['lead_source_url'] ),
+                            array(
+                                'name'  => 'Test',
+                                'value' => $rij['test']
+                            ),
+                            array(
+                                'name'  => 'Voornaam',
+                                'value' => $rij['voornaam']
+                            ),
+                            array(
+                                'name'  => 'E-mailadres',
+                                'value' => $rij['email']
+                            ),
+                            array(
+                                'name'  => 'Versie',
+                                'value' => $rij['lengte']
+                            ),
+                            array(
+                                'name'  => 'Gestart',
+                                'value' => (string) $rij['gestart_op']
+                            ),
+                            array(
+                                'name'  => 'Afgerond',
+                                'value' => (string) $rij['afgerond_op']
+                            ),
+                            array(
+                                'name'  => 'Resultaatcode',
+                                'value' => (string) $rij['code']
+                            ),
+                            array(
+                                'name'  => 'Antwoorden',
+                                'value' => (string) $rij['antwoorden']
+                            ),
+                            array(
+                                'name'  => 'Nieuwsbrief',
+                                'value' => $rij['nieuwsbrief'] ? 'ja' : 'nee'
+                            ),
+                            array(
+                                'name'  => 'Herkomstpagina',
+                                'value' => $rij['lead_source_url']
+                            ),
                         ),
                     );
                 }
             }
-            return array( 'data' => $data, 'done' => true );
+            return array(
+                'data' => $data,
+                'done' => true
+            );
         },
     );
     return $exporteurs;

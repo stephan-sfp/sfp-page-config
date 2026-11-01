@@ -24,17 +24,22 @@ $same   = function ( $verwacht, $echt, $wat ) use ( &$checks, &$fouten ) {
         echo 'FOUT: ' . $wat . "\n  verwacht: " . var_export( $verwacht, true ) . "\n  kreeg:    " . var_export( $echt, true ) . "\n";
     }
 };
-$waar = function ( $echt, $wat ) use ( $same ) {
+$waar   = function ( $echt, $wat ) use ( $same ) {
     $same( true, (bool) $echt, $wat );
 };
-$bevat = function ( $hooiberg, $naald, $wat ) use ( $same ) {
+$bevat  = function ( $hooiberg, $naald, $wat ) use ( $same ) {
     $same( true, false !== strpos( (string) $hooiberg, (string) $naald ), $wat . ' (zoekt ' . $naald . ')' );
 };
-$mist = function ( $hooiberg, $naald, $wat ) use ( $same ) {
+$mist   = function ( $hooiberg, $naald, $wat ) use ( $same ) {
     $same( false, false !== strpos( (string) $hooiberg, (string) $naald ), $wat . ' (zonder ' . $naald . ')' );
 };
 
-$admin = get_users( array( 'role' => 'administrator', 'number' => 1 ) )[0];
+$admin = get_users(
+    array(
+        'role'   => 'administrator',
+        'number' => 1
+    )
+)[0];
 wp_set_current_user( $admin->ID );
 $oud_eigen = get_option( SFP_Reviews_Manual::OPTION, null );
 $oud_inst  = get_option( 'sfp_settings' );
@@ -69,17 +74,30 @@ $maak_beeld = function ( $naam, $breed, $hoog ) use ( &$weg ) {
     imagefill( $img, 0, 0, imagecolorallocate( $img, 200, 200, 200 ) );
     imagepng( $img, $pad );
     imagedestroy( $img );
-    $id = wp_insert_attachment( array( 'post_mime_type' => 'image/png', 'post_title' => $naam, 'post_status' => 'inherit' ), $pad );
+    $id = wp_insert_attachment(
+        array(
+            'post_mime_type' => 'image/png',
+            'post_title'     => $naam,
+            'post_status'    => 'inherit'
+        ),
+        $pad
+    );
     require_once ABSPATH . 'wp-admin/includes/image.php';
     wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $pad ) );
     update_post_meta( $id, '_wp_attachment_image_alt', $naam . ' logo' );
     $weg[] = $id;
     return $id;
 };
-$a = $maak_beeld( 'proef-klant-a', 600, 200 );
-$b = $maak_beeld( 'proef-klant-b', 1200, 200 );
-$tekstpost = wp_insert_post( array( 'post_type' => 'post', 'post_status' => 'publish', 'post_title' => 'Geen beeld' ) );
-$weg[]     = $tekstpost;
+$a          = $maak_beeld( 'proef-klant-a', 600, 200 );
+$b          = $maak_beeld( 'proef-klant-b', 1200, 200 );
+$tekstpost  = wp_insert_post(
+    array(
+        'post_type'   => 'post',
+        'post_status' => 'publish',
+        'post_title'  => 'Geen beeld'
+    )
+);
+$weg[]      = $tekstpost;
 
 $same( '', sfp_page_config_render_logostrook( array( 'logos' => array() ) ), 'Logostrook zonder logo\'s: niets op de site' );
 $same( '', sfp_page_config_render_logostrook( array( 'logos' => array( $tekstpost, 999999 ) ) ), 'Logostrook met alleen geen-beelden: niets' );
@@ -93,13 +111,18 @@ $waar( strpos( $html, 'proef-klant-b logo' ) < strpos( $html, 'proef-klant-a log
 $bevat( $html, 'alt="proef-klant-a logo"', 'Alt-tekst uit de mediabibliotheek' );
 $bevat( $html, 'loading="lazy"', 'Logo\'s laden lui' );
 $bevat( $html, '(max-width: 600px) 120px, 150px"', 'Logo\'s met passende maat' );
-$html = sfp_page_config_render_logostrook( array( 'logos' => array( $a ), 'label' => 'Klanten <b>van</b> ons' ) );
+$html = sfp_page_config_render_logostrook(
+    array(
+        'logos' => array( $a ),
+        'label' => 'Klanten <b>van</b> ons'
+    )
+);
 $bevat( $html, '>Klanten van ons</p>', 'Eigen label, zonder opmaak' );
 $same( 'Trusted by teams at', sfp_page_config_tekst_standaard( 'logostrook_label', 'en' ), 'Standaardlabel Engels zoals op SwS' );
 $waar( '' !== sfp_page_config_tekst_standaard( 'logostrook_label', 'nl' ) && '' !== sfp_page_config_tekst_standaard( 'logostrook_label', 'pt' ), 'Standaardlabel in nl en pt' );
 
 // Zoals het in de inhoud staat: één blok zonder binnenblokken.
-$inhoud = '<!-- wp:sfp/logostrook {"logos":[' . $a . ',' . $b . ']} /-->';
+$inhoud  = '<!-- wp:sfp/logostrook {"logos":[' . $a . ',' . $b . ']} /-->';
 $blokken = parse_blocks( $inhoud );
 $same( 'sfp/logostrook', $blokken[0]['blockName'], 'Opgeslagen vorm wordt herkend' );
 $waar( preg_match( '/class="[^"]*\\bsfp-logostrook\\b[^"]*\\bwp-block-sfp-logostrook\\b|class="[^"]*\\bwp-block-sfp-logostrook\\b[^"]*\\bsfp-logostrook\\b/', render_block( $blokken[0] ) ), 'Omhulling met blokklasse' );
@@ -107,21 +130,60 @@ $waar( preg_match( '/class="[^"]*\\bsfp-logostrook\\b[^"]*\\bwp-block-sfp-logost
 /* ---------- Eigen reviews: vermelding ---------- */
 
 SFP_Reviews_Manual::save_all( array() );
-$lijst = SFP_Reviews_Manual::add( array( 'author' => 'Vy Lê', 'rating' => 5, 'datum' => '2024-03-20', 'text' => "Thank you, Stephan for the very insightful training.", 'vermelding' => 'Google review of my Dutch company, De Presenteerschool.' ) );
+$lijst = SFP_Reviews_Manual::add(
+    array(
+        'author'     => 'Vy Lê',
+        'rating'     => 5,
+        'datum'      => '2024-03-20',
+        'text'       => "Thank you, Stephan for the very insightful training.",
+        'vermelding' => 'Google review of my Dutch company, De Presenteerschool.'
+    )
+);
 $r1    = $lijst[0];
 $same( 'Google review of my Dutch company, De Presenteerschool.', $r1['vermelding'], 'Vermelding wordt bewaard' );
-$same( '', SFP_Reviews_Manual::schoon( array( 'author' => 'x', 'text' => 'y' ) )['vermelding'], 'Zonder vermelding: leeg' );
+$same(
+    '',
+    SFP_Reviews_Manual::schoon(
+        array(
+            'author' => 'x',
+            'text'   => 'y'
+        )
+    )['vermelding'],
+    'Zonder vermelding: leeg'
+);
 $mist( SFP_Reviews_Manual::schoon( array( 'vermelding' => "a <script>x</script>\nb" ) )['vermelding'], '<', 'Vermelding is platte tekst' );
 
 // Bijwerken via het beheer houdt de vermelding (en verliest hem niet stil).
 rest_get_server();
 $verzoek = new WP_REST_Request( 'POST', '/sfp/v1/beheer/reviews/eigen' );
 $verzoek->set_header( 'content-type', 'application/json' );
-$verzoek->set_body( wp_json_encode( array( 'id' => $r1['id'], 'author' => 'Vy Lê', 'rating' => 5, 'datum' => '2024-03-20', 'text' => 'Thank you, Stephan for the very insightful training.', 'vermelding' => 'Translated from Dutch.' ) ) );
+$verzoek->set_body(
+    wp_json_encode(
+        array(
+            'id'         => $r1['id'],
+            'author'     => 'Vy Lê',
+            'rating'     => 5,
+            'datum'      => '2024-03-20',
+            'text'       => 'Thank you, Stephan for the very insightful training.',
+            'vermelding' => 'Translated from Dutch.'
+        )
+    )
+);
 $antwoord = rest_do_request( $verzoek );
 $same( 200, $antwoord->get_status(), 'Beheer: eigen review opslaan' );
 $same( 'Translated from Dutch.', SFP_Reviews_Manual::get_all()[0]['vermelding'], 'Beheer: vermelding bijgewerkt' );
-$verzoek->set_body( wp_json_encode( array( 'id' => $r1['id'], 'author' => 'Vy Lê', 'rating' => 4, 'datum' => '2024-03-20', 'text' => 'Thank you.', 'vermelding' => 'Translated from Dutch.' ) ) );
+$verzoek->set_body(
+    wp_json_encode(
+        array(
+            'id'         => $r1['id'],
+            'author'     => 'Vy Lê',
+            'rating'     => 4,
+            'datum'      => '2024-03-20',
+            'text'       => 'Thank you.',
+            'vermelding' => 'Translated from Dutch.'
+        )
+    )
+);
 rest_do_request( $verzoek );
 $same( 'Translated from Dutch.', SFP_Reviews_Manual::get_all()[0]['vermelding'], 'Beheer: andere wijziging houdt de vermelding' );
 $stand = rest_do_request( new WP_REST_Request( 'GET', '/sfp/v1/beheer' ) )->get_data();
@@ -129,14 +191,22 @@ $same( 'Translated from Dutch.', $stand['reviews']['eigen'][0]['vermelding'], 'B
 
 /* ---------- Review ---------- */
 
-$inst = is_array( $oud_inst ) ? $oud_inst : array();
+$inst                          = is_array( $oud_inst ) ? $oud_inst : array();
 $inst['onderdelen']['reviews'] = '1';
 update_option( 'sfp_settings', $inst );
 if ( function_exists( 'sfp_page_config_instellingen_vergeet' ) ) {
     sfp_page_config_instellingen_vergeet();
 }
 SFP_Reviews_Manual::save_all( array() );
-$lijst = SFP_Reviews_Manual::add( array( 'author' => 'Petra', 'rating' => 4, 'datum' => '2025-01-02', 'text' => "Eerste regel.\nTweede regel.\n\nNieuwe alinea met <b>html</b> & meer.", 'vermelding' => 'Translated from Dutch.' ) );
+$lijst = SFP_Reviews_Manual::add(
+    array(
+        'author'     => 'Petra',
+        'rating'     => 4,
+        'datum'      => '2025-01-02',
+        'text'       => "Eerste regel.\nTweede regel.\n\nNieuwe alinea met <b>html</b> & meer.",
+        'vermelding' => 'Translated from Dutch.'
+    )
+);
 $petra = $lijst[0];
 
 if ( sfp_page_config_reviews_actief() ) {
@@ -153,7 +223,13 @@ if ( sfp_page_config_reviews_actief() ) {
     $mist( $html, '“', 'Review: geen aanhalingsteken' );
     $same( '', sfp_page_config_render_review_kaart( array( 'review' => '' ) ), 'Review: niets gekozen, niets op de site' );
     $same( '', sfp_page_config_render_review_kaart( array( 'review' => 'mr_bestaat_niet' ) ), 'Review: weg, niets op de site' );
-    $zonder = SFP_Reviews_Manual::add( array( 'author' => 'Anne', 'rating' => 5, 'text' => 'Goed.' ) );
+    $zonder = SFP_Reviews_Manual::add(
+        array(
+            'author' => 'Anne',
+            'rating' => 5,
+            'text'   => 'Goed.'
+        )
+    );
     $mist( sfp_page_config_render_review_kaart( array( 'review' => $zonder[1]['id'] ) ), 'sfp-review-kaart__bron', 'Review zonder vermelding: geen lege regel' );
 
     // Zoals het in de inhoud staat.
@@ -178,14 +254,64 @@ if ( sfp_page_config_reviews_actief() ) {
 
 /* ---------- Reviewblok: vermelding, enkelvoud, kleuren ---------- */
 
-$rend = new SFP_Reviews_Renderer();
-$kaart = $rend->render( array( SFP_Reviews_Manual::schoon( array( 'author' => 'X', 'rating' => 5, 'text' => 'Tekst', 'vermelding' => 'Vertaald.' ) ) + array( 'time' => '' ) ), array( 'layout' => 'grid' ) );
+$rend  = new SFP_Reviews_Renderer();
+$kaart = $rend->render(
+    array(
+        SFP_Reviews_Manual::schoon(
+            array(
+                'author'     => 'X',
+                'rating'     => 5,
+                'text'       => 'Tekst',
+                'vermelding' => 'Vertaald.'
+            )
+        ) + array( 'time' => '' )
+    ),
+    array( 'layout' => 'grid' )
+);
 $bevat( $kaart, '<p class="sfp-review__vermelding">Vertaald.</p>', 'Reviewblok: vermelding onder de tekst' );
-$kaart = $rend->render( array( SFP_Reviews_Manual::schoon( array( 'author' => 'X', 'rating' => 5, 'text' => 'Tekst' ) ) ), array( 'layout' => 'grid' ) );
+$kaart = $rend->render(
+    array(
+        SFP_Reviews_Manual::schoon(
+            array(
+                'author' => 'X',
+                'rating' => 5,
+                'text'   => 'Tekst'
+            )
+        )
+    ),
+    array( 'layout' => 'grid' )
+);
 $mist( $kaart, 'sfp-review__vermelding', 'Reviewblok zonder vermelding: geen lege regel' );
-$same( sfp_page_config_tekst_f( 'reviews_basis_een', '1' ), $rend->samenvatting_teksten( array( 'rating' => 5, 'total' => 1 ) )['basis'], 'Eén review: enkelvoud (wens 5)' );
-$same( sfp_page_config_tekst_f( 'reviews_basis', '2' ), $rend->samenvatting_teksten( array( 'rating' => 5, 'total' => 2 ) )['basis'], 'Twee reviews: meervoud' );
-$bevat( $rend->samenvatting( array( 'rating' => 5, 'total' => '1' ) ), esc_html( sfp_page_config_tekst_f( 'reviews_basis_een', '1' ) ), 'Eén review als tekst uit Google: enkelvoud' );
+$same(
+    sfp_page_config_tekst_f( 'reviews_basis_een', '1' ),
+    $rend->samenvatting_teksten(
+        array(
+            'rating' => 5,
+            'total'  => 1
+        )
+    )['basis'],
+    'Eén review: enkelvoud (wens 5)'
+);
+$same(
+    sfp_page_config_tekst_f( 'reviews_basis', '2' ),
+    $rend->samenvatting_teksten(
+        array(
+            'rating' => 5,
+            'total'  => 2
+        )
+    )['basis'],
+    'Twee reviews: meervoud'
+);
+$bevat(
+    $rend->samenvatting(
+        array(
+            'rating' => 5,
+            'total'  => '1'
+        )
+    ),
+    esc_html( sfp_page_config_tekst_f( 'reviews_basis_een', '1' ) ),
+    'Eén review als tekst uit Google: enkelvoud'
+);
 $rcss = (string) file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/reviews/reviews.css' );
 $same( 2, substr_count( $rcss, 'color-mix(in srgb, var(--sfp-rol-primair, currentColor) 20%, transparent)' ), 'Reviewblok: rand en lege ster primair 20% (wens 6)' );
 $mist( $rcss, '--sfp-review-border:        var(--sfp-rol-tint-2', 'Reviewblok: rand niet meer op de tint' );

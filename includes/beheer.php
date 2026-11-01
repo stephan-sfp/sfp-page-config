@@ -69,7 +69,7 @@ function sfp_page_config_beheer_menu_naam() {
             unset( $menu[ $plek ] ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- het menu van WordPress zelf.
             continue;
         }
-        $gezien              = true;
+        $gezien           = true;
         $menu[ $plek ][0] = 'SFP Beheer'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
         $menu[ $plek ][3] = 'SFP Beheer'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
     }
@@ -178,7 +178,7 @@ function sfp_page_config_beheer_fonts_url() {
         $vast  = array( 'inherit', 'serif', 'sans-serif', 'monospace', 'system-ui', 'arial', 'helvetica', 'georgia', 'verdana', 'tahoma', 'times new roman', 'courier new', '-apple-system' );
         return '' === $naam || in_array( strtolower( $naam ), $vast, true ) ? '' : $naam;
     };
-    $kop = $eerste( $brand['font'] );
+    $kop      = $eerste( $brand['font'] );
     if ( '' !== $kop ) {
         $gewicht          = preg_match( '/^[1-9]00$/', (string) $brand['weight'] ) ? (string) $brand['weight'] : '700';
         $families[ $kop ] = array( $gewicht => true );
@@ -261,7 +261,7 @@ function sfp_page_config_beheer_stand() {
     // Onderdelen.
     $onderdelen = array();
     foreach ( sfp_page_config_onderdelen() as $id => $onderdeel ) {
-        $rij = array(
+        $rij          = array(
             'id'     => $id,
             'naam'   => $onderdeel['naam'],
             'uitleg' => $onderdeel['uitleg'],
@@ -356,16 +356,16 @@ function sfp_page_config_beheer_stand() {
     // Reviews.
     $opts    = sfp_page_config_reviews_opties();
     $reviews = array(
-        'oud'    => false,
-        'opties' => array(
+        'oud'       => false,
+        'opties'    => array(
             'layout'    => (string) $opts['layout'],
             'min_stars' => (int) $opts['min_stars'],
             'summary'   => (bool) filter_var( $opts['summary'], FILTER_VALIDATE_BOOLEAN ),
             'place_id'  => (string) $opts['place_id'],
             'sleutel'   => '' !== (string) $opts['api_key'],
         ),
-        'stand'  => sfp_page_config_reviews_stand(),
-        'eigen'  => class_exists( 'SFP_Reviews_Manual' ) ? SFP_Reviews_Manual::get_all() : array(),
+        'stand'     => sfp_page_config_reviews_stand(),
+        'eigen'     => class_exists( 'SFP_Reviews_Manual' ) ? SFP_Reviews_Manual::get_all() : array(),
         'voorbeeld' => sfp_page_config_beheer_reviews_voorbeeld(),
     );
 
@@ -378,9 +378,9 @@ function sfp_page_config_beheer_stand() {
     );
 
     // Onderhoud.
-    $totaal    = function_exists( 'sfp_ao_fetch_totals' ) ? sfp_ao_fetch_totals() : null;
-    $skip      = isset( $alle['ajax_lean_skip'] ) && is_array( $alle['ajax_lean_skip'] ) ? $alle['ajax_lean_skip'] : ( function_exists( 'sfp_ajax_lean_default_skip' ) ? sfp_ajax_lean_default_skip() : array() );
-    $plugins   = array();
+    $totaal  = function_exists( 'sfp_ao_fetch_totals' ) ? sfp_ao_fetch_totals() : null;
+    $skip    = isset( $alle['ajax_lean_skip'] ) && is_array( $alle['ajax_lean_skip'] ) ? $alle['ajax_lean_skip'] : ( function_exists( 'sfp_ajax_lean_default_skip' ) ? sfp_ajax_lean_default_skip() : array() );
+    $plugins = array();
     if ( ! function_exists( 'get_plugins' ) ) {
         require_once ABSPATH . 'wp-admin/includes/plugin.php';
     }
@@ -397,16 +397,16 @@ function sfp_page_config_beheer_stand() {
         );
     }
     $onderhoud = array(
-        'kanaal'      => isset( $alle['update_kanaal'] ) && 'proef' === $alle['update_kanaal'] ? 'proef' : '',
-        'autoload_kb' => $totaal ? (int) round( $totaal->total_bytes / 1024 ) : 0,
+        'kanaal'       => isset( $alle['update_kanaal'] ) && 'proef' === $alle['update_kanaal'] ? 'proef' : '',
+        'autoload_kb'  => $totaal ? (int) round( $totaal->total_bytes / 1024 ) : 0,
         'autoload_url' => function_exists( 'sfp_ao_page_url' ) ? sfp_ao_page_url() : '',
-        'lean_aan'    => isset( $alle['ajax_lean_enabled'] ) && '1' === (string) $alle['ajax_lean_enabled'],
-        'lean_fout'   => (string) get_option( 'sfp_ajax_lean_error', '' ),
-        'plugins'     => $plugins,
-        'deelbeeld'   => function_exists( 'sfp_page_config_deelbeeld_stand' ) ? sfp_page_config_deelbeeld_stand() : null,
-        'cron_email'  => isset( $alle['cron_email'] ) ? (string) $alle['cron_email'] : '',
+        'lean_aan'     => isset( $alle['ajax_lean_enabled'] ) && '1' === (string) $alle['ajax_lean_enabled'],
+        'lean_fout'    => (string) get_option( 'sfp_ajax_lean_error', '' ),
+        'plugins'      => $plugins,
+        'deelbeeld'    => function_exists( 'sfp_page_config_deelbeeld_stand' ) ? sfp_page_config_deelbeeld_stand() : null,
+        'cron_email'   => isset( $alle['cron_email'] ) ? (string) $alle['cron_email'] : '',
         // Kennisbanken voor [sfp_publicaties] (3.22.0).
-        'publicaties' => array(
+        'publicaties'  => array(
             'sites' => function_exists( 'sfp_feiten_publicaties_sites' ) ? sfp_feiten_publicaties_sites() : array(),
             'eigen' => '' !== (string) ( $alle['publicaties_sites'] ?? '' ),
             'stand' => get_option( 'sfp_feiten_publicaties_stand', null ),
@@ -415,54 +415,62 @@ function sfp_page_config_beheer_stand() {
     );
 
     return array(
-        'versie'       => SFP_PAGE_CONFIG_VERSION,
-        'site'         => array(
+        'versie'           => SFP_PAGE_CONFIG_VERSION,
+        'site'             => array(
             'host' => preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) ),
             'taal' => sfp_page_config_taal(),
             'home' => home_url( '/' ),
         ),
-        'onderdelen'   => $onderdelen,
-        'zelftest'     => function_exists( 'sfp_zelftest_stand' ) ? sfp_zelftest_stand() : null,
-        'tools'        => function_exists( 'sfp_page_config_tool_beheer_stand' ) ? sfp_page_config_tool_beheer_stand() : null,
-        'afwijkingen'  => sfp_page_config_afwijkingen(),
-        'knop'         => $knop,
-        'teksten'      => $teksten,
-        'paginakeuze'  => sfp_page_config_beheer_paginakeuze(),
-        'soorten'      => sfp_page_config_soorten(),
-        'artikel'      => $artikel,
-        'vervolg'      => function_exists( 'sfp_page_config_vervolg_overzicht' ) ? sfp_page_config_vervolg_overzicht() : array(),
-        'vervolg_css'  => sfp_page_config_beheer_blok_css( array( 'sfp/vervolg' ) ),
-        'vervolg_algemeen' => function_exists( 'sfp_page_config_vervolg_astra_layouts' ) ? array_values( array_column( array_filter( sfp_page_config_vervolg_astra_layouts(), function ( $layout ) {
-            return ! empty( $layout['algemeen'] );
-        } ), 'titel' ) ) : array(),
-        'reviews'      => $reviews,
-        'tooltips'     => array(
+        'onderdelen'       => $onderdelen,
+        'zelftest'         => function_exists( 'sfp_zelftest_stand' ) ? sfp_zelftest_stand() : null,
+        'tools'            => function_exists( 'sfp_page_config_tool_beheer_stand' ) ? sfp_page_config_tool_beheer_stand() : null,
+        'afwijkingen'      => sfp_page_config_afwijkingen(),
+        'knop'             => $knop,
+        'teksten'          => $teksten,
+        'paginakeuze'      => sfp_page_config_beheer_paginakeuze(),
+        'soorten'          => sfp_page_config_soorten(),
+        'artikel'          => $artikel,
+        'vervolg'          => function_exists( 'sfp_page_config_vervolg_overzicht' ) ? sfp_page_config_vervolg_overzicht() : array(),
+        'vervolg_css'      => sfp_page_config_beheer_blok_css( array( 'sfp/vervolg' ) ),
+        'vervolg_algemeen' => function_exists( 'sfp_page_config_vervolg_astra_layouts' ) ? array_values(
+            array_column(
+                array_filter(
+                    sfp_page_config_vervolg_astra_layouts(),
+                    function ( $layout ) {
+                        return ! empty( $layout['algemeen'] );
+                    }
+                ),
+                'titel'
+            )
+        ) : array(),
+        'reviews'          => $reviews,
+        'tooltips'         => array(
             'oud' => false,
         ),
-        'whatsapp'     => array(
+        'whatsapp'         => array(
             'nummer'    => isset( $alle['whatsapp_number'] ) ? (string) $alle['whatsapp_number'] : '',
             'norm'      => sfp_page_config_whatsapp_norm(),
             'bericht'   => sfp_page_config_tekst_eigen( 'whatsapp_bericht' ) ? sfp_page_config_tekst_eigen( 'whatsapp_bericht' ) : (string) sfp_page_config_get_setting( 'whatsapp_message', '' ),
             'standaard' => sfp_page_config_tekst_standaard( 'whatsapp_bericht' ),
         ),
-        'footer'       => $footer,
-        'kleurrollen'  => function_exists( 'sfp_page_config_kleurrollen_stand' ) ? sfp_page_config_kleurrollen_stand() : array(),
-        'berichttypes' => function_exists( 'sfp_page_config_berichttypes_stand' ) ? sfp_page_config_berichttypes_stand() : array(),
-        'onderhoud'    => $onderhoud,
-        'cursusdata'   => array(
-            'paginas' => null,
-            'start'   => isset( $alle['cursus_tijd_default_start'] ) ? (string) $alle['cursus_tijd_default_start'] : '',
-            'eind'    => isset( $alle['cursus_tijd_default_eind'] ) ? (string) $alle['cursus_tijd_default_eind'] : '',
+        'footer'           => $footer,
+        'kleurrollen'      => function_exists( 'sfp_page_config_kleurrollen_stand' ) ? sfp_page_config_kleurrollen_stand() : array(),
+        'berichttypes'     => function_exists( 'sfp_page_config_berichttypes_stand' ) ? sfp_page_config_berichttypes_stand() : array(),
+        'onderhoud'        => $onderhoud,
+        'cursusdata'       => array(
+            'paginas'              => null,
+            'start'                => isset( $alle['cursus_tijd_default_start'] ) ? (string) $alle['cursus_tijd_default_start'] : '',
+            'eind'                 => isset( $alle['cursus_tijd_default_eind'] ) ? (string) $alle['cursus_tijd_default_eind'] : '',
             // Wachtlijst (includes/wachtlijst.php): welk formulier wisselt voor welk.
             'inschrijf_formulier'  => isset( $alle['inschrijf_formulier'] ) ? (int) $alle['inschrijf_formulier'] : 0,
             'wachtlijst_formulier' => isset( $alle['wachtlijst_formulier'] ) ? (int) $alle['wachtlijst_formulier'] : 0,
             'formulieren'          => sfp_page_config_beheer_formulieren(),
         ),
-        'banner'       => function_exists( 'sfp_page_config_banner_stand' ) ? sfp_page_config_banner_stand() : array(),
+        'banner'           => function_exists( 'sfp_page_config_banner_stand' ) ? sfp_page_config_banner_stand() : array(),
         // Sinds 3.22.0 alleen wat het overzicht nodig heeft: de pagina's die
         // aandacht vragen en per soort een voorbeeld. De hele lijst haalt het
         // scherm Pagina's zelf op, per 50.
-        'controle'     => sfp_page_config_paginas_samenvatting(),
+        'controle'         => sfp_page_config_paginas_samenvatting(),
     );
 }
 
@@ -473,10 +481,10 @@ function sfp_page_config_beheer_stand() {
  * @return array{pijler: string, titel: string, auteur: string, meta: string, gecheckt: string, redactie: string}
  */
 function sfp_page_config_beheer_artikel_voorbeeld() {
-    $t   = function ( $sleutel ) {
+    $t     = function ( $sleutel ) {
         return function_exists( 'sfp_page_config_artikel_tekst' ) ? sfp_page_config_artikel_tekst( $sleutel ) : '';
     };
-    $uit = array(
+    $uit   = array(
         'pijler'   => '',
         'titel'    => '',
         'auteur'   => '',
@@ -568,7 +576,7 @@ add_action( 'rest_api_init', 'sfp_page_config_beheer_rest' );
  * De routes van het beheer. Allemaal alleen voor beheerders.
  */
 function sfp_page_config_beheer_rest() {
-    $mag = function () {
+    $mag   = function () {
         return current_user_can( 'manage_options' );
     };
     $route = function ( $pad, $methode, $callback ) use ( $mag ) {
@@ -585,7 +593,7 @@ function sfp_page_config_beheer_rest() {
     $stand = function () {
         return rest_ensure_response( sfp_page_config_beheer_stand() );
     };
-    $json = function ( WP_REST_Request $verzoek ) {
+    $json  = function ( WP_REST_Request $verzoek ) {
         $gegevens = $verzoek->get_json_params();
         return is_array( $gegevens ) ? $gegevens : (array) $verzoek->get_body_params();
     };
@@ -621,12 +629,12 @@ function sfp_page_config_beheer_rest() {
         '/paginas',
         'GET',
         function ( WP_REST_Request $verzoek ) {
-            $alles  = sfp_page_config_paginas_overzicht( ! empty( $verzoek['opnieuw'] ) );
-            $per    = max( 1, min( 500, (int) ( $verzoek['per'] ? $verzoek['per'] : 50 ) ) );
-            $pagina = max( 1, (int) ( $verzoek['pagina'] ? $verzoek['pagina'] : 1 ) );
-            $alles['totaal'] = count( $alles['paginas'] );
-            $alles['per']    = $per;
-            $alles['pagina'] = $pagina;
+            $alles            = sfp_page_config_paginas_overzicht( ! empty( $verzoek['opnieuw'] ) );
+            $per              = max( 1, min( 500, (int) ( $verzoek['per'] ? $verzoek['per'] : 50 ) ) );
+            $pagina           = max( 1, (int) ( $verzoek['pagina'] ? $verzoek['pagina'] : 1 ) );
+            $alles['totaal']  = count( $alles['paginas'] );
+            $alles['per']     = $per;
+            $alles['pagina']  = $pagina;
             $alles['paginas'] = array_slice( $alles['paginas'], ( $pagina - 1 ) * $per, $per );
             return rest_ensure_response( $alles );
         }
@@ -733,7 +741,7 @@ function sfp_page_config_beheer_rest() {
             if ( isset( $gegevens['api_key'] ) && '' === trim( (string) $gegevens['api_key'] ) ) {
                 unset( $gegevens['api_key'] );
             }
-            $oud  = sfp_page_config_reviews_opties();
+            $oud   = sfp_page_config_reviews_opties();
             $nieuw = sfp_page_config_reviews_opties_schoon( $gegevens );
             // "Naast elkaar" met de oude standaard van 1 kolom staat onder elkaar.
             // Wie het hier kiest, krijgt drie kolommen op een breed scherm.
@@ -876,4 +884,3 @@ function sfp_page_config_beheer_formulieren() {
 /* =========================================================================
  * Eigen reviews: invoerschema en bewaren (sinds 3.19.0)
  * ====================================================================== */
-

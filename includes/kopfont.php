@@ -58,4 +58,3 @@ function sfp_page_config_kopfont_vars() {
         $ux // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gevalideerd in sfp_page_config_sanitize_font_family().
     );
 }
-

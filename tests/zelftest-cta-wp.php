@@ -35,13 +35,13 @@ if ( sfp_zelftest_tests() ) {
     return;
 }
 
-$bewaard_inst = get_option( 'sfp_settings', array() );
-$bewaard_zt   = get_option( 'sfp_zelftest', null );
-$s            = is_array( $bewaard_inst ) ? $bewaard_inst : array();
-$s['artikel_aan']              = '1';
-$s['onderdelen']               = isset( $s['onderdelen'] ) && is_array( $s['onderdelen'] ) ? $s['onderdelen'] : array();
-$s['onderdelen']['pijler']     = '1';
-$s['onderdelen']['zelftest']   = '1';
+$bewaard_inst                = get_option( 'sfp_settings', array() );
+$bewaard_zt                  = get_option( 'sfp_zelftest', null );
+$s                           = is_array( $bewaard_inst ) ? $bewaard_inst : array();
+$s['artikel_aan']            = '1';
+$s['onderdelen']             = isset( $s['onderdelen'] ) && is_array( $s['onderdelen'] ) ? $s['onderdelen'] : array();
+$s['onderdelen']['pijler']   = '1';
+$s['onderdelen']['zelftest'] = '1';
 update_option( 'sfp_settings', $s );
 if ( function_exists( 'sfp_page_config_instellingen_vergeet' ) ) {
     sfp_page_config_instellingen_vergeet();
@@ -50,20 +50,65 @@ if ( function_exists( 'sfp_page_config_instellingen_vergeet' ) ) {
 // Nep-pakket.
 $map = sfp_zelftest_map( 'pakket/cta-proef/huidig' );
 wp_mkdir_p( $map );
-file_put_contents( $map . 'manifest.json', wp_json_encode( array( 'test' => 'cta-proef', 'pakket_versie' => 'x', 'talen' => array( 'en', 'nl' ), 'lengtes' => array( 'long' => array( 'vragen' => array( 1, 2, 3 ) ), 'short' => array( 'vragen' => array( 1 ) ) ) ) ) );
-file_put_contents( $map . 'inhoud.json', wp_json_encode( array( 'algemeen' => array( 'testnaam' => array( 'en' => 'Speaker test', 'nl' => 'Sprekerstest' ) ), 'vragen' => array() ) ) );
+file_put_contents(
+    $map . 'manifest.json',
+    wp_json_encode(
+        array(
+            'test'          => 'cta-proef',
+            'pakket_versie' => 'x',
+            'talen'         => array( 'en', 'nl' ),
+            'lengtes'       => array(
+                'long'  => array( 'vragen' => array( 1, 2, 3 ) ),
+                'short' => array( 'vragen' => array( 1 ) )
+            )
+        )
+    )
+);
+file_put_contents(
+    $map . 'inhoud.json',
+    wp_json_encode(
+        array(
+            'algemeen' => array(
+                'testnaam' => array(
+                    'en' => 'Speaker test',
+                    'nl' => 'Sprekerstest'
+                )
+            ),
+            'vragen'   => array()
+        )
+    )
+);
 sfp_zelftest_pakket( '', true );
 
 $opruimen = array();
-$pagina   = wp_insert_post( array( 'post_type' => 'page', 'post_title' => 'Testpagina', 'post_name' => 'proef-testpagina', 'post_status' => 'draft' ) );
-$training = wp_insert_post( array( 'post_type' => 'page', 'post_title' => 'Training', 'post_name' => 'proef-training', 'post_status' => 'publish' ) );
+$pagina   = wp_insert_post(
+    array(
+        'post_type'   => 'page',
+        'post_title'  => 'Testpagina',
+        'post_name'   => 'proef-testpagina',
+        'post_status' => 'draft'
+    )
+);
+$training = wp_insert_post(
+    array(
+        'post_type'   => 'page',
+        'post_title'  => 'Training',
+        'post_name'   => 'proef-training',
+        'post_status' => 'publish'
+    )
+);
 $opruimen = array( $pagina, $training );
 sfp_zelftest_instellingen_bewaar( 'cta-proef', array( 'testpagina' => $pagina ) );
 
 $check( 'testpagina concept: geen test van de site', '' === sfp_zelftest_site_test() );
 $check( 'testpagina concept: geen oproep', null === sfp_zelftest_cta_gegevens() );
 
-wp_update_post( array( 'ID' => $pagina, 'post_status' => 'publish' ) );
+wp_update_post(
+    array(
+        'ID'          => $pagina,
+        'post_status' => 'publish'
+    )
+);
 $check( 'test van de site', 'cta-proef' === sfp_zelftest_site_test() );
 $g = sfp_zelftest_cta_gegevens( '', 'Pagina Training!' );
 $check( 'gegevens', is_array( $g ) && 'cta-proef' === $g['test'] );
@@ -73,7 +118,14 @@ $check( 'bronlabel schoon in de link', is_array( $g ) && false !== strpos( $g['u
 $check( 'aantal vragen eerste lengte', is_array( $g ) && 3 === $g['vragen'] );
 $check( 'onbekende test', null === sfp_zelftest_cta_gegevens( 'bestaat-niet' ) );
 
-sfp_zelftest_instellingen_bewaar( 'cta-proef', array( 'cta_kop' => 'How strong is your presence?', 'cta_zin' => '<b>Twelve</b> questions.', 'cta_knop' => str_repeat( 'x', 80 ) ) );
+sfp_zelftest_instellingen_bewaar(
+    'cta-proef',
+    array(
+        'cta_kop'  => 'How strong is your presence?',
+        'cta_zin'  => '<b>Twelve</b> questions.',
+        'cta_knop' => str_repeat( 'x', 80 )
+    )
+);
 $g = sfp_zelftest_cta_gegevens();
 $check( 'eigen kop', 'How strong is your presence?' === $g['kop'] );
 $check( 'zin zonder html', 'Twelve questions.' === $g['zin'] );
@@ -83,12 +135,28 @@ sfp_zelftest_instellingen_bewaar( 'cta-proef', array( 'cta_knop' => '' ) );
 // Blok en code.
 $GLOBALS['post'] = get_post( $training );
 setup_postdata( $GLOBALS['post'] );
-$html = render_block( array( 'blockName' => 'sfp/zelftest-cta', 'attrs' => array(), 'innerBlocks' => array(), 'innerHTML' => '', 'innerContent' => array() ) );
+$html = render_block(
+    array(
+        'blockName'    => 'sfp/zelftest-cta',
+        'attrs'        => array(),
+        'innerBlocks'  => array(),
+        'innerHTML'    => '',
+        'innerContent' => array()
+    )
+);
 $check( 'blok toont oproep', false !== strpos( $html, 'sfp-zt-cta' ) && false !== strpos( $html, 'How strong is your presence?' ) );
 $check( 'blok standaard bron', false !== strpos( $html, 'bron=pagina-proef-training' ) );
 $check( 'blok knop van het thema', false !== strpos( $html, 'wp-block-button__link' ) );
 $check( 'blok standaard zonder icoon (3.13.0)', false === strpos( $html, '<span class="sfp-zt-cta__icoon"' ) && ! preg_match( '/<aside[^>]*sfp-zt-cta--icoon/', $html ) );
-$html = render_block( array( 'blockName' => 'sfp/zelftest-cta', 'attrs' => array( 'icoon' => true ), 'innerBlocks' => array(), 'innerHTML' => '', 'innerContent' => array() ) );
+$html = render_block(
+    array(
+        'blockName'    => 'sfp/zelftest-cta',
+        'attrs'        => array( 'icoon' => true ),
+        'innerBlocks'  => array(),
+        'innerHTML'    => '',
+        'innerContent' => array()
+    )
+);
 $check( 'blok met icoon als instelling (3.13.0)', false !== strpos( $html, '<span class="sfp-zt-cta__icoon"' ) && preg_match( '/<aside[^>]*sfp-zt-cta--icoon/', $html ) );
 $html = do_shortcode( '[sfp_zelftest_cta bron="footer"]' );
 $check( 'code', false !== strpos( $html, 'bron=footer' ) );
@@ -98,8 +166,14 @@ $css = sfp_page_config_blokken_css_bestand( 'zelftest-cta' );
 $check( 'oproep-CSS zonder fontnaam of hexkleur (3.13.0)', ! preg_match( '/#[0-9a-f]{3,6}\b|Roboto|Nunito|Manrope/i', $css ) );
 $check( 'oproep-CSS kop in kapitalen en kopfont, max 760 px (3.13.0)', false !== strpos( $css, 'text-transform:uppercase;color:var(--sfp-b-primair)' ) && false !== strpos( $css, 'max-width:760px' ) && false !== strpos( $css, 'font-family:var(--sfp-b-kop)' ) );
 if ( post_type_exists( 'tool' ) ) {
-    $tool = wp_insert_post( array( 'post_type' => 'tool', 'post_title' => 'Proeftool', 'post_status' => 'publish' ) );
-    $opruimen[] = $tool;
+    $tool            = wp_insert_post(
+        array(
+            'post_type'   => 'tool',
+            'post_title'  => 'Proeftool',
+            'post_status' => 'publish'
+        )
+    );
+    $opruimen[]      = $tool;
     $GLOBALS['post'] = get_post( $tool );
     setup_postdata( $GLOBALS['post'] );
     $check( 'niet op een toolpagina', '' === do_shortcode( '[sfp_zelftest_cta]' ) );
@@ -108,8 +182,14 @@ wp_reset_postdata();
 $check( 'vervolg laat het blok toe', in_array( 'sfp/zelftest-cta', sfp_page_config_vervolg_blokken( true, (object) array( 'post' => (object) array( 'post_type' => 'sfp_vervolg' ) ) ), true ) );
 
 // Pijler.
-$term = wp_insert_term( 'Proef pijler ' . wp_generate_password( 6, false ), 'category' );
-$gids = wp_insert_post( array( 'post_title' => 'Proefgids', 'post_status' => 'publish', 'post_category' => array( $term['term_id'] ) ) );
+$term       = wp_insert_term( 'Proef pijler ' . wp_generate_password( 6, false ), 'category' );
+$gids       = wp_insert_post(
+    array(
+        'post_title'    => 'Proefgids',
+        'post_status'   => 'publish',
+        'post_category' => array( $term['term_id'] )
+    )
+);
 $opruimen[] = $gids;
 update_post_meta( $gids, 'sfp_vorm', 'pijler' );
 delete_transient( 'sfp_pc_gidsen' );
@@ -122,7 +202,7 @@ update_post_meta( $gids, 'sfp_zelftest', 'cta-proef' );
 $check( 'pijler met gekozen test', null !== sfp_page_config_pijler_zelftest( $gids ) );
 
 // Onderdeel uit.
-$s = get_option( 'sfp_settings' );
+$s                           = get_option( 'sfp_settings' );
 $s['onderdelen']['zelftest'] = '0';
 update_option( 'sfp_settings', $s );
 if ( function_exists( 'sfp_page_config_instellingen_vergeet' ) ) {

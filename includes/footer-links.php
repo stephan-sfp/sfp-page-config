@@ -176,7 +176,7 @@ function sfp_page_config_footer_na( $index ) {
     if ( 'footer-widget-4' !== $index || empty( $GLOBALS['sfp_page_config_footer_buffer'] ) ) {
         return;
     }
-    $niveau = (int) $GLOBALS['sfp_page_config_footer_buffer'];
+    $niveau                                   = (int) $GLOBALS['sfp_page_config_footer_buffer'];
     $GLOBALS['sfp_page_config_footer_buffer'] = 0;
 
     // Heeft een widget zelf een buffer open laten staan, dan sluiten we die

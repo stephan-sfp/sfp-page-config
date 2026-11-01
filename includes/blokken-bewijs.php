@@ -47,18 +47,24 @@ function sfp_page_config_bewijs_blokken( $blokken ) {
         'css'          => 'logostrook',
         'zonder_basis' => true,
         'attributes'   => array(
-            'label' => array( 'type' => 'string', 'default' => '' ),
+            'label'     => array(
+                'type'    => 'string',
+                'default' => ''
+            ),
             'logos'     => array(
                 'type'    => 'array',
                 'default' => array(),
                 'items'   => array( 'type' => 'integer' ),
             ),
             // Alleen voor het voorbeeld in de blokkenlijst (sinds 3.20.0).
-            'voorbeeld' => array( 'type' => 'boolean', 'default' => false ),
+            'voorbeeld' => array(
+                'type'    => 'boolean',
+                'default' => false
+            ),
         ),
         'render'       => 'sfp_page_config_render_logostrook',
     );
-    $blokken['sfp/review']     = array(
+    $blokken['sfp/review'] = array(
         'title'        => 'Review',
         'description'  => 'Eén eigen review als kaart met sterren. De reviews staan in SFP Beheer, Reviews.',
         'icon'         => 'format-quote',
@@ -66,9 +72,15 @@ function sfp_page_config_bewijs_blokken( $blokken ) {
         'zonder_basis' => true,
         'inserter'     => $reviews,
         'attributes'   => array(
-            'review'    => array( 'type' => 'string', 'default' => '' ),
+            'review'    => array(
+                'type'    => 'string',
+                'default' => ''
+            ),
             // Alleen voor het voorbeeld in de blokkenlijst (sinds 3.20.0).
-            'voorbeeld' => array( 'type' => 'boolean', 'default' => false ),
+            'voorbeeld' => array(
+                'type'    => 'boolean',
+                'default' => false
+            ),
         ),
         'render'       => 'sfp_page_config_render_review_kaart',
     );
@@ -171,9 +183,9 @@ function sfp_page_config_review_kaart_vind( $id ) {
  * @return string
  */
 function sfp_page_config_review_kaart_alineas( $tekst ) {
-    $tekst  = str_replace( array( "\r\n", "\r" ), "\n", trim( (string) $tekst ) );
-    $delen  = preg_split( '/\n\s*\n/', $tekst );
-    $uit    = '';
+    $tekst = str_replace( array( "\r\n", "\r" ), "\n", trim( (string) $tekst ) );
+    $delen = preg_split( '/\n\s*\n/', $tekst );
+    $uit   = '';
     foreach ( (array) $delen as $deel ) {
         $deel = trim( $deel );
         if ( '' === $deel ) {

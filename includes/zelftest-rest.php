@@ -85,7 +85,7 @@ function sfp_zelftest_rest_fout( array $pakket, $code, $tekst, $status ) {
  * @return bool           true als het verzoek mag.
  */
 function sfp_zelftest_limiet( $soort, $sleutel, $max, $venster = HOUR_IN_SECONDS ) {
-    $naam  = 'sfp_pc_zt_' . substr( md5( $soort . '|' . $sleutel . '|' . wp_salt( 'nonce' ) ), 0, 20 );
+    $naam   = 'sfp_pc_zt_' . substr( md5( $soort . '|' . $sleutel . '|' . wp_salt( 'nonce' ) ), 0, 20 );
     $aantal = (int) get_transient( $naam );
     if ( $aantal >= $max ) {
         return false;
@@ -118,15 +118,33 @@ function sfp_zelftest_is_cloudflare( $ip ) {
     $blokken = (array) apply_filters(
         'sfp_zelftest_cloudflare_ips',
         array(
-            '173.245.48.0/20', '103.21.244.0/22', '103.22.200.0/22', '103.31.4.0/22', '141.101.64.0/18', '108.162.192.0/18',
-            '190.93.240.0/20', '188.114.96.0/20', '197.234.240.0/22', '198.41.128.0/17', '162.158.0.0/15', '104.16.0.0/13',
-            '104.24.0.0/14', '172.64.0.0/13', '131.0.72.0/22',
-            '2400:cb00::/32', '2606:4700::/32', '2803:f800::/32', '2405:b500::/32', '2405:8100::/32', '2a06:98c0::/29', '2c0f:f248::/32',
+            '173.245.48.0/20',
+            '103.21.244.0/22',
+            '103.22.200.0/22',
+            '103.31.4.0/22',
+            '141.101.64.0/18',
+            '108.162.192.0/18',
+            '190.93.240.0/20',
+            '188.114.96.0/20',
+            '197.234.240.0/22',
+            '198.41.128.0/17',
+            '162.158.0.0/15',
+            '104.16.0.0/13',
+            '104.24.0.0/14',
+            '172.64.0.0/13',
+            '131.0.72.0/22',
+            '2400:cb00::/32',
+            '2606:4700::/32',
+            '2803:f800::/32',
+            '2405:b500::/32',
+            '2405:8100::/32',
+            '2a06:98c0::/29',
+            '2c0f:f248::/32',
         )
     );
     foreach ( $blokken as $blok ) {
         list( $net, $lengte ) = array_pad( explode( '/', (string) $blok ), 2, '' );
-        $netbin = @inet_pton( $net ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+        $netbin               = @inet_pton( $net ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
         if ( false === $netbin || strlen( $netbin ) !== strlen( $bin ) ) {
             continue;
         }
@@ -166,9 +184,12 @@ function sfp_zelftest_vragen( array $pakket ) {
     $taal   = sfp_zelftest_taal( $pakket );
     $vragen = array();
     foreach ( (array) $pakket['inhoud']['vragen'] as $vraag ) {
-        $nr = (int) $vraag['nr'];
-        $o  = isset( $vraag[ $taal ]['o'] ) && is_array( $vraag[ $taal ]['o'] ) ? $vraag[ $taal ]['o'] : array();
-        $vragen[ $nr ] = array( 'opties' => count( $o ), 'meerdere' => ! empty( $vraag['meerdere'] ) );
+        $nr            = (int) $vraag['nr'];
+        $o             = isset( $vraag[ $taal ]['o'] ) && is_array( $vraag[ $taal ]['o'] ) ? $vraag[ $taal ]['o'] : array();
+        $vragen[ $nr ] = array(
+            'opties'   => count( $o ),
+            'meerdere' => ! empty( $vraag['meerdere'] )
+        );
     }
     return $vragen;
 }
@@ -249,7 +270,10 @@ function sfp_zelftest_uitkomst_schoon( array $pakket, $ruw ) {
             $notitie[] = array( mb_substr( sanitize_text_field( (string) $regel[0] ), 0, 60 ), mb_substr( sanitize_text_field( (string) $regel[1] ), 0, 300 ) );
         }
     }
-    return array( 'crm' => $crm, 'notitie' => $notitie );
+    return array(
+        'crm'     => $crm,
+        'notitie' => $notitie
+    );
 }
 
 /**
@@ -325,7 +349,12 @@ function sfp_zelftest_rest_start( WP_REST_Request $verzoek ) {
             'utm_medium'      => sfp_zelftest_veld( $in, 'utm_medium', 200 ),
             'utm_campaign'    => sfp_zelftest_veld( $in, 'utm_campaign', 200 ),
             'gclid'           => sfp_zelftest_veld( $in, 'gclid', 200 ),
-            'extra'           => wp_json_encode( array( 'dienst' => sanitize_key( sfp_zelftest_veld( $in, 'dienst', 20 ) ), 'taal' => $taal ) ),
+            'extra'           => wp_json_encode(
+                array(
+                    'dienst' => sanitize_key( sfp_zelftest_veld( $in, 'dienst', 20 ) ),
+                    'taal'   => $taal
+                )
+            ),
             'gestart_op'      => sfp_zelftest_nu(),
             'crm_start'       => 'wacht',
             'crm_volgende'    => sfp_zelftest_nu(),
@@ -359,7 +388,12 @@ function sfp_zelftest_rest_afgerond( WP_REST_Request $verzoek ) {
     sfp_zelftest_taal_context( sfp_zelftest_rij_taal( $rij ) );
     // Al afgerond: hetzelfde antwoord, geen nieuwe code (dubbele klik, opnieuw versturen na een netwerkfout).
     if ( ! empty( $rij['afgerond_op'] ) && ! empty( $rij['code'] ) ) {
-        return rest_ensure_response( array( 'code' => $rij['code'], 'result_url' => sfp_zelftest_adres( $rij['test'], 'pdf', array( 'code' => $rij['code'] ) ) ) );
+        return rest_ensure_response(
+            array(
+                'code'       => $rij['code'],
+                'result_url' => sfp_zelftest_adres( $rij['test'], 'pdf', array( 'code' => $rij['code'] ) )
+            )
+        );
     }
     if ( strtotime( $rij['gestart_op'] . ' UTC' ) < time() - DAY_IN_SECONDS ) {
         return sfp_zelftest_rest_fout( $pakket, 'sfp_zelftest_sessie', 'fout_versturen', 400 );
@@ -396,18 +430,28 @@ function sfp_zelftest_rest_afgerond( WP_REST_Request $verzoek ) {
         $sets[] = $kolom . ' = ' . ( is_int( $waarde ) ? '%d' : '%s' );
         $args[] = $waarde;
     }
-    $args[]   = (int) $rij['id'];
-    $tabel    = sfp_zelftest_tabel();
+    $args[]    = (int) $rij['id'];
+    $tabel     = sfp_zelftest_tabel();
     $gewijzigd = $wpdb->query( $wpdb->prepare( "UPDATE {$tabel} SET " . implode( ', ', $sets ) . ' WHERE id = %d AND code IS NULL', $args ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
     if ( ! $gewijzigd ) {
         $rij = sfp_zelftest_rij_op( 'id', (string) (int) $rij['id'] );
         if ( $rij && ! empty( $rij['code'] ) ) {
-            return rest_ensure_response( array( 'code' => $rij['code'], 'result_url' => sfp_zelftest_adres( $rij['test'], 'pdf', array( 'code' => $rij['code'] ) ) ) );
+            return rest_ensure_response(
+                array(
+                    'code'       => $rij['code'],
+                    'result_url' => sfp_zelftest_adres( $rij['test'], 'pdf', array( 'code' => $rij['code'] ) )
+                )
+            );
         }
         return sfp_zelftest_rest_fout( $pakket, 'sfp_zelftest_opslaan', 'fout_versturen', 500 );
     }
     sfp_zelftest_na_antwoord( (int) $rij['id'] );
-    return rest_ensure_response( array( 'code' => $code, 'result_url' => sfp_zelftest_adres( $rij['test'], 'pdf', array( 'code' => $code ) ) ) );
+    return rest_ensure_response(
+        array(
+            'code'       => $code,
+            'result_url' => sfp_zelftest_adres( $rij['test'], 'pdf', array( 'code' => $code ) )
+        )
+    );
 }
 
 /**
@@ -428,7 +472,7 @@ function sfp_zelftest_rest_opnieuw( WP_REST_Request $verzoek ) {
     if ( $rij ) {
         sfp_zelftest_taal_context( sfp_zelftest_rij_taal( $rij ) );
     }
-    $email  = sfp_zelftest_email( $in );
+    $email = sfp_zelftest_email( $in );
     if ( ! $rij || $rij['test'] !== $pakket['test'] || empty( $rij['afgerond_op'] ) || '' === $email ) {
         return sfp_zelftest_rest_fout( $pakket, 'sfp_zelftest_ongeldig', 'fout_versturen', 400 );
     }
@@ -467,7 +511,7 @@ function sfp_zelftest_rest_opnieuw( WP_REST_Request $verzoek ) {
 function sfp_zelftest_na_antwoord( $id ) {
     static $rijen = array();
     static $haak  = false;
-    $rijen[] = (int) $id;
+    $rijen[]      = (int) $id;
     if ( $haak ) {
         return;
     }

@@ -72,24 +72,29 @@ if ( ! $map || ! is_readable( rtrim( $map, '/' ) . '/manifest.json' ) ) {
 $map = rtrim( $map, '/' ) . '/';
 
 // Een beheerder voor de beheerroutes.
-$beheerder = get_users( array( 'role' => 'administrator', 'number' => 1 ) );
+$beheerder = get_users(
+    array(
+        'role'   => 'administrator',
+        'number' => 1
+    )
+);
 wp_set_current_user( $beheerder ? $beheerder[0]->ID : 1 );
 sfp_page_config_instellingen_bewaar( array( 'onderdelen' => array( 'zelftest' => true ) ) );
 
 /* ---------- Pakket ---------- */
-$bestanden             = array();
+$bestanden = array();
 foreach ( array( 'manifest.json', 'inhoud.json', 'motor.js', 'label.js', 'blad.html' ) as $naam ) {
     $bestanden[ $naam ] = (string) file_get_contents( $map . $naam ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 }
-$manifest         = json_decode( $bestanden['manifest.json'], true );
-$manifest['test'] = 'proeftest';
+$manifest                   = json_decode( $bestanden['manifest.json'], true );
+$manifest['test']           = 'proeftest';
 $bestanden['manifest.json'] = wp_json_encode( $manifest );
 
 // Weigeren: ontbrekend bestand, kapotte JSON, verkeerde test, onbekende lengtevraag.
 $fout = sfp_zelftest_pakket_inlezen( 'proeftest', array_diff_key( $bestanden, array( 'motor.js' => 1 ) ) );
 zt_is( is_wp_error( $fout ), 'pakket zonder motor.js wordt geweigerd' );
-$kapot                  = $bestanden;
-$kapot['inhoud.json']   = '{kapot';
+$kapot                = $bestanden;
+$kapot['inhoud.json'] = '{kapot';
 zt_is( is_wp_error( sfp_zelftest_pakket_inlezen( 'proeftest', $kapot ) ), 'kapotte inhoud.json wordt geweigerd' );
 zt_is( is_wp_error( sfp_zelftest_pakket_inlezen( 'andere', $bestanden ) ), 'manifest van een andere test wordt geweigerd' );
 $m2                                 = $manifest;
@@ -111,10 +116,10 @@ zt_is( is_readable( $basis . '.htaccess' ) && false !== strpos( (string) file_ge
 zt_is( (bool) preg_match( '#/sfp-zelftest-[a-f0-9]{24}/$#', $basis ), 'werkmap heeft een willekeurige naam' );
 
 // Tweede inlezen: vorige versie bewaard en terug te zetten.
-$m3                         = $manifest;
-$m3['pakket_versie']        = 'proef-2';
-$b3                         = $bestanden;
-$b3['manifest.json']        = wp_json_encode( $m3 );
+$m3                  = $manifest;
+$m3['pakket_versie'] = 'proef-2';
+$b3                  = $bestanden;
+$b3['manifest.json'] = wp_json_encode( $m3 );
 sfp_zelftest_pakket_inlezen( 'proeftest', $b3 );
 zt_is( 'proef-2' === sfp_zelftest_pakket( 'proeftest' )['manifest']['pakket_versie'], 'nieuwe versie actief' );
 sfp_zelftest_pakket_terug( 'proeftest' );
@@ -123,7 +128,17 @@ zt_is( $manifest['pakket_versie'] === sfp_zelftest_pakket( 'proeftest' )['manife
 /* ---------- Instellingen ---------- */
 zt_is( is_wp_error( sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'pdf_pad' => 'https://ergens.nl/x y' ) ) ), 'ongeldig pad wordt geweigerd' );
 zt_is( is_wp_error( sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'webhook_start' => 'http://onveilig.nl' ) ) ), 'webhook zonder https wordt geweigerd' );
-zt_is( true === sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'pdf_pad' => '/proeftest/resultaat/', 'webhook_start' => 'https://voorbeeld.nl/a', 'proefmodus' => true ) ), 'geldige instellingen opgeslagen' );
+zt_is(
+    true === sfp_zelftest_instellingen_bewaar(
+        'proeftest',
+        array(
+            'pdf_pad'       => '/proeftest/resultaat/',
+            'webhook_start' => 'https://voorbeeld.nl/a',
+            'proefmodus'    => true
+        )
+    ),
+    'geldige instellingen opgeslagen'
+);
 $inst = sfp_zelftest_instellingen( 'proeftest' );
 zt_is( 'proeftest/resultaat' === $inst['pdf_pad'], 'pad zonder schuine strepen aan de randen' );
 sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'webhook_start' => '' ) );
@@ -133,7 +148,15 @@ zt_is( '' === sfp_zelftest_instellingen( 'proeftest' )['webhook_start'], '- wist
 
 $stand = zt_rest( 'GET', '/sfp/v1/zelftest' )->get_data();
 zt_is( false === strpos( wp_json_encode( $stand ), 'voorbeeld.nl' ), 'stand toont geen webhookadres' );
-zt_is( true === sfp_zelftest_cloudflare_bewaar( array( 'account' => str_repeat( 'a', 32 ), 'token' => 'geheim_token_1234567890abcdef' ) ), 'Cloudflare opgeslagen' );
+zt_is(
+    true === sfp_zelftest_cloudflare_bewaar(
+        array(
+            'account' => str_repeat( 'a', 32 ),
+            'token'   => 'geheim_token_1234567890abcdef'
+        )
+    ),
+    'Cloudflare opgeslagen'
+);
 $stand = zt_rest( 'GET', '/sfp/v1/zelftest' )->get_data();
 zt_is( false === strpos( wp_json_encode( $stand ), 'geheim_token' ), 'stand toont het token niet' );
 zt_is( is_wp_error( sfp_zelftest_cloudflare_bewaar( array( 'account' => 'kort' ) ) ), 'ongeldig account-ID wordt geweigerd' );
@@ -146,19 +169,61 @@ zt_is( 401 === zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/pakket', array( 'bes
 
 /* ---------- Start ---------- */
 zt_limiet_leeg();
-$r = zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/start', array( 'voornaam' => 'Proef', 'email' => 'geen-adres', 'lengte' => 'long' ) );
+$r = zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/start',
+    array(
+        'voornaam' => 'Proef',
+        'email'    => 'geen-adres',
+        'lengte'   => 'long'
+    )
+);
 zt_is( 400 === $r->get_status(), 'start met ongeldig e-mailadres: 400' );
-$r = zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/start', array( 'voornaam' => 'Proef', 'email' => 'proef@example.com', 'lengte' => 'middel' ) );
+$r = zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/start',
+    array(
+        'voornaam' => 'Proef',
+        'email'    => 'proef@example.com',
+        'lengte'   => 'middel'
+    )
+);
 zt_is( 400 === $r->get_status(), 'start met onbekende lengte: 400' );
-$r = zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/start', array( 'voornaam' => 'Proef', 'email' => 'proef@example.com', 'lengte' => 'long', 'website' => 'spam' ) );
+$r = zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/start',
+    array(
+        'voornaam' => 'Proef',
+        'email'    => 'proef@example.com',
+        'lengte'   => 'long',
+        'website'  => 'spam'
+    )
+);
 zt_is( 400 === $r->get_status(), 'start met ingevuld lokveld: 400' );
-$r = zt_rest( 'POST', '/sfp/v1/zelftest/onbekend/start', array( 'voornaam' => 'Proef', 'email' => 'proef@example.com', 'lengte' => 'long' ) );
+$r = zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/onbekend/start',
+    array(
+        'voornaam' => 'Proef',
+        'email'    => 'proef@example.com',
+        'lengte'   => 'long'
+    )
+);
 zt_is( 404 === $r->get_status(), 'start van een onbekende test: 404' );
 
 $r = zt_rest(
     'POST',
     '/sfp/v1/zelftest/proeftest/start',
-    array( 'voornaam' => '<b>Proef</b>', 'email' => 'Proef@Example.com', 'lengte' => 'long', 'nieuwsbrief' => true, 'lead_source_url' => 'https://depresenteerschool.nl/presentatietraining/', 'utm_source' => 'nieuwsbrief', 'gclid' => 'abc', 'dienst' => 'training' )
+    array(
+        'voornaam'        => '<b>Proef</b>',
+        'email'           => 'Proef@Example.com',
+        'lengte'          => 'long',
+        'nieuwsbrief'     => true,
+        'lead_source_url' => 'https://depresenteerschool.nl/presentatietraining/',
+        'utm_source'      => 'nieuwsbrief',
+        'gclid'           => 'abc',
+        'dienst'          => 'training'
+    )
 );
 zt_is( 200 === $r->get_status(), 'geldige start: 200' );
 $sessie = (string) $r->get_data()['sessie'];
@@ -175,28 +240,107 @@ foreach ( explode( ' ', $antw_tekst ) as $stuk ) {
     preg_match( '/^(\d+)(.+)$/', $stuk, $m );
     $antw[ (int) $m[1] ] = false !== strpos( $m[2], ',' ) ? explode( ',', $m[2] ) : $m[2];
 }
-$uitkomst = array( 'crm' => array( 'weakest_pillar' => 'connection', 'tried_before' => 'yes', 'urgency' => 'coming months' ), 'notitie' => array( array( 'Scores', '63 85 40' ) ), 'varianten' => array( 'sterk', 'heel' ) );
+$uitkomst = array(
+    'crm'       => array(
+        'weakest_pillar' => 'connection',
+        'tried_before'   => 'yes',
+        'urgency'        => 'coming months'
+    ),
+    'notitie'   => array( array( 'Scores', '63 85 40' ) ),
+    'varianten' => array( 'sterk', 'heel' )
+);
 
 $fout_antw = $antw;
 unset( $fout_antw[17] );
-zt_is( 400 === zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => $sessie, 'antwoorden' => $fout_antw, 'uitkomst' => $uitkomst ) )->get_status(), 'ontbrekend antwoord: 400' );
-$fout_antw      = $antw;
-$fout_antw[7]   = 'd';
-zt_is( 400 === zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => $sessie, 'antwoorden' => $fout_antw, 'uitkomst' => $uitkomst ) )->get_status(), 'letter buiten de opties: 400' );
-$fout_antw      = $antw;
-$fout_antw[39]  = 'a';
-zt_is( 400 === zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => $sessie, 'antwoorden' => $fout_antw, 'uitkomst' => $uitkomst ) )->get_status(), 'meer-antwoordvraag als losse letter: 400' );
-$fout_uit                           = $uitkomst;
-$fout_uit['crm']['weakest_pillar']  = 'alles';
-zt_is( 400 === zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => $sessie, 'antwoorden' => $antw, 'uitkomst' => $fout_uit ) )->get_status(), 'CRM-waarde buiten de lijst: 400' );
-zt_is( 400 === zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => str_repeat( 'a', 32 ), 'antwoorden' => $antw, 'uitkomst' => $uitkomst ) )->get_status(), 'onbekende sessie: 400' );
+zt_is(
+    400 === zt_rest(
+        'POST',
+        '/sfp/v1/zelftest/proeftest/afgerond',
+        array(
+            'sessie'     => $sessie,
+            'antwoorden' => $fout_antw,
+            'uitkomst'   => $uitkomst
+        )
+    )->get_status(),
+    'ontbrekend antwoord: 400'
+);
+$fout_antw    = $antw;
+$fout_antw[7] = 'd';
+zt_is(
+    400 === zt_rest(
+        'POST',
+        '/sfp/v1/zelftest/proeftest/afgerond',
+        array(
+            'sessie'     => $sessie,
+            'antwoorden' => $fout_antw,
+            'uitkomst'   => $uitkomst
+        )
+    )->get_status(),
+    'letter buiten de opties: 400'
+);
+$fout_antw     = $antw;
+$fout_antw[39] = 'a';
+zt_is(
+    400 === zt_rest(
+        'POST',
+        '/sfp/v1/zelftest/proeftest/afgerond',
+        array(
+            'sessie'     => $sessie,
+            'antwoorden' => $fout_antw,
+            'uitkomst'   => $uitkomst
+        )
+    )->get_status(),
+    'meer-antwoordvraag als losse letter: 400'
+);
+$fout_uit                          = $uitkomst;
+$fout_uit['crm']['weakest_pillar'] = 'alles';
+zt_is(
+    400 === zt_rest(
+        'POST',
+        '/sfp/v1/zelftest/proeftest/afgerond',
+        array(
+            'sessie'     => $sessie,
+            'antwoorden' => $antw,
+            'uitkomst'   => $fout_uit
+        )
+    )->get_status(),
+    'CRM-waarde buiten de lijst: 400'
+);
+zt_is(
+    400 === zt_rest(
+        'POST',
+        '/sfp/v1/zelftest/proeftest/afgerond',
+        array(
+            'sessie'     => str_repeat( 'a', 32 ),
+            'antwoorden' => $antw,
+            'uitkomst'   => $uitkomst
+        )
+    )->get_status(),
+    'onbekende sessie: 400'
+);
 
-$r = zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => $sessie, 'antwoorden' => $antw, 'uitkomst' => $uitkomst ) );
+$r = zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/afgerond',
+    array(
+        'sessie'     => $sessie,
+        'antwoorden' => $antw,
+        'uitkomst'   => $uitkomst
+    )
+);
 zt_is( 200 === $r->get_status(), 'geldig afgerond: 200' );
 $code = (string) $r->get_data()['code'];
 zt_is( (bool) preg_match( '/^' . $manifest['code_voorvoegsel'] . '-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}-[0-9A-HJKMNP-TV-Z]{4}$/', $code ), 'code in het juiste formaat (Crockford, zonder I L O U)' );
 zt_is( false !== strpos( (string) $r->get_data()['result_url'], 'proeftest/resultaat/?code=' . $code ), 'result_url wijst naar de pdf-link' );
-$r2 = zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => $sessie, 'antwoorden' => $antw, 'uitkomst' => $uitkomst ) );
+$r2 = zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/afgerond',
+    array(
+        'sessie'     => $sessie,
+        'antwoorden' => $antw,
+        'uitkomst'   => $uitkomst
+    )
+);
 zt_is( $code === (string) $r2->get_data()['code'], 'dubbel afgerond: dezelfde code, geen nieuwe' );
 $rij = sfp_zelftest_rij_op( 'code', $code );
 zt_is( 'wacht' === $rij['crm_afgerond'] && 'wacht' === $rij['pdf_status'], 'send 2 en pdf in de wachtrij' );
@@ -204,16 +348,62 @@ zt_is( ! array_key_exists( 'deelcode', $rij ) && ! array_key_exists( 'deelbeelde
 
 // Opnieuw doen geeft een nieuwe code.
 zt_limiet_leeg();
-$s2 = (string) zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/start', array( 'voornaam' => 'Proef', 'email' => 'proef@example.com', 'lengte' => 'long' ) )->get_data()['sessie'];
-$c2 = (string) zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => $s2, 'antwoorden' => $antw, 'uitkomst' => $uitkomst ) )->get_data()['code'];
+$s2 = (string) zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/start',
+    array(
+        'voornaam' => 'Proef',
+        'email'    => 'proef@example.com',
+        'lengte'   => 'long'
+    )
+)->get_data()['sessie'];
+$c2 = (string) zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/afgerond',
+    array(
+        'sessie'     => $s2,
+        'antwoorden' => $antw,
+        'uitkomst'   => $uitkomst
+    )
+)->get_data()['code'];
 zt_is( '' !== $c2 && $c2 !== $code, 'opnieuw doen: een nieuwe code' );
 
 // Korte versie: alleen de vragen van die lengte.
 $kort_vragen = array_map( 'intval', $manifest['lengtes']['short']['vragen'] );
 $kort        = array_intersect_key( $antw, array_flip( $kort_vragen ) );
-$s3          = (string) zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/start', array( 'voornaam' => 'Kort', 'email' => 'kort@example.com', 'lengte' => 'short' ) )->get_data()['sessie'];
-zt_is( 400 === zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => $s3, 'antwoorden' => $antw, 'uitkomst' => $uitkomst ) )->get_status(), 'korte versie met antwoorden van de lange: 400' );
-zt_is( 200 === zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/afgerond', array( 'sessie' => $s3, 'antwoorden' => $kort, 'uitkomst' => $uitkomst ) )->get_status(), 'korte versie: 200' );
+$s3          = (string) zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/start',
+    array(
+        'voornaam' => 'Kort',
+        'email'    => 'kort@example.com',
+        'lengte'   => 'short'
+    )
+)->get_data()['sessie'];
+zt_is(
+    400 === zt_rest(
+        'POST',
+        '/sfp/v1/zelftest/proeftest/afgerond',
+        array(
+            'sessie'     => $s3,
+            'antwoorden' => $antw,
+            'uitkomst'   => $uitkomst
+        )
+    )->get_status(),
+    'korte versie met antwoorden van de lange: 400'
+);
+zt_is(
+    200 === zt_rest(
+        'POST',
+        '/sfp/v1/zelftest/proeftest/afgerond',
+        array(
+            'sessie'     => $s3,
+            'antwoorden' => $kort,
+            'uitkomst'   => $uitkomst
+        )
+    )->get_status(),
+    'korte versie: 200'
+);
 
 /* ---------- CRM in proefmodus ---------- */
 delete_option( 'sfp_zelftest_log' );
@@ -223,30 +413,105 @@ $wpdb->query( $wpdb->prepare( "UPDATE {$tabel} SET crm_volgende = %s WHERE id = 
 sfp_zelftest_crm_verwerk( (int) $rij['id'] );
 $rij = sfp_zelftest_rij_op( 'id', (string) $rij['id'] );
 zt_is( 'proef' === $rij['crm_start'] && 'proef' === $rij['crm_afgerond'], 'proefmodus: beide stappen naar het logboek' );
-$log = get_option( 'sfp_zelftest_log', array() );
+$log   = get_option( 'sfp_zelftest_log', array() );
 $send2 = isset( $log[0]['gegevens'] ) ? $log[0]['gegevens'] : array();
 zt_is( isset( $send2['note'], $send2['result_url'], $send2['weakest_pillar'] ) && 'connection' === $send2['weakest_pillar'], 'send 2 bevat note, result_url en de CRM-velden' );
 zt_is( array( 'email', 'first_name', 'result_url', 'weakest_pillar', 'tried_before', 'urgency', 'note' ) === array_keys( $send2 ), 'send 2 heeft precies de velden uit sectie 6.2' );
 $send1 = isset( $log[1]['gegevens'] ) ? $log[1]['gegevens'] : array();
 zt_is( array( 'email', 'first_name', 'test_length', 'lead_source_url', 'newsletter' ) === array_keys( $send1 ), 'send 1 heeft precies de velden uit sectie 6.2' );
 zt_is( in_array( $send1['newsletter'], array( 'true', 'false' ), true ), 'send 1: newsletter als tekst true of false' );
-zt_is( 'true' === sfp_zelftest_payload_start( array( 'email' => 'a@b.nl', 'voornaam' => 'A', 'lengte' => 'long', 'lead_source_url' => '', 'nieuwsbrief' => '1' ) )['newsletter'] && 'false' === sfp_zelftest_payload_start( array( 'email' => 'a@b.nl', 'voornaam' => 'A', 'lengte' => 'long', 'lead_source_url' => '', 'nieuwsbrief' => '0' ) )['newsletter'], 'newsletter aangevinkt true, niet aangevinkt false' );
-zt_is( count( array_filter( $send2, function ( $w ) { return ! is_string( $w ); } ) ) === 0 && count( array_filter( sfp_zelftest_payload_afgerond( $rij, sfp_zelftest_pakket( 'proeftest' ) ), function ( $w ) { return ! is_string( $w ); } ) ) === 0, 'send 2: alle waarden zijn tekst' );
+zt_is(
+    'true' === sfp_zelftest_payload_start(
+        array(
+            'email'           => 'a@b.nl',
+            'voornaam'        => 'A',
+            'lengte'          => 'long',
+            'lead_source_url' => '',
+            'nieuwsbrief'     => '1'
+        )
+    )['newsletter'] && 'false' === sfp_zelftest_payload_start(
+        array(
+            'email'           => 'a@b.nl',
+            'voornaam'        => 'A',
+            'lengte'          => 'long',
+            'lead_source_url' => '',
+            'nieuwsbrief'     => '0'
+        )
+    )['newsletter'],
+    'newsletter aangevinkt true, niet aangevinkt false'
+);
+zt_is(
+    count(
+        array_filter(
+            $send2,
+            function ( $w ) {
+                return ! is_string( $w );
+            }
+        )
+    ) === 0 && count(
+        array_filter(
+            sfp_zelftest_payload_afgerond( $rij, sfp_zelftest_pakket( 'proeftest' ) ),
+            function ( $w ) {
+                return ! is_string( $w );
+            }
+        )
+    ) === 0,
+    'send 2: alle waarden zijn tekst'
+);
 zt_is( false !== strpos( (string) $send2['note'], '39. ' ) && false !== strpos( (string) $send2['note'], $code ), 'notitie met antwoorden en link' );
 
 /* ---------- Opnieuw sturen ---------- */
-$r = zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/opnieuw-sturen', array( 'sessie' => $sessie, 'email' => 'nieuw@example.com' ) );
+$r = zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/opnieuw-sturen',
+    array(
+        'sessie' => $sessie,
+        'email'  => 'nieuw@example.com'
+    )
+);
 zt_is( 200 === $r->get_status() && 'nieuw@example.com' === sfp_zelftest_rij_op( 'code', $code )['email'], 'opnieuw sturen past het adres aan' );
 zt_is( 'wacht' === sfp_zelftest_rij_op( 'code', $code )['crm_afgerond'], 'opnieuw sturen zet send 2 opnieuw in de wachtrij' );
-zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/opnieuw-sturen', array( 'sessie' => $sessie, 'email' => 'nieuw2@example.com' ) );
-zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/opnieuw-sturen', array( 'sessie' => $sessie, 'email' => 'nieuw3@example.com' ) );
-zt_is( 429 === zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/opnieuw-sturen', array( 'sessie' => $sessie, 'email' => 'nieuw4@example.com' ) )->get_status(), 'opnieuw sturen hoogstens drie keer' );
+zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/opnieuw-sturen',
+    array(
+        'sessie' => $sessie,
+        'email'  => 'nieuw2@example.com'
+    )
+);
+zt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftest/opnieuw-sturen',
+    array(
+        'sessie' => $sessie,
+        'email'  => 'nieuw3@example.com'
+    )
+);
+zt_is(
+    429 === zt_rest(
+        'POST',
+        '/sfp/v1/zelftest/proeftest/opnieuw-sturen',
+        array(
+            'sessie' => $sessie,
+            'email'  => 'nieuw4@example.com'
+        )
+    )->get_status(),
+    'opnieuw sturen hoogstens drie keer'
+);
 
 /* ---------- Limiet ---------- */
 zt_limiet_leeg();
 $statussen = array();
 for ( $i = 0; $i < 9; $i++ ) {
-    $statussen[] = zt_rest( 'POST', '/sfp/v1/zelftest/proeftest/start', array( 'voornaam' => 'L', 'email' => 'limiet@example.com', 'lengte' => 'long' ) )->get_status();
+    $statussen[] = zt_rest(
+        'POST',
+        '/sfp/v1/zelftest/proeftest/start',
+        array(
+            'voornaam' => 'L',
+            'email'    => 'limiet@example.com',
+            'lengte'   => 'long'
+        )
+    )->get_status();
 }
 zt_is( 429 === end( $statussen ) && 200 === $statussen[0], 'limiet per e-mailadres: 429 na 8 starts in een uur' );
 zt_limiet_leeg();
@@ -286,9 +551,16 @@ zt_is( ! function_exists( 'sfp_zelftest_maak_deelbeeld' ) && ! function_exists( 
 zt_is( ! array_key_exists( 'deel_pad', sfp_zelftest_instellingen( 'proeftest' ) ), 'geen instelling voor een deelpagina' );
 
 /* ---------- Testpagina (3.5.0) ---------- */
-$zt_pagina = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Proeftest pagina', 'post_content' => '<!-- wp:sfp/zelftest {"test":"proeftest"} /-->' ) );
+$zt_pagina = wp_insert_post(
+    array(
+        'post_type'    => 'page',
+        'post_status'  => 'publish',
+        'post_title'   => 'Proeftest pagina',
+        'post_content' => '<!-- wp:sfp/zelftest {"test":"proeftest"} /-->'
+    )
+);
 sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'testpagina' => $zt_pagina ) );
-$GLOBALS['wp_query'] = new WP_Query( array( 'page_id' => $zt_pagina ) ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+$GLOBALS['wp_query']     = new WP_Query( array( 'page_id' => $zt_pagina ) ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
 $GLOBALS['wp_the_query'] = $GLOBALS['wp_query']; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
 zt_is( 'proeftest' === sfp_zelftest_pagina_test(), 'testpagina herkend' );
 zt_is( false !== strpos( sfp_zelftest_pagina_sjabloon( 'thema.php' ), 'templates/zelftest-pagina.php' ), 'testpagina krijgt het eigen sjabloon' );
@@ -296,14 +568,15 @@ zt_is( in_array( 'sfp-zt-testpagina', sfp_zelftest_pagina_body_class( array() ),
 if ( ! did_action( 'wp' ) ) {
     do_action( 'wp' );
 }
-zt_is( 0 === apply_filters( 'pre_get_rocket_option_remove_unused_css', null ), 'testpagina: geen Remove Unused CSS van WP Rocket' );zt_is( '' !== sfp_page_config_tekst( 'zelftest_stop' ) && '' !== sfp_page_config_tekst( 'zelftest_sluiten' ), 'teksten van het kruisje' );
+zt_is( 0 === apply_filters( 'pre_get_rocket_option_remove_unused_css', null ), 'testpagina: geen Remove Unused CSS van WP Rocket' );
+zt_is( '' !== sfp_page_config_tekst( 'zelftest_stop' ) && '' !== sfp_page_config_tekst( 'zelftest_sluiten' ), 'teksten van het kruisje' );
 wp_delete_post( $zt_pagina, true );
 sfp_zelftest_instellingen_bewaar( 'proeftest', array( 'testpagina' => 0 ) );
 
 /* ---------- IP-adres ---------- */
 zt_is( sfp_zelftest_is_cloudflare( '162.158.1.1' ) && sfp_zelftest_is_cloudflare( '2606:4700::1' ), 'adressen van Cloudflare herkend' );
 zt_is( ! sfp_zelftest_is_cloudflare( '8.8.8.8' ) && ! sfp_zelftest_is_cloudflare( 'rommel' ), 'andere adressen niet' );
-$oud_ip = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
+$oud_ip                           = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
 $_SERVER['REMOTE_ADDR']           = '8.8.8.8';
 $_SERVER['HTTP_CF_CONNECTING_IP'] = '1.2.3.4';
 zt_is( '8.8.8.8' === sfp_zelftest_ip(), 'CF-Connecting-IP genegeerd buiten Cloudflare' );
@@ -313,31 +586,72 @@ $_SERVER['REMOTE_ADDR'] = $oud_ip;
 unset( $_SERVER['HTTP_CF_CONNECTING_IP'] );
 
 /* ---------- Pdf-wachtrij ---------- */
-$rij = sfp_zelftest_rij_op( 'code', $c2 );
+$rij    = sfp_zelftest_rij_op( 'code', $c2 );
 $cf_oud = sfp_zelftest_cloudflare();
-sfp_zelftest_cloudflare_bewaar( array( 'account' => '-', 'token' => '-' ) );
-sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'wacht', 'pdf_volgende' => null ) );
+sfp_zelftest_cloudflare_bewaar(
+    array(
+        'account' => '-',
+        'token'   => '-'
+    )
+);
+sfp_zelftest_rij_bij(
+    (int) $rij['id'],
+    array(
+        'pdf_status'   => 'wacht',
+        'pdf_volgende' => null
+    )
+);
 sfp_zelftest_pdf_verwerk( (int) $rij['id'] );
 zt_is( 'uitgesteld' === sfp_zelftest_rij_op( 'code', $c2 )['pdf_status'], 'zonder Cloudflare: pdf uitgesteld, geen poging' );
-sfp_zelftest_cloudflare_bewaar( array( 'account' => str_repeat( 'b', 32 ), 'token' => 'geheim_token_1234567890abcdef' ) );
+sfp_zelftest_cloudflare_bewaar(
+    array(
+        'account' => str_repeat( 'b', 32 ),
+        'token'   => 'geheim_token_1234567890abcdef'
+    )
+);
 zt_is( 'wacht' === sfp_zelftest_rij_op( 'code', $c2 )['pdf_status'], 'Cloudflare ingesteld: uitgestelde pdf weer in de wachtrij' );
-sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'wacht', 'pdf_volgende' => null, 'afgerond_op' => sfp_zelftest_nu( -61 * DAY_IN_SECONDS ) ) );
+sfp_zelftest_rij_bij(
+    (int) $rij['id'],
+    array(
+        'pdf_status'   => 'wacht',
+        'pdf_volgende' => null,
+        'afgerond_op'  => sfp_zelftest_nu( -61 * DAY_IN_SECONDS )
+    )
+);
 sfp_zelftest_pdf_verwerk( (int) $rij['id'] );
 zt_is( 'verlopen' === sfp_zelftest_rij_op( 'code', $c2 )['pdf_status'], 'na de geldigheid: geen pdf meer gemaakt' );
 sfp_zelftest_rij_bij( (int) $rij['id'], array( 'afgerond_op' => sfp_zelftest_nu() ) );
 if ( '' !== $cf_oud['account'] ) {
-    sfp_zelftest_cloudflare_bewaar( array( 'account' => $cf_oud['account'], 'token' => $cf_oud['token'] ) );
+    sfp_zelftest_cloudflare_bewaar(
+        array(
+            'account' => $cf_oud['account'],
+            'token'   => $cf_oud['token']
+        )
+    );
 }
 
 /* ---------- Bewaartermijn ---------- */
-$rij = sfp_zelftest_rij_op( 'code', $code );
+$rij     = sfp_zelftest_rij_op( 'code', $code );
 $pdf_map = sfp_zelftest_map( 'pdf' );
 file_put_contents( $pdf_map . str_repeat( 'b', 32 ) . '.pdf', '%PDF-proef' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_bestand' => str_repeat( 'b', 32 ) . '.pdf', 'pdf_status' => 'klaar', 'afgerond_op' => sfp_zelftest_nu( -61 * DAY_IN_SECONDS ) ) );
+sfp_zelftest_rij_bij(
+    (int) $rij['id'],
+    array(
+        'pdf_bestand' => str_repeat( 'b', 32 ) . '.pdf',
+        'pdf_status'  => 'klaar',
+        'afgerond_op' => sfp_zelftest_nu( -61 * DAY_IN_SECONDS )
+    )
+);
 $uit = sfp_zelftest_dagelijks();
 zt_is( $uit['pdf'] >= 1 && ! file_exists( $pdf_map . str_repeat( 'b', 32 ) . '.pdf' ), 'pdf na 60 dagen gewist' );
 zt_is( 'gewist' === sfp_zelftest_rij_op( 'code', $code )['pdf_status'], 'rij blijft, pdf-status gewist' );
-sfp_zelftest_rij_bij( (int) $rij['id'], array( 'gestart_op' => gmdate( 'Y-m-d H:i:s', time() - 2 * YEAR_IN_SECONDS - DAY_IN_SECONDS ), 'afgerond_op' => gmdate( 'Y-m-d H:i:s', time() - 2 * YEAR_IN_SECONDS - 3600 ) ) );
+sfp_zelftest_rij_bij(
+    (int) $rij['id'],
+    array(
+        'gestart_op'  => gmdate( 'Y-m-d H:i:s', time() - 2 * YEAR_IN_SECONDS - DAY_IN_SECONDS ),
+        'afgerond_op' => gmdate( 'Y-m-d H:i:s', time() - 2 * YEAR_IN_SECONDS - 3600 )
+    )
+);
 sfp_zelftest_dagelijks();
 $anon = sfp_zelftest_rij_op( 'id', (string) $rij['id'] );
 zt_is( '' === $anon['email'] && '' === $anon['voornaam'] && null === $anon['code'] && '' === $anon['lead_source_url'] && '' === $anon['utm_source'] && '' === $anon['gclid'] && '' === $anon['sessie'], 'na 2 jaar: geen persoonsgegevens' );
@@ -346,10 +660,28 @@ zt_is( '' !== (string) $anon['antwoorden'] && '' !== (string) $anon['uitkomst'],
 zt_is( ! isset( sfp_zelftest_json( $anon, 'uitkomst' )['notitie'] ) && isset( sfp_zelftest_json( $anon, 'uitkomst' )['crm'] ), 'na 2 jaar: notitie weg, CRM-velden blijven' );
 
 /* ---------- Bestandsnaam van de pdf (3.5.2) ---------- */
-$bn = sfp_zelftest_pdf_bestandsnaam( array( 'test' => 'dps', 'manifest' => array( 'code_voorvoegsel' => 'DPS', 'naam' => 'Presentatietest' ) ), 'DPS-8H02-ZW6N-Y9R7' );
+$bn = sfp_zelftest_pdf_bestandsnaam(
+    array(
+        'test'     => 'dps',
+        'manifest' => array(
+            'code_voorvoegsel' => 'DPS',
+            'naam'             => 'Presentatietest'
+        )
+    ),
+    'DPS-8H02-ZW6N-Y9R7'
+);
 zt_is( "DPS \u{2022} Presentatietest \u{2022} 8H02-ZW6N-Y9R7.pdf" === $bn['utf8'], 'pdf-naam met punten en code zonder voorvoegsel' );
 zt_is( 'DPS - Presentatietest - 8H02-ZW6N-Y9R7.pdf' === $bn['ascii'], 'gewone reservenaam' );
-$bn2 = sfp_zelftest_pdf_bestandsnaam( array( 'test' => 'x', 'manifest' => array( 'code_voorvoegsel' => 'X', 'naam' => 'Teste "a"; b/c' ) ), 'X-AAAA-BBBB-CCCC' );
+$bn2 = sfp_zelftest_pdf_bestandsnaam(
+    array(
+        'test'     => 'x',
+        'manifest' => array(
+            'code_voorvoegsel' => 'X',
+            'naam'             => 'Teste "a"; b/c'
+        )
+    ),
+    'X-AAAA-BBBB-CCCC'
+);
 zt_is( false === strpbrk( $bn2['utf8'] . $bn2['ascii'], "\";/\\\r\n" ), 'geen tekens die de kop of de naam breken' );
 
 /* ---------- Wissen ---------- */

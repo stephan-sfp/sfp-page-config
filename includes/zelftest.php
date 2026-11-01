@@ -175,8 +175,8 @@ function sfp_zelftest_instellingen_alle() {
  * @return array
  */
 function sfp_zelftest_instellingen( $test ) {
-    $alle  = sfp_zelftest_instellingen_alle();
-    $eigen = isset( $alle['tests'][ $test ] ) && is_array( $alle['tests'][ $test ] ) ? $alle['tests'][ $test ] : array();
+    $alle      = sfp_zelftest_instellingen_alle();
+    $eigen     = isset( $alle['tests'][ $test ] ) && is_array( $alle['tests'][ $test ] ) ? $alle['tests'][ $test ] : array();
     $standaard = array(
         'testpagina'       => 0,
         'logo'             => 0,
@@ -220,7 +220,7 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
     }
     if ( array_key_exists( 'logo', $wijzigingen ) ) {
         // Het logo op de testpagina: een afbeelding uit de mediabibliotheek.
-        $logo       = absint( $wijzigingen['logo'] );
+        $logo = absint( $wijzigingen['logo'] );
         // Een afbeelding of een SVG (scherp op elke grootte, sinds 3.5.2).
         $nu['logo'] = ( $logo > 0 && ( wp_attachment_is_image( $logo ) || 'image/svg+xml' === get_post_mime_type( $logo ) ) ) ? $logo : 0;
     }
@@ -249,7 +249,11 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
         }
         $nu[ $sleutel ] = $url;
     }
-    foreach ( array( 'cta_kop' => 90, 'cta_zin' => 220, 'cta_knop' => 40 ) as $sleutel => $max ) {
+    foreach ( array(
+        'cta_kop'  => 90,
+        'cta_zin'  => 220,
+        'cta_knop' => 40
+    ) as $sleutel => $max ) {
         if ( array_key_exists( $sleutel, $wijzigingen ) ) {
             $tekst          = trim( sanitize_text_field( (string) $wijzigingen[ $sleutel ] ) );
             $nu[ $sleutel ] = function_exists( 'mb_substr' ) ? mb_substr( $tekst, 0, $max ) : substr( $tekst, 0, $max );
@@ -472,7 +476,11 @@ function sfp_zelftest_pakket_controle( array $bestanden ) {
         }
     }
     if ( $fouten ) {
-        return array( 'fouten' => $fouten, 'let_op' => $let_op, 'manifest' => null );
+        return array(
+            'fouten'   => $fouten,
+            'let_op'   => $let_op,
+            'manifest' => null
+        );
     }
 
     $manifest = json_decode( (string) $bestanden['manifest.json'], true );
@@ -484,7 +492,11 @@ function sfp_zelftest_pakket_controle( array $bestanden ) {
         $fouten[] = 'inhoud.json is geen geldige JSON.';
     }
     if ( $fouten ) {
-        return array( 'fouten' => $fouten, 'let_op' => $let_op, 'manifest' => null );
+        return array(
+            'fouten'   => $fouten,
+            'let_op'   => $let_op,
+            'manifest' => null
+        );
     }
 
     if ( '' === sfp_zelftest_naam( isset( $manifest['test'] ) ? $manifest['test'] : '' ) ) {
@@ -621,7 +633,11 @@ function sfp_zelftest_pakket_controle( array $bestanden ) {
         }
     }
 
-    return array( 'fouten' => array_values( array_unique( $fouten ) ), 'let_op' => $let_op, 'manifest' => $fouten ? null : $manifest );
+    return array(
+        'fouten'   => array_values( array_unique( $fouten ) ),
+        'let_op'   => $let_op,
+        'manifest' => $fouten ? null : $manifest
+    );
 }
 
 /**
@@ -639,7 +655,15 @@ function sfp_zelftest_pakket_inlezen( $test, array $bestanden ) {
     }
     $controle = sfp_zelftest_pakket_controle( $bestanden );
     if ( $controle['fouten'] ) {
-        return new WP_Error( 'sfp_zelftest_pakket', 'Het pakket is niet ingelezen.', array( 'status' => 400, 'fouten' => $controle['fouten'], 'let_op' => $controle['let_op'] ) );
+        return new WP_Error(
+            'sfp_zelftest_pakket',
+            'Het pakket is niet ingelezen.',
+            array(
+                'status' => 400,
+                'fouten' => $controle['fouten'],
+                'let_op' => $controle['let_op']
+            )
+        );
     }
     if ( $test !== $controle['manifest']['test'] ) {
         return new WP_Error( 'sfp_zelftest_pakket', 'Het manifest hoort bij test "' . $controle['manifest']['test'] . '", niet bij "' . $test . '".', array( 'status' => 400 ) );
@@ -804,7 +828,7 @@ function sfp_zelftest_taal( array $pakket ) {
     if ( '' !== $nu && in_array( $nu, $talen, true ) ) {
         return $nu;
     }
-    $site  = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
+    $site = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
     foreach ( $talen as $taal ) {
         if ( 0 === strpos( (string) $taal, $site ) ) {
             return (string) $taal;
@@ -821,8 +845,8 @@ function sfp_zelftest_taal( array $pakket ) {
  * @return string
  */
 function sfp_zelftest_tekst( array $pakket, $pad ) {
-    $taal  = sfp_zelftest_taal( $pakket );
-    $deel  = isset( $pakket['inhoud'] ) ? $pakket['inhoud'] : array();
+    $taal = sfp_zelftest_taal( $pakket );
+    $deel = isset( $pakket['inhoud'] ) ? $pakket['inhoud'] : array();
     foreach ( explode( '.', $pad ) as $stap ) {
         if ( ! is_array( $deel ) || ! isset( $deel[ $stap ] ) ) {
             return '';
@@ -878,8 +902,8 @@ function sfp_zelftest_testpagina_url( $test ) {
  * @return array{testpagina:int,pdf_pad:string,taal:string}
  */
 function sfp_zelftest_inst_taal( $test, $taal = null ) {
-    $inst = sfp_zelftest_instellingen( $test );
-    $taal = null === $taal ? sfp_zelftest_taal_context() : sfp_zelftest_taalcode( $taal );
+    $inst  = sfp_zelftest_instellingen( $test );
+    $taal  = null === $taal ? sfp_zelftest_taal_context() : sfp_zelftest_taalcode( $taal );
     $eigen = '' !== $taal && isset( $inst['talen'][ $taal ] ) && is_array( $inst['talen'][ $taal ] ) ? $inst['talen'][ $taal ] : null;
     // Het pdf-adres: bewaard, of door de plugin gemaakt (sinds 3.19.0).
     $paden = sfp_zelftest_pdf_paden( $test );
@@ -891,7 +915,11 @@ function sfp_zelftest_inst_taal( $test, $taal = null ) {
             'taal'       => $taal,
         );
     }
-    return array( 'testpagina' => (int) $inst['testpagina'], 'pdf_pad' => $eerst, 'taal' => '' );
+    return array(
+        'testpagina' => (int) $inst['testpagina'],
+        'pdf_pad'    => $eerst,
+        'taal'       => ''
+    );
 }
 
 /**
@@ -987,7 +1015,13 @@ function sfp_zelftest_datum( $formaat, $ts, array $pakket ) {
     if ( 0 === strpos( $taal, $site ) || ! function_exists( 'switch_to_locale' ) ) {
         return (string) wp_date( $formaat, $ts );
     }
-    $locales = array( 'nl' => 'nl_NL', 'en' => 'en_US', 'pt' => 'pt_BR', 'pt-br' => 'pt_BR', 'pt-pt' => 'pt_PT' );
+    $locales = array(
+        'nl'    => 'nl_NL',
+        'en'    => 'en_US',
+        'pt'    => 'pt_BR',
+        'pt-br' => 'pt_BR',
+        'pt-pt' => 'pt_PT'
+    );
     $doel    = isset( $locales[ $taal ] ) ? $locales[ $taal ] : ( isset( $locales[ substr( $taal, 0, 2 ) ] ) ? $locales[ substr( $taal, 0, 2 ) ] : '' );
     if ( '' === $doel ) {
         return (string) wp_date( $formaat, $ts );

@@ -18,103 +18,103 @@ defined( 'ABSPATH' ) || exit;
 
 class SFP_Reviews_Fetcher {
 
-	private string $api_key;
-	private int    $ttl;
+    private string $api_key;
+    private int $ttl;
 
-	public function __construct( string $api_key, int $ttl = DAY_IN_SECONDS ) {
-		$this->api_key = $api_key;
-		$this->ttl     = $ttl;
-	}
+    public function __construct( string $api_key, int $ttl = DAY_IN_SECONDS ) {
+        $this->api_key = $api_key;
+        $this->ttl     = $ttl;
+    }
 
-	/**
-	 * Haal reviews en het cijfer op voor een Place ID, bewaard in een transient.
-	 * Met $vers (3.22.0, de dagelijkse taak) zonder de bewaarde gegevens te
-	 * lezen; mislukt het, dan blijven de bewaarde gegevens staan.
-	 *
-	 * @return array{reviews: array, meta: array}|WP_Error
-	 */
-	public function get( string $place_id, bool $vers = false ): array|WP_Error {
-		$cache_key = 'sfp_reviews_' . md5( $place_id );
-		$cached    = $vers ? false : get_transient( $cache_key );
+    /**
+     * Haal reviews en het cijfer op voor een Place ID, bewaard in een transient.
+     * Met $vers (3.22.0, de dagelijkse taak) zonder de bewaarde gegevens te
+     * lezen; mislukt het, dan blijven de bewaarde gegevens staan.
+     *
+     * @return array{reviews: array, meta: array}|WP_Error
+     */
+    public function get( string $place_id, bool $vers = false ): array|WP_Error {
+        $cache_key = 'sfp_reviews_' . md5( $place_id );
+        $cached    = $vers ? false : get_transient( $cache_key );
 
-		if ( false !== $cached ) {
-			return $cached;
-		}
+        if ( false !== $cached ) {
+            return $cached;
+        }
 
-		// Na een mislukte aanvraag tien minuten niet opnieuw proberen: anders
-		// wacht elke pagina met reviews op een antwoord dat niet komt.
-		$fout = $vers ? '' : get_transient( $cache_key . '_fout' );
-		if ( is_string( $fout ) && '' !== $fout ) {
-			return new WP_Error( 'sfp_reviews_geen_gegevens', $fout );
-		}
+        // Na een mislukte aanvraag tien minuten niet opnieuw proberen: anders
+        // wacht elke pagina met reviews op een antwoord dat niet komt.
+        $fout = $vers ? '' : get_transient( $cache_key . '_fout' );
+        if ( is_string( $fout ) && '' !== $fout ) {
+            return new WP_Error( 'sfp_reviews_geen_gegevens', $fout );
+        }
 
-		$talen = array(
-			'nl' => 'nl',
-			'en' => 'en',
-			'pt' => 'pt-BR',
-		);
-		$taal  = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
+        $talen = array(
+            'nl' => 'nl',
+            'en' => 'en',
+            'pt' => 'pt-BR',
+        );
+        $taal  = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
 
-		$url = add_query_arg(
-			array(
-				'place_id' => rawurlencode( $place_id ),
-				'fields'   => 'name,rating,user_ratings_total,reviews',
-				'key'      => $this->api_key,
-				'language' => isset( $talen[ $taal ] ) ? $talen[ $taal ] : 'en',
-			),
-			'https://maps.googleapis.com/maps/api/place/details/json'
-		);
+        $url = add_query_arg(
+            array(
+                'place_id' => rawurlencode( $place_id ),
+                'fields'   => 'name,rating,user_ratings_total,reviews',
+                'key'      => $this->api_key,
+                'language' => isset( $talen[ $taal ] ) ? $talen[ $taal ] : 'en',
+            ),
+            'https://maps.googleapis.com/maps/api/place/details/json'
+        );
 
-		$response = wp_remote_get( $url, array( 'timeout' => 10 ) );
+        $response = wp_remote_get( $url, array( 'timeout' => 10 ) );
 
-		if ( is_wp_error( $response ) ) {
-			set_transient( $cache_key . '_fout', $response->get_error_message(), 10 * MINUTE_IN_SECONDS );
-			return $response;
-		}
+        if ( is_wp_error( $response ) ) {
+            set_transient( $cache_key . '_fout', $response->get_error_message(), 10 * MINUTE_IN_SECONDS );
+            return $response;
+        }
 
-		$body   = json_decode( wp_remote_retrieve_body( $response ), true );
-		$result = is_array( $body ) && isset( $body['result'] ) && is_array( $body['result'] ) ? $body['result'] : array();
+        $body   = json_decode( wp_remote_retrieve_body( $response ), true );
+        $result = is_array( $body ) && isset( $body['result'] ) && is_array( $body['result'] ) ? $body['result'] : array();
 
-		// Een antwoord zonder gegevens (verkeerde sleutel, storing bij Google)
-		// wordt niet een dag bewaard: de volgende aanvraag probeert het opnieuw.
-		if ( ! $result ) {
-			$status = is_array( $body ) && isset( $body['status'] ) ? (string) $body['status'] : 'geen antwoord';
-			$melding = 'Google gaf geen gegevens terug (' . $status . ').';
-			set_transient( $cache_key . '_fout', $melding, 10 * MINUTE_IN_SECONDS );
-			return new WP_Error( 'sfp_reviews_geen_gegevens', $melding );
-		}
+        // Een antwoord zonder gegevens (verkeerde sleutel, storing bij Google)
+        // wordt niet een dag bewaard: de volgende aanvraag probeert het opnieuw.
+        if ( ! $result ) {
+            $status  = is_array( $body ) && isset( $body['status'] ) ? (string) $body['status'] : 'geen antwoord';
+            $melding = 'Google gaf geen gegevens terug (' . $status . ').';
+            set_transient( $cache_key . '_fout', $melding, 10 * MINUTE_IN_SECONDS );
+            return new WP_Error( 'sfp_reviews_geen_gegevens', $melding );
+        }
 
-		$meta = array(
-			'rating' => (float) ( $result['rating'] ?? 0 ),
-			'total'  => (int) ( $result['user_ratings_total'] ?? 0 ),
-		);
+        $meta = array(
+            'rating' => (float) ( $result['rating'] ?? 0 ),
+            'total'  => (int) ( $result['user_ratings_total'] ?? 0 ),
+        );
 
-		$reviews = array();
-		foreach ( $result['reviews'] ?? array() as $r ) {
-			$reviews[] = array(
-				'author' => $r['author_name'] ?? '',
-				'photo'  => function_exists( 'sfp_page_config_reviews_foto' ) ? sfp_page_config_reviews_foto( $r['profile_photo_url'] ?? '' ) : ( $r['profile_photo_url'] ?? '' ),
-				'rating' => (int) ( $r['rating'] ?? 0 ),
-				'text'   => $r['text'] ?? '',
-				'time'   => $r['relative_time_description'] ?? '',
-			);
-		}
+        $reviews = array();
+        foreach ( $result['reviews'] ?? array() as $r ) {
+            $reviews[] = array(
+                'author' => $r['author_name'] ?? '',
+                'photo'  => function_exists( 'sfp_page_config_reviews_foto' ) ? sfp_page_config_reviews_foto( $r['profile_photo_url'] ?? '' ) : ( $r['profile_photo_url'] ?? '' ),
+                'rating' => (int) ( $r['rating'] ?? 0 ),
+                'text'   => $r['text'] ?? '',
+                'time'   => $r['relative_time_description'] ?? '',
+            );
+        }
 
-		$data = array(
-			'reviews' => $reviews,
-			'meta'    => $meta,
-		);
-		// Vers opgehaald door de dagelijkse taak (3.22.0): een dag langer
-		// bewaren dan het interval, zodat een pagina nooit zelf hoeft te wachten.
-		set_transient( $cache_key, $data, $vers ? $this->ttl + DAY_IN_SECONDS : $this->ttl );
-		delete_transient( $cache_key . '_fout' );
+        $data = array(
+            'reviews' => $reviews,
+            'meta'    => $meta,
+        );
+        // Vers opgehaald door de dagelijkse taak (3.22.0): een dag langer
+        // bewaren dan het interval, zodat een pagina nooit zelf hoeft te wachten.
+        set_transient( $cache_key, $data, $vers ? $this->ttl + DAY_IN_SECONDS : $this->ttl );
+        delete_transient( $cache_key . '_fout' );
 
-		return $data;
-	}
+        return $data;
+    }
 
-	/** Verwijder de bewaarde gegevens van een Place ID. */
-	public function flush( string $place_id ): void {
-		delete_transient( 'sfp_reviews_' . md5( $place_id ) );
-		delete_transient( 'sfp_reviews_' . md5( $place_id ) . '_fout' );
-	}
+    /** Verwijder de bewaarde gegevens van een Place ID. */
+    public function flush( string $place_id ): void {
+        delete_transient( 'sfp_reviews_' . md5( $place_id ) );
+        delete_transient( 'sfp_reviews_' . md5( $place_id ) . '_fout' );
+    }
 }

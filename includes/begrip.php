@@ -215,11 +215,11 @@ add_filter( 'sfp_page_config_blokken_extra', 'sfp_page_config_begrip_blokken' );
  * @return array
  */
 function sfp_page_config_begrip_blokken( $blokken ) {
-    $tekst = array(
+    $tekst                      = array(
         'type'    => 'string',
         'default' => '',
     );
-    $blokken['sfp/definitie'] = array(
+    $blokken['sfp/definitie']   = array(
         'title'        => 'Definitie',
         'description'  => 'De definitie van een begrip in één zin, een korte uitleg en vier feiten. Komt ook terug als tooltip, in de begrippenlijst en voor Google.',
         'icon'         => 'book-alt',
@@ -378,7 +378,12 @@ function sfp_page_config_render_definitie( $attrs, $content ) {
         return '';
     }
     $feiten = '';
-    foreach ( array( 'ook' => 'ook_wel', 'herkomst' => 'herkomst', 'eerst' => 'eerst_beschreven', 'deel' => 'deel_van' ) as $sleutel => $label ) {
+    foreach ( array(
+        'ook'      => 'ook_wel',
+        'herkomst' => 'herkomst',
+        'eerst'    => 'eerst_beschreven',
+        'deel'     => 'deel_van'
+    ) as $sleutel => $label ) {
         $hoofd = wp_kses( sfp_page_config_blok_attr( $attrs, $sleutel ), $k );
         if ( '' === trim( wp_strip_all_tags( $hoofd ) ) ) {
             continue;
@@ -440,7 +445,16 @@ function sfp_page_config_begrip_makersregel( $post ) {
     $rol    = trim( (string) get_user_meta( $auteur, 'sfp_rol', true ) );
     $delen  = array();
     if ( $auteur && '' !== (string) $naam ) {
-        $foto    = get_avatar( $auteur, 28, '', $naam, array( 'class' => 'sfp-art-maker__foto', 'loading' => 'eager' ) );
+        $foto    = get_avatar(
+            $auteur,
+            28,
+            '',
+            $naam,
+            array(
+                'class'   => 'sfp-art-maker__foto',
+                'loading' => 'eager'
+            )
+        );
         $delen[] = '<span class="sfp-art-maker__wie">' . $foto . sprintf( esc_html( $t( 'door' ) ), '<a href="' . esc_url( sfp_page_config_artikel_auteur_url( $auteur ) ) . '">' . esc_html( $naam ) . '</a>' ) . ( '' !== $rol ? ', ' . esc_html( $rol ) : '' ) . '</span>';
     }
     $bijgewerkt = (int) get_post_timestamp( $post, 'modified' );
@@ -568,8 +582,8 @@ function sfp_page_config_begrip_buren( $post ) {
  * @return string
  */
 function sfp_page_config_begrip_leesverder( $post ) {
-    $t      = 'sfp_page_config_artikel_tekst';
-    $html   = '';
+    $t       = 'sfp_page_config_artikel_tekst';
+    $html    = '';
     $verwant = sfp_page_config_begrip_verwant( $post );
     if ( $verwant ) {
         $items = '';
@@ -592,7 +606,7 @@ function sfp_page_config_begrip_leesverder( $post ) {
         $html .= '<div class="sfp-leesverder__deel"><span class="sfp-blok-label">' . esc_html( $t( 'gebruikt_in' ) ) . '</span><div class="sfp-gebruikt">' . $items . '</div></div>';
     }
     list( $vorige, $volgende ) = sfp_page_config_begrip_buren( $post );
-    $archief = get_post_type_archive_link( 'begrippen' );
+    $archief                   = get_post_type_archive_link( 'begrippen' );
     if ( $vorige || $volgende || $archief ) {
         $html .= '<nav class="sfp-termnav" aria-label="' . esc_attr( $t( 'woordenlijst' ) ) . '">'
             . ( $vorige ? '<a class="sfp-termnav__vorige" href="' . esc_url( get_permalink( $vorige ) ) . '"><small>' . esc_html( $t( 'vorige_term' ) ) . '</small>&larr; ' . esc_html( wp_strip_all_tags( get_the_title( $vorige ) ) ) . '</a>' : '<span></span>' )
@@ -698,7 +712,7 @@ function sfp_page_config_begrip_schema() {
         'url'          => get_permalink( $post ),
         'dateModified' => wp_date( 'c', (int) get_post_timestamp( $post, 'modified' ) ),
     );
-    $archief = get_post_type_archive_link( 'begrippen' );
+    $archief  = get_post_type_archive_link( 'begrippen' );
     if ( $archief ) {
         $gegevens['inDefinedTermSet'] = array(
             '@type' => 'DefinedTermSet',

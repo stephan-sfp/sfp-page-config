@@ -28,7 +28,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return int|null    Seconden, of null als er geen poging meer komt.
  */
 function sfp_zelftest_wachttijd( $poging ) {
-    $tijden = array( 1 => 60, 2 => 300, 3 => 1800, 4 => 7200 );
+    $tijden = array(
+        1 => 60,
+        2 => 300,
+        3 => 1800,
+        4 => 7200
+    );
     return isset( $tijden[ $poging ] ) ? $tijden[ $poging ] : null;
 }
 
@@ -220,20 +225,41 @@ function sfp_zelftest_crm_verwerk( $id ) {
         $payload = call_user_func( $stap[1], $rij, $pakket );
         if ( $proef ) {
             sfp_zelftest_log( $rij['test'], 'proef', 'crm_start' === $kolom ? 'Send 1 (start), niet verstuurd: proefmodus' : 'Send 2 (afgerond), niet verstuurd: proefmodus', $payload );
-            sfp_zelftest_rij_bij( (int) $rij['id'], array( $kolom => 'proef', 'crm_pogingen' => 0, 'crm_volgende' => null ) );
+            sfp_zelftest_rij_bij(
+                (int) $rij['id'],
+                array(
+                    $kolom         => 'proef',
+                    'crm_pogingen' => 0,
+                    'crm_volgende' => null
+                )
+            );
             $rij[ $kolom ] = 'proef';
             continue;
         }
         $url = (string) $inst[ $stap[0] ];
         if ( '' === $url ) {
             sfp_zelftest_log( $rij['test'], 'fout', ( 'crm_start' === $kolom ? 'Send 1' : 'Send 2' ) . ' niet verstuurd: geen webhookadres ingesteld (rij ' . (int) $rij['id'] . ').' );
-            sfp_zelftest_rij_bij( (int) $rij['id'], array( $kolom => 'mislukt', 'crm_pogingen' => 0, 'crm_volgende' => null ) );
+            sfp_zelftest_rij_bij(
+                (int) $rij['id'],
+                array(
+                    $kolom         => 'mislukt',
+                    'crm_pogingen' => 0,
+                    'crm_volgende' => null
+                )
+            );
             $rij[ $kolom ] = 'mislukt';
             continue;
         }
         $uitkomst = sfp_zelftest_webhook( $url, $payload );
         if ( true === $uitkomst ) {
-            sfp_zelftest_rij_bij( (int) $rij['id'], array( $kolom => 'verstuurd', 'crm_pogingen' => 0, 'crm_volgende' => null ) );
+            sfp_zelftest_rij_bij(
+                (int) $rij['id'],
+                array(
+                    $kolom         => 'verstuurd',
+                    'crm_pogingen' => 0,
+                    'crm_volgende' => null
+                )
+            );
             $rij[ $kolom ] = 'verstuurd';
             continue;
         }
@@ -241,11 +267,24 @@ function sfp_zelftest_crm_verwerk( $id ) {
         $wacht  = sfp_zelftest_wachttijd( $poging );
         if ( null === $wacht ) {
             sfp_zelftest_log( $rij['test'], 'fout', ( 'crm_start' === $kolom ? 'Send 1' : 'Send 2' ) . ' definitief mislukt na 5 pogingen (rij ' . (int) $rij['id'] . '): ' . $uitkomst );
-            sfp_zelftest_rij_bij( (int) $rij['id'], array( $kolom => 'mislukt', 'crm_pogingen' => 0, 'crm_volgende' => null ) );
+            sfp_zelftest_rij_bij(
+                (int) $rij['id'],
+                array(
+                    $kolom         => 'mislukt',
+                    'crm_pogingen' => 0,
+                    'crm_volgende' => null
+                )
+            );
             $rij[ $kolom ] = 'mislukt';
             continue;
         }
-        sfp_zelftest_rij_bij( (int) $rij['id'], array( 'crm_pogingen' => $poging, 'crm_volgende' => sfp_zelftest_nu( $wacht ) ) );
+        sfp_zelftest_rij_bij(
+            (int) $rij['id'],
+            array(
+                'crm_pogingen' => $poging,
+                'crm_volgende' => sfp_zelftest_nu( $wacht )
+            )
+        );
         return;
     }
 }
