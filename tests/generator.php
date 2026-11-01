@@ -10,6 +10,9 @@
  * assets/tool/generator.js met dezelfde antwoorden: beide moeten dezelfde
  * blokken geven. Node is nodig voor die vergelijking.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler(
     function ( $severity, $message, $file, $line ) {

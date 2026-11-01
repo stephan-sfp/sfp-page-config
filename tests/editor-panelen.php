@@ -11,6 +11,9 @@
  * sjabloon van een begrip en de nieuwe teksten.
  * Vervangt geen proef in een echte WordPress met een browser.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler(
     function ( $severity, $message, $file, $line ) {

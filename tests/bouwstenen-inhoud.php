@@ -9,6 +9,9 @@
  * detected), the author bio checklist, and that old codes are only added
  * when no snippet registered them.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler( function ( $severity, $message, $file, $line ) {
     throw new ErrorException( $message, 0, $severity, $file, $line );

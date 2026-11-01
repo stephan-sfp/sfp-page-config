@@ -9,6 +9,9 @@
  * SFP_TEST_URL; dan wordt ook gemeten of de code echt draait.
  * Maakt eigen snippets aan en ruimt ze aan het eind op.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit( 1 );

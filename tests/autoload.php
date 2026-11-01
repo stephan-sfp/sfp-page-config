@@ -1,5 +1,8 @@
 <?php
 /** Run with: php tests/autoload.php */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler(
     function ( $severity, $message, $file, $line ) {

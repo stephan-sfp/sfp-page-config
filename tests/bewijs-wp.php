@@ -7,6 +7,9 @@
  * in een proefinstallatie met SFP Page Config aan (nooit een live site).
  * Maakt eigen bijlagen en reviews aan en zet alles aan het eind terug.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit( 1 );

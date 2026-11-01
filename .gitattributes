@@ -1,0 +1,9 @@
+# Niet in het pakket voor de sites (git archive en de zipball van GitHub).
+/tests export-ignore
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/phpcs.xml.dist export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/bouw export-ignore

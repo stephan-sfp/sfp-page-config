@@ -1,12 +1,20 @@
 name: Release
 
-# Maakt automatisch een GitHub-release zodra er een nieuwe versie in de repo staat.
+# Maakt een GitHub-release zodra er een nieuwe versie in de repo staat.
 # - Push naar main: release v<versie> (pre-release als de versie een streepje heeft, zoals 3.4.0-beta.1).
-# - Push naar een claude/-branch: alleen een pre-release, en alleen als de versie een streepje heeft.
+# - Proefversie vanaf een andere branch alleen na een handmatige stap: de knop
+#   "Run workflow" (workflow_dispatch) op die branch, of een push naar een
+#   claude/-branch waarvan het laatste commitbericht [proef] bevat.
 # - Bestaat de tag al, dan gebeurt er niets.
+# Voor de release: dezelfde controles als bij een pull request (bouw/controle.sh).
+# Het pakket is sfp-page-config.zip (bouw/pakket.sh): zonder tests/, .github/ en bouw/,
+# met de map sfp-page-config/. Het controlegetal (SHA-256) staat als laatste regel
+# in de releasetekst en als bestand sfp-page-config.zip.sha256; de updater op de
+# sites installeert alleen dat pakket en alleen als het controlegetal klopt.
 # De tekst van de release is het blok "## [<versie>]" uit CHANGELOG.md; ontbreekt dat blok, dan faalt de run.
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -29,7 +37,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Handmatige stap voor proefversies vanaf een branch
+        id: poort
+        shell: bash
+        env:
+          BERICHT: ${{ github.event.head_commit.message }}
+        run: |
+          set -euo pipefail
+          door=true
+          if [ "$GITHUB_EVENT_NAME" = "push" ] && [ "$GITHUB_REF_NAME" != "main" ]; then
+            case "$BERICHT" in *"[proef]"*) ;; *) door=false; echo "Push naar $GITHUB_REF_NAME zonder [proef] in het commitbericht: geen release." ;; esac
+          fi
+          echo "door=$door" >> "$GITHUB_OUTPUT"
+
+      - uses: shivammathur/setup-php@v2
+        if: steps.poort.outputs.door == 'true'
+        with:
+          php-version: '8.1'
+          coverage: none
+      - uses: actions/setup-node@v4
+        if: steps.poort.outputs.door == 'true'
+        with:
+          node-version: '20'
+
       - name: Versie lezen en controleren
+        if: steps.poort.outputs.door == 'true'
         id: versie
         shell: bash
         run: |
@@ -52,6 +84,7 @@ jobs:
           echo "Hoofdbestand $hoofd, versie $kop, proefversie $proef"
 
       - name: Bepalen of er een release moet komen
+        if: steps.poort.outputs.door == 'true'
         id: besluit
         shell: bash
         env:
@@ -70,6 +103,20 @@ jobs:
           fi
           echo "maken=$maken" >> "$GITHUB_OUTPUT"
 
+      - name: Controles
+        if: steps.besluit.outputs.maken == 'true'
+        run: bash bouw/controle.sh
+
+      - name: Pakket bouwen
+        if: steps.besluit.outputs.maken == 'true'
+        id: pakket
+        shell: bash
+        run: |
+          set -euo pipefail
+          som=$(bash bouw/pakket.sh dist | tail -n1)
+          echo "som=$som" >> "$GITHUB_OUTPUT"
+          unzip -l dist/sfp-page-config.zip | tail -n1
+
       - name: Releasetekst uit CHANGELOG.md
         if: steps.besluit.outputs.maken == 'true'
         shell: bash
@@ -85,6 +132,7 @@ jobs:
           if [ ! -s notes.md ]; then
             echo "::error::Geen blok '## [$VERSIE]' met tekst in CHANGELOG.md"; exit 1
           fi
+          printf '\nSHA-256 sfp-page-config.zip: %s\n' "${{ steps.pakket.outputs.som }}" >> notes.md
           cat notes.md
 
       - name: Release publiceren
@@ -103,5 +151,6 @@ jobs:
             --target "$GITHUB_SHA" \
             --title "v$VERSIE" \
             --notes-file notes.md \
-            "${extra[@]}"
+            "${extra[@]}" \
+            dist/sfp-page-config.zip dist/sfp-page-config.zip.sha256
           echo "Gepubliceerd: https://github.com/$GITHUB_REPOSITORY/releases/tag/v$VERSIE"

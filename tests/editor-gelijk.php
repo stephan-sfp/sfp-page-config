@@ -6,6 +6,9 @@
  * WordPress. De doorloop in een echte editor (alle voorbeeldtools, typen en
  * opslaan, uitklap en tabs) gebeurt in een lokale testinstallatie.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 $map    = dirname( __DIR__ ) . '/';
 $fouten = 0;
