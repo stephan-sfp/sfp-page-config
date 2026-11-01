@@ -177,6 +177,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Opmaak en links in de biografie van een auteur, en regels die met een vinkje beginnen als lijst met vinkjes.',
             'detail' => false,
         ),
+        'merkwaarden'  => array(
+            'naam'   => 'Merkwaarden',
+            'uitleg' => 'De merkwaarden voor bezoekers, live uit de merkbron, met per taal een slotzin en een knop.',
+            'detail' => true,
+        ),
         'snippets'     => array(
             'naam'   => 'Snippets beheren op afstand',
             'uitleg' => 'Claude leest, maakt en wijzigt de codefragmenten van ASE Pro en zet ze aan of uit, zonder browser. Alleen voor onderhoud.',
@@ -823,6 +828,29 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
             case 'footer':
                 $alle['footer'] = function_exists( 'sfp_page_config_footer_schoon' ) ? sfp_page_config_footer_schoon( $ruw ) : array();
                 $bewaard[]      = $sleutel;
+                break;
+
+            case 'merkwaarden':
+                // Alleen het slot per taal (3.23.0); de tekst zelf staat in de merkbron.
+                if ( ! is_array( $ruw ) || ! isset( $ruw['slot'] ) ) {
+                    break;
+                }
+                $oud = isset( $alle['merkwaarden'] ) && is_array( $alle['merkwaarden'] ) ? $alle['merkwaarden'] : array();
+                $nieuw = function_exists( 'sfp_page_config_merkwaarden_slot_schoon' ) ? sfp_page_config_merkwaarden_slot_schoon( $ruw['slot'] ) : array();
+                // Talen die niet zijn meegestuurd, blijven zoals ze waren.
+                $slot = isset( $oud['slot'] ) && is_array( $oud['slot'] ) ? $oud['slot'] : array();
+                foreach ( array( 'nl', 'en', 'pt' ) as $taal ) {
+                    if ( is_array( $ruw['slot'] ) && array_key_exists( $taal, $ruw['slot'] ) ) {
+                        if ( isset( $nieuw[ $taal ] ) ) {
+                            $slot[ $taal ] = $nieuw[ $taal ];
+                        } else {
+                            unset( $slot[ $taal ] );
+                        }
+                    }
+                }
+                $oud['slot']         = $slot;
+                $alle['merkwaarden'] = $oud;
+                $bewaard[]           = $sleutel;
                 break;
         }
     }
