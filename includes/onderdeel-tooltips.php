@@ -108,7 +108,7 @@ function sfp_page_config_tooltips_editor() {
     }
     wp_enqueue_script(
         'sfp-tooltip-format',
-        SFP_PAGE_CONFIG_URL . 'assets/tooltip/format.js',
+        sfp_page_config_asset_url( 'tooltip/format.js' ),
         array( 'wp-rich-text', 'wp-block-editor', 'wp-element', 'wp-data', 'wp-components' ),
         SFP_PAGE_CONFIG_VERSION,
         true
@@ -134,7 +134,7 @@ function sfp_page_config_tooltips_editor() {
     );
     wp_enqueue_style(
         'sfp-tooltip-editor',
-        SFP_PAGE_CONFIG_URL . 'assets/tooltip/editor.css',
+        sfp_page_config_asset_url( 'tooltip/editor.css' ),
         array(),
         SFP_PAGE_CONFIG_VERSION
     );
@@ -151,7 +151,7 @@ function sfp_page_config_tooltips_script() {
     }
     wp_enqueue_script(
         'sfp-tooltip-frontend',
-        SFP_PAGE_CONFIG_URL . 'assets/tooltip/frontend.js',
+        sfp_page_config_asset_url( 'tooltip/frontend.js' ),
         array(),
         SFP_PAGE_CONFIG_VERSION,
         true

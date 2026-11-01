@@ -12,8 +12,10 @@ trap 'rm -rf "$werk"' EXIT
 mkdir -p "$uit"
 uit="$(cd "$uit" && pwd)"
 git archive --format=tar --prefix=sfp-page-config/ HEAD | tar -x -C "$werk"
-if command -v node >/dev/null 2>&1 && [ -f bouw/verklein.js ]; then
+if [ -d bouw/node_modules ]; then
   node bouw/verklein.js "$werk/sfp-page-config"
+else
+  echo "Let op: bouw/node_modules ontbreekt, pakket zonder verkleinde bestanden (npm ci in bouw/)." >&2
 fi
 for verboden in tests .github bouw; do
   if [ -e "$werk/sfp-page-config/$verboden" ]; then

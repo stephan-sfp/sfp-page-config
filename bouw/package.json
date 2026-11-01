@@ -1,0 +1,9 @@
+{
+  "name": "sfp-page-config-bouw",
+  "private": true,
+  "description": "Alleen voor de releaseworkflow: verkleinen van JS en CSS in het pakket.",
+  "devDependencies": {
+    "lightningcss": "1.28.2",
+    "terser": "5.36.0"
+  }
+}

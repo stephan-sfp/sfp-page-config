@@ -91,7 +91,7 @@ function sfp_page_config_longread_nav_enqueue() {
 
     wp_enqueue_script(
         'sfp-longread-nav',
-        SFP_PAGE_CONFIG_URL . 'assets/longread-nav.js',
+        sfp_page_config_asset_url( 'longread-nav.js' ),
         array(),
         SFP_PAGE_CONFIG_VERSION,
         true

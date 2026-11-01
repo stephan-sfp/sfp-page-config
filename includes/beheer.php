@@ -122,10 +122,10 @@ function sfp_page_config_beheer_bestanden( $hook_suffix ) {
         wp_enqueue_style( 'sfp-beheer-merkfonts', $fonts, array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- adres van het lettertype.
     }
 
-    wp_enqueue_style( 'sfp-beheer', SFP_PAGE_CONFIG_URL . 'assets/beheer/beheer.css', array(), SFP_PAGE_CONFIG_VERSION );
+    wp_enqueue_style( 'sfp-beheer', sfp_page_config_asset_url( 'beheer/beheer.css' ), array(), SFP_PAGE_CONFIG_VERSION );
     wp_add_inline_style( 'sfp-beheer', sfp_page_config_beheer_merk_css() );
 
-    wp_enqueue_script( 'sfp-beheer', SFP_PAGE_CONFIG_URL . 'assets/beheer/beheer.js', array( 'wp-api-fetch' ), SFP_PAGE_CONFIG_VERSION, true );
+    wp_enqueue_script( 'sfp-beheer', sfp_page_config_asset_url( 'beheer/beheer.js' ), array( 'wp-api-fetch' ), SFP_PAGE_CONFIG_VERSION, true );
     wp_add_inline_script( 'sfp-beheer', 'window.sfpBeheer=' . wp_json_encode( sfp_page_config_beheer_stand() ) . ';', 'before' );
 }
 

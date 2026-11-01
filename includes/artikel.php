@@ -35,6 +35,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once __DIR__ . '/bestanden.php';
+
 /* =========================================================================
  * Aan of uit
  * ====================================================================== */
@@ -181,11 +183,7 @@ function sfp_page_config_artikel_head_css() {
  * @return string
  */
 function sfp_page_config_artikel_css_bestand() {
-    $pad = SFP_PAGE_CONFIG_DIR . 'assets/artikel.css';
-    $css = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
-    $css = preg_replace( '#/\*.*?\*/#s', '', $css );
-    $css = preg_replace( '/\s+/', ' ', $css );
-    return trim( str_replace( array( ' {', '{ ', ' }', '; ', ': ', ', ' ), array( '{', '{', '}', ';', ':', ',' ), $css ) );
+    return sfp_page_config_css_lees( 'artikel.css' );
 }
 
 /**

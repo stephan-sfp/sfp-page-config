@@ -379,7 +379,7 @@ function sfp_page_config_placeholder_editor_assets() {
 
     wp_enqueue_script(
         'sfp-page-config-placeholder',
-        SFP_PAGE_CONFIG_URL . 'assets/placeholder-editor.js',
+        sfp_page_config_asset_url( 'placeholder-editor.js' ),
         array( 'wp-data', 'wp-notices' ),
         SFP_PAGE_CONFIG_VERSION,
         true

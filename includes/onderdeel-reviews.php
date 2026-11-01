@@ -271,7 +271,7 @@ function sfp_page_config_reviews_laad_assets() {
         return;
     }
     sfp_page_config_css_inline( 'sfp-reviews', 'reviews/reviews.css' );
-    wp_enqueue_script( 'sfp-reviews', SFP_PAGE_CONFIG_URL . 'assets/reviews/reviews.js', array(), SFP_PAGE_CONFIG_VERSION, true );
+    wp_enqueue_script( 'sfp-reviews', sfp_page_config_asset_url( 'reviews/reviews.js' ), array(), SFP_PAGE_CONFIG_VERSION, true );
     wp_add_inline_script(
         'sfp-reviews',
         'window.sfpReviewsTeksten=' . wp_json_encode(

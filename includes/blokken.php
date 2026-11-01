@@ -49,6 +49,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once __DIR__ . '/bestanden.php';
+
 /* =========================================================================
  * Definities
  * ====================================================================== */
@@ -299,7 +301,7 @@ function sfp_page_config_blokken_registreer() {
 
     wp_register_script(
         'sfp-blokken-editor',
-        SFP_PAGE_CONFIG_URL . 'assets/blokken/editor.js',
+        sfp_page_config_asset_url( 'blokken/editor.js' ),
         array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-data', 'wp-core-data', 'wp-notices', 'wp-url', 'wp-html-entities', 'wp-server-side-render', 'wp-hooks', 'wp-compose' ),
         SFP_PAGE_CONFIG_VERSION,
         true
@@ -556,19 +558,7 @@ function sfp_page_config_blok_voorbeeld_binnen( array $blokken ) {
  * @return string
  */
 function sfp_page_config_blokken_css_bestand( $naam ) {
-    static $cache = array();
-    if ( isset( $cache[ $naam ] ) ) {
-        return $cache[ $naam ];
-    }
-    $naam = preg_replace( '/[^a-z-]/', '', (string) $naam );
-    $pad  = SFP_PAGE_CONFIG_DIR . 'assets/blokken/' . $naam . '.css';
-    $css  = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
-    // Commentaar en witruimte eruit; de bestanden blijven leesbaar in de repo.
-    $css = preg_replace( '#/\*.*?\*/#s', '', $css );
-    $css = preg_replace( '/\s+/', ' ', $css );
-    $css = str_replace( array( ' {', '{ ', ' }', '; ', ': ', ', ' ), array( '{', '{', '}', ';', ':', ',' ), $css );
-    $cache[ $naam ] = trim( $css );
-    return $cache[ $naam ];
+    return sfp_page_config_css_lees( 'blokken/' . preg_replace( '/[^a-z-]/', '', (string) $naam ) . '.css' );
 }
 
 /**
@@ -759,17 +749,21 @@ function sfp_page_config_blokken_editor_css() {
     if ( ! is_admin() ) {
         return;
     }
-    $css = sfp_page_config_editor_merk_css() . sfp_page_config_blokken_css_variabelen();
-    // Sinds 3.16.0 ook definitie (Definitie, In a talk en Check your
-    // understanding bij een begrip): zonder die opmaak stonden ze in de
-    // editor als losse regels. Sinds 3.18.0 ook zelftest-cta: zonder die
-    // opmaak stond de kop van de Zelftest-oproep als gewone tekst.
-    foreach ( array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'editor' ) as $bestand ) {
-        $css .= sfp_page_config_blokken_css_bestand( $bestand );
-    }
-    wp_register_style( 'sfp-blokken-editor', false, array(), SFP_PAGE_CONFIG_VERSION );
-    wp_enqueue_style( 'sfp-blokken-editor' );
-    wp_add_inline_style( 'sfp-blokken-editor', $css );
+    // Sinds 3.22.0 de vaste opmaak als bestanden (de browser bewaart ze
+    // tussen keren openen, verkleind door de releaseworkflow); alleen het merk
+    // en de variabelen van deze site staan inline. Zie
+    // sfp_page_config_editor_blok_bestanden() in editor.php.
+    sfp_page_config_editor_blok_bestanden( sfp_page_config_editor_merk_css() . sfp_page_config_blokken_css_variabelen() );
+}
+
+/**
+ * De CSS-bestanden van de bouwstenen in de editor. Sinds 3.16.0 ook
+ * definitie, sinds 3.18.0 zelftest-cta.
+ *
+ * @return string[]
+ */
+function sfp_page_config_blokken_editor_bestanden() {
+    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'editor' );
 }
 
 /**

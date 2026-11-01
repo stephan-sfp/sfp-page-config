@@ -183,14 +183,14 @@ function sfp_page_config_editor_paneel() {
 
     wp_enqueue_script(
         'sfp-deze-pagina',
-        SFP_PAGE_CONFIG_URL . 'assets/editor/deze-pagina.js',
+        sfp_page_config_asset_url( 'editor/deze-pagina.js' ),
         array( 'wp-plugins', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data', 'wp-api-fetch', 'wp-url', 'wp-blocks', 'wp-block-editor', 'wp-editor', 'wp-edit-post', 'wp-dom-ready' ),
         SFP_PAGE_CONFIG_VERSION,
         true
     );
     wp_enqueue_style(
         'sfp-deze-pagina',
-        SFP_PAGE_CONFIG_URL . 'assets/editor/deze-pagina.css',
+        sfp_page_config_asset_url( 'editor/deze-pagina.css' ),
         array(),
         SFP_PAGE_CONFIG_VERSION
     );
@@ -522,7 +522,7 @@ function sfp_page_config_editor_artikel_css() {
     if ( ! is_admin() || ! function_exists( 'sfp_page_config_artikel_aan' ) || ! sfp_page_config_artikel_aan() ) {
         return;
     }
-    wp_enqueue_style( 'sfp-artikel-editor', SFP_PAGE_CONFIG_URL . 'assets/artikel.css', array(), SFP_PAGE_CONFIG_VERSION );
+    wp_enqueue_style( 'sfp-artikel-editor', sfp_page_config_asset_url( 'artikel.css' ), array(), SFP_PAGE_CONFIG_VERSION );
 }
 
 /**
@@ -561,7 +561,7 @@ function sfp_page_config_tool_canvas_editor() {
     }
     wp_enqueue_script(
         'sfp-tool-canvas',
-        SFP_PAGE_CONFIG_URL . 'assets/editor/tool-canvas.js',
+        sfp_page_config_asset_url( 'editor/tool-canvas.js' ),
         array( 'wp-element', 'wp-data', 'wp-editor', 'wp-core-data' ),
         SFP_PAGE_CONFIG_VERSION,
         true
@@ -625,11 +625,11 @@ function sfp_page_config_tool_canvas_css() {
     if ( ! $scherm || 'tool' !== $scherm->post_type || ! sfp_page_config_tool_aan() ) {
         return;
     }
-    wp_enqueue_style( 'sfp-tool-editor', SFP_PAGE_CONFIG_URL . 'assets/tool/tool.css', array(), SFP_PAGE_CONFIG_VERSION );
+    wp_enqueue_style( 'sfp-tool-editor', sfp_page_config_asset_url( 'tool/tool.css' ), array(), SFP_PAGE_CONFIG_VERSION );
     foreach ( array( 'generator', 'tekstanalyse', 'kaart' ) as $sfp_deel ) {
-        wp_enqueue_style( 'sfp-tool-editor-' . $sfp_deel, SFP_PAGE_CONFIG_URL . 'assets/tool/tool-' . $sfp_deel . '.css', array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
+        wp_enqueue_style( 'sfp-tool-editor-' . $sfp_deel, sfp_page_config_asset_url( 'tool/tool-' . $sfp_deel . '.css' ), array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
     }
-    wp_enqueue_style( 'sfp-tool-canvas', SFP_PAGE_CONFIG_URL . 'assets/editor/tool-canvas.css', array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
+    wp_enqueue_style( 'sfp-tool-canvas', sfp_page_config_asset_url( 'editor/tool-canvas.css' ), array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
 }
 
 /* =========================================================================
@@ -727,4 +727,25 @@ function sfp_page_config_editor_zonder_kleur( array $instellingen ) {
     $instellingen['gradients']              = array();
     $instellingen['fontSizes']              = array();
     return $instellingen;
+}
+
+/**
+ * De bouwstenen in de editor: elk CSS-bestand als link (in de iframe van de
+ * editor, in volgorde), en daarna de inline opmaak van deze site (merk en
+ * variabelen) op een eigen handle. De volgorde is gelijk aan de oude inline
+ * opmaak: eerst variabelen, dan de bestanden; variabelen staan op :root en
+ * hangen niet van de volgorde af.
+ *
+ * @param string $inline Merk en variabelen.
+ */
+function sfp_page_config_editor_blok_bestanden( $inline ) {
+    wp_register_style( 'sfp-blokken-editor', false, array(), SFP_PAGE_CONFIG_VERSION );
+    wp_enqueue_style( 'sfp-blokken-editor' );
+    wp_add_inline_style( 'sfp-blokken-editor', $inline );
+    $vorige = 'sfp-blokken-editor';
+    foreach ( sfp_page_config_blokken_editor_bestanden() as $bestand ) {
+        $handle = 'sfp-blokken-editor-' . $bestand;
+        wp_enqueue_style( $handle, sfp_page_config_asset_url( 'blokken/' . $bestand . '.css' ), array( $vorige ), SFP_PAGE_CONFIG_VERSION );
+        $vorige = $handle;
+    }
 }

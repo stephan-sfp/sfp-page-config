@@ -96,7 +96,7 @@ function sfp_page_config_enqueue_sales_assets() {
 
     wp_enqueue_script(
         'sfp-page-config-sticky-cta',
-        SFP_PAGE_CONFIG_URL . 'assets/sticky-cta.js',
+        sfp_page_config_asset_url( 'sticky-cta.js' ),
         array(),
         SFP_PAGE_CONFIG_VERSION,
         true

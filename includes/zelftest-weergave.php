@@ -24,7 +24,7 @@ function sfp_zelftest_registreer() {
     if ( ! shortcode_exists( 'sfp_zelftest' ) ) {
         add_shortcode( 'sfp_zelftest', 'sfp_zelftest_shortcode' );
     }
-    wp_register_script( 'sfp-zelftest-editor', SFP_PAGE_CONFIG_URL . 'assets/zelftest/editor.js', array( 'wp-blocks', 'wp-element', 'wp-components', 'wp-block-editor' ), SFP_PAGE_CONFIG_VERSION, true );
+    wp_register_script( 'sfp-zelftest-editor', sfp_page_config_asset_url( 'zelftest/editor.js' ), array( 'wp-blocks', 'wp-element', 'wp-components', 'wp-block-editor' ), SFP_PAGE_CONFIG_VERSION, true );
     if ( ! WP_Block_Type_Registry::get_instance()->is_registered( 'sfp/zelftest' ) ) {
         register_block_type(
             'sfp/zelftest',
@@ -142,7 +142,7 @@ function sfp_zelftest_shortcode( $atts ) {
     );
 
     sfp_zelftest_stijl();
-    wp_enqueue_script( 'sfp-zelftest', SFP_PAGE_CONFIG_URL . 'assets/zelftest/zelftest.js', array(), SFP_PAGE_CONFIG_VERSION, true );
+    wp_enqueue_script( 'sfp-zelftest', sfp_page_config_asset_url( 'zelftest/zelftest.js' ), array(), SFP_PAGE_CONFIG_VERSION, true );
     $veilig = function ( $js ) {
         return str_ireplace( '</script', '<\/script', (string) $js );
     };

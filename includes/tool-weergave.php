@@ -82,7 +82,7 @@ function sfp_page_config_tool_bestanden( $soort = 'test', $kaart = false ) {
     }
     if ( empty( $klaar['js'] ) ) {
         $klaar['js'] = true;
-        wp_enqueue_script( 'sfp-tool-motor', SFP_PAGE_CONFIG_URL . 'assets/tool/motor.js', array(), SFP_PAGE_CONFIG_VERSION, true );
+        wp_enqueue_script( 'sfp-tool-motor', sfp_page_config_asset_url( 'tool/motor.js' ), array(), SFP_PAGE_CONFIG_VERSION, true );
         wp_add_inline_script( 'sfp-tool-motor', 'window.sfpToolConfig=' . wp_json_encode( sfp_page_config_tool_config(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP ) . ';', 'before' );
     }
     if ( ! isset( sfp_page_config_tool_soorten()[ $soort ] ) ) {
@@ -100,7 +100,7 @@ function sfp_page_config_tool_bestanden( $soort = 'test', $kaart = false ) {
     foreach ( $scripts as $script ) {
         if ( empty( $klaar[ $script ] ) ) {
             $klaar[ $script ] = true;
-            wp_enqueue_script( 'sfp-tool-' . $script, SFP_PAGE_CONFIG_URL . 'assets/tool/' . $script . '.js', array( $vorige ), SFP_PAGE_CONFIG_VERSION, true );
+            wp_enqueue_script( 'sfp-tool-' . $script, sfp_page_config_asset_url( 'tool/' . $script . '.js' ), array( $vorige ), SFP_PAGE_CONFIG_VERSION, true );
         }
         $vorige = 'sfp-tool-' . $script;
     }

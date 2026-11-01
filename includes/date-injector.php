@@ -173,7 +173,7 @@ function sfp_page_config_enqueue_dropdown_script() {
 
     wp_enqueue_script(
         'sfp-page-config-dropdown',
-        SFP_PAGE_CONFIG_URL . 'assets/dropdown.js',
+        sfp_page_config_asset_url( 'dropdown.js' ),
         array(),
         SFP_PAGE_CONFIG_VERSION,
         true

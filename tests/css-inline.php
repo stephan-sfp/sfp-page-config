@@ -122,7 +122,7 @@ foreach ( glob( SFP_PAGE_CONFIG_DIR . 'includes/*.php' ) as $pad ) {
         continue;
     }
     $src = file_get_contents( $pad );
-    same( 0, preg_match( '/wp_(enqueue|register)_style\s*\([^;]*SFP_PAGE_CONFIG_URL/s', $src ), 'no stylesheet file in ' . basename( $pad ) );
+    same( 0, preg_match( '/wp_(enqueue|register)_style\s*\([^;]*(SFP_PAGE_CONFIG_URL|sfp_page_config_asset_url)/s', $src ), 'no stylesheet file in ' . basename( $pad ) );
 }
 
 // Review photos at 80 pixels.

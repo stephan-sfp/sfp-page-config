@@ -31,6 +31,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once __DIR__ . '/bestanden.php';
+
 add_filter( 'rocket_exclude_js', 'sfp_page_config_rocket_niet_verkleinen' );
 add_filter( 'rocket_exclude_css', 'sfp_page_config_rocket_niet_verkleinen' );
 
@@ -55,12 +57,7 @@ function sfp_page_config_rocket_niet_verkleinen( $uitsluitingen ) {
  * @return string
  */
 function sfp_page_config_asset( $bestand ) {
-    $bestand = ltrim( (string) $bestand, '/' );
-    $min     = preg_replace( '/\.(js|css)$/', '.min.$1', $bestand );
-    if ( $min !== $bestand && is_readable( SFP_PAGE_CONFIG_DIR . 'assets/' . $min ) ) {
-        $bestand = $min;
-    }
-    return add_query_arg( 'ver', SFP_PAGE_CONFIG_VERSION, SFP_PAGE_CONFIG_URL . 'assets/' . $bestand );
+    return add_query_arg( 'ver', SFP_PAGE_CONFIG_VERSION, sfp_page_config_asset_url( $bestand ) );
 }
 
 /**
@@ -105,17 +102,7 @@ function sfp_page_config_css_inline_handles() {
  * @return string
  */
 function sfp_page_config_css_bestand( $bestand ) {
-    static $cache = array();
-    if ( isset( $cache[ $bestand ] ) ) {
-        return $cache[ $bestand ];
-    }
-    $pad = SFP_PAGE_CONFIG_DIR . 'assets/' . ltrim( (string) $bestand, '/' );
-    $css = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
-    $css = preg_replace( '#/\*.*?\*/#s', '', $css );
-    $css = preg_replace( '/\s+/', ' ', $css );
-    $css = trim( str_replace( array( ' {', '{ ', ' }', '; ', ': ', ', ', ';}' ), array( '{', '{', '}', ';', ':', ',', '}' ), $css ) );
-    $cache[ $bestand ] = $css;
-    return $css;
+    return sfp_page_config_css_lees( $bestand );
 }
 
 /**

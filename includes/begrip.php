@@ -809,7 +809,7 @@ function sfp_page_config_begrip_editor() {
     }
     wp_enqueue_script(
         'sfp-begrip-format',
-        SFP_PAGE_CONFIG_URL . 'assets/editor/begrip-format.js',
+        sfp_page_config_asset_url( 'editor/begrip-format.js' ),
         array( 'wp-rich-text', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data' ),
         SFP_PAGE_CONFIG_VERSION,
         true

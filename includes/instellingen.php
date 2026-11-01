@@ -27,6 +27,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once __DIR__ . '/bestanden.php';
+
 /* =========================================================================
  * Lezen
  * ====================================================================== */
@@ -48,11 +50,6 @@ function sfp_page_config_instellingen() {
  * @param  mixed  $default Terugval.
  * @return mixed
  */
-function sfp_page_config_get_setting( $key, $default = '' ) {
-    $settings = sfp_page_config_instellingen();
-    return isset( $settings[ $key ] ) && '' !== $settings[ $key ] ? $settings[ $key ] : $default;
-}
-
 /**
  * De soorten pagina met een knop onderaan.
  *
