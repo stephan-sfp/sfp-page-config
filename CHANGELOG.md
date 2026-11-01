@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.22.2] - 2026-11-01
+
+Snippetbeheer: groepen. Alleen de achterkant; bezoekers merken niets.
+
+Terugdraaien: versie 3.22.1 terugzetten (zip uit de tag v3.22.1, map sfp-page-config).
+
+### Toegevoegd
+- Snippetbeheer: een snippet in een bestaande groep van ASE Pro zetten via POST /sfp/v1/snippets/<id>/groep met groep (naam). Maakt geen nieuwe groep aan; een onbekende naam geeft de bestaande groepen terug. Overgenomen uit het snippet "Snippets beheren via REST", dat sinds 3.22.1 uit staat.
+- Snippetbeheer: elk snippet in de lijst noemt zijn groepen.
+
 ## [3.22.1] - 2026-11-01
 
 Opschoning en een herstel in de editor. Voor bezoekers verandert er niets.
