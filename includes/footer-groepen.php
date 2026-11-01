@@ -81,32 +81,3 @@ function sfp_page_config_footer_groepen_js_code() {
     return "(function(){var mq=window.matchMedia('(max-width: 921px)');function zet(){var g=document.querySelectorAll('.sfp-fj__groep');for(var i=0;i<g.length;i++){if(mq.matches){g[i].removeAttribute('open');}else{g[i].setAttribute('open','');}}}\nfunction klik(e){var s=e.target.closest?e.target.closest('.sfp-fj__kop'):null;if(s&&!mq.matches){e.preventDefault();}}\nif(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',zet);}else{zet();}\ndocument.addEventListener('click',klik);if(mq.addEventListener){mq.addEventListener('change',zet);}else if(mq.addListener){mq.addListener(zet);}})();";
 }
 
-add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_footer_groepen_rucss' );
-
-/**
- * Laat WP Rocket Remove Unused CSS het inline CSS-blok ongemoeid.
- *
- * @param  array $exclusions Uitsluitingen op attribuut.
- * @return array
- */
-function sfp_page_config_footer_groepen_rucss( $exclusions ) {
-    $exclusions   = (array) $exclusions;
-    $exclusions[] = 'sfp-footer-groepen';
-    return $exclusions;
-}
-
-add_filter( 'rocket_delay_js_exclusions', 'sfp_page_config_footer_groepen_delay' );
-
-/**
- * Laat WP Rocket het script niet vertragen, anders staan de groepen op
- * mobiel open tot de eerste aanraking en verspringt de footer.
- *
- * @param  array $exclusions Uitsluitingen.
- * @return array
- */
-function sfp_page_config_footer_groepen_delay( $exclusions ) {
-    $exclusions   = (array) $exclusions;
-    $exclusions[] = 'sfp-footer-groepen-js';
-    $exclusions[] = 'sfp-fj__groep';
-    return $exclusions;
-}

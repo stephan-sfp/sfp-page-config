@@ -35,6 +35,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once __DIR__ . '/bestanden.php';
+
 /* =========================================================================
  * Aan of uit
  * ====================================================================== */
@@ -181,26 +183,7 @@ function sfp_page_config_artikel_head_css() {
  * @return string
  */
 function sfp_page_config_artikel_css_bestand() {
-    $pad = SFP_PAGE_CONFIG_DIR . 'assets/artikel.css';
-    $css = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
-    $css = preg_replace( '#/\*.*?\*/#s', '', $css );
-    $css = preg_replace( '/\s+/', ' ', $css );
-    return trim( str_replace( array( ' {', '{ ', ' }', '; ', ': ', ', ' ), array( '{', '{', '}', ';', ':', ',' ), $css ) );
-}
-
-add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_artikel_rucss' );
-
-/**
- * WP Rocket Remove Unused CSS laat de CSS van de artikelopmaak staan:
- * panelen en de hoofdstukbalk zijn bij het meten niet in beeld.
- *
- * @param  array $uitsluitingen Uitsluitingen op attribuut.
- * @return array
- */
-function sfp_page_config_artikel_rucss( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-artikel';
-    return $uitsluitingen;
+    return sfp_page_config_css_lees( 'artikel.css' );
 }
 
 /**
@@ -229,28 +212,7 @@ function sfp_page_config_artikel_js() {
     if ( ! sfp_page_config_artikel_js_nodig() && ! sfp_page_config_artikel_actief() ) {
         return;
     }
-    $pad = SFP_PAGE_CONFIG_DIR . 'assets/artikel.js';
-    $js  = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
-    if ( '' === $js ) {
-        return;
-    }
-    echo '<script id="sfp-artikel-js" nowprocket>' . $js . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste JS uit de plugin.
-}
-
-add_filter( 'rocket_delay_js_exclusions', 'sfp_page_config_artikel_delay' );
-
-/**
- * WP Rocket stelt het script niet uit; anders loopt de inhoudsopgave pas
- * mee na de eerste aanraking.
- *
- * @param  array $uitsluitingen Uitsluitingen.
- * @return array
- */
-function sfp_page_config_artikel_delay( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-artikel-js';
-    $uitsluitingen[] = 'sfp-artikel-viewport';
-    return $uitsluitingen;
+    sfp_page_config_script_tag( 'sfp-artikel-js', 'artikel.js' );
 }
 
 /* =========================================================================
@@ -1294,7 +1256,7 @@ function sfp_page_config_artikel_rest_lees() {
     return rest_ensure_response(
         array(
             'versie'       => SFP_PAGE_CONFIG_VERSION,
-            'taal'         => sfp_page_config_artikel_taal(),
+            'taal'         => sfp_page_config_taal(),
             'instellingen' => $uit,
             'affiliate'    => function_exists( 'sfp_page_config_affiliate_teksten' ) ? sfp_page_config_affiliate_teksten() : null,
             'deelbeeld'    => function_exists( 'sfp_page_config_deelbeeld_stand' ) ? sfp_page_config_deelbeeld_stand() : null,

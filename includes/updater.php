@@ -15,6 +15,14 @@
  * van deze updater en laat WordPress opnieuw naar updates kijken. Alleen
  * voor gebruikers die plugins mogen bijwerken.
  *
+ * Pakket (sinds 3.22.0): alleen de bijlage met de exacte naam
+ * sfp-page-config.zip uit een release van deze repo, en alleen als het
+ * controlegetal (SHA-256) klopt dat de releaseworkflow als laatste regel in
+ * de releasetekst zet. Zonder die bijlage of dat getal biedt de updater
+ * niets aan; de zipball van GitHub is geen terugval meer. Het downloaden
+ * gebeurt hier zelf (upgrader_pre_download), zodat het getal gecontroleerd
+ * wordt voordat WordPress het pakket uitpakt.
+ *
  * @package SFP_Page_Config
  */
 
@@ -85,6 +93,98 @@ class SFP_Page_Config_Updater {
         add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_update' ) );
         add_filter( 'plugins_api', array( $this, 'plugin_info' ), 20, 3 );
         add_filter( 'upgrader_post_install', array( $this, 'after_install' ), 10, 3 );
+        add_filter( 'upgrader_pre_download', array( $this, 'pre_download' ), 10, 4 );
+    }
+
+    /**
+     * Naam van de bijlage die de releaseworkflow maakt.
+     */
+    const PAKKET = 'sfp-page-config.zip';
+
+    /**
+     * Begin van elke geldige download-URL van een bijlage.
+     *
+     * @return string
+     */
+    private function pakket_prefix() {
+        return 'https://github.com/' . $this->github_user . '/' . $this->github_repo . '/releases/download/';
+    }
+
+    /**
+     * Pakket en controlegetal uit een release, of lege waarden.
+     *
+     * @param  object $release Release zoals GitHub hem geeft.
+     * @return array{0:string,1:string} URL en SHA-256.
+     */
+    private function pakket_uit_release( $release ) {
+        $url = '';
+        if ( ! empty( $release->assets ) && is_array( $release->assets ) ) {
+            foreach ( $release->assets as $asset ) {
+                if ( isset( $asset->name, $asset->browser_download_url ) && self::PAKKET === $asset->name
+                    && 0 === strpos( (string) $asset->browser_download_url, $this->pakket_prefix() ) ) {
+                    $url = (string) $asset->browser_download_url;
+                    break;
+                }
+            }
+        }
+        $som = '';
+        if ( isset( $release->body ) && preg_match( '/SHA-256 sfp-page-config\.zip:\s*([0-9a-f]{64})/i', (string) $release->body, $m ) ) {
+            $som = strtolower( $m[1] );
+        }
+        if ( '' === $url || '' === $som ) {
+            return array( '', '' );
+        }
+        return array( $url, $som );
+    }
+
+    /**
+     * Download het eigen pakket en controleer het getal, voordat WordPress
+     * het uitpakt. Andere pakketten laat deze functie met rust.
+     *
+     * @param  bool|WP_Error|string $antwoord   Eerder antwoord van een filter.
+     * @param  string               $pakket     Download-URL.
+     * @param  object               $upgrader   WP_Upgrader.
+     * @param  array                $hook_extra Extra gegevens.
+     * @return bool|WP_Error|string Pad naar het gecontroleerde bestand.
+     */
+    public function pre_download( $antwoord, $pakket, $upgrader = null, $hook_extra = array() ) {
+        $eigen_plugin = is_array( $hook_extra ) && isset( $hook_extra['plugin'] ) && $hook_extra['plugin'] === $this->plugin_slug;
+        $eigen_url    = is_string( $pakket ) && 0 === strpos( $pakket, $this->pakket_prefix() );
+        if ( false !== $antwoord || ( ! $eigen_plugin && ! $eigen_url ) ) {
+            return $antwoord;
+        }
+        if ( ! $eigen_url || self::PAKKET !== basename( (string) wp_parse_url( $pakket, PHP_URL_PATH ) ) ) {
+            return new WP_Error( 'sfp_pakket', 'SFP Page Config: alleen het pakket sfp-page-config.zip uit een release van deze repo wordt geïnstalleerd.' );
+        }
+        $verwacht = '';
+        foreach ( array( '', 'proef' ) as $kanaal ) {
+            $release = get_transient( $this->transient_key . ( 'proef' === $kanaal ? '_proef' : '' ) );
+            if ( is_object( $release ) && isset( $release->download_url, $release->sha256 ) && $release->download_url === $pakket ) {
+                $verwacht = (string) $release->sha256;
+            }
+        }
+        if ( '' === $verwacht ) {
+            $release = $this->get_latest_release();
+            if ( $release && $release->download_url === $pakket ) {
+                $verwacht = (string) $release->sha256;
+            }
+        }
+        if ( ! preg_match( '/^[0-9a-f]{64}$/', $verwacht ) ) {
+            return new WP_Error( 'sfp_pakket', 'SFP Page Config: geen controlegetal voor dit pakket.' );
+        }
+        if ( ! function_exists( 'download_url' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+        $bestand = download_url( $pakket, 300 );
+        if ( is_wp_error( $bestand ) ) {
+            return $bestand;
+        }
+        $som = hash_file( 'sha256', $bestand );
+        if ( ! is_string( $som ) || ! hash_equals( $verwacht, $som ) ) {
+            wp_delete_file( $bestand );
+            return new WP_Error( 'sfp_pakket', 'SFP Page Config: het controlegetal van het pakket klopt niet. Er is niets geïnstalleerd.' );
+        }
+        return $bestand;
     }
 
     /* -----------------------------------------------------------------
@@ -167,6 +267,8 @@ class SFP_Page_Config_Updater {
     public static function wis_cache() {
         delete_transient( 'sfp_page_config_github_release' );
         delete_transient( 'sfp_page_config_github_release_proef' );
+        delete_transient( 'sfp_page_config_github_release_fout' );
+        delete_transient( 'sfp_page_config_github_release_proef_fout' );
     }
 
     /**
@@ -190,6 +292,11 @@ class SFP_Page_Config_Updater {
         if ( false !== $release ) {
             return $release;
         }
+        // Na een fout van GitHub 15 minuten niet opnieuw vragen: alle sites
+        // kunnen bij de host één IP delen (60 verzoeken per uur zonder token).
+        if ( false !== get_transient( $key . '_fout' ) ) {
+            return false;
+        }
 
         // Gewoon kanaal: de laatste release die geen pre-release is. Kanaal
         // proef: de lijst met releases, waaruit hieronder de hoogste versie
@@ -212,6 +319,7 @@ class SFP_Page_Config_Updater {
         ) );
 
         if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+            set_transient( $key . '_fout', 1, 15 * MINUTE_IN_SECONDS );
             return false;
         }
 
@@ -219,7 +327,11 @@ class SFP_Page_Config_Updater {
         if ( $proef ) {
             $beste = null;
             foreach ( is_array( $body ) ? $body : array() as $kandidaat ) {
-                if ( empty( $kandidaat->tag_name ) || ! empty( $kandidaat->draft ) ) {
+                if ( ! is_object( $kandidaat ) || empty( $kandidaat->tag_name ) || ! empty( $kandidaat->draft ) ) {
+                    continue;
+                }
+                list( $kandidaat_url ) = $this->pakket_uit_release( $kandidaat );
+                if ( '' === $kandidaat_url ) {
                     continue;
                 }
                 if ( null === $beste || version_compare( ltrim( $kandidaat->tag_name, 'vV' ), ltrim( $beste->tag_name, 'vV' ), '>' ) ) {
@@ -235,19 +347,9 @@ class SFP_Page_Config_Updater {
         // Strip leading "v" from tag (e.g. "v1.9.5" -> "1.9.5").
         $body->version = ltrim( $body->tag_name, 'vV' );
 
-        // Find a .zip asset; fall back to GitHub's auto-generated zipball.
-        $body->download_url = '';
-        if ( ! empty( $body->assets ) && is_array( $body->assets ) ) {
-            foreach ( $body->assets as $asset ) {
-                if ( ! empty( $asset->browser_download_url ) && '.zip' === substr( $asset->browser_download_url, -4 ) ) {
-                    $body->download_url = $asset->browser_download_url;
-                    break;
-                }
-            }
-        }
-        if ( empty( $body->download_url ) ) {
-            $body->download_url = isset( $body->zipball_url ) ? $body->zipball_url : '';
-        }
+        // Alleen de bijlage sfp-page-config.zip met een controlegetal; geen
+        // terugval op de zipball (die bevat ook tests/ en .github/).
+        list( $body->download_url, $body->sha256 ) = $this->pakket_uit_release( $body );
 
         set_transient( $key, $body, 12 * HOUR_IN_SECONDS );
 
@@ -290,7 +392,7 @@ class SFP_Page_Config_Updater {
             return $transient;
         }
 
-        if ( version_compare( $release->version, $this->plugin_version, '>' ) ) {
+        if ( '' !== $release->download_url && version_compare( $release->version, $this->plugin_version, '>' ) ) {
             $transient->response[ $this->plugin_slug ] = $this->build_item(
                 $release->version,
                 isset( $release->html_url ) ? $release->html_url : '',
@@ -372,9 +474,14 @@ class SFP_Page_Config_Updater {
             return $result;
         }
 
-        $proper_destination = WP_PLUGIN_DIR . '/sfp-page-config/';
-        $wp_filesystem->move( $result['destination'], $proper_destination );
-        $result['destination'] = $proper_destination;
+        $proper_destination = trailingslashit( WP_PLUGIN_DIR ) . 'sfp-page-config/';
+        if ( isset( $result['destination'] ) && untrailingslashit( $result['destination'] ) !== untrailingslashit( $proper_destination ) ) {
+            if ( ! $wp_filesystem || ! $wp_filesystem->move( $result['destination'], $proper_destination, true ) ) {
+                return new WP_Error( 'sfp_verplaatsen', 'SFP Page Config: de map kon niet naar sfp-page-config/ worden verplaatst. Upload de vorige versie handmatig.' );
+            }
+        }
+        $result['destination']      = $proper_destination;
+        $result['destination_name'] = 'sfp-page-config';
 
         // Re-activate the plugin after update.
         activate_plugin( $this->plugin_slug );

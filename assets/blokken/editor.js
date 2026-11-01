@@ -274,7 +274,11 @@
 	/* sfp/held */
 	blok( 'sfp/held', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-held sfp-held--recht' + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) } );
+		/* Zoals op de site (3.22.0): met een tool erin krijgt de held de klasse sfp-held--tool, dus tekst links en de tool rechts. */
+		var metTool = wp.data.useSelect( function ( select ) {
+			return ( select( 'core/block-editor' ).getBlocks( props.clientId ) || [] ).some( function ( x ) { return 'sfp/tool' === x.name; } );
+		}, [ props.clientId ] );
+		var blockProps = useBlockProps( { className: 'sfp-held sfp-held--recht' + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) + ( metTool ? ' sfp-held--tool' : '' ) } );
 		var inner = useInnerBlocksProps( { className: 'sfp-held__binnen' }, {
 			template: [
 				[ 'core/heading', { level: 1 } ],
@@ -304,11 +308,18 @@
 	];
 	blok( 'sfp/kolommen', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling } );
+		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling + ( a.uitlijning ? ' sfp-kolommen--' + a.uitlijning : '' ) } );
 		var inner = useInnerBlocksProps( blockProps, { orientation: 'horizontal', template: [ [ 'sfp/kolom' ], [ 'sfp/kolom' ] ] } );
 		return el( Fragment, null,
 			paneel( 'Kolommen', [
 				vormkeuze( 'Indeling', a.indeling, indelingen, function ( v ) { props.setAttributes( { indeling: v } ); } ),
+				keuze( 'Verticale uitlijning', a.uitlijning || '', [
+					{ label: 'Zoals de indeling', value: '' },
+					{ label: 'Boven', value: 'boven' },
+					{ label: 'Midden', value: 'midden' },
+					{ label: 'Onder', value: 'onder' },
+					{ label: 'Even hoog', value: 'rekken' },
+				], function ( v ) { props.setAttributes( { uitlijning: v } ); } ),
 				uitleg( 'Op een telefoon staan de kolommen onder elkaar.' ),
 			] ),
 			el( 'div', inner )
@@ -404,7 +415,8 @@
 		var inner = useInnerBlocksProps( { className: 'sfp-uitklap__inhoud', hidden: ! open }, { template: [ [ 'core/paragraph' ] ] } );
 		// Label en regel onder de titel typ je in het blok, alleen in de vorm die ze toont.
 		var metLabel = 'verhaal' === variant || a.label;
-		var metSub = 'kaart' === variant || a.sub;
+		// De regel onder de titel (teaser) kan sinds 3.22.0 in elke vorm.
+		var metSub = true;
 		var zetTitel = function ( v ) { props.setAttributes( { titel: v } ); };
 		var titelVeld = function ( tag ) {
 			return el( RichText, { tagName: tag, value: a.titel, placeholder: 'Titel van de regel', allowedFormats: [ 'core/bold', 'core/italic' ], onChange: zetTitel } );
@@ -414,7 +426,7 @@
 		// Dezelfde opbouw als de regel op de site (render_uitklap_regel).
 		var kop;
 		if ( metLabel ) {
-			kop = el( 'span', { className: 'sfp-uitklap__titel' }, labelVeld, titelVeld( 'b' ) );
+			kop = el( 'span', { className: 'sfp-uitklap__titel' }, labelVeld, titelVeld( 'b' ), subVeld );
 		} else if ( metSub ) {
 			kop = el( 'span', { className: 'sfp-uitklap__titel' }, titelVeld( 'span' ), subVeld );
 		} else {
@@ -992,11 +1004,11 @@
 			paneel( 'Thermometer', [
 				uitleg( 'Drie tot acht stellingen. De lezer kiest per stelling Klopt, Soms of Klopt niet. Daarna volgt de uitslag op een schaal met twee uiteinden, met de naam en tekst die jij per uitslag geeft en een link naar het hoofdstuk dat erbij past. Schrijf alle stellingen in dezelfde richting: Klopt telt naar het rechteruiteinde. Niets wordt bewaard.' ),
 				tekstveld( 'Schaal: linkeruiteinde', a.links, function ( v ) { props.setAttributes( { links: v } ); }, 'Weinig herkenning, bijvoorbeeld: Rustig.' ),
-				tekstveld( 'Schaal: rechteruiteinde', a.rechts, function ( v ) { props.setAttributes( { rechts: v } ); }, 'Veel herkenning, bijvoorbeeld: Zenuwen nemen het over.' ),
-			].concat( band( 'laag', 'bij weinig herkenning', 'Bij weinig herkenning.', 'Je aanwezigheid draagt je' ), band( 'midden', 'in het midden', null, 'Je aanwezigheid wisselt' ), band( 'hoog', 'bij veel herkenning', 'Bij veel herkenning.', 'Je zenuwen gaan voor' ) ) ),
+				tekstveld( 'Schaal: rechteruiteinde', a.rechts, function ( v ) { props.setAttributes( { rechts: v } ); }, 'Veel herkenning, bijvoorbeeld: Sterk aanwezig.' ),
+			].concat( band( 'laag', 'bij weinig herkenning', 'Bij weinig herkenning.', 'Het gaat vanzelf' ), band( 'midden', 'in het midden', null, 'Het wisselt' ), band( 'hoog', 'bij veel herkenning', 'Bij veel herkenning.', 'Het speelt sterk' ) ) ),
 			el( 'div', blockProps,
 				el( 'span', { className: 'sfp-editor-label' }, 'Thermometer · staat op de site als knop in de kopkaart van de pijler, niet op deze plek' ),
-				el( RichText, { tagName: 'div', className: 'sfp-editor-warm__vraag', value: a.kop, placeholder: 'De vraag boven de stellingen, bijvoorbeeld: Hoe groot is jouw spreekangst?', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { kop: v } ); } } ),
+				el( RichText, { tagName: 'div', className: 'sfp-editor-warm__vraag', value: a.kop, placeholder: 'De vraag boven de stellingen, bijvoorbeeld: Hoe herkenbaar is dit voor jou?', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { kop: v } ); } } ),
 				el( 'div', inner ),
 				aantal < 3 ? el( 'span', { className: 'sfp-blokmelding' }, 'Een Thermometer heeft minstens drie stellingen. Zonder die verschijnt hij niet op de site.' ) : null,
 				aantal > 8 ? el( 'span', { className: 'sfp-blokmelding' }, 'Hoogstens acht stellingen; de rest valt weg.' ) : null,
@@ -1009,7 +1021,7 @@
 	blok( 'sfp/thermometer-stelling', function ( props ) {
 		var blockProps = useBlockProps( { className: 'sfp-editor-vlak sfp-editor-thermo__stelling' } );
 		return el( 'div', blockProps,
-			el( RichText, { tagName: 'div', value: props.attributes.tekst, placeholder: 'Stelling, bijvoorbeeld: Ik slaap slecht de nacht voor een presentatie.', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { tekst: v } ); } } )
+			el( RichText, { tagName: 'div', value: props.attributes.tekst, placeholder: 'Stelling, bijvoorbeeld: Ik zie er de dag ervoor al tegen op.', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { tekst: v } ); } } )
 		);
 	} );
 
@@ -1475,6 +1487,84 @@
 				'Dit artikel heeft nog geen uitgelichte afbeelding. Die is nodig voor Lees ook, de overzichten en het delen.',
 				{ id: MELDING, isDismissible: true }
 			);
+		} );
+	}() );
+
+	/*
+	 * Markeren per regel in sfp/lijst, stijl letters (3.22.0). Een schakelaar
+	 * bij elke lijstregel zet de klasse is-sfp-gemarkeerd; geen inline stijl.
+	 */
+	( function () {
+		if ( ! wp.hooks || ! wp.compose || ! wp.data ) {
+			return;
+		}
+		var KLASSE = 'is-sfp-gemarkeerd';
+		var metKlasse = function ( naam, aan ) {
+			var delen = ( naam || '' ).split( /\s+/ ).filter( function ( k ) { return k && k !== KLASSE; } );
+			if ( aan ) { delen.push( KLASSE ); }
+			return delen.join( ' ' ) || undefined;
+		};
+		wp.hooks.addFilter( 'editor.BlockEdit', 'sfp/lijst-markeren', wp.compose.createHigherOrderComponent( function ( BlockEdit ) {
+			return function ( props ) {
+				var inLetters = wp.data.useSelect( function ( select ) {
+					if ( 'core/list-item' !== props.name ) { return false; }
+					var b = select( 'core/block-editor' );
+					var ouders = b.getBlockParents( props.clientId, true );
+					for ( var i = 0; i < ouders.length; i++ ) {
+						var o = b.getBlock( ouders[ i ] );
+						if ( o && 'sfp/lijst' === o.name ) { return 'letters' === ( o.attributes.stijl || 'vink' ); }
+					}
+					return false;
+				}, [ props.clientId, props.name ] );
+				if ( ! inLetters ) {
+					return el( BlockEdit, props );
+				}
+				var aan = ( ' ' + ( props.attributes.className || '' ) + ' ' ).indexOf( ' ' + KLASSE + ' ' ) !== -1;
+				return el( Fragment, null,
+					el( BlockEdit, props ),
+					el( InspectorControls, null,
+						el( c.PanelBody, { title: 'Letter', initialOpen: true },
+							el( c.ToggleControl, {
+								label: 'Gemarkeerd',
+								help: 'Gemarkeerd: gevuld rondje en vet. Staat er in de lijst een gemarkeerde regel, dan krijgen de andere een leeg rondje.',
+								checked: aan,
+								onChange: function ( v ) { props.setAttributes( { className: metKlasse( props.attributes.className, v ) } ); },
+								__nextHasNoMarginBottom: true,
+							} )
+						)
+					)
+				);
+			};
+		}, 'sfpLijstMarkeren' ) );
+	}() );
+
+	/*
+	 * Paginatitel in de editor (3.22.0): verborgen waar hij op de site ook
+	 * niet staat. Astra bewaart "titel uit" als meta site-post-title =
+	 * disabled; een pagina die met de held begint, toont de titel in de held.
+	 */
+	( function () {
+		if ( ! wp.data || ! wp.data.subscribe ) {
+			return;
+		}
+		var vorige = null;
+		function canvasBody() {
+			var f = document.querySelector( 'iframe[name="editor-canvas"]' );
+			try { return f && f.contentDocument ? f.contentDocument.body : document.body; } catch ( e ) { return document.body; }
+		}
+		wp.data.subscribe( function () {
+			var ed = wp.data.select( 'core/editor' );
+			var be2 = wp.data.select( 'core/block-editor' );
+			if ( ! ed || ! be2 ) { return; }
+			var meta = ed.getEditedPostAttribute ? ( ed.getEditedPostAttribute( 'meta' ) || {} ) : {};
+			var eerste = ( be2.getBlocks() || [] )[ 0 ];
+			var uit = 'disabled' === meta[ 'site-post-title' ] || !! ( eerste && 'sfp/held' === eerste.name );
+			var body = canvasBody();
+			if ( body && ( uit !== vorige || ! body.classList.contains( 'sfp-titel-uit' ) === uit ) ) {
+				body.classList.toggle( 'sfp-titel-uit', uit );
+				if ( body !== document.body ) { document.body.classList.toggle( 'sfp-titel-uit', uit ); }
+				vorige = uit;
+			}
 		} );
 	}() );
 }( window.wp ) );

@@ -205,6 +205,9 @@
 		if ( ! this.b || ! this.app ) { return false; }
 		var fabriek = SOORTEN[ this.b.soort ];
 		if ( ! fabriek ) { return false; }
+		/* Het eerste scherm uit de HTML (3.22.0) maakt plaats voor de echte tool, in hetzelfde frame. */
+		var voorlopig = this.app.querySelector( '.sfp-tool__voorlopig' );
+		if ( voorlopig ) { voorlopig.parentNode.removeChild( voorlopig ); }
 		this.app.hidden = false;
 		this.app.appendChild( this.sr );
 		this.motor = fabriek( this );
@@ -260,8 +263,8 @@
 	};
 
 	/* Duimpjes: de telling per tool en optioneel een tekst. Bij een wissel gaat de vorige stem eraf. */
-	Tool.prototype.duim = function ( stem, tekst, email, website, vorige ) {
-		return post( 'duim', { tool: this.slug, stem: stem, vorige: vorige || '', tekst: tekst || '', email: email || '', website: website || '' } );
+	Tool.prototype.duim = function ( stem, tekst, email, website, vorige, bewijs ) {
+		return post( 'duim', { tool: this.slug, stem: stem, vorige: vorige || '', bewijs: bewijs || '', tekst: tekst || '', email: email || '', website: website || '' } );
 	};
 
 	/* De widget "Heeft deze tool je geholpen?" */
@@ -280,10 +283,15 @@
 				if ( klaar ) { return; }
 				gekozen = stem;
 				Array.prototype.forEach.call( knoppen.children, function ( k ) { var is = k.getAttribute( 'data-stem' ) === stem; k.classList.toggle( 'is-gekozen', is ); k.setAttribute( 'aria-pressed', is ? 'true' : 'false' ); } );
+				var nieuw = { stem: stem, klaar: false };
 				if ( ! eerder || eerder.stem !== stem ) {
-					zelf.duim( stem, '', '', '', eerder && eerder.stem ? eerder.stem : '' ).catch( function () {} );
+					zelf.duim( stem, '', '', '', eerder && eerder.stem ? eerder.stem : '', eerder && eerder.bewijs ? eerder.bewijs : '' ).then( function ( r ) {
+						if ( r && r.data && r.data.bewijs ) { nieuw.bewijs = r.data.bewijs; opslag.schrijf( sleutel, nieuw ); }
+					} ).catch( function () {} );
+				} else if ( eerder.bewijs ) {
+					nieuw.bewijs = eerder.bewijs;
 				}
-				eerder = { stem: stem, klaar: false };
+				eerder = nieuw;
 				opslag.schrijf( sleutel, eerder );
 				vervolg.hidden = false;
 				veld.focus();

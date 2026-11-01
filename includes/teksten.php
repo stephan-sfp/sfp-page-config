@@ -84,6 +84,13 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Artikelen: een keuze uit de labels van de artikelopmaak.
+        // Begrip (3.22.0): het label van het blok "In een presentatie"
+        // past niet op elke site (DST, CVD); per site aan te passen.
+        'artikel_in_een_talk' => array(
+            'groep'   => 'Artikelen',
+            'label'   => 'Label van het blok "In een presentatie" bij een begrip',
+            'artikel' => 'in_een_talk',
+        ),
         'artikel_samenvatting' => array(
             'groep'   => 'Artikelen',
             'label'   => 'Samenvatting',
@@ -467,12 +474,59 @@ function sfp_page_config_teksten_register() {
             'en'    => 'until %s',
             'pt'    => 'até %s',
         ),
+        // Ankers van het formulier (3.22.0): per taal, en per site aan te
+        // passen. De Nederlandse ankers blijven daarnaast altijd werken.
+        'anker_inschrijven'  => array(
+            'groep' => 'Formulieren en cursusdata',
+            'label' => 'Anker van het inschrijfformulier (zonder #)',
+            'nl'    => 'inschrijven',
+            'en'    => 'register',
+            'pt'    => 'inscricao',
+        ),
+        'anker_aanvragen'    => array(
+            'groep' => 'Formulieren en cursusdata',
+            'label' => 'Anker van het aanvraagformulier (zonder #)',
+            'nl'    => 'aanvragen',
+            'en'    => 'request',
+            'pt'    => 'solicitar',
+        ),
         'tijd_uur'           => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Achter een lestijd',
             'nl'    => 'uur',
             'en'    => '',
             'pt'    => '',
+        ),
+
+        // Feitencodes (3.22.0): [sfp_reviews] en [sfp_publicaties] in de
+        // taal van de site.
+        'feiten_reviews_geen'        => array(
+            'groep' => 'Feitencodes',
+            'label' => '[sfp_reviews] zonder meting',
+            'nl'    => 'ons actuele cijfer lees je op ons Google-bedrijfsprofiel',
+            'en'    => 'you can find our current rating on our Google Business Profile',
+            'pt'    => 'nossa nota atual está no nosso Perfil da Empresa no Google',
+        ),
+        'feiten_reviews_een'         => array(
+            'groep' => 'Feitencodes',
+            'label' => '[sfp_reviews] met één review (%1$s is het cijfer, %2$s het aantal)',
+            'nl'    => '%1$s op basis van %2$s review',
+            'en'    => '%1$s based on %2$s review',
+            'pt'    => '%1$s com base em %2$s avaliação',
+        ),
+        'feiten_reviews_meer'        => array(
+            'groep' => 'Feitencodes',
+            'label' => '[sfp_reviews] met meer reviews (%1$s is het cijfer, %2$s het aantal)',
+            'nl'    => '%1$s op basis van %2$s reviews',
+            'en'    => '%1$s based on %2$s reviews',
+            'pt'    => '%1$s com base em %2$s avaliações',
+        ),
+        'feiten_publicaties_terugval' => array(
+            'groep' => 'Feitencodes',
+            'label' => '[sfp_publicaties] als er nog niet geteld is',
+            'nl'    => 'ruim 200',
+            'en'    => 'more than 200',
+            'pt'    => 'mais de 200',
         ),
 
         // WhatsApp.

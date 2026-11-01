@@ -10,6 +10,9 @@
  * assets/tool/generator.js met dezelfde antwoorden: beide moeten dezelfde
  * blokken geven. Node is nodig voor die vergelijking.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler(
     function ( $severity, $message, $file, $line ) {
@@ -160,6 +163,7 @@ const fs = require('fs');
 global.window = global; global.document = { readyState: 'loading', addEventListener(){}, querySelectorAll(){ return []; } };
 window.sfpToolConfig = { teksten: JSON.parse(fs.readFileSync(process.argv[5], 'utf8')) };
 eval(fs.readFileSync(process.argv[2] + 'motor.js', 'utf8'));
+eval(fs.readFileSync(process.argv[2] + 'generator-bouw.js', 'utf8'));
 eval(fs.readFileSync(process.argv[2] + 'generator.js', 'utf8'));
 const b = JSON.parse(fs.readFileSync(process.argv[3], 'utf8'));
 const sets = JSON.parse(fs.readFileSync(process.argv[4], 'utf8'));

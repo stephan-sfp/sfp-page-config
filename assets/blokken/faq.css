@@ -1,6 +1,5 @@
-/* Bouwstenen: FAQ. Vragen als witte kaarten; werkt zonder JavaScript. Gecentreerd onder een gecentreerde sectiekop. */
-:root .sfp-faq{max-width:820px;width:100%;margin:0}
-:root .sfp-sectie__binnen>h2.has-text-align-center~.sfp-faq{margin:0 auto}
+/* Bouwstenen: FAQ. Vragen als witte kaarten; werkt zonder JavaScript. Sinds 3.22.0 op de breedte van de kolom of sectie. */
+:root .sfp-faq{max-width:none;width:100%;margin:0}
 :root .sfp-faq__vraag{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);margin:0 0 12px}
 .sfp-faq__vraag summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:26px;font-weight:700;font-size:17px;line-height:1.4;color:var(--sfp-b-primair)}
 .sfp-faq__vraag summary::-webkit-details-marker{display:none}

@@ -15,6 +15,9 @@
  *
  * @package SFP_Page_Config
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -41,7 +44,7 @@ $s       = is_array( $bewaard ) ? $bewaard : array();
 $s['onderdelen']['tools'] = '1';
 update_option( 'sfp_settings', $s );
 if ( ! post_type_exists( 'tool' ) ) {
-    sfp_page_config_tool_posttype();
+    sfp_page_config_berichttypes_registreer();
     sfp_page_config_tool_meta();
 }
 
@@ -137,8 +140,7 @@ foreach ( array( 'tool_terug', 'tool_voortgang', 'tool_groep_van', 'tool_letter_
 }
 
 /* Opmaak op rol: geen kleurcode en geen fontnaam in de nieuwe regels. */
-$tcss  = (string) file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/tool/tool.css' );
-$kaart = substr( $tcss, (int) strpos( $tcss, 'Kaartweergave (3.21.0)' ) );
+$kaart = (string) file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/tool/tool-kaart.css' );
 $check( 'kaartopmaak zonder merkkleur', ! preg_match( '/#[0-9a-fA-F]{3,6}\b(?!\))/', str_replace( array( '#fff', '#000' ), '', $kaart ) ) );
 $check( 'kaartopmaak zonder fontnaam', ! preg_match( '/font-family:\s*["\']?[A-Z]/', $kaart ) );
 

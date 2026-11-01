@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function sfp_page_config_tool_config() {
     $teksten = array();
     $alle    = function_exists( 'sfp_page_config_artikel_teksten' ) ? sfp_page_config_artikel_teksten() : array();
-    $taal    = function_exists( 'sfp_page_config_artikel_taal' ) ? sfp_page_config_artikel_taal() : 'en';
+    $taal    = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'en';
     $basis   = isset( $alle['en'] ) ? $alle['en'] : array();
     $eigen   = isset( $alle[ $taal ] ) ? $alle[ $taal ] : array();
     foreach ( $basis as $sleutel => $waarde ) {
@@ -47,7 +47,8 @@ function sfp_page_config_tool_config() {
  *
  * @param string $soort Soort tool (bepaalt welk soortscript meegaat).
  */
-function sfp_page_config_tool_bestanden( $soort = 'test' ) {
+function sfp_page_config_tool_bestanden( $soort = 'test', $kaart = false ) {
+    sfp_page_config_tool_motor();
     static $klaar = array();
     if ( empty( $klaar['basis'] ) ) {
         $klaar['basis'] = true;
@@ -55,25 +56,53 @@ function sfp_page_config_tool_bestanden( $soort = 'test' ) {
         if ( function_exists( 'sfp_page_config_blokken_css_variabelen' ) ) {
             wp_add_inline_style( 'sfp-tool', sfp_page_config_blokken_css_variabelen() );
         }
-        wp_enqueue_script( 'sfp-tool-motor', SFP_PAGE_CONFIG_URL . 'assets/tool/motor.js', array(), SFP_PAGE_CONFIG_VERSION, true );
+    }
+    // Opmaak per soort en voor de kaart (3.22.0): alleen wat deze tool
+    // gebruikt, in de volgorde van het oude tool.css (generator,
+    // tekstanalyse, kaart), op dezelfde handle.
+    $delen = array();
+    if ( sfp_page_config_tool_op_generator( $soort ) || 'tekstanalyse' === $soort ) {
+        $delen[] = 'generator';
+    }
+    if ( 'tekstanalyse' === $soort ) {
+        $delen[] = 'tekstanalyse';
+    }
+    if ( $kaart ) {
+        $delen[] = 'kaart';
+    }
+    foreach ( $delen as $deel ) {
+        if ( empty( $klaar[ 'css-' . $deel ] ) ) {
+            $klaar[ 'css-' . $deel ] = true;
+            if ( wp_style_is( 'sfp-tool', 'done' ) ) {
+                // De basis staat al op de pagina: dit deel als eigen blok.
+                sfp_page_config_css_inline( 'sfp-tool-' . $deel, 'tool/tool-' . $deel . '.css' );
+            } else {
+                wp_add_inline_style( 'sfp-tool', sfp_page_config_css_bestand( 'tool/tool-' . $deel . '.css' ) );
+            }
+        }
+    }
+    if ( empty( $klaar['js'] ) ) {
+        $klaar['js'] = true;
+        wp_enqueue_script( 'sfp-tool-motor', sfp_page_config_asset_url( 'tool/motor.js' ), array(), SFP_PAGE_CONFIG_VERSION, true );
         wp_add_inline_script( 'sfp-tool-motor', 'window.sfpToolConfig=' . wp_json_encode( sfp_page_config_tool_config(), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP ) . ';', 'before' );
     }
     if ( ! isset( sfp_page_config_tool_soorten()[ $soort ] ) ) {
         return;
     }
-    // Rekenaar en checklist draaien op de motor van de generator; de
-    // tekstanalyse gebruikt daarnaast de rekentaal uit dat script.
+    // Rekenaar en checklist draaien op de motor van de generator. Sinds
+    // 3.22.0 staan bouwen en rekentaal los (generator-bouw.js): de
+    // tekstanalyse laadt alleen dat deel, niet het scherm van de generator.
     $scripts = array( $soort );
     if ( sfp_page_config_tool_op_generator( $soort ) ) {
-        $scripts = array( 'generator' );
+        $scripts = array( 'generator-bouw', 'generator' );
     } elseif ( 'tekstanalyse' === $soort ) {
-        $scripts = array( 'generator', 'tekstanalyse' );
+        $scripts = array( 'generator-bouw', 'tekstanalyse' );
     }
     $vorige = 'sfp-tool-motor';
     foreach ( $scripts as $script ) {
         if ( empty( $klaar[ $script ] ) ) {
             $klaar[ $script ] = true;
-            wp_enqueue_script( 'sfp-tool-' . $script, SFP_PAGE_CONFIG_URL . 'assets/tool/' . $script . '.js', array( $vorige ), SFP_PAGE_CONFIG_VERSION, true );
+            wp_enqueue_script( 'sfp-tool-' . $script, sfp_page_config_asset_url( 'tool/' . $script . '.js' ), array( $vorige ), SFP_PAGE_CONFIG_VERSION, true );
         }
         $vorige = 'sfp-tool-' . $script;
     }
@@ -86,29 +115,50 @@ add_action( 'wp_enqueue_scripts', 'sfp_page_config_tool_bestanden_vooraf', 20 );
  * stijl niet in de footer belandt.
  */
 function sfp_page_config_tool_bestanden_vooraf() {
-    if ( ! sfp_page_config_tool_aan() || ! is_singular( 'tool' ) ) {
+    if ( ! sfp_page_config_tool_aan() || ! is_singular() ) {
         return;
     }
-    $b = sfp_page_config_tool_beschrijving( get_queried_object() );
-    if ( $b ) {
-        sfp_page_config_tool_bestanden( $b['soort'] );
+    $post = get_queried_object();
+    if ( ! $post instanceof WP_Post ) {
+        return;
+    }
+    $tools = array();
+    if ( 'tool' === $post->post_type ) {
+        $tools[] = $post;
+    }
+    // Een tool als blok of shortcode in de inhoud (bijvoorbeeld in de held):
+    // ook dan de opmaak in de head, zodat het eerste scherm meteen goed staat
+    // en er niets verspringt (3.22.0).
+    $inhoud = (string) $post->post_content;
+    if ( false !== strpos( $inhoud, '<!-- wp:sfp/tool' ) && preg_match_all( '/<!-- wp:sfp\/tool \{[^}]*"tool":(\d+)/', $inhoud, $m ) ) {
+        foreach ( array_slice( array_unique( $m[1] ), 0, 5 ) as $id ) {
+            $tools[] = get_post( (int) $id );
+        }
+    }
+    if ( false !== strpos( $inhoud, '[sfp_tool' ) && preg_match_all( '/\[sfp_tool[^\]]*\bid=["\']?(\d+)/', $inhoud, $m ) ) {
+        foreach ( array_slice( array_unique( $m[1] ), 0, 5 ) as $id ) {
+            $tools[] = get_post( (int) $id );
+        }
+    }
+    foreach ( $tools as $tool ) {
+        if ( ! $tool instanceof WP_Post || 'tool' !== $tool->post_type ) {
+            continue;
+        }
+        $b = sfp_page_config_tool_beschrijving( $tool );
+        if ( $b ) {
+            sfp_page_config_tool_bestanden( $b['soort'], sfp_page_config_tool_is_kaart( $b ) );
+        }
     }
 }
 
-add_filter( 'rocket_delay_js_exclusions', 'sfp_page_config_tool_delay' );
-
 /**
- * WP Rocket stelt de motor niet uit: de tool moet er staan zodra de pagina
- * er is, ook zonder aanraking (deellink opent direct op het resultaat).
+ * Staat deze tool in de kaartweergave?
  *
- * @param  array $uitsluitingen Uitsluitingen.
- * @return array
+ * @param  array $b Beschrijving.
+ * @return bool
  */
-function sfp_page_config_tool_delay( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-page-config/assets/tool/';
-    $uitsluitingen[] = 'sfpToolConfig';
-    return $uitsluitingen;
+function sfp_page_config_tool_is_kaart( array $b ) {
+    return isset( $b['weergave']['modus'] ) && 'kaart' === $b['weergave']['modus'];
 }
 
 /**
@@ -119,6 +169,7 @@ function sfp_page_config_tool_delay( $uitsluitingen ) {
  * @return string
  */
 function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
+    sfp_page_config_tool_motor();
     static $geteld = array();
     $post = get_post( $post );
     if ( ! $post || 'tool' !== $post->post_type || ! sfp_page_config_tool_aan() ) {
@@ -140,7 +191,7 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
         }
         return '';
     }
-    sfp_page_config_tool_bestanden( $b['soort'] );
+    sfp_page_config_tool_bestanden( $b['soort'], sfp_page_config_tool_is_kaart( $b ) );
     $t        = 'sfp_page_config_artikel_tekst';
     $weergave = 'compact' === $weergave ? 'compact' : 'volledig';
     // Dezelfde tool twee keer op een pagina: de tweede krijgt een eigen id.
@@ -152,7 +203,11 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
     $html  = '<div class="sfp-tool sfp-tool--' . esc_attr( $b['soort'] ) . ' sfp-tool--' . $weergave . $kaart . '" id="' . esc_attr( $id ) . '" data-tool="' . (int) $post->ID . '" data-slug="' . esc_attr( $post->post_name ) . '" data-titel="' . esc_attr( $titel ) . '" data-weergave="' . $weergave . '">';
     $html .= '<script type="application/json" class="sfp-tool__data">' . wp_json_encode( sfp_page_config_tool_voor_browser( $b ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . '</script>';
     $html .= '<noscript><p class="sfp-tool__noscript">' . esc_html( $t( 'tool_geen_script' ) ) . '</p></noscript>';
-    $html .= '<div class="sfp-tool__app" hidden></div>';
+    // Het eerste scherm staat al in de HTML (3.22.0), zodat er niets
+    // verspringt als de motor de tool bouwt. Kan dat voor deze vorm niet,
+    // dan blijft de app leeg en verborgen tot de motor er is.
+    $eerste = function_exists( 'sfp_page_config_tool_eerste_scherm' ) ? sfp_page_config_tool_eerste_scherm( $b, (int) $post->ID, $titel ) : '';
+    $html  .= '' !== $eerste ? '<div class="sfp-tool__app">' . $eerste . '</div>' : '<div class="sfp-tool__app" hidden></div>';
     if ( $b['acties']['formulier'] > 0 && shortcode_exists( 'sureforms' ) ) {
         $html .= '<div class="sfp-tool__formulier" hidden>' . do_shortcode( '[sureforms id="' . (int) $b['acties']['formulier'] . '"]' ) . '</div>';
     }

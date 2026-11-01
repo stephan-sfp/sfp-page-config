@@ -11,13 +11,13 @@
 .sfp-uitklap__inhoud p{margin:0}
 
 /* groot */
-:root .sfp-uitklap--groot{border-top:2px solid var(--sfp-b-secundair);max-width:820px}
+/* Sinds 3.22.0 op de volle breedte van de inhoud; alleen de opengeklapte tekst houdt de leesbreedte. */
+:root .sfp-uitklap--groot{border-top:2px solid var(--sfp-b-secundair);max-width:none;width:100%}
 .sfp-uitklap--groot .sfp-uitklap__regel{border-bottom:1px solid var(--sfp-b-lijn-sterk)}
 .sfp-uitklap--groot :is(summary,:where(.sfp-uitklap__kop)){display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;font-family:var(--sfp-b-kop);font-weight:700;font-size:clamp(19px,.8vw + 15px,24px);line-height:1.35;color:var(--sfp-b-primair)}
 .sfp-uitklap--groot :is(summary,:where(.sfp-uitklap__kop))::after{content:"+";flex:0 0 34px;height:34px;border-radius:50%;border:1px solid var(--sfp-b-lijn-sterk);display:grid;place-items:center;font-family:inherit;font-weight:400;font-size:22px;line-height:1}
 .sfp-uitklap--groot .sfp-uitklap__regel:is([open],:where(.is-open)) :is(summary,:where(.sfp-uitklap__kop))::after{content:"\2212";background:var(--sfp-b-secundair);border-color:var(--sfp-b-secundair);color:var(--sfp-b-wit)}
 :root .sfp-uitklap--groot .sfp-uitklap__inhoud{padding:0 50px 24px 0;font-size:18px;max-width:720px}
-@media (min-width:981px){:root .sfp-uitklap--groot{max-width:60%}}
 
 /* compact: Read more */
 .sfp-uitklap--compact :is(summary,:where(.sfp-uitklap__kop)){display:inline-flex;align-items:center;gap:8px;font-family:var(--sfp-b-kop);font-weight:700;font-size:14px;line-height:1;letter-spacing:.05em;color:var(--sfp-b-primair);margin-top:4px}
@@ -32,7 +32,9 @@
 .sfp-uitklap--kaart :is(summary,:where(.sfp-uitklap__kop)):focus,.sfp-uitklap--kaart :is(summary,:where(.sfp-uitklap__kop)):focus-visible{outline:none}
 .sfp-uitklap--kaart :is(summary,:where(.sfp-uitklap__kop))::after{content:"+";flex:0 0 32px;height:32px;border-radius:50%;border:1px solid var(--sfp-b-lijn-sterk);display:grid;place-items:center;font-weight:400;font-size:20px;line-height:1}
 .sfp-uitklap--kaart .sfp-uitklap__regel:is([open],:where(.is-open)) :is(summary,:where(.sfp-uitklap__kop))::after{content:"\2212"}
-.sfp-uitklap__sub{display:block;font-weight:400;font-size:14px;line-height:1.5;color:var(--sfp-b-body);margin-top:4px}
+/* Regel onder de titel (teaser): in de tekstletter, normaal gewicht, in elke vorm. */
+:root .sfp-uitklap__sub{display:block;font-family:var(--sfp-b-tekst);font-weight:400;font-size:15px;line-height:1.5;letter-spacing:normal;text-transform:none;color:var(--sfp-b-body);margin-top:4px}
+.sfp-uitklap--groot .sfp-uitklap__titel,.sfp-uitklap--compact .sfp-uitklap__titel{display:grid;gap:2px}
 :root .sfp-uitklap--kaart .wp-block-table{overflow-x:auto;padding:0 22px;margin:0}
 :root .sfp-uitklap--kaart table{width:100%;border-collapse:collapse;font-size:15px;min-width:520px;margin:0;table-layout:auto}
 :root .sfp-uitklap--kaart :is(th,td){text-align:left;padding:10px 12px;border:0;word-break:normal;border-bottom:1px solid var(--sfp-b-lijn);vertical-align:top;background:none}

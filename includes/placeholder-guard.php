@@ -166,10 +166,12 @@ function sfp_page_config_onthoud_shortcodes_voorkant() {
     $tags = sfp_page_config_registered_shortcodes();
     sort( $tags );
     $hash = md5( implode( ',', $tags ) );
-    $nu   = get_option( 'sfp_pc_shortcodes_voorkant', array() );
-    if ( is_array( $nu ) && isset( $nu['hash'] ) && $nu['hash'] === $hash ) {
+    // Alleen de korte controlesom laadt mee (autoload); de lijst zelf niet.
+    // Zo kost deze controle geen databasevraag per pagina (3.22.0).
+    if ( get_option( 'sfp_pc_shortcodes_hash', '' ) === $hash ) {
         return;
     }
+    update_option( 'sfp_pc_shortcodes_hash', $hash, true );
     update_option(
         'sfp_pc_shortcodes_voorkant',
         array(
@@ -377,7 +379,7 @@ function sfp_page_config_placeholder_editor_assets() {
 
     wp_enqueue_script(
         'sfp-page-config-placeholder',
-        SFP_PAGE_CONFIG_URL . 'assets/placeholder-editor.js',
+        sfp_page_config_asset_url( 'placeholder-editor.js' ),
         array( 'wp-data', 'wp-notices' ),
         SFP_PAGE_CONFIG_VERSION,
         true
@@ -396,50 +398,3 @@ function sfp_page_config_placeholder_editor_assets() {
  * Site-wide sweep
  * ====================================================================== */
 
-/**
- * Scan every published, supported post for placeholders.
- *
- * Result is cached for an hour and invalidated on each save. Returns an
- * associative array of post_id => array of matched fragments.
- *
- * @param  bool $force Bypass and rebuild the cache.
- * @return array<int, string[]>
- */
-function sfp_page_config_scan_placeholders( $force = false ) {
-
-    $cache_key = 'sfp_pc_sweep';
-
-    if ( ! $force ) {
-        $cached = get_transient( $cache_key );
-        if ( is_array( $cached ) ) {
-            return $cached;
-        }
-    }
-
-    $results = array();
-
-    $query = new WP_Query(
-        array(
-            'post_type'              => sfp_page_config_post_types(),
-            'post_status'            => 'publish',
-            'posts_per_page'         => -1,
-            'fields'                 => 'ids',
-            'no_found_rows'          => true,
-            'update_post_meta_cache' => false,
-            'update_post_term_cache' => false,
-            'suppress_filters'       => true,
-        )
-    );
-
-    foreach ( $query->posts as $pid ) {
-        $content = get_post_field( 'post_content', $pid );
-        $found   = sfp_page_config_find_placeholders( $content );
-        if ( ! empty( $found ) ) {
-            $results[ (int) $pid ] = $found;
-        }
-    }
-
-    set_transient( $cache_key, $results, HOUR_IN_SECONDS );
-
-    return $results;
-}

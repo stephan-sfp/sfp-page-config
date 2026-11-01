@@ -1,5 +1,8 @@
 <?php
 /** Run with: php tests/zelftest-husselen.php (schakelaar Husselen, 3.13.3) */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler(
     function ( $severity, $message, $file, $line ) {

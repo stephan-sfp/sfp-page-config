@@ -4,6 +4,55 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.22.0] - 2026-11-01
+
+Grote update na de stresstest van 31-10-2026: alle 32 punten en de vijf FAST-punten in één release (werk page-config-grote-update). Bestaande inhoud, codes, blokken en routes werken zoals ze werkten.
+
+Proef 3.22.0-beta.1 op SwS, DPS en SFP, uitgelogd gemeten tegen de nulmeting: toolpagina's mobiel van 82-89 naar 96-98, verspringen van 0,20-0,35 naar 0; andere pagina's gelijk binnen de meetruis. Geen scriptfouten op telefoon en desktop.
+
+Terugdraaien: versie 3.21.0 terugzetten (zip uit de tag v3.21.0, map sfp-page-config). Eenmalig omgezet: eigen reviews staan niet meer in autoload (gaat bij 3.21.0 vanzelf goed) en de oude mappen tests/ en .github/ zijn uit de pluginmap weg.
+
+### Gerepareerd
+- Tools verspringen niet meer bij het laden: de server zet het eerste scherm al in de HTML, met dezelfde opbouw als de motor. Proef met alle 50 voorbeeldtools op 375 en 1280 px: 0 px verschil.
+- Datums uit cursusdata worden gecontroleerd op een echte kalenderdatum; het scheidingsteken in [cursus_datum] is veilig; beschadigde meta geeft geen fout meer.
+- De dagelijkse controle draait om 08:00 sitetijd in plaats van UTC.
+- In de mail van een tool wordt eerst afgekapt en dan pas op tekens gesplitst; links en @ uit vrije tekst gaan niet mee.
+
+### Gewijzigd
+- Release en updater: de workflow bouwt een eigen pakket sfp-page-config.zip met een SHA-256-controlegetal in de releasetekst. De updater installeert alleen die bijlage van deze repo, met een kloppend getal, en controleert het verplaatsen van de map. Een fout wordt 15 minuten onthouden.
+- Proefversies vanaf een branch alleen met [proef] in het commitbericht of de knop Run workflow.
+- tests/, .github/ en bouw/ zitten niet meer in het pakket; elk testscript stopt buiten de opdrachtregel.
+- JS en CSS staan verkleind in het pakket; de repo houdt leesbare bronnen. Eén lezer voor inline CSS.
+- Publieke routes: /tool/mail met een grens van 64 KB, eerst een IP-limiet, per adres 5 per dag en per site 30 per uur en 200 per dag. /tool/duim telt een vorige stem alleen met een eenmalig bewijs. Zelftest-start 20 per IP per uur en een plafond per site. IPv6 telt per /64.
+- JSON-LD op één plek, veilig voor scripttags.
+- Google-reviews en [sfp_publicaties] worden dagelijks op de achtergrond opgehaald; een pagina wacht nooit meer op Google of andere sites. Een mislukte telling houdt het vorige aantal.
+- [sfp_publicaties]: welke sites meetellen is instelbaar in SFP Beheer, Onderhoud; standaard de vijf Nederlandse sites.
+- De banner leest de komende startmomenten uit een bewaarde lijst, bijgewerkt bij opslaan en dagelijks.
+- SFP Beheer laadt Pagina's per 50 en cursusdata pas bij het openen van dat scherm; de controle leest per honderd berichten.
+- CSS en JS alleen waar ze nodig zijn: tool.css in vier delen (basis, generator, tekstanalyse, kaart), leestijd, voortgangsbalk en auteursbio alleen waar ze iets tonen. WP Rocket-uitsluitingen op één plek. Twee databasevragen per pagina minder.
+- Radius 6 px netwerkbreed via één variabele; omslagbeelden zonder radius (FAST).
+- Functionele kleuren als variabelen (goed, fout, ster). De thermometer toont "warm" nu als mix van die twee in plaats van een eigen kleur.
+- Uitklap groot op de volle breedte van de inhoud; de regel onder de titel in elke vorm in de tekstletter (FAST).
+- FAQ op de breedte van de kolom (FAST).
+- Leestijd, voortgangsbalk en verkooppagina op de kleurrollen van de plugin; de plugin zet geen --brand-* meer.
+- Editor: een held met een tool staat zoals op de site; het blok Tool toont het eerste scherm; de paginatitel is verborgen als Astra hem uit heeft of de pagina met de held begint.
+- Laden: beheer, analyzer, snippetbeheer en zelftestbeheer alleen in wp-admin en bij REST; de toolmotor op de server pas als een tool erom vraagt. generator.js is in twee delen gesplitst.
+- Universeel: tool_auto-codes werken met alle acht voorvoegsels; ankers inschrijven en aanvragen, datums in SFP Beheer en de editorvoorbeelden volgen de taal van de site; de controle op passieve zinnen alleen op Nederlandse sites.
+- Het vinkje "Bevat affiliate links" staat alleen nog op een site waar het in gebruik is (nu DPS).
+
+### Toegevoegd
+- Route /sfp/v1/onderhoud in de plugin, met dezelfde parameters en hetzelfde antwoord als het snippet "Onderhoud: updates en Site Health via de cloud". Zolang dat snippet actief is, blijft het snippet leidend.
+- Blok Kolommen: instelling verticale uitlijning (boven, midden, onder, rekken).
+- Blok Lijst, letters: een regel markeren.
+- Privacy-export en -wisser voor toolfeedback, bewaartermijn 12 maanden; onafgemaakte zelftests na 30 dagen geanonimiseerd.
+- Snippetbeheer met een logboek van de laatste 200 wijzigingen; weigert bij DISALLOW_FILE_MODS.
+- Controle-workflow bij elke pull request (php -l, node --check, losse tests) en een rapport volgens phpcs.xml.dist.
+
+### Verwijderd
+- Het affiliateblok onder het bericht (Astra-layout van DPS): staat sinds 31-10 in een snippet op DPS. Meta en vinkje blijven.
+- Overgangscode voor SFP Tooltip en SFP Google Reviews (op geen van de acht sites meer).
+- Dode code: vijf functies, de AJAX-actie voor cursusdata, window.sfpCoursePromo en de oude upgradefunctie.
+
 ## [3.21.0] - 2026-10-31
 
 Drie onderdelen in één release, besluit Stephan 31-10-2026 (klus page-config-3-21-0): Vervolg per pijler in de oude CTA-code, een kaartweergave voor de toolmotor (nodig voor de FAST-tool op SwS) en punten uit de artikelopmaak. Bestaande inhoud, tools, codes en blokken werken zoals ze werkten.

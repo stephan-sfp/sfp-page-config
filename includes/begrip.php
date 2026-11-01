@@ -711,7 +711,7 @@ function sfp_page_config_begrip_schema() {
     if ( '' !== $maker ) {
         $gegevens['author'] = array( '@id' => $maker );
     }
-    echo '<script type="application/ld+json" id="sfp-begrip-schema">' . wp_json_encode( $gegevens, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON uit eigen gegevens.
+    echo sfp_page_config_json_ld( $gegevens, 'sfp-begrip-schema' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON met JSON_HEX_TAG.
 }
 
 /**
@@ -809,7 +809,7 @@ function sfp_page_config_begrip_editor() {
     }
     wp_enqueue_script(
         'sfp-begrip-format',
-        SFP_PAGE_CONFIG_URL . 'assets/editor/begrip-format.js',
+        sfp_page_config_asset_url( 'editor/begrip-format.js' ),
         array( 'wp-rich-text', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data' ),
         SFP_PAGE_CONFIG_VERSION,
         true

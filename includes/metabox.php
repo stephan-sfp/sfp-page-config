@@ -370,11 +370,9 @@ function sfp_page_config_render_metabox( $post ) {
     /* =====================================================================
      * Affiliate toggle - posts only
      * =================================================================== */
-    // Alleen waar het vinkje iets doet: op een site met een affiliateblok en
-    // zonder de artikelopmaak (die herkent affiliatelinks zelf).
+    // Alleen waar het vinkje in gebruik is (sinds 3.22.0, zie affiliate.php).
     $affiliate_vinkje = 'post' === $post->post_type
-        && function_exists( 'sfp_page_config_get_affiliate_layout_id' ) && sfp_page_config_get_affiliate_layout_id()
-        && ! ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() );
+        && function_exists( 'sfp_page_config_affiliate_vinkje_toont' ) && sfp_page_config_affiliate_vinkje_toont();
     if ( $affiliate_vinkje ) :
         $has_affiliate = get_post_meta( $post->ID, '_has_affiliate_links', true );
     ?>

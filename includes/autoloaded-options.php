@@ -152,6 +152,10 @@ function sfp_ao_known_prefixes() {
         'surecontact'                => 'SureContact',
         'suretriggers'               => 'Ottokit (SureTriggers)',
         'ottokit'                    => 'Ottokit',
+        'sfp_dps_'                   => 'Eenmalige snippetvlag (restant)',
+        'sfp_dst_'                   => 'Eenmalige snippetvlag (restant)',
+        'sfp_reviews_custom_css'     => 'SFP Google Reviews (restant)',
+        'sfp_tooltip_css'            => 'SFP Tooltip (restant)',
         'sfp_'                       => 'SFP Page Config',
         'sfp-'                       => 'SFP Page Config',
         'imagify'                    => 'Imagify',
@@ -798,6 +802,19 @@ function sfp_ao_own_source( $name ) {
 }
 
 /**
+ * Is dit een restant met het voorvoegsel sfp_ dat SFP Page Config niet gebruikt?
+ *
+ * @param  string $name Optienaam.
+ * @return bool
+ */
+function sfp_ao_is_sfp_restant( $name ) {
+    if ( in_array( $name, array( 'sfp_reviews_custom_css', 'sfp_tooltip_css' ), true ) ) {
+        return true;
+    }
+    return 0 === strpos( $name, 'sfp_dps_' ) || 0 === strpos( $name, 'sfp_dst_' );
+}
+
+/**
  * Determine the status classification of an option.
  *
  * Returns one of: 'transient', 'orphan', 'core', 'active', 'unknown'.
@@ -831,6 +848,16 @@ function sfp_ao_detect_status( $name, array $active_prefixes ) {
         || ( sfp_ao_is_core_pattern( $name ) && 0 !== strpos( $name, 'default_term_asenha' ) )
     ) {
         return 'core';
+    }
+
+    // 3.22.0: restanten met het voorvoegsel van de plugin die de plugin zelf
+    // niet (meer) gebruikt. Eenmalige vlaggen van oude snippets op DPS en DST
+    // (robots, 410-opruiming, besluit Stephan 1-11-2026) en de CSS-vakken van
+    // SFP Google Reviews en SFP Tooltip, die sinds 3.0.0 niet meer gelezen
+    // worden. Zonder deze regel rekende de analyzer ze tot SFP Page Config
+    // (actief) en waren ze niet weg te klikken.
+    if ( sfp_ao_is_sfp_restant( $name ) ) {
+        return 'orphan';
     }
 
     // v2.6.3: check the active-plugin set BEFORE the orphan-prefix

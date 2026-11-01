@@ -31,6 +31,7 @@ add_action( 'save_post_page', 'sfp_page_config_cursusdata_wis_lijst' );
  */
 function sfp_page_config_cursusdata_wis_lijst() {
     delete_transient( 'sfp_dashboard_pages_training' );
+    delete_option( 'sfp_pc_komende_cursussen' );
     // Oude sleutel van voor 1.9.10.
     delete_transient( 'sfp_dashboard_pages' );
 }
@@ -102,7 +103,7 @@ function sfp_page_config_cursusdata_schoon( $data ) {
         $dates = array();
         foreach ( $sm['data'] as $d ) {
             $d = sanitize_text_field( (string) $d );
-            if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $d ) && strtotime( $d ) ) {
+            if ( sfp_page_config_geldige_datum( $d ) ) {
                 $dates[] = $d;
             }
         }
@@ -174,42 +175,20 @@ function sfp_page_config_cursusdata_bewaar( $post_id, $data ) {
 
     return array(
         'clean'         => $clean,
-        'eerstvolgende' => $closest ? sfp_page_config_format_date_nl( $closest, 'short' ) : '-',
+        'eerstvolgende' => $closest ? sfp_page_config_format_datum( $closest, 'short' ) : '-',
     );
-}
-
-/* =========================================================================
- * AJAX (blijft bestaan voor oude aanroepen)
- * ====================================================================== */
-
-// Alleen als een oud ASE-snippet deze actie niet al afhandelt.
-if ( ! has_action( 'wp_ajax_sfp_save_cursusdata' ) ) {
-    add_action( 'wp_ajax_sfp_save_cursusdata', 'sfp_page_config_ajax_save' );
 }
 
 /**
- * AJAX: bewaar de startmomenten van één pagina.
+ * Is dit een bestaande datum in de vorm JJJJ-MM-DD? strtotime() neemt ook
+ * 2026-02-31 aan (en rolt door naar maart); checkdate() niet.
+ *
+ * @param  string $d Datum.
+ * @return bool
  */
-function sfp_page_config_ajax_save() {
-
-    check_ajax_referer( 'sfp_cursusdata_nonce', 'nonce' );
-
-    $post_id = isset( $_POST['post_id'] ) ? intval( $_POST['post_id'] ) : 0;
-    if ( ! $post_id ) {
-        wp_send_json_error( 'Ongeldig post ID.' );
+function sfp_page_config_geldige_datum( $d ) {
+    if ( ! is_string( $d ) || ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', $d, $m ) ) {
+        return false;
     }
-    if ( ! current_user_can( 'edit_page', $post_id ) ) {
-        wp_send_json_error( 'Geen rechten.' );
-    }
-
-    $raw    = isset( $_POST['cursusdata'] ) ? wp_unslash( $_POST['cursusdata'] ) : '[]'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- opgeschoond in sfp_page_config_cursusdata_schoon().
-    $result = sfp_page_config_cursusdata_bewaar( $post_id, json_decode( (string) $raw, true ) );
-
-    wp_send_json_success(
-        array(
-            'clean'         => $result['clean'],
-            'cursusdata'    => $result['clean'],
-            'eerstvolgende' => $result['eerstvolgende'],
-        )
-    );
+    return checkdate( (int) $m[2], (int) $m[3], (int) $m[1] );
 }

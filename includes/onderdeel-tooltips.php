@@ -32,15 +32,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Draait de oude plugin SFP Tooltip nog op deze site?
- *
- * @return bool
- */
-function sfp_page_config_tooltips_oude_plugin() {
-    return defined( 'SFP_TOOLTIP_VERSION' );
-}
-
-/**
  * Verzorgt dit onderdeel de tooltips op deze site?
  *
  * Pas betrouwbaar vanaf `plugins_loaded`: de oude plugin laadt na deze.
@@ -48,7 +39,7 @@ function sfp_page_config_tooltips_oude_plugin() {
  * @return bool
  */
 function sfp_page_config_tooltips_actief() {
-    return ! sfp_page_config_tooltips_oude_plugin() && sfp_page_config_onderdeel_aan( 'tooltips' );
+    return sfp_page_config_onderdeel_aan( 'tooltips' );
 }
 
 add_filter( 'wp_kses_allowed_html', 'sfp_page_config_tooltips_kses', 10, 2 );
@@ -108,7 +99,7 @@ function sfp_page_config_tooltips_editor() {
     }
     wp_enqueue_script(
         'sfp-tooltip-format',
-        SFP_PAGE_CONFIG_URL . 'assets/tooltip/format.js',
+        sfp_page_config_asset_url( 'tooltip/format.js' ),
         array( 'wp-rich-text', 'wp-block-editor', 'wp-element', 'wp-data', 'wp-components' ),
         SFP_PAGE_CONFIG_VERSION,
         true
@@ -134,7 +125,7 @@ function sfp_page_config_tooltips_editor() {
     );
     wp_enqueue_style(
         'sfp-tooltip-editor',
-        SFP_PAGE_CONFIG_URL . 'assets/tooltip/editor.css',
+        sfp_page_config_asset_url( 'tooltip/editor.css' ),
         array(),
         SFP_PAGE_CONFIG_VERSION
     );
@@ -151,7 +142,7 @@ function sfp_page_config_tooltips_script() {
     }
     wp_enqueue_script(
         'sfp-tooltip-frontend',
-        SFP_PAGE_CONFIG_URL . 'assets/tooltip/frontend.js',
+        sfp_page_config_asset_url( 'tooltip/frontend.js' ),
         array(),
         SFP_PAGE_CONFIG_VERSION,
         true
@@ -214,17 +205,3 @@ function sfp_page_config_tooltips_head_css() {
     echo '<style id="sfp-tooltip-css">' . sfp_page_config_tooltips_css() . "</style>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste CSS uit de plugin plus gevalideerde kleuren.
 }
 
-add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_tooltips_rucss' );
-
-/**
- * WP Rocket Remove Unused CSS laat de opmaak staan: het tekstvlak bestaat
- * pas na een klik en is bij het meten dus niet in beeld.
- *
- * @param  array $uitsluitingen Uitsluitingen op attribuut.
- * @return array
- */
-function sfp_page_config_tooltips_rucss( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-tooltip-css';
-    return $uitsluitingen;
-}

@@ -51,8 +51,6 @@ function sfp_ajax_lean_default_skip() {
         'sureforms-pro',
         'wp-rocket',
         'cloudflare',
-        'sfp-google-reviews',
-        'sfp-tooltip',
     );
 }
 
@@ -180,22 +178,3 @@ function sfp_ajax_lean_remove() {
     }
     delete_option( 'sfp_ajax_lean_state' );
 }
-
-/* =========================================================================
- * Eenmalige taken per pluginversie
- * ====================================================================== */
-
-/**
- * Run upgrade tasks once after a new plugin version is installed.
- *
- * 2.10.0: remove the measurement results of the temporary ASE profiling
- * snippet used on DPS (2026-10-08). The option was never autoloaded.
- */
-function sfp_page_config_run_upgrades() {
-    if ( get_option( 'sfp_page_config_version' ) === SFP_PAGE_CONFIG_VERSION ) {
-        return;
-    }
-    delete_option( 'sfp_prof_resultaten' );
-    update_option( 'sfp_page_config_version', SFP_PAGE_CONFIG_VERSION, true );
-}
-add_action( 'init', 'sfp_page_config_run_upgrades', 5 );

@@ -1,5 +1,8 @@
 <?php
 /** Run with: php tests/ajax-lean.php */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler( function ( $severity, $message, $file, $line ) {
     throw new ErrorException( $message, 0, $severity, $file, $line );
@@ -36,11 +39,8 @@ require dirname( __DIR__ ) . '/includes/ajax-lean.php';
 // Sanitize: textarea input, invalid names dropped, protected folders dropped.
 same( array( 'surerank', 'wp-rocket' ), sfp_ajax_lean_sanitize_skip( "surerank\nwp-rocket, latepoint\n../evil\nsfp-page-config\nsurerank" ), 'sanitize skip list' );
 
-// Upgrade task removes the profiling option exactly once.
-$GLOBALS['options']['sfp_prof_resultaten'] = array( 1 );
-sfp_page_config_run_upgrades();
-same( false, get_option( 'sfp_prof_resultaten' ), 'profiling option removed' );
-same( '2.10.0', get_option( 'sfp_page_config_version' ), 'version recorded' );
+// De upgradetaken staan sinds 3.22.0 in includes/upgrade.php.
+same( false, function_exists( 'sfp_page_config_run_upgrades' ), 'oude upgradefunctie weg' );
 
 // Sync: disabled means no file, enabled places it, disabling removes it.
 sfp_ajax_lean_maybe_sync();

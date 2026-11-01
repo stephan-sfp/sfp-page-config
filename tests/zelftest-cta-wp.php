@@ -11,6 +11,9 @@
  *
  * @package SFP_Page_Config
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;

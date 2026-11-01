@@ -123,7 +123,7 @@ function sfp_zelftest_pagina_bestanden() {
         return;
     }
     sfp_zelftest_stijl();
-    wp_enqueue_script( 'sfp-zelftest-pagina', SFP_PAGE_CONFIG_URL . 'assets/zelftest/pagina.js', array(), SFP_PAGE_CONFIG_VERSION, true );
+    wp_enqueue_script( 'sfp-zelftest-pagina', sfp_page_config_asset_url( 'zelftest/pagina.js' ), array(), SFP_PAGE_CONFIG_VERSION, true );
 }
 
 add_filter( 'pre_get_rocket_option_remove_unused_css', 'sfp_zelftest_pagina_geen_usedcss' );

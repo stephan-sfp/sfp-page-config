@@ -5,7 +5,7 @@
  */
 :root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
 :root .sfp-definitie{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-top:4px solid var(--sfp-b-secundair);border-radius:var(--sfp-b-r-kaart);padding:22px 24px 20px;margin:0 0 28px;display:grid;gap:14px;box-sizing:border-box}
-.sfp-definitie__maker{background:var(--sfp-b-tint3);margin:-22px -24px 6px;padding:14px 24px;border-bottom:1px solid var(--sfp-b-lijn);border-radius:12px 12px 0 0}
+.sfp-definitie__maker{background:var(--sfp-b-tint3);margin:-22px -24px 6px;padding:14px 24px;border-bottom:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart,6px) var(--sfp-b-r-kaart,6px) 0 0}
 :root .sfp-definitie__zin{margin:0;font-size:21px;line-height:1.5;color:var(--sfp-b-primair)}
 :root .sfp-definitie__uitleg{margin:0;font-size:17px;line-height:1.65;color:var(--sfp-b-body)}
 .sfp-definitie__feiten{margin:0;padding:16px 0 0;border-top:1px solid var(--sfp-b-lijn);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
@@ -55,13 +55,13 @@
 :root .sfp-check__opties button:disabled{cursor:default;opacity:1;color:var(--sfp-b-body)}
 .sfp-check__opties button::before{content:"";position:absolute;left:12px;top:50%;width:16px;height:16px;margin-top:-8px;border-radius:50%;border:1px solid var(--sfp-b-lijn-sterk);box-sizing:border-box}
 /* Na het antwoord: het juiste antwoord groen met een vinkje, een fout gekozen antwoord rood met een kruis. Vaste signaalkleuren, geen merkkleuren. */
-.sfp-check__vraag[data-uitkomst] button[data-juist]{border-color:#2f9e5b;color:var(--sfp-b-primair);box-shadow:inset 0 0 0 1px #2f9e5b}
-.sfp-check__vraag[data-uitkomst] button[data-juist]::before{content:"\2713";border:0;background:#2f9e5b;color:#fff;font-size:11px;line-height:16px;text-align:center}
-.sfp-check__vraag[data-uitkomst=fout] button[aria-pressed=true]{border-color:#d64541;box-shadow:inset 0 0 0 1px #d64541}
-.sfp-check__vraag[data-uitkomst=fout] button[aria-pressed=true]::before{content:"\2715";border:0;background:#d64541;color:#fff;font-size:10px;line-height:16px;text-align:center}
+.sfp-check__vraag[data-uitkomst] button[data-juist]{border-color:var(--sfp-b-goed,#1E8B45);color:var(--sfp-b-primair);box-shadow:inset 0 0 0 1px var(--sfp-b-goed,#1E8B45)}
+.sfp-check__vraag[data-uitkomst] button[data-juist]::before{content:"\2713";border:0;background:var(--sfp-b-goed,#1E8B45);color:#fff;font-size:11px;line-height:16px;text-align:center}
+.sfp-check__vraag[data-uitkomst=fout] button[aria-pressed=true]{border-color:var(--sfp-b-fout,#A4262C);box-shadow:inset 0 0 0 1px var(--sfp-b-fout,#A4262C)}
+.sfp-check__vraag[data-uitkomst=fout] button[aria-pressed=true]::before{content:"\2715";border:0;background:var(--sfp-b-fout,#A4262C);color:#fff;font-size:10px;line-height:16px;text-align:center}
 :root .sfp-check__uitslag{margin:0;font-size:15px;line-height:1.55;color:var(--sfp-b-body)}
-.sfp-check__goed{color:#2f9e5b}
-.sfp-check__fout{color:#d64541}
+.sfp-check__goed{color:var(--sfp-b-goed,#1E8B45)}
+.sfp-check__fout{color:var(--sfp-b-fout,#A4262C)}
 @media (max-width:600px){:root .sfp-check{padding:18px}}
 /* Eén vraag tegelijk (3.7.1-beta.3): teller rechts van het label, knop naar de volgende vraag. */
 .sfp-check__kop{display:flex;justify-content:space-between;align-items:baseline;gap:12px}

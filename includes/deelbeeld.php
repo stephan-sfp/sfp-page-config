@@ -784,6 +784,9 @@ function sfp_page_config_deelbeeld_rest() {
         $bewaard = get_post_meta( $post_id, '_sfp_deelbeeld', true );
         $beelden = array();
         foreach ( is_array( $bewaard ) ? $bewaard : array() as $sleutel => $slot ) {
+            if ( ! is_array( $slot ) || ! isset( $slot['id'] ) ) {
+                continue;
+            }
             $beelden[ $sleutel ] = array(
                 'id'      => (int) $slot['id'],
                 'url'     => (string) wp_get_attachment_url( (int) $slot['id'] ),

@@ -1,0 +1,47 @@
+name: Controle
+
+# Bij elke pull request en elke push naar main: php -l, node --check en de losse tests.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  controle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Controles
+        run: bash bouw/controle.sh
+
+  codestandaard:
+    # Rapport volgens phpcs.xml.dist. Nog niet blokkerend: de bron is nog
+    # niet in één keer opgeschoond (zie CHANGELOG 3.22.0).
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+          tools: composer
+      - name: WordPress-codestandaard installeren
+        run: |
+          composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
+          composer global require --no-interaction wp-coding-standards/wpcs:^3.1 phpcompatibility/phpcompatibility-wp:^2.1
+      - name: phpcs
+        run: |
+          "$(composer global config bin-dir --absolute --quiet)/phpcs" --report=summary

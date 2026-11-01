@@ -39,12 +39,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * De onderdelen van dit bestand.
+ * Tekst voor een blokvoorbeeld in de taal van de site (sinds 3.22.0).
  *
- * @return string[]
+ * @param  string $nl Nederlands.
+ * @param  string $en Engels.
+ * @param  string $pt Portugees.
+ * @return string
  */
-function sfp_page_config_inhoud_onderdelen() {
-    return array( 'kopieerblok', 'bronnenlijst', 'praktijkblok', 'auteursbio' );
+function sfp_page_config_bouwsteen_t( $nl, $en, $pt ) {
+    $taal = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
+    return 'en' === $taal ? $en : ( 'pt' === $taal ? $pt : $nl );
 }
 
 /**
@@ -88,10 +92,16 @@ function sfp_page_config_inhoud_css( $naam ) {
         return '';
     }
     $geplaatst = sfp_page_config_inhoud_geplaatst();
-    if ( ! empty( $geplaatst[ 'css-' . $naam ] ) ) {
+    // Eén register met de blokken (3.22.0): staat dit bestand al via het
+    // vangnet van de blokken op de pagina, dan niet nog een keer.
+    $blokken_al = function_exists( 'sfp_page_config_blokken_geplaatst' ) ? sfp_page_config_blokken_geplaatst() : array();
+    if ( ! empty( $geplaatst[ 'css-' . $naam ] ) || ! empty( $blokken_al[ $naam ] ) ) {
         return '';
     }
     sfp_page_config_inhoud_geplaatst( 'css-' . $naam );
+    if ( function_exists( 'sfp_page_config_blokken_geplaatst' ) ) {
+        sfp_page_config_blokken_geplaatst( $naam );
+    }
     $css = '';
     if ( function_exists( 'sfp_page_config_blokken_geplaatst' ) ) {
         $blokken = sfp_page_config_blokken_geplaatst();
@@ -116,7 +126,13 @@ function sfp_page_config_inhoud_head() {
         return;
     }
     $uit = '';
-    if ( sfp_page_config_inhoud_aan( 'auteursbio' ) && ( is_singular() || is_author() ) ) {
+    // Auteursbio: alleen op artikelen, auteurspagina's en waar het blok in de
+    // inhoud staat (3.22.0; daarvoor op elke pagina, ook tools). Staat de bio
+    // in een Astra-layout op een andere pagina, dan zet het tonen de opmaak
+    // alsnog neer (sfp_page_config_auteursbio_vinkjes).
+    $bio_post = get_queried_object();
+    if ( sfp_page_config_inhoud_aan( 'auteursbio' ) && ( is_author() || is_singular( 'post' )
+        || ( is_singular() && $bio_post instanceof WP_Post && false !== strpos( (string) $bio_post->post_content, 'wp:post-author-biography' ) ) ) ) {
         $uit .= sfp_page_config_inhoud_css( 'auteursbio' );
     }
     if ( is_singular() ) {
@@ -148,44 +164,7 @@ function sfp_page_config_inhoud_js() {
     if ( empty( $geplaatst['js-kopieer'] ) && empty( $geplaatst['js-bronnen'] ) ) {
         return;
     }
-    $pad = SFP_PAGE_CONFIG_DIR . 'assets/blokken/inhoud.js';
-    $js  = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
-    if ( '' === $js ) {
-        return;
-    }
-    $js = preg_replace( '#/\*.*?\*/#s', '', $js );
-    echo '<script id="sfp-inhoud-js" nowprocket>' . $js . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste JS uit de plugin.
-}
-
-add_filter( 'rocket_delay_js_exclusions', 'sfp_page_config_inhoud_delay' );
-
-/**
- * WP Rocket stelt het script niet uit.
- *
- * @param  array $uitsluitingen Uitsluitingen.
- * @return array
- */
-function sfp_page_config_inhoud_delay( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-inhoud-js';
-    return $uitsluitingen;
-}
-
-add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_inhoud_rucss' );
-
-/**
- * WP Rocket Remove Unused CSS laat de inline opmaak staan (ingeklapt, open,
- * melding en geen treffers verschijnen pas na een klik).
- *
- * @param  array $uitsluitingen Uitsluitingen.
- * @return array
- */
-function sfp_page_config_inhoud_rucss( $uitsluitingen ) {
-    $uitsluitingen = (array) $uitsluitingen;
-    foreach ( array( 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio' ) as $naam ) {
-        $uitsluitingen[] = 'sfp-' . $naam . '-inline-css';
-    }
-    return $uitsluitingen;
+    sfp_page_config_script_tag( 'sfp-inhoud-js', 'blokken/inhoud.js' );
 }
 
 /* =========================================================================
@@ -275,9 +254,9 @@ function sfp_page_config_kopieer_registreer() {
             'editor_script'   => 'sfp-blokken-editor',
             'render_callback' => 'sfp_page_config_kopieer_render',
             'example'         => array(
-                'attributes'  => array( 'lang' => 'Kopieer deze prompt', 'voorbeeld' => true ),
+                'attributes'  => array( 'lang' => sfp_page_config_bouwsteen_t( 'Kopieer deze prompt', 'Copy this prompt', 'Copie este prompt' ), 'voorbeeld' => true ),
                 'innerBlocks' => array(
-                    array( 'name' => 'core/paragraph', 'attributes' => array( 'content' => 'Jij bent een ervaren presentatiecoach. Geef drie concrete tips voor een sterke opening.' ), 'innerBlocks' => array() ),
+                    array( 'name' => 'core/paragraph', 'attributes' => array( 'content' => sfp_page_config_bouwsteen_t( 'Jij bent een ervaren redacteur. Geef drie concrete tips voor een sterke opening.', 'You are an experienced editor. Give three concrete tips for a strong opening.', 'Você é um editor experiente. Dê três dicas concretas para uma abertura forte.' ) ), 'innerBlocks' => array() ),
                 ),
             ),
         )
@@ -708,8 +687,8 @@ function sfp_page_config_bronnen_render( $attrs ) {
     if ( $voorbeeld ) {
         list( , $groepen, $totaal ) = sfp_page_config_bronnen_verzamel(
             array(
-                array( '#', 'Spreekangst overwinnen', '<span data-tooltip="Angst neemt af door herhaling.<br>Bron: Barlow, D. H. (2002). Anxiety and its disorders. Guilford Press.">x</span>' ),
-                array( '#', 'Presenteren met impact', '<span data-tooltip="Bron: Cialdini, R. B. (2006). Influence. Harper Business.">x</span>' ),
+                array( '#', sfp_page_config_bouwsteen_t( 'Een eerste artikel', 'A first article', 'Um primeiro artigo' ), '<span data-tooltip="Angst neemt af door herhaling.<br>Bron: Barlow, D. H. (2002). Anxiety and its disorders. Guilford Press.">x</span>' ),
+                array( '#', sfp_page_config_bouwsteen_t( 'Een tweede artikel', 'A second article', 'Um segundo artigo' ), '<span data-tooltip="Bron: Cialdini, R. B. (2006). Influence. Harper Business.">x</span>' ),
             )
         );
     } else {
@@ -820,7 +799,7 @@ function sfp_page_config_bronnen_schema() {
             'itemListElement' => $items,
         ),
     );
-    return '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . "</script>\n";
+    return sfp_page_config_json_ld( $schema );
 }
 
 /* =========================================================================
@@ -946,7 +925,9 @@ function sfp_page_config_oude_codes() {
         'dynamische_pijlerlink' => 'sfp_page_config_code_dynamisch',
         'dynamische_zelftest'   => 'sfp_page_config_code_dynamisch',
     );
-    foreach ( array( 'sfp', 'dps', 'dga', 'cvd', 'dst', 'fl' ) as $site ) {
+    // Eén code voor alle sites (3.22.0): [sfp_tool_auto]. De codes met een
+    // sitenaam blijven als alias werken, nu voor alle acht.
+    foreach ( array( 'sfp', 'dps', 'dga', 'cvd', 'dst', 'slb', 'sws', 'fl' ) as $site ) {
         $codes[ $site . '_tool_auto' ] = 'sfp_page_config_code_tool_auto';
     }
     foreach ( $codes as $code => $functie ) {
@@ -1052,7 +1033,13 @@ function sfp_page_config_code_tool_auto( $atts, $content = null, $tag = '' ) {
     }
     $slug  = (string) get_post_field( 'post_name', get_the_ID() );
     $site  = preg_replace( '/_tool_auto$/', '', (string) $tag );
-    $codes = array( $site . '_tool_' . str_replace( '-', '_', $slug ), $site . '_tool_' . $slug );
+    // Eerst de sitenaam uit de code, dan de andere sitenamen: zo vindt ook
+    // [sfp_tool_auto] op een andere site de oude code van die site.
+    $codes = array();
+    foreach ( array_unique( array_merge( array( $site ), array( 'sfp', 'dps', 'dga', 'cvd', 'dst', 'slb', 'sws', 'fl' ) ) ) as $voor ) {
+        $codes[] = $voor . '_tool_' . str_replace( '-', '_', $slug );
+        $codes[] = $voor . '_tool_' . $slug;
+    }
     foreach ( $codes as $code ) {
         if ( '' !== $slug && shortcode_exists( $code ) ) {
             return do_shortcode( '[' . $code . ']' );

@@ -8,6 +8,9 @@
  * no front-end file enqueues a stylesheet by URL, and review photos are asked
  * at 80 pixels.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler( function ( $severity, $message, $file, $line ) {
     throw new ErrorException( $message, 0, $severity, $file, $line );
@@ -66,6 +69,9 @@ $bestanden = array(
     'sfp-reviews'           => 'reviews/reviews.css',
     'sfp-page-config-sales' => 'sales-page.css',
     'sfp-tool'              => 'tool/tool.css',
+    'sfp-tool-generator'    => 'tool/tool-generator.css',
+    'sfp-tool-tekstanalyse' => 'tool/tool-tekstanalyse.css',
+    'sfp-tool-kaart'        => 'tool/tool-kaart.css',
     'sfp-longread-nav'      => 'longread-nav.css',
     'sfp-zelftest'          => 'zelftest/zelftest.css',
 );
@@ -116,7 +122,7 @@ foreach ( glob( SFP_PAGE_CONFIG_DIR . 'includes/*.php' ) as $pad ) {
         continue;
     }
     $src = file_get_contents( $pad );
-    same( 0, preg_match( '/wp_(enqueue|register)_style\s*\([^;]*SFP_PAGE_CONFIG_URL/s', $src ), 'no stylesheet file in ' . basename( $pad ) );
+    same( 0, preg_match( '/wp_(enqueue|register)_style\s*\([^;]*(SFP_PAGE_CONFIG_URL|sfp_page_config_asset_url)/s', $src ), 'no stylesheet file in ' . basename( $pad ) );
 }
 
 // Review photos at 80 pixels.
@@ -130,5 +136,24 @@ same( 'https://example.com/foto=s128.png', sfp_page_config_reviews_foto( 'https:
 same( '', sfp_page_config_reviews_foto( '' ), 'empty stays empty' );
 $renderer = file_get_contents( SFP_PAGE_CONFIG_DIR . 'includes/reviews/class-sfp-reviews-renderer.php' );
 same( 0, substr_count( $renderer, "esc_url( \$r['photo'] )" ), 'renderer always resizes' );
+
+// Grens van 10 KB verkleind per voorkantbestand (projectregel). De bekende
+// uitzonderingen mogen niet groeien; een nieuw bestand boven 10 KB faalt.
+$grens        = 10 * 1024;
+$uitzondering = array(
+    'tool/tool.css'         => 21000,
+    'artikel.css'           => 30000,
+    'zelftest/zelftest.css' => 26000,
+    'reviews/reviews.css'   => 15000,
+);
+$voorkant = array_merge( array_values( $bestanden ), array_map( function ( $p ) { return 'blokken/' . basename( $p ); }, glob( SFP_PAGE_CONFIG_DIR . 'assets/blokken/*.css' ) ) );
+foreach ( $voorkant as $bestand ) {
+    if ( 'blokken/editor.css' === $bestand ) {
+        continue;
+    }
+    $max = isset( $uitzondering[ $bestand ] ) ? $uitzondering[ $bestand ] : $grens;
+    $n   = strlen( sfp_page_config_css_bestand( $bestand ) );
+    same( true, $n <= $max, "10 KB-grens: $bestand is $n bytes (max $max)" );
+}
 
 echo "OK: {$checks} checks\n";

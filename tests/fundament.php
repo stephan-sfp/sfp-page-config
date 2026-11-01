@@ -5,6 +5,9 @@
  *
  * Draaien: php tests/fundament.php
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler(
     function ( $severity, $message, $file, $line ) {
@@ -115,6 +118,7 @@ function sfp_page_config_sanitize_css_color( $v ) {
 require dirname( __DIR__ ) . '/includes/instellingen.php';
 require dirname( __DIR__ ) . '/includes/teksten.php';
 require dirname( __DIR__ ) . '/includes/fundament.php';
+require dirname( __DIR__ ) . '/includes/wp-rocket.php';
 
 $checks = 0;
 $fouten = 0;
@@ -230,17 +234,13 @@ same( 'Roboto, sans-serif', sfp_page_config_kopfont_ux()['kop'], 'UX: koppen vol
 $GLOBALS['astra']['headings-font-family'] = "'Nunito', sans-serif;}</style><script>";
 same( false, strpos( sfp_page_config_kopfont_ux_declaraties(), '<' ), 'UX: geen tag uit een kapot font' );
 
-ob_start();
-sfp_page_config_kopfont_ux_head();
-same( '', ob_get_clean(), 'UX uit: geen uitvoer' );
 zet( 'kopfont', true );
 $GLOBALS['astra'] = array( 'headings-font-family' => "'Nunito', sans-serif", 'font-family-h1' => "'Nunito', sans-serif" );
-ob_start();
-sfp_page_config_kopfont_ux_head();
-same( '<style id="sfp-kopfont-ux">:root{--ux-display-font:Nunito, sans-serif;--ux-heading-font:Nunito, sans-serif;}</style>' . "\n", ob_get_clean(), 'UX aan: blok in de head' );
+same( '--ux-display-font:Nunito, sans-serif;--ux-heading-font:Nunito, sans-serif;', sfp_page_config_kopfont_ux_declaraties(), 'UX aan: declaraties voor het blok sfp-kopfont' );
+same( false, function_exists( 'sfp_page_config_kopfont_ux_head' ), 'UX: geen eigen blok meer in de head' );
 
-same( true, in_array( 'sfp-kleurrollen', sfp_page_config_fundament_rucss( array() ), true ), 'RUCSS laat de kleurrollen staan' );
-same( true, in_array( 'sfp-kopfont-ux', sfp_page_config_fundament_rucss( array() ), true ), 'RUCSS laat de fontvariabelen staan' );
+same( true, in_array( 'sfp-kleurrollen', sfp_page_config_rocket_rucss_ids(), true ), 'RUCSS laat de kleurrollen staan' );
+same( true, in_array( 'sfp-kopfont', sfp_page_config_rocket_rucss_ids(), true ), 'RUCSS laat de fontvariabelen staan' );
 
 /* ---------- Berichttypes: standaard per taal ---------- */
 

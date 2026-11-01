@@ -35,7 +35,12 @@ foreach ( array(
     'sfp_page_config_version',
     'sfp_pc_aff_treffers_sleutel',
     'sfp_pc_shortcodes_voorkant',
-    'sfp_page_config_tool_adressen',
+    'sfp_pc_shortcodes_hash',
+    'sfp_feiten_publicaties_stand',
+    'sfp_pc_komende_cursussen',
+    // Tekstfeedback met e-mailadres (3.22.0): persoonsgegevens, dus mee weg,
+    // net als bij de zelftest.
+    'sfp_page_config_tool_feedback_log',
 ) as $sfp_optie ) {
     delete_option( $sfp_optie );
 }
@@ -47,12 +52,17 @@ if ( $sfp_tijdstip ) {
 
 // Tijdelijk bewaarde gegevens van de plugin.
 global $wpdb;
-foreach ( array( 'sfp_pc_', 'sfp_feiten_', 'sfp_dashboard_', 'sfp_next_course_' ) as $sfp_voorvoegsel ) {
+foreach ( array( 'sfp_pc_', 'sfp_feiten_', 'sfp_dashboard_', 'sfp_next_course_', 'sfp_tool_rl_', 'sfp_reviews_', 'sfp_page_config_github_', 'sfp_deelbeeld_font_' ) as $sfp_voorvoegsel ) {
     $sfp_patroon = $wpdb->esc_like( '_transient_' . $sfp_voorvoegsel ) . '%';
     $sfp_namen   = $wpdb->get_col( $wpdb->prepare( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s", $sfp_patroon ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
     foreach ( $sfp_namen as $sfp_naam ) {
         delete_transient( substr( $sfp_naam, strlen( '_transient_' ) ) );
     }
+}
+// Sloten van paginabeheer (opties, geen transients).
+$sfp_sloten = $wpdb->get_col( $wpdb->prepare( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s", $wpdb->esc_like( 'sfp_content_mcp_lock_' ) . '%' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+foreach ( $sfp_sloten as $sfp_slot ) {
+    delete_option( $sfp_slot );
 }
 
 // Zelftest (3.4.0): gegevens van deelnemers en pdf's gaan

@@ -6,6 +6,9 @@
  * in een proefinstallatie met SFP Page Config aan. Maakt eigen berichten en
  * een eigen gebruiker aan en ruimt ze aan het eind op.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit( 1 );

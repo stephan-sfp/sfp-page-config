@@ -30,8 +30,13 @@ class SFP_Reviews_Manual {
 
 	/** Bewaar de volledige lijst. */
 	public static function save_all( array $reviews ): void {
-		update_option( self::OPTION, wp_json_encode( array_values( $reviews ), JSON_UNESCAPED_UNICODE ) );
+		// Niet autoload (3.22.0): de lijst is alleen nodig op pagina's met
+		// reviews en in het beheer, niet bij elke aanvraag.
+		update_option( self::OPTION, wp_json_encode( array_values( array_slice( $reviews, 0, self::MAX ) ), JSON_UNESCAPED_UNICODE ), false );
 	}
+
+	/** Het grootste aantal eigen reviews. */
+	const MAX = 200;
 
 	/**
 	 * Schoon één review op.
@@ -41,7 +46,7 @@ class SFP_Reviews_Manual {
 	 */
 	public static function schoon( array $review ): array {
 		$datum = isset( $review['datum'] ) ? sanitize_text_field( (string) $review['datum'] ) : '';
-		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $datum ) || ! strtotime( $datum ) ) {
+		if ( ! function_exists( 'sfp_page_config_geldige_datum' ) ? ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $datum ) || ! strtotime( $datum ) ) : ! sfp_page_config_geldige_datum( $datum ) ) {
 			$datum = '';
 		}
 		return array(

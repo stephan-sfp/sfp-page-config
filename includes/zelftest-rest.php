@@ -80,33 +80,28 @@ function sfp_zelftest_rest_fout( array $pakket, $code, $tekst, $status ) {
  *
  * @param  string $soort  Soort (start-ip, start-mail, ...).
  * @param  string $sleutel Waarde om te tellen (wordt gehasht).
- * @param  int    $max    Maximum per uur.
+ * @param  int    $max    Maximum per venster.
+ * @param  int    $venster Seconden (standaard een uur).
  * @return bool           true als het verzoek mag.
  */
-function sfp_zelftest_limiet( $soort, $sleutel, $max ) {
+function sfp_zelftest_limiet( $soort, $sleutel, $max, $venster = HOUR_IN_SECONDS ) {
     $naam  = 'sfp_pc_zt_' . substr( md5( $soort . '|' . $sleutel . '|' . wp_salt( 'nonce' ) ), 0, 20 );
     $aantal = (int) get_transient( $naam );
     if ( $aantal >= $max ) {
         return false;
     }
-    set_transient( $naam, $aantal + 1, HOUR_IN_SECONDS );
+    set_transient( $naam, $aantal + 1, $venster );
     return true;
 }
 
 /**
- * Het IP-adres van de bezoeker. Achter Cloudflare het adres uit
- * CF-Connecting-IP, alleen om te tellen (wordt nooit opgeslagen).
+ * Het IP-adres van de bezoeker om te tellen; IPv6 per /64 (sinds 3.22.0).
+ * Zie sfp_page_config_bezoeker_ip().
  *
  * @return string
  */
 function sfp_zelftest_ip() {
-    $direct = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-    $cf     = isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) : '';
-    // CF-Connecting-IP alleen als het verzoek echt van Cloudflare komt; anders is het na te maken.
-    if ( filter_var( $cf, FILTER_VALIDATE_IP ) && sfp_zelftest_is_cloudflare( $direct ) ) {
-        return $cf;
-    }
-    return (string) $direct;
+    return sfp_page_config_bezoeker_ip();
 }
 
 /**
@@ -303,7 +298,11 @@ function sfp_zelftest_rest_start( WP_REST_Request $verzoek ) {
     if ( '' === $voornaam || '' === $email || ! isset( $pakket['manifest']['lengtes'][ $lengte ] ) ) {
         return sfp_zelftest_rest_fout( $pakket, 'sfp_zelftest_ongeldig', 'fout_versturen', 400 );
     }
-    if ( ! sfp_zelftest_limiet( 'start-ip', sfp_zelftest_ip(), 60 ) || ! sfp_zelftest_limiet( 'start-mail', $email, 5 ) ) {
+    // Per IP 20 per uur (een kantoorgroep past erin), per adres 5 per uur,
+    // en per site een plafond per uur en per dag, zodat wisselende IP's
+    // het CRM niet kunnen vullen.
+    if ( ! sfp_zelftest_limiet( 'start-ip', sfp_zelftest_ip(), 20 ) || ! sfp_zelftest_limiet( 'start-mail', $email, 5 )
+        || ! sfp_zelftest_limiet( 'start-site', 'uur', 60 ) || ! sfp_zelftest_limiet( 'start-site-dag', wp_date( 'Y-m-d' ), 300, DAY_IN_SECONDS ) ) {
         return sfp_zelftest_rest_fout( $pakket, 'sfp_zelftest_te_vaak', 'fout_te_vaak', 429 );
     }
 

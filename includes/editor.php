@@ -183,14 +183,14 @@ function sfp_page_config_editor_paneel() {
 
     wp_enqueue_script(
         'sfp-deze-pagina',
-        SFP_PAGE_CONFIG_URL . 'assets/editor/deze-pagina.js',
+        sfp_page_config_asset_url( 'editor/deze-pagina.js' ),
         array( 'wp-plugins', 'wp-element', 'wp-components', 'wp-data', 'wp-core-data', 'wp-api-fetch', 'wp-url', 'wp-blocks', 'wp-block-editor', 'wp-editor', 'wp-edit-post', 'wp-dom-ready' ),
         SFP_PAGE_CONFIG_VERSION,
         true
     );
     wp_enqueue_style(
         'sfp-deze-pagina',
-        SFP_PAGE_CONFIG_URL . 'assets/editor/deze-pagina.css',
+        sfp_page_config_asset_url( 'editor/deze-pagina.css' ),
         array(),
         SFP_PAGE_CONFIG_VERSION
     );
@@ -239,7 +239,7 @@ function sfp_page_config_editor_gegevens( $post_type ) {
         'whatsapp'       => sfp_page_config_onderdeel_aan( 'whatsapp' ),
         'cursusdata'     => sfp_page_config_onderdeel_aan( 'cursusdata' ),
         'longread'       => in_array( $post_type, array( 'post', 'page' ), true ) && ! $artikel,
-        'affiliate'      => 'post' === $post_type && function_exists( 'sfp_page_config_get_affiliate_layout_id' ) && sfp_page_config_get_affiliate_layout_id() && ! ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() ),
+        'affiliate'      => 'post' === $post_type && function_exists( 'sfp_page_config_affiliate_vinkje_toont' ) && sfp_page_config_affiliate_vinkje_toont(),
         'pijler'         => function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan(),
         'begrip'         => function_exists( 'sfp_page_config_begrip_aan' ) && sfp_page_config_begrip_aan(),
         'tools'          => function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan(),
@@ -286,6 +286,7 @@ function sfp_page_config_editor_rest() {
  * @return array
  */
 function sfp_page_config_editor_stand( WP_Post $post ) {
+    sfp_page_config_tool_motor();
     $stand = array(
         'cursusdata' => sfp_page_config_editor_cursusdata( $post->ID ),
         'pijler'     => '',
@@ -522,7 +523,7 @@ function sfp_page_config_editor_artikel_css() {
     if ( ! is_admin() || ! function_exists( 'sfp_page_config_artikel_aan' ) || ! sfp_page_config_artikel_aan() ) {
         return;
     }
-    wp_enqueue_style( 'sfp-artikel-editor', SFP_PAGE_CONFIG_URL . 'assets/artikel.css', array(), SFP_PAGE_CONFIG_VERSION );
+    wp_enqueue_style( 'sfp-artikel-editor', sfp_page_config_asset_url( 'artikel.css' ), array(), SFP_PAGE_CONFIG_VERSION );
 }
 
 /**
@@ -561,7 +562,7 @@ function sfp_page_config_tool_canvas_editor() {
     }
     wp_enqueue_script(
         'sfp-tool-canvas',
-        SFP_PAGE_CONFIG_URL . 'assets/editor/tool-canvas.js',
+        sfp_page_config_asset_url( 'editor/tool-canvas.js' ),
         array( 'wp-element', 'wp-data', 'wp-editor', 'wp-core-data' ),
         SFP_PAGE_CONFIG_VERSION,
         true
@@ -596,6 +597,7 @@ function sfp_page_config_tool_canvas_editor() {
  * @return string HTML.
  */
 function sfp_page_config_tool_canvas_hoe( WP_Post $post ) {
+    sfp_page_config_tool_motor();
     if ( ! function_exists( 'sfp_page_config_tool_beschrijving' ) || ! function_exists( 'sfp_page_config_tool_hoe_rekent' ) ) {
         return '';
     }
@@ -622,11 +624,19 @@ function sfp_page_config_tool_canvas_css() {
         return;
     }
     $scherm = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-    if ( ! $scherm || 'tool' !== $scherm->post_type || ! sfp_page_config_tool_aan() ) {
+    if ( ! $scherm || ! $scherm->is_block_editor() || ! sfp_page_config_tool_aan() ) {
         return;
     }
-    wp_enqueue_style( 'sfp-tool-editor', SFP_PAGE_CONFIG_URL . 'assets/tool/tool.css', array(), SFP_PAGE_CONFIG_VERSION );
-    wp_enqueue_style( 'sfp-tool-canvas', SFP_PAGE_CONFIG_URL . 'assets/editor/tool-canvas.css', array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
+    // Sinds 3.22.0 in elke blokeditor: het blok Tool toont zijn eerste
+    // scherm ook op een pagina (bijvoorbeeld in de held), niet alleen op de
+    // pagina van de tool zelf.
+    wp_enqueue_style( 'sfp-tool-editor', sfp_page_config_asset_url( 'tool/tool.css' ), array(), SFP_PAGE_CONFIG_VERSION );
+    foreach ( array( 'generator', 'tekstanalyse', 'kaart' ) as $sfp_deel ) {
+        wp_enqueue_style( 'sfp-tool-editor-' . $sfp_deel, sfp_page_config_asset_url( 'tool/tool-' . $sfp_deel . '.css' ), array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
+    }
+    if ( 'tool' === $scherm->post_type ) {
+        wp_enqueue_style( 'sfp-tool-canvas', sfp_page_config_asset_url( 'editor/tool-canvas.css' ), array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
+    }
 }
 
 /* =========================================================================
@@ -724,4 +734,25 @@ function sfp_page_config_editor_zonder_kleur( array $instellingen ) {
     $instellingen['gradients']              = array();
     $instellingen['fontSizes']              = array();
     return $instellingen;
+}
+
+/**
+ * De bouwstenen in de editor: elk CSS-bestand als link (in de iframe van de
+ * editor, in volgorde), en daarna de inline opmaak van deze site (merk en
+ * variabelen) op een eigen handle. De volgorde is gelijk aan de oude inline
+ * opmaak: eerst variabelen, dan de bestanden; variabelen staan op :root en
+ * hangen niet van de volgorde af.
+ *
+ * @param string $inline Merk en variabelen.
+ */
+function sfp_page_config_editor_blok_bestanden( $inline ) {
+    wp_register_style( 'sfp-blokken-editor', false, array(), SFP_PAGE_CONFIG_VERSION );
+    wp_enqueue_style( 'sfp-blokken-editor' );
+    wp_add_inline_style( 'sfp-blokken-editor', $inline );
+    $vorige = 'sfp-blokken-editor';
+    foreach ( sfp_page_config_blokken_editor_bestanden() as $bestand ) {
+        $handle = 'sfp-blokken-editor-' . $bestand;
+        wp_enqueue_style( $handle, sfp_page_config_asset_url( 'blokken/' . $bestand . '.css' ), array( $vorige ), SFP_PAGE_CONFIG_VERSION );
+        $vorige = $handle;
+    }
 }

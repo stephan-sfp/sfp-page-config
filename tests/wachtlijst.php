@@ -8,6 +8,9 @@
  *
  * Draaien: php tests/wachtlijst.php
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler(
     function ( $severity, $message, $file, $line ) {
@@ -80,6 +83,9 @@ function sanitize_key( $s ) {
 }
 function absint( $n ) {
     return abs( (int) $n );
+}
+function wp_kses( $s ) {
+    return strip_tags( (string) $s );
 }
 function esc_html( $s ) {
     return htmlspecialchars( (string) $s, ENT_QUOTES, 'UTF-8' );

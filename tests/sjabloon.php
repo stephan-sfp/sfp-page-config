@@ -5,6 +5,9 @@
  * telt per .html-bestand in <map> wat de controle "Sjabloontekst niet
  * ingevuld" nog meldt, met de opgegeven shortcodes als bekend op de voorkant.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler( function ( $severity, $message, $file, $line ) {
     throw new ErrorException( $message, 0, $severity, $file, $line );

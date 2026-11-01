@@ -38,8 +38,9 @@ function sfp_page_config_hero_focal_css() {
     // hun standaard (het midden), zoals tot nu toe.
     $gekozen = metadata_exists( 'post', $post_id, 'sfp_hero_focal_x' ) || metadata_exists( 'post', $post_id, 'sfp_hero_focal_y' );
     if ( ! $gekozen ) {
-        $terms = wp_get_object_terms( $post_id, 'post_tag', array( 'fields' => 'slugs' ) );
-        if ( ! in_array( 'pijler', (array) $terms, true ) ) {
+        // has_tag() leest de termcache van de hoofdquery; wp_get_object_terms()
+        // deed hier een extra databasevraag per pagina.
+        if ( ! has_tag( 'pijler', $post_id ) ) {
             return;
         }
     }

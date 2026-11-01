@@ -219,6 +219,11 @@ function sfp_page_config_tekstanalyse_controleer( array $b ) {
     foreach ( $b['per_zin'] as $m ) {
         if ( ! in_array( $m['meet'], sfp_page_config_tekstanalyse_metingen(), true ) ) {
             $fouten[] = 'Per zin "' . $m['id'] . '": onbekende meting "' . $m['meet'] . '". Bekend: ' . implode( ', ', sfp_page_config_tekstanalyse_metingen() ) . '.';
+        } elseif ( 'passief' === $m['meet'] && function_exists( 'sfp_page_config_taal' ) && 'nl' !== sfp_page_config_taal() ) {
+            // De lijdende vorm herkent de motor alleen in het Nederlands
+            // (word, wordt, werd + voltooid deelwoord); op een Engelse of
+            // Portugese site zou de meting altijd 0 geven (3.22.0).
+            $fouten[] = 'Per zin "' . $m['id'] . '": de meting "passief" werkt alleen in het Nederlands; de site is ' . sfp_page_config_taal() . '.';
         }
         if ( 'lijst' === $m['meet'] && ! isset( ( (array) $b['lijsten'] )[ $m['lijst'] ] ) ) {
             $fouten[] = 'Per zin "' . $m['id'] . '": de lijst "' . $m['lijst'] . '" bestaat niet.';

@@ -1,5 +1,8 @@
 <?php
 /** Run with: php tests/beheer.php */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler(
     function ( $severity, $message, $file, $line ) {
@@ -505,32 +508,8 @@ $GLOBALS['meta'][4]['_sfp_controle_meld_weer'] = '1';
 same( array( 'knop' ), sfp_page_config_controle_genegeerd( 4 ), 'Na "Meld weer" telt de oude keuze niet meer' );
 $GLOBALS['meta'][4] = array();
 
-/* ---------- Oude plugin weer aanzetten ---------- */
+/* ---------- Overgangscode voor de oude plugins (weg sinds 3.22.0) ---------- */
 
-$_REQUEST                  = array( 'action' => 'activate', 'plugin' => 'sfp-google-reviews/sfp-google-reviews.php' );
-$_SERVER['REQUEST_METHOD'] = 'GET';
-$_SERVER['REQUEST_URI']    = '/?plugin=sfp-google-reviews/sfp-google-reviews.php';
-same( false, sfp_page_config_plugin_wordt_aangezet( 'sfp-google-reviews' ), 'Een bezoeker kan het op de voorkant niet uitlokken' );
-$GLOBALS['admin']       = true;
-$_SERVER['REQUEST_URI'] = '/wp-admin/plugins.php?action=activate&plugin=sfp-google-reviews%2Fsfp-google-reviews.php';
-same( true, sfp_page_config_plugin_wordt_aangezet( 'sfp-google-reviews' ), 'Aanzetten in wp-admin' );
-same( false, sfp_page_config_plugin_wordt_aangezet( 'sfp-tooltip' ), 'Andere plugin' );
-$_REQUEST               = array( 'action' => 'activate-selected', 'checked' => array( 'hello.php', 'sfp-google-reviews/sfp-google-reviews.php' ) );
-$_SERVER['REQUEST_URI'] = '/wp-admin/plugins.php';
-same( true, sfp_page_config_plugin_wordt_aangezet( 'sfp-google-reviews' ), 'Aanzetten in bulk' );
-$_REQUEST = array();
-same( false, sfp_page_config_plugin_wordt_aangezet( 'sfp-google-reviews' ), 'Het pluginscherm zonder actie' );
-$GLOBALS['admin']          = false;
-$_SERVER['REQUEST_URI']    = '/wp-json/wp/v2/plugins/sfp-google-reviews/sfp-google-reviews?context=edit';
-same( false, sfp_page_config_plugin_wordt_aangezet( 'sfp-google-reviews' ), 'REST: alleen lezen telt niet' );
-$_SERVER['REQUEST_METHOD'] = 'POST';
-same( true, sfp_page_config_plugin_wordt_aangezet( 'sfp-google-reviews' ), 'Aanzetten via REST' );
-$_SERVER['REQUEST_URI'] = '/wp-json/wp/v2/plugins/sfp-google-reviews-extra/x';
-same( false, sfp_page_config_plugin_wordt_aangezet( 'sfp-google-reviews' ), 'Andere map met dezelfde start' );
-$_SERVER['REQUEST_URI'] = '/';
-$_REQUEST               = array( 'rest_route' => '/wp/v2/plugins/sfp-google-reviews/sfp-google-reviews' );
-same( true, sfp_page_config_plugin_wordt_aangezet( 'sfp-google-reviews' ), 'Aanzetten via REST zonder nette adressen' );
-$_REQUEST                  = array();
-$_SERVER['REQUEST_METHOD'] = 'GET';
+same( false, function_exists( 'sfp_page_config_plugin_wordt_aangezet' ), 'Geen aanzetcontrole meer voor de oude plugins' );
 
 echo "OK: $checks checks\n";

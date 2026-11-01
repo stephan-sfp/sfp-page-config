@@ -142,7 +142,7 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
                 continue;
             }
 
-            $dates_str = implode( $atts['separator'], $dates_html );
+            $dates_str = implode( sfp_page_config_scheiding( $atts['separator'] ), $dates_html );
 
             // Add group label when showing multiple groups OR layout=list.
             if ( $total_groups > 1 || 'list' === $atts['layout'] ) {
@@ -238,7 +238,7 @@ function sfp_page_config_shortcode_cursus_tijd( $atts ) {
     // waarvan de eerste dag vandaag of later is.
     $data = sfp_page_config_cursusdata_toekomst( $post_id );
 
-    $sep    = $atts['separator'];
+    $sep    = html_entity_decode( wp_kses( (string) $atts['separator'], array() ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
     $suffix = $atts['suffix'];
 
     // Collect formatted times per groep (1-based) for groups that have one.
@@ -307,3 +307,13 @@ function sfp_page_config_shortcode_cursus_tijd( $atts ) {
         : '';
 }
 
+/**
+ * Een scheidingsteken uit een shortcode-attribuut, veilig voor de HTML.
+ * Entiteiten zoals &bull; blijven werken; tags gaan eruit.
+ *
+ * @param  string $sep Ruwe waarde.
+ * @return string      Geëscapete HTML.
+ */
+function sfp_page_config_scheiding( $sep ) {
+    return esc_html( html_entity_decode( wp_kses( (string) $sep, array() ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) );
+}

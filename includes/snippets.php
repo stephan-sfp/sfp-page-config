@@ -59,6 +59,11 @@ function sfp_page_config_snippets_mag() {
     if ( ! sfp_page_config_onderdeel_aan( 'snippets' ) ) {
         return new WP_Error( 'sfp_snippets_uit', 'Snippetbeheer staat op deze site uit (SFP Beheer, Onderdelen).', array( 'status' => 403 ) );
     }
+    // Een site die bestandswijzigingen uitzet (DISALLOW_FILE_MODS), mag ook
+    // via deze route geen PHP laten schrijven.
+    if ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ) {
+        return new WP_Error( 'sfp_snippets_bestanden_uit', 'Op deze site staan bestandswijzigingen uit (DISALLOW_FILE_MODS).', array( 'status' => 403 ) );
+    }
     $gebruiker = wp_get_current_user();
     if ( ! current_user_can( 'manage_options' ) || sfp_page_config_snippets_gebruiker() !== (string) $gebruiker->user_login ) {
         return new WP_Error( 'sfp_snippets_geen_toegang', 'Alleen het serviceaccount ' . sfp_page_config_snippets_gebruiker() . ' mag snippets beheren.', array( 'status' => 403 ) );
@@ -333,6 +338,7 @@ function sfp_page_config_snippets_invoer( array $invoer ) {
 function sfp_page_config_snippets_naar_ase( $id ) {
     $post    = get_post( $id );
     $map     = (string) CSM_UPLOAD_DIR;
+    sfp_page_config_snippets_log( $id, (string) $post->post_content );
     $bestand = sfp_page_config_snippets_bestand( $id, 'php' );
     if ( ! is_dir( $map ) ) {
         wp_mkdir_p( $map );
@@ -350,6 +356,29 @@ function sfp_page_config_snippets_naar_ase( $id ) {
     Code_Snippets_Manager::update_php_snippet_validated_hash_after_file_write( $id, $bestand );
     Code_Snippets_Manager()->rebuild_snippets_tree();
     return true;
+}
+
+/**
+ * Logboek van elke schrijfactie: wie, wanneer, welk snippet en het
+ * controlegetal (md5) van de code voor en na. De laatste 200 regels, niet
+ * autoload. Zichtbaar via GET /sfp/v1/snippets (veld log).
+ *
+ * @param int    $id   Snippet.
+ * @param string $code Nieuwe code.
+ */
+function sfp_page_config_snippets_log( $id, $code ) {
+    $bestand = sfp_page_config_snippets_bestand( $id, 'php' );
+    $voor    = is_readable( $bestand ) ? md5_file( $bestand ) : '';
+    $log     = get_option( 'sfp_page_config_snippets_log', array() );
+    $log     = is_array( $log ) ? $log : array();
+    $log[]   = array(
+        'tijd'      => wp_date( 'Y-m-d H:i:s' ),
+        'gebruiker' => (string) wp_get_current_user()->user_login,
+        'snippet'   => (int) $id,
+        'voor'      => (string) $voor,
+        'na'        => md5( $code ),
+    );
+    update_option( 'sfp_page_config_snippets_log', array_slice( $log, -200 ), false );
 }
 
 /**
@@ -555,6 +584,7 @@ function sfp_page_config_snippets_rest() {
                             'map'           => (string) CSM_UPLOAD_DIR,
                             'veilige_modus' => sfp_page_config_snippets_veilige_modus(),
                             'snippets'      => array_map( 'sfp_page_config_snippets_rij', $posts ),
+                            'log'           => array_slice( array_reverse( (array) get_option( 'sfp_page_config_snippets_log', array() ) ), 0, 50 ),
                         )
                     );
                 },

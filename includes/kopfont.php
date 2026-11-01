@@ -48,23 +48,14 @@ function sfp_page_config_kopfont_vars() {
     $font   = wp_strip_all_tags( $font );
     $weight = wp_strip_all_tags( $weight );
 
+    // Sinds 3.22.0 in één blok met de fontvariabelen van het onderdeel
+    // Kopfont (--ux-display-font, --ux-heading-font); daarvoor twee blokken.
+    $ux = function_exists( 'sfp_page_config_kopfont_ux_declaraties' ) && sfp_page_config_onderdeel_aan( 'kopfont' ) ? sfp_page_config_kopfont_ux_declaraties() : '';
     printf(
-        "<style id=\"sfp-kopfont\">:root{--sfp-kopfont:%s;--sfp-kopfont-gewicht:%s;}</style>\n",
+        "<style id=\"sfp-kopfont\">:root{--sfp-kopfont:%s;--sfp-kopfont-gewicht:%s;%s}</style>\n",
         $font, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gevalideerd, zie hierboven.
-        $weight // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gevalideerd, zie hierboven.
+        $weight, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gevalideerd, zie hierboven.
+        $ux // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gevalideerd in sfp_page_config_sanitize_font_family().
     );
 }
 
-add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_kopfont_rucss_exclusion' );
-
-/**
- * Laat WP Rocket (Remove Unused CSS) dit inline blok ongemoeid.
- *
- * @param  array $exclusions Uitsluitingen op attribuut.
- * @return array
- */
-function sfp_page_config_kopfont_rucss_exclusion( $exclusions ) {
-    $exclusions   = (array) $exclusions;
-    $exclusions[] = 'sfp-kopfont';
-    return $exclusions;
-}

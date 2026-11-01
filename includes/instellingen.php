@@ -27,6 +27,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once __DIR__ . '/bestanden.php';
+
 /* =========================================================================
  * Lezen
  * ====================================================================== */
@@ -48,11 +50,6 @@ function sfp_page_config_instellingen() {
  * @param  mixed  $default Terugval.
  * @return mixed
  */
-function sfp_page_config_get_setting( $key, $default = '' ) {
-    $settings = sfp_page_config_instellingen();
-    return isset( $settings[ $key ] ) && '' !== $settings[ $key ] ? $settings[ $key ] : $default;
-}
-
 /**
  * De soorten pagina met een knop onderaan.
  *
@@ -726,6 +723,25 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 $bewaard[]        = $sleutel;
                 break;
 
+            case 'publicaties_sites':
+                // Kennisbanken voor [sfp_publicaties]: alleen https-adressen,
+                // bewaard als basisadres per regel.
+                $regels = is_array( $ruw ) ? $ruw : preg_split( '/\r\n|\r|\n|,/', (string) $ruw );
+                $sites  = array();
+                foreach ( $regels as $regel ) {
+                    $regel = trim( (string) $regel );
+                    if ( '' === $regel ) {
+                        continue;
+                    }
+                    $host = (string) wp_parse_url( false === strpos( $regel, '://' ) ? 'https://' . $regel : $regel, PHP_URL_HOST );
+                    if ( '' !== $host && preg_match( '/^[a-z0-9.-]+\.[a-z]{2,}$/i', $host ) ) {
+                        $sites[] = 'https://' . strtolower( $host );
+                    }
+                }
+                $alle[ $sleutel ] = implode( "\n", array_values( array_unique( $sites ) ) );
+                $bewaard[]        = $sleutel;
+                break;
+
             case 'affiliate_patronen':
                 $regels           = is_array( $ruw ) ? $ruw : preg_split( '/\r\n|\r|\n/', (string) $ruw );
                 $regels           = array_values( array_unique( array_filter( array_map( 'sanitize_text_field', array_map( 'trim', array_map( 'strval', $regels ) ) ), 'strlen' ) ) );
@@ -855,68 +871,3 @@ function sfp_page_config_instelling_naar_norm( $pad ) {
     return true;
 }
 
-/**
- * Wordt een plugin uit deze map in dit verzoek aangezet?
- *
- * Nodig bij terugdraaien: de oude plugins SFP Google Reviews en SFP Tooltip
- * gebruiken namen die deze plugin heeft overgenomen. Zet iemand zo'n oude
- * plugin weer aan, dan houdt deze plugin zich in dat ene verzoek in. Vanaf het
- * volgende verzoek is de oude plugin actief en blijft dit onderdeel slapen.
- *
- * Leest het verzoek alleen om te beslissen wat er niet geladen wordt; er
- * wordt niets mee opgeslagen of uitgevoerd.
- *
- * @param  string $map Mapnaam van de plugin.
- * @return bool
- */
-function sfp_page_config_plugin_wordt_aangezet( $map ) {
-    $map = (string) $map;
-    if ( '' === $map ) {
-        return false;
-    }
-
-    // WP-CLI: wp plugin activate <map>.
-    if ( defined( 'WP_CLI' ) && WP_CLI && ! empty( $GLOBALS['argv'] ) && is_array( $GLOBALS['argv'] ) ) {
-        $argv = array_map( 'strval', $GLOBALS['argv'] );
-        if ( in_array( 'activate', $argv, true ) && in_array( $map, $argv, true ) ) {
-            return true;
-        }
-    }
-
-    // Alleen op de plekken waar een plugin aangezet kan worden: het
-    // pluginscherm in wp-admin en de REST-route voor plugins. Een bezoeker
-    // kan dit op de voorkant niet met een adres uitlokken. Wie er is
-    // ingelogd, is hier nog niet te vragen zonder de aanmelding via een
-    // applicatiewachtwoord te verstoren.
-    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- alleen lezen, zie de toelichting.
-    $methode = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) : 'GET';
-    $uri     = isset( $_SERVER['REQUEST_URI'] ) ? rawurldecode( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) : '';
-
-    if ( is_admin() && false !== strpos( $uri, '/plugins.php' ) ) {
-        $kandidaten = array();
-        if ( isset( $_REQUEST['plugin'] ) && is_string( $_REQUEST['plugin'] ) ) {
-            $kandidaten[] = sanitize_text_field( wp_unslash( $_REQUEST['plugin'] ) );
-        }
-        if ( isset( $_REQUEST['checked'] ) && is_array( $_REQUEST['checked'] ) ) {
-            foreach ( wp_unslash( $_REQUEST['checked'] ) as $gekozen ) {
-                if ( is_string( $gekozen ) ) {
-                    $kandidaten[] = sanitize_text_field( $gekozen );
-                }
-            }
-        }
-        foreach ( $kandidaten as $kandidaat ) {
-            if ( 0 === strpos( $kandidaat, $map . '/' ) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // REST: POST of PUT op /wp/v2/plugins/<map>/<bestand>.
-    if ( ! in_array( $methode, array( 'POST', 'PUT', 'PATCH' ), true ) ) {
-        return false;
-    }
-    $route = isset( $_REQUEST['rest_route'] ) && is_string( $_REQUEST['rest_route'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['rest_route'] ) ) : '';
-    // phpcs:enable WordPress.Security.NonceVerification.Recommended
-    return false !== strpos( $uri, '/wp/v2/plugins/' . $map . '/' ) || 0 === strpos( $route, '/wp/v2/plugins/' . $map . '/' );
-}

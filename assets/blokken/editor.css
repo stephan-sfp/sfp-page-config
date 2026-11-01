@@ -65,3 +65,11 @@
 .sfp-editor-vanzelfband [hidden]{display:none!important}
 .sfp-editor-definitie .sfp-editor-promo{width:auto;max-width:none;margin:0}
 @media (min-width:900px){.sfp-editor-definitie--promo{grid-template-columns:minmax(0,1fr) 260px}}
+/* Held met een tool in de editor (3.22.0): het blok Tool zit in een eigen omhulling; dezelfde plek als op de site. */
+:root .sfp-held--tool .sfp-held__binnen>.wp-block-sfp-tool{margin:28px 0 0;color:var(--sfp-b-body);text-shadow:none;grid-area:auto}
+@media (min-width:981px){
+  :root .sfp-held--tool .sfp-held__binnen>.wp-block-sfp-tool{grid-column:2;grid-row:1 / span 8;align-self:center;margin:0}
+}
+.sfp-held--tool .sfp-held__binnen>.wp-block-sfp-tool .sfp-tool__voorlopig{pointer-events:none}
+/* De paginatitel waar de site hem ook niet toont (zie editor.js). */
+.sfp-titel-uit .editor-visual-editor__post-title-wrapper,.sfp-titel-uit .editor-post-title{display:none}

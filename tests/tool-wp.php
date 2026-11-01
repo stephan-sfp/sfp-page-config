@@ -11,6 +11,9 @@
  *
  * @package SFP_Page_Config
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -52,7 +55,7 @@ $uit = $s;
 $uit['onderdelen']['tools'] = '0';
 update_option( 'sfp_settings', $uit );
 if ( empty( $GLOBALS['sfp_page_config_tool_eigen_type'] ) && ! post_type_exists( 'tool' ) ) {
-    sfp_page_config_tool_posttype();
+    sfp_page_config_berichttypes_registreer();
     $check( 'tools uit: plugin registreert geen berichttype', ! post_type_exists( 'tool' ) );
 }
 $check( 'tools uit: tool niet in de paginatypes', ! in_array( 'tool', sfp_page_config_post_types(), true ) );
@@ -66,7 +69,7 @@ delete_option( 'sfp_page_config_tool_feedback' );
 update_option( 'cvd_tool_feedback_counts', array( 'proef-tool' => array( 'omhoog' => 7, 'omlaag' => 2 ) ), false );
 // Het berichttype komt bij init; zette deze test Tools pas net aan, dan nu.
 if ( ! post_type_exists( 'tool' ) ) {
-    sfp_page_config_tool_posttype();
+    sfp_page_config_berichttypes_registreer();
     sfp_page_config_tool_meta();
 }
 $check( 'tools aan: tool in de paginatypes', in_array( 'tool', sfp_page_config_post_types(), true ) );

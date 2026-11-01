@@ -1,5 +1,8 @@
 <?php
 /** Run with: php tests/brand-regression.php [raw] */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 set_error_handler( function ( $severity, $message, $file, $line ) {
     throw new ErrorException( $message, 0, $severity, $file, $line );
@@ -16,7 +19,7 @@ if ( ! in_array( 'raw', $argv ?? array(), true ) ) {
 
 // Execute the actual production brand functions without unrelated WP hooks.
 $source = file_get_contents( dirname( __DIR__ ) . '/sfp-page-config.php' );
-$end = strpos( $source, '/* =========================================================================' , strpos( $source, 'function sfp_page_config_longread_color_keys' ) );
+$end = strpos( $source, '/* =========================================================================' , strpos( $source, 'function sfp_page_config_get_brand' ) );
 if ( false === $end ) { throw new RuntimeException( 'Brand section not found' ); }
 eval( '?>' . substr( $source, 0, $end ) );
 $checks = 0;

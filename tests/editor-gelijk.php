@@ -6,6 +6,9 @@
  * WordPress. De doorloop in een echte editor (alle voorbeeldtools, typen en
  * opslaan, uitklap en tabs) gebeurt in een lokale testinstallatie.
  */
+if ( 'cli' !== PHP_SAPI ) {
+    exit( 1 );
+}
 error_reporting( E_ALL );
 $map    = dirname( __DIR__ ) . '/';
 $fouten = 0;
@@ -77,7 +80,7 @@ check( false !== strpos( $dp, "'Geavanceerd'" ), 'beschrijving onder Geavanceerd
 
 /* Restpunten 3.18.0. */
 // Elk CSS-bestand van de blokken staat in de editorlijst (zelftest-cta ontbrak).
-preg_match( "/function sfp_page_config_blokken_editor_css\(\).*?foreach \( array\(([^)]*)\)/s", $blokken, $lijst );
+preg_match( "/function sfp_page_config_blokken_editor_bestanden\(\).*?return array\(([^)]*)\)/s", $blokken, $lijst );
 $in_lijst = isset( $lijst[1] ) ? array_map( function ( $x ) { return trim( $x, " '\t\n" ); }, explode( ',', $lijst[1] ) ) : array();
 foreach ( glob( $map . 'assets/blokken/*.css' ) as $bestand ) {
     $naam = basename( $bestand, '.css' );

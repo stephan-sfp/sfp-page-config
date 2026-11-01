@@ -31,6 +31,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once __DIR__ . '/bestanden.php';
+
 add_filter( 'rocket_exclude_js', 'sfp_page_config_rocket_niet_verkleinen' );
 add_filter( 'rocket_exclude_css', 'sfp_page_config_rocket_niet_verkleinen' );
 
@@ -47,6 +49,33 @@ function sfp_page_config_rocket_niet_verkleinen( $uitsluitingen ) {
 }
 
 /**
+ * De URL van een bestand onder assets/, met ?ver=. Staat er een verkleinde
+ * versie naast (.min.js of .min.css, gebouwd door de releaseworkflow), dan
+ * die. In de repo staan alleen de leesbare bronnen.
+ *
+ * @param  string $bestand Pad onder assets/, bijvoorbeeld 'artikel.js'.
+ * @return string
+ */
+function sfp_page_config_asset( $bestand ) {
+    return add_query_arg( 'ver', SFP_PAGE_CONFIG_VERSION, sfp_page_config_asset_url( $bestand ) );
+}
+
+/**
+ * Een script van de plugin als los bestand in de footer: met defer, niet
+ * uitgesteld door WP Rocket (nowprocket) en door de browser te cachen tussen
+ * pagina's (sinds 3.22.0; daarvoor stond de code inline op elke pagina).
+ *
+ * @param string $id      Id van de scripttag.
+ * @param string $bestand Pad onder assets/.
+ */
+function sfp_page_config_script_tag( $id, $bestand ) {
+    if ( ! is_readable( SFP_PAGE_CONFIG_DIR . 'assets/' . ltrim( $bestand, '/' ) ) ) {
+        return;
+    }
+    echo '<script id="' . esc_attr( $id ) . '" src="' . esc_url( sfp_page_config_asset( $bestand ) ) . '" defer nowprocket></script>' . "\n"; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript -- in de footer na de wachtrij, zie sfp_page_config_artikel_js().
+}
+
+/**
  * Handles van de voorkant waarvan de opmaak inline staat.
  *
  * @return string[]
@@ -58,6 +87,9 @@ function sfp_page_config_css_inline_handles() {
         'sfp-reviews',
         'sfp-page-config-sales',
         'sfp-tool',
+        'sfp-tool-generator',
+        'sfp-tool-tekstanalyse',
+        'sfp-tool-kaart',
         'sfp-longread-nav',
         'sfp-zelftest',
     );
@@ -70,17 +102,7 @@ function sfp_page_config_css_inline_handles() {
  * @return string
  */
 function sfp_page_config_css_bestand( $bestand ) {
-    static $cache = array();
-    if ( isset( $cache[ $bestand ] ) ) {
-        return $cache[ $bestand ];
-    }
-    $pad = SFP_PAGE_CONFIG_DIR . 'assets/' . ltrim( (string) $bestand, '/' );
-    $css = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
-    $css = preg_replace( '#/\*.*?\*/#s', '', $css );
-    $css = preg_replace( '/\s+/', ' ', $css );
-    $css = trim( str_replace( array( ' {', '{ ', ' }', '; ', ': ', ', ', ';}' ), array( '{', '{', '}', ';', ':', ',', '}' ), $css ) );
-    $cache[ $bestand ] = $css;
-    return $css;
+    return sfp_page_config_css_lees( $bestand );
 }
 
 /**
@@ -104,19 +126,84 @@ function sfp_page_config_css_inline( $handle, $bestand ) {
 }
 
 add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_css_inline_rucss' );
+add_filter( 'rocket_delay_js_exclusions', 'sfp_page_config_rocket_delay' );
 
 /**
- * WP Rocket Remove Unused CSS laat de inline opmaak van de plugin staan:
- * regels voor wat pas na het laden verschijnt (resultaat van een tool,
- * staat van de WhatsApp-knop) zijn bij het meten niet in beeld.
+ * Alle <style>-ids van de plugin die WP Rocket Remove Unused CSS moet laten
+ * staan (sinds 3.22.0 op één plek). Regels voor wat pas na het laden of na
+ * een klik verschijnt (resultaat van een tool, open uitklap, tooltip,
+ * panelen) zijn bij het meten niet in beeld en zouden anders wegvallen.
  *
+ * @return string[]
+ */
+function sfp_page_config_rocket_rucss_ids() {
+    $ids = array(
+        'sfp-artikel',
+        'sfp-blokken',
+        'sfp-footer-groepen',
+        'sfp-kleurrollen',
+        'sfp-kopfont-ux',
+        'sfp-kop-leestekens',
+        'sfp-kopfont',
+        'sfp-tooltip-css',
+        'sfp-kopieer-inline-css',
+        'sfp-bronnen-inline-css',
+        'sfp-praktijkblok-inline-css',
+        'sfp-auteursbio-inline-css',
+    );
+    foreach ( sfp_page_config_css_inline_handles() as $handle ) {
+        $ids[] = $handle . '-inline-css';
+    }
+    return $ids;
+}
+
+/**
+ * Scripts die WP Rocket niet mag uitstellen (sinds 3.22.0 op één plek). Ze
+ * zijn klein en moeten er direct zijn: de tool en de zelftest staan anders
+ * pas na de eerste aanraking, de knop onderaan mist de held, tabs en de
+ * inhoudsopgave reageren niet en de footer verspringt. De inline configuratie
+ * (sfp...Config) hoort erbij: WP Rocket stelt inline scripts los uit.
+ *
+ * @return string[]
+ */
+function sfp_page_config_rocket_delay_lijst() {
+    return array(
+        'sfp-page-config/assets/dropdown',
+        'sfp-page-config/assets/sticky-cta',
+        'sfp-page-config/assets/longread-nav',
+        'sfp-page-config/assets/artikel',
+        'sfp-page-config/assets/blokken/',
+        'sfp-page-config/assets/tool/',
+        'sfp-page-config/assets/footer-groepen',
+        'assets/zelftest/',
+        'sfpStickyConfig',
+        'sfpCourseData',
+        'sfpDropdownConfig',
+        'sfpToolConfig',
+        'sfpZelftest',
+        'sfpArtikel',
+        'sfp-artikel-js',
+        'sfp-artikel-viewport',
+        'sfp-blokken-js',
+        'sfp-inhoud-js',
+        'sfp-footer-groepen-js',
+        'sfp-fj__groep',
+        'sfp-zelftest',
+    );
+}
+
+/**
  * @param  array $uitsluitingen Uitsluitingen op attribuut.
  * @return array
  */
 function sfp_page_config_css_inline_rucss( $uitsluitingen ) {
-    $uitsluitingen = (array) $uitsluitingen;
-    foreach ( sfp_page_config_css_inline_handles() as $handle ) {
-        $uitsluitingen[] = $handle . '-inline-css';
-    }
-    return $uitsluitingen;
+    return array_values( array_unique( array_merge( (array) $uitsluitingen, sfp_page_config_rocket_rucss_ids() ) ) );
+}
+
+/**
+ * @param  array $uitsluitingen Uitsluitingen.
+ * @return array
+ */
+function sfp_page_config_rocket_delay( $uitsluitingen ) {
+    return array_values( array_unique( array_merge( (array) $uitsluitingen, sfp_page_config_rocket_delay_lijst() ) ) );
 }
