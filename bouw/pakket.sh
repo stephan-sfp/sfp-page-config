@@ -10,6 +10,7 @@ uit="${1:-dist}"
 werk="$(mktemp -d)"
 trap 'rm -rf "$werk"' EXIT
 mkdir -p "$uit"
+uit="$(cd "$uit" && pwd)"
 git archive --format=tar --prefix=sfp-page-config/ HEAD | tar -x -C "$werk"
 if command -v node >/dev/null 2>&1 && [ -f bouw/verklein.js ]; then
   node bouw/verklein.js "$werk/sfp-page-config"
@@ -20,7 +21,7 @@ for verboden in tests .github bouw; do
   fi
 done
 rm -f "$uit/sfp-page-config.zip"
-( cd "$werk" && zip -qrX "$OLDPWD/$uit/sfp-page-config.zip" sfp-page-config )
+( cd "$werk" && zip -qrX "$uit/sfp-page-config.zip" sfp-page-config )
 som=$(sha256sum "$uit/sfp-page-config.zip" | cut -d' ' -f1)
 printf '%s  sfp-page-config.zip\n' "$som" > "$uit/sfp-page-config.zip.sha256"
 echo "$som"
