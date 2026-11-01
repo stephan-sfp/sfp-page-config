@@ -509,6 +509,7 @@ function sfp_page_config_delay_js_exclusions( $exclusions ) {
 $sfp_includes = array(
     'includes/instellingen.php',
     'includes/teksten.php',
+    'includes/rest.php',
     'includes/metabox.php',
     'includes/cursusdata.php',
     'includes/wachtlijst.php',

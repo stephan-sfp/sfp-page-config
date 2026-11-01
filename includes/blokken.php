@@ -1246,5 +1246,5 @@ function sfp_page_config_faq_schema() {
         '@type'      => 'FAQPage',
         'mainEntity' => $vragen,
     );
-    echo '<script type="application/ld+json" id="sfp-faq-schema">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON uit wp_json_encode met JSON_HEX_TAG.
+    echo sfp_page_config_json_ld( $schema, 'sfp-faq-schema' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON met JSON_HEX_TAG.
 }

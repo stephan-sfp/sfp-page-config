@@ -75,6 +75,16 @@ function sfp_zelftest_dagelijks() {
         ++$uit['geanonimiseerd'];
     }
 
+    // 2b. Onafgemaakte tests na 30 dagen: de CRM-gegevens zijn dan al
+    // verstuurd, en botverkeer blijft zo geen twee jaar staan. De rij zelf
+    // blijft, zodat de tellingen in het beheer kloppen.
+    $grens = sfp_zelftest_nu( -30 * DAY_IN_SECONDS );
+    $rijen = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$tabel} WHERE geanonimiseerd = 0 AND afgerond_op IS NULL AND gestart_op < %s LIMIT 500", $grens ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+    foreach ( (array) $rijen as $rij ) {
+        sfp_zelftest_anonimiseer( $rij );
+        ++$uit['geanonimiseerd'];
+    }
+
     // 3. Logboek: alleen de laatste 30 dagen.
     $log = get_option( 'sfp_zelftest_log', array() );
     if ( is_array( $log ) && $log ) {

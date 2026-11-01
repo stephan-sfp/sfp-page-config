@@ -944,6 +944,9 @@ function sfp_page_config_reviews_eigen_bewaar( array $gegevens, $samenvoegen = f
     if ( '' === trim( (string) $review['author'] ) || '' === trim( (string) $review['text'] ) ) {
         return new WP_Error( 'sfp_reviews_onvolledig', 'Vul een naam en een tekst in.', array( 'status' => 400 ) );
     }
+    if ( ! $bestaand && count( SFP_Reviews_Manual::get_all() ) >= SFP_Reviews_Manual::MAX ) {
+        return new WP_Error( 'sfp_reviews_vol', sprintf( 'Er staan al %d eigen reviews. Haal er eerst een weg.', SFP_Reviews_Manual::MAX ), array( 'status' => 400 ) );
+    }
     if ( $bestaand ) {
         SFP_Reviews_Manual::update( $id, $review );
     } else {

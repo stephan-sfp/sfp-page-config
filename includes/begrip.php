@@ -711,7 +711,7 @@ function sfp_page_config_begrip_schema() {
     if ( '' !== $maker ) {
         $gegevens['author'] = array( '@id' => $maker );
     }
-    echo '<script type="application/ld+json" id="sfp-begrip-schema">' . wp_json_encode( $gegevens, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON uit eigen gegevens.
+    echo sfp_page_config_json_ld( $gegevens, 'sfp-begrip-schema' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON met JSON_HEX_TAG.
 }
 
 /**

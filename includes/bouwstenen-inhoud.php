@@ -820,7 +820,7 @@ function sfp_page_config_bronnen_schema() {
             'itemListElement' => $items,
         ),
     );
-    return '<script type="application/ld+json">' . wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . "</script>\n";
+    return sfp_page_config_json_ld( $schema );
 }
 
 /* =========================================================================

@@ -102,7 +102,7 @@ function sfp_page_config_cursusdata_schoon( $data ) {
         $dates = array();
         foreach ( $sm['data'] as $d ) {
             $d = sanitize_text_field( (string) $d );
-            if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $d ) && strtotime( $d ) ) {
+            if ( sfp_page_config_geldige_datum( $d ) ) {
                 $dates[] = $d;
             }
         }

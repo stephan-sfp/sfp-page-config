@@ -212,7 +212,7 @@ function sfp_page_config_repair_faq_json( $matches, $html ) {
         );
     }
 
-    $json = wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+    $json = wp_json_encode( $schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP );
 
     if ( ! $json ) {
         if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {

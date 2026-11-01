@@ -22,7 +22,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function sfp_page_config_schedule_cron() {
     if ( ! wp_next_scheduled( 'sfp_page_config_daily_check' ) && ! wp_next_scheduled( 'sfp_daily_check' ) ) {
-        wp_schedule_event( strtotime( 'today 08:00' ), 'daily', 'sfp_page_config_daily_check' );
+        // 08:00 in de tijdzone van de site, niet 08:00 UTC.
+        $start = ( new DateTimeImmutable( 'today 08:00', wp_timezone() ) )->getTimestamp();
+        if ( $start < time() ) {
+            $start += DAY_IN_SECONDS;
+        }
+        wp_schedule_event( $start, 'daily', 'sfp_page_config_daily_check' );
     }
 }
 add_action( 'init', 'sfp_page_config_schedule_cron' );
@@ -121,6 +126,9 @@ function sfp_page_config_run_daily_check() {
                     continue;
                 }
                 foreach ( $sm['data'] as $date_str ) {
+                    if ( ! is_string( $date_str ) ) {
+                        continue;
+                    }
                     $ts = strtotime( $date_str );
                     if ( ! $ts ) {
                         continue;

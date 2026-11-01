@@ -819,7 +819,40 @@ function sfp_page_config_generator_antwoord( array $b, array $a, $id ) {
     if ( 'kort' === $v['type'] ) {
         $w = sfp_page_config_generator_trim( $w );
     }
-    return implode( '', array_slice( sfp_page_config_generator_tekens( $w ), 0, $max ) );
+    return sfp_page_config_generator_kap( $w, $max );
+}
+
+/**
+ * Kap een tekst af op een aantal tekens, gelijk aan
+ * Array.from( s ).slice( 0, max ).join( '' ) in de browser. Eerst afkappen,
+ * dan pas tekens splitsen: zo kost een enorme invoer geen enorm geheugen.
+ * Ongeldige UTF-8 geeft een lege tekst, net als het splitsen deed.
+ *
+ * @param  string $w   Tekst.
+ * @param  int    $max Maximum aantal tekens.
+ * @return string
+ */
+function sfp_page_config_generator_kap( $w, $max ) {
+    $w = (string) $w;
+    if ( ! mb_check_encoding( $w, 'UTF-8' ) ) {
+        return '';
+    }
+    return mb_substr( $w, 0, max( 0, (int) $max ), 'UTF-8' );
+}
+
+/**
+ * Haal links en mailadressen uit vrije tekst van een bezoeker voordat die in
+ * een mail vanaf de site gaat: zo is de toolmail geen doorgeefluik voor
+ * links naar willekeurige adressen.
+ *
+ * @param  string $w Tekst.
+ * @return string
+ */
+function sfp_page_config_generator_zonder_links( $w ) {
+    $w = preg_replace( '~(?:https?://|www\.)\S+~iu', '', (string) $w );
+    $w = preg_replace( '~\b[\p{L}0-9-]+(?:\.[\p{L}0-9-]+)*\.[a-z]{2,}(?:/\S*)?~iu', '', (string) $w );
+    $w = str_replace( array( '@', '＠' ), ' ', (string) $w );
+    return trim( preg_replace( '~[ \t]{2,}~u', ' ', (string) $w ) );
 }
 
 /**
@@ -1729,8 +1762,10 @@ function sfp_page_config_generator_mail_antwoorden( array $b, array $antwoorden 
             continue;
         }
         $w = sfp_page_config_generator_antwoord( $b, $antwoorden, $id );
-        if ( is_string( $w ) && in_array( $v['type'], array( 'kort', 'tekstvak', 'regels', 'getallen' ), true ) ) {
-            $w = implode( '', array_slice( sfp_page_config_generator_tekens( $w ), 0, 'kort' === $v['type'] ? 80 : ( 'getallen' === $v['type'] ? 2000 : 400 ) ) );
+        if ( is_string( $w ) && in_array( $v['type'], array( 'kort', 'tekstvak', 'regels' ), true ) ) {
+            $w = sfp_page_config_generator_kap( sfp_page_config_generator_zonder_links( $w ), 'kort' === $v['type'] ? 80 : 400 );
+        } elseif ( is_string( $w ) && 'getallen' === $v['type'] ) {
+            $w = sfp_page_config_generator_kap( $w, 2000 );
         }
         if ( ! sfp_page_config_generator_leeg( $w ) ) {
             $schoon[ $id ] = $w;
@@ -1738,7 +1773,7 @@ function sfp_page_config_generator_mail_antwoorden( array $b, array $antwoorden 
     }
     $vink = array();
     foreach ( array_slice( sfp_page_config_generator_vinkjes( $antwoorden ), 0, 500 ) as $x ) {
-        $vink[] = implode( '', array_slice( sfp_page_config_generator_tekens( $x ), 0, 80 ) );
+        $vink[] = sfp_page_config_generator_kap( sfp_page_config_generator_zonder_links( $x ), 80 );
     }
     if ( $vink ) {
         $schoon['_vink'] = $vink;

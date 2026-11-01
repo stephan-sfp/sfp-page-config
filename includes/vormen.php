@@ -885,7 +885,7 @@ function sfp_page_config_gids_schema() {
     if ( $bronnen ) {
         $gegevens['citation'] = $bronnen;
     }
-    echo '<script type="application/ld+json" id="sfp-pijler-schema">' . wp_json_encode( $gegevens, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON uit eigen gegevens.
+    echo sfp_page_config_json_ld( $gegevens, 'sfp-pijler-schema' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON met JSON_HEX_TAG.
 }
 
 /* =========================================================================

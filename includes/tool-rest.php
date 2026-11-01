@@ -77,16 +77,7 @@ function sfp_page_config_tool_routes() {
  * @return string
  */
 function sfp_page_config_tool_ip() {
-    if ( function_exists( 'sfp_zelftest_ip' ) ) {
-        $ip = (string) sfp_zelftest_ip();
-    } else {
-        $ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-    }
-    $bin = filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ? @inet_pton( $ip ) : false; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-    if ( false !== $bin && 16 === strlen( $bin ) ) {
-        return inet_ntop( substr( $bin, 0, 8 ) . str_repeat( "\0", 8 ) ) . '/64';
-    }
-    return $ip;
+    return sfp_page_config_bezoeker_ip();
 }
 
 /**
@@ -112,6 +103,27 @@ function sfp_page_config_tool_limiet( $sleutel, $max, $venster ) {
     $stand['n'] = (int) $stand['n'] + 1;
     set_transient( $sleutel, $stand, max( 1, (int) $stand['tot'] - $nu ) );
     return true;
+}
+
+/**
+ * Grootste body van een openbaar toolverzoek (mail, duimpje), in bytes.
+ */
+if ( ! defined( 'SFP_PAGE_CONFIG_TOOL_MAX_BODY' ) ) {
+    define( 'SFP_PAGE_CONFIG_TOOL_MAX_BODY', 64 * 1024 );
+}
+
+/**
+ * Limieten per adres en per site voor de toolmail (de limiet per IP staat
+ * al vooraan in de route): 5 per adres per dag, per site 30 per uur en 200
+ * per dag.
+ *
+ * @param  string $email Adres.
+ * @return bool          True als de mail nog mag.
+ */
+function sfp_page_config_tool_mail_plafond( $email ) {
+    return sfp_page_config_tool_limiet( 'mail-adres-' . sfp_page_config_tool_adres_sleutel( $email ), 5, DAY_IN_SECONDS )
+        && sfp_page_config_tool_limiet( 'mail-site', 30, HOUR_IN_SECONDS )
+        && sfp_page_config_tool_limiet( 'mail-site-dag', 200, DAY_IN_SECONDS );
 }
 
 /**
@@ -187,6 +199,14 @@ function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
         // Honeypot: doen alsof het lukte.
         return new WP_REST_Response( array( 'ok' => true ), 200 );
     }
+    // Eerst de goedkope grenzen: de omvang van het verzoek en de limiet per
+    // IP, voordat er iets met de antwoorden gebeurt.
+    if ( strlen( (string) $verzoek->get_body() ) > SFP_PAGE_CONFIG_TOOL_MAX_BODY ) {
+        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Verzoek te groot.' ), 413 );
+    }
+    if ( ! sfp_page_config_tool_limiet( 'mail-ip-' . sfp_page_config_tool_ip(), 20, HOUR_IN_SECONDS ) ) {
+        return new WP_REST_Response( array( 'ok' => false, 'message' => 'Te veel verzoeken. Probeer het later opnieuw.' ), 429 );
+    }
     if ( ! sfp_page_config_tool_aan() ) {
         return new WP_REST_Response( array( 'ok' => false, 'message' => 'Tools staan uit.' ), 404 );
     }
@@ -203,7 +223,7 @@ function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
         return new WP_REST_Response( array( 'ok' => false, 'message' => $t( 'tool_mail_fout' ) ), 400 );
     }
     $antwoorden = $verzoek->get_param( 'antwoorden' );
-    if ( ! is_array( $antwoorden ) ) {
+    if ( ! is_array( $antwoorden ) || count( $antwoorden ) > 300 ) {
         return new WP_REST_Response( array( 'ok' => false, 'message' => 'Geen antwoorden.' ), 400 );
     }
     if ( sfp_page_config_tool_op_generator( $b['soort'] ) ) {
@@ -225,9 +245,7 @@ function sfp_page_config_tool_rest_mail( WP_REST_Request $verzoek ) {
             $schoon[ $v['id'] ] = mb_substr( $w, 0, 200 );
         }
     }
-    if ( ! sfp_page_config_tool_limiet( 'mail-ip-' . sfp_page_config_tool_ip(), 20, HOUR_IN_SECONDS )
-        || ! sfp_page_config_tool_limiet( 'mail-adres-' . sfp_page_config_tool_adres_sleutel( $email ), 5, DAY_IN_SECONDS )
-        || ! sfp_page_config_tool_limiet( 'mail-site', 100, HOUR_IN_SECONDS ) ) {
+    if ( ! sfp_page_config_tool_mail_plafond( $email ) ) {
         return new WP_REST_Response( array( 'ok' => false, 'message' => 'Te veel verzoeken. Probeer het later opnieuw.' ), 429 );
     }
     $r = sfp_page_config_tool_reken( $b, $schoon );
@@ -270,9 +288,7 @@ function sfp_page_config_generator_rest_mail( $post, array $b, $email, array $an
             return new WP_REST_Response( array( 'ok' => false, 'message' => sprintf( $t( 'tool_vul_in' ), $stap['titel'] ) ), 400 );
         }
     }
-    if ( ! sfp_page_config_tool_limiet( 'mail-ip-' . sfp_page_config_tool_ip(), 20, HOUR_IN_SECONDS )
-        || ! sfp_page_config_tool_limiet( 'mail-adres-' . sfp_page_config_tool_adres_sleutel( $email ), 5, DAY_IN_SECONDS )
-        || ! sfp_page_config_tool_limiet( 'mail-site', 100, HOUR_IN_SECONDS ) ) {
+    if ( ! sfp_page_config_tool_mail_plafond( $email ) ) {
         return new WP_REST_Response( array( 'ok' => false, 'message' => 'Te veel verzoeken. Probeer het later opnieuw.' ), 429 );
     }
     $schoon    = sfp_page_config_generator_mail_antwoorden( $b, $antwoorden );
@@ -338,6 +354,9 @@ function sfp_page_config_tool_rest_duim( WP_REST_Request $verzoek ) {
     if ( '' !== trim( (string) $verzoek->get_param( 'website' ) ) ) {
         return new WP_REST_Response( array( 'ok' => true ), 200 );
     }
+    if ( strlen( (string) $verzoek->get_body() ) > SFP_PAGE_CONFIG_TOOL_MAX_BODY ) {
+        return new WP_REST_Response( array( 'ok' => false ), 413 );
+    }
     if ( ! sfp_page_config_tool_aan() ) {
         return new WP_REST_Response( array( 'ok' => false ), 404 );
     }
@@ -376,6 +395,11 @@ function sfp_page_config_tool_rest_duim( WP_REST_Request $verzoek ) {
             $log = array_slice( $log, -500 );
         }
         update_option( 'sfp_page_config_tool_feedback_log', $log, false );
+        // Mail alleen binnen een plafond per site; de tekst staat hoe dan
+        // ook in het logboek in SFP Beheer.
+        if ( ! sfp_page_config_tool_limiet( 'duim-mail-site', 20, HOUR_IN_SECONDS ) ) {
+            return new WP_REST_Response( array( 'ok' => true ), 200 );
+        }
         $onderwerp = 'Tool-feedback: ' . $slug . ' (duim ' . $stem . ')';
         $body      = 'Tool: ' . $slug . "\nStem: duim " . $stem . "\nTijd: " . wp_date( 'Y-m-d H:i' ) . "\nSite: " . home_url() . "\n\nFeedback:\n" . $tekst . "\n" . ( '' !== $email ? "\nAntwoord-adres: " . $email . "\n" : '' );
         $headers   = '' !== $email ? array( 'Reply-To: ' . $email ) : array();
@@ -387,12 +411,55 @@ function sfp_page_config_tool_rest_duim( WP_REST_Request $verzoek ) {
         $tellingen[ $slug ] = array( 'omhoog' => 0, 'omlaag' => 0 );
     }
     $tellingen[ $slug ][ $stem ] = (int) $tellingen[ $slug ][ $stem ] + 1;
-    // Van gedachten veranderd: de vorige stem eraf, niet onder nul.
-    if ( in_array( $vorige, array( 'omhoog', 'omlaag' ), true ) && $vorige !== $stem ) {
+    // Van gedachten veranderd: de vorige stem eraf, niet onder nul, en alleen
+    // met het bewijs dat de server bij die vorige stem gaf (eenmalig). Zo
+    // haalt niemand met alleen vorige=... stemmen weg die hij niet gaf.
+    if ( in_array( $vorige, array( 'omhoog', 'omlaag' ), true ) && $vorige !== $stem
+        && sfp_page_config_tool_duim_bewijs_geldig( $slug, $vorige, (string) $verzoek->get_param( 'bewijs' ) ) ) {
         $tellingen[ $slug ][ $vorige ] = max( 0, (int) $tellingen[ $slug ][ $vorige ] - 1 );
     }
     update_option( 'sfp_page_config_tool_feedback', $tellingen, false );
-    return new WP_REST_Response( array( 'ok' => true ), 200 );
+    return new WP_REST_Response( array( 'ok' => true, 'bewijs' => sfp_page_config_tool_duim_bewijs( $slug, $stem ) ), 200 );
+}
+
+/**
+ * Bewijs van een stem: willekeurige code plus handtekening, 30 dagen geldig.
+ *
+ * @param  string $slug Tool.
+ * @param  string $stem omhoog of omlaag.
+ * @return string
+ */
+function sfp_page_config_tool_duim_bewijs( $slug, $stem ) {
+    $code = wp_generate_password( 12, false ) . '.' . time();
+    return $code . '.' . substr( hash_hmac( 'sha256', $slug . '|' . $stem . '|' . $code, wp_salt( 'nonce' ) ), 0, 20 );
+}
+
+/**
+ * Is dit bewijs geldig voor die stem, en nog niet gebruikt? Gebruikte
+ * bewijzen worden 30 dagen onthouden.
+ *
+ * @param  string $slug   Tool.
+ * @param  string $stem   Vorige stem.
+ * @param  string $bewijs Bewijs uit de browser.
+ * @return bool
+ */
+function sfp_page_config_tool_duim_bewijs_geldig( $slug, $stem, $bewijs ) {
+    if ( ! preg_match( '/^([A-Za-z0-9]{12})\.(\d{9,11})\.([0-9a-f]{20})$/', $bewijs, $m ) ) {
+        return false;
+    }
+    if ( (int) $m[2] < time() - 30 * DAY_IN_SECONDS ) {
+        return false;
+    }
+    $code = $m[1] . '.' . $m[2];
+    if ( ! hash_equals( substr( hash_hmac( 'sha256', $slug . '|' . $stem . '|' . $code, wp_salt( 'nonce' ) ), 0, 20 ), $m[3] ) ) {
+        return false;
+    }
+    $gebruikt = 'sfp_tool_rl_b' . substr( md5( $code ), 0, 20 );
+    if ( false !== get_transient( $gebruikt ) ) {
+        return false;
+    }
+    set_transient( $gebruikt, 1, 30 * DAY_IN_SECONDS );
+    return true;
 }
 
 /**
@@ -425,4 +492,102 @@ function sfp_page_config_tool_rest_controle_route( WP_REST_Request $verzoek ) {
     $uitkomst = sfp_page_config_tool_controleer_tekst( $tekst );
     unset( $uitkomst['beschrijving'] );
     return new WP_REST_Response( $uitkomst, 200 );
+}
+
+/* =========================================================================
+ * Privacy: tekstfeedback met e-mailadres
+ * ====================================================================== */
+
+add_filter( 'wp_privacy_personal_data_erasers', 'sfp_page_config_tool_privacy_wisser' );
+add_filter( 'wp_privacy_personal_data_exporters', 'sfp_page_config_tool_privacy_exporteur' );
+add_action( 'sfp_page_config_daily_check', 'sfp_page_config_tool_feedback_bewaartermijn' );
+
+/**
+ * Regels uit het feedbacklogboek met dit adres.
+ *
+ * @param  string $email Adres.
+ * @return array<int, array> Index => regel.
+ */
+function sfp_page_config_tool_feedback_van( $email ) {
+    $email = strtolower( trim( (string) $email ) );
+    $log   = get_option( 'sfp_page_config_tool_feedback_log', array() );
+    $uit   = array();
+    if ( '' === $email || ! is_array( $log ) ) {
+        return $uit;
+    }
+    foreach ( $log as $i => $regel ) {
+        if ( is_array( $regel ) && isset( $regel['email'] ) && strtolower( (string) $regel['email'] ) === $email ) {
+            $uit[ $i ] = $regel;
+        }
+    }
+    return $uit;
+}
+
+/**
+ * @param  array $wissers Wissers.
+ * @return array
+ */
+function sfp_page_config_tool_privacy_wisser( $wissers ) {
+    $wissers['sfp-tool-feedback'] = array(
+        'eraser_friendly_name' => 'Toolfeedback (SFP Page Config)',
+        'callback'             => function ( $email ) {
+            $weg = sfp_page_config_tool_feedback_van( $email );
+            if ( $weg ) {
+                $log = array_values( array_diff_key( (array) get_option( 'sfp_page_config_tool_feedback_log', array() ), $weg ) );
+                update_option( 'sfp_page_config_tool_feedback_log', $log, false );
+            }
+            return array( 'items_removed' => (bool) $weg, 'items_retained' => false, 'messages' => array(), 'done' => true );
+        },
+    );
+    return $wissers;
+}
+
+/**
+ * @param  array $exporteurs Exporteurs.
+ * @return array
+ */
+function sfp_page_config_tool_privacy_exporteur( $exporteurs ) {
+    $exporteurs['sfp-tool-feedback'] = array(
+        'exporter_friendly_name' => 'Toolfeedback (SFP Page Config)',
+        'callback'               => function ( $email ) {
+            $data = array();
+            foreach ( sfp_page_config_tool_feedback_van( $email ) as $i => $regel ) {
+                $data[] = array(
+                    'group_id'    => 'sfp-tool-feedback',
+                    'group_label' => 'Toolfeedback',
+                    'item_id'     => 'sfp-tool-feedback-' . (int) $i,
+                    'data'        => array(
+                        array( 'name' => 'Tijd', 'value' => (string) ( $regel['tijd'] ?? '' ) ),
+                        array( 'name' => 'Tool', 'value' => (string) ( $regel['tool'] ?? '' ) ),
+                        array( 'name' => 'Feedback', 'value' => (string) ( $regel['tekst'] ?? '' ) ),
+                        array( 'name' => 'E-mailadres', 'value' => (string) ( $regel['email'] ?? '' ) ),
+                    ),
+                );
+            }
+            return array( 'data' => $data, 'done' => true );
+        },
+    );
+    return $exporteurs;
+}
+
+/**
+ * Bewaartermijn: tekstfeedback ouder dan 12 maanden gaat uit het logboek.
+ */
+function sfp_page_config_tool_feedback_bewaartermijn() {
+    $log = get_option( 'sfp_page_config_tool_feedback_log', array() );
+    if ( ! is_array( $log ) || ! $log ) {
+        return;
+    }
+    $grens = wp_date( 'Y-m-d H:i:s', time() - YEAR_IN_SECONDS );
+    $nieuw = array_values(
+        array_filter(
+            $log,
+            function ( $regel ) use ( $grens ) {
+                return is_array( $regel ) && isset( $regel['tijd'] ) && (string) $regel['tijd'] >= $grens;
+            }
+        )
+    );
+    if ( count( $nieuw ) !== count( $log ) ) {
+        update_option( 'sfp_page_config_tool_feedback_log', $nieuw, false );
+    }
 }
