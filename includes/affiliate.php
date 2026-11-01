@@ -2,15 +2,12 @@
 /**
  * SFP Page Config - Affiliate Box
  *
- * Registers `_has_affiliate_links` post meta and appends the affiliate
- * disclosure box (from an Astra Custom Layout) after the post content
- * when the checkbox is enabled.
+ * Registers `_has_affiliate_links` post meta. Since 3.22.0 the plugin no
+ * longer appends a disclosure box itself; a site that wants one reads the
+ * meta in its own snippet.
  *
  * The affiliate toggle is shown in the SFP Page Config metabox (on posts
  * only) instead of a separate Gutenberg sidebar panel.
- *
- * The Astra layout post ID is configured per site so each domain can
- * use its own disclosure template.
  *
  * Replaces the old ASE Pro "Affiliate checkbox" snippet.
  *
@@ -19,7 +16,7 @@
  * ook als ze alleen in een tooltip staan, aan de patronen uit de instelling
  * "affiliate_patronen". Gevonden: een korte regel in de kopkaart, als link
  * naar een uitlegblok onderaan met het anker #affiliate. Niet gevonden: geen
- * van beide. Het vinkje en de Astra-layout hieronder gelden dan niet meer;
+ * van beide. Het vinkje geldt dan niet meer;
  * op sites zonder artikelopmaak blijft alles zoals het was.
  *
  * De teksten staan in de instellingen "affiliate_regel" en
@@ -56,92 +53,73 @@ function sfp_page_config_register_affiliate_meta() {
 }
 
 /* =========================================================================
- * 2. Affiliate layout post ID per site
+ * 2. Het vinkje "Bevat affiliate links"
  * ====================================================================== */
 
 /**
- * Get the Astra Custom Layout post ID that contains the affiliate box.
+ * Toont de editor het vinkje "Bevat affiliate links"?
  *
- * Returns null when no layout is configured for the current site, which
- * effectively disables the feature on that domain.
+ * Sinds 3.22.0 (punt 23) plakt de plugin zelf geen uitlegblok meer onder
+ * het bericht: dat was een Astra-layout van één site en staat nu in een
+ * snippet op die site. De meta _has_affiliate_links en het vinkje blijven,
+ * zodat dat snippet ze kan lezen. Het vinkje staat er alleen waar het in
+ * gebruik is: zonder de artikelopmaak (die herkent affiliatelinks zelf) en
+ * op een site waar minstens één bericht het vinkje aan heeft. Een site kan
+ * dat met het filter sfp_page_config_affiliate_vinkje anders zetten.
  *
- * @return int|null
+ * @return bool
  */
-function sfp_page_config_get_affiliate_layout_id() {
-
-    $domain = wp_parse_url( home_url(), PHP_URL_HOST );
-
-    $layouts = array(
-        'depresenteerschool.nl' => 27038,
-    );
-
-    foreach ( $layouts as $host => $post_id ) {
-        if ( false !== strpos( $domain, $host ) ) {
-            return $post_id;
-        }
-    }
-
-    return null;
+function sfp_page_config_affiliate_vinkje_toont() {
+    $aan = ! ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() )
+        && sfp_page_config_affiliate_in_gebruik();
+    return (bool) apply_filters( 'sfp_page_config_affiliate_vinkje', $aan );
 }
-
-/* =========================================================================
- * 3. Append affiliate box via the_content
- * ====================================================================== */
-
-add_filter( 'the_content', 'sfp_page_config_affiliate_content', 50 );
 
 /**
- * Append the affiliate disclosure box after the post content when enabled.
+ * Heeft minstens één bericht het vinkje "Bevat affiliate links" aan?
+ * Een dag onthouden; opslaan met het vinkje aan zet het meteen op ja.
  *
- * @param  string $content The post content.
- * @return string
+ * @return bool
  */
-function sfp_page_config_affiliate_content( $content ) {
-
-    static $running = false;
-
-    // Prevent recursion.
-    if ( $running ) {
-        return $content;
+function sfp_page_config_affiliate_in_gebruik() {
+    $stand = get_transient( 'sfp_pc_affiliate_in_gebruik' );
+    if ( false === $stand ) {
+        $ids   = get_posts(
+            array(
+                'post_type'      => 'post',
+                'post_status'    => 'any',
+                'meta_key'       => '_has_affiliate_links', // phpcs:ignore WordPress.DB.SlowDBQuery
+                'meta_value'     => '1', // phpcs:ignore WordPress.DB.SlowDBQuery
+                'fields'         => 'ids',
+                'posts_per_page' => 1,
+                'no_found_rows'  => true,
+            )
+        );
+        $stand = $ids ? 'ja' : 'nee';
+        set_transient( 'sfp_pc_affiliate_in_gebruik', $stand, DAY_IN_SECONDS );
     }
+    return 'ja' === $stand;
+}
 
-    if ( ! is_singular( 'post' ) ) {
-        return $content;
+add_action( 'updated_post_meta', 'sfp_page_config_affiliate_in_gebruik_bij', 10, 4 );
+add_action( 'added_post_meta', 'sfp_page_config_affiliate_in_gebruik_bij', 10, 4 );
+
+/**
+ * Het vinkje ging aan: onthoud dat het in gebruik is.
+ *
+ * @param int    $meta_id  Meta-id.
+ * @param int    $post_id  Bericht.
+ * @param string $sleutel  Metasleutel.
+ * @param mixed  $waarde   Nieuwe waarde.
+ */
+function sfp_page_config_affiliate_in_gebruik_bij( $meta_id, $post_id, $sleutel, $waarde ) {
+    if ( '_has_affiliate_links' === $sleutel && ! empty( $waarde ) ) {
+        set_transient( 'sfp_pc_affiliate_in_gebruik', 'ja', DAY_IN_SECONDS );
     }
-
-    // Met de artikelopmaak aan regelt de automatische melding dit.
-    if ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() ) {
-        return $content;
-    }
-
-    if ( ! get_post_meta( get_the_ID(), '_has_affiliate_links', true ) ) {
-        return $content;
-    }
-
-    $layout_id = sfp_page_config_get_affiliate_layout_id();
-    if ( ! $layout_id ) {
-        return $content;
-    }
-
-    $layout_content = get_post_field( 'post_content', $layout_id );
-    if ( ! $layout_content ) {
-        return $content;
-    }
-
-    try {
-        $running = true;
-        $rendered = apply_filters( 'the_content', $layout_content );
-    } finally {
-        $running = false;
-    }
-
-    $content .= $rendered;
-
-    return $content;
 }
 
 /* =========================================================================
- * 4. Automatische melding in de artikelopmaak (sinds 2.12.0)
+ * 3. Automatische melding in de artikelopmaak (sinds 2.12.0)
  * ====================================================================== */
 
 /**

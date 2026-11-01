@@ -239,7 +239,7 @@ function sfp_page_config_editor_gegevens( $post_type ) {
         'whatsapp'       => sfp_page_config_onderdeel_aan( 'whatsapp' ),
         'cursusdata'     => sfp_page_config_onderdeel_aan( 'cursusdata' ),
         'longread'       => in_array( $post_type, array( 'post', 'page' ), true ) && ! $artikel,
-        'affiliate'      => 'post' === $post_type && function_exists( 'sfp_page_config_get_affiliate_layout_id' ) && sfp_page_config_get_affiliate_layout_id() && ! ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() ),
+        'affiliate'      => 'post' === $post_type && function_exists( 'sfp_page_config_affiliate_vinkje_toont' ) && sfp_page_config_affiliate_vinkje_toont(),
         'pijler'         => function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan(),
         'begrip'         => function_exists( 'sfp_page_config_begrip_aan' ) && sfp_page_config_begrip_aan(),
         'tools'          => function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan(),

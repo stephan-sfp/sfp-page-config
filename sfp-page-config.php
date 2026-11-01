@@ -520,6 +520,7 @@ function sfp_page_config_includes_beheer() {
     return array(
         'includes/autoloaded-options.php',
         'includes/beheer.php',
+        'includes/onderhoud.php',
         'includes/snippets.php',
         'includes/zelftest-beheer.php',
     );
