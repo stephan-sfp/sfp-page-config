@@ -192,6 +192,7 @@ function sfp_page_config_snippets_rij( WP_Post $post, $code = false ) {
         'prioriteit'   => isset( $opties['priority'] ) ? (int) $opties['priority'] : 10,
         'beschrijving' => (string) get_post_meta( $post->ID, 'code_snippet_description', true ),
         'bewerkt'      => (string) $post->post_modified_gmt,
+        'groepen'      => sfp_page_config_snippets_groepen( $post->ID ),
         'bestand'      => array(
             'bestaat' => $bestaat,
             // Het bestand is wat ASE uitvoert; het moet gelijk zijn aan de code in de database.
@@ -202,6 +203,88 @@ function sfp_page_config_snippets_rij( WP_Post $post, $code = false ) {
         $rij['code'] = (string) $post->post_content;
     }
     return $rij;
+}
+
+/**
+ * De taxonomie waarmee ASE snippets in groepen zet (sinds 3.22.2), of ''.
+ *
+ * ASE noemt de groepen categorieen; de naam van de taxonomie verschilt per
+ * versie, dus die zoeken we op.
+ *
+ * @return string
+ */
+function sfp_page_config_snippets_groep_tax() {
+    $taxen = get_object_taxonomies( 'asenha_code_snippet' );
+    foreach ( $taxen as $tax ) {
+        if ( false !== strpos( $tax, 'categor' ) ) {
+            return (string) $tax;
+        }
+    }
+    return 1 === count( $taxen ) ? (string) $taxen[0] : '';
+}
+
+/**
+ * De namen van de groepen van een snippet.
+ *
+ * @param  int $id Post-id.
+ * @return string[]
+ */
+function sfp_page_config_snippets_groepen( $id ) {
+    $tax = sfp_page_config_snippets_groep_tax();
+    if ( '' === $tax ) {
+        return array();
+    }
+    $termen = get_the_terms( (int) $id, $tax );
+    return is_array( $termen ) ? array_values( wp_list_pluck( $termen, 'name' ) ) : array();
+}
+
+/**
+ * Een snippet in een bestaande groep zetten (sinds 3.22.2, overgenomen uit
+ * het snippet "Snippets beheren via REST"). Maakt geen nieuwe groep aan en
+ * vervangt de groep die er stond.
+ *
+ * @param  int    $id   Post-id.
+ * @param  string $naam Naam van een bestaande groep.
+ * @return string[]|WP_Error De groepen na afloop.
+ */
+function sfp_page_config_snippets_zet_groep( $id, $naam ) {
+    $post = sfp_page_config_snippets_post( $id );
+    if ( is_wp_error( $post ) ) {
+        return $post;
+    }
+    $naam = trim( (string) $naam );
+    if ( '' === $naam ) {
+        return new WP_Error( 'sfp_snippets_groep_leeg', 'Stuur groep: de naam van een bestaande groep.', array( 'status' => 400 ) );
+    }
+    $tax = sfp_page_config_snippets_groep_tax();
+    if ( '' === $tax ) {
+        return new WP_Error( 'sfp_snippets_groep_tax', 'ASE heeft hier geen groepen.', array( 'status' => 503 ) );
+    }
+    $term = get_term_by( 'name', $naam, $tax );
+    if ( ! $term ) {
+        $bestaand = get_terms(
+            array(
+                'taxonomy'   => $tax,
+                'hide_empty' => false,
+                'fields'     => 'names',
+            )
+        );
+        return new WP_Error( 'sfp_snippets_groep_onbekend', 'Deze groep bestaat niet; er wordt geen nieuwe groep aangemaakt.', array( 'status' => 404, 'groepen' => is_array( $bestaand ) ? $bestaand : array() ) );
+    }
+    $klaar = wp_set_object_terms( (int) $post->ID, array( (int) $term->term_id ), $tax, false );
+    if ( is_wp_error( $klaar ) ) {
+        return $klaar;
+    }
+    $log   = get_option( 'sfp_page_config_snippets_log', array() );
+    $log   = is_array( $log ) ? $log : array();
+    $log[] = array(
+        'tijd'      => wp_date( 'Y-m-d H:i:s' ),
+        'gebruiker' => (string) wp_get_current_user()->user_login,
+        'snippet'   => (int) $post->ID,
+        'groep'     => (string) $term->name,
+    );
+    update_option( 'sfp_page_config_snippets_log', array_slice( $log, -200 ), false );
+    return sfp_page_config_snippets_groepen( $post->ID );
 }
 
 /**
@@ -651,6 +734,21 @@ function sfp_page_config_snippets_rest() {
                 }
                 $aan   = true === $gegevens['aan'] || 1 === $gegevens['aan'] || '1' === $gegevens['aan'] || 'true' === $gegevens['aan'];
                 $klaar = sfp_page_config_snippets_schakel( (int) $verzoek['id'], $aan );
+                return is_wp_error( $klaar ) ? $klaar : $antwoord( (int) $verzoek['id'] );
+            },
+        )
+    );
+
+    // In een bestaande groep zetten (sinds 3.22.2).
+    register_rest_route(
+        'sfp/v1',
+        '/snippets/(?P<id>\d+)/groep',
+        array(
+            'methods'             => 'POST',
+            'permission_callback' => $mag,
+            'callback'            => function ( WP_REST_Request $verzoek ) use ( $json, $antwoord ) {
+                $gegevens = $json( $verzoek );
+                $klaar    = sfp_page_config_snippets_zet_groep( (int) $verzoek['id'], isset( $gegevens['groep'] ) ? (string) $gegevens['groep'] : '' );
                 return is_wp_error( $klaar ) ? $klaar : $antwoord( (int) $verzoek['id'] );
             },
         )
