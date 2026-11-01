@@ -4,9 +4,11 @@ if ( 'cli' !== PHP_SAPI ) {
     exit( 1 );
 }
 error_reporting( E_ALL );
-set_error_handler( function ( $severity, $message, $file, $line ) {
-    throw new ErrorException( $message, 0, $severity, $file, $line );
-} );
+set_error_handler(
+    function ( $severity, $message, $file, $line ) {
+        throw new ErrorException( $message, 0, $severity, $file, $line );
+    }
+);
 define( 'ABSPATH', __DIR__ . '/' );
 $tmp = sys_get_temp_dir() . '/sfp-ajax-lean-' . getmypid();
 define( 'WPMU_PLUGIN_DIR', $tmp . '/mu-plugins' );
@@ -15,15 +17,28 @@ define( 'SFP_PAGE_CONFIG_VERSION', '2.10.0' );
 
 $GLOBALS['options'] = array();
 $GLOBALS['filters'] = array();
-function get_option( $k, $d = false ) { return $GLOBALS['options'][ $k ] ?? $d; }
-function update_option( $k, $v ) { $GLOBALS['options'][ $k ] = $v; return true; }
-function delete_option( $k ) { unset( $GLOBALS['options'][ $k ] ); return true; }
-function add_filter( $h, $cb, $p = 10, $n = 1 ) { $GLOBALS['filters'][ $h ][] = $cb; }
-function add_action( $h, $cb, $p = 10, $n = 1 ) { $GLOBALS['filters'][ $h ][] = $cb; }
-function apply_filters( $h, $v ) { foreach ( $GLOBALS['filters'][ $h ] ?? array() as $cb ) { $v = $cb( $v ); } return $v; }
-function trailingslashit( $p ) { return rtrim( $p, '/' ) . '/'; }
-function wp_mkdir_p( $d ) { return is_dir( $d ) || mkdir( $d, 0777, true ); }
-function wp_delete_file( $f ) { @unlink( $f ); }
+function get_option( $k, $d = false ) {
+    return $GLOBALS['options'][ $k ] ?? $d; }
+function update_option( $k, $v ) {
+    $GLOBALS['options'][ $k ] = $v;
+    return true; }
+function delete_option( $k ) {
+    unset( $GLOBALS['options'][ $k ] );
+    return true; }
+function add_filter( $h, $cb, $p = 10, $n = 1 ) {
+    $GLOBALS['filters'][ $h ][] = $cb; }
+function add_action( $h, $cb, $p = 10, $n = 1 ) {
+    $GLOBALS['filters'][ $h ][] = $cb; }
+function apply_filters( $h, $v ) {
+    foreach ( $GLOBALS['filters'][ $h ] ?? array() as $cb ) {
+        $v = $cb( $v );
+    } return $v; }
+function trailingslashit( $p ) {
+    return rtrim( $p, '/' ) . '/'; }
+function wp_mkdir_p( $d ) {
+    return is_dir( $d ) || mkdir( $d, 0777, true ); }
+function wp_delete_file( $f ) {
+    @unlink( $f ); }
 
 $checks = 0;
 function same( $expected, $actual, $message ) {
@@ -45,7 +60,10 @@ same( false, function_exists( 'sfp_page_config_run_upgrades' ), 'oude upgradefun
 // Sync: disabled means no file, enabled places it, disabling removes it.
 sfp_ajax_lean_maybe_sync();
 same( false, file_exists( sfp_ajax_lean_mu_target() ), 'no mu-plugin when disabled' );
-$GLOBALS['options']['sfp_settings'] = array( 'ajax_lean_enabled' => '1', 'ajax_lean_skip' => sfp_ajax_lean_default_skip() );
+$GLOBALS['options']['sfp_settings'] = array(
+    'ajax_lean_enabled' => '1',
+    'ajax_lean_skip'    => sfp_ajax_lean_default_skip()
+);
 sfp_ajax_lean_maybe_sync();
 same( true, file_exists( sfp_ajax_lean_mu_target() ), 'mu-plugin placed when enabled' );
 same( SFP_AJAX_LEAN_MU_VERSION, sfp_ajax_lean_installed_version(), 'installed version matches' );
@@ -56,7 +74,7 @@ same( true, file_exists( sfp_ajax_lean_mu_target() ), 'missing file is restored'
 // Mu-plugin: front-end LatePoint call skips listed plugins only.
 $active = array( 'sfp-page-config/sfp-page-config.php', 'latepoint/latepoint.php', 'surerank/surerank.php', 'wp-rocket/wp-rocket.php', 'suretriggers/suretriggers.php', 'hello.php' );
 define( 'DOING_AJAX', true );
-$_REQUEST['action'] = 'latepoint_route_call';
+$_REQUEST['action']      = 'latepoint_route_call';
 $_SERVER['HTTP_REFERER'] = 'https://example.test/adviesgesprek-zelftest/';
 require sfp_ajax_lean_mu_target();
 same( array( 'sfp-page-config/sfp-page-config.php', 'latepoint/latepoint.php', 'suretriggers/suretriggers.php', 'hello.php' ), apply_filters( 'option_active_plugins', $active ), 'front-end call runs lean' );
@@ -66,7 +84,7 @@ same( 2, $GLOBALS['sfp_ajax_lean_skipped'], 'skipped count' );
 $_SERVER['HTTP_REFERER'] = 'https://example.test/wp-admin/admin.php?page=latepoint';
 same( false, sfp_ajax_lean_is_target_request(), 'wp-admin LatePoint call untouched' );
 $_SERVER['HTTP_REFERER'] = '';
-$_REQUEST['action'] = 'heartbeat';
+$_REQUEST['action']      = 'heartbeat';
 same( false, sfp_ajax_lean_is_target_request(), 'other ajax action untouched' );
 
 // Disabling removes the mu-plugin; deactivation removes it too.

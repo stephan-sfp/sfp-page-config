@@ -204,4 +204,3 @@ function sfp_page_config_tooltips_head_css() {
     }
     echo '<style id="sfp-tooltip-css">' . sfp_page_config_tooltips_css() . "</style>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste CSS uit de plugin plus gevalideerde kleuren.
 }
-

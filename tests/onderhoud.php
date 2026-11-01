@@ -10,21 +10,40 @@ if ( 'cli' !== PHP_SAPI ) {
     exit( 1 );
 }
 error_reporting( E_ALL );
-set_error_handler( function ( $severity, $message, $file, $line ) {
-    throw new ErrorException( $message, 0, $severity, $file, $line );
-} );
+set_error_handler(
+    function ( $severity, $message, $file, $line ) {
+        throw new ErrorException( $message, 0, $severity, $file, $line );
+    }
+);
 define( 'ABSPATH', __DIR__ . '/' );
 
 $GLOBALS['routes'] = array();
 $GLOBALS['user']   = null;
 $GLOBALS['caps']   = array();
-function add_action( $h, $cb, $p = 10 ) { $GLOBALS['acties'][ $h ][] = array( $cb, $p ); }
-function register_rest_route( $ns, $route, $args ) { $GLOBALS['routes'][] = array( $ns, $route, $args ); }
-function apply_filters( $h, $v ) { return $v; }
-function wp_get_current_user() { return $GLOBALS['user']; }
-function current_user_can( $c ) { return in_array( $c, $GLOBALS['caps'], true ); }
-class WP_Error { public $code; public $data; function __construct( $c, $m, $d ) { $this->code = $c; $this->data = $d; } }
-class Gebruiker { public $user_login; function __construct( $l ) { $this->user_login = $l; } function exists() { return true; } }
+function add_action( $h, $cb, $p = 10 ) {
+    $GLOBALS['acties'][ $h ][] = array( $cb, $p ); }
+function register_rest_route( $ns, $route, $args ) {
+    $GLOBALS['routes'][] = array( $ns, $route, $args ); }
+function apply_filters( $h, $v ) {
+    return $v; }
+function wp_get_current_user() {
+    return $GLOBALS['user']; }
+function current_user_can( $c ) {
+    return in_array( $c, $GLOBALS['caps'], true ); }
+class WP_Error {
+    public $code;
+    public $data;
+    function __construct( $c, $m, $d ) {
+        $this->code = $c;
+        $this->data = $d; }
+}
+class Gebruiker {
+    public $user_login;
+    function __construct( $l ) {
+        $this->user_login = $l;
+    } function exists() {
+        return true; }
+}
 
 require dirname( __DIR__ ) . '/includes/onderhoud.php';
 

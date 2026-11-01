@@ -45,7 +45,7 @@ add_filter( 'sfp_page_config_blokken_extra', 'sfp_page_config_thermometer_blokke
  * @return array
  */
 function sfp_page_config_thermometer_blokken( $blokken ) {
-    $tekst = array(
+    $tekst                               = array(
         'type'    => 'string',
         'default' => '',
     );
@@ -191,7 +191,11 @@ function sfp_page_config_thermometer_paneel( array $thermo, array $hoofdstukken 
     $stip    = '';
     $blokken = '';
     $knoppen = '';
-    foreach ( array( 2 => 'thermo_klopt', 1 => 'thermo_soms', 0 => 'thermo_niet' ) as $punt => $sleutel ) {
+    foreach ( array(
+        2 => 'thermo_klopt',
+        1 => 'thermo_soms',
+        0 => 'thermo_niet'
+    ) as $punt => $sleutel ) {
         $knoppen .= '<button type="button" aria-pressed="false" data-punt="' . (int) $punt . '">' . esc_html( $t( $sleutel ) ) . '</button>';
     }
     foreach ( $thermo['stellingen'] as $i => $stelling ) {

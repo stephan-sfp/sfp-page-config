@@ -41,8 +41,11 @@ function sfp_zelftest_stand() {
                 'label.js'      => $pakket['label'],
                 'blad.html'     => $pakket['blad'],
             )
-        ) : array( 'fouten' => array(), 'let_op' => array() );
-        $tests[] = array(
+        ) : array(
+            'fouten' => array(),
+            'let_op' => array()
+        );
+        $tests[]  = array(
             'test'         => $test,
             'naam'         => $pakket ? sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' ) : $test,
             'versie'       => $pakket ? (string) $pakket['manifest']['pakket_versie'] : '',
@@ -155,7 +158,12 @@ function sfp_zelftest_rest_beheer() {
                     return $uitkomst;
                 }
                 sfp_zelftest_tabel_klaar();
-                return rest_ensure_response( array( 'let_op' => $uitkomst['let_op'], 'stand' => sfp_zelftest_stand() ) );
+                return rest_ensure_response(
+                    array(
+                        'let_op' => $uitkomst['let_op'],
+                        'stand'  => sfp_zelftest_stand()
+                    )
+                );
             },
         )
     );
@@ -225,7 +233,12 @@ function sfp_zelftest_rest_beheer() {
                 if ( ! is_email( $email ) ) {
                     return new WP_Error( 'sfp_zelftest_email', 'Geen geldig e-mailadres.', array( 'status' => 400 ) );
                 }
-                return rest_ensure_response( array( 'gewist' => sfp_zelftest_wis_email( $email ), 'stand' => sfp_zelftest_stand() ) );
+                return rest_ensure_response(
+                    array(
+                        'gewist' => sfp_zelftest_wis_email( $email ),
+                        'stand'  => sfp_zelftest_stand()
+                    )
+                );
             },
         )
     );
@@ -251,7 +264,7 @@ function sfp_zelftest_rest_proef( WP_REST_Request $verzoek ) {
     $lengte = isset( $g['lengte'] ) && 'short' === $g['lengte'] ? 'short' : 'long';
     // Proef in een andere taal van het pakket (sinds 3.11.0).
     sfp_zelftest_taal_context( isset( $g['taal'] ) ? (string) $g['taal'] : '' );
-    $ruw    = isset( $g['antwoorden'] ) ? $g['antwoorden'] : array();
+    $ruw = isset( $g['antwoorden'] ) ? $g['antwoorden'] : array();
     if ( is_string( $ruw ) ) {
         $tekst = $ruw;
         $ruw   = array();
@@ -262,7 +275,7 @@ function sfp_zelftest_rest_proef( WP_REST_Request $verzoek ) {
         }
     }
     // Vragen die niet in deze lengte zitten, vallen weg; meer-antwoordvragen altijd als lijst.
-    $vragen  = sfp_zelftest_vragen( $pakket );
+    $vragen = sfp_zelftest_vragen( $pakket );
     if ( ! isset( $pakket['manifest']['lengtes'][ $lengte ]['vragen'] ) ) {
         return new WP_Error( 'sfp_zelftest_lengte', 'Deze test heeft geen ' . ( 'short' === $lengte ? 'korte' : 'lange' ) . ' versie.', array( 'status' => 400 ) );
     }
@@ -290,7 +303,12 @@ function sfp_zelftest_rest_proef( WP_REST_Request $verzoek ) {
         return $html;
     }
     if ( ! empty( $g['alleen_html'] ) ) {
-        return rest_ensure_response( array( 'html' => $html, 'voet' => $voet ) );
+        return rest_ensure_response(
+            array(
+                'html' => $html,
+                'voet' => $voet
+            )
+        );
     }
     $inhoud = sfp_zelftest_maak_pdf( $pakket, $html, true, $voet );
     if ( is_wp_error( $inhoud ) ) {

@@ -36,9 +36,9 @@ function sfp_page_config_reken_functies() {
  * @return array|null Null bij een teken dat de taal niet kent.
  */
 function sfp_page_config_reken_delen( $s ) {
-    $s     = (string) $s;
-    $uit   = array();
-    $pos   = 0;
+    $s      = (string) $s;
+    $uit    = array();
+    $pos    = 0;
     $lengte = strlen( $s );
     while ( $pos < $lengte ) {
         if ( ! preg_match( '/\G\s*(?:(\d+(?:\.\d+)?)|"([^"]*)"|([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)?)|(<=|>=|!=|[-+*\/()<>=,]))/', $s, $m, 0, $pos ) ) {
@@ -69,7 +69,7 @@ function sfp_page_config_reken_delen( $s ) {
  */
 function sfp_page_config_reken_boom( $s ) {
     static $cache = array();
-    $s = (string) $s;
+    $s            = (string) $s;
     if ( array_key_exists( $s, $cache ) ) {
         return $cache[ $s ];
     }
@@ -103,8 +103,13 @@ function sfp_page_config_reken_ontleed( array $d, &$i, $niveau ) {
         return isset( $d[ $i ] ) && 'o' === $d[ $i ][0] && $d[ $i ][1] === $w;
     };
     if ( 0 === $niveau || 1 === $niveau || 4 === $niveau || 5 === $niveau ) {
-        $ops  = array( 0 => array( 'of' ), 1 => array( 'en' ), 4 => array( '+', '-' ), 5 => array( '*', '/' ) );
-        $l    = sfp_page_config_reken_ontleed( $d, $i, $niveau + 1 );
+        $ops = array(
+            0 => array( 'of' ),
+            1 => array( 'en' ),
+            4 => array( '+', '-' ),
+            5 => array( '*', '/' )
+        );
+        $l   = sfp_page_config_reken_ontleed( $d, $i, $niveau + 1 );
         while ( null !== $l && isset( $d[ $i ] ) && 'o' === $d[ $i ][0] && in_array( $d[ $i ][1], $ops[ $niveau ], true ) ) {
             $op = $d[ $i ][1];
             $i++;
@@ -422,7 +427,14 @@ function sfp_page_config_reken_functie( $f, array $args ) {
                 return (float) count( $x );
             }
             if ( is_string( $x ) ) {
-                return (float) count( array_filter( preg_split( '/\r?\n/', $x ), function ( $r ) { return '' !== trim( $r ); } ) );
+                return (float) count(
+                    array_filter(
+                        preg_split( '/\r?\n/', $x ),
+                        function ( $r ) {
+                            return '' !== trim( $r );
+                        }
+                    )
+                );
             }
             return null === $x ? 0.0 : 1.0;
         case 'tel':
@@ -456,9 +468,9 @@ function sfp_page_config_reken_functie( $f, array $args ) {
  * @return string
  */
 function sfp_page_config_reken_opmaak( $n, $dec ) {
-    $dec  = max( 0, min( 6, (int) $dec ) );
-    $r    = sfp_page_config_reken_afronden( $n, $dec );
-    $teken = sfp_page_config_artikel_tekst( 'tool_getal_scheiding' );
+    $dec    = max( 0, min( 6, (int) $dec ) );
+    $r      = sfp_page_config_reken_afronden( $n, $dec );
+    $teken  = sfp_page_config_artikel_tekst( 'tool_getal_scheiding' );
     $tekens = sfp_page_config_generator_tekens( (string) $teken );
     $komma  = isset( $tekens[0] ) ? $tekens[0] : ',';
     $punt   = isset( $tekens[1] ) ? $tekens[1] : '.';

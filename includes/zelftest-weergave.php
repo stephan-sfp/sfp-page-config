@@ -71,12 +71,21 @@ function sfp_zelftest_editor_gegevens() {
     foreach ( sfp_zelftest_tests() as $test ) {
         $pakket  = sfp_zelftest_pakket( $test );
         $tests[] = array(
-            'test' => $test,
+            'test'  => $test,
             'naam'  => $pakket ? sfp_zelftest_tekst( $pakket, 'algemeen.testnaam' ) : $test,
             'talen' => $pakket ? sfp_zelftest_pakket_talen( $pakket ) : array(),
         );
     }
-    wp_add_inline_script( 'sfp-zelftest-editor', 'window.sfpZelftestTests=' . wp_json_encode( array( 'tests' => $tests, 'aan' => sfp_page_config_onderdeel_aan( 'zelftest' ) ) ) . ';', 'before' );
+    wp_add_inline_script(
+        'sfp-zelftest-editor',
+        'window.sfpZelftestTests=' . wp_json_encode(
+            array(
+                'tests' => $tests,
+                'aan'   => sfp_page_config_onderdeel_aan( 'zelftest' )
+            )
+        ) . ';',
+        'before'
+    );
 }
 
 /**
@@ -110,7 +119,14 @@ function sfp_zelftest_stijl() {
  * @return string
  */
 function sfp_zelftest_shortcode( $atts ) {
-    $atts   = shortcode_atts( array( 'test' => '', 'taal' => '' ), (array) $atts, 'sfp_zelftest' );
+    $atts   = shortcode_atts(
+        array(
+            'test' => '',
+            'taal' => ''
+        ),
+        (array) $atts,
+        'sfp_zelftest'
+    );
     $test   = sfp_zelftest_naam( $atts['test'] );
     $pakket = ( '' !== $test && sfp_page_config_onderdeel_aan( 'zelftest' ) ) ? sfp_zelftest_pakket( $test ) : null;
     if ( ! $pakket ) {
@@ -211,18 +227,18 @@ function sfp_zelftest_weergave( array $pakket, $test = '' ) {
             'opties_bij' => array(),
         );
     }
-    $w     = isset( $pakket['manifest']['weergave'] ) && is_array( $pakket['manifest']['weergave'] ) ? $pakket['manifest']['weergave'] : array();
-    $lang  = isset( $pakket['manifest']['lengtes']['long']['vragen'] ) ? array_map( 'intval', (array) $pakket['manifest']['lengtes']['long']['vragen'] ) : array();
+    $w    = isset( $pakket['manifest']['weergave'] ) && is_array( $pakket['manifest']['weergave'] ) ? $pakket['manifest']['weergave'] : array();
+    $lang = isset( $pakket['manifest']['lengtes']['long']['vragen'] ) ? array_map( 'intval', (array) $pakket['manifest']['lengtes']['long']['vragen'] ) : array();
     sort( $lang );
-    $lijst = function ( $sleutel, $standaard ) use ( $w ) {
+    $lijst   = function ( $sleutel, $standaard ) use ( $w ) {
         if ( isset( $w[ $sleutel ] ) && is_array( $w[ $sleutel ] ) && $w[ $sleutel ] ) {
             return array_values( array_unique( array_map( 'intval', $w[ $sleutel ] ) ) );
         }
         return $standaard;
     };
-    $kern   = $lijst( 'kern', count( $lang ) > 10 ? array_slice( $lang, 5, count( $lang ) - 10 ) : array() );
+    $kern    = $lijst( 'kern', count( $lang ) > 10 ? array_slice( $lang, 5, count( $lang ) - 10 ) : array() );
     $profiel = count( $lang ) > 4 ? array( $lang[3], $lang[4] ) : array();
-    $opties = $lijst( 'opties', array_values( array_unique( array_merge( $profiel, $kern ) ) ) );
+    $opties  = $lijst( 'opties', array_values( array_unique( array_merge( $profiel, $kern ) ) ) );
     // Vragen met meerdere antwoorden blijven staan.
     $meerdere = array();
     foreach ( isset( $pakket['inhoud']['vragen'] ) ? (array) $pakket['inhoud']['vragen'] : array() as $v ) {
@@ -238,4 +254,3 @@ function sfp_zelftest_weergave( array $pakket, $test = '' ) {
         'opties_bij' => array_values( array_diff( $opties, $meerdere ) ),
     );
 }
-

@@ -194,10 +194,19 @@ function sfp_page_config_kopieer_van_plugin() {
  * @return array
  */
 function sfp_page_config_kopieer_attributen() {
-    $attrs = array(
-        'lang'      => array( 'type' => 'string', 'default' => '' ),
-        'collapsed' => array( 'type' => 'boolean', 'default' => false ),
-        'voorbeeld' => array( 'type' => 'boolean', 'default' => false ),
+    $attrs   = array(
+        'lang'      => array(
+            'type'    => 'string',
+            'default' => ''
+        ),
+        'collapsed' => array(
+            'type'    => 'boolean',
+            'default' => false
+        ),
+        'voorbeeld' => array(
+            'type'    => 'boolean',
+            'default' => false
+        ),
     );
     $kleuren = array(
         'headerBg'     => 'data-header-bg',
@@ -254,9 +263,16 @@ function sfp_page_config_kopieer_registreer() {
             'editor_script'   => 'sfp-blokken-editor',
             'render_callback' => 'sfp_page_config_kopieer_render',
             'example'         => array(
-                'attributes'  => array( 'lang' => sfp_page_config_bouwsteen_t( 'Kopieer deze prompt', 'Copy this prompt', 'Copie este prompt' ), 'voorbeeld' => true ),
+                'attributes'  => array(
+                    'lang'      => sfp_page_config_bouwsteen_t( 'Kopieer deze prompt', 'Copy this prompt', 'Copie este prompt' ),
+                    'voorbeeld' => true
+                ),
                 'innerBlocks' => array(
-                    array( 'name' => 'core/paragraph', 'attributes' => array( 'content' => sfp_page_config_bouwsteen_t( 'Jij bent een ervaren redacteur. Geef drie concrete tips voor een sterke opening.', 'You are an experienced editor. Give three concrete tips for a strong opening.', 'Você é um editor experiente. Dê três dicas concretas para uma abertura forte.' ) ), 'innerBlocks' => array() ),
+                    array(
+                        'name'        => 'core/paragraph',
+                        'attributes'  => array( 'content' => sfp_page_config_bouwsteen_t( 'Jij bent een ervaren redacteur. Geef drie concrete tips voor een sterke opening.', 'You are an experienced editor. Give three concrete tips for a strong opening.', 'Você é um editor experiente. Dê três dicas concretas para uma abertura forte.' ) ),
+                        'innerBlocks' => array()
+                    ),
                 ),
             ),
         )
@@ -454,7 +470,10 @@ function sfp_page_config_bronnen_blok( $blokken ) {
         'zonder_basis' => true,
         'inserter'     => sfp_page_config_inhoud_aan( 'bronnenlijst' ),
         'attributes'   => array(
-            'voorbeeld' => array( 'type' => 'boolean', 'default' => false ),
+            'voorbeeld' => array(
+                'type'    => 'boolean',
+                'default' => false
+            ),
         ),
         'render'       => 'sfp_page_config_bronnen_render',
     );
@@ -515,13 +534,17 @@ function sfp_page_config_bronnen_uit_tooltip( $tooltip ) {
         return null;
     }
 
-    $ruw = sfp_page_config_bronnen_kaal( $ruw );
-    $ruw = preg_match( '/https?:\/\/\S+$/u', $ruw ) ? rtrim( trim( $ruw ), '.,;' ) : rtrim( trim( $ruw ), '.,;' ) . '.';
+    $ruw  = sfp_page_config_bronnen_kaal( $ruw );
+    $ruw  = preg_match( '/https?:\/\/\S+$/u', $ruw ) ? rtrim( trim( $ruw ), '.,;' ) : rtrim( trim( $ruw ), '.,;' ) . '.';
     $toon = trim(
         wp_kses(
             $ruw,
             array(
-                'a'      => array( 'href' => true, 'target' => true, 'rel' => true ),
+                'a'      => array(
+                    'href'   => true,
+                    'target' => true,
+                    'rel'    => true
+                ),
                 'em'     => array(),
                 'strong' => array(),
                 'i'      => array(),
@@ -645,7 +668,10 @@ function sfp_page_config_bronnen_verzamel( $berichten = null ) {
                 }
             }
             if ( ! $al ) {
-                $bronnen[ $sleutel ]['posts'][] = array( 'url' => $url, 'title' => $titel );
+                $bronnen[ $sleutel ]['posts'][] = array(
+                    'url'   => $url,
+                    'title' => $titel
+                );
             }
         }
     }
@@ -700,7 +726,13 @@ function sfp_page_config_bronnen_render( $attrs ) {
     sfp_page_config_inhoud_geplaatst( 'js-bronnen' );
     $site  = get_bloginfo( 'name' );
     $intro = sfp_page_config_tekst( 1 === (int) $totaal ? 'bronnen_intro_een' : 'bronnen_intro_meer' );
-    $intro = wp_kses( sprintf( $intro, esc_html( $site ), (int) $totaal ), array( 'strong' => array(), 'em' => array() ) );
+    $intro = wp_kses(
+        sprintf( $intro, esc_html( $site ), (int) $totaal ),
+        array(
+            'strong' => array(),
+            'em'     => array()
+        )
+    );
     $zoek  = 'sfp-bronnen-zoek';
 
     $html  = sfp_page_config_inhoud_css( 'bronnen' );
@@ -713,8 +745,8 @@ function sfp_page_config_bronnen_render( $attrs ) {
         $anker = '#' === $letter ? 'bib-hash' : 'bib-' . strtolower( $letter );
         $html .= '<a href="#' . esc_attr( $anker ) . '">' . esc_html( $letter ) . '</a>';
     }
-    $html .= '</nav>';
-    $html .= '<p class="sfp-bronnen__geen" role="status" hidden>' . esc_html( sfp_page_config_tekst( 'bronnen_geen' ) ) . '</p>';
+    $html     .= '</nav>';
+    $html     .= '<p class="sfp-bronnen__geen" role="status" hidden>' . esc_html( sfp_page_config_tekst( 'bronnen_geen' ) ) . '</p>';
     $geciteerd = sfp_page_config_tekst( 'bronnen_geciteerd' );
     foreach ( $groepen as $letter => $items ) {
         $anker = '#' === $letter ? 'bib-hash' : 'bib-' . strtolower( $letter );
@@ -816,7 +848,13 @@ function sfp_page_config_praktijkblok_registreer() {
         return;
     }
     if ( function_exists( 'register_block_style' ) ) {
-        register_block_style( 'core/quote', array( 'name' => 'praktijkblok', 'label' => 'Uit de trainingspraktijk' ) );
+        register_block_style(
+            'core/quote',
+            array(
+                'name'  => 'praktijkblok',
+                'label' => 'Uit de trainingspraktijk'
+            )
+        );
     }
     if ( function_exists( 'register_block_pattern' ) ) {
         if ( function_exists( 'register_block_pattern_category' ) ) {
@@ -1031,8 +1069,8 @@ function sfp_page_config_code_tool_auto( $atts, $content = null, $tag = '' ) {
     if ( ! is_singular( 'tool' ) ) {
         return '';
     }
-    $slug  = (string) get_post_field( 'post_name', get_the_ID() );
-    $site  = preg_replace( '/_tool_auto$/', '', (string) $tag );
+    $slug = (string) get_post_field( 'post_name', get_the_ID() );
+    $site = preg_replace( '/_tool_auto$/', '', (string) $tag );
     // Eerst de sitenaam uit de code, dan de andere sitenamen: zo vindt ook
     // [sfp_tool_auto] op een andere site de oude code van die site.
     $codes = array();

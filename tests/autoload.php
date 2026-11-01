@@ -82,14 +82,23 @@ class Nep_WPDB {
                 $b += strlen( $o[0] );
             }
         }
-        return (object) array( 'total_count' => $n, 'total_bytes' => $b );
+        return (object) array(
+            'total_count' => $n,
+            'total_bytes' => $b
+        );
     }
     public function get_results( $q ) {
         list( $sql, $args ) = $q;
-        $on  = array( 'on', 'auto', 'yes' );
-        $uit = array();
+        $on                 = array( 'on', 'auto', 'yes' );
+        $uit                = array();
         foreach ( $GLOBALS['db'] as $naam => $o ) {
-            $rij = (object) array( 'option_id' => 1, 'option_name' => $naam, 'size' => strlen( $o[0] ), 'autoload' => $o[1], 'option_value' => $o[0] );
+            $rij = (object) array(
+                'option_id'    => 1,
+                'option_name'  => $naam,
+                'size'         => strlen( $o[0] ),
+                'autoload'     => $o[1],
+                'option_value' => $o[0]
+            );
             if ( false !== strpos( $sql, 'option_name IN' ) ) {
                 if ( in_array( $naam, $args, true ) ) {
                     $uit[] = $rij;
@@ -102,9 +111,12 @@ class Nep_WPDB {
                 $uit[] = $rij;
             }
         }
-        usort( $uit, function ( $a, $b ) {
-            return $b->size <=> $a->size ?: strcmp( $a->option_name, $b->option_name );
-        } );
+        usort(
+            $uit,
+            function ( $a, $b ) {
+                return $b->size <=> $a->size ?: strcmp( $a->option_name, $b->option_name );
+            }
+        );
         return $uit;
     }
 }
@@ -127,12 +139,24 @@ function zelfde( $verwacht, $echt, $wat ) {
 
 // Netwerkstack (zonder Spectra, zoals SwS).
 $GLOBALS['active'] = array(
-    'admin-site-enhancements-pro/a.php', 'surerank/a.php', 'sureforms/a.php', 'surecontact/a.php',
-    'suretriggers/a.php', 'sfp-page-config/a.php', 'imagify/a.php', 'wp-rocket/a.php',
-    'complianz-gdpr/a.php', 'presto-player/a.php', 'fluent-smtp/a.php', 'sigmize/a.php',
-    'sg-cachepress/a.php', 'sg-security/a.php', 'latepoint/a.php', 'cloudflare/a.php',
+    'admin-site-enhancements-pro/a.php',
+    'surerank/a.php',
+    'sureforms/a.php',
+    'surecontact/a.php',
+    'suretriggers/a.php',
+    'sfp-page-config/a.php',
+    'imagify/a.php',
+    'wp-rocket/a.php',
+    'complianz-gdpr/a.php',
+    'presto-player/a.php',
+    'fluent-smtp/a.php',
+    'sigmize/a.php',
+    'sg-cachepress/a.php',
+    'sg-security/a.php',
+    'latepoint/a.php',
+    'cloudflare/a.php',
 );
-$actief = sfp_ao_active_prefixes();
+$actief            = sfp_ao_active_prefixes();
 
 /* ---------- a. Bronherkenning ---------- */
 
@@ -177,13 +201,13 @@ zelfde( 'unknown', sfp_ao_detect_status( 'iets_onherkenbaars', $actief ), 'onher
 /* ---------- 3.2.1: actieve plugins met afwijkende namen ---------- */
 
 foreach ( array(
-    'suretrigger_options'           => 'Ottokit (SureTriggers)',
-    '_fluentsmtp_connection_health' => 'FluentSMTP',
-    '_fluent_smtp_notify_settings'  => 'FluentSMTP',
-    '_fsmtp_last_notification_sent' => 'FluentSMTP',
-    '_surerank_seo_last_updated'    => 'SureRank SEO',
-    'zip_ai_settings'               => 'Brainstorm Force',
-    'mcp_jwt_secret'                => 'WP Rocket',
+    'suretrigger_options'               => 'Ottokit (SureTriggers)',
+    '_fluentsmtp_connection_health'     => 'FluentSMTP',
+    '_fluent_smtp_notify_settings'      => 'FluentSMTP',
+    '_fsmtp_last_notification_sent'     => 'FluentSMTP',
+    '_surerank_seo_last_updated'        => 'SureRank SEO',
+    'zip_ai_settings'                   => 'Brainstorm Force',
+    'mcp_jwt_secret'                    => 'WP Rocket',
     'wpmedia_mcp_oauth_rewrite_version' => 'WP Rocket',
 ) as $naam => $bron ) {
     zelfde( $bron, sfp_ao_detect_source( $naam ), "bron van $naam" );
@@ -243,23 +267,40 @@ $GLOBALS['db'] = array(
     'sws_x'                   => array( 'b', 'on' ),
     '_transient_oud'          => array( 'z', 'off' ),
 );
-$a = sfp_ao_analyse();
+$a             = sfp_ao_analyse();
 zelfde( 7, $a['totals']->total_count, 'totaal aantal' );
 zelfde( 7, $a['tellingen']['all'], 'telling alles gelijk aan totaal' );
-$eigen_namen = array_map( function ( $r ) {
-    return $r->option_name;
-}, $a['eigen'] );
+$eigen_namen = array_map(
+    function ( $r ) {
+        return $r->option_name;
+    },
+    $a['eigen']
+);
 sort( $eigen_namen );
 zelfde( array( 'dps_bvfix_backup_1', 'sws_x' ), $eigen_namen, 'eigen gegevens: aan en uit' );
 zelfde( 2, $a['tellingen']['eigen'], 'telling eigen gegevens' );
 zelfde( 1, $a['tellingen']['orphan'], 'een verweesde met autoload aan' );
 zelfde( 2, $a['tellingen']['unknown'], 'twee onbekende met autoload aan' );
-zelfde( array( 'acf_version', 'pll_x' ), array_map( function ( $r ) {
-    return $r->option_name;
-}, $a['uit'] ), 'restanten met autoload uit: verweesd en onbekend, geen actief, geen transient' );
-zelfde( array( 'astra-settings', 'grote_onbekende' ), array_map( function ( $r ) {
-    return $r->option_name;
-}, $a['groot'] ), 'groot en verplicht aan: on en yes, niet auto' );
+zelfde(
+    array( 'acf_version', 'pll_x' ),
+    array_map(
+        function ( $r ) {
+            return $r->option_name;
+        },
+        $a['uit']
+    ),
+    'restanten met autoload uit: verweesd en onbekend, geen actief, geen transient'
+);
+zelfde(
+    array( 'astra-settings', 'grote_onbekende' ),
+    array_map(
+        function ( $r ) {
+            return $r->option_name;
+        },
+        $a['groot']
+    ),
+    'groot en verplicht aan: on en yes, niet auto'
+);
 
 $rest = sfp_ao_rest_data();
 zelfde( $a['totals']->total_bytes, $rest['totaal']['bytes'], 'REST-totaal gelijk aan pagina' );
@@ -274,7 +315,15 @@ zelfde( 2, count( $rest['eigen_gegevens'] ), 'REST toont eigen gegevens' );
 $exp = sfp_ao_export_data( array( 'acf_version', 'wpforms_settings', 'bestaat_niet', 'acf_version' ) );
 zelfde( 2, $exp['aantal'], 'back-up telt gevonden opties' );
 zelfde( array( 'bestaat_niet' ), $exp['niet_gevonden'], 'back-up meldt ontbrekende namen' );
-zelfde( array( 'naam' => 'acf_version', 'autoload' => 'off', 'waarde' => '6.0' ), $exp['opties'][0], 'back-up bevat ruwe waarde en autoload' );
+zelfde(
+    array(
+        'naam'     => 'acf_version',
+        'autoload' => 'off',
+        'waarde'   => '6.0'
+    ),
+    $exp['opties'][0],
+    'back-up bevat ruwe waarde en autoload'
+);
 
 /* ---------- Bevestigingslijst ---------- */
 

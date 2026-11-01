@@ -41,9 +41,20 @@ function sfp_page_config_blokken_gegevens() {
             'inserter'     => $cursus,
             'context'      => array( 'postId' ),
             'attributes'   => array(
-                'groep'    => array( 'type' => 'integer', 'default' => 0 ),
-                'toon'     => array( 'type' => 'string', 'default' => 'alle', 'enum' => array( 'alle', 'eerste' ) ),
-                'indeling' => array( 'type' => 'string', 'default' => 'regel', 'enum' => array( 'regel', 'lijst' ) ),
+                'groep'    => array(
+                    'type'    => 'integer',
+                    'default' => 0
+                ),
+                'toon'     => array(
+                    'type'    => 'string',
+                    'default' => 'alle',
+                    'enum'    => array( 'alle', 'eerste' )
+                ),
+                'indeling' => array(
+                    'type'    => 'string',
+                    'default' => 'regel',
+                    'enum'    => array( 'regel', 'lijst' )
+                ),
             ),
             'render'       => 'sfp_page_config_render_cursusdatum',
         ),
@@ -56,8 +67,15 @@ function sfp_page_config_blokken_gegevens() {
             'inserter'     => $cursus,
             'context'      => array( 'postId' ),
             'attributes'   => array(
-                'groep'    => array( 'type' => 'integer', 'default' => 0 ),
-                'indeling' => array( 'type' => 'string', 'default' => 'regel', 'enum' => array( 'regel', 'lijst' ) ),
+                'groep'    => array(
+                    'type'    => 'integer',
+                    'default' => 0
+                ),
+                'indeling' => array(
+                    'type'    => 'string',
+                    'default' => 'regel',
+                    'enum'    => array( 'regel', 'lijst' )
+                ),
             ),
             'render'       => 'sfp_page_config_render_lestijd',
         ),
@@ -79,8 +97,16 @@ function sfp_page_config_blokken_gegevens() {
             'zonder_basis' => true,
             'inserter'     => $reviews,
             'attributes'   => array(
-                'weergave'     => array( 'type' => 'string', 'default' => '', 'enum' => array( '', 'slider', 'grid', 'banner', 'cijfer' ) ),
-                'samenvatting' => array( 'type' => 'string', 'default' => '', 'enum' => array( '', 'ja', 'nee' ) ),
+                'weergave'     => array(
+                    'type'    => 'string',
+                    'default' => '',
+                    'enum'    => array( '', 'slider', 'grid', 'banner', 'cijfer' )
+                ),
+                'samenvatting' => array(
+                    'type'    => 'string',
+                    'default' => '',
+                    'enum'    => array( '', 'ja', 'nee' )
+                ),
             ),
             'render'       => 'sfp_page_config_render_reviews_blok',
         ),

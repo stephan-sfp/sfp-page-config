@@ -87,7 +87,14 @@ function sfp_page_config_deelbeeld_fout( $reden = null ) {
         delete_option( 'sfp_deelbeeld_fout' );
         return '';
     }
-    update_option( 'sfp_deelbeeld_fout', array( 'reden' => $reden, 'tijd' => time() ), false );
+    update_option(
+        'sfp_deelbeeld_fout',
+        array(
+            'reden' => $reden,
+            'tijd'  => time()
+        ),
+        false
+    );
     return $reden;
 }
 
@@ -275,7 +282,13 @@ function sfp_page_config_deelbeeld_kleuren() {
  * @return string        Pad, of '' zonder foto.
  */
 function sfp_page_config_deelbeeld_portret( $user_id, $ophalen = false ) {
-    $url = get_avatar_url( $user_id, array( 'size' => 192, 'default' => '404' ) );
+    $url = get_avatar_url(
+        $user_id,
+        array(
+            'size'    => 192,
+            'default' => '404'
+        )
+    );
     $map = sfp_page_config_deelbeeld_map( 'portret' );
     if ( ! $url || '' === $map ) {
         return '';
@@ -337,7 +350,10 @@ function sfp_page_config_deelbeeld_punten( $html ) {
  */
 function sfp_page_config_deelbeeld_slots( $post ) {
     $slots  = array();
-    $teller = array( 'inzicht' => 0, 'samenvatting' => 0 );
+    $teller = array(
+        'inzicht'      => 0,
+        'samenvatting' => 0
+    );
     $loop   = function ( array $blokken ) use ( &$loop, &$slots, &$teller, $post ) {
         foreach ( $blokken as $blok ) {
             $naam  = isset( $blok['blockName'] ) ? (string) $blok['blockName'] : '';
@@ -364,7 +380,7 @@ function sfp_page_config_deelbeeld_slots( $post ) {
                     if ( '' === $onderwerp ) {
                         $onderwerp = get_the_title( $post );
                     }
-                    $decode = function ( $t ) {
+                    $decode                         = function ( $t ) {
                         return html_entity_decode( $t, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
                     };
                     $slots[ 'samenvatting-' . $nr ] = array(
@@ -400,7 +416,12 @@ function sfp_page_config_deelbeeld_slots( $post ) {
  */
 function sfp_page_config_deelbeeld_maak( $post_id, $forceer = false ) {
     $post    = get_post( $post_id );
-    $verslag = array( 'gemaakt' => array(), 'ongewijzigd' => array(), 'mislukt' => array(), 'reden' => '' );
+    $verslag = array(
+        'gemaakt'     => array(),
+        'ongewijzigd' => array(),
+        'mislukt'     => array(),
+        'reden'       => ''
+    );
     if ( ! $post ) {
         $verslag['reden'] = 'Bericht niet gevonden.';
         return $verslag;
@@ -467,8 +488,8 @@ function sfp_page_config_deelbeeld_maak( $post_id, $forceer = false ) {
             $verslag['mislukt'][] = $sleutel;
             continue;
         }
-        $inzicht             = 'inzicht' === $slot['soort'];
-        $bewaard[ $sleutel ] = array(
+        $inzicht              = 'inzicht' === $slot['soort'];
+        $bewaard[ $sleutel ]  = array(
             'id'       => $id,
             'hash'     => $hash,
             'controle' => $slot['controle'],
@@ -506,7 +527,11 @@ function sfp_page_config_deelbeeld_voorwaarden() {
     if ( ! $fonts ) {
         return array( 'reden' => 'De fonts uit Astra konden niet als TTF worden opgehaald bij Google Fonts.' );
     }
-    return array( 'reden' => '', 'kleuren' => $kleuren, 'fonts' => $fonts );
+    return array(
+        'reden'   => '',
+        'kleuren' => $kleuren,
+        'fonts'   => $fonts
+    );
 }
 
 /**
@@ -748,22 +773,22 @@ function sfp_page_config_deelbeeld_og( $meta ) {
 function sfp_page_config_deelbeeld_stand() {
     $fonts = sfp_page_config_deelbeeld_fonts( false );
     return array(
-        'gd'           => function_exists( 'imagecreatetruecolor' ),
-        'freetype'     => function_exists( 'imagettftext' ),
-        'jpeg'         => function_exists( 'imagejpeg' ),
-        'werkmap'      => '' !== sfp_page_config_deelbeeld_map(),
-        'kleurrollen'  => null !== sfp_page_config_deelbeeld_kleuren(),
+        'gd'             => function_exists( 'imagecreatetruecolor' ),
+        'freetype'       => function_exists( 'imagettftext' ),
+        'jpeg'           => function_exists( 'imagejpeg' ),
+        'werkmap'        => '' !== sfp_page_config_deelbeeld_map(),
+        'kleurrollen'    => null !== sfp_page_config_deelbeeld_kleuren(),
         'fonts_aanwezig' => null !== $fonts,
-        'laatste_fout' => sfp_page_config_deelbeeld_fout(),
+        'laatste_fout'   => sfp_page_config_deelbeeld_fout(),
         // WebP: kan GD het zelf, en welke beeldbewerker van WordPress kan het.
-        'webp_gd'      => function_exists( 'imagewebp' ) && function_exists( 'gd_info' ) && ! empty( gd_info()['WebP Support'] ),
-        'webp_bewerker' => function_exists( '_wp_image_editor_choose' ) ? (string) _wp_image_editor_choose(
+        'webp_gd'        => function_exists( 'imagewebp' ) && function_exists( 'gd_info' ) && ! empty( gd_info()['WebP Support'] ),
+        'webp_bewerker'  => function_exists( '_wp_image_editor_choose' ) ? (string) _wp_image_editor_choose(
             array(
                 'mime_type'        => 'image/jpeg',
                 'output_mime_type' => 'image/webp',
             )
         ) : '',
-        'webp_laatste' => (string) get_option( 'sfp_page_config_deelbeeld_webp', '' ),
+        'webp_laatste'   => (string) get_option( 'sfp_page_config_deelbeeld_webp', '' ),
     );
 }
 
@@ -776,7 +801,7 @@ add_action( 'rest_api_init', 'sfp_page_config_deelbeeld_rest' );
  *   POST /sfp/v1/deelbeeld/<id>   opnieuw maken (ook als de tekst gelijk is)
  */
 function sfp_page_config_deelbeeld_rest() {
-    $mag = function ( WP_REST_Request $verzoek ) {
+    $mag  = function ( WP_REST_Request $verzoek ) {
         return current_user_can( 'edit_post', (int) $verzoek['id'] );
     };
     $lees = function ( WP_REST_Request $verzoek, $verslag = null ) {

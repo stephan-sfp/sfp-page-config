@@ -9,25 +9,38 @@ if ( 'cli' !== PHP_SAPI ) {
     exit( 1 );
 }
 error_reporting( E_ALL );
-set_error_handler( function ( $severity, $message, $file, $line ) {
-    throw new ErrorException( $message, 0, $severity, $file, $line );
-} );
+set_error_handler(
+    function ( $severity, $message, $file, $line ) {
+        throw new ErrorException( $message, 0, $severity, $file, $line );
+    }
+);
 define( 'ABSPATH', __DIR__ . '/' );
 
 $GLOBALS['options']        = array();
 $GLOBALS['transients']     = array();
 $GLOBALS['shortcode_tags'] = array();
 $GLOBALS['is_admin']       = true;
-function get_option( $k, $d = false ) { return $GLOBALS['options'][ $k ] ?? $d; }
-function update_option( $k, $v, $a = null ) { $GLOBALS['options'][ $k ] = $v; return true; }
-function delete_transient( $k ) { unset( $GLOBALS['transients'][ $k ] ); return true; }
+function get_option( $k, $d = false ) {
+    return $GLOBALS['options'][ $k ] ?? $d; }
+function update_option( $k, $v, $a = null ) {
+    $GLOBALS['options'][ $k ] = $v;
+    return true; }
+function delete_transient( $k ) {
+    unset( $GLOBALS['transients'][ $k ] );
+    return true; }
 function add_action( $h, $cb, $p = 10, $n = 1 ) {}
-function has_action( $h, $cb = false ) { return false; }
-function is_admin() { return $GLOBALS['is_admin']; }
-function wp_doing_ajax() { return false; }
-function wp_doing_cron() { return false; }
-function add_shortcode( $t, $cb ) { $GLOBALS['shortcode_tags'][ $t ] = $cb; }
-function shortcode_exists( $t ) { return isset( $GLOBALS['shortcode_tags'][ $t ] ); }
+function has_action( $h, $cb = false ) {
+    return false; }
+function is_admin() {
+    return $GLOBALS['is_admin']; }
+function wp_doing_ajax() {
+    return false; }
+function wp_doing_cron() {
+    return false; }
+function add_shortcode( $t, $cb ) {
+    $GLOBALS['shortcode_tags'][ $t ] = $cb; }
+function shortcode_exists( $t ) {
+    return isset( $GLOBALS['shortcode_tags'][ $t ] ); }
 define( 'HOUR_IN_SECONDS', 3600 );
 define( 'MINUTE_IN_SECONDS', 60 );
 
@@ -52,7 +65,15 @@ if ( isset( $argv[1] ) ) {
         $gevonden = sfp_page_config_find_placeholders( file_get_contents( $bestand ) );
         if ( $gevonden ) {
             ++$totaal;
-            echo basename( $bestand, '.html' ) . ': ' . implode( ' | ', array_map( function ( $f ) { return mb_substr( preg_replace( '/\s+/', ' ', $f ), 0, 70 ); }, $gevonden ) ) . "\n";
+            echo basename( $bestand, '.html' ) . ': ' . implode(
+                ' | ',
+                array_map(
+                    function ( $f ) {
+                        return mb_substr( preg_replace( '/\s+/', ' ', $f ), 0, 70 );
+                    },
+                    $gevonden
+                )
+            ) . "\n";
         }
     }
     echo "Pagina's met een melding: $totaal\n";

@@ -71,7 +71,12 @@ update_option( 'WPLANG', 'nl_NL' );
 $oude_locale       = isset( $GLOBALS['locale'] ) ? $GLOBALS['locale'] : null;
 $GLOBALS['locale'] = 'nl_NL'; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- site in het Nederlands voor deze test.
 
-$beheerder = get_users( array( 'role' => 'administrator', 'number' => 1 ) );
+$beheerder = get_users(
+    array(
+        'role'   => 'administrator',
+        'number' => 1
+    )
+);
 wp_set_current_user( $beheerder ? $beheerder[0]->ID : 1 );
 sfp_page_config_instellingen_bewaar( array( 'onderdelen' => array( 'zelftest' => true ) ) );
 
@@ -80,17 +85,31 @@ $bestanden = array();
 foreach ( array( 'manifest.json', 'inhoud.json', 'motor.js', 'label.js', 'blad.html' ) as $naam ) {
     $bestanden[ $naam ] = (string) file_get_contents( $map . $naam ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 }
-$manifest         = json_decode( $bestanden['manifest.json'], true );
-$manifest['test'] = 'proeftalen';
+$manifest                   = json_decode( $bestanden['manifest.json'], true );
+$manifest['test']           = 'proeftalen';
 $bestanden['manifest.json'] = wp_json_encode( $manifest );
-$goed = sfp_zelftest_pakket_inlezen( 'proeftalen', $bestanden );
+$goed                       = sfp_zelftest_pakket_inlezen( 'proeftalen', $bestanden );
 ztt_is( ! is_wp_error( $goed ) && ! $goed['fouten'], 'tweetalig pakket wordt ingelezen' );
 $pakket = sfp_zelftest_pakket( 'proeftalen' );
 ztt_is( array( 'nl', 'en' ) === sfp_zelftest_pakket_talen( $pakket ), 'pakket heeft nl en en' );
 
 /* ---------- Instellingen per taal ---------- */
-$nl_pagina = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Test nl', 'post_content' => '<!-- wp:sfp/zelftest {"test":"proeftalen"} /-->' ) );
-$en_pagina = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Test en', 'post_content' => '<!-- wp:sfp/zelftest {"test":"proeftalen"} /-->' ) );
+$nl_pagina = wp_insert_post(
+    array(
+        'post_type'    => 'page',
+        'post_status'  => 'publish',
+        'post_title'   => 'Test nl',
+        'post_content' => '<!-- wp:sfp/zelftest {"test":"proeftalen"} /-->'
+    )
+);
+$en_pagina = wp_insert_post(
+    array(
+        'post_type'    => 'page',
+        'post_status'  => 'publish',
+        'post_title'   => 'Test en',
+        'post_content' => '<!-- wp:sfp/zelftest {"test":"proeftalen"} /-->'
+    )
+);
 ztt_is( is_wp_error( sfp_zelftest_instellingen_bewaar( 'proeftalen', array( 'talen' => array( 'en' => array( 'pdf_pad' => 'https://x.nl/a b' ) ) ) ) ), 'ongeldig pad voor een taal wordt geweigerd' );
 ztt_is(
     true === sfp_zelftest_instellingen_bewaar(
@@ -100,8 +119,14 @@ ztt_is(
             'pdf_pad'    => 'proeftest/resultaat',
             'proefmodus' => true,
             'talen'      => array(
-                'en'  => array( 'testpagina' => $en_pagina, 'pdf_pad' => '/en/test/result/' ),
-                'X!'  => array( 'testpagina' => 5, 'pdf_pad' => 'kapot' ),
+                'en' => array(
+                    'testpagina' => $en_pagina,
+                    'pdf_pad'    => '/en/test/result/'
+                ),
+                'X!' => array(
+                    'testpagina' => 5,
+                    'pdf_pad'    => 'kapot'
+                ),
             ),
         )
     ),
@@ -109,28 +134,76 @@ ztt_is(
 );
 $inst = sfp_zelftest_instellingen( 'proeftalen' );
 ztt_is( array( 'en' ) === array_keys( $inst['talen'] ) && 'en/test/result' === $inst['talen']['en']['pdf_pad'] && $en_pagina === $inst['talen']['en']['testpagina'], 'alleen geldige taalcodes, pad schoon' );
-ztt_is( array( '' => 'proeftest/resultaat', 'en' => 'en/test/result' ) === sfp_zelftest_pdf_paden( 'proeftalen' ), 'beide pdf-adressen bekend' );
+ztt_is(
+    array(
+        ''   => 'proeftest/resultaat',
+        'en' => 'en/test/result'
+    ) === sfp_zelftest_pdf_paden( 'proeftalen' ),
+    'beide pdf-adressen bekend'
+);
 sfp_zelftest_instellingen_bewaar( 'proeftalen', array( 'logo' => 0 ) );
 ztt_is( 'en/test/result' === sfp_zelftest_instellingen( 'proeftalen' )['talen']['en']['pdf_pad'], 'opslaan zonder talen laat de talen staan' );
 $stand = ztt_rest( 'GET', '/sfp/v1/zelftest' )->get_data();
-$t     = array_values( array_filter( $stand['tests'], function ( $x ) { return 'proeftalen' === $x['test']; } ) )[0];
+$t     = array_values(
+    array_filter(
+        $stand['tests'],
+        function ( $x ) {
+            return 'proeftalen' === $x['test'];
+        }
+    )
+)[0];
 ztt_is( array( 'nl', 'en' ) === $t['talen'] && 'en/test/result' === ( (array) $t['instellingen']['talen'] )['en']['pdf_pad'], 'stand toont talen en instellingen per taal' );
 $uris = apply_filters( 'rocket_cache_reject_uri', array() );
 ztt_is( in_array( '/proeftest/resultaat/(.*)', $uris, true ) && in_array( '/en/test/result/(.*)', $uris, true ), 'WP Rocket slaat beide pdf-adressen over' );
 
 /* ---------- Start in het Engels ---------- */
-$r = ztt_rest( 'POST', '/sfp/v1/zelftest/proeftalen/start', array( 'voornaam' => 'Ann', 'email' => 'ann@example.com', 'lengte' => 'long', 'taal' => 'en' ) );
+$r = ztt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftalen/start',
+    array(
+        'voornaam' => 'Ann',
+        'email'    => 'ann@example.com',
+        'lengte'   => 'long',
+        'taal'     => 'en'
+    )
+);
 ztt_is( 200 === $r->get_status(), 'start in het Engels: 200' );
 $sessie_en = $r->get_data()['sessie'];
 $rij       = sfp_zelftest_rij_op( 'sessie', $sessie_en );
 ztt_is( 'en' === sfp_zelftest_rij_taal( $rij ), 'taal bewaard bij de rij' );
-$r = ztt_rest( 'POST', '/sfp/v1/zelftest/proeftalen/start', array( 'voornaam' => 'Bo', 'email' => 'bo@example.com', 'lengte' => 'long', 'taal' => 'fr' ) );
+$r      = ztt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftalen/start',
+    array(
+        'voornaam' => 'Bo',
+        'email'    => 'bo@example.com',
+        'lengte'   => 'long',
+        'taal'     => 'fr'
+    )
+);
 $rij_fr = sfp_zelftest_rij_op( 'sessie', $r->get_data()['sessie'] );
 ztt_is( 'nl' === sfp_zelftest_rij_taal( $rij_fr ), 'onbekende taal: de taal van de site' );
-$r = ztt_rest( 'POST', '/sfp/v1/zelftest/proeftalen/start', array( 'voornaam' => 'Cas', 'email' => 'cas@example.com', 'lengte' => 'long' ) );
+$r         = ztt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftalen/start',
+    array(
+        'voornaam' => 'Cas',
+        'email'    => 'cas@example.com',
+        'lengte'   => 'long'
+    )
+);
 $sessie_nl = $r->get_data()['sessie'];
 ztt_is( 'nl' === sfp_zelftest_rij_taal( sfp_zelftest_rij_op( 'sessie', $sessie_nl ) ), 'zonder taal: de taal van de site' );
-$fout = ztt_rest( 'POST', '/sfp/v1/zelftest/proeftalen/start', array( 'voornaam' => 'Ann', 'email' => 'geen', 'lengte' => 'long', 'taal' => 'en' ) );
+$fout = ztt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftalen/start',
+    array(
+        'voornaam' => 'Ann',
+        'email'    => 'geen',
+        'lengte'   => 'long',
+        'taal'     => 'en'
+    )
+);
 ztt_is( 0 === strpos( (string) $fout->get_data()['message'], 'EN ' ), 'foutmelding in de taal van de test' );
 
 /* ---------- Afronden: adres per taal ---------- */
@@ -138,10 +211,33 @@ $antwoorden = array();
 foreach ( (array) $pakket['manifest']['lengtes']['long']['vragen'] as $nr ) {
     $antwoorden[ $nr ] = 39 === (int) $nr ? array( 'a' ) : 'a';
 }
-$uitkomst = array( 'crm' => array( 'weakest_pillar' => 'presence', 'tried_before' => 'yes', 'urgency' => 'this month' ), 'notitie' => array( array( 'Version', 'long' ) ) );
-$r_en = ztt_rest( 'POST', '/sfp/v1/zelftest/proeftalen/afgerond', array( 'sessie' => $sessie_en, 'antwoorden' => $antwoorden, 'uitkomst' => $uitkomst ) );
+$uitkomst = array(
+    'crm'     => array(
+        'weakest_pillar' => 'presence',
+        'tried_before'   => 'yes',
+        'urgency'        => 'this month'
+    ),
+    'notitie' => array( array( 'Version', 'long' ) )
+);
+$r_en     = ztt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftalen/afgerond',
+    array(
+        'sessie'     => $sessie_en,
+        'antwoorden' => $antwoorden,
+        'uitkomst'   => $uitkomst
+    )
+);
 ztt_is( 200 === $r_en->get_status() && false !== strpos( $r_en->get_data()['result_url'], '/en/test/result/' ), 'Engelse rij: pdf-adres in het Engels' );
-$r_nl = ztt_rest( 'POST', '/sfp/v1/zelftest/proeftalen/afgerond', array( 'sessie' => $sessie_nl, 'antwoorden' => $antwoorden, 'uitkomst' => $uitkomst ) );
+$r_nl = ztt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftalen/afgerond',
+    array(
+        'sessie'     => $sessie_nl,
+        'antwoorden' => $antwoorden,
+        'uitkomst'   => $uitkomst
+    )
+);
 ztt_is( 200 === $r_nl->get_status() && false !== strpos( $r_nl->get_data()['result_url'], '/proeftest/resultaat/' ), 'Nederlandse rij: gewone pdf-adres' );
 
 /* ---------- CRM, notitie en blad in de taal van de rij ---------- */
@@ -182,7 +278,7 @@ $data = is_array( $data ) ? implode( "\n", $data ) : (string) $data;
 ztt_is( false !== strpos( $data, '"taal":"en"' ), 'configuratie met taal en' );
 ztt_is( false !== strpos( $data, '"weergave":{"vragen":"willekeurig","opties":"willekeurig","blokkop":false' ), 'configuratie met de weergave van de schakelaar Husselen (standaard aan)' );
 ztt_is( 'en' === sfp_zelftest_pagina_taal( 'proeftalen', 'en' ) && '' === sfp_zelftest_pagina_taal( 'proeftalen', 'fr' ), 'taal uit het blok alleen als het pakket hem heeft' );
-$GLOBALS['wp_query'] = new WP_Query( array( 'page_id' => $en_pagina ) ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+$GLOBALS['wp_query']     = new WP_Query( array( 'page_id' => $en_pagina ) ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 $GLOBALS['wp_the_query'] = $GLOBALS['wp_query']; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 ztt_is( 'en' === sfp_zelftest_pagina_taal( 'proeftalen' ), 'Engelse testpagina: taal en' );
 sfp_zelftest_taal_context( 'en' );
@@ -193,7 +289,17 @@ sfp_zelftest_taal_context( '' );
 ztt_is( sfp_page_config_tekst( 'zelftest_sluiten' ) === sfp_zelftest_pagina_tekst( 'zelftest_sluiten' ), 'zonder taal: de tekst van de site' );
 
 /* ---------- Proef in een andere taal ---------- */
-$r = ztt_rest( 'POST', '/sfp/v1/zelftest/proeftalen/proef', array( 'lengte' => 'long', 'antwoorden' => $antwoorden, 'alleen_html' => 1, 'taal' => 'en', 'naam' => 'Ann' ) );
+$r = ztt_rest(
+    'POST',
+    '/sfp/v1/zelftest/proeftalen/proef',
+    array(
+        'lengte'      => 'long',
+        'antwoorden'  => $antwoorden,
+        'alleen_html' => 1,
+        'taal'        => 'en',
+        'naam'        => 'Ann'
+    )
+);
 ztt_is( 200 === $r->get_status() && false !== strpos( $r->get_data()['html'], '"taal":"en"' ), 'proef in het Engels' );
 
 /* ---------- Opruimen ---------- */

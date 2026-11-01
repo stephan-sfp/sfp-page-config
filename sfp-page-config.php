@@ -21,9 +21,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * ====================================================================== */
 
 define( 'SFP_PAGE_CONFIG_VERSION', '3.22.0' );
-define( 'SFP_PAGE_CONFIG_FILE',    __FILE__ );
-define( 'SFP_PAGE_CONFIG_DIR',     plugin_dir_path( __FILE__ ) );
-define( 'SFP_PAGE_CONFIG_URL',     plugin_dir_url( __FILE__ ) );
+define( 'SFP_PAGE_CONFIG_FILE', __FILE__ );
+define( 'SFP_PAGE_CONFIG_DIR', plugin_dir_path( __FILE__ ) );
+define( 'SFP_PAGE_CONFIG_URL', plugin_dir_url( __FILE__ ) );
 
 /* =========================================================================
  * Brand configuration per site
@@ -168,7 +168,7 @@ function sfp_page_config_get_brand() {
 
     // Buttons. The fallback chain mirrors Astra's own: an empty button
     // colour means Astra uses the theme colour, then the link colour.
-    $cta_bg = sfp_page_config_first_color(
+    $cta_bg    = sfp_page_config_first_color(
         array(
             sfp_page_config_astra_option( 'button-bg-color' ),
             sfp_page_config_astra_option( 'theme-color' ),
@@ -231,14 +231,14 @@ function sfp_page_config_get_brand() {
     }
 
     $resolved = array(
-        'cta_bg'    => $cta_bg,
-        'cta_hover' => $cta_hover,
-        'cta_text'  => $cta_text,
-        'link'      => $link,
-        'font'      => $font,
-        'weight'    => $weight,
-        'body_font' => $body_font,
-        'primary'   => $primary,
+        'cta_bg'            => $cta_bg,
+        'cta_hover'         => $cta_hover,
+        'cta_text'          => $cta_text,
+        'link'              => $link,
+        'font'              => $font,
+        'weight'            => $weight,
+        'body_font'         => $body_font,
+        'primary'           => $primary,
 
         // Longread: bar = button colour, table of contents = primary,
         // and the active item = button colour so the reading position
@@ -304,10 +304,52 @@ function sfp_page_config_post_types() {
  */
 function sfp_page_config_format_date_nl( $date_string, $format = 'short' ) {
 
-    $months_short = array(1=>'jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec');
-    $months_long  = array(1=>'januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december');
-    $days_short   = array('Monday'=>'ma','Tuesday'=>'di','Wednesday'=>'wo','Thursday'=>'do','Friday'=>'vr','Saturday'=>'za','Sunday'=>'zo');
-    $days_long    = array('Monday'=>'maandag','Tuesday'=>'dinsdag','Wednesday'=>'woensdag','Thursday'=>'donderdag','Friday'=>'vrijdag','Saturday'=>'zaterdag','Sunday'=>'zondag');
+    $months_short = array(
+        1 => 'jan',
+        'feb',
+        'mrt',
+        'apr',
+        'mei',
+        'jun',
+        'jul',
+        'aug',
+        'sep',
+        'okt',
+        'nov',
+        'dec'
+    );
+    $months_long  = array(
+        1 => 'januari',
+        'februari',
+        'maart',
+        'april',
+        'mei',
+        'juni',
+        'juli',
+        'augustus',
+        'september',
+        'oktober',
+        'november',
+        'december'
+    );
+    $days_short   = array(
+        'Monday'    => 'ma',
+        'Tuesday'   => 'di',
+        'Wednesday' => 'wo',
+        'Thursday'  => 'do',
+        'Friday'    => 'vr',
+        'Saturday'  => 'za',
+        'Sunday'    => 'zo'
+    );
+    $days_long    = array(
+        'Monday'    => 'maandag',
+        'Tuesday'   => 'dinsdag',
+        'Wednesday' => 'woensdag',
+        'Thursday'  => 'donderdag',
+        'Friday'    => 'vrijdag',
+        'Saturday'  => 'zaterdag',
+        'Sunday'    => 'zondag'
+    );
 
     $ts = strtotime( $date_string );
     if ( ! $ts ) {
@@ -353,9 +395,18 @@ function sfp_page_config_format_date_nl( $date_string, $format = 'short' ) {
     // when format uses F/M because the Dutch translation only kicks in if
     // the site locale is nl_NL. We handle both cases safely.
     $months_en_long = array(
-        'January'=>'januari','February'=>'februari','March'=>'maart','April'=>'april',
-        'May'=>'mei','June'=>'juni','July'=>'juli','August'=>'augustus',
-        'September'=>'september','October'=>'oktober','November'=>'november','December'=>'december',
+        'January'   => 'januari',
+        'February'  => 'februari',
+        'March'     => 'maart',
+        'April'     => 'april',
+        'May'       => 'mei',
+        'June'      => 'juni',
+        'July'      => 'juli',
+        'August'    => 'augustus',
+        'September' => 'september',
+        'October'   => 'oktober',
+        'November'  => 'november',
+        'December'  => 'december',
     );
     foreach ( $months_en_long as $en => $nl ) {
         $map[ $en ] = $nl;
@@ -366,8 +417,18 @@ function sfp_page_config_format_date_nl( $date_string, $format = 'short' ) {
         $map[ substr( $en, 0, 3 ) ] = $nl;
     }
     $months_en_short = array(
-        'Jan'=>'jan','Feb'=>'feb','Mar'=>'mrt','Apr'=>'apr','May'=>'mei','Jun'=>'jun',
-        'Jul'=>'jul','Aug'=>'aug','Sep'=>'sep','Oct'=>'okt','Nov'=>'nov','Dec'=>'dec',
+        'Jan' => 'jan',
+        'Feb' => 'feb',
+        'Mar' => 'mrt',
+        'Apr' => 'apr',
+        'May' => 'mei',
+        'Jun' => 'jun',
+        'Jul' => 'jul',
+        'Aug' => 'aug',
+        'Sep' => 'sep',
+        'Oct' => 'okt',
+        'Nov' => 'nov',
+        'Dec' => 'dec',
     );
     foreach ( $months_en_short as $en => $nl ) {
         $map[ $en ] = $nl;

@@ -56,7 +56,7 @@ function sfp_page_config_teksten_register() {
 
     $register = array(
         // Knop onderaan.
-        'knop_coaching'      => array(
+        'knop_coaching'               => array(
             'groep'  => 'Knop onderaan',
             'label'  => 'Coaching',
             'nl'     => 'Boek je gratis proefsessie',
@@ -64,7 +64,7 @@ function sfp_page_config_teksten_register() {
             'pt'     => 'Agende uma conversa',
             'opslag' => 'sticky_cta.coaching.text',
         ),
-        'knop_training'      => array(
+        'knop_training'               => array(
             'groep'  => 'Knop onderaan',
             'label'  => 'Training',
             'nl'     => 'Plan een kennismaking in',
@@ -72,7 +72,7 @@ function sfp_page_config_teksten_register() {
             'pt'     => 'Reserve sua vaga',
             'opslag' => 'sticky_cta.training.text',
         ),
-        'knop_incompany'     => array(
+        'knop_incompany'              => array(
             'groep'  => 'Knop onderaan',
             'label'  => 'Incompany',
             // Netwerknorm sinds 3.0.0 (besluit 11-10-2026): gelijk aan wat de
@@ -86,37 +86,37 @@ function sfp_page_config_teksten_register() {
         // Artikelen: een keuze uit de labels van de artikelopmaak.
         // Begrip (3.22.0): het label van het blok "In een presentatie"
         // past niet op elke site (DST, CVD); per site aan te passen.
-        'artikel_in_een_talk' => array(
+        'artikel_in_een_talk'         => array(
             'groep'   => 'Artikelen',
             'label'   => 'Label van het blok "In een presentatie" bij een begrip',
             'artikel' => 'in_een_talk',
         ),
-        'artikel_samenvatting' => array(
+        'artikel_samenvatting'        => array(
             'groep'   => 'Artikelen',
             'label'   => 'Samenvatting',
             'artikel' => 'samenvatting',
         ),
-        'artikel_inhoud'     => array(
+        'artikel_inhoud'              => array(
             'groep'   => 'Artikelen',
             'label'   => 'Inhoudsopgave',
             'artikel' => 'inhoud',
         ),
-        'artikel_naar_boven' => array(
+        'artikel_naar_boven'          => array(
             'groep'   => 'Artikelen',
             'label'   => 'Naar boven',
             'artikel' => 'naar_boven',
         ),
-        'artikel_gecheckt'   => array(
+        'artikel_gecheckt'            => array(
             'groep'   => 'Artikelen',
             'label'   => 'Gecontroleerd',
             'artikel' => 'gecheckt',
         ),
-        'artikel_redactiebeleid' => array(
+        'artikel_redactiebeleid'      => array(
             'groep'   => 'Artikelen',
             'label'   => 'Link naar de redactionele verantwoording',
             'artikel' => 'redactiebeleid',
         ),
-        'affiliate_regel'    => array(
+        'affiliate_regel'             => array(
             'groep'  => 'Artikelen',
             'label'  => 'Affiliatelinks, korte regel',
             'nl'     => 'Bevat affiliate links',
@@ -124,7 +124,7 @@ function sfp_page_config_teksten_register() {
             'pt'     => '',
             'opslag' => 'affiliate_regel',
         ),
-        'affiliate_uitleg'   => array(
+        'affiliate_uitleg'            => array(
             'groep'  => 'Artikelen',
             'label'  => 'Affiliatelinks, uitleg onder het artikel',
             'nl'     => 'In dit artikel verwijzen we soms naar boeken en hulpmiddelen via een affiliate link. Koop je via zo\'n link iets, dan ontvangen wij een kleine commissie. Jij betaalt niets extra. Zo kunnen we de kwaliteit van ons expertisecentrum waarborgen.',
@@ -135,49 +135,49 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Leestijd en inhoudsopgave op pagina's zonder artikelopmaak.
-        'leestijd_label'     => array(
+        'leestijd_label'              => array(
             'groep' => 'Leestijd en inhoudsopgave',
             'label' => 'Leestijd',
             'nl'    => 'LEESTIJD',
             'en'    => 'READING TIME',
             'pt'    => 'TEMPO DE LEITURA',
         ),
-        'minuut'             => array(
+        'minuut'                      => array(
             'groep' => 'Leestijd en inhoudsopgave',
             'label' => 'Eén minuut',
             'nl'    => 'minuut',
             'en'    => 'minute',
             'pt'    => 'minuto',
         ),
-        'minuten'            => array(
+        'minuten'                     => array(
             'groep' => 'Leestijd en inhoudsopgave',
             'label' => 'Meer minuten',
             'nl'    => 'minuten',
             'en'    => 'minutes',
             'pt'    => 'minutos',
         ),
-        'inhoudsopgave'      => array(
+        'inhoudsopgave'               => array(
             'groep' => 'Leestijd en inhoudsopgave',
             'label' => 'Inhoudsopgave',
             'nl'    => 'Inhoudsopgave',
             'en'    => 'Contents',
             'pt'    => 'Conteúdo',
         ),
-        'naar_boven'         => array(
+        'naar_boven'                  => array(
             'groep' => 'Leestijd en inhoudsopgave',
             'label' => 'Naar boven',
             'nl'    => 'Naar boven',
             'en'    => 'Back to top',
             'pt'    => 'Voltar ao topo',
         ),
-        'vorig_hoofdstuk'    => array(
+        'vorig_hoofdstuk'             => array(
             'groep' => 'Leestijd en inhoudsopgave',
             'label' => 'Vorig hoofdstuk',
             'nl'    => 'Vorig hoofdstuk',
             'en'    => 'Previous chapter',
             'pt'    => 'Capítulo anterior',
         ),
-        'volgend_hoofdstuk'  => array(
+        'volgend_hoofdstuk'           => array(
             'groep' => 'Leestijd en inhoudsopgave',
             'label' => 'Volgend hoofdstuk',
             'nl'    => 'Volgend hoofdstuk',
@@ -186,56 +186,56 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Reviews.
-        'reviews_basis_een'  => array(
+        'reviews_basis_een'           => array(
             'groep' => 'Reviews',
             'label' => 'Samenvatting bij één review',
             'nl'    => 'Op basis van %s review',
             'en'    => 'Based on %s review',
             'pt'    => 'Com base em %s avaliação',
         ),
-        'reviews_basis'      => array(
+        'reviews_basis'               => array(
             'groep' => 'Reviews',
             'label' => 'Samenvatting',
             'nl'    => 'Op basis van %s reviews',
             'en'    => 'Based on %s reviews',
             'pt'    => 'Com base em %s avaliações',
         ),
-        'reviews_uitstekend' => array(
+        'reviews_uitstekend'          => array(
             'groep' => 'Reviews',
             'label' => 'Oordeel vanaf 4,5',
             'nl'    => 'Uitstekend',
             'en'    => 'Excellent',
             'pt'    => 'Excelente',
         ),
-        'reviews_zeer_goed'  => array(
+        'reviews_zeer_goed'           => array(
             'groep' => 'Reviews',
             'label' => 'Oordeel vanaf 4,0',
             'nl'    => 'Zeer goed',
             'en'    => 'Very good',
             'pt'    => 'Muito bom',
         ),
-        'reviews_goed'       => array(
+        'reviews_goed'                => array(
             'groep' => 'Reviews',
             'label' => 'Oordeel vanaf 3,5',
             'nl'    => 'Goed',
             'en'    => 'Good',
             'pt'    => 'Bom',
         ),
-        'reviews_gemiddeld'  => array(
+        'reviews_gemiddeld'           => array(
             'groep' => 'Reviews',
             'label' => 'Oordeel vanaf 3,0',
             'nl'    => 'Gemiddeld',
             'en'    => 'Average',
             'pt'    => 'Regular',
         ),
-        'reviews_matig'      => array(
+        'reviews_matig'               => array(
             'groep' => 'Reviews',
             'label' => 'Oordeel onder 3,0',
             'nl'    => 'Matig',
             'en'    => 'Fair',
             'pt'    => 'Fraco',
         ),
-        'reviews_lees_verder' => array(
+        'reviews_lees_verder'         => array(
             'groep' => 'Reviews',
             'label' => 'Lange review openen',
             'nl'    => 'Lees verder',
@@ -243,35 +243,35 @@ function sfp_page_config_teksten_register() {
             'pt'    => 'Leia mais',
         ),
 
-        'reviews_minder'     => array(
+        'reviews_minder'              => array(
             'groep' => 'Reviews',
             'label' => 'Lange review sluiten',
             'nl'    => 'Minder tonen',
             'en'    => 'Show less',
             'pt'    => 'Mostrar menos',
         ),
-        'reviews_geleden'    => array(
+        'reviews_geleden'             => array(
             'groep' => 'Reviews',
             'label' => 'Ouderdom van een eigen review',
             'nl'    => '%s geleden',
             'en'    => '%s ago',
             'pt'    => 'há %s',
         ),
-        'reviews_vorige'     => array(
+        'reviews_vorige'              => array(
             'groep' => 'Reviews',
             'label' => 'Knop vorige, voor schermlezers',
             'nl'    => 'Vorige review',
             'en'    => 'Previous review',
             'pt'    => 'Avaliação anterior',
         ),
-        'reviews_volgende'   => array(
+        'reviews_volgende'            => array(
             'groep' => 'Reviews',
             'label' => 'Knop volgende, voor schermlezers',
             'nl'    => 'Volgende review',
             'en'    => 'Next review',
             'pt'    => 'Próxima avaliação',
         ),
-        'reviews_sterren'    => array(
+        'reviews_sterren'             => array(
             'groep' => 'Reviews',
             'label' => 'Sterren, voor schermlezers',
             'nl'    => '%d van de 5 sterren',
@@ -280,7 +280,7 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Logostrook (sinds 3.14.0).
-        'logostrook_label'   => array(
+        'logostrook_label'            => array(
             'groep' => 'Logostrook',
             'label' => 'Label boven de logo\'s, als het blok geen eigen label heeft',
             'nl'    => 'Vertrouwd door teams van',
@@ -289,35 +289,35 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Kopieerblok (sinds 3.20.0).
-        'kopieer_knop'       => array(
+        'kopieer_knop'                => array(
             'groep' => 'Kopieerblok',
             'label' => 'Knop',
             'nl'    => 'Kopieer',
             'en'    => 'Copy',
             'pt'    => 'Copiar',
         ),
-        'kopieer_klaar'      => array(
+        'kopieer_klaar'               => array(
             'groep' => 'Kopieerblok',
             'label' => 'Na het kopiëren',
             'nl'    => 'Gekopieerd',
             'en'    => 'Copied',
             'pt'    => 'Copiado',
         ),
-        'kopieer_mislukt'    => array(
+        'kopieer_mislukt'             => array(
             'groep' => 'Kopieerblok',
             'label' => 'Als kopiëren niet lukt',
             'nl'    => 'De tekst is geselecteerd. Druk op Ctrl+C (Mac: Cmd+C) om te kopiëren.',
             'en'    => 'The text is selected. Press Ctrl+C (Mac: Cmd+C) to copy.',
             'pt'    => 'O texto está selecionado. Pressione Ctrl+C (Mac: Cmd+C) para copiar.',
         ),
-        'kopieer_meer'       => array(
+        'kopieer_meer'                => array(
             'groep' => 'Kopieerblok',
             'label' => 'Lange tekst openen',
             'nl'    => 'Toon alles',
             'en'    => 'Show all',
             'pt'    => 'Mostrar tudo',
         ),
-        'kopieer_minder'     => array(
+        'kopieer_minder'              => array(
             'groep' => 'Kopieerblok',
             'label' => 'Lange tekst inklappen',
             'nl'    => 'Toon minder',
@@ -326,7 +326,7 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Bronnenlijst (sinds 3.20.0; teksten gelijk aan het snippet v1.11).
-        'bronnen_intro_een'  => array(
+        'bronnen_intro_een'           => array(
             'groep' => 'Bronnenlijst',
             'label' => 'Inleiding bij één bron (%1$s is de site, %2$s het aantal)',
             'nl'    => 'De content van %1$s is gebaseerd op <strong>%2$s</strong> bron. Deze pagina toont die bron en de artikelen waarin hij voorkomt.',
@@ -334,7 +334,7 @@ function sfp_page_config_teksten_register() {
             'pt'    => 'O conteúdo de %1$s se baseia em <strong>%2$s</strong> fonte. Esta página mostra essa fonte e os artigos em que ela aparece.',
             'lang'  => true,
         ),
-        'bronnen_intro_meer' => array(
+        'bronnen_intro_meer'          => array(
             'groep' => 'Bronnenlijst',
             'label' => 'Inleiding bij meer bronnen (%1$s is de site, %2$s het aantal)',
             'nl'    => 'De content van %1$s is gebaseerd op <strong>%2$s</strong> voornamelijk academische bronnen. Deze pagina bevat een overzicht van al deze bronnen en de artikelen waarin ze voorkomen.',
@@ -342,35 +342,35 @@ function sfp_page_config_teksten_register() {
             'pt'    => 'O conteúdo de %1$s se baseia em <strong>%2$s</strong> fontes, em sua maioria acadêmicas. Esta página lista todas as fontes e os artigos em que elas aparecem.',
             'lang'  => true,
         ),
-        'bronnen_zoek'       => array(
+        'bronnen_zoek'                => array(
             'groep' => 'Bronnenlijst',
             'label' => 'Zoekveld',
             'nl'    => 'Zoek op auteur of titel',
             'en'    => 'Search by author or title',
             'pt'    => 'Busque por autor ou título',
         ),
-        'bronnen_geen'       => array(
+        'bronnen_geen'                => array(
             'groep' => 'Bronnenlijst',
             'label' => 'Niets gevonden',
             'nl'    => 'Geen bron gevonden.',
             'en'    => 'No source found.',
             'pt'    => 'Nenhuma fonte encontrada.',
         ),
-        'bronnen_nav'        => array(
+        'bronnen_nav'                 => array(
             'groep' => 'Bronnenlijst',
             'label' => 'Letters (voor schermlezers)',
             'nl'    => 'Navigeer op beginletter',
             'en'    => 'Jump to letter',
             'pt'    => 'Ir para a letra',
         ),
-        'bronnen_geciteerd'  => array(
+        'bronnen_geciteerd'           => array(
             'groep' => 'Bronnenlijst',
             'label' => 'Geciteerd in',
             'nl'    => 'Geciteerd in:',
             'en'    => 'Cited in:',
             'pt'    => 'Citado em:',
         ),
-        'bronnen_schema'     => array(
+        'bronnen_schema'              => array(
             'groep' => 'Bronnenlijst',
             'label' => 'Naam voor Google',
             'nl'    => 'Bibliografie',
@@ -379,7 +379,7 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Praktijkblok (sinds 3.20.0).
-        'praktijkblok_kop'   => array(
+        'praktijkblok_kop'            => array(
             'groep' => 'Praktijkblok',
             'label' => 'Kop van een nieuw praktijkblok',
             'nl'    => 'Uit de trainingspraktijk',
@@ -388,7 +388,7 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Tooltips.
-        'tooltip_toon'       => array(
+        'tooltip_toon'                => array(
             'groep' => 'Tooltips',
             'label' => 'Uitleg openen, voor schermlezers',
             'nl'    => 'Toon definitie van %s',
@@ -397,77 +397,77 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Formulieren en cursusdata.
-        'groep'              => array(
+        'groep'                       => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Groep met nummer',
             'nl'    => 'Groep %d',
             'en'    => 'Group %d',
             'pt'    => 'Turma %d',
         ),
-        'kies_groep'         => array(
+        'kies_groep'                  => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Keuzelijst',
             'nl'    => 'Kies een groep',
             'en'    => 'Choose a group',
             'pt'    => 'Escolha uma turma',
         ),
-        'geen_data'          => array(
+        'geen_data'                   => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Geen startmomenten',
             'nl'    => 'Neem contact op voor de eerstvolgende startdata.',
             'en'    => 'Get in touch for the next start dates.',
             'pt'    => 'Entre em contato para saber as próximas datas.',
         ),
-        'wachtlijst_tekst'   => array(
+        'wachtlijst_tekst'            => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Geen nieuwe groep, met wachtlijst (%s is de link)',
             'nl'    => 'Er staat nog geen nieuwe groep gepland. Wil je deze training volgen? %s en je hoort het als eerste wanneer de volgende groep van start gaat!',
             'en'    => 'No new group has been scheduled yet. Keen to join this training? %s and you will be the first to hear when the next group starts!',
             'pt'    => 'Ainda não há nova turma agendada. Quer fazer este treinamento? %s e seja o primeiro a saber quando a próxima turma começar!',
         ),
-        'wachtlijst_link'    => array(
+        'wachtlijst_link'             => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Link naar het wachtlijstformulier',
             'nl'    => 'Zet jezelf op de wachtlijst',
             'en'    => 'Join the waiting list',
             'pt'    => 'Entre na lista de espera',
         ),
-        'banner_cursus'      => array(
+        'banner_cursus'               => array(
             'groep' => 'Banner',
             'label' => 'Cursusbanner (%1$s is de training, %2$s de startdatum)',
             'nl'    => 'Nog plekken vrij: %1$s, start %2$s.',
             'en'    => 'Places available: %1$s, starting %2$s.',
             'pt'    => 'Vagas abertas: %1$s, início em %2$s.',
         ),
-        'banner_cursus_link' => array(
+        'banner_cursus_link'          => array(
             'groep' => 'Banner',
             'label' => 'Link in de cursusbanner',
             'nl'    => 'Schrijf je in',
             'en'    => 'Sign up',
             'pt'    => 'Inscreva-se',
         ),
-        'banner_sluit'       => array(
+        'banner_sluit'                => array(
             'groep' => 'Banner',
             'label' => 'Sluitknop (voor schermlezers)',
             'nl'    => 'Sluit deze melding',
             'en'    => 'Close this message',
             'pt'    => 'Fechar este aviso',
         ),
-        'banner_regio'       => array(
+        'banner_regio'                => array(
             'groep' => 'Banner',
             'label' => 'Naam van de banner (voor schermlezers)',
             'nl'    => 'Aankondiging',
             'en'    => 'Announcement',
             'pt'    => 'Aviso',
         ),
-        'tijd_vanaf'         => array(
+        'tijd_vanaf'                  => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Lestijd met alleen een begin',
             'nl'    => 'vanaf %s',
             'en'    => 'from %s',
             'pt'    => 'a partir das %s',
         ),
-        'tijd_tot'           => array(
+        'tijd_tot'                    => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Lestijd met alleen een einde',
             'nl'    => 'tot %s',
@@ -476,21 +476,21 @@ function sfp_page_config_teksten_register() {
         ),
         // Ankers van het formulier (3.22.0): per taal, en per site aan te
         // passen. De Nederlandse ankers blijven daarnaast altijd werken.
-        'anker_inschrijven'  => array(
+        'anker_inschrijven'           => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Anker van het inschrijfformulier (zonder #)',
             'nl'    => 'inschrijven',
             'en'    => 'register',
             'pt'    => 'inscricao',
         ),
-        'anker_aanvragen'    => array(
+        'anker_aanvragen'             => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Anker van het aanvraagformulier (zonder #)',
             'nl'    => 'aanvragen',
             'en'    => 'request',
             'pt'    => 'solicitar',
         ),
-        'tijd_uur'           => array(
+        'tijd_uur'                    => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Achter een lestijd',
             'nl'    => 'uur',
@@ -500,21 +500,21 @@ function sfp_page_config_teksten_register() {
 
         // Feitencodes (3.22.0): [sfp_reviews] en [sfp_publicaties] in de
         // taal van de site.
-        'feiten_reviews_geen'        => array(
+        'feiten_reviews_geen'         => array(
             'groep' => 'Feitencodes',
             'label' => '[sfp_reviews] zonder meting',
             'nl'    => 'ons actuele cijfer lees je op ons Google-bedrijfsprofiel',
             'en'    => 'you can find our current rating on our Google Business Profile',
             'pt'    => 'nossa nota atual está no nosso Perfil da Empresa no Google',
         ),
-        'feiten_reviews_een'         => array(
+        'feiten_reviews_een'          => array(
             'groep' => 'Feitencodes',
             'label' => '[sfp_reviews] met één review (%1$s is het cijfer, %2$s het aantal)',
             'nl'    => '%1$s op basis van %2$s review',
             'en'    => '%1$s based on %2$s review',
             'pt'    => '%1$s com base em %2$s avaliação',
         ),
-        'feiten_reviews_meer'        => array(
+        'feiten_reviews_meer'         => array(
             'groep' => 'Feitencodes',
             'label' => '[sfp_reviews] met meer reviews (%1$s is het cijfer, %2$s het aantal)',
             'nl'    => '%1$s op basis van %2$s reviews',
@@ -530,7 +530,7 @@ function sfp_page_config_teksten_register() {
         ),
 
         // WhatsApp.
-        'whatsapp_bericht'   => array(
+        'whatsapp_bericht'            => array(
             'groep' => 'WhatsApp',
             'label' => 'Eerste bericht',
             'nl'    => 'Hoi, ik heb een vraag',
@@ -539,28 +539,28 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Zelftest: de testpagina (sinds 3.5.0).
-        'zelftest_sluiten'   => array(
+        'zelftest_sluiten'            => array(
             'groep' => 'Zelftest',
             'label' => 'Kruisje op de testpagina (voor schermlezers)',
             'nl'    => 'Sluiten',
             'en'    => 'Close',
             'pt'    => 'Fechar',
         ),
-        'zelftest_stop'      => array(
+        'zelftest_stop'               => array(
             'groep' => 'Zelftest',
             'label' => 'Vraag bij het kruisje tijdens de test',
             'nl'    => 'Weet je zeker dat je stopt? Je antwoorden worden niet bewaard.',
             'en'    => 'Are you sure you want to stop? Your answers will not be saved.',
             'pt'    => 'Tem certeza de que quer parar? Suas respostas não serão salvas.',
         ),
-        'zelftest_stop_ja'   => array(
+        'zelftest_stop_ja'            => array(
             'groep' => 'Zelftest',
             'label' => 'Knop: stoppen',
             'nl'    => 'Stoppen',
             'en'    => 'Stop',
             'pt'    => 'Parar',
         ),
-        'zelftest_stop_nee'  => array(
+        'zelftest_stop_nee'           => array(
             'groep' => 'Zelftest',
             'label' => 'Knop: verder met de test',
             'nl'    => 'Verder met de test',
@@ -758,16 +758,34 @@ function sfp_page_config_berichttype_namen( $type, $taal = null ) {
     $taal  = null === $taal ? sfp_page_config_taal() : $taal;
     $namen = array(
         'begrippen' => array(
-            'nl' => array( 'meervoud' => 'Begrippen', 'enkelvoud' => 'Begrip' ),
-            'en' => array( 'meervoud' => 'Glossary', 'enkelvoud' => 'Term' ),
-            'pt' => array( 'meervoud' => 'Glossario', 'enkelvoud' => 'Termo' ),
+            'nl' => array(
+                'meervoud'  => 'Begrippen',
+                'enkelvoud' => 'Begrip'
+            ),
+            'en' => array(
+                'meervoud'  => 'Glossary',
+                'enkelvoud' => 'Term'
+            ),
+            'pt' => array(
+                'meervoud'  => 'Glossario',
+                'enkelvoud' => 'Termo'
+            ),
         ),
         'tool'      => array(
-            'nl' => array( 'meervoud' => 'Tools', 'enkelvoud' => 'Tool' ),
-            'en' => array( 'meervoud' => 'Tools', 'enkelvoud' => 'Tool' ),
-            'pt' => array( 'meervoud' => 'Ferramentas', 'enkelvoud' => 'Ferramenta' ),
+            'nl' => array(
+                'meervoud'  => 'Tools',
+                'enkelvoud' => 'Tool'
+            ),
+            'en' => array(
+                'meervoud'  => 'Tools',
+                'enkelvoud' => 'Tool'
+            ),
+            'pt' => array(
+                'meervoud'  => 'Ferramentas',
+                'enkelvoud' => 'Ferramenta'
+            ),
         ),
     );
-    $type = isset( $namen[ $type ] ) ? $type : 'tool';
+    $type  = isset( $namen[ $type ] ) ? $type : 'tool';
     return $namen[ $type ][ $taal ] ?? $namen[ $type ]['nl'];
 }

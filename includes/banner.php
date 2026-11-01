@@ -158,7 +158,10 @@ function sfp_page_config_banner_cursussen( $max = 3 ) {
     $uit     = array();
     foreach ( sfp_page_config_komende_cursussen() as $groep ) {
         if ( isset( $groep['pagina'], $groep['dag'] ) && (string) $groep['dag'] >= $vandaag ) {
-            $uit[] = array( 'pagina' => (int) $groep['pagina'], 'dag' => (string) $groep['dag'] );
+            $uit[] = array(
+                'pagina' => (int) $groep['pagina'],
+                'dag'    => (string) $groep['dag']
+            );
         }
     }
     return array_slice( $uit, 0, max( 1, (int) $max ) );
@@ -197,7 +200,10 @@ function sfp_page_config_komende_cursussen_bouw() {
             }
             foreach ( sfp_page_config_cursusdata_toekomst( (int) $id ) as $groep ) {
                 if ( ! empty( $groep['data'][0] ) ) {
-                    $uit[] = array( 'pagina' => (int) $id, 'dag' => (string) $groep['data'][0] );
+                    $uit[] = array(
+                        'pagina' => (int) $id,
+                        'dag'    => (string) $groep['data'][0]
+                    );
                 }
             }
         }
@@ -307,8 +313,8 @@ function sfp_page_config_banner_kandidaten( $context = null, $vandaag = '' ) {
         if ( ! sfp_page_config_banner_hier( $a, $a['pagina'], $context['pagina'], $context ) ) {
             continue;
         }
-        $link = $a['pagina'] ? (string) get_permalink( $a['pagina'] ) : $a['link'];
-        $kern = ( '' !== $a['label'] ? esc_html( $a['label'] ) . ': ' : '' ) . '<strong>' . esc_html( $a['titel'] ) . '</strong>.';
+        $link  = $a['pagina'] ? (string) get_permalink( $a['pagina'] ) : $a['link'];
+        $kern  = ( '' !== $a['label'] ? esc_html( $a['label'] ) . ': ' : '' ) . '<strong>' . esc_html( $a['titel'] ) . '</strong>.';
         $uit[] = array(
             'id'    => 'a' . substr( md5( wp_json_encode( $a ) ), 0, 10 ),
             'soort' => 'aanbod',
@@ -474,7 +480,7 @@ function sfp_page_config_banner_stand() {
             'inhoud' => false,
         )
     );
-    $keuze = sfp_page_config_banner_keuze( $voorpagina, wp_date( 'Y-m-d' ) );
+    $keuze      = sfp_page_config_banner_keuze( $voorpagina, wp_date( 'Y-m-d' ) );
     return array(
         'instelling' => $inst,
         'rollen'     => sfp_page_config_banner_rollen(),

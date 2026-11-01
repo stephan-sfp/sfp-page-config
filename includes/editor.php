@@ -40,10 +40,10 @@ add_action( 'init', 'sfp_page_config_editor_meta', 11 );
  * hier niet bij.
  */
 function sfp_page_config_editor_meta() {
-    $mag = function ( $toegestaan, $sleutel, $post_id ) {
+    $mag     = function ( $toegestaan, $sleutel, $post_id ) {
         return current_user_can( 'edit_post', $post_id );
     };
-    $vlag = function ( $waarde ) {
+    $vlag    = function ( $waarde ) {
         return '1' === (string) $waarde || true === $waarde ? '1' : '';
     };
     $procent = function ( $waarde ) {
@@ -232,21 +232,21 @@ function sfp_page_config_editor_gegevens( $post_type ) {
     $artikel       = function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan() && in_array( $post_type, $artikel_types, true );
 
     return array(
-        'soorten'        => $soorten,
-        'artikel'        => $artikel,
-        'paginatype'     => 'page' === $post_type,
-        'knop'           => sfp_page_config_onderdeel_aan( 'knop' ),
-        'whatsapp'       => sfp_page_config_onderdeel_aan( 'whatsapp' ),
-        'cursusdata'     => sfp_page_config_onderdeel_aan( 'cursusdata' ),
-        'longread'       => in_array( $post_type, array( 'post', 'page' ), true ) && ! $artikel,
-        'affiliate'      => 'post' === $post_type && function_exists( 'sfp_page_config_affiliate_vinkje_toont' ) && sfp_page_config_affiliate_vinkje_toont(),
-        'pijler'         => function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan(),
-        'begrip'         => function_exists( 'sfp_page_config_begrip_aan' ) && sfp_page_config_begrip_aan(),
-        'tools'          => function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan(),
+        'soorten'       => $soorten,
+        'artikel'       => $artikel,
+        'paginatype'    => 'page' === $post_type,
+        'knop'          => sfp_page_config_onderdeel_aan( 'knop' ),
+        'whatsapp'      => sfp_page_config_onderdeel_aan( 'whatsapp' ),
+        'cursusdata'    => sfp_page_config_onderdeel_aan( 'cursusdata' ),
+        'longread'      => in_array( $post_type, array( 'post', 'page' ), true ) && ! $artikel,
+        'affiliate'     => 'post' === $post_type && function_exists( 'sfp_page_config_affiliate_vinkje_toont' ) && sfp_page_config_affiliate_vinkje_toont(),
+        'pijler'        => function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan(),
+        'begrip'        => function_exists( 'sfp_page_config_begrip_aan' ) && sfp_page_config_begrip_aan(),
+        'tools'         => function_exists( 'sfp_page_config_tool_aan' ) && sfp_page_config_tool_aan(),
         // Alleen deze alineastijlen in een artikel, begrip of tool (sinds 3.19.0).
-        'alineastijlen'  => sfp_page_config_editor_is_vorm( $post_type ) ? sfp_page_config_vorm_alineastijlen() : null,
-        'beheer'         => admin_url( 'admin.php?page=sfp-page-config' ),
-        'home'           => home_url( '/' ),
+        'alineastijlen' => sfp_page_config_editor_is_vorm( $post_type ) ? sfp_page_config_vorm_alineastijlen() : null,
+        'beheer'        => admin_url( 'admin.php?page=sfp-page-config' ),
+        'home'          => home_url( '/' ),
     );
 }
 
@@ -288,16 +288,16 @@ function sfp_page_config_editor_rest() {
 function sfp_page_config_editor_stand( WP_Post $post ) {
     sfp_page_config_tool_motor();
     $stand = array(
-        'cursusdata' => sfp_page_config_editor_cursusdata( $post->ID ),
-        'pijler'     => '',
+        'cursusdata'  => sfp_page_config_editor_cursusdata( $post->ID ),
+        'pijler'      => '',
         'onderwerpen' => array(),
-        'vervolg'    => '',
-        'focus'      => false,
-        'voorbeeld'  => null,
-        'kop'        => '',
-        'voet'       => '',
-        'promo'      => false,
-        'vorm'       => null,
+        'vervolg'     => '',
+        'focus'       => false,
+        'voorbeeld'   => null,
+        'kop'         => '',
+        'voet'        => '',
+        'promo'       => false,
+        'vorm'        => null,
     );
 
     // Begrip: gebruikt in en de controle.
@@ -314,9 +314,13 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
 
     // Tool: de beschrijving, de samenvatting en de controle.
     if ( function_exists( 'sfp_page_config_is_tool' ) && sfp_page_config_is_tool( $post ) ) {
-        $tekst          = trim( (string) get_post_meta( $post->ID, 'sfp_tool', true ) );
-        $uitkomst       = '' !== $tekst ? sfp_page_config_tool_controleer_tekst( $tekst ) : array( 'fouten' => array(), 'let_op' => array(), 'samenvatting' => array() );
-        $stand['tool']  = array(
+        $tekst         = trim( (string) get_post_meta( $post->ID, 'sfp_tool', true ) );
+        $uitkomst      = '' !== $tekst ? sfp_page_config_tool_controleer_tekst( $tekst ) : array(
+            'fouten'       => array(),
+            'let_op'       => array(),
+            'samenvatting' => array()
+        );
+        $stand['tool'] = array(
             'aan'          => sfp_page_config_tool_aan(),
             'fouten'       => $uitkomst['fouten'],
             'let_op'       => $uitkomst['let_op'],
@@ -339,10 +343,10 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
             $vorm['meldingen'] = sfp_page_config_pijler_controle( $post );
             $term              = sfp_page_config_gids_term( $post );
             if ( $term ) {
-                $ouder              = $term->parent ? get_term( $term->parent, 'category' ) : null;
-                $vorm['onder']      = ( $ouder && ! is_wp_error( $ouder ) ) ? html_entity_decode( $ouder->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '';
-                $vorm['artikelen']  = count( sfp_page_config_pijler_artikelen( $term, null, true ) );
-                $vorm['begrippen']  = count( sfp_page_config_pijler_begrippen( $term->term_id ) );
+                $ouder             = $term->parent ? get_term( $term->parent, 'category' ) : null;
+                $vorm['onder']     = ( $ouder && ! is_wp_error( $ouder ) ) ? html_entity_decode( $ouder->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '';
+                $vorm['artikelen'] = count( sfp_page_config_pijler_artikelen( $term, null, true ) );
+                $vorm['begrippen'] = count( sfp_page_config_pijler_begrippen( $term->term_id ) );
             }
             $vorm['zelftests'] = array(
                 'site'  => function_exists( 'sfp_zelftest_site_test' ) ? sfp_zelftest_site_test() : '',
@@ -394,13 +398,13 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
         $pijler          = sfp_page_config_vervolg_pijler( $post );
         $stand['pijler'] = $pijler ? html_entity_decode( $pijler->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '';
     }
-    $onderwerpen = wp_get_object_terms( $post->ID, 'post_tag', array( 'fields' => 'names' ) );
+    $onderwerpen          = wp_get_object_terms( $post->ID, 'post_tag', array( 'fields' => 'names' ) );
     $stand['onderwerpen'] = is_array( $onderwerpen ) ? array_values( array_diff( $onderwerpen, array( 'pijler' ) ) ) : array();
 
     if ( function_exists( 'sfp_page_config_vervolg_voor' ) ) {
         $vervolg = sfp_page_config_vervolg_voor( $post );
         if ( $vervolg ) {
-            $naam = '';
+            $naam       = '';
             $kandidaten = $pijler ? array_merge( array( (int) $pijler->term_id ), array_map( 'intval', get_ancestors( $pijler->term_id, 'category' ) ) ) : array();
             foreach ( $kandidaten as $term_id ) {
                 if ( (int) get_term_meta( $term_id, 'sfp_vervolg_post', true ) === (int) $vervolg->ID ) {
@@ -478,14 +482,14 @@ function sfp_page_config_editor_omlijsting( WP_Post $post ) {
     $GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- tijdelijk, hieronder teruggezet.
     setup_postdata( $post );
     try {
-        $inhoud = do_blocks( (string) $post->post_content );
+        $inhoud                 = do_blocks( (string) $post->post_content );
         list( , $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ) );
 
         $begrip = function_exists( 'sfp_page_config_is_begrip' ) && sfp_page_config_is_begrip( $post );
         $tool   = function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post );
         // Een tool: de regel boven de titel en de melding waar de tool komt; de
         // motor zelf draait niet in de editor.
-        $kop    = $tool ? sfp_page_config_tool_pijlerregel( $post ) . sfp_page_config_tool_ondertitel( $post ) . '<p class="sfp-tool__noscript">' . esc_html( sfp_page_config_artikel_tekst( 'tool_plek' ) ) . '</p>' : ( $begrip ? sfp_page_config_begrip_pijlerregel( $post ) : sfp_page_config_artikel_pijlerregel( $post ) . sfp_page_config_artikel_kopkaart( $post, $hoofdstukken ) );
+        $kop = $tool ? sfp_page_config_tool_pijlerregel( $post ) . sfp_page_config_tool_ondertitel( $post ) . '<p class="sfp-tool__noscript">' . esc_html( sfp_page_config_artikel_tekst( 'tool_plek' ) ) . '</p>' : ( $begrip ? sfp_page_config_begrip_pijlerregel( $post ) : sfp_page_config_artikel_pijlerregel( $post ) . sfp_page_config_artikel_kopkaart( $post, $hoofdstukken ) );
 
         ob_start();
         do_action( 'sfp_artikel_vervolg', $post ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- eigen actie, zie artikel.php.

@@ -80,4 +80,3 @@ function sfp_page_config_footer_groepen_js() {
 function sfp_page_config_footer_groepen_js_code() {
     return "(function(){var mq=window.matchMedia('(max-width: 921px)');function zet(){var g=document.querySelectorAll('.sfp-fj__groep');for(var i=0;i<g.length;i++){if(mq.matches){g[i].removeAttribute('open');}else{g[i].setAttribute('open','');}}}\nfunction klik(e){var s=e.target.closest?e.target.closest('.sfp-fj__kop'):null;if(s&&!mq.matches){e.preventDefault();}}\nif(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',zet);}else{zet();}\ndocument.addEventListener('click',klik);if(mq.addEventListener){mq.addEventListener('change',zet);}else if(mq.addListener){mq.addListener(zet);}})();";
 }
-

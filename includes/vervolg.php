@@ -269,9 +269,9 @@ function sfp_page_config_vervolg_astra_layouts() {
             }
         }
         $uit[] = array(
-            'id'      => (int) $post->ID,
-            'titel'   => html_entity_decode( get_the_title( $post ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
-            'pijlers' => array_values( array_unique( $pijlers ) ),
+            'id'       => (int) $post->ID,
+            'titel'    => html_entity_decode( get_the_title( $post ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+            'pijlers'  => array_values( array_unique( $pijlers ) ),
             'algemeen' => $algemeen,
         );
     }
@@ -352,12 +352,12 @@ function sfp_page_config_vervolg_overzicht() {
             }
             $vervolg = sfp_page_config_vervolg_van_pijler( $term->term_id );
             $rij     = array(
-                'id'       => (int) $term->term_id,
-                'naam'     => html_entity_decode( $term->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
-                'niveau'   => $niveau,
+                'id'        => (int) $term->term_id,
+                'naam'      => html_entity_decode( $term->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+                'niveau'    => $niveau,
                 'artikelen' => (int) $term->count,
-                'vervolg'  => null,
-                'astra'    => null,
+                'vervolg'   => null,
+                'astra'     => null,
             );
             if ( $vervolg ) {
                 $oms            = sfp_page_config_vervolg_omschrijving( $vervolg );

@@ -24,8 +24,16 @@ define( 'ABSPATH', __DIR__ . '/' );
 
 $GLOBALS['options'] = array( 'sfp_settings' => array() );
 $GLOBALS['meta']    = array();
-$GLOBALS['types']   = array( 501 => 'sureforms_form', 502 => 'sureforms_form', 503 => 'page' );
-$GLOBALS['status']  = array( 501 => 'publish', 502 => 'publish', 503 => 'publish' );
+$GLOBALS['types']   = array(
+    501 => 'sureforms_form',
+    502 => 'sureforms_form',
+    503 => 'page'
+);
+$GLOBALS['status']  = array(
+    501 => 'publish',
+    502 => 'publish',
+    503 => 'publish'
+);
 $GLOBALS['vandaag'] = '2026-10-28';
 $GLOBALS['pagina']  = 0;
 $GLOBALS['admin']   = false;
@@ -151,7 +159,7 @@ function bevat_niet( $naald, $hooi, $wat ) {
 }
 
 
-$GLOBALS['front'] = false;
+$GLOBALS['front']  = false;
 $GLOBALS['titels'] = array();
 function get_the_title( $id ) {
     return $GLOBALS['titels'][ $id ] ?? ( 'Pagina ' . $id );
@@ -183,12 +191,22 @@ function training( $id, $dagen, $titel ) {
     $GLOBALS['titels'][ $id ] = $titel;
     $GLOBALS['meta'][ $id ]   = array(
         'sfp_page_type'  => 'training',
-        'sfp_cursusdata' => json_encode( array_map( function ( $d ) { return array( 'data' => $d ); }, $dagen ) ),
+        'sfp_cursusdata' => json_encode(
+            array_map(
+                function ( $d ) {
+                    return array( 'data' => $d ); },
+                $dagen
+            )
+        ),
     );
     return $id;
 }
 function ctx( $pagina = 0, $front = false, $inhoud = false ) {
-    return array( 'pagina' => $pagina, 'front' => $front, 'inhoud' => $inhoud );
+    return array(
+        'pagina' => $pagina,
+        'front'  => $front,
+        'inhoud' => $inhoud
+    );
 }
 function instel( $w ) {
     sfp_page_config_instellingen_bewaar( $w );
@@ -205,11 +223,27 @@ $GLOBALS['training_ids'] = array( 22577, 22603 );
 $s = sfp_page_config_banner_schoon(
     array(
         'kleur'  => 'paars',
-        'cursus' => array( 'aan' => '0', 'waar' => 'raar', 'niet' => '5, 6 ,x' ),
+        'cursus' => array(
+            'aan'  => '0',
+            'waar' => 'raar',
+            'niet' => '5, 6 ,x'
+        ),
         'aanbod' => array(
-            array( 'titel' => '', 'pagina' => 3 ),
-            array( 'titel' => 'Boek', 'pagina' => 0, 'link' => 'geen adres' ),
-            array( 'titel' => '<b>De FASTER-methode</b>', 'pagina' => 31375, 'van' => '2026-13-45', 'tot' => '2026-11-30' ),
+            array(
+                'titel'  => '',
+                'pagina' => 3
+            ),
+            array(
+                'titel'  => 'Boek',
+                'pagina' => 0,
+                'link'   => 'geen adres'
+            ),
+            array(
+                'titel'  => '<b>De FASTER-methode</b>',
+                'pagina' => 31375,
+                'van'    => '2026-13-45',
+                'tot'    => '2026-11-30'
+            ),
         ),
     )
 );
@@ -238,14 +272,32 @@ same( 'c22603-20270114', $k[0]['id'], 'Op de trainingspagina zelf de andere trai
 
 /* ---------- Aanbod met voorrang ---------- */
 
-$GLOBALS['types'][31375] = 'page'; $GLOBALS['status'][31375] = 'publish';
-$GLOBALS['types'][31382] = 'page'; $GLOBALS['status'][31382] = 'publish';
+$GLOBALS['types'][31375]  = 'page';
+$GLOBALS['status'][31375] = 'publish';
+$GLOBALS['types'][31382]  = 'page';
+$GLOBALS['status'][31382] = 'publish';
 instel(
     array(
         'banner' => array(
             'aanbod' => array(
-                array( 'label' => 'Nieuw boek', 'titel' => 'De FASTER-methode', 'extra' => 'Presale begint 1 december.', 'linktekst' => 'Zet jezelf op de wachtlijst', 'pagina' => 31375, 'tot' => '2026-11-30', 'niet' => array( 31382 ) ),
-                array( 'label' => 'Nieuw boek', 'titel' => 'De FASTER-methode', 'linktekst' => 'Bestel nu', 'pagina' => 31375, 'van' => '2026-12-01', 'waar' => 'inhoud', 'ook' => array( 381 ) ),
+                array(
+                    'label'     => 'Nieuw boek',
+                    'titel'     => 'De FASTER-methode',
+                    'extra'     => 'Presale begint 1 december.',
+                    'linktekst' => 'Zet jezelf op de wachtlijst',
+                    'pagina'    => 31375,
+                    'tot'       => '2026-11-30',
+                    'niet'      => array( 31382 )
+                ),
+                array(
+                    'label'     => 'Nieuw boek',
+                    'titel'     => 'De FASTER-methode',
+                    'linktekst' => 'Bestel nu',
+                    'pagina'    => 31375,
+                    'van'       => '2026-12-01',
+                    'waar'      => 'inhoud',
+                    'ook'       => array( 381 )
+                ),
             ),
         ),
     )
@@ -271,7 +323,12 @@ same( 'cursus', $k[0]['soort'], 'Verlopen aanbod staat er niet meer in' );
 
 instel( array( 'banner' => array( 'cursus' => array( 'aan' => '0' ) ) ) );
 same( array(), sfp_page_config_banner_kandidaten( ctx( 1 ), '2026-10-29' ), 'Cursusbanner uit en geen aanbod: niets' );
-instel( array( 'banner' => array(), 'onderdelen' => array( 'cursusdata' => '0' ) ) );
+instel(
+    array(
+        'banner'     => array(),
+        'onderdelen' => array( 'cursusdata' => '0' )
+    )
+);
 same( array(), sfp_page_config_banner_kandidaten( ctx( 1 ), '2026-10-29' ), 'Cursusdata uit: geen cursusbanner' );
 
 /* ---------- Norm en teksten ---------- */

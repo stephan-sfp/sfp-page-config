@@ -68,7 +68,7 @@ add_action( 'init', 'sfp_page_config_vormen_meta', 12 );
  * Registreer de gegevens per bericht voor het paneel Deze pagina en REST.
  */
 function sfp_page_config_vormen_meta() {
-    $mag = function ( $toegestaan, $sleutel, $post_id ) {
+    $mag  = function ( $toegestaan, $sleutel, $post_id ) {
         return current_user_can( 'edit_post', $post_id );
     };
     $vlag = function ( $waarde ) {
@@ -187,13 +187,13 @@ function sfp_page_config_gidsen( $vers = false ) {
     if ( null !== $geheugen && ! $vers && $stand === $nu ) {
         return $geheugen;
     }
-    $stand = $nu;
+    $stand      = $nu;
     $opgeslagen = $vers ? false : get_transient( 'sfp_pc_gidsen' );
     if ( is_array( $opgeslagen ) ) {
         $geheugen = $opgeslagen;
         return $geheugen;
     }
-    $ids = get_posts(
+    $ids   = get_posts(
         array(
             'post_type'        => 'post',
             'post_status'      => 'publish',
@@ -346,7 +346,7 @@ function sfp_page_config_gids_verzoek( $vars ) {
         return $vars;
     }
     $GLOBALS['sfp_page_config_gids_op_categorie'] = $gids; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- prefix staat erin.
-    $nieuw = array(
+    $nieuw                                        = array(
         'p'         => $gids,
         'post_type' => 'post',
     );
@@ -638,15 +638,15 @@ function sfp_page_config_gids_kaart( $gids ) {
     if ( ! $term ) {
         return '';
     }
-    $t         = 'sfp_page_config_artikel_tekst';
-    $kinderen  = get_terms(
+    $t        = 'sfp_page_config_artikel_tekst';
+    $kinderen = get_terms(
         array(
             'taxonomy'   => 'category',
             'parent'     => (int) $term->term_id,
             'hide_empty' => false,
         )
     );
-    $groepen   = array();
+    $groepen  = array();
     if ( is_array( $kinderen ) ) {
         foreach ( $kinderen as $kind ) {
             $kind_gids = sfp_page_config_gids_van_term( $kind->term_id );
@@ -666,8 +666,8 @@ function sfp_page_config_gids_kaart( $gids ) {
         $html   = '';
         foreach ( $groepen as $groep ) {
             list( $kind, $lijst ) = $groep;
-            $totaal += count( $lijst );
-            $items   = '';
+            $totaal              += count( $lijst );
+            $items                = '';
             foreach ( array_slice( $lijst, 0, 4 ) as $p ) {
                 $items .= '<li><a href="' . esc_url( get_permalink( $p ) ) . '">' . esc_html( wp_strip_all_tags( get_the_title( $p ) ) ) . '</a></li>';
             }

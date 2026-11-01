@@ -194,7 +194,7 @@ function sfp_zelftest_blad_voet( array $pakket, array $gegevens ) {
     if ( ! is_array( $tekst ) ) {
         return '';
     }
-    $vak = function ( $sleutel ) use ( $tekst, $gegevens ) {
+    $vak  = function ( $sleutel ) use ( $tekst, $gegevens ) {
         $t = isset( $tekst[ $sleutel ] ) ? esc_html( (string) $tekst[ $sleutel ] ) : '';
         return strtr(
             $t,
@@ -225,12 +225,12 @@ function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
     if ( '' === $html ) {
         return new WP_Error( 'sfp_zelftest_blad', 'Het pakket heeft geen blad.html.' );
     }
-    $html = preg_replace( '#<link[^>]+fonts\.(googleapis|gstatic)\.com[^>]*>#i', '', $html );
-    $merk = sfp_zelftest_merk( $pakket, $html, true );
-    $html = $merk['tekst'];
+    $html  = preg_replace( '#<link[^>]+fonts\.(googleapis|gstatic)\.com[^>]*>#i', '', $html );
+    $merk  = sfp_zelftest_merk( $pakket, $html, true );
+    $html  = $merk['tekst'];
     $fonts = sfp_zelftest_fonts_css( $merk['families'] );
 
-    $data = array(
+    $data     = array(
         'naam'       => (string) $gegevens['naam'],
         'antwoorden' => (array) $gegevens['antwoorden'],
         'lengte'     => (string) $gegevens['lengte'],
@@ -264,7 +264,15 @@ function sfp_zelftest_blad_html( array $pakket, array $gegevens ) {
     $stijl = '*{font-variant-ligatures:none!important;font-feature-settings:"locl" 0!important}';
     if ( '' !== sfp_zelftest_blad_voet( $pakket, $gegevens ) ) {
         $vakken = array( 'top-left-corner', 'top-left', 'top-center', 'top-right', 'top-right-corner', 'right-top', 'right-middle', 'right-bottom', 'bottom-right-corner', 'bottom-right', 'bottom-center', 'bottom-left', 'bottom-left-corner', 'left-bottom', 'left-middle', 'left-top' );
-        $stijl .= '@page{' . implode( '', array_map( function ( $v ) { return '@' . $v . '{content:none}'; }, $vakken ) ) . '}';
+        $stijl .= '@page{' . implode(
+            '',
+            array_map(
+                function ( $v ) {
+                    return '@' . $v . '{content:none}';
+                },
+                $vakken
+            )
+        ) . '}';
     }
     $stijl = '<style id="sfp-zt-pdf">' . $stijl . '</style>';
     $plek  = strripos( $html, '</body>' );
@@ -452,20 +460,32 @@ function sfp_zelftest_pdf_verwerk( $id, $forceer = false, $mag_wachten = true ) 
     if ( ! $claimed ) {
         return null;
     }
-    $rij    = sfp_zelftest_rij_op( 'id', (string) (int) $id );
+    $rij = sfp_zelftest_rij_op( 'id', (string) (int) $id );
     if ( $rij ) {
         sfp_zelftest_taal_context( sfp_zelftest_rij_taal( $rij ) );
     }
     $pakket = $rij ? sfp_zelftest_pakket( $rij['test'] ) : null;
     if ( ! $rij || ! $pakket || '' === $pakket['blad'] ) {
         if ( $rij ) {
-            sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'geen', 'pdf_volgende' => null ) );
+            sfp_zelftest_rij_bij(
+                (int) $rij['id'],
+                array(
+                    'pdf_status'   => 'geen',
+                    'pdf_volgende' => null
+                )
+            );
         }
         return null;
     }
     // Na de geldigheid van de link heeft een pdf geen zin meer: geen aanvraag bij Cloudflare.
     if ( strtotime( $rij['afgerond_op'] . ' UTC' ) + (int) $pakket['manifest']['geldigheid_dagen'] * DAY_IN_SECONDS < time() ) {
-        sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'verlopen', 'pdf_volgende' => null ) );
+        sfp_zelftest_rij_bij(
+            (int) $rij['id'],
+            array(
+                'pdf_status'   => 'verlopen',
+                'pdf_volgende' => null
+            )
+        );
         return null;
     }
 
@@ -473,15 +493,23 @@ function sfp_zelftest_pdf_verwerk( $id, $forceer = false, $mag_wachten = true ) 
     $html     = sfp_zelftest_blad_html( $pakket, $gegevens );
     $pdf      = is_wp_error( $html ) ? $html : sfp_zelftest_maak_pdf( $pakket, $html, $mag_wachten, sfp_zelftest_blad_voet( $pakket, $gegevens ) );
     if ( ! is_wp_error( $pdf ) ) {
-        $map   = sfp_zelftest_map( 'pdf' );
-        $naam  = bin2hex( random_bytes( 16 ) ) . '.pdf';
+        $map  = sfp_zelftest_map( 'pdf' );
+        $naam = bin2hex( random_bytes( 16 ) ) . '.pdf';
         // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents -- eigen werkmap.
         if ( '' !== $map && false !== file_put_contents( $map . $naam, $pdf ) ) {
             $oud = sfp_zelftest_pdf_pad( $rij );
             if ( '' !== $oud ) {
                 wp_delete_file( $oud );
             }
-            sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'klaar', 'pdf_bestand' => $naam, 'pdf_pogingen' => 0, 'pdf_volgende' => null ) );
+            sfp_zelftest_rij_bij(
+                (int) $rij['id'],
+                array(
+                    'pdf_status'   => 'klaar',
+                    'pdf_bestand'  => $naam,
+                    'pdf_pogingen' => 0,
+                    'pdf_volgende' => null
+                )
+            );
             return true;
         }
         $pdf = new WP_Error( 'sfp_zelftest_map', 'De pdf kon niet worden opgeslagen.' );
@@ -489,14 +517,26 @@ function sfp_zelftest_pdf_verwerk( $id, $forceer = false, $mag_wachten = true ) 
 
     // Cloudflare nog niet ingesteld: uitgesteld tot de gegevens er zijn (geen poging, geen cron).
     if ( 'sfp_zelftest_cf_geen' === $pdf->get_error_code() ) {
-        sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'uitgesteld', 'pdf_volgende' => null ) );
+        sfp_zelftest_rij_bij(
+            (int) $rij['id'],
+            array(
+                'pdf_status'   => 'uitgesteld',
+                'pdf_volgende' => null
+            )
+        );
         return $pdf;
     }
     // Pauze bij Cloudflare telt niet als poging.
     if ( 'sfp_zelftest_cf_pauze' === $pdf->get_error_code() ) {
         $data = $pdf->get_error_data();
         $tot  = is_array( $data ) && ! empty( $data['tot'] ) ? (int) $data['tot'] : time() + 60;
-        sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'wacht', 'pdf_volgende' => gmdate( 'Y-m-d H:i:s', $tot ) ) );
+        sfp_zelftest_rij_bij(
+            (int) $rij['id'],
+            array(
+                'pdf_status'   => 'wacht',
+                'pdf_volgende' => gmdate( 'Y-m-d H:i:s', $tot )
+            )
+        );
         sfp_zelftest_cron_plannen();
         return $pdf;
     }
@@ -504,10 +544,24 @@ function sfp_zelftest_pdf_verwerk( $id, $forceer = false, $mag_wachten = true ) 
     $wacht  = sfp_zelftest_wachttijd( $poging );
     if ( null === $wacht ) {
         sfp_zelftest_log( $rij['test'], 'fout', 'Pdf definitief mislukt na 5 pogingen (rij ' . (int) $rij['id'] . '): ' . $pdf->get_error_message() );
-        sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'mislukt', 'pdf_pogingen' => 0, 'pdf_volgende' => null ) );
+        sfp_zelftest_rij_bij(
+            (int) $rij['id'],
+            array(
+                'pdf_status'   => 'mislukt',
+                'pdf_pogingen' => 0,
+                'pdf_volgende' => null
+            )
+        );
     } else {
         sfp_zelftest_log( $rij['test'], 'fout', 'Pdf mislukt, poging ' . $poging . ' (rij ' . (int) $rij['id'] . '): ' . $pdf->get_error_message() );
-        sfp_zelftest_rij_bij( (int) $rij['id'], array( 'pdf_status' => 'wacht', 'pdf_pogingen' => $poging, 'pdf_volgende' => sfp_zelftest_nu( $wacht ) ) );
+        sfp_zelftest_rij_bij(
+            (int) $rij['id'],
+            array(
+                'pdf_status'   => 'wacht',
+                'pdf_pogingen' => $poging,
+                'pdf_volgende' => sfp_zelftest_nu( $wacht )
+            )
+        );
         sfp_zelftest_cron_plannen();
     }
     return $pdf;

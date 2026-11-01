@@ -77,17 +77,19 @@ function sfp_page_config_run_daily_check() {
     }
 
     // Only check PAGES marked as 'training'.
-    $pages = get_posts( array(
-        'post_type'      => 'page',
-        'posts_per_page' => -1,
-        'post_status'    => 'publish',
-        'meta_query'     => array(
-            array(
-                'key'   => 'sfp_page_type',
-                'value' => 'training',
+    $pages = get_posts(
+        array(
+            'post_type'      => 'page',
+            'posts_per_page' => -1,
+            'post_status'    => 'publish',
+            'meta_query'     => array(
+                array(
+                    'key'   => 'sfp_page_type',
+                    'value' => 'training',
+                ),
             ),
-        ),
-    ) );
+        )
+    );
 
     // Fetch previously notified signatures (per post ID).
     $notified = get_option( 'sfp_cron_notified', array() );
@@ -160,12 +162,12 @@ function sfp_page_config_run_daily_check() {
         $message_line  = '';
 
         if ( 'no-data' === $signature ) {
-            $should_notify = true;
-            $message_line  = sprintf( '- %s (geen cursusdata ingevoerd)', $page->post_title );
+            $should_notify     = true;
+            $message_line      = sprintf( '- %s (geen cursusdata ingevoerd)', $page->post_title );
             $needs_new_dates[] = $message_line . $regel_link;
         } elseif ( 'invalid' === $signature ) {
-            $should_notify = true;
-            $message_line  = sprintf( '- %s (geen geldige cursusdata gevonden)', $page->post_title );
+            $should_notify     = true;
+            $message_line      = sprintf( '- %s (geen geldige cursusdata gevonden)', $page->post_title );
             $needs_new_dates[] = $message_line . $regel_link;
         } else {
             // We have a latest_date. Check where it sits relative to today.
@@ -175,8 +177,8 @@ function sfp_page_config_run_daily_check() {
 
             if ( $days_left < 0 ) {
                 // Expired: all dates are in the past.
-                $should_notify = true;
-                $message_line  = sprintf(
+                $should_notify     = true;
+                $message_line      = sprintf(
                     '- %s (laatste datum was %s, %d dagen geleden)',
                     $page->post_title,
                     sfp_page_config_format_datum( $latest_date, 'short' ) ?: $latest_date,
@@ -192,7 +194,7 @@ function sfp_page_config_run_daily_check() {
                     sfp_page_config_format_datum( $latest_date, 'short' ) ?: $latest_date,
                     $days_left
                 );
-                $upcoming[] = $message_line . $regel_link;
+                $upcoming[]    = $message_line . $regel_link;
             }
             // else: plenty of runway, no notification.
         }

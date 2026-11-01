@@ -4,23 +4,32 @@ if ( 'cli' !== PHP_SAPI ) {
     exit( 1 );
 }
 error_reporting( E_ALL );
-set_error_handler( function ( $severity, $message, $file, $line ) {
-    throw new ErrorException( $message, 0, $severity, $file, $line );
-} );
+set_error_handler(
+    function ( $severity, $message, $file, $line ) {
+        throw new ErrorException( $message, 0, $severity, $file, $line );
+    }
+);
 define( 'ABSPATH', __DIR__ . '/' );
-function plugin_dir_path( $file ) { return dirname( $file ) . '/'; }
-function plugin_dir_url( $file ) { return 'https://example.test/plugin/'; }
-function get_option( $key, $default = false ) { return $GLOBALS['options'][ $key ] ?? $default; }
-function home_url( $path = '' ) { return 'https://' . $GLOBALS['host'] . $path; }
-function wp_parse_url( $url, $component = -1 ) { return parse_url( $url, $component ); }
+function plugin_dir_path( $file ) {
+    return dirname( $file ) . '/'; }
+function plugin_dir_url( $file ) {
+    return 'https://example.test/plugin/'; }
+function get_option( $key, $default = false ) {
+    return $GLOBALS['options'][ $key ] ?? $default; }
+function home_url( $path = '' ) {
+    return 'https://' . $GLOBALS['host'] . $path; }
+function wp_parse_url( $url, $component = -1 ) {
+    return parse_url( $url, $component ); }
 if ( ! in_array( 'raw', $argv ?? array(), true ) ) {
-    function astra_get_option( $key ) { return $GLOBALS['options']['astra-settings'][ $key ] ?? ''; }
+    function astra_get_option( $key ) {
+        return $GLOBALS['options']['astra-settings'][ $key ] ?? ''; }
 }
 
 // Execute the actual production brand functions without unrelated WP hooks.
 $source = file_get_contents( dirname( __DIR__ ) . '/sfp-page-config.php' );
-$end = strpos( $source, '/* =========================================================================' , strpos( $source, 'function sfp_page_config_get_brand' ) );
-if ( false === $end ) { throw new RuntimeException( 'Brand section not found' ); }
+$end    = strpos( $source, '/* =========================================================================', strpos( $source, 'function sfp_page_config_get_brand' ) );
+if ( false === $end ) {
+    throw new RuntimeException( 'Brand section not found' ); }
 eval( '?>' . substr( $source, 0, $end ) );
 $checks = 0;
 function same( $expected, $actual, $message ) {
@@ -31,16 +40,18 @@ function same( $expected, $actual, $message ) {
     }
 }
 function configure( $host, $heading = 'var(--ast-global-color-2)' ) {
-    $GLOBALS['host'] = $host;
-    $GLOBALS['options'] = array( 'astra-settings' => array(
-        'heading-base-color' => $heading,
-        'button-bg-color' => 'var(--ast-global-color-1)',
-        'button-bg-h-color' => 'var(--ast-global-color-7)',
-        'button-color' => 'var(--ast-global-color-5)',
-        'headings-font-family' => "'Rubik', sans-serif",
-        'headings-font-weight' => '900',
-        'body-font-family' => 'Roboto, sans-serif',
-    ) );
+    $GLOBALS['host']    = $host;
+    $GLOBALS['options'] = array(
+        'astra-settings' => array(
+            'heading-base-color'   => $heading,
+            'button-bg-color'      => 'var(--ast-global-color-1)',
+            'button-bg-h-color'    => 'var(--ast-global-color-7)',
+            'button-color'         => 'var(--ast-global-color-5)',
+            'headings-font-family' => "'Rubik', sans-serif",
+            'headings-font-weight' => '900',
+            'body-font-family'     => 'Roboto, sans-serif',
+        )
+    );
 }
 
 foreach ( array( 'schoolforprofessionals.com', 'depresenteerschool.nl', 'degespreksacademie.nl', 'centrumvoordidactiek.nl', 'deschrijftrainers.nl', 'stephanborggreve.com' ) as $host ) {
@@ -80,7 +91,10 @@ $GLOBALS['options']['astra-settings']['headings-font-weight'] = 900;
 same( '900', sfp_page_config_get_brand()['weight'], 'Numeric Astra weight survives' );
 $GLOBALS['options']['astra-settings']['button-bg-color'] = '#123456';
 same( '#123456', sfp_page_config_get_brand()['lr_bar_bg'], 'Astra changes apply without release' );
-$GLOBALS['options']['sfp_settings'] = array( 'lr_sidebar_text' => '#abcdef', 'lr_bar_bg' => 'red;}body{display:none' );
+$GLOBALS['options']['sfp_settings'] = array(
+    'lr_sidebar_text' => '#abcdef',
+    'lr_bar_bg'       => 'red;}body{display:none'
+);
 // Sinds 3.0.0 zijn er geen kleurvelden meer: een bewaarde waarde telt niet mee.
 same( 'var(--ast-global-color-2)', sfp_page_config_get_brand()['lr_sidebar_text'], 'Stored colour field is ignored' );
 same( '#123456', sfp_page_config_get_brand()['lr_bar_bg'], 'Bar keeps the Astra button colour' );

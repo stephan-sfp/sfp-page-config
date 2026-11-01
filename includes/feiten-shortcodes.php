@@ -166,7 +166,11 @@ function sfp_page_config_shortcode_reviews() {
     return esc_html(
         strtr(
             sfp_page_config_tekst( 1 === $aantal ? 'feiten_reviews_een' : 'feiten_reviews_meer' ),
-            array( '%1$s' => $rating, '%2$s' => number_format_i18n( $aantal ), '%s' => $rating )
+            array(
+                '%1$s' => $rating,
+                '%2$s' => number_format_i18n( $aantal ),
+                '%s'   => $rating
+            )
         )
     );
 }
@@ -229,7 +233,7 @@ function sfp_feiten_publicaties_tel() {
                 'user-agent' => '' !== $agent ? $agent : 'SFP-Page-Config/' . SFP_PAGE_CONFIG_VERSION,
             )
         );
-        $aantal = is_wp_error( $antwoord ) || 200 !== (int) wp_remote_retrieve_response_code( $antwoord ) ? -1 : (int) wp_remote_retrieve_header( $antwoord, 'x-wp-total' );
+        $aantal   = is_wp_error( $antwoord ) || 200 !== (int) wp_remote_retrieve_response_code( $antwoord ) ? -1 : (int) wp_remote_retrieve_header( $antwoord, 'x-wp-total' );
         if ( $aantal < 0 ) {
             $aantal = isset( $vorige[ $host ] ) ? (int) $vorige[ $host ] : 0;
         }

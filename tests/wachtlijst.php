@@ -23,8 +23,16 @@ define( 'ABSPATH', __DIR__ . '/' );
 
 $GLOBALS['options'] = array( 'sfp_settings' => array() );
 $GLOBALS['meta']    = array();
-$GLOBALS['types']   = array( 501 => 'sureforms_form', 502 => 'sureforms_form', 503 => 'page' );
-$GLOBALS['status']  = array( 501 => 'publish', 502 => 'publish', 503 => 'publish' );
+$GLOBALS['types']   = array(
+    501 => 'sureforms_form',
+    502 => 'sureforms_form',
+    503 => 'page'
+);
+$GLOBALS['status']  = array(
+    501 => 'publish',
+    502 => 'publish',
+    503 => 'publish'
+);
 $GLOBALS['vandaag'] = '2026-10-28';
 $GLOBALS['pagina']  = 0;
 $GLOBALS['admin']   = false;
@@ -177,7 +185,18 @@ instel( array( 'onderdelen' => array( 'cursusdata' => '1' ) ) );
 
 /* ---------- Toekomstige groepen ---------- */
 
-$p = training( 10, array( array( 'data' => array( '2026-10-01', '2026-10-15' ) ), array( 'data' => array( '2026-11-03', '2026-11-17' ), 'start' => '09:00', 'eind' => '17:00' ), array( 'data' => array( '2026-10-28' ) ) ) );
+$p = training(
+    10,
+    array(
+        array( 'data' => array( '2026-10-01', '2026-10-15' ) ),
+        array(
+            'data'  => array( '2026-11-03', '2026-11-17' ),
+            'start' => '09:00',
+            'eind'  => '17:00'
+        ),
+        array( 'data' => array( '2026-10-28' ) )
+    )
+);
 $t = sfp_page_config_cursusdata_toekomst( $p );
 same( 2, count( $t ), 'Verlopen groep valt weg, groep van vandaag telt mee' );
 same( '2026-10-28', $t[0]['data'][0], 'Volgorde op eerste dag' );
@@ -190,7 +209,7 @@ $p = training( 12, null, array( 'startdatum' => '2026-12-01' ) );
 same( 1, count( sfp_page_config_cursusdata_toekomst( $p ) ), 'Oud veld startdatum in de toekomst telt' );
 $p = training( 13, null, array( 'startdatum' => '2026-01-01' ) );
 same( array(), sfp_page_config_cursusdata_toekomst( $p ), 'Oud veld startdatum verlopen telt niet' );
-$p = training( 14, 'kapot' );
+$p                                     = training( 14, 'kapot' );
 $GLOBALS['meta'][14]['sfp_cursusdata'] = '{kapot';
 same( array(), sfp_page_config_cursusdata_toekomst( $p ), 'Kapotte JSON geeft geen groepen' );
 
@@ -207,7 +226,7 @@ instel( array( 'onderdelen' => array( 'cursusdata' => '1' ) ) );
 /* ---------- [cursus_datum] ---------- */
 
 $GLOBALS['pagina'] = 10;
-$uit = sfp_page_config_shortcode_cursus_datum( array( 'intro' => 'De volgende groepen starten op:' ) );
+$uit               = sfp_page_config_shortcode_cursus_datum( array( 'intro' => 'De volgende groepen starten op:' ) );
 bevat( 'De volgende groepen starten op:', $uit, 'Intro met data' );
 bevat( 'Groep 1:', $uit, 'Nummering vanaf 1 over toekomstige groepen' );
 bevat( 'Groep 2:', $uit, 'Tweede toekomstige groep' );
@@ -215,11 +234,16 @@ bevat_niet( 'Groep 3:', $uit, 'Verlopen groep niet getoond' );
 same( '', sfp_page_config_shortcode_cursus_datum( array( 'groep' => '3' ) ), 'Niet bestaande groep met wel data: leeg' );
 
 $GLOBALS['pagina'] = 11;
-$uit = sfp_page_config_shortcode_cursus_datum( array( 'intro' => 'De volgende groepen starten op:' ) );
+$uit               = sfp_page_config_shortcode_cursus_datum( array( 'intro' => 'De volgende groepen starten op:' ) );
 bevat_niet( 'De volgende groepen', $uit, 'Geen intro zonder data' );
 bevat( 'Neem contact op', $uit, 'Zonder wachtlijstformulier: oude tekst geen startmomenten' );
 
-instel( array( 'inschrijf_formulier' => '501', 'wachtlijst_formulier' => '502' ) );
+instel(
+    array(
+        'inschrijf_formulier'  => '501',
+        'wachtlijst_formulier' => '502'
+    )
+);
 same( 501, sfp_page_config_wachtlijst_formulier_id( 'inschrijf_formulier' ), 'Inschrijfformulier bewaard' );
 same( 502, sfp_page_config_wachtlijst_formulier_id( 'wachtlijst_formulier' ), 'Wachtlijstformulier bewaard' );
 instel( array( 'wachtlijst_formulier' => '503' ) );
@@ -247,27 +271,52 @@ bevat( '09:00', sfp_page_config_shortcode_cursus_tijd( array( 'groep' => '2' ) )
 /* ---------- Formulier wisselen ---------- */
 
 $GLOBALS['pagina'] = 11;
-$blok = sfp_page_config_wachtlijst_formulier_wissel( array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 501 ) ) );
+$blok              = sfp_page_config_wachtlijst_formulier_wissel(
+    array(
+        'blockName' => 'srfm/form',
+        'attrs'     => array( 'id' => 501 )
+    )
+);
 same( 502, $blok['attrs']['id'], 'Zonder toekomstige groep: wachtlijstformulier' );
-$blok = sfp_page_config_wachtlijst_formulier_wissel( array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 777 ) ) );
+$blok = sfp_page_config_wachtlijst_formulier_wissel(
+    array(
+        'blockName' => 'srfm/form',
+        'attrs'     => array( 'id' => 777 )
+    )
+);
 same( 777, $blok['attrs']['id'], 'Ander formulier blijft' );
 $GLOBALS['pagina'] = 10;
-$blok = sfp_page_config_wachtlijst_formulier_wissel( array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 501 ) ) );
+$blok              = sfp_page_config_wachtlijst_formulier_wissel(
+    array(
+        'blockName' => 'srfm/form',
+        'attrs'     => array( 'id' => 501 )
+    )
+);
 same( 501, $blok['attrs']['id'], 'Met toekomstige groep: inschrijfformulier blijft' );
 $GLOBALS['pagina'] = 11;
 $GLOBALS['admin']  = true;
-$blok = sfp_page_config_wachtlijst_formulier_wissel( array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 501 ) ) );
+$blok              = sfp_page_config_wachtlijst_formulier_wissel(
+    array(
+        'blockName' => 'srfm/form',
+        'attrs'     => array( 'id' => 501 )
+    )
+);
 same( 501, $blok['attrs']['id'], 'In het beheer: niets wisselen' );
-$GLOBALS['admin'] = false;
+$GLOBALS['admin']       = false;
 $GLOBALS['status'][502] = 'draft';
-$blok = sfp_page_config_wachtlijst_formulier_wissel( array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 501 ) ) );
+$blok                   = sfp_page_config_wachtlijst_formulier_wissel(
+    array(
+        'blockName' => 'srfm/form',
+        'attrs'     => array( 'id' => 501 )
+    )
+);
 same( 501, $blok['attrs']['id'], 'Wachtlijstformulier niet gepubliceerd: niets wisselen' );
 $GLOBALS['status'][502] = 'publish';
 
 /* ---------- Klassen ---------- */
 
-$met    = array( 'attrs' => array( 'className' => 'iets sfp-met-data' ) );
-$zonder = array( 'attrs' => array( 'className' => 'sfp-zonder-data' ) );
+$met               = array( 'attrs' => array( 'className' => 'iets sfp-met-data' ) );
+$zonder            = array( 'attrs' => array( 'className' => 'sfp-zonder-data' ) );
 $GLOBALS['pagina'] = 11;
 same( '', sfp_page_config_wachtlijst_blokken( '<p>a</p>', $met ), 'Zonder data: sfp-met-data weg' );
 same( '<p>b</p>', sfp_page_config_wachtlijst_blokken( '<p>b</p>', $zonder ), 'Zonder data: sfp-zonder-data staat er' );
@@ -281,8 +330,8 @@ same( '<p>c</p>', sfp_page_config_wachtlijst_blokken( '<p>c</p>', array( 'attrs'
 /* ---------- Paginaadres in verborgen velden ---------- */
 
 $GLOBALS['pagina'] = 10;
-$vorm = '<input name="x-lead-source-url" value="{embed_post_url}" type="hidden"><input name="y" value="{embed_post_permalink}" type="hidden">';
-$uit  = sfp_page_config_formulier_paginaadres( $vorm, array( 'blockName' => 'srfm/form' ) );
+$vorm              = '<input name="x-lead-source-url" value="{embed_post_url}" type="hidden"><input name="y" value="{embed_post_permalink}" type="hidden">';
+$uit               = sfp_page_config_formulier_paginaadres( $vorm, array( 'blockName' => 'srfm/form' ) );
 same( 2, substr_count( $uit, 'value="https://voorbeeld.test/pagina-10/"' ), 'Paginaadres in beide codewoorden' );
 same( $vorm, sfp_page_config_formulier_paginaadres( $vorm, array( 'blockName' => 'core/paragraph' ) ), 'Ander blok blijft' );
 

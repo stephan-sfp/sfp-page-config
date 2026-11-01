@@ -67,7 +67,10 @@ function sfp_page_config_blokken() {
     if ( null !== $alle ) {
         return $alle;
     }
-    $tekst = array( 'type' => 'string', 'default' => '' );
+    $tekst = array(
+        'type'    => 'string',
+        'default' => ''
+    );
 
     $alle = array(
         'sfp/sectie'        => array(
@@ -76,7 +79,11 @@ function sfp_page_config_blokken() {
             'icon'        => 'align-full-width',
             'css'         => 'basis',
             'attributes'  => array(
-                'achtergrond' => array( 'type' => 'string', 'default' => 'wit', 'enum' => array( 'wit', 'tint' ) ),
+                'achtergrond' => array(
+                    'type'    => 'string',
+                    'default' => 'wit',
+                    'enum'    => array( 'wit', 'tint' )
+                ),
                 'anker'       => $tekst,
             ),
             'render'      => 'sfp_page_config_render_sectie',
@@ -87,7 +94,11 @@ function sfp_page_config_blokken() {
             'icon'        => 'cover-image',
             'css'         => 'held',
             'attributes'  => array(
-                'variant' => array( 'type' => 'string', 'default' => 'recht', 'enum' => array( 'recht', 'breed' ) ),
+                'variant' => array(
+                    'type'    => 'string',
+                    'default' => 'recht',
+                    'enum'    => array( 'recht', 'breed' )
+                ),
                 'anker'   => $tekst,
             ),
             'render'      => 'sfp_page_config_render_held',
@@ -98,9 +109,17 @@ function sfp_page_config_blokken() {
             'icon'        => 'columns',
             'css'         => 'kolommen',
             'attributes'  => array(
-                'indeling'   => array( 'type' => 'string', 'default' => 'twee', 'enum' => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal' ) ),
+                'indeling'   => array(
+                    'type'    => 'string',
+                    'default' => 'twee',
+                    'enum'    => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal' )
+                ),
                 // Verticale uitlijning (3.22.0). Leeg: zoals de indeling het doet.
-                'uitlijning' => array( 'type' => 'string', 'default' => '', 'enum' => array( '', 'boven', 'midden', 'onder', 'rekken' ) ),
+                'uitlijning' => array(
+                    'type'    => 'string',
+                    'default' => '',
+                    'enum'    => array( '', 'boven', 'midden', 'onder', 'rekken' )
+                ),
             ),
             'render'      => 'sfp_page_config_render_kolommen',
         ),
@@ -119,9 +138,19 @@ function sfp_page_config_blokken() {
             'icon'        => 'id-alt',
             'css'         => 'kaart',
             'attributes'  => array(
-                'variant' => array( 'type' => 'string', 'default' => 'standaard', 'enum' => array( 'standaard', 'vlak', 'donker' ) ),
-                'ruim'    => array( 'type' => 'boolean', 'default' => false ),
-                'smal'    => array( 'type' => 'boolean', 'default' => false ),
+                'variant' => array(
+                    'type'    => 'string',
+                    'default' => 'standaard',
+                    'enum'    => array( 'standaard', 'vlak', 'donker' )
+                ),
+                'ruim'    => array(
+                    'type'    => 'boolean',
+                    'default' => false
+                ),
+                'smal'    => array(
+                    'type'    => 'boolean',
+                    'default' => false
+                ),
                 'link'    => $tekst,
             ),
             'render'      => 'sfp_page_config_render_kaart',
@@ -149,8 +178,15 @@ function sfp_page_config_blokken() {
             'icon'        => 'arrow-down-alt2',
             'css'         => 'uitklap',
             'attributes'  => array(
-                'variant'     => array( 'type' => 'string', 'default' => 'groot', 'enum' => array( 'groot', 'compact', 'kaart', 'verhaal' ) ),
-                'eenTegelijk' => array( 'type' => 'boolean', 'default' => false ),
+                'variant'     => array(
+                    'type'    => 'string',
+                    'default' => 'groot',
+                    'enum'    => array( 'groot', 'compact', 'kaart', 'verhaal' )
+                ),
+                'eenTegelijk' => array(
+                    'type'    => 'boolean',
+                    'default' => false
+                ),
             ),
             'render'      => 'sfp_page_config_render_uitklap',
         ),
@@ -195,7 +231,11 @@ function sfp_page_config_blokken() {
             'icon'        => 'editor-ul',
             'css'         => 'lijst',
             'attributes'  => array(
-                'stijl' => array( 'type' => 'string', 'default' => 'vink', 'enum' => array( 'regels', 'letters', 'vink', 'kruis', 'nummers' ) ),
+                'stijl' => array(
+                    'type'    => 'string',
+                    'default' => 'vink',
+                    'enum'    => array( 'regels', 'letters', 'vink', 'kruis', 'nummers' )
+                ),
             ),
             'render'      => 'sfp_page_config_render_lijst',
         ),
@@ -253,16 +293,16 @@ function sfp_page_config_blokken() {
 function sfp_page_config_blokstijlen() {
     return array(
         'core/paragraph' => array(
-            'sfp-intro'       => 'Intro',
-            'sfp-groot'       => 'Groot',
-            'sfp-pijl'        => 'Pijllink',
+            'sfp-intro'        => 'Intro',
+            'sfp-groot'        => 'Groot',
+            'sfp-pijl'         => 'Pijllink',
             'sfp-bovenschrift' => 'Bovenschrift',
-            'sfp-getal'       => 'Getal (pakket)',
-            'sfp-prijs'       => 'Prijs',
-            'sfp-wie'         => 'Naam met portret',
-            'sfp-mailregel'   => 'Mailregel',
-            'sfp-klein'       => 'Klein',
-            'sfp-lead'        => 'Lead (eerste alinea van een artikel)',
+            'sfp-getal'        => 'Getal (pakket)',
+            'sfp-prijs'        => 'Prijs',
+            'sfp-wie'          => 'Naam met portret',
+            'sfp-mailregel'    => 'Mailregel',
+            'sfp-klein'        => 'Klein',
+            'sfp-lead'         => 'Lead (eerste alinea van een artikel)',
         ),
         'core/table'     => array(
             'sfp-tabel' => 'Huisstijl',
@@ -364,7 +404,13 @@ function sfp_page_config_blokken_registreer() {
     if ( function_exists( 'register_block_style' ) ) {
         foreach ( sfp_page_config_blokstijlen() as $blok => $stijlen ) {
             foreach ( $stijlen as $naam => $label ) {
-                register_block_style( $blok, array( 'name' => $naam, 'label' => $label ) );
+                register_block_style(
+                    $blok,
+                    array(
+                        'name'  => $naam,
+                        'label' => $label
+                    )
+                );
             }
         }
     }
@@ -408,17 +454,29 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
         if ( '' !== $klasse ) {
             $a['className'] = $klasse;
         }
-        return array( 'name' => 'core/paragraph', 'attributes' => $a );
+        return array(
+            'name'       => 'core/paragraph',
+            'attributes' => $a
+        );
     };
-    $kop = function ( $tekst, $niveau = 2 ) {
-        return array( 'name' => 'core/heading', 'attributes' => array( 'content' => $tekst, 'level' => $niveau ) );
+    $kop    = function ( $tekst, $niveau = 2 ) {
+        return array(
+            'name'       => 'core/heading',
+            'attributes' => array(
+                'content' => $tekst,
+                'level'   => $niveau
+            )
+        );
     };
-    $lijst = function ( array $items ) {
+    $lijst  = function ( array $items ) {
         return array(
             'name'        => 'core/list',
             'innerBlocks' => array_map(
                 function ( $item ) {
-                    return array( 'name' => 'core/list-item', 'attributes' => array( 'content' => $item ) );
+                    return array(
+                        'name'       => 'core/list-item',
+                        'attributes' => array( 'content' => $item )
+                    );
                 },
                 $items
             ),
@@ -437,48 +495,101 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
         'sfp/held'         => array( 'innerBlocks' => array( $kop( $t( 'Een duidelijke titel', 'A clear title', 'Um título claro' ), 1 ), $alinea( $t( 'Eén zin die zegt wat de bezoeker hier vindt.', 'One sentence that says what the visitor finds here.', 'Uma frase que diz o que o visitante encontra aqui.' ), 'is-style-sfp-intro' ) ) ),
         'sfp/kolommen'     => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/kolom', 'innerBlocks' => array( $alinea( $t( 'Eerste kolom met tekst.', 'First column with text.', 'Primeira coluna com texto.' ) ) ) ),
-                array( 'name' => 'sfp/kolom', 'innerBlocks' => array( $alinea( $t( 'Tweede kolom met tekst.', 'Second column with text.', 'Segunda coluna com texto.' ) ) ) ),
+                array(
+                    'name'        => 'sfp/kolom',
+                    'innerBlocks' => array( $alinea( $t( 'Eerste kolom met tekst.', 'First column with text.', 'Primeira coluna com texto.' ) ) )
+                ),
+                array(
+                    'name'        => 'sfp/kolom',
+                    'innerBlocks' => array( $alinea( $t( 'Tweede kolom met tekst.', 'Second column with text.', 'Segunda coluna com texto.' ) ) )
+                ),
             ),
         ),
         'sfp/kaart'        => array( 'innerBlocks' => array( $kop( $t( 'Persoonlijke begeleiding', 'Personal guidance', 'Acompanhamento individual' ), 3 ), $alinea( $t( 'Eén op één, rond je eigen vraag.', 'One to one, around your own question.', 'Individual, em torno da sua pergunta.' ) ) ) ),
         'sfp/stappen'      => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/stap', 'innerBlocks' => array( $kop( $t( 'Kennismaken', 'Getting to know you', 'Conversa inicial' ), 3 ), $alinea( $t( 'We bespreken je doel.', 'We discuss your goal.', 'Conversamos sobre o seu objetivo.' ) ) ) ),
-                array( 'name' => 'sfp/stap', 'innerBlocks' => array( $kop( $t( 'Oefenen', 'Practice', 'Prática' ), 3 ), $alinea( $t( 'Met je eigen materiaal.', 'With your own material.', 'Com o seu próprio material.' ) ) ) ),
+                array(
+                    'name'        => 'sfp/stap',
+                    'innerBlocks' => array( $kop( $t( 'Kennismaken', 'Getting to know you', 'Conversa inicial' ), 3 ), $alinea( $t( 'We bespreken je doel.', 'We discuss your goal.', 'Conversamos sobre o seu objetivo.' ) ) )
+                ),
+                array(
+                    'name'        => 'sfp/stap',
+                    'innerBlocks' => array( $kop( $t( 'Oefenen', 'Practice', 'Prática' ), 3 ), $alinea( $t( 'Met je eigen materiaal.', 'With your own material.', 'Com o seu próprio material.' ) ) )
+                ),
             ),
         ),
         'sfp/uitklap'      => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/uitklap-regel', 'attributes' => array( 'titel' => $t( 'Hoe lang duurt de training?', 'How long is the training?', 'Quanto tempo dura o treinamento?' ) ), 'innerBlocks' => array( $alinea( $t( 'Twee dagen.', 'Two days.', 'Dois dias.' ) ) ) ),
-                array( 'name' => 'sfp/uitklap-regel', 'attributes' => array( 'titel' => $t( 'Waar vindt hij plaats?', 'Where does it take place?', 'Onde acontece?' ) ), 'innerBlocks' => array( $alinea( $t( 'Op locatie of online.', 'On location or online.', 'Presencial ou online.' ) ) ) ),
+                array(
+                    'name'        => 'sfp/uitklap-regel',
+                    'attributes'  => array( 'titel' => $t( 'Hoe lang duurt de training?', 'How long is the training?', 'Quanto tempo dura o treinamento?' ) ),
+                    'innerBlocks' => array( $alinea( $t( 'Twee dagen.', 'Two days.', 'Dois dias.' ) ) )
+                ),
+                array(
+                    'name'        => 'sfp/uitklap-regel',
+                    'attributes'  => array( 'titel' => $t( 'Waar vindt hij plaats?', 'Where does it take place?', 'Onde acontece?' ) ),
+                    'innerBlocks' => array( $alinea( $t( 'Op locatie of online.', 'On location or online.', 'Presencial ou online.' ) ) )
+                ),
             ),
         ),
         'sfp/tabs'         => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/tab', 'attributes' => array( 'titel' => $t( 'Inhoud', 'Content', 'Conteúdo' ) ), 'innerBlocks' => array( $alinea( $t( 'Wat je leert.', 'What you learn.', 'O que você aprende.' ) ) ) ),
-                array( 'name' => 'sfp/tab', 'attributes' => array( 'titel' => $t( 'Vorm', 'Format', 'Formato' ) ), 'innerBlocks' => array( $alinea( $t( 'Hoe het gaat.', 'How it works.', 'Como funciona.' ) ) ) ),
+                array(
+                    'name'        => 'sfp/tab',
+                    'attributes'  => array( 'titel' => $t( 'Inhoud', 'Content', 'Conteúdo' ) ),
+                    'innerBlocks' => array( $alinea( $t( 'Wat je leert.', 'What you learn.', 'O que você aprende.' ) ) )
+                ),
+                array(
+                    'name'        => 'sfp/tab',
+                    'attributes'  => array( 'titel' => $t( 'Vorm', 'Format', 'Formato' ) ),
+                    'innerBlocks' => array( $alinea( $t( 'Hoe het gaat.', 'How it works.', 'Como funciona.' ) ) )
+                ),
             ),
         ),
         'sfp/lijst'        => array( 'innerBlocks' => array( $lijst( array( $t( 'Je oefent met je eigen materiaal', 'You practise with your own material', 'Você pratica com o seu próprio material' ), $t( 'Je krijgt direct feedback', 'You get direct feedback', 'Você recebe feedback na hora' ) ) ) ) ),
         'sfp/faq'          => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/faq-vraag', 'attributes' => array( 'vraag' => $t( 'Voor wie is dit bedoeld?', 'Who is this for?', 'Para quem é?' ) ), 'innerBlocks' => array( $alinea( $t( 'Voor iedereen die er in het werk mee te maken heeft.', 'For anyone who deals with it at work.', 'Para quem lida com isso no trabalho.' ) ) ) ),
+                array(
+                    'name'        => 'sfp/faq-vraag',
+                    'attributes'  => array( 'vraag' => $t( 'Voor wie is dit bedoeld?', 'Who is this for?', 'Para quem é?' ) ),
+                    'innerBlocks' => array( $alinea( $t( 'Voor iedereen die er in het werk mee te maken heeft.', 'For anyone who deals with it at work.', 'Para quem lida com isso no trabalho.' ) ) )
+                ),
             ),
         ),
         'sfp/samenvatting' => array( 'innerBlocks' => array( $lijst( array( $t( 'Begin met de kern.', 'Start with the core.', 'Comece pelo essencial.' ), $t( 'Eén punt per alinea.', 'One point per paragraph.', 'Um ponto por parágrafo.' ), $t( 'Sluit af met een vervolgstap.', 'End with a next step.', 'Termine com um próximo passo.' ) ) ) ) ),
-        'sfp/kader'        => array( 'attributes' => array( 'soort' => 'wist-je-dat' ), 'innerBlocks' => array( $alinea( $t( 'De meeste lezers onthouden vooral het begin en het einde.', 'Most readers mainly remember the beginning and the end.', 'A maioria dos leitores lembra sobretudo do início e do fim.' ) ) ) ),
-        'sfp/citaat'       => array( 'attributes' => array( 'bijschrift' => $t( 'Een deelnemer over de eerste sessie', 'A participant about the first session', 'Um participante sobre a primeira sessão' ), 'portret' => false ), 'innerBlocks' => array( $alinea( $t( 'Na twee sessies pakte ik het anders aan.', 'After two sessions I approached it differently.', 'Depois de duas sessões, passei a fazer diferente.' ) ) ) ),
+        'sfp/kader'        => array(
+            'attributes'  => array( 'soort' => 'wist-je-dat' ),
+            'innerBlocks' => array( $alinea( $t( 'De meeste lezers onthouden vooral het begin en het einde.', 'Most readers mainly remember the beginning and the end.', 'A maioria dos leitores lembra sobretudo do início e do fim.' ) ) )
+        ),
+        'sfp/citaat'       => array(
+            'attributes'  => array(
+                'bijschrift' => $t( 'Een deelnemer over de eerste sessie', 'A participant about the first session', 'Um participante sobre a primeira sessão' ),
+                'portret'    => false
+            ),
+            'innerBlocks' => array( $alinea( $t( 'Na twee sessies pakte ik het anders aan.', 'After two sessions I approached it differently.', 'Depois de duas sessões, passei a fazer diferente.' ) ) )
+        ),
         'sfp/inzicht'      => array( 'attributes' => array( 'tekst' => $t( 'Een kleine fout valt <em>minder</em> op dan je denkt.', 'A small mistake stands out <em>less</em> than you think.', 'Um pequeno erro chama <em>menos</em> atenção do que você pensa.' ) ) ),
         'sfp/lees-ook'     => array( 'attributes' => array( 'titel' => $t( 'Zo begin je sterk', 'How to start strong', 'Como começar bem' ) ) ),
         'sfp/vervolg'      => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/vervolg-vlak', 'attributes' => array( 'label' => $t( 'Begeleiding', 'Guidance', 'Acompanhamento' ) ), 'innerBlocks' => array( $kop( $t( 'Klaar voor de volgende stap?', 'Ready for the next step?', 'Pronto para o próximo passo?' ), 3 ), $alinea( $t( 'Werk er een op een aan.', 'Work on it one to one.', 'Trabalhe nisso individualmente.' ) ) ) ),
+                array(
+                    'name'        => 'sfp/vervolg-vlak',
+                    'attributes'  => array( 'label' => $t( 'Begeleiding', 'Guidance', 'Acompanhamento' ) ),
+                    'innerBlocks' => array( $kop( $t( 'Klaar voor de volgende stap?', 'Ready for the next step?', 'Pronto para o próximo passo?' ), 3 ), $alinea( $t( 'Werk er een op een aan.', 'Work on it one to one.', 'Trabalhe nisso individualmente.' ) ) )
+                ),
             ),
         ),
         'sfp/warming-up'   => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/warming-up-vraag', 'attributes' => array( 'vraag' => $t( 'Hoeveel mensen zien een kleine fout?', 'How many people notice a small mistake?', 'Quantas pessoas percebem um pequeno erro?' ), 'optie1' => $t( 'Bijna iedereen', 'Almost everyone', 'Quase todos' ), 'optie2' => $t( 'De helft', 'Half', 'Metade' ), 'optie3' => $t( 'Heel weinig', 'Very few', 'Muito poucas' ) ) ),
+                array(
+                    'name'       => 'sfp/warming-up-vraag',
+                    'attributes' => array(
+                        'vraag'  => $t( 'Hoeveel mensen zien een kleine fout?', 'How many people notice a small mistake?', 'Quantas pessoas percebem um pequeno erro?' ),
+                        'optie1' => $t( 'Bijna iedereen', 'Almost everyone', 'Quase todos' ),
+                        'optie2' => $t( 'De helft', 'Half', 'Metade' ),
+                        'optie3' => $t( 'Heel weinig', 'Very few', 'Muito poucas' )
+                    )
+                ),
             ),
         ),
         'sfp/cursusdatum'  => array(),
@@ -493,8 +604,14 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
                 'rechts' => $t( 'Klopt helemaal', 'Completely true', 'Totalmente verdade' ),
             ),
             'innerBlocks' => array(
-                array( 'name' => 'sfp/thermometer-stelling', 'attributes' => array( 'tekst' => $t( 'Ik zie er de dag ervoor al tegen op.', 'I dread it the day before.', 'Já fico apreensivo no dia anterior.' ) ) ),
-                array( 'name' => 'sfp/thermometer-stelling', 'attributes' => array( 'tekst' => $t( 'Ik zie op tegen onverwachte vragen.', 'I dread unexpected questions.', 'Tenho receio de perguntas inesperadas.' ) ) ),
+                array(
+                    'name'       => 'sfp/thermometer-stelling',
+                    'attributes' => array( 'tekst' => $t( 'Ik zie er de dag ervoor al tegen op.', 'I dread it the day before.', 'Já fico apreensivo no dia anterior.' ) )
+                ),
+                array(
+                    'name'       => 'sfp/thermometer-stelling',
+                    'attributes' => array( 'tekst' => $t( 'Ik zie op tegen onverwachte vragen.', 'I dread unexpected questions.', 'Tenho receio de perguntas inesperadas.' ) )
+                ),
             ),
         ),
         'sfp/zelftest-cta' => array(),
@@ -520,7 +637,16 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
         'sfp/bronnenlijst' => array( 'attributes' => array( 'voorbeeld' => true ) ),
         'sfp/begrip-check' => array(
             'innerBlocks' => array(
-                array( 'name' => 'sfp/begrip-vraag', 'attributes' => array( 'vraag' => $t( 'Wanneer wordt een gewoonte een probleem?', 'When does a habit become a problem?', 'Quando um hábito vira um problema?' ), 'optie1' => $t( 'Altijd', 'Always', 'Sempre' ), 'optie2' => $t( 'Als je erdoor gaat vermijden', 'When it makes you avoid things', 'Quando faz você evitar coisas' ), 'optie3' => $t( 'Nooit', 'Never', 'Nunca' ), 'juist' => 2 ) ),
+                array(
+                    'name'       => 'sfp/begrip-vraag',
+                    'attributes' => array(
+                        'vraag'  => $t( 'Wanneer wordt een gewoonte een probleem?', 'When does a habit become a problem?', 'Quando um hábito vira um problema?' ),
+                        'optie1' => $t( 'Altijd', 'Always', 'Sempre' ),
+                        'optie2' => $t( 'Als je erdoor gaat vermijden', 'When it makes you avoid things', 'Quando faz você evitar coisas' ),
+                        'optie3' => $t( 'Nooit', 'Never', 'Nunca' ),
+                        'juist'  => 2
+                    )
+                ),
             ),
         ),
     );
@@ -976,7 +1102,7 @@ function sfp_page_config_render_kaart( $attrs, $content ) {
         ! empty( $attrs['smal'] ) ? 'sfp-kaart--smal' : '',
         '' !== $link ? 'sfp-kaart--link' : '',
     );
-    $laag = '' !== $link ? '<a class="sfp-kaart__link" href="' . $link . '" tabindex="-1" aria-hidden="true"></a>' : '';
+    $laag    = '' !== $link ? '<a class="sfp-kaart__link" href="' . $link . '" tabindex="-1" aria-hidden="true"></a>' : '';
     return sfp_page_config_blokken_css_vangnet( 'sfp/kaart' )
         . '<div ' . sfp_page_config_blok_omhulling( $klassen ) . '>' . $content . $laag . '</div>';
 }
@@ -1170,22 +1296,29 @@ function sfp_page_config_render_faq_vraag( $attrs, $content ) {
     }
     // Alinea's worden regelovergangen; links en nadruk blijven staan.
     $antwoord = preg_replace( '#</p>\s*<p[^>]*>#', '<br><br>', (string) $content );
-    $antwoord = trim( wp_kses(
-        $antwoord,
-        array(
-            'br'     => array(),
-            'ul'     => array(),
-            'ol'     => array(),
-            'li'     => array(),
-            'a'      => array( 'href' => true ),
-            'strong' => array(),
-            'b'      => array(),
-            'em'     => array(),
-            'i'      => array(),
+    $antwoord = trim(
+        wp_kses(
+            $antwoord,
+            array(
+                'br'     => array(),
+                'ul'     => array(),
+                'ol'     => array(),
+                'li'     => array(),
+                'a'      => array( 'href' => true ),
+                'strong' => array(),
+                'b'      => array(),
+                'em'     => array(),
+                'i'      => array(),
+            )
         )
-    ) );
+    );
     if ( '' !== $antwoord && ! is_admin() ) {
-        sfp_page_config_faq_verzamel( array( 'vraag' => html_entity_decode( $tekst, ENT_QUOTES, 'UTF-8' ), 'antwoord' => $antwoord ) );
+        sfp_page_config_faq_verzamel(
+            array(
+                'vraag'    => html_entity_decode( $tekst, ENT_QUOTES, 'UTF-8' ),
+                'antwoord' => $antwoord
+            )
+        );
     }
     $extra = array(
         'class' => 'sfp-faq__vraag',
@@ -1211,7 +1344,7 @@ function sfp_page_config_faq_schema() {
             continue;
         }
         $gezien[ $paar['vraag'] ] = true;
-        $vragen[] = array(
+        $vragen[]                 = array(
             '@type'          => 'Question',
             'name'           => $paar['vraag'],
             'acceptedAnswer' => array(

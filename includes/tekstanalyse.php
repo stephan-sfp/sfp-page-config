@@ -79,11 +79,11 @@ function sfp_page_config_tekstanalyse_teksten( $w ) {
  * @return array
  */
 function sfp_page_config_tekstanalyse_normaliseer( array $b ) {
-    $tekst = function ( $x, $k ) {
+    $tekst   = function ( $x, $k ) {
         return isset( $x[ $k ] ) && is_scalar( $x[ $k ] ) ? (string) $x[ $k ] : '';
     };
-    $invoer = isset( $b['invoer'] ) && is_array( $b['invoer'] ) ? $b['invoer'] : array();
-    $uit    = array(
+    $invoer  = isset( $b['invoer'] ) && is_array( $b['invoer'] ) ? $b['invoer'] : array();
+    $uit     = array(
         'versie'          => isset( $b['versie'] ) ? (int) $b['versie'] : 1,
         'soort'           => 'tekstanalyse',
         'resultaat_kop'   => $tekst( $b, 'resultaat_kop' ),
@@ -123,7 +123,7 @@ function sfp_page_config_tekstanalyse_normaliseer( array $b ) {
         'op'     => (string) $klassen['op'],
         'labels' => sfp_page_config_tekstanalyse_labels( isset( $klassen['labels'] ) ? $klassen['labels'] : array() ),
     ) : null;
-    $reken = array();
+    $reken          = array();
     foreach ( isset( $b['reken'] ) && is_array( $b['reken'] ) ? $b['reken'] : array() as $r ) {
         if ( is_array( $r ) && isset( $r['id'], $r['formule'] ) && is_scalar( $r['id'] ) && is_scalar( $r['formule'] ) ) {
             $reken[] = array(
@@ -132,9 +132,9 @@ function sfp_page_config_tekstanalyse_normaliseer( array $b ) {
             );
         }
     }
-    $uit['reken']   = $reken;
-    $oordeel        = isset( $b['oordeel'] ) && is_array( $b['oordeel'] ) ? $b['oordeel'] : null;
-    $uit['oordeel'] = $oordeel && isset( $oordeel['op'] ) && is_scalar( $oordeel['op'] ) ? array(
+    $uit['reken']    = $reken;
+    $oordeel         = isset( $b['oordeel'] ) && is_array( $b['oordeel'] ) ? $b['oordeel'] : null;
+    $uit['oordeel']  = $oordeel && isset( $oordeel['op'] ) && is_scalar( $oordeel['op'] ) ? array(
         'op'     => (string) $oordeel['op'],
         'labels' => sfp_page_config_tekstanalyse_labels( isset( $oordeel['labels'] ) ? $oordeel['labels'] : array() ),
     ) : null;
@@ -144,7 +144,7 @@ function sfp_page_config_tekstanalyse_normaliseer( array $b ) {
         'voegwoorden' => sfp_page_config_tekstanalyse_teksten( isset( $splitsen['voegwoorden'] ) ? $splitsen['voegwoorden'] : array() ),
         'min_tekens'  => isset( $splitsen['min_tekens'] ) && is_numeric( $splitsen['min_tekens'] ) ? max( 1, (int) $splitsen['min_tekens'] ) : 5,
     ) : null;
-    $uitvoer = array();
+    $uitvoer         = array();
     foreach ( isset( $b['uitvoer'] ) && is_array( $b['uitvoer'] ) ? $b['uitvoer'] : array() as $s ) {
         if ( ! is_array( $s ) ) {
             continue;
@@ -181,9 +181,9 @@ function sfp_page_config_tekstanalyse_normaliseer( array $b ) {
         }
         $uitvoer[] = $x;
     }
-    $uit['uitvoer'] = $uitvoer;
-    $acties         = isset( $b['acties'] ) && is_array( $b['acties'] ) ? $b['acties'] : array();
-    $uit['acties']  = array(
+    $uit['uitvoer']   = $uitvoer;
+    $acties           = isset( $b['acties'] ) && is_array( $b['acties'] ) ? $b['acties'] : array();
+    $uit['acties']    = array(
         'pdf'              => ! isset( $acties['pdf'] ) || ! empty( $acties['pdf'] ),
         'word'             => ! isset( $acties['word'] ) || ! empty( $acties['word'] ),
         'kopieer'          => ! empty( $acties['kopieer'] ),
@@ -193,8 +193,8 @@ function sfp_page_config_tekstanalyse_normaliseer( array $b ) {
         'formulier'        => isset( $acties['formulier'] ) ? (int) $acties['formulier'] : 0,
         'pdf_bestandsnaam' => $tekst( $acties, 'pdf_bestandsnaam' ),
     );
-    $bron         = isset( $b['bron'] ) && is_array( $b['bron'] ) ? $b['bron'] : array();
-    $uit['bron']  = array(
+    $bron             = isset( $b['bron'] ) && is_array( $b['bron'] ) ? $b['bron'] : array();
+    $uit['bron']      = array(
         'model' => $tekst( $bron, 'model' ),
         'link'  => sfp_page_config_tool_url( $tekst( $bron, 'link' ) ),
     );

@@ -72,62 +72,62 @@ function sfp_page_config_paginasoorten() {
  */
 function sfp_page_config_onderdelen() {
     return array(
-        'knop'       => array(
+        'knop'         => array(
             'naam'   => 'Knop onderaan',
             'uitleg' => 'Op een telefoon blijft op een dienstpagina één knop in beeld.',
             'detail' => true,
         ),
-        'artikel'    => array(
+        'artikel'      => array(
             'naam'   => 'Artikelen',
             'uitleg' => 'Kopkaart, inhoudsopgave, auteurskaart en vervolg bij elk artikel.',
             'detail' => true,
         ),
-        'reviews'    => array(
+        'reviews'      => array(
             'naam'   => 'Reviews',
             'uitleg' => 'Reviews van Google en je eigen reviews.',
             'detail' => true,
         ),
-        'tooltips'   => array(
+        'tooltips'     => array(
             'naam'   => 'Tooltips',
             'uitleg' => 'Uitleg bij een woord, die verschijnt bij aanwijzen of aantikken.',
             'detail' => true,
         ),
-        'footer'     => array(
+        'footer'       => array(
             'naam'   => 'Footerlinks',
             'uitleg' => 'De groepen met links onderaan de site.',
             'detail' => true,
         ),
-        'voortgang'  => array(
+        'voortgang'    => array(
             'naam'   => 'Voortgangsbalk',
             'uitleg' => 'Een dunne balk bovenaan die meeloopt terwijl de lezer scrolt.',
             'detail' => false,
         ),
-        'whatsapp'   => array(
+        'whatsapp'     => array(
             'naam'   => 'WhatsApp-knop',
             'uitleg' => 'Een zwevende knop op de pagina\'s waar je hem aanzet.',
             'detail' => true,
         ),
-        'cursusdata' => array(
+        'cursusdata'   => array(
             'naam'   => 'Cursusdata',
             'uitleg' => 'Startmomenten van trainingen, op de pagina en in het aanmeldformulier.',
             'detail' => true,
         ),
-        'zelftest'   => array(
+        'zelftest'     => array(
             'naam'   => 'Zelftest',
             'uitleg' => 'Een zelftest voor bezoekers, met het resultaat als pdf per e-mail via het CRM.',
             'detail' => true,
         ),
-        'pijler'     => array(
+        'pijler'       => array(
             'naam'   => 'Pijler',
             'uitleg' => 'Een bericht kan de gids van een categorie zijn: op het adres van de categorie, met de kaart van alle artikelen en begrippen erin.',
             'detail' => false,
         ),
-        'begrip'     => array(
+        'begrip'       => array(
             'naam'   => 'Begrip',
             'uitleg' => 'Begrippen krijgen de vorm van de woordenlijst: een definitie bovenaan, verwante begrippen eronder en de definitie als tooltip in artikelen.',
             'detail' => false,
         ),
-        'tools'      => array(
+        'tools'        => array(
             'naam'   => 'Online tools',
             'uitleg' => 'Kleine online tools voor bezoekers: tests, generatoren, rekenaars, checklists en tekstanalyses. Met pdf, Word, deellink, mail naar jezelf en duimpjes.',
             'detail' => true,
@@ -152,7 +152,7 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Pagina\'s, berichten, begrippen en tools lezen, bijwerken en herstellen via de MCP-koppeling, met revisiecontrole.',
             'detail' => false,
         ),
-        'banner'     => array(
+        'banner'       => array(
             'naam'   => 'Banner',
             'uitleg' => 'Eén regel boven de header: een boek of e-course in een periode die je kiest, anders vanzelf de eerstvolgende groep uit de cursusdata.',
             'detail' => true,
@@ -177,7 +177,7 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Opmaak en links in de biografie van een auteur, en regels die met een vinkje beginnen als lijst met vinkjes.',
             'detail' => false,
         ),
-        'snippets'   => array(
+        'snippets'     => array(
             'naam'   => 'Snippets beheren op afstand',
             'uitleg' => 'Claude leest, maakt en wijzigt de codefragmenten van ASE Pro en zet ze aan of uit, zonder browser. Alleen voor onderhoud.',
             'detail' => false,
@@ -195,7 +195,7 @@ function sfp_page_config_onderdelen() {
  */
 function sfp_page_config_in_gebruik( $meta_key, $meta_value = '' ) {
     static $geheugen = array();
-    $sleutel = $meta_key . '|' . $meta_value;
+    $sleutel         = $meta_key . '|' . $meta_value;
     if ( isset( $geheugen[ $sleutel ] ) ) {
         return $geheugen[ $sleutel ];
     }
@@ -212,7 +212,7 @@ function sfp_page_config_in_gebruik( $meta_key, $meta_value = '' ) {
         $meta['value']   = '';
         $meta['compare'] = '!=';
     }
-    $gevonden = get_posts(
+    $gevonden             = get_posts(
         array(
             'post_type'        => sfp_page_config_post_types(),
             'post_status'      => array( 'publish', 'draft', 'pending', 'future', 'private' ),
@@ -432,11 +432,11 @@ function sfp_page_config_norm() {
             'norm'  => sfp_page_config_tekst_standaard( $sleutel ),
         );
     }
-    $norm['whatsapp_number']  = array(
+    $norm['whatsapp_number']    = array(
         'label' => 'Telefoonnummer van de WhatsApp-knop',
         'norm'  => sfp_page_config_whatsapp_norm(),
     );
-    $norm['words_per_minute'] = array(
+    $norm['words_per_minute']   = array(
         'label' => 'Leessnelheid voor de leestijd',
         'norm'  => '250',
     );
@@ -448,7 +448,7 @@ function sfp_page_config_norm() {
         'label' => 'Tekstkleur van de banner',
         'norm'  => 'wit',
     );
-    $norm['update_kanaal']    = array(
+    $norm['update_kanaal']      = array(
         'label' => 'Soort versies die deze site krijgt',
         'norm'  => '',
     );
@@ -626,10 +626,10 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                     if ( ! isset( $ruw[ $type ] ) || ! is_array( $ruw[ $type ] ) ) {
                         continue;
                     }
-                    $oud  = isset( $alle['sticky_cta'][ $type ] ) && is_array( $alle['sticky_cta'][ $type ] ) ? $alle['sticky_cta'][ $type ] : array();
-                    $in   = $ruw[ $type ];
-                    $doel = isset( $in['doel'] ) && in_array( $in['doel'], array( 'form', 'pagina', 'link' ), true ) ? $in['doel'] : ( isset( $oud['doel'] ) ? $oud['doel'] : 'form' );
-                    $oud['text']   = array_key_exists( 'text', $in ) ? sanitize_text_field( (string) $in['text'] ) : ( isset( $oud['text'] ) ? $oud['text'] : '' );
+                    $oud         = isset( $alle['sticky_cta'][ $type ] ) && is_array( $alle['sticky_cta'][ $type ] ) ? $alle['sticky_cta'][ $type ] : array();
+                    $in          = $ruw[ $type ];
+                    $doel        = isset( $in['doel'] ) && in_array( $in['doel'], array( 'form', 'pagina', 'link' ), true ) ? $in['doel'] : ( isset( $oud['doel'] ) ? $oud['doel'] : 'form' );
+                    $oud['text'] = array_key_exists( 'text', $in ) ? sanitize_text_field( (string) $in['text'] ) : ( isset( $oud['text'] ) ? $oud['text'] : '' );
                     if ( isset( $in['doel'] ) || isset( $oud['doel'] ) ) {
                         $oud['doel'] = $doel;
                     }
@@ -870,4 +870,3 @@ function sfp_page_config_instelling_naar_norm( $pad ) {
     }
     return true;
 }
-

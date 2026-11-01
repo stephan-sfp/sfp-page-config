@@ -43,9 +43,18 @@ function sfp_page_config_onderhoud_routes() {
                 'callback'            => 'sfp_page_config_onderhoud_run',
                 'permission_callback' => 'sfp_page_config_onderhoud_permission',
                 'args'                => array(
-                    'stage'   => array( 'type' => 'string', 'required' => true ),
-                    'limit'   => array( 'type' => 'integer', 'default' => 5 ),
-                    'exclude' => array( 'type' => 'array', 'default' => array( 'latepoint-pro-features/latepoint-pro-features.php' ) ),
+                    'stage'   => array(
+                        'type'     => 'string',
+                        'required' => true
+                    ),
+                    'limit'   => array(
+                        'type'    => 'integer',
+                        'default' => 5
+                    ),
+                    'exclude' => array(
+                        'type'    => 'array',
+                        'default' => array( 'latepoint-pro-features/latepoint-pro-features.php' )
+                    ),
                 ),
             ),
         )
@@ -93,7 +102,12 @@ function sfp_page_config_onderhoud_refresh() {
 }
 
 function sfp_page_config_onderhoud_pending() {
-    $out = array( 'plugins' => array(), 'themes' => array(), 'translations' => array(), 'core' => array() );
+    $out = array(
+        'plugins'      => array(),
+        'themes'       => array(),
+        'translations' => array(),
+        'core'         => array()
+    );
 
     $all = get_plugins();
     $pl  = get_site_transient( 'update_plugins' );
@@ -112,7 +126,7 @@ function sfp_page_config_onderhoud_pending() {
     $th = get_site_transient( 'update_themes' );
     if ( ! empty( $th->response ) ) {
         foreach ( $th->response as $slug => $data ) {
-            $theme            = wp_get_theme( $slug );
+            $theme           = wp_get_theme( $slug );
             $out['themes'][] = array(
                 'slug'    => $slug,
                 'name'    => $theme->exists() ? $theme->get( 'Name' ) : $slug,
@@ -123,12 +137,19 @@ function sfp_page_config_onderhoud_pending() {
     }
 
     foreach ( (array) wp_get_translation_updates() as $t ) {
-        $out['translations'][] = array( 'type' => $t->type, 'slug' => $t->slug, 'language' => $t->language );
+        $out['translations'][] = array(
+            'type'     => $t->type,
+            'slug'     => $t->slug,
+            'language' => $t->language
+        );
     }
 
     foreach ( (array) get_core_updates() as $c ) {
         if ( isset( $c->response ) && 'upgrade' === $c->response ) {
-            $out['core'][] = array( 'current' => get_bloginfo( 'version' ), 'new' => $c->version );
+            $out['core'][] = array(
+                'current' => get_bloginfo( 'version' ),
+                'new'     => $c->version
+            );
         }
     }
 
@@ -138,7 +159,12 @@ function sfp_page_config_onderhoud_pending() {
 function sfp_page_config_onderhoud_health( $with_details = true ) {
     $health = WP_Site_Health::get_instance();
     $tests  = WP_Site_Health::get_tests();
-    $result = array( 'critical' => array(), 'recommended' => array(), 'good' => 0, 'async_skipped' => array() );
+    $result = array(
+        'critical'      => array(),
+        'recommended'   => array(),
+        'good'          => 0,
+        'async_skipped' => array()
+    );
 
     foreach ( $tests['direct'] as $name => $test ) {
         $r = null;
@@ -185,7 +211,10 @@ function sfp_page_config_onderhoud_status( WP_REST_Request $req ) {
             'site'       => home_url(),
             'wp'         => get_bloginfo( 'version' ),
             'php'        => PHP_VERSION,
-            'theme'      => array( 'name' => $theme->get( 'Name' ), 'version' => $theme->get( 'Version' ) ),
+            'theme'      => array(
+                'name'    => $theme->get( 'Name' ),
+                'version' => $theme->get( 'Version' )
+            ),
             'pending'    => sfp_page_config_onderhoud_pending(),
             'health'     => sfp_page_config_onderhoud_health( false ),
             'checked_at' => current_time( 'mysql' ),
@@ -338,10 +367,10 @@ function sfp_page_config_onderhoud_update_translations() {
         $still[] = $u->type . ':' . $u->slug . ':' . $u->language;
     }
     return array(
-        'stage'          => 'translations',
-        'updated'        => $out,
-        'still_offered'  => $still,
-        'messages'       => array_slice( array_map( 'wp_strip_all_tags', $messages ), -20 ),
+        'stage'         => 'translations',
+        'updated'       => $out,
+        'still_offered' => $still,
+        'messages'      => array_slice( array_map( 'wp_strip_all_tags', $messages ), -20 ),
     );
 }
 
@@ -364,5 +393,9 @@ function sfp_page_config_onderhoud_purge( $usedcss_legen = false ) {
         \SiteGround_Optimizer\Supercacher\Supercacher::purge_cache();
         $done[] = 'siteground';
     }
-    return array( 'stage' => 'purge', 'purged' => $done, 'note' => 'Cloudflare niet geleegd; dat blijft handmatig of via de Cloudflare-plugin bij publiceren.' );
+    return array(
+        'stage'  => 'purge',
+        'purged' => $done,
+        'note'   => 'Cloudflare niet geleegd; dat blijft handmatig of via de Cloudflare-plugin bij publiceren.'
+    );
 }

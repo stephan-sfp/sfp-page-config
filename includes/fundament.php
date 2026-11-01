@@ -172,7 +172,7 @@ function sfp_page_config_kleurrollen_palet() {
     $palet = is_array( $astra ) && isset( $astra['global-color-palette']['palette'] ) && is_array( $astra['global-color-palette']['palette'] ) ? array_values( $astra['global-color-palette']['palette'] ) : array();
     $uit   = array();
     for ( $i = 0; $i < 9; $i++ ) {
-        $kleur   = isset( $palet[ $i ] ) && is_string( $palet[ $i ] ) ? $palet[ $i ] : '';
+        $kleur     = isset( $palet[ $i ] ) && is_string( $palet[ $i ] ) ? $palet[ $i ] : '';
         $uit[ $i ] = function_exists( 'sfp_page_config_sanitize_css_color' ) ? sfp_page_config_sanitize_css_color( $kleur ) : '';
     }
     return $uit;
@@ -297,10 +297,21 @@ function sfp_page_config_berichttypes() {
  */
 function sfp_page_config_berichttype_standaard( $type ) {
     $taal  = function_exists( 'sfp_page_config_taal' ) ? sfp_page_config_taal() : 'nl';
-    $namen = function_exists( 'sfp_page_config_berichttype_namen' ) ? sfp_page_config_berichttype_namen( $type, $taal ) : array( 'meervoud' => $type, 'enkelvoud' => $type );
+    $namen = function_exists( 'sfp_page_config_berichttype_namen' ) ? sfp_page_config_berichttype_namen( $type, $taal ) : array(
+        'meervoud'  => $type,
+        'enkelvoud' => $type
+    );
     $slugs = array(
-        'begrippen' => array( 'nl' => 'begrippen', 'en' => 'glossary', 'pt' => 'glossario' ),
-        'tool'      => array( 'nl' => 'tools', 'en' => 'tools', 'pt' => 'ferramentas' ),
+        'begrippen' => array(
+            'nl' => 'begrippen',
+            'en' => 'glossary',
+            'pt' => 'glossario'
+        ),
+        'tool'      => array(
+            'nl' => 'tools',
+            'en' => 'tools',
+            'pt' => 'ferramentas'
+        ),
     );
     return array(
         'slug'       => $slugs[ $type ][ $taal ] ?? $slugs[ $type ]['nl'],
@@ -352,7 +363,15 @@ function sfp_page_config_berichttype_uitlezen( $obj ) {
     $rewrite = is_array( $obj->rewrite ) ? $obj->rewrite : array();
     // Alleen de labels die de registratie zelf zette. De rest vult WordPress
     // in de taal van de gebruiker; die bevriezen we niet in de instelling.
-    $standaard = function_exists( 'get_post_type_labels' ) ? (array) get_object_vars( get_post_type_labels( (object) array( 'labels' => array(), 'hierarchical' => false, 'name' => 'post' ) ) ) : array();
+    $standaard = function_exists( 'get_post_type_labels' ) ? (array) get_object_vars(
+        get_post_type_labels(
+            (object) array(
+                'labels'       => array(),
+                'hierarchical' => false,
+                'name'         => 'post'
+            )
+        )
+    ) : array();
     $labels    = array();
     foreach ( (array) get_object_vars( (object) $obj->labels ) as $sleutel => $waarde ) {
         if ( is_string( $waarde ) && ( ! isset( $standaard[ $sleutel ] ) || $standaard[ $sleutel ] !== $waarde ) ) {
@@ -489,14 +508,14 @@ function sfp_page_config_berichttypes_stand() {
         $reg   = sfp_page_config_berichttype_bewaard( $type );
         $eigen = isset( $GLOBALS['sfp_page_config_eigen_berichttypes'] ) && preg_grep( '/^' . preg_quote( $type, '/' ) . ':/', (array) $GLOBALS['sfp_page_config_eigen_berichttypes'] );
         $uit[] = array(
-            'type'    => $type,
-            'naam'    => $obj ? (string) $obj->labels->name : '',
+            'type'      => $type,
+            'naam'      => $obj ? (string) $obj->labels->name : '',
             // Sinds 3.19.0 heet het berichttype in het beheer Nederlands; dit is de naam voor de bezoeker.
             'naam_site' => isset( $GLOBALS['sfp_page_config_site_namen'][ $type ] ) ? $GLOBALS['sfp_page_config_site_namen'][ $type ] : ( $obj ? (string) $obj->labels->name : '' ),
             'afwijking' => sfp_page_config_berichttype_afwijking( $type ),
-            'adres'   => $obj ? (string) get_post_type_archive_link( $type ) : '',
-            'bewaard' => null !== $reg,
-            'bron'    => ! $obj ? 'geen' : ( $eigen ? 'plugin' : 'snippet' ),
+            'adres'     => $obj ? (string) get_post_type_archive_link( $type ) : '',
+            'bewaard'   => null !== $reg,
+            'bron'      => ! $obj ? 'geen' : ( $eigen ? 'plugin' : 'snippet' ),
         );
     }
     return $uit;
@@ -558,24 +577,24 @@ function sfp_page_config_berichttypes_beheer_labels() {
         $klein = strtolower( $een );
         $meerk = strtolower( $meer );
         return array(
-            'name'                  => $meer,
-            'singular_name'         => $een,
-            'menu_name'             => $meer,
-            'name_admin_bar'        => $een,
-            'all_items'             => 'Alle ' . $meerk,
-            'archives'              => $meer,
-            'add_new'               => 'Nieuw' . ( 'het' === $lidwoord ? '' : 'e' ) . ' ' . $klein,
-            'add_new_item'          => 'Nieuw' . ( 'het' === $lidwoord ? '' : 'e' ) . ' ' . $klein . ' toevoegen',
-            'edit_item'             => ucfirst( $klein ) . ' bewerken',
-            'new_item'              => 'Nieuw' . ( 'het' === $lidwoord ? '' : 'e' ) . ' ' . $klein,
-            'view_item'             => ucfirst( $klein ) . ' bekijken',
-            'view_items'            => ucfirst( $meerk ) . ' bekijken',
-            'search_items'          => ucfirst( $meerk ) . ' zoeken',
-            'not_found'             => 'Geen ' . $meerk . ' gevonden',
-            'not_found_in_trash'    => 'Geen ' . $meerk . ' in de prullenbak',
-            'item_published'        => ucfirst( $klein ) . ' gepubliceerd',
-            'item_updated'          => ucfirst( $klein ) . ' bijgewerkt',
-            'item_scheduled'        => ucfirst( $klein ) . ' ingepland',
+            'name'                   => $meer,
+            'singular_name'          => $een,
+            'menu_name'              => $meer,
+            'name_admin_bar'         => $een,
+            'all_items'              => 'Alle ' . $meerk,
+            'archives'               => $meer,
+            'add_new'                => 'Nieuw' . ( 'het' === $lidwoord ? '' : 'e' ) . ' ' . $klein,
+            'add_new_item'           => 'Nieuw' . ( 'het' === $lidwoord ? '' : 'e' ) . ' ' . $klein . ' toevoegen',
+            'edit_item'              => ucfirst( $klein ) . ' bewerken',
+            'new_item'               => 'Nieuw' . ( 'het' === $lidwoord ? '' : 'e' ) . ' ' . $klein,
+            'view_item'              => ucfirst( $klein ) . ' bekijken',
+            'view_items'             => ucfirst( $meerk ) . ' bekijken',
+            'search_items'           => ucfirst( $meerk ) . ' zoeken',
+            'not_found'              => 'Geen ' . $meerk . ' gevonden',
+            'not_found_in_trash'     => 'Geen ' . $meerk . ' in de prullenbak',
+            'item_published'         => ucfirst( $klein ) . ' gepubliceerd',
+            'item_updated'           => ucfirst( $klein ) . ' bijgewerkt',
+            'item_scheduled'         => ucfirst( $klein ) . ' ingepland',
             'item_reverted_to_draft' => ucfirst( $klein ) . ' terug naar concept',
         );
     };
@@ -598,7 +617,10 @@ function sfp_page_config_berichttype_afwijking( $type ) {
         return null;
     }
     $norm = sfp_page_config_berichttype_standaard( $type );
-    return $reg['slug'] !== $norm['slug'] ? array( 'nu' => $reg['slug'], 'norm' => $norm['slug'] ) : null;
+    return $reg['slug'] !== $norm['slug'] ? array(
+        'nu'   => $reg['slug'],
+        'norm' => $norm['slug']
+    ) : null;
 }
 
 /**
@@ -617,9 +639,9 @@ function sfp_page_config_berichttype_naar_norm( $type ) {
     $oud   = sfp_page_config_berichttype_bewaard( $type );
     $nieuw = sfp_page_config_berichttype_standaard( $type );
     // Het menu-icoon en de REST-basis blijven zoals ze waren.
-    $nieuw['rest_base'] = '' !== $oud['rest_base'] ? $oud['rest_base'] : $nieuw['rest_base'];
-    $vorig              = isset( $alle['berichttypes_vorig'][ $type ] ) ? (array) $alle['berichttypes_vorig'][ $type ] : array();
-    $vorig[]            = $oud['slug'];
+    $nieuw['rest_base']                  = '' !== $oud['rest_base'] ? $oud['rest_base'] : $nieuw['rest_base'];
+    $vorig                               = isset( $alle['berichttypes_vorig'][ $type ] ) ? (array) $alle['berichttypes_vorig'][ $type ] : array();
+    $vorig[]                             = $oud['slug'];
     $alle['berichttypes_vorig'][ $type ] = array_values( array_diff( array_unique( array_map( 'sanitize_title', $vorig ) ), array( $nieuw['slug'] ) ) );
     $alle['berichttypes'][ $type ]       = $nieuw;
     update_option( 'sfp_settings', $alle );

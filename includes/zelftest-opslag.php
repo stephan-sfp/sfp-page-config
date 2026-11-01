@@ -209,7 +209,17 @@ function sfp_zelftest_json( array $rij, $kolom ) {
  */
 function sfp_zelftest_tellingen( $test ) {
     global $wpdb;
-    $leeg = array( 'gestart' => 0, 'afgerond' => 0, 'gestart_30' => 0, 'afgerond_30' => 0, 'crm_wacht' => 0, 'crm_mislukt' => 0, 'pdf_wacht' => 0, 'pdf_mislukt' => 0, 'pdf_klaar' => 0 );
+    $leeg = array(
+        'gestart'     => 0,
+        'afgerond'    => 0,
+        'gestart_30'  => 0,
+        'afgerond_30' => 0,
+        'crm_wacht'   => 0,
+        'crm_mislukt' => 0,
+        'pdf_wacht'   => 0,
+        'pdf_mislukt' => 0,
+        'pdf_klaar'   => 0
+    );
     if ( ! sfp_zelftest_tabel_klaar() ) {
         return $leeg;
     }

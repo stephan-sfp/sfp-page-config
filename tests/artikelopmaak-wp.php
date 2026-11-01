@@ -33,14 +33,14 @@ $check  = function ( $naam, $ok, $detail = '' ) use ( &$fouten, &$goed ) {
 };
 
 /* P3: links in de bronnenlijst. */
-$l = 'sfp_page_config_artikel_bron_links';
+$l        = 'sfp_page_config_artikel_bron_links';
 $gevallen = array(
-    'doi-adres'          => array( 'Gilovich (2000). https://doi.org/10.1037/0022-3514.78.2.211', '<a href="https://doi.org/10.1037/0022-3514.78.2.211">https://doi.org/10.1037/0022-3514.78.2.211</a>' ),
-    'punt erachter'      => array( 'Zie https://example.com/pad.', '<a href="https://example.com/pad">https://example.com/pad</a>.' ),
-    'doi: voorvoegsel'   => array( 'Smith, doi:10.1000/xyz123', '<a href="https://doi.org/10.1000/xyz123">doi:10.1000/xyz123</a>' ),
-    'kale doi'           => array( 'Smith, 10.1000/xyz123', '<a href="https://doi.org/10.1000/xyz123">10.1000/xyz123</a>' ),
-    'haakje erachter'    => array( '(https://example.com/a)', '(<a href="https://example.com/a">https://example.com/a</a>)' ),
-    'ampersand'          => array( 'https://example.com/?a=1&amp;b=2', '<a href="https://example.com/?a=1&#038;b=2">https://example.com/?a=1&amp;b=2</a>' ),
+    'doi-adres'        => array( 'Gilovich (2000). https://doi.org/10.1037/0022-3514.78.2.211', '<a href="https://doi.org/10.1037/0022-3514.78.2.211">https://doi.org/10.1037/0022-3514.78.2.211</a>' ),
+    'punt erachter'    => array( 'Zie https://example.com/pad.', '<a href="https://example.com/pad">https://example.com/pad</a>.' ),
+    'doi: voorvoegsel' => array( 'Smith, doi:10.1000/xyz123', '<a href="https://doi.org/10.1000/xyz123">doi:10.1000/xyz123</a>' ),
+    'kale doi'         => array( 'Smith, 10.1000/xyz123', '<a href="https://doi.org/10.1000/xyz123">10.1000/xyz123</a>' ),
+    'haakje erachter'  => array( '(https://example.com/a)', '(<a href="https://example.com/a">https://example.com/a</a>)' ),
+    'ampersand'        => array( 'https://example.com/?a=1&amp;b=2', '<a href="https://example.com/?a=1&#038;b=2">https://example.com/?a=1&amp;b=2</a>' ),
 );
 foreach ( $gevallen as $naam => $g ) {
     $uit = $l( $g[0] );
@@ -52,7 +52,7 @@ $check( 'tekst zonder adres blijft gelijk', 'Kahneman, D. (2011). Thinking, fast
 $check( 'jaartal en pagina blijven tekst', false === strpos( $l( 'Journal 78(2), 211-222.' ), '<a' ) );
 $check( 'geen javascript-adres', false === stripos( $l( 'javascript:alert(1)' ), '<a' ) );
 
-$inhoud = '<p>Tekst <span class="sfp-tooltip" data-tooltip="Het effect.&lt;br&gt;Source: Gilovich, T. (2000). Journal, 78(2), 211-222. https://doi.org/10.1037/0022-3514.78.2.211">woord</span>.</p>';
+$inhoud  = '<p>Tekst <span class="sfp-tooltip" data-tooltip="Het effect.&lt;br&gt;Source: Gilovich, T. (2000). Journal, 78(2), 211-222. https://doi.org/10.1037/0022-3514.78.2.211">woord</span>.</p>';
 $bronnen = sfp_page_config_artikel_bronnen( $inhoud );
 $check( 'bron gevonden', 1 === count( $bronnen ), (string) count( $bronnen ) );
 $check( 'bron met link en nieuw tabblad', isset( $bronnen[0] ) && false !== strpos( $bronnen[0], '<a target="_blank" rel="noopener" href="https://doi.org/10.1037/0022-3514.78.2.211">' ), isset( $bronnen[0] ) ? $bronnen[0] : '' );

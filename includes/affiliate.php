@@ -41,15 +41,19 @@ add_action( 'init', 'sfp_page_config_register_affiliate_meta' );
  * Register the _has_affiliate_links meta key for posts.
  */
 function sfp_page_config_register_affiliate_meta() {
-    register_post_meta( 'post', '_has_affiliate_links', array(
-        'show_in_rest'  => true,
-        'single'        => true,
-        'type'          => 'boolean',
-        'default'       => false,
-        'auth_callback' => function () {
-            return current_user_can( 'edit_posts' );
-        },
-    ) );
+    register_post_meta(
+        'post',
+        '_has_affiliate_links',
+        array(
+            'show_in_rest'  => true,
+            'single'        => true,
+            'type'          => 'boolean',
+            'default'       => false,
+            'auth_callback' => function () {
+                return current_user_can( 'edit_posts' );
+            },
+        )
+    );
 }
 
 /* =========================================================================

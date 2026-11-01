@@ -125,4 +125,3 @@ function sfp_page_config_leestekens_css() {
     }
     echo '<style id="sfp-kop-leestekens">h1 .sfp-lt{margin-left:-.2em;margin-right:-.12em}h1 .sfp-lt-k{margin-left:-.12em;margin-right:-.12em}</style>' . "\n";
 }
-

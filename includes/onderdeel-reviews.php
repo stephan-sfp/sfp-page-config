@@ -320,13 +320,13 @@ function sfp_page_config_reviews_stand() {
         $teksten = ( new SFP_Reviews_Renderer() )->samenvatting_teksten( $meta );
     }
     return array(
-        'ingesteld' => $ingesteld,
-        'verbonden' => ! empty( $meta['rating'] ),
-        'cijfer'    => isset( $meta['rating'] ) ? (float) $meta['rating'] : 0.0,
+        'ingesteld'    => $ingesteld,
+        'verbonden'    => ! empty( $meta['rating'] ),
+        'cijfer'       => isset( $meta['rating'] ) ? (float) $meta['rating'] : 0.0,
         'cijfer_tekst' => isset( $meta['rating'] ) ? number_format_i18n( (float) $meta['rating'], 1 ) : '',
-        'aantal'    => isset( $meta['total'] ) ? (int) $meta['total'] : 0,
-        'oordeel'   => $teksten['oordeel'],
-        'basis'     => $teksten['basis'],
+        'aantal'       => isset( $meta['total'] ) ? (int) $meta['total'] : 0,
+        'oordeel'      => $teksten['oordeel'],
+        'basis'        => $teksten['basis'],
     );
 }
 

@@ -193,10 +193,30 @@ require dirname( __DIR__ ) . '/includes/beheer-paginas.php';
 require dirname( __DIR__ ) . '/includes/reviews/class-sfp-reviews-manual.php';
 
 $GLOBALS['posts'] = array(
-    4 => array( 'status' => 'publish', 'type' => 'page', 'slug' => 'contact', 'titel' => 'Contact' ),
-    5 => array( 'status' => 'draft', 'type' => 'page', 'slug' => 'concept', 'titel' => 'Concept' ),
-    6 => array( 'status' => 'publish', 'type' => 'page', 'slug' => 'privacy', 'titel' => 'Privacyverklaring' ),
-    7 => array( 'status' => 'publish', 'type' => 'post', 'slug' => 'artikel', 'titel' => 'Artikel' ),
+    4 => array(
+        'status' => 'publish',
+        'type'   => 'page',
+        'slug'   => 'contact',
+        'titel'  => 'Contact'
+    ),
+    5 => array(
+        'status' => 'draft',
+        'type'   => 'page',
+        'slug'   => 'concept',
+        'titel'  => 'Concept'
+    ),
+    6 => array(
+        'status' => 'publish',
+        'type'   => 'page',
+        'slug'   => 'privacy',
+        'titel'  => 'Privacyverklaring'
+    ),
+    7 => array(
+        'status' => 'publish',
+        'type'   => 'post',
+        'slug'   => 'artikel',
+        'titel'  => 'Artikel'
+    ),
 );
 
 /* ---------- Teksten per taal ---------- */
@@ -251,7 +271,7 @@ $GLOBALS['options']['sfp_settings'] = array(
     'lr_brand'         => '#ff3c38',
     'artikel_aan'      => '',
 );
-$bewaard = sfp_page_config_instellingen_bewaar(
+$bewaard                            = sfp_page_config_instellingen_bewaar(
     array(
         'whatsapp_number' => '+31 85 060 13 55',
         'onbekend'        => 'x',
@@ -262,7 +282,7 @@ $bewaard = sfp_page_config_instellingen_bewaar(
         ),
     )
 );
-$alle = instellingen();
+$alle                               = instellingen();
 same( 'blijft', $alle['iets_van_vroeger'], 'Onbekende bewaarde sleutel blijft staan' );
 same( '#ff3c38', $alle['lr_brand'], 'Oude kleurinstelling wordt niet gewist (alleen niet meer toegepast)' );
 same( false, isset( $alle['onbekend'] ), 'Onbekende invoer wordt niet bewaard' );
@@ -272,7 +292,14 @@ same( false, isset( $alle['onderdelen']['nep'] ), 'Onbekend onderdeel wordt over
 same( '1', $alle['artikel_aan'], 'Onderdeel artikel schrijft artikel_aan' );
 same( true, sfp_page_config_onderdeel_aan( 'artikel' ), 'Artikelen aan' );
 same( true, sfp_page_config_onderdeel_aan( 'whatsapp' ), 'WhatsApp aan' );
-sfp_page_config_instellingen_bewaar( array( 'onderdelen' => array( 'artikel' => false, 'whatsapp' => '0' ) ) );
+sfp_page_config_instellingen_bewaar(
+    array(
+        'onderdelen' => array(
+            'artikel'  => false,
+            'whatsapp' => '0'
+        )
+    )
+);
 same( false, sfp_page_config_onderdeel_aan( 'artikel' ), 'Artikelen uit' );
 same( false, sfp_page_config_onderdeel_aan( 'whatsapp' ), 'WhatsApp uit' );
 
@@ -312,35 +339,99 @@ sfp_page_config_instellingen_bewaar( array( 'teksten' => array( 'affiliate_regel
 same( null, sfp_page_config_get_sticky_cta( 'onbekend' ), 'Onbekende soort pagina heeft geen knop' );
 $GLOBALS['options']['sfp_settings'] = array();
 same(
-    array( 'text' => 'Boek je gratis proefsessie', 'doel' => 'form', 'href' => '', 'target' => '_self' ),
+    array(
+        'text'   => 'Boek je gratis proefsessie',
+        'doel'   => 'form',
+        'href'   => '',
+        'target' => '_self'
+    ),
     sfp_page_config_get_sticky_cta( 'coaching' ),
     'Zonder instelling: standaardtekst en naar het formulier'
 );
 // Opslag van 2.12.0: een anker betekent het formulier, een adres een link.
-$GLOBALS['options']['sfp_settings'] = array( 'sticky_cta' => array( 'coaching' => array( 'text' => 'Oud', 'href' => '#aanvragen' ) ) );
+$GLOBALS['options']['sfp_settings'] = array(
+    'sticky_cta' => array(
+        'coaching' => array(
+            'text' => 'Oud',
+            'href' => '#aanvragen'
+        )
+    )
+);
 same( 'form', sfp_page_config_get_sticky_cta( 'coaching' )['doel'], 'Oud anker wordt het formulier' );
 same( 'Oud', sfp_page_config_get_sticky_cta( 'coaching' )['text'], 'Oude tekst blijft' );
 $GLOBALS['options']['sfp_settings'] = array( 'sticky_cta' => array( 'coaching' => array( 'href' => 'https://elders.test/boek' ) ) );
 same(
-    array( 'text' => 'Boek je gratis proefsessie', 'doel' => 'link', 'href' => 'https://elders.test/boek', 'target' => '_blank' ),
+    array(
+        'text'   => 'Boek je gratis proefsessie',
+        'doel'   => 'link',
+        'href'   => 'https://elders.test/boek',
+        'target' => '_blank'
+    ),
     sfp_page_config_get_sticky_cta( 'coaching' ),
     'Oud adres wordt een link in een nieuw venster'
 );
-sfp_page_config_instellingen_bewaar( array( 'sticky_cta' => array( 'training' => array( 'text' => ' Schrijf je in ', 'doel' => 'pagina', 'pagina' => 4 ) ) ) );
+sfp_page_config_instellingen_bewaar(
+    array(
+        'sticky_cta' => array(
+            'training' => array(
+                'text'   => ' Schrijf je in ',
+                'doel'   => 'pagina',
+                'pagina' => 4
+            )
+        )
+    )
+);
 same(
-    array( 'text' => 'Schrijf je in', 'doel' => 'pagina', 'href' => 'https://example.test/contact/', 'target' => '_self' ),
+    array(
+        'text'   => 'Schrijf je in',
+        'doel'   => 'pagina',
+        'href'   => 'https://example.test/contact/',
+        'target' => '_self'
+    ),
     sfp_page_config_get_sticky_cta( 'training' ),
     'Knop naar een pagina van de site'
 );
-sfp_page_config_instellingen_bewaar( array( 'sticky_cta' => array( 'training' => array( 'doel' => 'pagina', 'pagina' => 5 ) ) ) );
+sfp_page_config_instellingen_bewaar(
+    array(
+        'sticky_cta' => array(
+            'training' => array(
+                'doel'   => 'pagina',
+                'pagina' => 5
+            )
+        )
+    )
+);
 same( 'form', sfp_page_config_get_sticky_cta( 'training' )['doel'], 'Een pagina die niet gepubliceerd is, valt terug op het formulier' );
-sfp_page_config_instellingen_bewaar( array( 'sticky_cta' => array( 'incompany' => array( 'doel' => 'link', 'link' => 'javascript:alert(1)' ) ) ) );
+sfp_page_config_instellingen_bewaar(
+    array(
+        'sticky_cta' => array(
+            'incompany' => array(
+                'doel' => 'link',
+                'link' => 'javascript:alert(1)'
+            )
+        )
+    )
+);
 same( 'form', sfp_page_config_get_sticky_cta( 'incompany' )['doel'], 'Een onveilig adres wordt niet bewaard' );
-sfp_page_config_instellingen_bewaar( array( 'sticky_cta' => array( 'incompany' => array( 'doel' => 'link', 'link' => 'https://example.test/offerte/' ) ) ) );
+sfp_page_config_instellingen_bewaar(
+    array(
+        'sticky_cta' => array(
+            'incompany' => array(
+                'doel' => 'link',
+                'link' => 'https://example.test/offerte/'
+            )
+        )
+    )
+);
 same( '_self', sfp_page_config_get_sticky_cta( 'incompany' )['target'], 'Een link naar de eigen site opent in hetzelfde venster' );
 
 // Links die als pagina zijn gekozen.
-sfp_page_config_instellingen_bewaar( array( 'artikel_redactie_pagina' => 6, 'artikel_redactie_url' => 'https://example.test/oud/' ) );
+sfp_page_config_instellingen_bewaar(
+    array(
+        'artikel_redactie_pagina' => 6,
+        'artikel_redactie_url'    => 'https://example.test/oud/'
+    )
+);
 same( 'https://example.test/privacy/', sfp_page_config_link_instelling( 'artikel_redactie' ), 'Gekozen pagina gaat voor het oude adres' );
 sfp_page_config_instellingen_bewaar( array( 'artikel_redactie_pagina' => 5 ) );
 same( 'https://example.test/oud/', sfp_page_config_link_instelling( 'artikel_redactie' ), 'Concept valt terug op het oude adres' );
@@ -349,16 +440,31 @@ same( 'https://example.test/oud/', sfp_page_config_link_instelling( 'artikel_red
 
 $schoon = sfp_page_config_cursusdata_schoon(
     array(
-        array( 'data' => array( '2027-03-11', '2027-03-04', '2027-03-04', 'geen-datum' ), 'start' => '09:30', 'eind' => '25:00', 'vreemd' => 'x' ),
+        array(
+            'data'   => array( '2027-03-11', '2027-03-04', '2027-03-04', 'geen-datum' ),
+            'start'  => '09:30',
+            'eind'   => '25:00',
+            'vreemd' => 'x'
+        ),
         array( 'data' => array() ),
-        array( 'data' => array( '2027-01-14' ), 'start' => '', 'eind' => '16:30' ),
+        array(
+            'data'  => array( '2027-01-14' ),
+            'start' => '',
+            'eind'  => '16:30'
+        ),
         'geen-array',
     )
 );
 same(
     array(
-        array( 'data' => array( '2027-01-14' ), 'eind' => '16:30' ),
-        array( 'data' => array( '2027-03-04', '2027-03-11' ), 'start' => '09:30' ),
+        array(
+            'data' => array( '2027-01-14' ),
+            'eind' => '16:30'
+        ),
+        array(
+            'data'  => array( '2027-03-04', '2027-03-11' ),
+            'start' => '09:30'
+        ),
     ),
     $schoon,
     'Cursusdata: gesorteerd, ontdubbeld, ongeldige waarden weg, lestijd bewaard'
@@ -373,15 +479,45 @@ $footer = sfp_page_config_footer_schoon(
             array(
                 'naam'  => ' Juridisch <b>x</b> ',
                 'links' => array(
-                    array( 'soort' => 'pagina', 'id' => '6', 'label' => 'Privacy' ),
-                    array( 'soort' => 'pagina', 'id' => 0 ),
-                    array( 'soort' => 'link', 'url' => 'https://example.test/sitemap_index.xml', 'label' => 'Sitemap' ),
-                    array( 'soort' => 'link', 'url' => 'javascript:alert(1)', 'label' => 'Fout' ),
-                    array( 'soort' => 'link', 'url' => 'https://example.test/zonder-tekst/', 'label' => '' ),
+                    array(
+                        'soort' => 'pagina',
+                        'id'    => '6',
+                        'label' => 'Privacy'
+                    ),
+                    array(
+                        'soort' => 'pagina',
+                        'id'    => 0
+                    ),
+                    array(
+                        'soort' => 'link',
+                        'url'   => 'https://example.test/sitemap_index.xml',
+                        'label' => 'Sitemap'
+                    ),
+                    array(
+                        'soort' => 'link',
+                        'url'   => 'javascript:alert(1)',
+                        'label' => 'Fout'
+                    ),
+                    array(
+                        'soort' => 'link',
+                        'url'   => 'https://example.test/zonder-tekst/',
+                        'label' => ''
+                    ),
                 ),
             ),
-            array( 'naam' => '', 'links' => array( array( 'soort' => 'pagina', 'id' => 4 ) ) ),
-            array( 'naam' => 'Leeg', 'links' => array() ),
+            array(
+                'naam'  => '',
+                'links' => array(
+                    array(
+                        'soort' => 'pagina',
+                        'id'    => 4
+                    )
+                )
+            ),
+            array(
+                'naam'  => 'Leeg',
+                'links' => array()
+            ),
         ),
     )
 );
@@ -389,7 +525,34 @@ same( 1, count( $footer['groepen'] ), 'Footer: groep zonder naam of zonder links
 same( 'Juridisch x', $footer['groepen'][0]['naam'], 'Footer: naam zonder HTML' );
 same( 2, count( $footer['groepen'][0]['links'] ), 'Footer: ongeldige links vervallen' );
 
-sfp_page_config_instellingen_bewaar( array( 'footer' => array( 'groepen' => array( array( 'naam' => 'Service', 'links' => array( array( 'soort' => 'pagina', 'id' => 4, 'label' => '' ), array( 'soort' => 'pagina', 'id' => 5, 'label' => 'Concept' ), array( 'soort' => 'link', 'url' => 'https://example.test/a?b=1&c=2', 'label' => 'A & B' ) ) ) ) ) ) );
+sfp_page_config_instellingen_bewaar(
+    array(
+        'footer' => array(
+            'groepen' => array(
+                array(
+                    'naam'  => 'Service',
+                    'links' => array(
+                        array(
+                            'soort' => 'pagina',
+                            'id'    => 4,
+                            'label' => ''
+                        ),
+                        array(
+                            'soort' => 'pagina',
+                            'id'    => 5,
+                            'label' => 'Concept'
+                        ),
+                        array(
+                            'soort' => 'link',
+                            'url'   => 'https://example.test/a?b=1&c=2',
+                            'label' => 'A & B'
+                        )
+                    )
+                )
+            )
+        )
+    )
+);
 $groepen = sfp_page_config_footer_groepen();
 same( 2, count( $groepen[0]['links'] ), 'Footer: een pagina die niet gepubliceerd is, staat niet in de lijst' );
 same( 'Contact', $groepen[0]['links'][0]['label'], 'Footer: zonder eigen tekst de paginatitel' );
@@ -405,11 +568,27 @@ $GLOBALS['options']['widget_block']     = array(
     9 => array( 'content' => '<p>iets anders</p>' ),
     2 => array( 'content' => '<nav class="sfp-fj" aria-label="x"><details class="sfp-fj__groep" open><summary class="sfp-fj__kop">Legal</summary><ul class="sfp-fj__links"><li><a href="https://example.test/privacy/">Privacy</a></li><li><a href="https://example.test/concept/">Concept</a></li></ul></details><details class="sfp-fj__groep" open><summary class="sfp-fj__kop">Service</summary><ul class="sfp-fj__links"><li><a href="https://example.test/sitemap_index.xml">Sitemap</a></li><li><a href="https://example.test/contact/">Contact</a></li></ul></details></nav>' ),
 );
-$over = sfp_page_config_footer_uit_widget();
+$over                                   = sfp_page_config_footer_uit_widget();
 same( array( 'Legal', 'Service' ), array_column( $over['groepen'], 'naam' ), 'Widget: twee groepen' );
-same( array( 'soort' => 'pagina', 'id' => 6, 'label' => 'Privacy' ), $over['groepen'][0]['links'][0], 'Widget: link naar een pagina wordt een pagina, eigen tekst blijft' );
+same(
+    array(
+        'soort' => 'pagina',
+        'id'    => 6,
+        'label' => 'Privacy'
+    ),
+    $over['groepen'][0]['links'][0],
+    'Widget: link naar een pagina wordt een pagina, eigen tekst blijft'
+);
 same( 'link', $over['groepen'][0]['links'][1]['soort'], 'Widget: link naar een concept blijft een losse link' );
-same( array( 'soort' => 'pagina', 'id' => 4, 'label' => '' ), $over['groepen'][1]['links'][1], 'Widget: tekst gelijk aan de titel wordt niet apart bewaard' );
+same(
+    array(
+        'soort' => 'pagina',
+        'id'    => 4,
+        'label' => ''
+    ),
+    $over['groepen'][1]['links'][1],
+    'Widget: tekst gelijk aan de titel wordt niet apart bewaard'
+);
 $GLOBALS['options']['widget_block'] = array( 2 => array( 'content' => '<p>geen lijst</p>' ) );
 same( null, sfp_page_config_footer_uit_widget(), 'Widget zonder de opbouw: niets over te nemen' );
 
@@ -426,21 +605,63 @@ same( 2, sfp_page_config_aantal_tussenkoppen( '<h2>A</h2><h3>B</h3><H2 class="x"
 
 /* ---------- Eigen reviews ---------- */
 
-$r = SFP_Reviews_Manual::schoon( array( 'author' => ' <b>Anna</b> ', 'rating' => 9, 'datum' => '2026-13-45', 'text' => "Regel 1\nRegel 2", 'photo' => 'https://x.test/a.jpg' ) );
+$r = SFP_Reviews_Manual::schoon(
+    array(
+        'author' => ' <b>Anna</b> ',
+        'rating' => 9,
+        'datum'  => '2026-13-45',
+        'text'   => "Regel 1\nRegel 2",
+        'photo'  => 'https://x.test/a.jpg'
+    )
+);
 same( 'Anna', $r['author'], 'Review: naam zonder HTML' );
 same( 5, $r['rating'], 'Review: hoogstens vijf sterren' );
 same( '', $r['datum'], 'Review: ongeldige datum vervalt' );
 same( '', $r['photo'], 'Review: geen externe foto' );
 same( true, 0 === strpos( $r['id'], 'mr_' ), 'Review: krijgt een id' );
 SFP_Reviews_Manual::save_all( array() );
-SFP_Reviews_Manual::add( array( 'author' => 'Tom', 'rating' => 5, 'text' => 'Goed', 'datum' => '2026-06-01' ) );
-SFP_Reviews_Manual::add( array( 'author' => 'Eva', 'rating' => 3, 'text' => 'Matig' ) );
+SFP_Reviews_Manual::add(
+    array(
+        'author' => 'Tom',
+        'rating' => 5,
+        'text'   => 'Goed',
+        'datum'  => '2026-06-01'
+    )
+);
+SFP_Reviews_Manual::add(
+    array(
+        'author' => 'Eva',
+        'rating' => 3,
+        'text'   => 'Matig'
+    )
+);
 $alle = SFP_Reviews_Manual::get_all();
 same( 2, count( $alle ), 'Review: twee bewaard' );
-same( true, SFP_Reviews_Manual::update( $alle[0]['id'], array( 'author' => 'Tom B', 'rating' => 4, 'text' => 'Prima' ) ), 'Review: bijwerken' );
+same(
+    true,
+    SFP_Reviews_Manual::update(
+        $alle[0]['id'],
+        array(
+            'author' => 'Tom B',
+            'rating' => 4,
+            'text'   => 'Prima'
+        )
+    ),
+    'Review: bijwerken'
+);
 same( 'Tom B', SFP_Reviews_Manual::get_all()[0]['author'], 'Review: bijgewerkt' );
 same( $alle[0]['id'], SFP_Reviews_Manual::get_all()[0]['id'], 'Review: id blijft bij bijwerken' );
-same( false, SFP_Reviews_Manual::update( 'bestaat-niet', array( 'author' => 'x', 'text' => 'y' ) ), 'Review: onbekend id' );
+same(
+    false,
+    SFP_Reviews_Manual::update(
+        'bestaat-niet',
+        array(
+            'author' => 'x',
+            'text'   => 'y'
+        )
+    ),
+    'Review: onbekend id'
+);
 same( 1, count( SFP_Reviews_Manual::get_filtered( 4 ) ), 'Review: filter op sterren' );
 SFP_Reviews_Manual::delete( $alle[1]['id'] );
 same( 1, count( SFP_Reviews_Manual::get_all() ), 'Review: weghalen' );
@@ -450,14 +671,32 @@ same( 1, count( SFP_Reviews_Manual::get_all() ), 'Review: weghalen' );
 same( 'Aanvraag_Form', sfp_page_config_anker_schoon( '#Aanvraag_Form' ), 'Anker houdt zijn hoofdletters' );
 same( 'ab', sfp_page_config_anker_schoon( ' #a"><b ' ), 'Anker zonder vreemde tekens' );
 
-$GLOBALS['options']['sfp_settings'] = array( 'sticky_cta' => array( 'training' => array( 'text' => 'Oud', 'anchor' => '#data', 'hero' => '.mijn-held', 'href' => '#Inschrijf_Blok' ) ) );
-$knop = sfp_page_config_knop_voor_pagina( 4, 'training' );
+$GLOBALS['options']['sfp_settings'] = array(
+    'sticky_cta' => array(
+        'training' => array(
+            'text'   => 'Oud',
+            'anchor' => '#data',
+            'hero'   => '.mijn-held',
+            'href'   => '#Inschrijf_Blok'
+        )
+    )
+);
+$knop                               = sfp_page_config_knop_voor_pagina( 4, 'training' );
 same( 'form', $knop['doel'], 'Oude gegevens: de knop gaat naar het formulier' );
 same( array( 'Inschrijf_Blok', 'data', 'inschrijven', 'aanvragen' ), $knop['ankers'], 'Oude ankers tellen mee, het adresveld eerst' );
 same( '.mijn-held', $knop['hero'], 'Een met de hand aangewezen bovenkant blijft meetellen' );
 
 // Een anker in het veld "een andere link" is het formulier, niet een nieuw venster.
-sfp_page_config_instellingen_bewaar( array( 'sticky_cta' => array( 'incompany' => array( 'doel' => 'link', 'link' => '#offerte' ) ) ) );
+sfp_page_config_instellingen_bewaar(
+    array(
+        'sticky_cta' => array(
+            'incompany' => array(
+                'doel' => 'link',
+                'link' => '#offerte'
+            )
+        )
+    )
+);
 $knop = sfp_page_config_knop_voor_pagina( 4, 'incompany' );
 same( 'form', $knop['doel'], 'Link met een anker: naar het formulier' );
 same( '_self', $knop['target'], 'Link met een anker: zelfde venster' );
@@ -471,12 +710,15 @@ same( 'Nieuw', sfp_page_config_get_sticky_cta( 'coaching' )['text'], 'Alleen tek
 
 // Per pagina: een gekozen pagina, een eigen link, een eigen anker.
 $GLOBALS['options']['sfp_settings'] = array();
-$GLOBALS['meta'][4] = array( 'sfp_cta_text' => 'Eigen tekst', 'sfp_cta_pagina' => 6 );
-$knop = sfp_page_config_knop_voor_pagina( 4, 'coaching' );
+$GLOBALS['meta'][4]                 = array(
+    'sfp_cta_text'   => 'Eigen tekst',
+    'sfp_cta_pagina' => 6
+);
+$knop                               = sfp_page_config_knop_voor_pagina( 4, 'coaching' );
 same( 'https://example.test/privacy/', $knop['href'], 'Per pagina: de gekozen pagina' );
 same( 'Eigen tekst', $knop['text'], 'Per pagina: eigen tekst' );
 $GLOBALS['meta'][4] = array( 'sfp_cta_href' => '#Mijn_Formulier' );
-$knop = sfp_page_config_knop_voor_pagina( 4, 'coaching' );
+$knop               = sfp_page_config_knop_voor_pagina( 4, 'coaching' );
 same( 'form', $knop['doel'], 'Per pagina: een anker is het formulier' );
 same( 'Mijn_Formulier', $knop['ankers'][0], 'Per pagina: het anker houdt zijn hoofdletters' );
 $GLOBALS['meta'][4] = array();

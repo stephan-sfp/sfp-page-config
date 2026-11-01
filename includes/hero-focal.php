@@ -47,8 +47,10 @@ function sfp_page_config_hero_focal_css() {
 
     $x = (int) get_post_meta( $post_id, 'sfp_hero_focal_x', true );
     $y = (int) get_post_meta( $post_id, 'sfp_hero_focal_y', true );
-    if ( ! $x ) { $x = 50; }
-    if ( ! $y ) { $y = 50; }
+    if ( ! $x ) {
+        $x = 50; }
+    if ( ! $y ) {
+        $y = 50; }
 
     printf(
         '<style>@media(max-width:768px){.lcp-hero-image{background-position:%d%% %d%% !important;background-attachment:local !important}}</style>',

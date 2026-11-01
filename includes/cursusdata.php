@@ -66,8 +66,8 @@ function sfp_page_config_cursusdata_paginas() {
 
     $uit = array();
     foreach ( $ids as $id ) {
-        $json = get_post_meta( $id, 'sfp_cursusdata', true );
-        $data = $json ? json_decode( $json, true ) : array();
+        $json  = get_post_meta( $id, 'sfp_cursusdata', true );
+        $data  = $json ? json_decode( $json, true ) : array();
         $uit[] = array(
             'id'     => (int) $id,
             'titel'  => html_entity_decode( get_the_title( $id ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),

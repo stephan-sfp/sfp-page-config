@@ -75,15 +75,19 @@ if ( ! shortcode_exists( 'cursus_datum' ) ) {
  */
 function sfp_page_config_shortcode_cursus_datum( $atts ) {
 
-    $atts = shortcode_atts( array(
-        'post_id'   => '',
-        'format'    => 'l j F Y',
-        'groep'     => '',
-        'separator' => ' &bull; ',
-        'show'      => 'all',
-        'layout'    => 'inline',
-        'intro'     => '',
-    ), $atts, 'cursus_datum' );
+    $atts = shortcode_atts(
+        array(
+            'post_id'   => '',
+            'format'    => 'l j F Y',
+            'groep'     => '',
+            'separator' => ' &bull; ',
+            'show'      => 'all',
+            'layout'    => 'inline',
+            'intro'     => '',
+        ),
+        $atts,
+        'cursus_datum'
+    );
 
     // Backwards compatibility: accept old 'startmoment' attribute as alias.
     if ( empty( $atts['groep'] ) && ! empty( $atts['startmoment'] ) ) {
@@ -107,7 +111,7 @@ function sfp_page_config_shortcode_cursus_datum( $atts ) {
 
         // Optionally filter to a single groep.
         if ( '' !== $atts['groep'] ) {
-            $idx  = intval( $atts['groep'] ) - 1;
+            $idx = intval( $atts['groep'] ) - 1;
             if ( ! isset( $data[ $idx ] ) ) {
                 // Er is wel een toekomstige groep, alleen niet deze.
                 return '';
@@ -216,15 +220,19 @@ if ( ! shortcode_exists( 'cursus_tijd' ) ) {
  */
 function sfp_page_config_shortcode_cursus_tijd( $atts ) {
 
-    $atts = shortcode_atts( array(
-        'post_id'   => '',
-        'groep'     => '',
-        'separator' => ' - ',
-        // Niet opgegeven: de tekst van de site (Nederlands: " uur").
-        'suffix'    => null,
-        'layout'    => 'inline',
-        'fallback'  => '',
-    ), $atts, 'cursus_tijd' );
+    $atts = shortcode_atts(
+        array(
+            'post_id'   => '',
+            'groep'     => '',
+            'separator' => ' - ',
+            // Niet opgegeven: de tekst van de site (Nederlands: " uur").
+            'suffix'    => null,
+            'layout'    => 'inline',
+            'fallback'  => '',
+        ),
+        $atts,
+        'cursus_tijd'
+    );
 
     // Resolve post ID: explicit param > main query > get_the_ID().
     if ( '' !== $atts['post_id'] ) {

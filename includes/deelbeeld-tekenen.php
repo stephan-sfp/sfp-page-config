@@ -148,8 +148,8 @@ function sfp_page_config_db_portret( $im, $bestand, $x, $y, $d ) {
     if ( ! $bron ) {
         return false;
     }
-    $sw  = imagesx( $bron );
-    $sh  = imagesy( $bron );
+    $sw   = imagesx( $bron );
+    $sh   = imagesy( $bron );
     $kant = min( $sw, $sh );
     $rond = imagecreatetruecolor( $d, $d );
     imagealphablending( $rond, false );
@@ -205,10 +205,10 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
         // Label.
         sfp_page_config_db_schrijf( $im, mb_strtoupper( $s['label'] ), $rand, $rand + 21 * $f, $kop, $pt( 21 ), $sec, 21 * $f * .1 );
         // Voet.
-        $d  = 58 * $f;
-        $vy = $H - $rand - $d;
+        $d     = 58 * $f;
+        $vy    = $H - $rand - $d;
         $heeft = ! empty( $s['portret'] ) && sfp_page_config_db_portret( $im, $s['portret'], $rand, $vy, $d );
-        $vx = $rand + ( $heeft ? $d + 18 * $f : 0 );
+        $vx    = $rand + ( $heeft ? $d + 18 * $f : 0 );
         sfp_page_config_db_schrijf( $im, $s['naam'], $vx, $vy + 24 * $f, $vet, $pt( 23 ), $wit );
         sfp_page_config_db_schrijf( $im, $s['domein'], $vx, $vy + 52 * $f, $tekst, $pt( 23 ), $wit );
         // Tekst: zo groot als past, tussen label en voet.
@@ -217,7 +217,7 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
         $onder    = $vy - 28 * $f;
         foreach ( array( 62, 56, 50, 45, 40, 36, 32 ) as $maat ) {
             list( $regels, $spatie ) = sfp_page_config_db_regels( mb_strtoupper( $s['tekst'] ), $kop, $pt( $maat ), $ruimte_b );
-            $rh = $maat * 1.2 * $f;
+            $rh                      = $maat * 1.2 * $f;
             if ( count( $regels ) * $rh <= $onder - $boven ) {
                 break;
             }
@@ -230,14 +230,14 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
         $rand = 70 * $f;
         $y    = $rand + 30 * $f;
         sfp_page_config_db_schrijf( $im, mb_strtoupper( $s['label'] ), $rand, $y, $kop, $pt( 30 ), $sec, 30 * $f * .1 );
-        $y += 30 * $f;
+        $y                      += 30 * $f;
         list( $regels, $spatie ) = sfp_page_config_db_regels( mb_strtoupper( $s['titel'] ), $kop, $pt( 58 ), $B - 2 * $rand );
-        $y = sfp_page_config_db_schrijf_regels( $im, $regels, $spatie, $rand, $y + 54 * $f, $kop, $pt( 58 ), 58 * 1.15 * $f, $wit, $sec );
+        $y                       = sfp_page_config_db_schrijf_regels( $im, $regels, $spatie, $rand, $y + 54 * $f, $kop, $pt( 58 ), 58 * 1.15 * $f, $wit, $sec );
         // Voet.
-        $d  = 88 * $f;
-        $vy = $H - $rand - $d;
+        $d     = 88 * $f;
+        $vy    = $H - $rand - $d;
         $heeft = ! empty( $s['portret'] ) && sfp_page_config_db_portret( $im, $s['portret'], $rand, $vy, $d );
-        $vx = $rand + ( $heeft ? $d + 24 * $f : 0 );
+        $vx    = $rand + ( $heeft ? $d + 24 * $f : 0 );
         sfp_page_config_db_schrijf( $im, $s['naam'], $vx, $vy + 36 * $f, $vet, $pt( 32 ), $wit );
         sfp_page_config_db_schrijf( $im, $s['domein'], $vx, $vy + 76 * $f, $tekst, $pt( 32 ), $wit );
         // Punten: zo groot als past.

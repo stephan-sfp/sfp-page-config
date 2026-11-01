@@ -23,14 +23,19 @@ $same   = function ( $verwacht, $echt, $wat ) use ( &$checks, &$fouten ) {
         echo 'FOUT: ' . $wat . "\n  verwacht: " . var_export( $verwacht, true ) . "\n  kreeg:    " . var_export( $echt, true ) . "\n";
     }
 };
-$waar = function ( $echt, $wat ) use ( $same ) {
+$waar   = function ( $echt, $wat ) use ( $same ) {
     $same( true, (bool) $echt, $wat );
 };
 
-$opruimen   = array();
-$admin      = get_users( array( 'role' => 'administrator', 'number' => 1 ) )[0];
+$opruimen = array();
+$admin    = get_users(
+    array(
+        'role'   => 'administrator',
+        'number' => 1
+    )
+)[0];
 wp_set_current_user( $admin->ID );
-$oud_inst   = get_option( 'sfp_settings' );
+$oud_inst = get_option( 'sfp_settings' );
 
 /* ---------- Knop onderaan: welk anker eerst ---------- */
 
@@ -43,7 +48,14 @@ $same( array( 'aanvragen', 'inschrijven' ), array_slice( $coaching['ankers'], -2
 
 $same( '#', sfp_page_config_sanitize_cta_href( '#' ), 'Hekje blijft een hekje' );
 $same( '#inschrijven', sfp_page_config_sanitize_cta_href( ' #inschrijven ' ), 'Anker blijft' );
-$pagina = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Proef knop', 'post_content' => '<!-- wp:paragraph --><p>x</p><!-- /wp:paragraph -->' ) );
+$pagina     = wp_insert_post(
+    array(
+        'post_type'    => 'page',
+        'post_status'  => 'publish',
+        'post_title'   => 'Proef knop',
+        'post_content' => '<!-- wp:paragraph --><p>x</p><!-- /wp:paragraph -->'
+    )
+);
 $opruimen[] = $pagina;
 update_post_meta( $pagina, 'sfp_page_type', 'coaching' );
 update_post_meta( $pagina, 'sfp_cta_href', '#' );
@@ -61,7 +73,13 @@ $same( array(), $alle['ajax_lean_skip'], 'Lege lijst bij licht laden blijft leeg
 
 $same( 1, preg_match( sfp_page_config_affiliate_regex( 'managementboek.nl*affiliate' ), 'https://www.managementboek.nl/boek/123?affiliate=9' ), 'Sterretje: een willekeurig stuk' );
 $same( 0, preg_match( sfp_page_config_affiliate_regex( 'managementboek.nl?affiliate=' ), 'https://www.managementboek.nl/boek/123?affiliate=9' ), 'Vraagteken telt letterlijk' );
-$artikel = wp_insert_post( array( 'post_status' => 'publish', 'post_title' => 'Proef affiliate', 'post_content' => '<!-- wp:paragraph --><p><a href="https://www.managementboek.nl/boek/1?affiliate=2">boek</a></p><!-- /wp:paragraph -->' ) );
+$artikel    = wp_insert_post(
+    array(
+        'post_status'  => 'publish',
+        'post_title'   => 'Proef affiliate',
+        'post_content' => '<!-- wp:paragraph --><p><a href="https://www.managementboek.nl/boek/1?affiliate=2">boek</a></p><!-- /wp:paragraph -->'
+    )
+);
 $opruimen[] = $artikel;
 sfp_page_config_instellingen_bewaar( array( 'affiliate_patronen' => array( 'managementboek.nl*affiliate', 'managementboek.nl?affiliate=' ) ) );
 $treffers = sfp_page_config_affiliate_treffers();
@@ -94,7 +112,16 @@ $same( 100, (int) get_post_meta( $pagina, 'sfp_hero_focal_x', true ), 'Uitsnede 
 $same( 'training', get_post_meta( $pagina, 'sfp_page_type', true ), 'Soort pagina via REST' );
 
 $verzoek = new WP_REST_Request( 'POST', '/wp/v2/pages/' . $pagina );
-$verzoek->set_body_params( array( 'meta' => array( 'sfp_cta_href' => '', 'sfp_hero_focal_y' => 50, 'sfp_cta_pagina' => 0, 'sfp_longread' => '' ) ) );
+$verzoek->set_body_params(
+    array(
+        'meta' => array(
+            'sfp_cta_href'     => '',
+            'sfp_hero_focal_y' => 50,
+            'sfp_cta_pagina'   => 0,
+            'sfp_longread'     => ''
+        )
+    )
+);
 rest_do_request( $verzoek );
 $same( false, metadata_exists( 'post', $pagina, 'sfp_cta_href' ), 'Lege bestemming: geen rij' );
 $same( false, metadata_exists( 'post', $pagina, 'sfp_hero_focal_y' ), 'Uitsnede in het midden: geen rij' );
@@ -107,7 +134,13 @@ $verzoek->set_body_params( array( 'meta' => array( 'sfp_page_type' => 'onzin' ) 
 rest_do_request( $verzoek );
 $same( '', (string) get_post_meta( $pagina, 'sfp_page_type', true ), 'Onbekende soort pagina wordt leeg' );
 
-$gast = wp_insert_user( array( 'user_login' => 'sfp-proef-' . wp_rand(), 'user_pass' => wp_generate_password(), 'role' => 'contributor' ) );
+$gast = wp_insert_user(
+    array(
+        'user_login' => 'sfp-proef-' . wp_rand(),
+        'user_pass'  => wp_generate_password(),
+        'role'       => 'contributor'
+    )
+);
 wp_set_current_user( $gast );
 $verzoek = new WP_REST_Request( 'POST', '/wp/v2/pages/' . $pagina );
 $verzoek->set_body_params( array( 'meta' => array( 'training_naam' => 'Niet van mij' ) ) );
@@ -121,7 +154,19 @@ wp_set_current_user( $admin->ID );
 /* ---------- Stand voor het paneel ---------- */
 
 update_post_meta( $pagina, 'sfp_page_type', 'training' );
-update_post_meta( $pagina, 'sfp_cursusdata', wp_json_encode( array( array( 'data' => array( '2020-01-06', '2020-01-13' ), 'start' => '09:30', 'eind' => '16:30' ) ) ) );
+update_post_meta(
+    $pagina,
+    'sfp_cursusdata',
+    wp_json_encode(
+        array(
+            array(
+                'data'  => array( '2020-01-06', '2020-01-13' ),
+                'start' => '09:30',
+                'eind'  => '16:30'
+            )
+        )
+    )
+);
 $antwoord = rest_do_request( new WP_REST_Request( 'GET', '/sfp/v1/editor/' . $pagina ) );
 $s        = $antwoord->get_data();
 $same( 200, $antwoord->get_status(), 'Stand van de editor' );
@@ -135,7 +180,19 @@ $same( true, $s['focus'], 'Uitsnede: er is een gekozen punt' );
 // Sinds 3.17.0 tonen blokken en keuzelijst alleen groepen van vandaag of
 // later: vanaf hier een groep in de toekomst.
 $jaar = (string) ( (int) wp_date( 'Y' ) + 1 );
-update_post_meta( $pagina, 'sfp_cursusdata', wp_json_encode( array( array( 'data' => array( $jaar . '-01-06', $jaar . '-01-13' ), 'start' => '09:30', 'eind' => '16:30' ) ) ) );
+update_post_meta(
+    $pagina,
+    'sfp_cursusdata',
+    wp_json_encode(
+        array(
+            array(
+                'data'  => array( $jaar . '-01-06', $jaar . '-01-13' ),
+                'start' => '09:30',
+                'eind'  => '16:30'
+            )
+        )
+    )
+);
 
 $GLOBALS['post'] = get_post( $pagina );
 setup_postdata( $GLOBALS['post'] );
@@ -150,15 +207,21 @@ wp_reset_postdata();
 
 /* ---------- Leestijd: geen eindeloze herhaling ---------- */
 
-$zelf = wp_insert_post( array( 'post_status' => 'publish', 'post_title' => 'Proef leestijd', 'post_content' => 'Tekst [mijn_leestijd] tekst' ) );
-$opruimen[] = $zelf;
+$zelf            = wp_insert_post(
+    array(
+        'post_status'  => 'publish',
+        'post_title'   => 'Proef leestijd',
+        'post_content' => 'Tekst [mijn_leestijd] tekst'
+    )
+);
+$opruimen[]      = $zelf;
 $GLOBALS['post'] = get_post( $zelf );
 $waar( false !== strpos( do_shortcode( '[mijn_leestijd]' ), 'custom-read-meter' ), 'Leestijd werkt' );
 $waar( false !== strpos( do_shortcode( '[mijn_leestijd]' ), 'custom-read-meter' ), 'Leestijd werkt een tweede keer' );
 
 /* ---------- Uitsnede zonder de tag pijler ---------- */
 
-$this_post = get_post( $pagina );
+$this_post           = get_post( $pagina );
 $GLOBALS['wp_query'] = new WP_Query( array( 'page_id' => $pagina ) );
 $GLOBALS['wp_query']->the_post();
 ob_start();
@@ -171,11 +234,11 @@ wp_reset_query();
 
 $GLOBALS['wp_query'] = new WP_Query( array( 'page_id' => $pagina ) );
 $GLOBALS['wp_query']->the_post();
-$GLOBALS['wp_query']->is_singular = true;
-$GLOBALS['wp_query']->is_page     = true;
+$GLOBALS['wp_query']->is_singular       = true;
+$GLOBALS['wp_query']->is_page           = true;
 $GLOBALS['wp_query']->queried_object    = get_post( $pagina );
 $GLOBALS['wp_query']->queried_object_id = $pagina;
-$oud_onderdelen = sfp_page_config_onderdeel_aan( 'cursusdata' );
+$oud_onderdelen                         = sfp_page_config_onderdeel_aan( 'cursusdata' );
 sfp_page_config_instellingen_bewaar( array( 'onderdelen' => array( 'cursusdata' => '1' ) ) );
 ob_start();
 sfp_page_config_inject_course_data();
@@ -186,7 +249,19 @@ wp_reset_query();
 /* ---------- Mail over cursusdata met links ---------- */
 
 // De mail gaat over verlopen data: terug naar de groep van 2020.
-update_post_meta( $pagina, 'sfp_cursusdata', wp_json_encode( array( array( 'data' => array( '2020-01-06', '2020-01-13' ), 'start' => '09:30', 'eind' => '16:30' ) ) ) );
+update_post_meta(
+    $pagina,
+    'sfp_cursusdata',
+    wp_json_encode(
+        array(
+            array(
+                'data'  => array( '2020-01-06', '2020-01-13' ),
+                'start' => '09:30',
+                'eind'  => '16:30'
+            )
+        )
+    )
+);
 
 $mail = null;
 add_filter(
@@ -209,7 +284,16 @@ $register = WP_Block_Type_Registry::get_instance();
 $same( 'sfp-bouwstenen', $register->get_registered( 'sfp/kaart' )->category, 'Eigen groep in de blokkenlijst' );
 $waar( ! empty( $register->get_registered( 'sfp/samenvatting' )->example ), 'Samenvatting heeft een voorbeeld' );
 $same( null, $register->get_registered( 'sfp/stap' )->example, 'Een binnenblok heeft geen eigen voorbeeld' );
-$groepen = apply_filters( 'block_categories_all', array( array( 'slug' => 'text', 'title' => 'Tekst' ) ), null );
+$groepen = apply_filters(
+    'block_categories_all',
+    array(
+        array(
+            'slug'  => 'text',
+            'title' => 'Tekst'
+        )
+    ),
+    null
+);
 $same( 'sfp-bouwstenen', $groepen[0]['slug'], 'Groep bovenaan' );
 
 /* ---------- Opruimen ---------- */

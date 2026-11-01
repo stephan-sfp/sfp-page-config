@@ -76,9 +76,9 @@ function post_type_exists( $t ) {
     return isset( $GLOBALS['types'][ $t ] );
 }
 function register_post_type( $t, $args ) {
-    $obj              = (object) $args;
-    $obj->name        = $t;
-    $obj->labels      = (object) $args['labels'];
+    $obj                    = (object) $args;
+    $obj->name              = $t;
+    $obj->labels            = (object) $args['labels'];
     $GLOBALS['types'][ $t ] = $obj;
     return $obj;
 }
@@ -150,8 +150,23 @@ foreach ( array( 'kleurrollen', 'kopfont', 'berichttypes', 'paginabeheer' ) as $
 /* ---------- Kleurrollen: schoonmaken ---------- */
 
 same(
-    array( 'primair' => 2, 'tint-3' => 8, 'wit' => 5 ),
-    sfp_page_config_kleurrollen_schoon( array( 'primair' => '2', 'tint-3' => 8, 'wit' => 5, 'onzin' => 1, 'hover' => '', 'links' => 9, 'body' => -1, 'pijl' => 'x' ) ),
+    array(
+        'primair' => 2,
+        'tint-3'  => 8,
+        'wit'     => 5
+    ),
+    sfp_page_config_kleurrollen_schoon(
+        array(
+            'primair' => '2',
+            'tint-3'  => 8,
+            'wit'     => 5,
+            'onzin'   => 1,
+            'hover'   => '',
+            'links'   => 9,
+            'body'    => -1,
+            'pijl'    => 'x'
+        )
+    ),
     'Schoon: alleen bekende rollen, slot 0-8, leeg valt weg'
 );
 same( array(), sfp_page_config_kleurrollen_schoon( 'tekst' ), 'Schoon: geen lijst geeft niets' );
@@ -169,7 +184,18 @@ if ( true ) {
         return $GLOBALS['snippet_slots'];
     }
 }
-$GLOBALS['snippet_slots'] = array( 'secundair' => 0, 'links' => 1, 'primair' => 2, 'body' => 3, 'tint-1' => 4, 'wit' => 5, 'tint-2' => 6, 'hover' => 7, 'tint-3' => 8, 'pijl' => 0 );
+$GLOBALS['snippet_slots'] = array(
+    'secundair' => 0,
+    'links'     => 1,
+    'primair'   => 2,
+    'body'      => 3,
+    'tint-1'    => 4,
+    'wit'       => 5,
+    'tint-2'    => 6,
+    'hover'     => 7,
+    'tint-3'    => 8,
+    'pijl'      => 0
+);
 
 same( gesorteerd( $GLOBALS['snippet_slots'] ), gesorteerd( sfp_page_config_kleurrollen_slots() ), 'Uit: volgt het snippet' );
 same( false, sfp_page_config_kleurrollen_bewaard(), 'Uit: neemt niets over' );
@@ -186,8 +212,8 @@ same( gesorteerd( $GLOBALS['snippet_slots'] ), gesorteerd( get_option( 'sfp_sett
 
 ob_start();
 sfp_page_config_kleurrollen_head();
-$head   = ob_get_clean();
-$decl   = function ( $css ) {
+$head  = ob_get_clean();
+$decl  = function ( $css ) {
     preg_match_all( '/--sfp-rol-[a-z0-9-]+:var\(--ast-global-color-\d\)/', $css, $m );
     sort( $m[0] );
     return $m[0];
@@ -205,9 +231,24 @@ same( 2, sfp_page_config_kleurrollen_slots()['primair'], 'Aan: bewaarde toewijzi
 
 /* ---------- Kleurrollen: opslaan via het beheer ---------- */
 
-$bewaard = sfp_page_config_instellingen_bewaar( array( 'kleurrollen' => array( 'primair' => '3', 'hover' => 12, 'wit' => 5 ) ) );
+$bewaard = sfp_page_config_instellingen_bewaar(
+    array(
+        'kleurrollen' => array(
+            'primair' => '3',
+            'hover'   => 12,
+            'wit'     => 5
+        )
+    )
+);
 same( array( 'kleurrollen' ), $bewaard, 'Opslaan kleurrollen' );
-same( array( 'primair' => 3, 'wit' => 5 ), sfp_page_config_kleurrollen_slots(), 'Opslaan: slot buiten het palet valt weg' );
+same(
+    array(
+        'primair' => 3,
+        'wit'     => 5
+    ),
+    sfp_page_config_kleurrollen_slots(),
+    'Opslaan: slot buiten het palet valt weg'
+);
 same( '1', get_option( 'sfp_settings' )['onderdelen']['kleurrollen'], 'Opslaan laat de onderdelen staan' );
 
 $stand = sfp_page_config_kleurrollen_stand();
@@ -226,7 +267,14 @@ $GLOBALS['astra'] = array(
     'font-family-h1'       => "'Rubik Mono One', sans-serif",
     'body-font-family'     => "'Roboto', sans-serif",
 );
-same( array( 'display' => '"Rubik Mono One", sans-serif', 'kop' => 'Rubik, sans-serif' ), sfp_page_config_kopfont_ux(), 'UX: H1 en koppen uit Astra' );
+same(
+    array(
+        'display' => '"Rubik Mono One", sans-serif',
+        'kop'     => 'Rubik, sans-serif'
+    ),
+    sfp_page_config_kopfont_ux(),
+    'UX: H1 en koppen uit Astra'
+);
 $GLOBALS['astra']['font-family-h1'] = 'inherit';
 same( 'Rubik, sans-serif', sfp_page_config_kopfont_ux()['display'], 'UX: H1 volgt de koppen bij inherit' );
 $GLOBALS['astra']['headings-font-family'] = 'inherit';
@@ -235,7 +283,10 @@ $GLOBALS['astra']['headings-font-family'] = "'Nunito', sans-serif;}</style><scri
 same( false, strpos( sfp_page_config_kopfont_ux_declaraties(), '<' ), 'UX: geen tag uit een kapot font' );
 
 zet( 'kopfont', true );
-$GLOBALS['astra'] = array( 'headings-font-family' => "'Nunito', sans-serif", 'font-family-h1' => "'Nunito', sans-serif" );
+$GLOBALS['astra'] = array(
+    'headings-font-family' => "'Nunito', sans-serif",
+    'font-family-h1'       => "'Nunito', sans-serif"
+);
 same( '--ux-display-font:Nunito, sans-serif;--ux-heading-font:Nunito, sans-serif;', sfp_page_config_kopfont_ux_declaraties(), 'UX aan: declaraties voor het blok sfp-kopfont' );
 same( false, function_exists( 'sfp_page_config_kopfont_ux_head' ), 'UX: geen eigen blok meer in de head' );
 
@@ -283,8 +334,16 @@ $GLOBALS['locale'] = 'pt_BR';
 register_post_type(
     'begrippen',
     array(
-        'labels'  => array( 'name' => 'Glossario', 'singular_name' => 'Termo', 'add_new' => 'Add New Post', 'edit_item' => 'Editar termo' ),
-        'rewrite' => array( 'slug' => 'glossario', 'with_front' => true ),
+        'labels'    => array(
+            'name'          => 'Glossario',
+            'singular_name' => 'Termo',
+            'add_new'       => 'Add New Post',
+            'edit_item'     => 'Editar termo'
+        ),
+        'rewrite'   => array(
+            'slug'       => 'glossario',
+            'with_front' => true
+        ),
         'rest_base' => false,
     )
 );
@@ -294,7 +353,15 @@ $over = get_option( 'sfp_settings' )['berichttypes']['begrippen'];
 same( 'glossario', $over['slug'], 'Overname: slug' );
 same( true, $over['with_front'], 'Overname: with_front' );
 same( 'begrippen', $over['rest_base'], 'Overname: rest_base standaard gelijk aan de sleutel' );
-same( array( 'name' => 'Glossario', 'singular_name' => 'Termo', 'edit_item' => 'Editar termo' ), $over['labels'], 'Overname: alleen eigen labels, geen WordPress-standaard' );
+same(
+    array(
+        'name'          => 'Glossario',
+        'singular_name' => 'Termo',
+        'edit_item'     => 'Editar termo'
+    ),
+    $over['labels'],
+    'Overname: alleen eigen labels, geen WordPress-standaard'
+);
 same( 'geen', get_option( 'sfp_settings' )['berichttypes']['tool']['slug'] ?? 'geen', 'Tool zonder snippet: niets overgenomen, de plugin registreert zelf' );
 same( 'ferramentas', $GLOBALS['types']['tool']->rewrite['slug'], 'Tool zonder snippet: plugin registreert /ferramentas/' );
 
@@ -322,8 +389,32 @@ same( 'dashicons-admin-tools', sfp_page_config_berichttypes_iconen( array( 'menu
 /* ---------- Schoonmaken van een bewaarde registratie ---------- */
 
 same( null, sfp_page_config_berichttype_schoon( array( 'slug' => '' ) ), 'Schoon: zonder slug niets' );
-same( 'tools', sfp_page_config_berichttype_schoon( array( 'slug' => 'Tools<script>', 'labels' => array( 'name' => '<b>Tools</b>', 'Rare Sleutel' => 'x' ) ) )['slug'] === 'toolsscript' ? 'tools' : 'fout', 'Schoon: slug zonder tekens' );
-same( array( 'name' => 'Tools' ), sfp_page_config_berichttype_schoon( array( 'slug' => 'tools', 'labels' => array( 'name' => '<b>Tools</b>', 'Rare Sleutel' => 'x' ) ) )['labels'], 'Schoon: labels zonder HTML en rare sleutels' );
+same(
+    'tools',
+    sfp_page_config_berichttype_schoon(
+        array(
+            'slug'   => 'Tools<script>',
+            'labels' => array(
+                'name'         => '<b>Tools</b>',
+                'Rare Sleutel' => 'x'
+            )
+        )
+    )['slug'] === 'toolsscript' ? 'tools' : 'fout',
+    'Schoon: slug zonder tekens'
+);
+same(
+    array( 'name' => 'Tools' ),
+    sfp_page_config_berichttype_schoon(
+        array(
+            'slug'   => 'tools',
+            'labels' => array(
+                'name'         => '<b>Tools</b>',
+                'Rare Sleutel' => 'x'
+            )
+        )
+    )['labels'],
+    'Schoon: labels zonder HTML en rare sleutels'
+);
 
 /* ---------- Paginabeheer: klasse alleen met het onderdeel aan ---------- */
 

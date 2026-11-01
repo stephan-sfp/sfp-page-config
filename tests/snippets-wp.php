@@ -26,7 +26,7 @@ $same   = function ( $verwacht, $echt, $wat ) use ( &$checks, &$fouten ) {
         echo 'FOUT: ' . $wat . "\n  verwacht: " . var_export( $verwacht, true ) . "\n  kreeg:    " . var_export( $echt, true ) . "\n";
     }
 };
-$waar = function ( $echt, $wat ) use ( $same ) {
+$waar   = function ( $echt, $wat ) use ( $same ) {
     $same( true, (bool) $echt, $wat );
 };
 
@@ -46,7 +46,7 @@ if ( ! $claude || ! $anders ) {
 $oud_inst = get_option( 'sfp_settings' );
 $opruimen = array();
 
-$rest = function ( $methode, $pad, $body = null, $gebruiker = null ) {
+$rest   = function ( $methode, $pad, $body = null, $gebruiker = null ) {
     wp_set_current_user( $gebruiker ? $gebruiker->ID : 0 );
     $verzoek = new WP_REST_Request( $methode, '/sfp/v1' . $pad );
     if ( null !== $body ) {
@@ -57,13 +57,22 @@ $rest = function ( $methode, $pad, $body = null, $gebruiker = null ) {
     return array( $antwoord->get_status(), $antwoord->get_data() );
 };
 $aantal = function () {
-    return count( get_posts( array( 'post_type' => 'asenha_code_snippet', 'post_status' => 'any', 'posts_per_page' => -1, 'fields' => 'ids' ) ) );
+    return count(
+        get_posts(
+            array(
+                'post_type'      => 'asenha_code_snippet',
+                'post_status'    => 'any',
+                'posts_per_page' => -1,
+                'fields'         => 'ids'
+            )
+        )
+    );
 };
-$boom = function ( $id ) {
+$boom   = function ( $id ) {
     return array_key_exists( (int) $id, sfp_page_config_snippets_boom() );
 };
-$url  = getenv( 'SFP_TEST_URL' );
-$kop  = function () use ( $url ) {
+$url    = getenv( 'SFP_TEST_URL' );
+$kop    = function () use ( $url ) {
     $r = wp_remote_get( trailingslashit( $url ) . '?nc=' . wp_rand(), array( 'timeout' => 20 ) );
     return is_wp_error( $r ) ? 'fout' : (string) wp_remote_retrieve_header( $r, 'x-sfp-snippet-proef' );
 };
@@ -91,25 +100,58 @@ $waar( isset( $lijst['snippets'] ) && is_array( $lijst['snippets'] ), 'Lijst met
 
 /* ---------- Controle voor opslaan ---------- */
 
-$voor = $aantal();
-list( $code, $data ) = $rest( 'POST', '/snippets', array( 'titel' => 'Proef fout', 'code' => 'echo "x"' ), $claude );
+$voor                = $aantal();
+list( $code, $data ) = $rest(
+    'POST',
+    '/snippets',
+    array(
+        'titel' => 'Proef fout',
+        'code'  => 'echo "x"'
+    ),
+    $claude
+);
 $same( 400, $code, 'Syntaxfout: 400' );
 $same( 'sfp_snippets_syntax', $data['code'], 'Syntaxfout: eigen foutcode' );
 $same( $voor, $aantal(), 'Syntaxfout: geen snippet aangemaakt' );
 
 function sfp_snippet_proef_bestaat_al() {}
-list( $code, $data ) = $rest( 'POST', '/snippets', array( 'titel' => 'Proef dubbel', 'code' => 'function sfp_snippet_proef_bestaat_al() {}' ), $claude );
+list( $code, $data ) = $rest(
+    'POST',
+    '/snippets',
+    array(
+        'titel' => 'Proef dubbel',
+        'code'  => 'function sfp_snippet_proef_bestaat_al() {}'
+    ),
+    $claude
+);
 $same( 400, $code, 'Bestaande functie: 400' );
 $same( 'sfp_snippets_controle', $data['code'], 'Bestaande functie: controle van ASE' );
 $same( true, sfp_page_config_snippets_controleer( "<?php\nfunction sfp_snippet_proef_bestaat_al() { return 2; }", "<?php\nfunction sfp_snippet_proef_bestaat_al() {}" ), 'Bijwerken: eigen functie geldt niet als dubbel' );
 $waar( is_wp_error( sfp_page_config_snippets_controleer( "<?php\nfunction sfp_snippet_proef_bestaat_al() {}", "<?php\nfunction iets_anders() {}" ) ), 'Bijwerken: andermans functie wel' );
 $same( true, sfp_page_config_snippets_controleer( "<?php\nif ( ! function_exists( 'sfp_snippet_proef_bestaat_al' ) ) { function sfp_snippet_proef_bestaat_al() {} }" ), 'function_exists-guard mag' );
 
-list( $code, $data ) = $rest( 'POST', '/snippets', array( 'titel' => '', 'code' => 'x();' ), $claude );
+list( $code, $data ) = $rest(
+    'POST',
+    '/snippets',
+    array(
+        'titel' => '',
+        'code'  => 'x();'
+    ),
+    $claude
+);
 $same( 400, $code, 'Lege titel: 400' );
 list( $code, $data ) = $rest( 'POST', '/snippets', array( 'titel' => 'Zonder code' ), $claude );
 $same( 400, $code, 'Nieuw zonder code: 400' );
-list( $code, $data ) = $rest( 'POST', '/snippets', array( 'titel' => 'Proef', 'code' => 'x();', 'waar' => 'overal' ), $claude );
+list( $code, $data ) = $rest(
+    'POST',
+    '/snippets',
+    array(
+        'titel' => 'Proef',
+        'code'  => 'x();',
+        'waar'  => 'overal'
+    ),
+    $claude
+);
 $same( 400, $code, 'Onbekende waarde voor waar: 400' );
 
 /* ---------- Aanmaken ---------- */
@@ -122,13 +164,22 @@ $geen_html = function ( $caps ) {
 };
 add_filter( 'user_has_cap', $geen_html );
 wp_set_current_user( 0 ); // Anders slaat WordPress kses_init over bij dezelfde gebruiker.
-$kses_aan = null;
+$kses_aan  = null;
 $meet_kses = function ( $data ) use ( &$kses_aan ) {
     $kses_aan = has_filter( 'content_save_pre', 'wp_filter_post_kses' );
     return $data;
 };
 add_filter( 'rest_pre_dispatch', $meet_kses );
-list( $code, $s ) = $rest( 'POST', '/snippets', array( 'titel' => 'Proef kop', 'code' => $v1, 'beschrijving' => 'Test 3.3.0' ), $claude );
+list( $code, $s ) = $rest(
+    'POST',
+    '/snippets',
+    array(
+        'titel'        => 'Proef kop',
+        'code'         => $v1,
+        'beschrijving' => 'Test 3.3.0'
+    ),
+    $claude
+);
 remove_filter( 'rest_pre_dispatch', $meet_kses );
 $same( 10, $kses_aan, 'kses stond aan tijdens het verzoek' );
 $same( 10, has_filter( 'content_save_pre', 'wp_filter_post_kses' ), 'kses staat na opslaan weer aan' );
@@ -175,8 +226,17 @@ $same( 400, $code, 'Aan/uit zonder waarde: 400' );
 
 /* ---------- Bijwerken ---------- */
 
-$v2 = str_replace( 'v1', 'v2', $v1 );
-list( $code, $s ) = $rest( 'POST', '/snippets/' . $id, array( 'code' => "<?php\n" . $v2, 'hook' => 'init', 'prioriteit' => 20 ), $claude );
+$v2               = str_replace( 'v1', 'v2', $v1 );
+list( $code, $s ) = $rest(
+    'POST',
+    '/snippets/' . $id,
+    array(
+        'code'       => "<?php\n" . $v2,
+        'hook'       => 'init',
+        'prioriteit' => 20
+    ),
+    $claude
+);
 $same( 200, $code, 'Bijwerken: 200' );
 $same( "<?php\n" . $v2, $s['code'], 'Bijwerken: nieuwe code, geen dubbele <?php' );
 $same( 'init', $s['hook'], 'Bijwerken: hook' );
@@ -214,7 +274,7 @@ if ( $url ) {
 /* ---------- Lezen ---------- */
 
 list( $code, $lijst ) = $rest( 'GET', '/snippets', null, $claude );
-$rij = null;
+$rij                  = null;
 foreach ( $lijst['snippets'] as $r ) {
     if ( $r['id'] === $id ) {
         $rij = $r;
@@ -227,14 +287,27 @@ $same( 200, $code, 'Eén snippet: 200' );
 $same( "<?php\n" . $v2, $een['code'], 'Eén snippet: met code' );
 list( $code ) = $rest( 'GET', '/snippets/999999', null, $claude );
 $same( 404, $code, 'Onbekend snippet: 404' );
-$pagina = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Geen snippet' ) );
+$pagina       = wp_insert_post(
+    array(
+        'post_type'   => 'page',
+        'post_status' => 'publish',
+        'post_title'  => 'Geen snippet'
+    )
+);
 list( $code ) = $rest( 'GET', '/snippets/' . $pagina, null, $claude );
 $same( 404, $code, 'Andere post: 404' );
 wp_delete_post( $pagina, true );
 
 /* ---------- Andere taal ---------- */
 
-$css = wp_insert_post( array( 'post_type' => 'asenha_code_snippet', 'post_status' => 'publish', 'post_title' => 'Proef css', 'post_content' => 'body{}' ) );
+$css        = wp_insert_post(
+    array(
+        'post_type'    => 'asenha_code_snippet',
+        'post_status'  => 'publish',
+        'post_title'   => 'Proef css',
+        'post_content' => 'body{}'
+    )
+);
 $opruimen[] = $css;
 update_post_meta( $css, 'options', array( 'language' => 'css' ) );
 list( $code, $data ) = $rest( 'POST', '/snippets/' . $css, array( 'code' => 'x();' ), $claude );
@@ -245,7 +318,14 @@ $same( 'css', $data['taal'], 'CSS-snippet is wel te lezen' );
 
 /* ---------- Prullenbak (3.8.1) ---------- */
 
-$weg_id = wp_insert_post( array( 'post_type' => 'asenha_code_snippet', 'post_status' => 'publish', 'post_title' => 'Proef prullenbak', 'post_content' => "<?php\n// leeg" ) );
+$weg_id     = wp_insert_post(
+    array(
+        'post_type'    => 'asenha_code_snippet',
+        'post_status'  => 'publish',
+        'post_title'   => 'Proef prullenbak',
+        'post_content' => "<?php\n// leeg"
+    )
+);
 $opruimen[] = $weg_id;
 update_post_meta( $weg_id, 'options', array( 'language' => 'php' ) );
 update_post_meta( $weg_id, '_active', 'yes' );

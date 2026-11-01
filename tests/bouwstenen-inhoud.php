@@ -13,9 +13,11 @@ if ( 'cli' !== PHP_SAPI ) {
     exit( 1 );
 }
 error_reporting( E_ALL );
-set_error_handler( function ( $severity, $message, $file, $line ) {
-    throw new ErrorException( $message, 0, $severity, $file, $line );
-} );
+set_error_handler(
+    function ( $severity, $message, $file, $line ) {
+        throw new ErrorException( $message, 0, $severity, $file, $line );
+    }
+);
 
 define( 'ABSPATH', __DIR__ . '/' );
 define( 'SFP_PAGE_CONFIG_DIR', dirname( __DIR__ ) . '/' );
@@ -24,20 +26,34 @@ define( 'DAY_IN_SECONDS', 86400 );
 $GLOBALS['shortcode_tags'] = array();
 function add_action() {}
 function add_filter() {}
-function add_shortcode( $tag, $cb ) { $GLOBALS['shortcode_tags'][ $tag ] = $cb; }
-function remove_shortcode( $tag ) { unset( $GLOBALS['shortcode_tags'][ $tag ] ); }
-function shortcode_exists( $tag ) { return isset( $GLOBALS['shortcode_tags'][ $tag ] ); }
-function wp_strip_all_tags( $s ) { return trim( strip_tags( (string) $s ) ); }
-function wp_kses( $s, $toegestaan ) { return strip_tags( (string) $s, '<' . implode( '><', array_keys( $toegestaan ) ) . '>' ); }
-function esc_url( $u ) { return (string) $u; }
-function esc_html( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); }
-function esc_attr( $s ) { return htmlspecialchars( (string) $s, ENT_QUOTES ); }
-function is_admin() { return false; }
-function doing_action() { return false; }
-function is_singular() { return false; }
-function wp_is_json_request() { return false; }
-function sfp_page_config_onderdeel_aan( $id ) { return ! empty( $GLOBALS['aan'][ $id ] ); }
-function sfp_page_config_blokken_css_bestand( $naam ) { return '/*' . $naam . '*/'; }
+function add_shortcode( $tag, $cb ) {
+    $GLOBALS['shortcode_tags'][ $tag ] = $cb; }
+function remove_shortcode( $tag ) {
+    unset( $GLOBALS['shortcode_tags'][ $tag ] ); }
+function shortcode_exists( $tag ) {
+    return isset( $GLOBALS['shortcode_tags'][ $tag ] ); }
+function wp_strip_all_tags( $s ) {
+    return trim( strip_tags( (string) $s ) ); }
+function wp_kses( $s, $toegestaan ) {
+    return strip_tags( (string) $s, '<' . implode( '><', array_keys( $toegestaan ) ) . '>' ); }
+function esc_url( $u ) {
+    return (string) $u; }
+function esc_html( $s ) {
+    return htmlspecialchars( (string) $s, ENT_QUOTES ); }
+function esc_attr( $s ) {
+    return htmlspecialchars( (string) $s, ENT_QUOTES ); }
+function is_admin() {
+    return false; }
+function doing_action() {
+    return false; }
+function is_singular() {
+    return false; }
+function wp_is_json_request() {
+    return false; }
+function sfp_page_config_onderdeel_aan( $id ) {
+    return ! empty( $GLOBALS['aan'][ $id ] ); }
+function sfp_page_config_blokken_css_bestand( $naam ) {
+    return '/*' . $naam . '*/'; }
 
 require SFP_PAGE_CONFIG_DIR . 'includes/bouwstenen-inhoud.php';
 
@@ -116,7 +132,7 @@ add_shortcode( 'bronnenlijst', 'sfp_render_bronnenlijst' );
 sfp_page_config_bronnen_registreer();
 same( 'sfp_render_bronnenlijst', $GLOBALS['shortcode_tags']['bronnenlijst'], 'onderdeel uit: snippet blijft' );
 $GLOBALS['aan']['bronnenlijst'] = true;
-$GLOBALS['wp_filter'] = array();
+$GLOBALS['wp_filter']           = array();
 sfp_page_config_bronnen_registreer();
 same( 'sfp_page_config_bronnen_code', $GLOBALS['shortcode_tags']['bronnenlijst'], 'onderdeel aan: plugin neemt over' );
 remove_shortcode( 'bronnenlijst' );
@@ -127,17 +143,31 @@ same( 'sfp_page_config_bronnen_code', $GLOBALS['shortcode_tags']['bronnenlijst']
 /* ---------- Snippet-hooks in een closure van ASE ---------- */
 
 $GLOBALS['verwijderd'] = array();
-function remove_action( $hook, $naam, $prio ) { $GLOBALS['verwijderd'][] = $hook . ':' . $naam . '@' . $prio; return true; }
+function remove_action( $hook, $naam, $prio ) {
+    $GLOBALS['verwijderd'][] = $hook . ':' . $naam . '@' . $prio;
+    return true; }
 $GLOBALS['wp_filter'] = array(
     'wp_head' => (object) array(
         'callbacks' => array(
             10 => array(
-                'dps_bronnenlijst_css'    => array( 'function' => function () {}, 'accepted_args' => 1 ),
-                'dps_bibliografie_schema' => array( 'function' => function () {}, 'accepted_args' => 1 ),
-                'sfp_gtm_container'       => array( 'function' => function () {}, 'accepted_args' => 1 ),
+                'dps_bronnenlijst_css'    => array(
+                    'function'      => function () {},
+                    'accepted_args' => 1
+                ),
+                'dps_bibliografie_schema' => array(
+                    'function'      => function () {},
+                    'accepted_args' => 1
+                ),
+                'sfp_gtm_container'       => array(
+                    'function'      => function () {},
+                    'accepted_args' => 1
+                ),
             ),
             21 => array(
-                'sfp_page_config_inhoud_head' => array( 'function' => 'sfp_page_config_inhoud_head', 'accepted_args' => 1 ),
+                'sfp_page_config_inhoud_head' => array(
+                    'function'      => 'sfp_page_config_inhoud_head',
+                    'accepted_args' => 1
+                ),
             ),
         ),
     ),

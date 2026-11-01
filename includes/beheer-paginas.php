@@ -279,52 +279,52 @@ function sfp_page_config_paginas_overzicht( $force = false ) {
     foreach ( array_chunk( array_map( 'intval', $ids ), 100 ) as $blok ) {
         _prime_post_caches( $blok, false, true );
         foreach ( $blok as $id ) {
-        $post = get_post( $id );
-        if ( ! $post ) {
-            continue;
-        }
-        $soort     = (string) get_post_meta( $post->ID, 'sfp_page_type', true );
-        $soort     = isset( $soorten[ $soort ] ) ? $soort : '';
-        $meldingen = sfp_page_config_controleer_pagina( $post );
-        $knop      = null;
-        if ( '' !== $soort && sfp_page_config_onderdeel_aan( 'knop' ) && function_exists( 'sfp_page_config_knop_voor_pagina' ) ) {
-            $knop = sfp_page_config_knop_voor_pagina( $post->ID, $soort );
-        }
+            $post = get_post( $id );
+            if ( ! $post ) {
+                continue;
+            }
+            $soort     = (string) get_post_meta( $post->ID, 'sfp_page_type', true );
+            $soort     = isset( $soorten[ $soort ] ) ? $soort : '';
+            $meldingen = sfp_page_config_controleer_pagina( $post );
+            $knop      = null;
+            if ( '' !== $soort && sfp_page_config_onderdeel_aan( 'knop' ) && function_exists( 'sfp_page_config_knop_voor_pagina' ) ) {
+                $knop = sfp_page_config_knop_voor_pagina( $post->ID, $soort );
+            }
 
-        if ( 'page' === $post->post_type ) {
-            $soortnaam = $soorten[ $soort ]['naam'];
-        } elseif ( 'begrippen' === $post->post_type ) {
-            $soortnaam = 'Begrip';
-        } else {
-            $soortnaam = $artikel_op ? 'Artikel' : 'Bericht';
-        }
+            if ( 'page' === $post->post_type ) {
+                $soortnaam = $soorten[ $soort ]['naam'];
+            } elseif ( 'begrippen' === $post->post_type ) {
+                $soortnaam = 'Begrip';
+            } else {
+                $soortnaam = $artikel_op ? 'Artikel' : 'Bericht';
+            }
 
-        $rij = array(
-            'id'        => (int) $post->ID,
-            'titel'     => html_entity_decode( get_the_title( $post ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) . ( (int) $post->ID === $voorpagina ? ' (startpagina)' : '' ),
-            'type'      => $post->post_type,
-            'soort'     => $soort,
-            'soortnaam' => $soortnaam,
-            'knoptekst' => $knop ? $knop['text'] : '',
-            'eigen'     => array(
-                'tekst'  => (string) get_post_meta( $post->ID, 'sfp_cta_text', true ),
-                'doel'   => (int) get_post_meta( $post->ID, 'sfp_cta_pagina', true ) ? 'pagina' : ( '' !== (string) get_post_meta( $post->ID, 'sfp_cta_href', true ) ? 'link' : 'form' ),
-                'pagina' => (int) get_post_meta( $post->ID, 'sfp_cta_pagina', true ),
-                'link'   => (string) get_post_meta( $post->ID, 'sfp_cta_href', true ),
-            ),
-            'meldingen' => $meldingen,
-            'genegeerd' => count( sfp_page_config_controle_genegeerd( $post->ID ) ),
-            'link'      => (string) get_permalink( $post ),
-            'bewerk'    => (string) get_edit_post_link( $post->ID, 'raw' ),
-        );
-        if ( $meldingen ) {
-            ++$aandacht;
-        }
-        if ( 'page' === $post->post_type ) {
-            $paginas[] = $rij;
-        } else {
-            $overig[] = $rij;
-        }
+            $rij = array(
+                'id'        => (int) $post->ID,
+                'titel'     => html_entity_decode( get_the_title( $post ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) . ( (int) $post->ID === $voorpagina ? ' (startpagina)' : '' ),
+                'type'      => $post->post_type,
+                'soort'     => $soort,
+                'soortnaam' => $soortnaam,
+                'knoptekst' => $knop ? $knop['text'] : '',
+                'eigen'     => array(
+                    'tekst'  => (string) get_post_meta( $post->ID, 'sfp_cta_text', true ),
+                    'doel'   => (int) get_post_meta( $post->ID, 'sfp_cta_pagina', true ) ? 'pagina' : ( '' !== (string) get_post_meta( $post->ID, 'sfp_cta_href', true ) ? 'link' : 'form' ),
+                    'pagina' => (int) get_post_meta( $post->ID, 'sfp_cta_pagina', true ),
+                    'link'   => (string) get_post_meta( $post->ID, 'sfp_cta_href', true ),
+                ),
+                'meldingen' => $meldingen,
+                'genegeerd' => count( sfp_page_config_controle_genegeerd( $post->ID ) ),
+                'link'      => (string) get_permalink( $post ),
+                'bewerk'    => (string) get_edit_post_link( $post->ID, 'raw' ),
+            );
+            if ( $meldingen ) {
+                ++$aandacht;
+            }
+            if ( 'page' === $post->post_type ) {
+                $paginas[] = $rij;
+            } else {
+                $overig[] = $rij;
+            }
         }
         // Wat in dit blok gelezen is, hoeft niet in het geheugen te blijven.
         foreach ( $blok as $id ) {

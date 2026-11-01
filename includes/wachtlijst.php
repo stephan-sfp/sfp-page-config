@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return array<int, array{data: string[], start?: string, eind?: string}>
  */
 function sfp_page_config_cursusdata_toekomst( $post_id ) {
-    $post_id = (int) $post_id;
+    $post_id      = (int) $post_id;
     static $cache = array();
     if ( isset( $cache[ $post_id ] ) ) {
         return $cache[ $post_id ];
