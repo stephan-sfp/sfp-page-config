@@ -468,6 +468,7 @@ function sfp_page_config_beheer_stand() {
         ),
         'banner'           => function_exists( 'sfp_page_config_banner_stand' ) ? sfp_page_config_banner_stand() : array(),
         'merkwaarden'      => function_exists( 'sfp_page_config_merkwaarden_stand' ) ? sfp_page_config_merkwaarden_stand() : null,
+        'formulierbewaking' => function_exists( 'sfp_page_config_formulierbewaking_stand' ) ? sfp_page_config_formulierbewaking_stand() : null,
         // Sinds 3.22.0 alleen wat het overzicht nodig heeft: de pagina's die
         // aandacht vragen en per soort een voorbeeld. De hele lijst haalt het
         // scherm Pagina's zelf op, per 50.

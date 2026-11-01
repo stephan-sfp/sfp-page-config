@@ -182,6 +182,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'De merkwaarden voor bezoekers, live uit de merkbron, met per taal een slotzin en een knop.',
             'detail' => true,
         ),
+        'formulierbewaking' => array(
+            'naam'   => 'Formulierbewaking',
+            'uitleg' => 'De dagelijkse formuliercontrole: de testinzending onzichtbaar houden en opruimen, een mail als een formulier bij een bezoeker misgaat, en de logs voor de cloudcontrole. Zolang de snippets nog aan staan, doen die het.',
+            'detail' => false,
+        ),
         'snippets'     => array(
             'naam'   => 'Snippets beheren op afstand',
             'uitleg' => 'Claude leest, maakt en wijzigt de codefragmenten van ASE Pro en zet ze aan of uit, zonder browser. Alleen voor onderhoud.',

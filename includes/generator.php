@@ -410,6 +410,11 @@ function sfp_page_config_generator_sectie_schoon( array $s ) {
             $uit[ $sleutel ] = (string) $s[ $sleutel ];
         }
     }
+    // Een eigen actie voor het meten (3.24.0): kopieert de bezoeker tekst uit
+    // dit deel, dan pusht de motor event sfp_tool met deze actie.
+    if ( isset( $s['meet'] ) && is_string( $s['meet'] ) && in_array( $s['meet'], array( 'slides_prompt', 'kopieren' ), true ) ) {
+        $uit['meet'] = $s['meet'];
+    }
     if ( isset( $s['als'] ) && is_array( $s['als'] ) ) {
         $uit['als'] = $s['als'];
     }

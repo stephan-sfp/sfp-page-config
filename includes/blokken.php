@@ -300,6 +300,7 @@ function sfp_page_config_blokstijlen() {
             'sfp-getal'        => 'Getal (pakket)',
             'sfp-prijs'        => 'Prijs',
             'sfp-wie'          => 'Naam met portret',
+            'sfp-label'        => 'Label (boven een kop)',
             'sfp-mailregel'    => 'Mailregel',
             'sfp-klein'        => 'Klein',
             'sfp-lead'         => 'Lead (eerste alinea van een artikel)',
@@ -1071,7 +1072,7 @@ function sfp_page_config_render_kolommen( $attrs, $content ) {
     $uitlijning = sfp_page_config_blok_attr( $attrs, 'uitlijning' );
     $uitlijning = in_array( $uitlijning, array( 'boven', 'midden', 'onder', 'rekken' ), true ) ? 'sfp-kolommen--' . $uitlijning : '';
     return sfp_page_config_blokken_css_vangnet( 'sfp/kolommen' )
-        . '<div ' . sfp_page_config_blok_omhulling( array_filter( array( 'sfp-kolommen', 'sfp-kolommen--' . $indeling, $uitlijning ) ) ) . '>' . $content . '</div>';
+        . '<div ' . sfp_page_config_blok_omhulling( array_filter( array( 'sfp-kolommen', 'sfp-kolommen--' . $indeling, $uitlijning, 'boeking' === $indeling ? 'sfp-boekkaart' : '' ) ) ) . '>' . $content . '</div>';
 }
 
 /**

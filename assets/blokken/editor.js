@@ -303,12 +303,12 @@
 		{ label: 'Drie gelijk', value: 'drie', vorm: 'n:1,1,1' },
 		{ label: 'Tekst en beeld', value: 'tekst-beeld', vorm: 'n:1.2,1' },
 		{ label: 'Tekst en boek', value: 'tekst-boek', vorm: 'n:1.4,1' },
-		{ label: 'Tekst en boekkaart', value: 'boeking', vorm: 'n:1,1.1' },
+		{ label: 'Tekst en boekkaart', value: 'boeking', vorm: 'n:0.9,1.1' },
 		{ label: 'Breed en smal', value: 'breed-smal', vorm: 'n:1.2,1' },
 	];
 	blok( 'sfp/kolommen', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling + ( a.uitlijning ? ' sfp-kolommen--' + a.uitlijning : '' ) } );
+		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling + ( a.uitlijning ? ' sfp-kolommen--' + a.uitlijning : '' ) + ( 'boeking' === a.indeling ? ' sfp-boekkaart' : '' ) } );
 		var inner = useInnerBlocksProps( blockProps, { orientation: 'horizontal', template: [ [ 'sfp/kolom' ], [ 'sfp/kolom' ] ] } );
 		return el( Fragment, null,
 			paneel( 'Kolommen', [

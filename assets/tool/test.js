@@ -372,6 +372,7 @@
 			if ( i >= schermen.length ) { probeerResultaat(); return; }
 			if ( i < 0 ) { i = 0; }
 			huidig = i;
+			tool.stap( i + 1, schermen.length );
 			schermen.forEach( function ( s, k ) { s.el.hidden = k !== i; } );
 			toonMelding( '' );
 			var s = schermen[ i ];
@@ -421,7 +422,7 @@
 				var doel = 0;
 				if ( heeftContext && i > 0 ) { for ( var k = 0; k < schermen.length; k++ ) { if ( schermen[ k ].vraag && 'context' !== schermen[ k ].vraag.type ) { doel = k; break; } } }
 				ga( doel );
-			} else { zetStap( i ); }
+			} else { zetStap( i ); tool.stap( i + 1, Math.max( 1, stapNamen.length - 1 ) ); }
 		}
 		function probeerResultaat( stil ) {
 			var r = reken( b, antwoorden );
@@ -446,6 +447,7 @@
 			paneelVragen.hidden = true;
 			paneelResultaat.hidden = false;
 			paneelResultaat.innerHTML = '';
+			tool.afgerond();
 			zetStap( stapNamen.length - 1 );
 			stapItems[ stapNamen.length - 1 ].classList.remove( 'is-slot' );
 			var u = uitslagtekst( b, r.uitslag );
@@ -648,6 +650,7 @@
 		}
 
 		function opnieuw() {
+			tool.meet( 'opnieuw' );
 			antwoorden = {};
 			tool.wisBewaard();
 			Array.prototype.forEach.call( app.querySelectorAll( 'input[type=radio]' ), function ( i ) { i.checked = false; } );

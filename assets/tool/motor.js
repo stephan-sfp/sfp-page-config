@@ -210,9 +210,101 @@
 		if ( voorlopig ) { voorlopig.parentNode.removeChild( voorlopig ); }
 		this.app.hidden = false;
 		this.app.appendChild( this.sr );
+		this.luister();
 		this.motor = fabriek( this );
 		this.motor.start();
 		return true;
+	};
+
+	/* ---------------------------------------------------------------- *
+	 * Meten (3.24.0): events voor GTM in window.dataLayer
+	 *
+	 * Eén event, sfp_tool, met de actie als parameter. Alleen als de site een
+	 * dataLayer heeft; geen eigen GA-code en geen toestemmingslogica (die
+	 * loopt via de consent-instellingen in GTM). Nooit antwoorden of tekst
+	 * van de bezoeker. Beschreven in assets/tool/LEESMIJ.md.
+	 * ---------------------------------------------------------------- */
+
+	var MEET_ACTIES = [ 'start', 'stap', 'afgerond', 'kopieren', 'download_pdf', 'download_word', 'slides_prompt', 'opnieuw' ];
+	var afgerondDezeSessie = {};
+
+	Tool.prototype.weergaveNaam = function () {
+		return this.b && this.b.weergave && 'kaart' === this.b.weergave.modus ? 'kaart' : 'lijst';
+	};
+
+	Tool.prototype.meet = function ( actie ) {
+		if ( MEET_ACTIES.indexOf( actie ) < 0 ) { return false; }
+		var dl = window.dataLayer;
+		if ( ! dl || 'function' !== typeof dl.push ) { return false; }
+		/* Elke andere actie volgt op de eerste interactie: start gaat altijd voorop. */
+		if ( 'start' !== actie && ! this.gemetenStart ) { this.meet( 'start' ); }
+		if ( 'start' === actie ) {
+			if ( this.gemetenStart ) { return false; }
+			this.gemetenStart = true;
+		}
+		var stap = this.stapNu || null;
+		try {
+			dl.push( {
+				event: 'sfp_tool',
+				actie: actie,
+				tool_id: this.id,
+				tool_slug: this.slug,
+				/* Altijd alle sleutels, ook leeg: GTM onthoudt anders de waarde van het vorige event. */
+				stap_nummer: stap ? stap.nummer : null,
+				stap_totaal: stap ? stap.totaal : null,
+				weergave: this.weergaveNaam()
+			} );
+		} catch ( e ) { return false; }
+		return true;
+	};
+
+	/* De bezoeker staat op stap nummer van totaal (1-based). Meet alleen na de eerste interactie en alleen bij een wissel. */
+	Tool.prototype.stap = function ( nummer, totaal ) {
+		nummer = parseInt( nummer, 10 ) || 0;
+		totaal = parseInt( totaal, 10 ) || 0;
+		if ( nummer < 1 || totaal < 1 ) { return; }
+		var vorig = this.stapNu;
+		this.stapNu = { nummer: nummer, totaal: totaal };
+		if ( ! this.gemetenStart ) { return; }
+		if ( vorig && vorig.nummer === nummer && vorig.totaal === totaal ) { return; }
+		this.meet( 'stap' );
+	};
+
+	/* De uitslag staat er na een interactie van de bezoeker: één keer per sessie per tool. Een deellink of
+	   herladen pagina zonder interactie telt niet. */
+	Tool.prototype.afgerond = function () {
+		if ( ! this.gemetenStart ) { return; }
+		var sleutel = 'sfp-tool-afgerond-' + ( CONFIG.site || '' ) + '-' + this.id;
+		if ( afgerondDezeSessie[ sleutel ] ) { return; }
+		try { if ( window.sessionStorage.getItem( sleutel ) ) { afgerondDezeSessie[ sleutel ] = true; return; } } catch ( e ) {}
+		afgerondDezeSessie[ sleutel ] = true;
+		try { window.sessionStorage.setItem( sleutel, '1' ); } catch ( e ) {}
+		this.meet( 'afgerond' );
+	};
+
+	/* Eerste interactie: een klik, toets, keuze of invoer in de tool. Tab en
+	   pijltjes om rond te kijken tellen niet. WP Rocket speelt de eerste klik
+	   na het laden van de scripts nog eens af; die telt dan ook. Daarnaast:
+	   tekst kopiëren uit een deel van de uitslag met een eigen actie
+	   (sleutel meet in de beschrijving, bijvoorbeeld slides_prompt). */
+	Tool.prototype.luister = function () {
+		var zelf = this;
+		var w = this.wortel;
+		function eerste( e ) {
+			if ( 'keydown' === e.type && ( 'Tab' === e.key || 'Shift' === e.key || /^Arrow/.test( e.key ) || 'Escape' === e.key ) ) { return; }
+			if ( zelf.gemetenStart ) { return; }
+			zelf.meet( 'start' );
+		}
+		[ 'pointerdown', 'click', 'keydown', 'input', 'change' ].forEach( function ( soort ) { w.addEventListener( soort, eerste, true ); } );
+		w.addEventListener( 'copy', function () {
+			try {
+				var sel = window.getSelection ? window.getSelection() : null;
+				var n = sel && sel.anchorNode ? sel.anchorNode : null;
+				var e = n && 1 !== n.nodeType ? n.parentElement : n;
+				var deel = e && e.closest ? e.closest( '[data-sfp-meet]' ) : null;
+				if ( deel && w.contains( deel ) ) { zelf.meet( deel.getAttribute( 'data-sfp-meet' ) ); }
+			} catch ( x ) {}
+		} );
 	};
 
 	Tool.prototype.zeg = function ( tekst ) {
@@ -451,6 +543,7 @@
 				doc.text( ( CONFIG.siteurl || '' ) + '  ·  ' + i + ' / ' + n, 105, 290, { align: 'center' } );
 			}
 			doc.save( bestandsnaam + '.pdf' );
+			zelf.meet( 'download_pdf' );
 		} );
 	};
 
@@ -491,6 +584,7 @@
 				a.download = bestandsnaam + '.docx';
 				document.body.appendChild( a );
 				a.click();
+				zelf.meet( 'download_word' );
 				setTimeout( function () { URL.revokeObjectURL( a.href ); document.body.removeChild( a ); }, 1000 );
 			} );
 		} );

@@ -146,3 +146,13 @@ php tests/merkwaarden.php
 ```
 
 Checks the reader of the brand values (labels and headings in nl, en and pt, using copies of branding.md and merkwaarden.md from main in tests/merkwaarden/), the 12-hour transient, the last good version and the bundled copy when the source is unreachable or unreadable, refreshing via the GitHub API with the raw address as fallback, the closing line per language, the output, and that the code has no hex colour or font name. Rebuild the bundled copy with `php bouw/merkwaarden-terugval.php <branding.md> <merkwaarden.md>`.
+
+# Toolmeting, boekkaart en formulierbewaking (3.24.0)
+
+```sh
+php tests/toolmeting.php
+php tests/boekkaart.php
+php tests/formulierbewaking.php
+```
+
+Toolmeting: de events `sfp_tool` van de motor met een kleine nep-DOM (node): start pas bij een interactie, stap alleen bij een wissel, afgerond een keer per sessie, kopiëren uit een deel met `data-sfp-meet`, altijd dezelfde zeven sleutels, niets zonder dataLayer. Boekkaart: de vaste waarden van de DPS-kaart in kolommen.css, geen hexkleur of fontnaam, de klasse sfp-boekkaart en de blokstijl Label. Formulierbewaking: de route /sfp/v1/logs met dezelfde antwoordvorm als het snippet, de testinzending, de foutmail en niets dubbel zolang de snippets draaien. Het beeld van de boekkaart controleer je in een browser.
