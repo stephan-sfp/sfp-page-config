@@ -387,6 +387,10 @@ function sfp_page_config_blokken_registreer() {
         if ( isset( $def['context'] ) ) {
             $args['uses_context'] = $def['context'];
         }
+        // Uitlijning breed of volle breedte (sinds 3.23.0, het blok Merkwaarden).
+        if ( isset( $def['align'] ) ) {
+            $args['supports']['align'] = $def['align'];
+        }
         // Een voorbeeld als je het blok aanwijst in de blokkenlijst (ontwerpregel 23).
         $voorbeeld = sfp_page_config_blok_voorbeeld( $naam );
         if ( null !== $voorbeeld ) {
@@ -896,7 +900,7 @@ function sfp_page_config_blokken_editor_css() {
  * @return string[]
  */
 function sfp_page_config_blokken_editor_bestanden() {
-    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'editor' );
+    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'editor' );
 }
 
 /**

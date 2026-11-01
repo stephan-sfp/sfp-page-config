@@ -138,3 +138,11 @@ wp eval-file wp-content/plugins/sfp-page-config/tests/artikelopmaak-wp.php
 ```
 
 Run inside a real WordPress (a local test install, never a live site). vervolg-cta-wp checks that a post whose pillar has a published follow-up shows it instead of the layouts on the dynamische_cta action, and that pages, terms (begrippen), drafts, posts without a follow-up and archives keep the layouts; with the Artikelen component on the code gives nothing; a follow-up that contains the code does not repeat itself. tool-kaart-wp checks the card display keys (groups, icons, tiles, quadrant with axes, example from a bank), the checks on a broken quadrant or groups that do not add up, the card class, that tools without it are unchanged, the hero with a tool, a draft tool in the block only for editors, and the new texts in three languages. artikelopmaak-wp checks links for URLs and DOIs in the source list, the heading wrap, the panel line and focus rules, and the bio link label in three languages. The browser walk-through of the card (tiles, letters, fixed height, quadrant, result, notes in PDF, Word and copy, not in the share link) is in the report.
+
+# Merkwaarden (3.23.0)
+
+```sh
+php tests/merkwaarden.php
+```
+
+Checks the reader of the brand values (labels and headings in nl, en and pt, using copies of branding.md and merkwaarden.md from main in tests/merkwaarden/), the 12-hour transient, the last good version and the bundled copy when the source is unreachable or unreadable, refreshing via the GitHub API with the raw address as fallback, the closing line per language, the output, and that the code has no hex colour or font name. Rebuild the bundled copy with `php bouw/merkwaarden-terugval.php <branding.md> <merkwaarden.md>`.

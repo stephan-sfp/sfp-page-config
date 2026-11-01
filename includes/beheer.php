@@ -467,6 +467,7 @@ function sfp_page_config_beheer_stand() {
             'formulieren'          => sfp_page_config_beheer_formulieren(),
         ),
         'banner'           => function_exists( 'sfp_page_config_banner_stand' ) ? sfp_page_config_banner_stand() : array(),
+        'merkwaarden'      => function_exists( 'sfp_page_config_merkwaarden_stand' ) ? sfp_page_config_merkwaarden_stand() : null,
         // Sinds 3.22.0 alleen wat het overzicht nodig heeft: de pagina's die
         // aandacht vragen en per soort een voorbeeld. De hele lijst haalt het
         // scherm Pagina's zelf op, per 50.
@@ -600,6 +601,24 @@ function sfp_page_config_beheer_rest() {
 
     // De hele stand.
     $route( '', 'GET', $stand );
+
+    // Merkwaarden opnieuw ophalen uit de merkbron (3.23.0).
+    $route(
+        '/merkwaarden/ververs',
+        'POST',
+        function () {
+            if ( ! function_exists( 'sfp_page_config_merkwaarden_ververs' ) ) {
+                return new WP_Error( 'sfp_mw_niet', 'Het onderdeel Merkwaarden ontbreekt.', array( 'status' => 500 ) );
+            }
+            $uit = sfp_page_config_merkwaarden_ververs();
+            return rest_ensure_response(
+                array(
+                    'talen' => $uit['talen'],
+                    'stand' => sfp_page_config_beheer_stand(),
+                )
+            );
+        }
+    );
 
     // Instellingen: alleen de meegestuurde sleutels veranderen.
     $route(

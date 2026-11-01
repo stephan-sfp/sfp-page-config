@@ -1056,6 +1056,70 @@
 		]);
 	}
 
+	/* ---------- Onderdeel: merkwaarden (sinds 3.23.0) ---------- */
+
+	function detailMerkwaarden() {
+		var M = S.merkwaarden || { sitetaal: 'nl', talen: {}, log: [] };
+		var namen = { nl: 'Nederlands', en: 'Engels', pt: 'Portugees' };
+		if (!ui.mwTaal) ui.mwTaal = M.sitetaal || 'nl';
+		var taal = ui.mwTaal;
+		var T = M.talen[taal] || { slot: {} };
+		var slot = T.slot || {};
+
+		// Bron: per taal wanneer de tekst het laatst is opgehaald.
+		var bron = el('div', { class: 'sfpb-lijst' }, ['nl', 'en', 'pt'].map(function (k) {
+			var t = M.talen[k] || {};
+			var uitslag = ui.mwUitslag && ui.mwUitslag[k];
+			return el('div', { class: 'sfpb-rij' }, [
+				status(uitslag ? uitslag.gelukt : (t.opgehaald ? true : null), namen[k] + (k === M.sitetaal ? ' (taal van de site)' : '') + ': ' + (t.titel ? t.titel + ', opgehaald ' + t.opgehaald : 'nog niet opgehaald')),
+				uitslag && !uitslag.gelukt ? el('span', { class: 'sfpb-hulp', text: uitslag.tekst }) : null
+			]);
+		}));
+		var log = (M.log || []).length ? el('details', { class: 'sfpb-stapel' }, [
+			el('summary', { text: 'Laatste meldingen' }),
+			el('ul', null, M.log.map(function (r) { return el('li', { text: r.wanneer + ' (' + r.taal + '): ' + r.tekst }); }))
+		]) : null;
+
+		// Slot in de gekozen taal.
+		var zin = tekstInvoer(slot.zin, '');
+		var knop = tekstInvoer(slot.knop, '');
+		var pagina = paginaKeuze(slot.pagina, 'Geen pagina: gebruik het adres hieronder');
+		var link = tekstInvoer(slot.link, 'https://', 'url');
+
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Merkwaarden', 'De merkwaarden voor bezoekers. De tekst staat in de merkbron (sfp-brand-source, main) en komt vanzelf binnen, uiterlijk na 12 uur. Hier kies je per taal de slotzin en de knop.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				el('h2', { text: 'Bron' }),
+				bron,
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Nu opnieuw ophalen', klik: function () {
+						doe(this, 'mwv', api('/merkwaarden/ververs', 'POST', {}), 'Opgehaald', function (antwoord) { ui.mwUitslag = antwoord && antwoord.talen ? antwoord.talen : null; });
+					} }),
+					flitsPlek('mwv')
+				]),
+				el('p', { class: 'sfpb-hulp', text: 'Lukt ophalen niet, dan toont het blok de laatst opgehaalde tekst. De caches leegt de plugin niet: doe dat na het ophalen.' }),
+				log,
+				el('h2', { text: 'Slot' }),
+				pillen([['nl', 'Nederlands'], ['en', 'Engels'], ['pt', 'Portugees']], taal, function (k) { ui.mwTaal = k; teken(); }, 'Taal van het slot'),
+				el('p', { class: 'sfpb-hulp', text: 'Het blok toont het slot in de taal die het blok toont. Zonder zin, knop of bestemming ziet een beheerder een melding en een bezoeker niets.' }),
+				veld('Slotzin', zin, 'Spreekt de lezer rechtstreeks aan en leidt naar de knop.', 'sfpb-mw-zin'),
+				veld('Tekst op de knop', knop, null, 'sfpb-mw-knop'),
+				veld('Pagina', pagina, null, 'sfpb-mw-pagina'),
+				veld('Of een adres', link, 'Alleen als er geen pagina is gekozen.', 'sfpb-mw-link'),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						var w = { slot: {} };
+						w.slot[taal] = { zin: zin.value, knop: knop.value, pagina: pagina.value ? Number(pagina.value) : 0, link: link.value };
+						bewaarInstellingen(this, 'mw', { merkwaarden: w });
+					} }),
+					flitsPlek('mw'),
+					status(slot.klaar ? true : null, slot.klaar ? 'Slot ingevuld' : 'Slot nog niet compleet')
+				])
+			])
+		]);
+	}
+
 	/* ---------- Onderdeel: banner (sinds 3.17.0) ---------- */
 
 	function detailBanner() {
@@ -1785,12 +1849,13 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, merkwaarden: detailMerkwaarden };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 
 		if (ui.detail !== 'footer') ui.footer = null;
 		if (ui.detail !== 'banner') ui.banner = null;
+		if (ui.detail !== 'merkwaarden') { ui.mwTaal = ''; ui.mwUitslag = null; }
 
 		var y = window.pageYOffset;
 		wortel.innerHTML = '';

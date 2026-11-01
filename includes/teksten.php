@@ -538,6 +538,50 @@ function sfp_page_config_teksten_register() {
             'pt'    => 'Olá, tenho uma dúvida',
         ),
 
+        // Merkwaarden (sinds 3.23.0). De tekst zelf komt uit de merkbron.
+        'merkwaarden_grens'           => array(
+            'groep' => 'Merkwaarden',
+            'label' => 'Label voor de grens in het vlak',
+            'nl'    => 'Grens',
+            'en'    => 'Boundary',
+            'pt'    => 'Limite',
+        ),
+        'merkwaarden_meer'            => array(
+            'groep' => 'Merkwaarden',
+            'label' => 'Link onder in een kaart (%s is de waarde)',
+            'nl'    => 'Meer over %s',
+            'en'    => 'More about %s',
+            'pt'    => 'Mais sobre %s',
+        ),
+        'merkwaarden_kaarten'         => array(
+            'groep' => 'Merkwaarden',
+            'label' => 'Naam van de drie kaarten (voor schermlezers)',
+            'nl'    => 'De drie merkwaarden',
+            'en'    => 'The three brand values',
+            'pt'    => 'Os três valores de marca',
+        ),
+        'merkwaarden_geen_slot'       => array(
+            'groep' => 'Merkwaarden',
+            'label' => 'Melding voor de beheerder als het slot ontbreekt (%s is de taal)',
+            'nl'    => 'Alleen voor beheerders: vul de slotzin en de knop (%s) in bij SFP Beheer, Onderdelen, Merkwaarden. Bezoekers zien hier niets.',
+            'en'    => 'Admins only: fill in the closing line and the button (%s) in SFP Beheer, Onderdelen, Merkwaarden. Visitors see nothing here.',
+            'pt'    => 'Só para administradores: preencha a frase final e o botão (%s) em SFP Beheer, Onderdelen, Merkwaarden. Os visitantes não veem nada aqui.',
+        ),
+        'merkwaarden_terugval'        => array(
+            'groep' => 'Merkwaarden',
+            'label' => 'Melding voor de beheerder als de bron niet bereikbaar was',
+            'nl'    => 'Alleen voor beheerders: de merkbron was niet bereikbaar of niet te lezen. Dit is de laatst opgehaalde tekst. Zie SFP Beheer, Onderdelen, Merkwaarden.',
+            'en'    => 'Admins only: the brand source could not be reached or read. This is the last text fetched. See SFP Beheer, Onderdelen, Merkwaarden.',
+            'pt'    => 'Só para administradores: não foi possível acessar ou ler a fonte da marca. Este é o último texto obtido. Veja SFP Beheer, Onderdelen, Merkwaarden.',
+        ),
+        'merkwaarden_geen_bron'       => array(
+            'groep' => 'Merkwaarden',
+            'label' => 'Melding voor de beheerder als er geen tekst is',
+            'nl'    => 'Alleen voor beheerders: de merkwaarden konden niet worden geladen.',
+            'en'    => 'Admins only: the brand values could not be loaded.',
+            'pt'    => 'Só para administradores: não foi possível carregar os valores de marca.',
+        ),
+
         // Zelftest: de testpagina (sinds 3.5.0).
         'zelftest_sluiten'            => array(
             'groep' => 'Zelftest',

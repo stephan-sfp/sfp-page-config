@@ -1,0 +1,119 @@
+{
+    "nl": {
+        "taal": "nl",
+        "titel": "Onze merkwaarden",
+        "kernzin": "Alles wat we maken moet robuust, eenvoudig en aansprekend zijn.",
+        "inleiding": "Dat geldt voor alles wat je van ons ziet, van een website tot een offerte of een presentatie.",
+        "waarden": [
+            {
+                "naam": "Robuust",
+                "vraag": "Kun je vertrouwen op wat je ziet?",
+                "tekst": [
+                    "Alles past bij elkaar, en elk onderdeel is ook op zichzelf te begrijpen. Wat we maken, werkt op elk scherm en is toegankelijk voor zoveel mogelijk mensen. En wat we beloven, maken we waar."
+                ],
+                "grens": "Stevig en samenhangend, zonder log of ingewikkeld te worden."
+            },
+            {
+                "naam": "Eenvoudig",
+                "vraag": "Vind je moeiteloos je weg?",
+                "tekst": [
+                    "Je ziet meteen waar het over gaat en wat je kunt doen. We beginnen met de kern en geven je daarna meer, in overzichtelijke stappen. Wat je nodig hebt, staat erin; wat afleidt, laten we weg."
+                ],
+                "grens": "Eenvoud gaat nooit ten koste van de inhoud. We helpen je op weg, zonder je te sturen naar iets wat je niet wilt."
+            },
+            {
+                "naam": "Aansprekend",
+                "vraag": "Krijg je zin om verder te kijken?",
+                "tekst": [
+                    "We spreken je rechtstreeks aan en maken je nieuwsgierig met inhoud die de moeite waard is. Beeld, letters, kleuren en toon zijn fris, krachtig, energiek en positief."
+                ],
+                "grens": "We trekken je aandacht zonder te schreeuwen, te versieren of te joviaal te worden."
+            }
+        ],
+        "samen": {
+            "kop": "Samen",
+            "tekst": [
+                "Denk aan LEGO: losse blokken die precies op elkaar passen, waarmee je zonder bouwtekening aan de slag kunt en die uitnodigen om iets te maken."
+            ]
+        },
+        "hash": "10da78c111"
+    },
+    "en": {
+        "taal": "en",
+        "titel": "Our brand values",
+        "kernzin": "Everything we make must be robust, simple and appealing.",
+        "inleiding": "That goes for everything you see from us, from a website to a proposal or a presentation.",
+        "waarden": [
+            {
+                "naam": "Robust",
+                "vraag": "Can you trust what you see?",
+                "tekst": [
+                    "Everything fits together, and each part also makes sense on its own. What we make works on every screen and is accessible to as many people as possible. And what we promise, we deliver."
+                ],
+                "grens": "Solid and coherent, without becoming heavy or complicated."
+            },
+            {
+                "naam": "Simple",
+                "vraag": "Do you find your way easily?",
+                "tekst": [
+                    "You see at once what it is about and what you can do. We start with the main point and then give you more, in clear steps. What you need is there; what distracts, we leave out."
+                ],
+                "grens": "Simplicity never comes at the expense of content. We help you along, without steering you towards something you don't want."
+            },
+            {
+                "naam": "Appealing",
+                "vraag": "Do you want to explore further?",
+                "tekst": [
+                    "We address you directly and make you curious with content worth your time. Images, type, colours and tone are fresh, powerful, energetic and positive."
+                ],
+                "grens": "We draw your attention without being loud, overly decorative or overfamiliar."
+            }
+        ],
+        "samen": {
+            "kop": "Together",
+            "tekst": [
+                "Think of LEGO: separate bricks that fit together precisely, that you can start building with without instructions and that invite you to make something."
+            ]
+        },
+        "hash": "71708a1cff"
+    },
+    "pt": {
+        "taal": "pt",
+        "titel": "Nossos valores de marca",
+        "kernzin": "Tudo o que criamos precisa ser robusto, simples e cativante.",
+        "inleiding": "Isso vale para tudo o que você vê de nós, de um site a uma proposta ou uma apresentação.",
+        "waarden": [
+            {
+                "naam": "Robusto",
+                "vraag": "Você pode confiar no que está vendo?",
+                "tekst": [
+                    "Tudo combina entre si, e cada parte também faz sentido sozinha. O que criamos funciona em qualquer tela e é acessível ao maior número possível de pessoas. E o que prometemos, cumprimos."
+                ],
+                "grens": "Sólido e coerente, sem ficar pesado nem complicado."
+            },
+            {
+                "naam": "Simples",
+                "vraag": "Você encontra o caminho sem esforço?",
+                "tekst": [
+                    "Você vê na hora do que se trata e o que pode fazer. Começamos pelo essencial e depois damos mais, em etapas claras. O que você precisa está lá; o que distrai, deixamos de fora."
+                ],
+                "grens": "A simplicidade nunca prejudica o conteúdo. Ajudamos você no caminho, sem levá-lo para algo que você não quer."
+            },
+            {
+                "naam": "Cativante",
+                "vraag": "Você fica com vontade de saber mais?",
+                "tekst": [
+                    "Falamos diretamente com você e despertamos sua curiosidade com conteúdo que vale a pena. Imagem, letras, cores e tom são leves, fortes, dinâmicos e positivos."
+                ],
+                "grens": "Chamamos a sua atenção sem gritar, sem enfeitar e sem ficar informais demais."
+            }
+        ],
+        "samen": {
+            "kop": "Juntos",
+            "tekst": [
+                "Pense em LEGO: peças soltas que se encaixam com precisão, com as quais você começa a montar sem manual e que convidam a criar algo."
+            ]
+        },
+        "hash": "2e9869f974"
+    }
+}

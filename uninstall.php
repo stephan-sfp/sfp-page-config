@@ -41,6 +41,10 @@ foreach ( array(
     // Tekstfeedback met e-mailadres (3.22.0): persoonsgegevens, dus mee weg,
     // net als bij de zelftest.
     'sfp_page_config_tool_feedback_log',
+    // Merkwaarden (3.23.0): de laatst opgehaalde tekst en de meldingen; komen
+    // vanzelf terug, en tot dan geldt de kopie in de plugin.
+    'sfp_page_config_merkwaarden_laatst',
+    'sfp_page_config_merkwaarden_log',
 ) as $sfp_optie ) {
     delete_option( $sfp_optie );
 }

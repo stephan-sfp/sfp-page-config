@@ -1139,6 +1139,26 @@
 	} );
 
 	/* =====================================================================
+	 * Merkwaarden (sinds 3.23.0): de tekst komt live uit de merkbron
+	 * ================================================================== */
+
+	blok( 'sfp/merkwaarden', function ( props ) {
+		var a = props.attributes;
+		return el( Fragment, null,
+			paneel( 'Merkwaarden', [
+				keuze( 'Taal', a.taal || '', [
+					{ value: '', label: 'Taal van de site' },
+					{ value: 'nl', label: 'Nederlands' },
+					{ value: 'en', label: 'Engels' },
+					{ value: 'pt', label: 'Portugees' },
+				], function ( v ) { props.setAttributes( { taal: v } ); } ),
+				uitleg( 'De tekst staat in de merkbron (sfp-brand-source) en is hier niet te bewerken. De slotzin en de knop vul je per taal in bij SFP Beheer, Onderdelen, Merkwaarden.' ),
+			] ),
+			gegeven( 'sfp/merkwaarden', null, props, 'De merkwaarden worden geladen.' )
+		);
+	} );
+
+	/* =====================================================================
 	 * Logostrook en Review (sinds 3.14.0): in de editor gelijk aan de site
 	 * ================================================================== */
 
