@@ -69,6 +69,9 @@ $bestanden = array(
     'sfp-reviews'           => 'reviews/reviews.css',
     'sfp-page-config-sales' => 'sales-page.css',
     'sfp-tool'              => 'tool/tool.css',
+    'sfp-tool-generator'    => 'tool/tool-generator.css',
+    'sfp-tool-tekstanalyse' => 'tool/tool-tekstanalyse.css',
+    'sfp-tool-kaart'        => 'tool/tool-kaart.css',
     'sfp-longread-nav'      => 'longread-nav.css',
     'sfp-zelftest'          => 'zelftest/zelftest.css',
 );

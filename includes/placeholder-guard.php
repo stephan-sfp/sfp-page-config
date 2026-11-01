@@ -166,10 +166,12 @@ function sfp_page_config_onthoud_shortcodes_voorkant() {
     $tags = sfp_page_config_registered_shortcodes();
     sort( $tags );
     $hash = md5( implode( ',', $tags ) );
-    $nu   = get_option( 'sfp_pc_shortcodes_voorkant', array() );
-    if ( is_array( $nu ) && isset( $nu['hash'] ) && $nu['hash'] === $hash ) {
+    // Alleen de korte controlesom laadt mee (autoload); de lijst zelf niet.
+    // Zo kost deze controle geen databasevraag per pagina (3.22.0).
+    if ( get_option( 'sfp_pc_shortcodes_hash', '' ) === $hash ) {
         return;
     }
+    update_option( 'sfp_pc_shortcodes_hash', $hash, true );
     update_option(
         'sfp_pc_shortcodes_voorkant',
         array(

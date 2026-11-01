@@ -13,7 +13,7 @@
 :root .sfp-review-kaart{max-width:760px;margin:0 auto;padding:44px 56px 40px;background:var(--sfp-b-tint3);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);text-align:center;box-sizing:border-box}
 :root .sfp-review-kaart__sterren{display:flex;justify-content:center;gap:4px;margin:0 0 20px;line-height:0}
 :root .sfp-review-kaart__ster{width:22px;height:22px;flex:none;fill:color-mix(in srgb,var(--sfp-rol-primair,currentColor) 20%,transparent)}
-:root .sfp-review-kaart__ster.is-vol{fill:#FBBC04}
+:root .sfp-review-kaart__ster.is-vol{fill:var(--sfp-b-ster,#FBBC04)}
 :root .sfp-review-kaart__tekst{font-size:21px;line-height:1.5;font-weight:400;font-style:normal;color:var(--sfp-b-primair)}
 :root .sfp-review-kaart__tekst p{margin:0;font:inherit;color:inherit;quotes:none}
 :root .sfp-review-kaart__tekst p + p{margin-top:.75em}

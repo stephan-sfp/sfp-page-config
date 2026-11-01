@@ -239,19 +239,3 @@ function sfp_zelftest_weergave( array $pakket, $test = '' ) {
     );
 }
 
-add_filter( 'rocket_delay_js_exclusions', 'sfp_zelftest_rocket_delay' );
-
-/**
- * WP Rocket stelt de test niet uit; anders verschijnt hij pas na de eerste
- * aanraking.
- *
- * @param  array $uitsluitingen Uitsluitingen.
- * @return array
- */
-function sfp_zelftest_rocket_delay( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-zelftest';
-    $uitsluitingen[] = 'sfpZelftest';
-    $uitsluitingen[] = 'assets/zelftest/';
-    return $uitsluitingen;
-}

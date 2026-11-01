@@ -55,16 +55,3 @@ function sfp_page_config_kopfont_vars() {
     );
 }
 
-add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_kopfont_rucss_exclusion' );
-
-/**
- * Laat WP Rocket (Remove Unused CSS) dit inline blok ongemoeid.
- *
- * @param  array $exclusions Uitsluitingen op attribuut.
- * @return array
- */
-function sfp_page_config_kopfont_rucss_exclusion( $exclusions ) {
-    $exclusions   = (array) $exclusions;
-    $exclusions[] = 'sfp-kopfont';
-    return $exclusions;
-}

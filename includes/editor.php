@@ -626,6 +626,9 @@ function sfp_page_config_tool_canvas_css() {
         return;
     }
     wp_enqueue_style( 'sfp-tool-editor', SFP_PAGE_CONFIG_URL . 'assets/tool/tool.css', array(), SFP_PAGE_CONFIG_VERSION );
+    foreach ( array( 'generator', 'tekstanalyse', 'kaart' ) as $sfp_deel ) {
+        wp_enqueue_style( 'sfp-tool-editor-' . $sfp_deel, SFP_PAGE_CONFIG_URL . 'assets/tool/tool-' . $sfp_deel . '.css', array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
+    }
     wp_enqueue_style( 'sfp-tool-canvas', SFP_PAGE_CONFIG_URL . 'assets/editor/tool-canvas.css', array( 'sfp-tool-editor' ), SFP_PAGE_CONFIG_VERSION );
 }
 

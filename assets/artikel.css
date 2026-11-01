@@ -115,7 +115,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-art-thermo__opties button{text-align:center}
 :root .sfp-art-thermo__uitslag{display:grid;gap:12px}
 :root .sfp-art-thermo__uitslag .sfp-blok-label{display:block;outline:0}
-.sfp-art-thermo{--sfp-thermo-koel:#2f9e5b;--sfp-thermo-warm:#e8a317;--sfp-thermo-heet:#d64541;--sfp-thermo-stand:var(--sfp-thermo-koel)}
+.sfp-art-thermo{--sfp-thermo-koel:var(--sfp-b-goed,#1E8B45);--sfp-thermo-warm:color-mix(in srgb,var(--sfp-b-goed,#1E8B45),var(--sfp-b-fout,#A4262C));--sfp-thermo-heet:var(--sfp-b-fout,#A4262C);--sfp-thermo-stand:var(--sfp-thermo-koel)}
 .sfp-art-thermo__uitslag[data-band=midden]{--sfp-thermo-stand:var(--sfp-thermo-warm)}
 .sfp-art-thermo__uitslag[data-band=hoog]{--sfp-thermo-stand:var(--sfp-thermo-heet)}
 .sfp-art-thermo__schaal{display:grid;gap:6px;padding:4px 0}
@@ -163,7 +163,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-art-promo .sfp-pijl{font-size:13px;margin-top:2px}
 :root .sfp-art-promo--inline{display:none}
 :root .sfp-art-promo--rond img{width:60px;height:60px;border:0;border-radius:50%;object-fit:cover;box-shadow:none}
-.sfp-art-promo__test{width:60px;height:60px;border-radius:12px;background:var(--sfp-b-primair);color:var(--sfp-b-secundair);display:grid;place-items:center}
+.sfp-art-promo__test{width:60px;height:60px;border-radius:var(--sfp-b-r-kaart,6px);background:var(--sfp-b-primair);color:var(--sfp-b-secundair);display:grid;place-items:center}
 .sfp-art-promo__test svg{width:30px;height:30px}
 
 /* vervolg, affiliate-uitleg */
@@ -253,7 +253,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 .sfp-gids__lijst{display:grid;grid-template-columns:1fr 1fr;gap:4px 20px}
 :root a.sfp-gids__item{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;align-items:center;padding:6px 0;min-height:44px;text-decoration:none;color:inherit}
 :root a.sfp-gids__item:is(:hover,:focus) b{text-decoration:underline;text-underline-offset:3px}
-.sfp-gids__vlak{aspect-ratio:4/3;border-radius:8px;overflow:hidden;display:block;background:var(--sfp-b-tint3)}
+.sfp-gids__vlak{aspect-ratio:4/3;border-radius:var(--sfp-b-r-kaart,6px);overflow:hidden;display:block;background:var(--sfp-b-tint3)}
 .sfp-gids__vlak--leeg{background:var(--sfp-b-tint1)}
 :root .sfp-gids__vlak img{width:100%;height:100%;object-fit:cover;display:block;border:0;border-radius:0;box-shadow:none}
 .sfp-gids__tekst{min-width:0}
@@ -294,7 +294,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 .sfp-gebruikt{display:grid;gap:10px}
 :root .sfp-gebruikt a.sfp-gids__item{grid-template-columns:72px minmax(0,1fr);gap:14px;padding:10px 14px 10px 10px;background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-kaart)}
 :root .sfp-gebruikt a.sfp-gids__item:is(:hover,:focus){border-color:var(--sfp-b-primair)}
-.sfp-gebruikt .sfp-gids__vlak{border-radius:10px}
+.sfp-gebruikt .sfp-gids__vlak{border-radius:var(--sfp-b-r-kaart,6px)}
 .sfp-gebruikt .sfp-gids__tekst b{font-size:16px}
 .sfp-termnav{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;padding:16px 0;border-top:1px solid var(--sfp-b-lijn);border-bottom:1px solid var(--sfp-b-lijn);font-size:15px;line-height:1.4}
 :root .sfp-termnav a{color:var(--sfp-b-primair);text-decoration:none;font-weight:700}

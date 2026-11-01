@@ -304,11 +304,18 @@
 	];
 	blok( 'sfp/kolommen', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling } );
+		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling + ( a.uitlijning ? ' sfp-kolommen--' + a.uitlijning : '' ) } );
 		var inner = useInnerBlocksProps( blockProps, { orientation: 'horizontal', template: [ [ 'sfp/kolom' ], [ 'sfp/kolom' ] ] } );
 		return el( Fragment, null,
 			paneel( 'Kolommen', [
 				vormkeuze( 'Indeling', a.indeling, indelingen, function ( v ) { props.setAttributes( { indeling: v } ); } ),
+				keuze( 'Verticale uitlijning', a.uitlijning || '', [
+					{ label: 'Zoals de indeling', value: '' },
+					{ label: 'Boven', value: 'boven' },
+					{ label: 'Midden', value: 'midden' },
+					{ label: 'Onder', value: 'onder' },
+					{ label: 'Even hoog', value: 'rekken' },
+				], function ( v ) { props.setAttributes( { uitlijning: v } ); } ),
 				uitleg( 'Op een telefoon staan de kolommen onder elkaar.' ),
 			] ),
 			el( 'div', inner )
@@ -404,7 +411,8 @@
 		var inner = useInnerBlocksProps( { className: 'sfp-uitklap__inhoud', hidden: ! open }, { template: [ [ 'core/paragraph' ] ] } );
 		// Label en regel onder de titel typ je in het blok, alleen in de vorm die ze toont.
 		var metLabel = 'verhaal' === variant || a.label;
-		var metSub = 'kaart' === variant || a.sub;
+		// De regel onder de titel (teaser) kan sinds 3.22.0 in elke vorm.
+		var metSub = true;
 		var zetTitel = function ( v ) { props.setAttributes( { titel: v } ); };
 		var titelVeld = function ( tag ) {
 			return el( RichText, { tagName: tag, value: a.titel, placeholder: 'Titel van de regel', allowedFormats: [ 'core/bold', 'core/italic' ], onChange: zetTitel } );
@@ -414,7 +422,7 @@
 		// Dezelfde opbouw als de regel op de site (render_uitklap_regel).
 		var kop;
 		if ( metLabel ) {
-			kop = el( 'span', { className: 'sfp-uitklap__titel' }, labelVeld, titelVeld( 'b' ) );
+			kop = el( 'span', { className: 'sfp-uitklap__titel' }, labelVeld, titelVeld( 'b' ), subVeld );
 		} else if ( metSub ) {
 			kop = el( 'span', { className: 'sfp-uitklap__titel' }, titelVeld( 'span' ), subVeld );
 		} else {
@@ -1476,5 +1484,53 @@
 				{ id: MELDING, isDismissible: true }
 			);
 		} );
+	}() );
+
+	/*
+	 * Markeren per regel in sfp/lijst, stijl letters (3.22.0). Een schakelaar
+	 * bij elke lijstregel zet de klasse is-sfp-gemarkeerd; geen inline stijl.
+	 */
+	( function () {
+		if ( ! wp.hooks || ! wp.compose || ! wp.data ) {
+			return;
+		}
+		var KLASSE = 'is-sfp-gemarkeerd';
+		var metKlasse = function ( naam, aan ) {
+			var delen = ( naam || '' ).split( /\s+/ ).filter( function ( k ) { return k && k !== KLASSE; } );
+			if ( aan ) { delen.push( KLASSE ); }
+			return delen.join( ' ' ) || undefined;
+		};
+		wp.hooks.addFilter( 'editor.BlockEdit', 'sfp/lijst-markeren', wp.compose.createHigherOrderComponent( function ( BlockEdit ) {
+			return function ( props ) {
+				var inLetters = wp.data.useSelect( function ( select ) {
+					if ( 'core/list-item' !== props.name ) { return false; }
+					var b = select( 'core/block-editor' );
+					var ouders = b.getBlockParents( props.clientId, true );
+					for ( var i = 0; i < ouders.length; i++ ) {
+						var o = b.getBlock( ouders[ i ] );
+						if ( o && 'sfp/lijst' === o.name ) { return 'letters' === ( o.attributes.stijl || 'vink' ); }
+					}
+					return false;
+				}, [ props.clientId, props.name ] );
+				if ( ! inLetters ) {
+					return el( BlockEdit, props );
+				}
+				var aan = ( ' ' + ( props.attributes.className || '' ) + ' ' ).indexOf( ' ' + KLASSE + ' ' ) !== -1;
+				return el( Fragment, null,
+					el( BlockEdit, props ),
+					el( InspectorControls, null,
+						el( c.PanelBody, { title: 'Letter', initialOpen: true },
+							el( c.ToggleControl, {
+								label: 'Gemarkeerd',
+								help: 'Gemarkeerd: gevuld rondje en vet. Staat er in de lijst een gemarkeerde regel, dan krijgen de andere een leeg rondje.',
+								checked: aan,
+								onChange: function ( v ) { props.setAttributes( { className: metKlasse( props.attributes.className, v ) } ); },
+								__nextHasNoMarginBottom: true,
+							} )
+						)
+					)
+				);
+			};
+		}, 'sfpLijstMarkeren' ) );
 	}() );
 }( window.wp ) );

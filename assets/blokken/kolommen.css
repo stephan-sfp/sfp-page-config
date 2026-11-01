@@ -20,6 +20,15 @@
 :root .sfp-kolommen--breed-smal{gap:28px;align-items:center}
 .sfp-kolommen--breed-smal .sfp-lijst{justify-self:start;width:100%}
 
+/* Verticale uitlijning per blok (3.22.0); zonder keuze geldt de indeling. Even hoog rekt de kolommen, beelden houden hun verhouding. */
+:root .sfp-kolommen.sfp-kolommen--boven{align-items:start}
+:root .sfp-kolommen.sfp-kolommen--midden{align-items:center}
+:root .sfp-kolommen.sfp-kolommen--onder{align-items:end}
+:root .sfp-kolommen.sfp-kolommen--rekken{align-items:stretch}
+:root .sfp-kolommen--midden>.sfp-kolom{align-content:center}
+:root .sfp-kolommen--onder>.sfp-kolom{align-content:end}
+:root .sfp-kolommen--rekken>.sfp-kolom{height:100%}
+
 @media (min-width:981px){
   :root .sfp-kolommen--twee{grid-template-columns:repeat(2,minmax(0,1fr))}
   :root .sfp-kolommen--drie{grid-template-columns:repeat(3,minmax(0,1fr))}

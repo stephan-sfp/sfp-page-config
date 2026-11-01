@@ -148,44 +148,7 @@ function sfp_page_config_inhoud_js() {
     if ( empty( $geplaatst['js-kopieer'] ) && empty( $geplaatst['js-bronnen'] ) ) {
         return;
     }
-    $pad = SFP_PAGE_CONFIG_DIR . 'assets/blokken/inhoud.js';
-    $js  = is_readable( $pad ) ? (string) file_get_contents( $pad ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- lokaal pluginbestand.
-    if ( '' === $js ) {
-        return;
-    }
-    $js = preg_replace( '#/\*.*?\*/#s', '', $js );
-    echo '<script id="sfp-inhoud-js" nowprocket>' . $js . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste JS uit de plugin.
-}
-
-add_filter( 'rocket_delay_js_exclusions', 'sfp_page_config_inhoud_delay' );
-
-/**
- * WP Rocket stelt het script niet uit.
- *
- * @param  array $uitsluitingen Uitsluitingen.
- * @return array
- */
-function sfp_page_config_inhoud_delay( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-inhoud-js';
-    return $uitsluitingen;
-}
-
-add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_inhoud_rucss' );
-
-/**
- * WP Rocket Remove Unused CSS laat de inline opmaak staan (ingeklapt, open,
- * melding en geen treffers verschijnen pas na een klik).
- *
- * @param  array $uitsluitingen Uitsluitingen.
- * @return array
- */
-function sfp_page_config_inhoud_rucss( $uitsluitingen ) {
-    $uitsluitingen = (array) $uitsluitingen;
-    foreach ( array( 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio' ) as $naam ) {
-        $uitsluitingen[] = 'sfp-' . $naam . '-inline-css';
-    }
-    return $uitsluitingen;
+    sfp_page_config_script_tag( 'sfp-inhoud-js', 'blokken/inhoud.js' );
 }
 
 /* =========================================================================

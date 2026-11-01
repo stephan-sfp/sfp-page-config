@@ -118,6 +118,7 @@ function sfp_page_config_sanitize_css_color( $v ) {
 require dirname( __DIR__ ) . '/includes/instellingen.php';
 require dirname( __DIR__ ) . '/includes/teksten.php';
 require dirname( __DIR__ ) . '/includes/fundament.php';
+require dirname( __DIR__ ) . '/includes/wp-rocket.php';
 
 $checks = 0;
 $fouten = 0;
@@ -242,8 +243,8 @@ ob_start();
 sfp_page_config_kopfont_ux_head();
 same( '<style id="sfp-kopfont-ux">:root{--ux-display-font:Nunito, sans-serif;--ux-heading-font:Nunito, sans-serif;}</style>' . "\n", ob_get_clean(), 'UX aan: blok in de head' );
 
-same( true, in_array( 'sfp-kleurrollen', sfp_page_config_fundament_rucss( array() ), true ), 'RUCSS laat de kleurrollen staan' );
-same( true, in_array( 'sfp-kopfont-ux', sfp_page_config_fundament_rucss( array() ), true ), 'RUCSS laat de fontvariabelen staan' );
+same( true, in_array( 'sfp-kleurrollen', sfp_page_config_rocket_rucss_ids(), true ), 'RUCSS laat de kleurrollen staan' );
+same( true, in_array( 'sfp-kopfont-ux', sfp_page_config_rocket_rucss_ids(), true ), 'RUCSS laat de fontvariabelen staan' );
 
 /* ---------- Berichttypes: standaard per taal ---------- */
 

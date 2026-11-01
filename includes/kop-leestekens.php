@@ -126,16 +126,3 @@ function sfp_page_config_leestekens_css() {
     echo '<style id="sfp-kop-leestekens">h1 .sfp-lt{margin-left:-.2em;margin-right:-.12em}h1 .sfp-lt-k{margin-left:-.12em;margin-right:-.12em}</style>' . "\n";
 }
 
-add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_leestekens_rucss' );
-
-/**
- * WP Rocket Remove Unused CSS laat deze regels staan.
- *
- * @param  array $uitsluitingen Uitsluitingen op attribuut.
- * @return array
- */
-function sfp_page_config_leestekens_rucss( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-kop-leestekens';
-    return $uitsluitingen;
-}

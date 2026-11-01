@@ -484,22 +484,6 @@ function sfp_page_config_format_cursus_tijd( $start, $eind, $separator = ' - ', 
  * delay-JS has no measurable impact on page load performance.
  * ====================================================================== */
 
-add_filter( 'rocket_delay_js_exclusions', 'sfp_page_config_delay_js_exclusions' );
-
-function sfp_page_config_delay_js_exclusions( $exclusions ) {
-    $exclusions[] = 'sfp-page-config/assets/dropdown';
-    $exclusions[] = 'sfp-page-config/assets/sticky-cta';
-    $exclusions[] = 'sfp-page-config/assets/longread-nav';
-    // Also exclude the inline config scripts. WP Rocket delays inline
-    // <script> tags independently of their associated external scripts.
-    // Without these, sfpStickyConfig and sfpCourseData are undefined
-    // when the main scripts execute.
-    $exclusions[] = 'sfpStickyConfig';
-    $exclusions[] = 'sfpCourseData';
-    $exclusions[] = 'sfpDropdownConfig';
-    return $exclusions;
-}
-
 /* =========================================================================
  * Include modules
  *

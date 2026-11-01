@@ -35,6 +35,7 @@ foreach ( array(
     'sfp_page_config_version',
     'sfp_pc_aff_treffers_sleutel',
     'sfp_pc_shortcodes_voorkant',
+    'sfp_pc_shortcodes_hash',
     // Tekstfeedback met e-mailadres (3.22.0): persoonsgegevens, dus mee weg,
     // net als bij de zelftest.
     'sfp_page_config_tool_feedback_log',

@@ -96,7 +96,9 @@ function sfp_page_config_blokken() {
             'icon'        => 'columns',
             'css'         => 'kolommen',
             'attributes'  => array(
-                'indeling' => array( 'type' => 'string', 'default' => 'twee', 'enum' => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal' ) ),
+                'indeling'   => array( 'type' => 'string', 'default' => 'twee', 'enum' => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal' ) ),
+                // Verticale uitlijning (3.22.0). Leeg: zoals de indeling het doet.
+                'uitlijning' => array( 'type' => 'string', 'default' => '', 'enum' => array( '', 'boven', 'midden', 'onder', 'rekken' ) ),
             ),
             'render'      => 'sfp_page_config_render_kolommen',
         ),
@@ -298,7 +300,7 @@ function sfp_page_config_blokken_registreer() {
     wp_register_script(
         'sfp-blokken-editor',
         SFP_PAGE_CONFIG_URL . 'assets/blokken/editor.js',
-        array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-data', 'wp-core-data', 'wp-notices', 'wp-url', 'wp-html-entities', 'wp-server-side-render' ),
+        array( 'wp-blocks', 'wp-element', 'wp-block-editor', 'wp-components', 'wp-data', 'wp-core-data', 'wp-notices', 'wp-url', 'wp-html-entities', 'wp-server-side-render', 'wp-hooks', 'wp-compose' ),
         SFP_PAGE_CONFIG_VERSION,
         true
     );
@@ -598,7 +600,11 @@ function sfp_page_config_blokken_css_variabelen() {
         . '--sfp-b-display:var(--ux-display-font,inherit);'
         . '--sfp-b-kop:var(--ux-heading-font,var(--sfp-kopfont,inherit));'
         . '--sfp-b-tekst:' . ( isset( $brand['body_font'] ) && '' !== $brand['body_font'] ? $brand['body_font'] : 'inherit' ) . ';'
-        . '--sfp-b-r-knop:6px;--sfp-b-r-kaart:16px}';
+        // Radius 6 px netwerkbreed (merkbron): knoppen, velden, kaarten,
+        // vlakken, beelden. Omslagen van boeken en albums hebben geen radius.
+        . '--sfp-b-r-knop:6px;--sfp-b-r-kaart:6px;'
+        // De drie functionele kleuren uit de merkbron: de enige vaste hexcodes.
+        . '--sfp-b-goed:#1E8B45;--sfp-b-fout:#A4262C;--sfp-b-ster:#FBBC04}';
 }
 
 /**
@@ -803,22 +809,6 @@ function sfp_page_config_editor_merk_css() {
     return '' === $css ? '' : ':root{' . $css . '}';
 }
 
-add_filter( 'rocket_rucss_inline_atts_exclusions', 'sfp_page_config_blokken_rucss' );
-
-/**
- * WP Rocket Remove Unused CSS laat de CSS van de blokken staan. Zonder
- * dit verdwijnen onder meer de regels voor geopende uitklapregels en
- * verborgen tabpanelen, omdat die bij het meten niet in beeld zijn.
- *
- * @param  array $uitsluitingen Uitsluitingen op attribuut.
- * @return array
- */
-function sfp_page_config_blokken_rucss( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-blokken';
-    return $uitsluitingen;
-}
-
 /* =========================================================================
  * Script (tabs en FAQ-ankers)
  * ====================================================================== */
@@ -857,21 +847,6 @@ function sfp_page_config_blokken_js() {
         . 'document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href^=\\"#\\"]");if(a&&a.getAttribute("href")===location.hash)setTimeout(o,0);});'
         . '})();';
     echo '<script id="sfp-blokken-js" nowprocket>' . $js . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste JS uit dit bestand.
-}
-
-add_filter( 'rocket_delay_js_exclusions', 'sfp_page_config_blokken_delay' );
-
-/**
- * WP Rocket stelt het script niet uit; anders werken tabs pas na de
- * eerste aanraking.
- *
- * @param  array $uitsluitingen Uitsluitingen.
- * @return array
- */
-function sfp_page_config_blokken_delay( $uitsluitingen ) {
-    $uitsluitingen   = (array) $uitsluitingen;
-    $uitsluitingen[] = 'sfp-blokken-js';
-    return $uitsluitingen;
 }
 
 /* =========================================================================
@@ -961,9 +936,11 @@ function sfp_page_config_render_held( $attrs, $content ) {
  * @return string
  */
 function sfp_page_config_render_kolommen( $attrs, $content ) {
-    $indeling = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'indeling', 'twee' ), array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal' ) );
+    $indeling   = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'indeling', 'twee' ), array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal' ) );
+    $uitlijning = sfp_page_config_blok_attr( $attrs, 'uitlijning' );
+    $uitlijning = in_array( $uitlijning, array( 'boven', 'midden', 'onder', 'rekken' ), true ) ? 'sfp-kolommen--' . $uitlijning : '';
     return sfp_page_config_blokken_css_vangnet( 'sfp/kolommen' )
-        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-kolommen', 'sfp-kolommen--' . $indeling ) ) . '>' . $content . '</div>';
+        . '<div ' . sfp_page_config_blok_omhulling( array_filter( array( 'sfp-kolommen', 'sfp-kolommen--' . $indeling, $uitlijning ) ) ) . '>' . $content . '</div>';
 }
 
 /**
@@ -1075,9 +1052,10 @@ function sfp_page_config_render_uitklap_regel( $attrs, $content ) {
     $sub   = wp_kses( sfp_page_config_blok_attr( $attrs, 'sub' ), sfp_page_config_blok_titel_kses() );
     $kop   = '' === $sub ? $titel : '<span class="sfp-uitklap__titel">' . $titel . '<span class="sfp-uitklap__sub">' . $sub . '</span></span>';
     // Variant verhaal: een label boven de titel ("Een typisch geval").
+    // Sinds 3.22.0 toont de regel onder de titel (teaser) ook met een label.
     $label = wp_kses( sfp_page_config_blok_attr( $attrs, 'label' ), sfp_page_config_blok_titel_kses() );
     if ( '' !== $label ) {
-        $kop = '<span class="sfp-uitklap__titel"><small class="sfp-blok-label">' . $label . '</small><b>' . $titel . '</b></span>';
+        $kop = '<span class="sfp-uitklap__titel"><small class="sfp-blok-label">' . $label . '</small><b>' . $titel . '</b>' . ( '' !== $sub ? '<span class="sfp-uitklap__sub">' . $sub . '</span>' : '' ) . '</span>';
     }
     $anker = sfp_page_config_blok_attr( $attrs, 'anker' );
     if ( '' !== $anker ) {
