@@ -28,6 +28,7 @@ function add_filter() {}
 function add_action() {}
 function get_locale() {
     return 'nl_NL'; }
+function wp_kses( $s ) { return strip_tags( $s, '<path><circle>' ); }
 function wp_json_encode( $a, $f = 0 ) {
     return json_encode( $a, $f ); }
 function sfp_page_config_taal() {

@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.22.1] - 2026-11-01
+
+Opschoning en een herstel in de editor. Voor bezoekers verandert er niets.
+
+Terugdraaien: versie 3.22.0 terugzetten (zip uit de tag v3.22.0, map sfp-page-config).
+
+### Gerepareerd
+- Editor: de tegels van een tool tonen hun pictogram. Het eerste scherm van de server tekent de pictogrammen nu zelf, uit dezelfde lijst als de motor; eerder bleef het vak in de editor leeg.
+
+### Gewijzigd
+- Inspringen en uitlijning van de PHP-bron volgens phpcs.xml.dist (punt 21 van de stresstest), als losse commit zonder inhoudelijke wijziging: per bestand gecontroleerd dat de PHP-code op witruimte na gelijk is.
+
 ## [3.22.0] - 2026-11-01
 
 Grote update na de stresstest van 31-10-2026: alle 32 punten en de vijf FAST-punten in één release (werk page-config-grote-update). Bestaande inhoud, codes, blokken en routes werken zoals ze werkten.

@@ -456,7 +456,8 @@ function sfp_page_config_tool_es_veld( array $b, $v, array $a, $kaart ) {
         }
         $kol   = ! empty( $v['kolommen'] ) ? (int) $v['kolommen'] : ( $kw || 4 === count( $opties ) || $met_uitleg ? 2 : 3 );
         $tegel = function ( $o ) {
-            $icoon = ! empty( $o['icoon'] ) ? '<span class="sfp-tool__icoon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"></svg></span>' : '';
+            $iconen = sfp_page_config_tool_iconen();
+            $icoon  = ! empty( $o['icoon'] ) && isset( $iconen[ $o['icoon'] ] ) ? '<span class="sfp-tool__icoon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">' . $iconen[ $o['icoon'] ] . '</svg></span>' : '';
             return '<label class="sfp-tool__tegel' . ( '' !== $icoon ? ' met-icoon' : '' ) . '"><input type="radio" class="sfp-tool__radio" disabled>' . $icoon . '<b>' . esc_html( $o['tekst'] ?? '' ) . '</b>' . ( ! empty( $o['uitleg'] ) ? '<small>' . esc_html( $o['uitleg'] ) . '</small>' : '' ) . '</label>';
         };
         $veld  = '<div class="sfp-tool__tegels sfp-tool__tegels--' . $kol . ( $kw ? ' sfp-tool__tegels--kwadrant' : '' ) . ( $met_uitleg ? ' sfp-tool__tegels--uitleg' : '' ) . '" role="radiogroup">';
@@ -512,4 +513,35 @@ function sfp_page_config_tool_es_slot( array $b ) {
         $html .= '<div class="sfp-tool__duim"><p class="sfp-tool__duim-vraag">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_duim_vraag' ) ) . '</p><div class="sfp-tool__duim-knoppen"><button type="button" class="sfp-tool__duim-knop">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_duim_ja' ) ) . '</button><button type="button" class="sfp-tool__duim-knop">' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_duim_nee' ) ) . '</button></div></div>';
     }
     return $html;
+}
+
+/**
+ * De pictogrammen van de toolmotor (sinds 3.22.1), gelezen uit
+ * assets/tool/generator-bouw.js zodat er één bron is. Het eerste scherm en
+ * de editor tonen zo dezelfde lijntekening als de motor.
+ *
+ * @return array<string,string> Naam naar SVG-inhoud.
+ */
+function sfp_page_config_tool_iconen() {
+    static $iconen = null;
+    if ( null !== $iconen ) {
+        return $iconen;
+    }
+    $iconen = array();
+    $bron   = @file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/tool/generator-bouw.js' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors, WordPress.WP.AlternativeFunctions
+    if ( ! is_string( $bron ) || ! preg_match( '/var ICONEN = \{(.*?)\n\s*\};/s', $bron, $blok ) ) {
+        return $iconen;
+    }
+    preg_match_all( "/^\s*([a-z]+): '([^']*)'/m", $blok[1], $m, PREG_SET_ORDER );
+    foreach ( $m as $r ) {
+        // Alleen SVG-vormen, geen andere opmaak.
+        $iconen[ $r[1] ] = wp_kses(
+            $r[2],
+            array(
+                'path'   => array( 'd' => true ),
+                'circle' => array( 'cx' => true, 'cy' => true, 'r' => true ),
+            )
+        );
+    }
+    return $iconen;
 }
