@@ -15,6 +15,9 @@
 .sfp-zt a:hover{text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 .sfp-zt :focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
 .sfp-zt-laden{min-height:420px}
+/* De testtitel is op de testpagina een H1 (3.25.0): geen woordafstand van een algemene H1-regel van thema of site. */
+.sfp-zt .sfp-zt-h1{word-spacing:normal}
+.sfp-zt .sfp-zt-h1.sfp-zt-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .sfp-zt-scherm{display:flex;flex-direction:column;gap:24px}
 .sfp-zt .sfp-zt-h1,.sfp-zt .sfp-zt-titel,.sfp-zt-route h1{font-family:var(--sfp-b-kop);font-weight:900;color:var(--sfp-b-primair);text-transform:uppercase;text-wrap:balance;margin:8px 0 0;line-height:1.15;letter-spacing:.01em;font-size:clamp(24px,2.5vw + 14px,34px)}
 .sfp-zt-lab{display:block;font:900 12px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.06em;color:var(--sfp-b-primair)}
@@ -238,6 +241,12 @@ body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-avg{font-size:13px;margin-top:10px}
 /* Keuzekaarten op de testpagina: gelijke tekst en gelijke knoppen. */
 body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2,body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-uitleg2 b{font-size:15px;line-height:1.5;font-weight:400;color:var(--sfp-b-body)}
 body.sfp-zt-testpagina .sfp-zt-kaartje .sfp-zt-knop{min-height:52px;padding:10px 14px;font-size:15px;letter-spacing:.02em;white-space:nowrap}
+/* Testpagina op tablet en desktop (besluit 3-11-2026, sinds 3.25.0): zoals op de telefoon één knop met de duur eronder en de andere versie als tekstlink. Levert het pakket die teksten niet, dan de keuzekaarten onder elkaar, zodat de knoptekst altijd past. */
+@media (min-width:641px) and (min-height:521px){
+body.sfp-zt-testpagina .sfp-zt-keuzes{grid-template-columns:1fr}
+body.sfp-zt-testpagina .sfp-zt-keuzes.heeft-mob{display:none}
+body.sfp-zt-testpagina .sfp-zt-mob{display:flex;flex-direction:column;margin-top:14px}
+}
 /* Vraagschermen op de testpagina (besluit 18-10-2026): een kolom van 760 px, midden op het scherm. */
 body.sfp-zt-testpagina .sfp-zt[data-scherm="vraag"] .sfp-zt-wrap,body.sfp-zt-testpagina .sfp-zt[data-scherm="uitleg"] .sfp-zt-wrap,body.sfp-zt-testpagina .sfp-zt[data-scherm="laden"] .sfp-zt-wrap{max-width:760px}
 @media (max-width:640px){.sfp-zt-uitleg-blok{padding:16px 16px}.sfp-zt-uitleg-blok p{font-size:16px}.sfp-zt-uitleg-sub{font-size:17px}.sfp-zt-stappen li{font-size:17px}}
