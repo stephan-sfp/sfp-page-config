@@ -4,6 +4,27 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.25.0] - 2026-11-03
+
+Besluiten Stephan 3-11, proef op SwS (beta.1 tot en met beta.3): bronnen en aanbod in de gegevens voor Google, een H1 op de testpagina van de zelftest, een rustiger keuze tussen lange en korte versie, en de radius van de auteursbio.
+
+Terugdraaien: versie 3.24.0 terugzetten (zip uit de tag v3.24.0, map sfp-page-config).
+
+### Toegevoegd
+- Vorm Artikel: de bronnen uit de bronnenlijst staan als citation in de Article van SureRank (zelfde @id), elke bron één keer, als werk met de bronregel als naam en de link of DOI als url.
+- Homepage: de kaarten in de sectie met anker services staan als ItemList in de gegevens voor Google, met de zichtbare sectiekop als naam en per kaart een dienst met naam, adres en omschrijving. Past een kaart, dan past het schema mee.
+- Zelftest, testpagina: de testtitel is de H1. Hij staat al in de HTML (onzichtbaar tot het script laadt) en het startscherm toont hem als H1 met dezelfde opmaak. Als blok op een gewone pagina blijft het een H2.
+
+### Gerepareerd
+- Geen dubbele functienaam meer (fout in beta.1); een test meldt voortaan elke dubbele functienaam in de plugin.
+
+### Gewijzigd
+- Vorm Pijler: de bronnen in de citation zijn nu werken met naam en url, zoals bij het artikel (was alleen tekst).
+- Zelftest, testpagina op tablet en desktop: één knop met de duur eronder en de korte versie als tekstlink, zoals op de telefoon. De knoptekst liep in de smalle keuzekaart buiten de knop (SwS op 1280 px, DPS tussen 960 en 1024 px).
+- Zelftest, testpagina: de testtitel houdt de normale woordafstand, ook als de site een algemene H1-regel voor een ander kopfont heeft.
+- Auteursbio: de vinkjeslijst heeft de radius van de netwerknorm (6 px, was 3 px).
+- Geen dubbele gegevens: staat het snippet "Bronvermeldingen in structured data" aan, dan levert de plugin geen citation (ook niet op de pijler); staat een snippet "Trainingsaanbod op homepage" aan, dan geen ItemList. De snippets blijven ongewijzigd.
+
 ## [3.25.0-beta.3] - 2026-11-03
 
 Proef op SwS: de testtitel als H1 kreeg de woordafstand van een algemene H1-regel van de site (bedoeld voor een ander kopfont), waardoor de woorden in elkaar schoven. De titel houdt nu de normale woordafstand en ziet er weer uit als voorheen. Verder gelijk aan beta.2.
