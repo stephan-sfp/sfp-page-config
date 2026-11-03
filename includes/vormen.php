@@ -867,7 +867,7 @@ function sfp_page_config_gids_schema() {
     // "Bronvermeldingen in structured data" ze al levert.
     $bronnen = ( function_exists( 'sfp_page_config_citation_door_snippet' ) && sfp_page_config_citation_door_snippet() )
         ? array()
-        : ( function_exists( 'sfp_page_config_bronnen_schema' ) ? sfp_page_config_bronnen_schema( $gids->post_content ) : array() );
+        : ( function_exists( 'sfp_page_config_citation_werken' ) ? sfp_page_config_citation_werken( $gids->post_content ) : array() );
     $gegevens = array(
         '@context'     => 'https://schema.org',
         '@type'        => 'Article',

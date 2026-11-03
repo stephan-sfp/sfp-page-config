@@ -66,7 +66,7 @@ function sfp_page_config_aanbod_door_snippet() {
  * @param  string $content Ruwe inhoud.
  * @return array<int, array<string, string>>
  */
-function sfp_page_config_bronnen_schema( $content ) {
+function sfp_page_config_citation_werken( $content ) {
     if ( ! function_exists( 'sfp_page_config_artikel_bronnen' ) ) {
         return array();
     }
@@ -113,7 +113,7 @@ function sfp_page_config_artikel_schema() {
     if ( sfp_page_config_citation_door_snippet() ) {
         return;
     }
-    $bronnen = sfp_page_config_bronnen_schema( $post->post_content );
+    $bronnen = sfp_page_config_citation_werken( $post->post_content );
     if ( ! $bronnen ) {
         return;
     }

@@ -107,14 +107,14 @@ foreach ( array( 'sfp_page_config_artikel_bronnen', 'sfp_page_config_artikel_bro
 
 $bron   = 'Gilovich, T., Medvec, V. H., &amp; Savitsky, K. (2000). The spotlight effect in social judgment. Journal of Personality and Social Psychology, 78(2), 211-222. https://doi.org/10.1037/0022-3514.78.2.211';
 $inhoud = '<p>Tekst <span class="sfp-tooltip" data-tooltip="Uitleg.&lt;br&gt;Source: ' . $bron . '">a</span> en <span data-tooltip="Nog eens.&lt;br&gt;Source: ' . $bron . '">b</span> en <span data-tooltip="Bron: Anderson, C. (2016). &lt;em&gt;TED Talks&lt;/em&gt;. Boston: Houghton Mifflin Harcourt.">c</span> <span data-tooltip="Geen bron hier">d</span></p>';
-$werken = sfp_page_config_bronnen_schema( $inhoud );
+$werken = sfp_page_config_citation_werken( $inhoud );
 sv_is( 2 === count( $werken ), 'twee bronnen, de dubbele een keer' );
 sv_is( 'CreativeWork' === ( $werken[0]['@type'] ?? '' ), 'bron als CreativeWork' );
 sv_is( 0 === strpos( $werken[0]['name'] ?? '', 'Gilovich, T., Medvec, V. H., & Savitsky, K. (2000).' ), 'naam is de bronregel, zonder HTML-entiteiten' );
 sv_is( 'https://doi.org/10.1037/0022-3514.78.2.211' === ( $werken[0]['url'] ?? '' ), 'url is de DOI-link' );
 sv_is( ! isset( $werken[1]['url'] ), 'bron zonder link: geen url' );
 sv_is( false === strpos( $werken[1]['name'], '<' ), 'naam zonder HTML' );
-sv_is( array() === sfp_page_config_bronnen_schema( '<p>Geen tooltips</p>' ), 'geen bronnen: lege lijst' );
+sv_is( array() === sfp_page_config_citation_werken( '<p>Geen tooltips</p>' ), 'geen bronnen: lege lijst' );
 
 // Ontdubbelen met de snippets.
 sv_is( ! sfp_page_config_citation_door_snippet(), 'zonder snippet: plugin levert citation' );
@@ -158,7 +158,7 @@ sv_is( null === sfp_page_config_aanbod_gegevens( $zonder ), 'geen sectie service
 
 // Pijler gebruikt dezelfde bronnen en dezelfde ontdubbeling.
 $vormen = (string) file_get_contents( $basis . 'includes/vormen.php' );
-sv_is( false !== strpos( $vormen, 'sfp_page_config_citation_door_snippet()' ) && false !== strpos( $vormen, 'sfp_page_config_bronnen_schema( $gids->post_content )' ), 'pijler: citation als CreativeWork, niet naast het snippet' );
+sv_is( false !== strpos( $vormen, 'sfp_page_config_citation_door_snippet()' ) && false !== strpos( $vormen, 'sfp_page_config_citation_werken( $gids->post_content )' ), 'pijler: citation als CreativeWork, niet naast het snippet' );
 $schema = (string) file_get_contents( $basis . 'includes/schema-vormen.php' );
 sv_is( false !== strpos( $schema, "get_permalink( \$post ) . '#article'" ), 'artikel: zelfde @id als de Article van SureRank' );
 sv_is( false !== strpos( $schema, 'sfp_page_config_is_gids( $post )' ), 'artikel: pijler krijgt geen tweede citation-knoop' );
@@ -182,6 +182,27 @@ sv_is( false !== strpos( $css, '.sfp-zt .sfp-zt-h1.sfp-zt-sr{position:absolute;w
 
 // Zelftest: keuzes op tablet en desktop zoals op de telefoon.
 sv_is( false !== strpos( $css, "@media (min-width:641px) and (min-height:521px){\nbody.sfp-zt-testpagina .sfp-zt-keuzes{grid-template-columns:1fr}\nbody.sfp-zt-testpagina .sfp-zt-keuzes.heeft-mob{display:none}\nbody.sfp-zt-testpagina .sfp-zt-mob{display:flex;flex-direction:column;margin-top:14px}\n}" ), 'testpagina: een knop en de korte versie als link vanaf 641 px' );
+
+// Geen functienaam dubbel in de plugin (een dubbele naam is een fatale fout bij het laden).
+$namen = array();
+$it    = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $basis, FilesystemIterator::SKIP_DOTS ) );
+foreach ( $it as $bestand ) {
+    $pad = (string) $bestand;
+    if ( '.php' !== substr( $pad, -4 ) || false !== strpos( $pad, '/tests/' ) || false !== strpos( $pad, '/.git/' ) || false !== strpos( $pad, '/vendor/' ) || false !== strpos( $pad, '/bouw/' ) ) {
+        continue;
+    }
+    preg_match_all( '/^function\s+([a-zA-Z0-9_]+)\s*\(/m', (string) file_get_contents( $pad ), $mm );
+    foreach ( $mm[1] as $naam ) {
+        $namen[ strtolower( $naam ) ][] = substr( $pad, strlen( $basis ) );
+    }
+}
+$dubbel = array_filter( $namen, function ( $plekken ) {
+    return count( $plekken ) > 1;
+} );
+foreach ( $dubbel as $naam => $plekken ) {
+    echo "Dubbel: $naam in " . implode( ', ', $plekken ) . "\n";
+}
+sv_is( ! $dubbel, 'geen functienaam dubbel in de plugin' );
 
 // Auteursbio: radius uit de netwerknorm.
 $bio = (string) file_get_contents( $basis . 'assets/blokken/auteursbio.css' );

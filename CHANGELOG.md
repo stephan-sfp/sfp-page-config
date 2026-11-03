@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.25.0-beta.2] - 2026-11-03
+
+Herstel van beta.1 op SwS: de nieuwe functie voor de bronnen had dezelfde naam als een bestaande functie van de bronnenpagina, wat een fatale fout gaf bij het laden. Nieuwe naam, en een test die elke dubbele functienaam in de plugin meldt. Verder gelijk aan beta.1.
+
+Terugdraaien: versie 3.24.0 terugzetten (zip uit de tag v3.24.0, map sfp-page-config).
+
 ## [3.25.0-beta.1] - 2026-11-03
 
 Proefversie op SwS (besluiten Stephan 3-11): bronnen en aanbod in de gegevens voor Google, een H1 op de testpagina van de zelftest, een rustiger keuze tussen lange en korte versie, en de radius van de auteursbio.
