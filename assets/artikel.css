@@ -42,8 +42,9 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 
 /* pijlerregel en titel */
 :root .sfp-art-pijler{font-family:var(--sfp-b-kop);font-weight:900;font-size:11px;line-height:1.4;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-primair);margin:0 0 12px}
-:root .sfp-art-pijler a{color:var(--sfp-b-primair);text-decoration:none;border-bottom:2px solid var(--sfp-b-secundair)}
-:root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-primair);border-bottom-color:var(--sfp-b-primair)}
+/* Tikdoel 24 px (3.26.0): verticale opvulling op de inline link verandert de regel niet; de streep staat waar de rand stond. */
+:root .sfp-art-pijler a{color:var(--sfp-b-primair);text-decoration:none;padding:6px 0 5px;background:linear-gradient(var(--sfp-b-secundair),var(--sfp-b-secundair)) left 0 bottom 3px/100% 2px no-repeat}
+:root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-primair);background-image:linear-gradient(var(--sfp-b-primair),var(--sfp-b-primair))}
 :root .sfp-artikel .sfp-art-titel{margin:0 0 24px;padding:0;text-wrap:pretty}
 
 /* kopkaart */

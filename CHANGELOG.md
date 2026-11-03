@@ -4,6 +4,26 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.26.0] - 2026-11-03
+
+Besluit Stephan 3-11 (onderdeel F), proef op SwS met beta.1: de pijlerregel boven de H1 is het zichtbare kruimelpad. Geen apart kruimelpad en geen Home; de BreadcrumbList blijft van SureRank.
+
+Terugdraaien: versie 3.25.0 terugzetten (zip uit de tag v3.25.0, map sfp-page-config).
+
+### Gewijzigd
+- Pijlerregel op artikel, begrip, tool en pijler: elke link heeft een tikdoel van 24 px (was 15 px). De regel ziet er hetzelfde uit en staat op dezelfde afstand van de H1; de streep onder de link staat op dezelfde plek.
+- Vorm Pijler: de regel heet Pillar in Blog (Pijler in Blog, Pilar em Blog), met een link naar de blogpagina van de site. Een pijler onder een hoofdpijler toont Pillar in die hoofdpijler. Zonder blogpagina staat er alleen Pillar. Was: Guide.
+
+## [3.26.0-beta.1] - 2026-11-03
+
+Proefversie op SwS (besluit Stephan 3-11, onderdeel F): de pijlerregel boven de H1 is het zichtbare kruimelpad. Geen apart kruimelpad en geen Home; de BreadcrumbList blijft van SureRank.
+
+Terugdraaien: versie 3.25.0 terugzetten (zip uit de tag v3.25.0, map sfp-page-config).
+
+### Gewijzigd
+- Pijlerregel op artikel, begrip, tool en pijler: elke link heeft een tikdoel van 24 px (was 15 px). De regel ziet er hetzelfde uit en staat op dezelfde afstand van de H1; de streep onder de link staat op dezelfde plek.
+- Vorm Pijler: de regel heet Pillar in Blog (Pijler in Blog, Pilar em Blog), met een link naar de blogpagina van de site. Een pijler onder een hoofdpijler toont Pillar in die hoofdpijler. Zonder blogpagina staat er alleen Pillar. Was: Guide.
+
 ## [3.25.0] - 2026-11-03
 
 Besluiten Stephan 3-11, proef op SwS (beta.1 tot en met beta.3): bronnen en aanbod in de gegevens voor Google, een H1 op de testpagina van de zelftest, een rustiger keuze tussen lange en korte versie, en de radius van de auteursbio.
