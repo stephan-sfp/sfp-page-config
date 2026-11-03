@@ -32,6 +32,8 @@
 		}
 		var I = C.inhoud;
 		var binnen = wortel.querySelector('.sfp-zt-wrap') || wortel;
+		/* Op de testpagina is de titel van het startscherm de H1 (sinds 3.25.0); als blok op een gewone pagina een H2. */
+		var kopStart = wortel.getAttribute('data-pagina') === '1' ? 'h1' : 'h2';
 
 		/* ---------- Hulpfuncties ---------- */
 		var T = function (o) { return (o && typeof o === 'object' ? (o[C.taal] != null ? o[C.taal] : '') : (typeof o === 'string' ? o : '')) || ''; };
@@ -170,7 +172,7 @@
 					+ '</div>';
 			}
 			binnen.innerHTML = '<div class="sfp-zt-scherm sfp-zt-start">'
-				+ '<div class="sfp-zt-start-tekst"><div><span class="sfp-zt-lab licht">' + esc(T(I.algemeen.testnaam)) + '</span><h2 class="sfp-zt-h1">' + esc(T(St.kop)) + '</h2></div>'
+				+ '<div class="sfp-zt-start-tekst"><div><span class="sfp-zt-lab licht">' + esc(T(I.algemeen.testnaam)) + '</span><' + kopStart + ' class="sfp-zt-h1">' + esc(T(St.kop)) + '</' + kopStart + '></div>'
 				+ (T(St.intro) ? '<div class="sfp-zt-intro"><p>' + esc(T(St.intro)) + '</p>' + (T(St.introLijstkop) ? '<p class="sfp-zt-lijstkop">' + ph(T(St.introLijstkop)) + '</p>' : '') + (St.introPunten && St.introPunten.length ? '<ul class="sfp-zt-lijst">' + St.introPunten.map(function (a) { return '<li>' + esc(T(a)) + '</li>'; }).join('') + '</ul>' : '') + '</div>' : '')
 				+ '</div>'
 				+ '<div class="sfp-zt-formulier">'

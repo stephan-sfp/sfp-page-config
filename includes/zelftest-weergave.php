@@ -170,7 +170,29 @@ function sfp_zelftest_shortcode( $atts ) {
         'before'
     );
 
-    return '<div class="sfp-zt" id="sfp-zelftest" data-test="' . esc_attr( $test ) . '" lang="' . esc_attr( $taal ) . '"><div class="sfp-zt-wrap"><p class="sfp-zt-laden">&nbsp;</p></div></div>';
+    // Op de testpagina is de testtitel de H1 (sinds 3.25.0): al in de HTML,
+    // onzichtbaar in het laadvak, zodat hij er ook zonder script staat. Het
+    // startscherm tekent hem daarna zichtbaar als H1, met dezelfde opmaak.
+    $pagina = function_exists( 'sfp_zelftest_pagina_test' ) && $test === sfp_zelftest_pagina_test();
+    $kop    = $pagina ? sfp_zelftest_starttitel( $pakket, $taal ) : '';
+    return '<div class="sfp-zt" id="sfp-zelftest" data-test="' . esc_attr( $test ) . '"' . ( $pagina ? ' data-pagina="1"' : '' ) . ' lang="' . esc_attr( $taal ) . '"><div class="sfp-zt-wrap">'
+        . ( '' !== $kop ? '<h1 class="sfp-zt-h1 sfp-zt-sr">' . esc_html( $kop ) . '</h1>' : '' )
+        . '<p class="sfp-zt-laden">&nbsp;</p></div></div>';
+}
+
+/**
+ * De titel van het startscherm in de taal van de test (sinds 3.25.0).
+ *
+ * @param  array  $pakket Pakket.
+ * @param  string $taal   Taal van de test.
+ * @return string
+ */
+function sfp_zelftest_starttitel( array $pakket, $taal ) {
+    $kop = $pakket['inhoud']['start']['kop'] ?? '';
+    if ( is_array( $kop ) ) {
+        $kop = isset( $kop[ $taal ] ) ? $kop[ $taal ] : '';
+    }
+    return is_string( $kop ) ? trim( wp_strip_all_tags( $kop ) ) : '';
 }
 
 /**
