@@ -712,16 +712,22 @@ function sfp_page_config_artikel_promo_in_tekst( $html, $kaart ) {
  * @return string        HTML, of '' zonder bruikbare categorie.
  */
 function sfp_page_config_artikel_pijlerregel( $post ) {
-    // Een pijler: Guide, of Guide in <hoofdpijler>.
+    // Een pijler (sinds 3.26.0): Pillar in <hoofdpijler>, anders Pillar in
+    // <Blog> met een link naar de blogpagina, zonder blogpagina alleen Pillar.
     $gids_term = function_exists( 'sfp_page_config_is_gids' ) && 'pijler' === sfp_page_config_vorm( $post ) ? sfp_page_config_is_gids( $post ) : null;
     if ( $gids_term ) {
         $ouder = $gids_term->parent ? get_term( $gids_term->parent, 'category' ) : null;
         if ( $ouder && ! is_wp_error( $ouder ) ) {
             $url  = get_term_link( $ouder );
             $naam = is_wp_error( $url ) ? esc_html( $ouder->name ) : '<a href="' . esc_url( $url ) . '">' . esc_html( $ouder->name ) . '</a>';
-            return '<p class="sfp-art-pijler">' . sprintf( esc_html( sfp_page_config_artikel_tekst( 'gids_in' ) ), $naam ) . '</p>';
+            return '<p class="sfp-art-pijler">' . sprintf( esc_html( sfp_page_config_artikel_tekst( 'pijler_regel_in' ) ), $naam ) . '</p>';
         }
-        return '<p class="sfp-art-pijler">' . esc_html( sfp_page_config_artikel_tekst( 'gids' ) ) . '</p>';
+        $blog = (int) get_option( 'page_for_posts' );
+        if ( $blog > 0 && 'publish' === get_post_status( $blog ) ) {
+            $naam = '<a href="' . esc_url( get_permalink( $blog ) ) . '">' . esc_html( wp_strip_all_tags( get_the_title( $blog ) ) ) . '</a>';
+            return '<p class="sfp-art-pijler">' . sprintf( esc_html( sfp_page_config_artikel_tekst( 'pijler_regel_in' ) ), $naam ) . '</p>';
+        }
+        return '<p class="sfp-art-pijler">' . esc_html( sfp_page_config_artikel_tekst( 'pijler_regel' ) ) . '</p>';
     }
     $termen = get_the_terms( $post, 'category' );
     if ( ! is_array( $termen ) ) {
