@@ -290,6 +290,22 @@ $GLOBALS['astra'] = array(
 same( '--ux-display-font:Nunito, sans-serif;--ux-heading-font:Nunito, sans-serif;', sfp_page_config_kopfont_ux_declaraties(), 'UX aan: declaraties voor het blok sfp-kopfont' );
 same( false, function_exists( 'sfp_page_config_kopfont_ux_head' ), 'UX: geen eigen blok meer in de head' );
 
+/* ---------- H1-gewicht uit Astra (3.26.1) ---------- */
+
+$GLOBALS['astra'] = array( 'font-weight-h1' => '400', 'headings-font-weight' => '900' );
+same( '400', sfp_page_config_h1_gewicht(), 'H1: eigen gewicht uit Astra (SwS, SLB, SFP)' );
+$GLOBALS['astra'] = array( 'font-weight-h1' => '900', 'headings-font-weight' => '900' );
+same( '900', sfp_page_config_h1_gewicht(), 'H1: 900 (DPS, CVD)' );
+$GLOBALS['astra'] = array( 'font-weight-h1' => 'inherit', 'headings-font-weight' => '900' );
+same( '900', sfp_page_config_h1_gewicht(), 'H1: volgt de koppen bij inherit' );
+$GLOBALS['astra'] = array( 'font-weight-h1' => 'inherit', 'headings-font-weight' => 'inherit' );
+same( '', sfp_page_config_h1_gewicht(), 'H1: geen vast gewicht, geen variabele' );
+$GLOBALS['astra'] = array( 'font-weight-h1' => '400;}</style><script>', 'headings-font-weight' => '700' );
+same( '700', sfp_page_config_h1_gewicht(), 'H1: kapotte waarde valt weg' );
+$css = file_get_contents( dirname( __DIR__ ) . '/assets/artikel.css' );
+same( 1, preg_match( '/\.sfp-art-titel\{[^}]*font-weight:var\(--sfp-h1-gewicht,inherit\)/', $css ), 'H1 van de vormen volgt --sfp-h1-gewicht' );
+same( 0, preg_match( '/\.sfp-art-titel\{[^}]*font-weight:\s*[1-9]00/', $css ), 'H1 van de vormen: geen vast gewicht' );
+
 same( true, in_array( 'sfp-kleurrollen', sfp_page_config_rocket_rucss_ids(), true ), 'RUCSS laat de kleurrollen staan' );
 same( true, in_array( 'sfp-kopfont', sfp_page_config_rocket_rucss_ids(), true ), 'RUCSS laat de fontvariabelen staan' );
 

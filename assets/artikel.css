@@ -45,7 +45,8 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 /* Tikdoel 24 px (3.26.0): verticale opvulling op de inline link verandert de regel niet; de streep staat waar de rand stond. */
 :root .sfp-art-pijler a{color:var(--sfp-b-primair);text-decoration:none;padding:6px 0 5px;background:linear-gradient(var(--sfp-b-secundair),var(--sfp-b-secundair)) left 0 bottom 3px/100% 2px no-repeat}
 :root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-primair);background-image:linear-gradient(var(--sfp-b-primair),var(--sfp-b-primair))}
-:root .sfp-artikel .sfp-art-titel{margin:0 0 24px;padding:0;text-wrap:pretty}
+/* H1-gewicht uit Astra (3.26.1): Astra zet op .entry-title een eigen blogtitelgewicht, de H1 van de vormen volgt het H1-gewicht. */
+:root .sfp-artikel .sfp-art-titel{margin:0 0 24px;padding:0;text-wrap:pretty;font-weight:var(--sfp-h1-gewicht,inherit)}
 
 /* kopkaart */
 .sfp-art-kop{background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:18px 20px 6px;margin:0 0 24px}

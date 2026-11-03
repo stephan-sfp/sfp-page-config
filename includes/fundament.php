@@ -270,6 +270,27 @@ function sfp_page_config_kopfont_ux_declaraties() {
     return $css;
 }
 
+/**
+ * Het H1-gewicht uit Astra (sinds 3.26.1).
+ *
+ * Astra zet het H1-gewicht op h1 (font-weight-h1) en volgt bij inherit het
+ * gewicht van de koppen. Op .entry-title zet Astra daarnaast een eigen
+ * gewicht (--ast-blog-title-font-weight), dat de H1 van de vormen anders
+ * overneemt. Deze functie geeft het gewicht dat Astra voor H1 bedoelt, of ''
+ * als Astra geen vast gewicht kent.
+ *
+ * @return string Een gewicht (100 tot 900, normal, bold) of ''.
+ */
+function sfp_page_config_h1_gewicht() {
+    foreach ( array( 'font-weight-h1', 'headings-font-weight' ) as $sleutel ) {
+        $gewicht = sfp_page_config_astra_option( $sleutel );
+        if ( preg_match( '/^(?:[1-9]00|normal|bold)$/', $gewicht ) ) {
+            return $gewicht;
+        }
+    }
+    return '';
+}
+
 // De fontvariabelen staan sinds 3.22.0 in het blok sfp-kopfont (kopfont.php).
 
 /* =========================================================================

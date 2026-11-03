@@ -5,6 +5,7 @@
  * Zet op de front-end twee variabelen op :root:
  *   --sfp-kopfont          het font van H2 tot en met H6 (Astra headings-font-family)
  *   --sfp-kopfont-gewicht  het gewicht daarvan (Astra headings-font-weight)
+ *   --sfp-h1-gewicht       het H1-gewicht (Astra font-weight-h1), sinds 3.26.1
  *
  * Bedoeld voor elementen die in kapitalen staan maar geen kop zijn, zoals de
  * groepslabels in de footer. De merkregel is dat kapitalen en kopfont bij
@@ -51,6 +52,13 @@ function sfp_page_config_kopfont_vars() {
     // Sinds 3.22.0 in één blok met de fontvariabelen van het onderdeel
     // Kopfont (--ux-display-font, --ux-heading-font); daarvoor twee blokken.
     $ux = function_exists( 'sfp_page_config_kopfont_ux_declaraties' ) && sfp_page_config_onderdeel_aan( 'kopfont' ) ? sfp_page_config_kopfont_ux_declaraties() : '';
+
+    // Sinds 3.26.1: het H1-gewicht uit Astra voor de H1 van de vormen, los
+    // van het onderdeel Kopfont. Gevalideerd tegen een vaste lijst.
+    $h1 = function_exists( 'sfp_page_config_h1_gewicht' ) ? sfp_page_config_h1_gewicht() : '';
+    if ( '' !== $h1 ) {
+        $ux .= '--sfp-h1-gewicht:' . $h1 . ';';
+    }
     printf(
         "<style id=\"sfp-kopfont\">:root{--sfp-kopfont:%s;--sfp-kopfont-gewicht:%s;%s}</style>\n",
         $font, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gevalideerd, zie hierboven.
