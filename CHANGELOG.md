@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.25.0-beta.3] - 2026-11-03
+
+Proef op SwS: de testtitel als H1 kreeg de woordafstand van een algemene H1-regel van de site (bedoeld voor een ander kopfont), waardoor de woorden in elkaar schoven. De titel houdt nu de normale woordafstand en ziet er weer uit als voorheen. Verder gelijk aan beta.2.
+
+Terugdraaien: versie 3.24.0 terugzetten (zip uit de tag v3.24.0, map sfp-page-config).
+
 ## [3.25.0-beta.2] - 2026-11-03
 
 Herstel van beta.1 op SwS: de nieuwe functie voor de bronnen had dezelfde naam als een bestaande functie van de bronnenpagina, wat een fatale fout gaf bij het laden. Nieuwe naam, en een test die elke dubbele functienaam in de plugin meldt. Verder gelijk aan beta.1.

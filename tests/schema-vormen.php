@@ -178,6 +178,7 @@ $js = (string) file_get_contents( $basis . 'assets/zelftest/zelftest.js' );
 sv_is( false !== strpos( $js, "wortel.getAttribute('data-pagina') === '1' ? 'h1' : 'h2'" ), 'startscherm: H1 op de testpagina, anders H2' );
 sv_is( 1 === substr_count( $js, 'kopStart' ) - 2, 'alleen de titel van het startscherm wisselt' );
 $css = (string) file_get_contents( $basis . 'assets/zelftest/zelftest.css' );
+sv_is( false !== strpos( $css, '.sfp-zt .sfp-zt-h1{word-spacing:normal}' ), 'titel: geen woordafstand van een algemene H1-regel' );
 sv_is( false !== strpos( $css, '.sfp-zt .sfp-zt-h1.sfp-zt-sr{position:absolute;width:1px;height:1px' ), 'H1 in het laadvak onzichtbaar' );
 
 // Zelftest: keuzes op tablet en desktop zoals op de telefoon.
