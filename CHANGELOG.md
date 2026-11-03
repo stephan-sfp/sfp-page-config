@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.26.1-beta.1] - 2026-11-03
+
+Proefversie op SwS (overdracht WordPress Toolkit, sws-h1-gewicht): de H1 van de vormen stond op SwS en SLB op gewicht 600 in een font dat alleen in 400 geladen is, zodat de browser de letter kunstmatig vet maakte.
+
+Terugdraaien: versie 3.26.0 terugzetten (zip uit de tag v3.26.0, map sfp-page-config).
+
+### Gerepareerd
+- Vormen Artikel, Begrip, Tool en Pijler: de H1 volgt het H1-gewicht uit Astra, ook als Astra een eigen gewicht voor blogtitels zet. Het gewicht komt uit Astra (H1, anders de koppen) als variabele --sfp-h1-gewicht in het blok sfp-kopfont; geen vaste waarde per merk. Kent Astra geen vast gewicht, dan blijft het gewicht van de omgeving staan.
+
 ## [3.26.0] - 2026-11-03
 
 Besluit Stephan 3-11 (onderdeel F), proef op SwS met beta.1: de pijlerregel boven de H1 is het zichtbare kruimelpad. Geen apart kruimelpad en geen Home; de BreadcrumbList blijft van SureRank.
