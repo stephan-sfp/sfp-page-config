@@ -35,7 +35,7 @@
 .sfp-tool__lijst--afvink li:has(input:checked) label{text-decoration:line-through;text-decoration-thickness:1px;opacity:.7}
 .sfp-tool__scherm--live{margin-top:22px;padding-top:18px;border-top:1px solid var(--tool-lijn)}
 /* Hulptegel in de kaartweergave (3.27.0): zesde tegel die de uitleg van de keuzes onder de tegels opent; geen keuze. */
-:root .sfp-tool--kaart .sfp-tool__tegel--hulp{appearance:none;font:inherit;width:100%;border-style:dashed;border-color:color-mix(in srgb,var(--sfp-b-primair) 35%,transparent);background:transparent;color:var(--sfp-b-primair);box-shadow:none;text-transform:none;letter-spacing:0}
+:root .sfp-tool--kaart .sfp-tool__tegel--hulp{appearance:none;font:inherit;width:100%;border:1.5px dashed color-mix(in srgb,var(--sfp-b-primair) 35%,transparent);background:transparent;color:var(--sfp-b-primair);box-shadow:none;text-transform:none;letter-spacing:0}
 :root .sfp-tool--kaart .sfp-tool__tegel--hulp b{font-size:14px}
 :root .sfp-tool--kaart .sfp-tool__tegel--hulp .sfp-tool__icoon{color:var(--sfp-b-links)}
 :root .sfp-tool--kaart .sfp-tool__tegel--hulp:is(:hover,.is-open){border-style:solid;border-color:var(--sfp-b-primair)}

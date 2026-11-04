@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.27.0-beta.2] - 2026-11-04
+
+Proef op SwS, gelijk aan beta.1 plus een correctie: de hulptegel toonde geen gestippelde rand, omdat het thema de randbreedte van knoppen op 0 zet.
+
+Terugdraaien: versie 3.26.1 terugzetten (zip uit de tag v3.26.1, map sfp-page-config).
+
+### Gerepareerd
+- Tool, hulptegel: gestippelde rand van 1,5 px, ook waar het thema knoppen zonder rand zet.
+
 ## [3.27.0-beta.1] - 2026-11-04
 
 Proefversie op SwS (oordelen Stephan op de staalkaart, 4-11): de tweede call-to-action op gewicht 700, de vuistregel als informatie-icoon, een hulptegel in de tool en een rustiger zelftestpagina op desktop.
