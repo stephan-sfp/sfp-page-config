@@ -255,6 +255,8 @@ function sfp_page_config_generator_veld_schoon( array $v, $reserve ) {
         'type'      => isset( $v['type'] ) && is_scalar( $v['type'] ) ? (string) $v['type'] : 'kort',
         'label'     => isset( $v['label'] ) && is_scalar( $v['label'] ) ? (string) $v['label'] : '',
         'hint'      => isset( $v['hint'] ) && is_scalar( $v['hint'] ) ? (string) $v['hint'] : '',
+        // Hulptegel (3.27.0): tekst op de extra tegel die de uitleg van de opties toont.
+        'hulp'      => isset( $v['hulp'] ) && is_scalar( $v['hulp'] ) ? (string) $v['hulp'] : '',
         'voorbeeld' => isset( $v['voorbeeld'] ) && is_scalar( $v['voorbeeld'] ) ? (string) $v['voorbeeld'] : '',
         'opties'    => $opties,
         'verder'    => ! empty( $v['verder'] ),

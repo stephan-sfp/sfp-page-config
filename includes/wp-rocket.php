@@ -174,6 +174,7 @@ function sfp_page_config_rocket_delay_lijst() {
         'sfp-page-config/assets/artikel',
         'sfp-page-config/assets/blokken/',
         'sfp-page-config/assets/tool/',
+        'sfp-page-config/assets/tooltip/',
         'sfp-page-config/assets/footer-groepen',
         'assets/zelftest/',
         'sfpStickyConfig',

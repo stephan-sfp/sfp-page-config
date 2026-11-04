@@ -188,7 +188,13 @@ function sfp_page_config_tooltips_css() {
         . '.tooltiptext::after{content:"";position:absolute;left:var(--arrow-position,50%);transform:translateX(-50%);border-width:8px;border-style:solid}'
         . '.tooltiptext:not(.is-bottom)::after{top:100%;border-color:var(--sfp-tt-vlak) transparent transparent transparent}'
         . '.tooltiptext.is-bottom::after{top:-16px;border-color:transparent transparent var(--sfp-tt-vlak) transparent}'
-        . '.tooltip:focus-visible{outline:2px solid var(--sfp-tt-accent);outline-offset:2px;border-radius:2px}';
+        . '.tooltip:focus-visible{outline:2px solid var(--sfp-tt-accent);outline-offset:2px;border-radius:2px}'
+        // Vuistregel als informatie-icoon (3.27.0): tikdoel 24 px, icoon 18 px, het woord alleen voor schermlezers.
+        . ':root .tooltip.sfp-vuistregel{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin:-4px 1px;vertical-align:-3px;border:0;border-radius:50%;color:var(--sfp-rol-links,var(--sfp-b-links,var(--sfp-tt-vlak)));text-decoration:none}'
+        . ':root .tooltip.sfp-vuistregel:hover{color:var(--sfp-tt-accent)}'
+        . ':root .tooltip.sfp-vuistregel svg{width:18px;height:18px;display:block}'
+        . ':root .tooltip.sfp-vuistregel .sfp-vuistregel__woord{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}'
+        . ':root .tooltip.sfp-vuistregel:focus-visible{border-radius:50%}';
 }
 
 add_action( 'wp_head', 'sfp_page_config_tooltips_head_css' );

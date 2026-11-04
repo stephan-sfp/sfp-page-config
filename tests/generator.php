@@ -367,5 +367,26 @@ foreach ( $mappen as $map ) {
     }
 }
 
+/* ---------- Hulptegel (3.27.0) ---------- */
+$h = sfp_page_config_tool_normaliseer(
+    array(
+        'soort'   => 'generator',
+        'stappen' => array(
+            array(
+                'titel'  => 'F',
+                'velden' => array(
+                    array( 'id' => 'verb', 'type' => 'keuze', 'label' => 'Wat?', 'hulp' => 'Wat is het verschil?', 'opties' => array( array( 'waarde' => 'a', 'tekst' => 'A', 'uitleg' => 'Uitleg A' ) ) ),
+                    array( 'id' => 'b', 'type' => 'kort', 'label' => 'B', 'hulp' => array( 'geen' => 'tekst' ) ),
+                ),
+            ),
+        ),
+    )
+);
+ok( 'Wat is het verschil?' === $h['stappen'][0]['velden'][0]['hulp'], 'hulp blijft bewaard na opslaan' );
+ok( 'Uitleg A' === $h['stappen'][0]['velden'][0]['opties'][0]['uitleg'], 'uitleg per optie blijft bewaard' );
+ok( '' === $h['stappen'][0]['velden'][1]['hulp'], 'hulp die geen tekst is wordt leeg' );
+ok( false !== strpos( file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/tool/motor.js' ), "'hulp' ]" ), 'motor meet de actie hulp' );
+ok( false !== strpos( file_get_contents( SFP_PAGE_CONFIG_DIR . 'assets/tool/generator.js' ), 'sfp-tool__tegel--hulp' ), 'generator tekent de hulptegel' );
+
 echo "\n$aantal controles, $fouten fouten\n";
 exit( $fouten ? 1 : 0 );
