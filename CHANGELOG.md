@@ -4,6 +4,43 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.27.0] - 2026-11-04
+
+Oordelen Stephan op de staalkaart (4-11), proef op SwS met beta.1 en beta.2: de tweede call-to-action op gewicht 700, de vuistregel als informatie-icoon, een hulptegel in de tool en een rustiger zelftestpagina op desktop.
+
+Terugdraaien: versie 3.26.1 terugzetten (zip uit de tag v3.26.1, map sfp-page-config).
+
+### Gewijzigd
+- Tweede call-to-action op gewicht 700 in plaats van 900, zoals branding.md nu zegt: de alineastijl Pijllink in Vervolg, de automatische pijllinks (Lees ook, auteurskaart, pijlerkaarten), de link in Merkwaarden en de keuze voor de korte versie van de zelftest.
+- Vuistregel: het label met data-vuistregel wordt op de site een informatie-icoon (rondje met een i, 18 px, tikdoel 24 px) met dezelfde tooltip; de haakjes direct voor en na het label vallen weg. De inhoud blijft ongewijzigd, het woord blijft als tekst voor schermlezers staan. Werkt in elke taal. Het script van de tooltips laadt WP Rocket niet uitgesteld.
+- Zelftestpagina op desktop: het formulier staat verticaal in het midden naast de tekst, niet meer tegen de bovenkant. Telefoon ongewijzigd.
+
+### Toegevoegd
+- Tool, kaartweergave: een keuzeveld kan een hulptegel krijgen (sleutel hulp in de tooldefinitie, met een uitleg per optie). Die zesde tegel opent onder de tegels een paneel met per optie de uitleg; tikken, Enter en spatie openen en sluiten het, Escape sluit. Geen keuze, telt niet mee. De motor meet het openen als actie hulp in het event sfp_tool. Beschreven in assets/tool/LEESMIJ.md.
+
+## [3.27.0-beta.2] - 2026-11-04
+
+Proef op SwS, gelijk aan beta.1 plus een correctie: de hulptegel toonde geen gestippelde rand, omdat het thema de randbreedte van knoppen op 0 zet.
+
+Terugdraaien: versie 3.26.1 terugzetten (zip uit de tag v3.26.1, map sfp-page-config).
+
+### Gerepareerd
+- Tool, hulptegel: gestippelde rand van 1,5 px, ook waar het thema knoppen zonder rand zet.
+
+## [3.27.0-beta.1] - 2026-11-04
+
+Proefversie op SwS (oordelen Stephan op de staalkaart, 4-11): de tweede call-to-action op gewicht 700, de vuistregel als informatie-icoon, een hulptegel in de tool en een rustiger zelftestpagina op desktop.
+
+Terugdraaien: versie 3.26.1 terugzetten (zip uit de tag v3.26.1, map sfp-page-config).
+
+### Gewijzigd
+- Tweede call-to-action op gewicht 700 in plaats van 900, zoals branding.md nu zegt: de alineastijl Pijllink in Vervolg, de automatische pijllinks (Lees ook, auteurskaart, pijlerkaarten), de link in Merkwaarden en de keuze voor de korte versie van de zelftest.
+- Vuistregel: het label met data-vuistregel wordt op de site een informatie-icoon (rondje met een i, 18 px, tikdoel 24 px) met dezelfde tooltip; de haakjes direct voor en na het label vallen weg. De inhoud blijft ongewijzigd, het woord blijft als tekst voor schermlezers staan. Werkt in elke taal. Het script van de tooltips laadt WP Rocket niet uitgesteld.
+- Zelftestpagina op desktop: het formulier staat verticaal in het midden naast de tekst, niet meer tegen de bovenkant. Telefoon ongewijzigd.
+
+### Toegevoegd
+- Tool, kaartweergave: een keuzeveld kan een hulptegel krijgen (sleutel hulp in de tooldefinitie). Die zesde tegel opent onder de tegels een paneel met per optie de uitleg; tikken, Enter en spatie openen en sluiten het, Escape sluit. Geen keuze, telt niet mee. De motor meet het openen als actie hulp in het event sfp_tool.
+
 ## [3.26.1] - 2026-11-03
 
 Overdracht WordPress Toolkit (sws-h1-gewicht), proef op SwS met beta.1: de H1 van de vormen stond op SwS en SLB op gewicht 600 in een font dat alleen in 400 geladen is, zodat de browser de letter kunstmatig vet maakte.

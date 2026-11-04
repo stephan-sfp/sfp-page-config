@@ -2,6 +2,15 @@
 
 De toolmotor (`motor.js`) bouwt elke tool van het type `tool` in de browser uit de beschrijving in het bericht. De soorten registreren zich bij de motor: `test.js` (test), `generator.js` met `generator-bouw.js` (generator, rekenaar, checklist) en `tekstanalyse.js` (tekstanalyse). De motor bewaart niets op de server.
 
+## Hulptegel bij een keuze (sinds 3.27.0)
+
+Een keuzeveld in de kaartweergave kan naast de opties een hulptegel krijgen. Zet bij het veld `"hulp": "What is the difference?"` en bij de opties een `uitleg`. De motor tekent dan een extra tegel met een vraagteken; die opent een paneel onder de tegels met per optie de uitleg, en toont die uitleg niet meer in de tegels zelf. Tikken, Enter en spatie openen en sluiten het paneel, Escape sluit het. De tegel is geen keuze en telt niet mee. Zonder `hulp` verandert er niets.
+
+```json
+{ "id": "verb", "type": "keuze", "label": "What should your talk do?", "hulp": "What is the difference?",
+  "opties": [ { "waarde": "Inform", "tekst": "Inform", "icoon": "info", "uitleg": "..." } ] }
+```
+
 ## Meten van toolgebruik (sinds 3.24.0)
 
 De motor pusht events naar `window.dataLayer`, zodat GTM ze kan doorgeven aan GA4. Dat gebeurt alleen als de pagina een `dataLayer` heeft. De plugin bevat geen eigen GA- of gtag-code en geen toestemmingslogica: toestemming loopt via Complianz en Consent Mode in GTM. Het werkt voor elke tool op de motor, op elke site, zonder instellingen.
@@ -38,6 +47,7 @@ Nooit in een event: antwoorden, ingevulde tekst, notities, e-mailadressen of de 
 | `download_word` | Het Word-bestand is gemaakt en opgeslagen. |
 | `slides_prompt` | De bezoeker kopieert tekst uit een deel van de uitslag dat in de beschrijving `"meet": "slides_prompt"` heeft. |
 | `opnieuw` | De bezoeker begint opnieuw (link of knop Opnieuw). |
+| `hulp` | De bezoeker opent de hulptegel bij een keuze (veld met `hulp`, sinds 3.27.0). |
 
 ### Een deel van de uitslag apart meten
 

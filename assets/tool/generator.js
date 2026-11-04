@@ -77,7 +77,9 @@
 			if ( 'keuze' === v.type && kaart ) {
 				var opties = v.opties || [];
 				var kw = 'kwadrant' === v.tegels && 4 === opties.length && v.assen && 2 === ( v.assen.kolommen || [] ).length && 2 === ( v.assen.rijen || [] ).length;
-				var metUitleg = opties.some( function ( o ) { return !! o.uitleg; } );
+				/* Hulptegel (3.27.0): met v.hulp staat de uitleg van de opties niet in elke tegel maar achter één extra tegel, die een paneel onder de tegels opent. */
+				var hulp = v.hulp && opties.some( function ( o ) { return !! o.uitleg; } ) ? String( v.hulp ) : '';
+				var metUitleg = ! hulp && opties.some( function ( o ) { return !! o.uitleg; } );
 				var kol = v.kolommen || ( kw || 4 === opties.length || metUitleg ? 2 : 3 );
 				veld = el( 'div', { class: 'sfp-tool__tegels sfp-tool__tegels--' + kol + ( kw ? ' sfp-tool__tegels--kwadrant' : '' ) + ( metUitleg ? ' sfp-tool__tegels--uitleg' : '' ), role: 'radiogroup', 'aria-labelledby': id + '-l' } );
 				var tegel = function ( o ) {
@@ -86,8 +88,25 @@
 						/* Een klik (of spatie) kiest en gaat door, ook op een keuze die al gekozen was; pijltjes kiezen alleen. */
 						onclick: function () { zet( v.id, String( o.waarde ) ); if ( alleenKeuzes( stapIndex ) ) { setTimeout( function () { if ( huidig === stapIndex ) { volgende(); } }, 180 ); } }
 					} );
-					return el( 'label', { class: 'sfp-tool__tegel' + ( o.icoon && ICONEN[ o.icoon ] ? ' met-icoon' : '' ) }, [ inp, o.icoon && ICONEN[ o.icoon ] ? icoon( o.icoon ) : null, el( 'b', { text: o.tekst || '' } ), o.uitleg ? el( 'small', { text: o.uitleg } ) : null ] );
+					return el( 'label', { class: 'sfp-tool__tegel' + ( o.icoon && ICONEN[ o.icoon ] ? ' met-icoon' : '' ) }, [ inp, o.icoon && ICONEN[ o.icoon ] ? icoon( o.icoon ) : null, el( 'b', { text: o.tekst || '' } ), o.uitleg && ! hulp ? el( 'small', { text: o.uitleg } ) : null ] );
 				};
+				var hulpPaneel = null;
+				if ( hulp ) {
+					var hulpId = id + '-hulp';
+					hulpPaneel = el( 'div', { class: 'sfp-tool__hulp', id: hulpId, hidden: true, role: 'region', 'aria-label': hulp }, [
+						el( 'dl', { class: 'sfp-tool__hulp-lijst' }, opties.filter( function ( o ) { return !! o.uitleg; } ).reduce( function ( acc, o ) {
+							return acc.concat( [ el( 'dt', { text: o.tekst || String( o.waarde ) } ), el( 'dd', { text: o.uitleg } ) ] );
+						}, [] ) )
+					] );
+					var hulpKnop = el( 'button', { type: 'button', class: 'sfp-tool__tegel sfp-tool__tegel--hulp met-icoon', 'aria-expanded': 'false', 'aria-controls': hulpId, onclick: function () {
+						var open = hulpPaneel.hidden;
+						hulpPaneel.hidden = ! open;
+						this.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
+						this.classList.toggle( 'is-open', open );
+						if ( open ) { tool.meet( 'hulp' ); }
+					}, onkeydown: function ( e ) { if ( 'Escape' === e.key && ! hulpPaneel.hidden ) { e.preventDefault(); this.click(); } } }, [ icoon( 'vraag' ), el( 'b', { text: hulp } ) ] );
+					hulpPaneel.addEventListener( 'keydown', function ( e ) { if ( 'Escape' === e.key ) { e.preventDefault(); hulpKnop.click(); hulpKnop.focus(); } } );
+				}
 				if ( kw ) {
 					veld.appendChild( el( 'span', { class: 'sfp-tool__as sfp-tool__as--hoek', 'aria-hidden': 'true' } ) );
 					v.assen.kolommen.forEach( function ( c ) { veld.appendChild( el( 'span', { class: 'sfp-tool__as', 'aria-hidden': 'true', text: c } ) ); } );
@@ -98,7 +117,9 @@
 					} );
 				} else {
 					opties.forEach( function ( o ) { veld.appendChild( tegel( o ) ); } );
+					if ( hulp ) { veld.appendChild( hulpKnop ); }
 				}
+				if ( hulpPaneel ) { veld = el( 'div', { class: 'sfp-tool__tegelgroep' }, [ veld, hulpPaneel ] ); }
 			} else if ( 'keuze' === v.type ) {
 				veld = el( 'div', { class: 'sfp-tool__keuzes', role: 'radiogroup', 'aria-labelledby': id + '-l' } );
 				( v.opties || [] ).forEach( function ( o ) {

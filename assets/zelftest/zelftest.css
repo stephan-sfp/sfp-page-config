@@ -31,7 +31,7 @@
 .sfp-zt .sfp-zt-knop.stil{background:var(--sfp-b-wit);color:var(--sfp-b-primair);border:2px solid var(--sfp-b-primair)}
 .sfp-zt .sfp-zt-knop.stil:hover{background:var(--sfp-b-tint3)}
 .sfp-zt .sfp-zt-knop[aria-busy="true"]{opacity:.7;cursor:progress}
-.sfp-zt .sfp-zt-cta2{display:inline;font:900 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:0;margin:0;text-align:left;text-transform:none;letter-spacing:0;min-height:0;box-shadow:none}
+.sfp-zt .sfp-zt-cta2{display:inline;font:700 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:0;margin:0;text-align:left;text-transform:none;letter-spacing:0;min-height:0;box-shadow:none}
 .sfp-zt .sfp-zt-cta2::after{content:" \2192"}
 .sfp-zt .sfp-zt-cta2:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 .sfp-zt .sfp-zt-cta2.klein{font-size:14px}
@@ -213,7 +213,7 @@ body.sfp-zt-testpagina .sfp-zt-instructie{max-width:none;font-size:15px;padding:
 @media (min-width:960px){
 body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud{padding:40px 40px 48px}
 .sfp-zt-top-in{max-width:1280px;padding:10px 40px}
-body.sfp-zt-testpagina .sfp-zt-start{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 72px;align-items:start}
+body.sfp-zt-testpagina .sfp-zt-start{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 72px;align-items:center}
 body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-start-tekst>div:first-child .sfp-zt-lab{line-height:20px}
 body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-formulier{padding-top:0}
 body.sfp-zt-testpagina .sfp-zt-start .sfp-zt-h1{font-size:clamp(34px,2.6vw + 12px,46px)}

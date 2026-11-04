@@ -97,6 +97,30 @@ document.addEventListener('DOMContentLoaded', () => {
         tooltip.setAttribute('aria-describedby', ghostId);
     }
 
+    // Vuistregel (3.27.0): het label "(vuistregel)" wordt een informatie-icoon
+    // met dezelfde tooltip. De inhoud blijft ongewijzigd: het woord blijft als
+    // tekst voor schermlezers staan, alleen de haakjes direct voor en na de
+    // span vallen weg (hoogstens één "(" ervoor en één ")" erna, met een
+    // eventuele spatie). Herkent op data-vuistregel, dus in elke taal.
+    const ICOON = '<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="10" cy="6.3" r="1.1" fill="currentColor"/><rect x="9.1" y="8.6" width="1.8" height="6" rx=".9" fill="currentColor"/></svg>';
+    function knipHaak( node, voor ) {
+        if (!node || node.nodeType !== 3) return;
+        const re = voor ? /\(\s*$/ : /^\s*\)/;
+        if (re.test( node.nodeValue )) node.nodeValue = node.nodeValue.replace( re, voor ? ' ' : '' );
+    }
+    document.querySelectorAll('.tooltip[data-vuistregel]').forEach(tooltip => {
+        if (tooltip.classList.contains('sfp-vuistregel') || tooltip.querySelector('a')) return;
+        const woord = document.createElement('span');
+        woord.className = 'sfp-vuistregel__woord';
+        woord.textContent = (tooltip.textContent || '').trim();
+        tooltip.textContent = '';
+        tooltip.insertAdjacentHTML('afterbegin', ICOON);
+        tooltip.appendChild(woord);
+        tooltip.classList.add('sfp-vuistregel');
+        knipHaak( tooltip.previousSibling, true );
+        knipHaak( tooltip.nextSibling, false );
+    });
+
     document.querySelectorAll('.tooltip').forEach(tooltip => {
         // Accessibility: maak tooltip toetsenbord-bedienbaar en aankondigbaar voor schermlezers
         if (!tooltip.hasAttribute('tabindex')) tooltip.setAttribute('tabindex', '0');

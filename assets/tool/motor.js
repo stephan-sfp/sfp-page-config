@@ -225,7 +225,7 @@
 	 * van de bezoeker. Beschreven in assets/tool/LEESMIJ.md.
 	 * ---------------------------------------------------------------- */
 
-	var MEET_ACTIES = [ 'start', 'stap', 'afgerond', 'kopieren', 'download_pdf', 'download_word', 'slides_prompt', 'opnieuw' ];
+	var MEET_ACTIES = [ 'start', 'stap', 'afgerond', 'kopieren', 'download_pdf', 'download_word', 'slides_prompt', 'opnieuw', 'hulp' ];
 	var afgerondDezeSessie = {};
 
 	Tool.prototype.weergaveNaam = function () {
