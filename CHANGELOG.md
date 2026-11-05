@@ -4,6 +4,19 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.27.1] - 2026-11-05
+
+Besluit Stephan 5-11 (variant B): de Pijllink in een klikbare kaart volgt branding.md.
+
+Terugdraaien: versie 3.27.0 terugzetten (zip uit de tag v3.27.0, map sfp-page-config).
+
+### Gewijzigd
+- Pijllink in een kaart (alineastijl Pijllink binnen het blok Kaart): in het bodyfont op gewicht 700, altijd onderstreept, onder de muis een onderstreping van 3 px. Tot nu stond hij in het kopfont, en hing de onderstreping van de pagina af: een Astra-regel voor links in de inhoud won op de ene pagina wel en op de andere niet van de plugin. De nieuwe regel heeft genoeg gewicht om overal hetzelfde te geven. Pijllinks buiten een kaart zijn niet veranderd.
+
+### Documentatie
+- docs/02: de Pijllink in een kaart beschreven zoals hij nu is; buiten een kaart staat hij in het kopfont.
+- docs/06: de Engelse vuistregelzin van speakwithsteve.com is bevestigd (Stephan, 4-11).
+
 ## [3.27.0] - 2026-11-04
 
 Oordelen Stephan op de staalkaart (4-11), proef op SwS met beta.1 en beta.2: de tweede call-to-action op gewicht 700, de vuistregel als informatie-icoon, een hulptegel in de tool en een rustiger zelftestpagina op desktop.

@@ -65,7 +65,7 @@ Stijlen kies je in het zijpaneel onder Styles. Kleur, achtergrond, verloop en le
 | Blok | Stijl | Gebruik |
 |---|---|---|
 | Alinea | Lead (eerste alinea van een artikel) | De eerste alinea van artikel en pijler |
-| Alinea | Pijllink | Tweede call-to-action als tekstlink met pijl, in het bodyfont op gewicht 700 (sinds 3.27.0; was 900) |
+| Alinea | Pijllink | Tweede call-to-action als tekstlink met pijl, op gewicht 700 (sinds 3.27.0; was 900). In een kaart (de aanwijzing onder in een klikbare kaart) in het bodyfont en altijd onderstreept, zoals branding.md de tweede call-to-action beschrijft (sinds 3.27.1). Buiten een kaart in het kopfont van de site. |
 | Alinea | Klein | Kleine toelichting |
 | Alinea (pagina's) | Label, Intro, Bovenschrift, Wie, Mailregel, Groot, Getal, Prijs | Label boven een kop; introzin in een held; opschrift boven een verhaal; naam en rol bij een portret (boekkaart); mailregel; grote cijfers; getal in een pakket; prijs. Gemeten in gebruik op SwS 377 en 1078 |
 | Kop | Paginatitel over de volle breedte | Een H1 buiten de held, bijvoorbeeld op de boekpagina |
