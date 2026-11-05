@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.27.1-beta.1] - 2026-11-05
+
+Proefversie op SwS: de Pijllink in een klikbare kaart volgens branding.md (bodyfont, 700, altijd onderstreept). Inhoud gelijk aan 3.27.1 hieronder.
+
+Terugdraaien: versie 3.27.0 terugzetten (zip uit de tag v3.27.0, map sfp-page-config).
+
+### Gewijzigd
+- Pijllink in een kaart: bodyfont, gewicht 700, altijd onderstreept, 3 px onder de muis. Buiten een kaart ongewijzigd.
+
 ## [3.27.1] - 2026-11-05
 
 Besluit Stephan 5-11 (variant B): de Pijllink in een klikbare kaart volgt branding.md.
