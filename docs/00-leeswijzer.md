@@ -1,6 +1,6 @@
 # SFP Page Config: handleiding voor de contentmarketeer
 
-Versie 2026-11-04d (ronde 3 verwerkt, stijlwijzigingen 3.27.0 opgenomen), gemeten op SFP Page Config 3.26.1 en 3.27.0 (speakwithsteve.com als model, steekproef depresenteerschool.nl). Lees de versie altijd live uit SFP Beheer, Onderhoud of `/wp-json/sfp/v1/beheer`.
+Versie 2026-11-05a (Pijllink in een kaart volgens branding.md, 3.27.1; SwS-vuistregelzin bevestigd), gemeten op SFP Page Config 3.27.0 en 3.27.1 (speakwithsteve.com als model, steekproef depresenteerschool.nl). Lees de versie altijd live uit SFP Beheer, Onderhoud of `/wp-json/sfp/v1/beheer`.
 
 ## Wat de plugin doet
 
