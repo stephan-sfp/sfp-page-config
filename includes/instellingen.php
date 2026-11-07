@@ -466,6 +466,10 @@ function sfp_page_config_norm() {
         'label' => 'Tekstkleur van de banner',
         'norm'  => 'wit',
     );
+    $norm['coach_persoon']      = array(
+        'label' => 'Site van de coach in de gegevens voor Google',
+        'norm'  => function_exists( 'sfp_page_config_coach_norm' ) ? sfp_page_config_coach_norm() : '',
+    );
     $norm['update_kanaal']      = array(
         'label' => 'Soort versies die deze site krijgt',
         'norm'  => '',
@@ -660,6 +664,13 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                     $alle['sticky_cta'][ $type ] = $oud;
                 }
                 $bewaard[] = $sleutel;
+                break;
+
+            case 'coach_persoon':
+                // Sinds 3.31.1: de site van de coach (Service-schema). Leeg is de norm.
+                $url              = esc_url_raw( trim( (string) $ruw ), array( 'http', 'https' ) );
+                $alle[ $sleutel ] = ( '' !== $url && function_exists( 'sfp_page_config_coach_norm' ) && untrailingslashit( $url ) === untrailingslashit( sfp_page_config_coach_norm() ) ) ? '' : $url;
+                $bewaard[]        = $sleutel;
                 break;
 
             case 'whatsapp_number':

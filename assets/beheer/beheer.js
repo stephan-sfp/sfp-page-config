@@ -1233,6 +1233,9 @@
 			return veld('Reden ' + (i + 1), inp, i === 0 ? 'Kort, zonder punt. Op een tablet staat alleen de eerste.' : null, 'sfpb-usp-' + i);
 		});
 		var tel = el('input', { type: 'tel', value: I.telefoon, maxlength: '20', 'aria-label': 'Telefoonnummer', placeholder: '085 060 13 55' });
+		var C = S.coach || { url: '', norm: '' };
+		var coach = tekstInvoer(C.url, C.norm, 'url');
+		coach.setAttribute('aria-label', 'Site van de coach');
 		tel.addEventListener('input', function () { I.telefoon = tel.value; });
 		var soorten = [['training', 'Trainingen'], ['coaching', 'Coaching'], ['incompany', 'Incompany']].map(function (s) {
 			return schakel(I.soorten.indexOf(s[0]) > -1, s[1], function (aan) {
@@ -1248,10 +1251,11 @@
 				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [el('h2', { text: 'Redenen' })].concat(velden)),
 				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [el('h2', { text: 'Belknop' }), veld('Telefoonnummer', tel, 'Leeg: geen belknop.', 'sfpb-usp-tel')]),
 				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [el('h2', { text: 'Op welke pagina\'s' })].concat(soorten).concat([el('p', { class: 'sfpb-hulp', text: 'Naar de soort van de pagina (Pagina\'s, soort).' })])),
+				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [el('h2', { text: 'Coach' }), veld('Site van de coach', coach, 'Voor de gegevens voor Google op een coachpagina met Pakketten. Leeg: ' + C.norm, 'sfpb-coach')]),
 				el('p', { class: 'sfpb-hulp', text: 'De caches leegt de plugin niet: doe dat na opslaan.' }),
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-						bewaarInstellingen(this, 'uspstrook', { uspstrook: { usps: I.usps.filter(function (u) { return u.trim() !== ''; }), telefoon: I.telefoon, soorten: I.soorten } }, null, function () { ui.uspstrook = null; });
+						bewaarInstellingen(this, 'uspstrook', { uspstrook: { usps: I.usps.filter(function (u) { return u.trim() !== ''; }), telefoon: I.telefoon, soorten: I.soorten }, coach_persoon: coach.value.trim() }, null, function () { ui.uspstrook = null; });
 					} }),
 					el('button', { class: 'sfpb-knop', type: 'button', text: 'Annuleren', klik: function () { ui.uspstrook = null; teken(); } }),
 					flitsPlek('uspstrook')

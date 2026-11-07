@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.31.1] - 2026-11-07
+
+Terugdraaien: versie 3.31.0 terugzetten (zip uit de tag v3.31.0, map sfp-page-config).
+
+### Gerepareerd
+- Geen dubbel aanbod meer voor Google: op een pagina waar de plugin het Course-schema (Groepskaarten met groepen) of het Service-schema (coachpagina met Pakketten) levert, haalt hij de Course en de Service uit het schema van SureRank. De rest van het schema van SureRank blijft staan; op andere pagina's verandert niets.
+- De groep Bouwstenen staat in de blokkenlijst weer bovenaan; SureForms zette zijn eigen groepen erboven.
+
+### Toegevoegd
+- SFP Beheer, USP-strook: veld Site van de coach voor het Service-schema. Leeg is de netwerknorm (stephanborggreve.com); een andere waarde staat in het Overzicht als afwijking.
+
+### Gewijzigd
+- Tests: de WP-tests voor tools, vormen en de editor volgen weer de huidige plugin (toolmotor op verzoek, bewijs bij het wisselen van een duim, de pijlerregel Pijler).
+
 ## [3.31.0] - 2026-11-07
 
 Aanvullingen op 3.30.0 uit de sitechats van DST, DGA en de coachpagina (C1 tot C10). 3.30.0 is niet uitgerold; deze versie bevat alles.

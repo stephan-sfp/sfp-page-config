@@ -457,7 +457,8 @@ function sfp_page_config_blokken_registreer() {
     }
 }
 
-add_filter( 'block_categories_all', 'sfp_page_config_blokken_groep', 10, 2 );
+// Laat (99): SureForms zet zijn eigen groepen op 10 ook bovenaan; deze moet daarna komen.
+add_filter( 'block_categories_all', 'sfp_page_config_blokken_groep', 99, 2 );
 
 /**
  * De eigen groep in de blokkenlijst, bovenaan.

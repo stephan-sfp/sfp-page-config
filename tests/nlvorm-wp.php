@@ -117,7 +117,29 @@ $sd = sfp_page_config_nlvorm_service_data( $pagina3, $coach );
 $is( 'Service', isset( $sd['@type'] ) ? $sd['@type'] : '', 'Service-schema' );
 $is( 2, isset( $sd['offers'] ) ? count( $sd['offers'] ) : 0, 'een aanbod per pakket' );
 $is( array(), sfp_page_config_nlvorm_service_data( $pagina3, '<!-- wp:paragraph --><p>x</p><!-- /wp:paragraph -->' ), 'zonder pakketten geen Service' );
+update_post_meta( $pagina3, 'sfp_page_type', 'coaching' );
+$is( true, sfp_page_config_nlvorm_eigen_aanbod( $pagina3 ), 'coachpagina met Pakketten: eigen aanbod' );
 wp_delete_post( $pagina3, true );
+
+/* ---------- Coach en SureRank (3.31.1) ---------- */
+$is( 'https://stephanborggreve.com/#person', sfp_page_config_coach_id(), 'coach standaard' );
+sfp_page_config_instellingen_bewaar( array( 'coach_persoon' => 'https://voorbeeld.test/over/' ) );
+$is( 'https://voorbeeld.test/#person', sfp_page_config_coach_id(), 'coach ingesteld' );
+sfp_page_config_instellingen_bewaar( array( 'coach_persoon' => 'https://stephanborggreve.com' ) );
+$is( '', (string) sfp_page_config_get_setting( 'coach_persoon', '' ), 'de norm wordt leeg bewaard' );
+sfp_page_config_instellingen_bewaar( array( 'coach_persoon' => '' ) );
+$is( true, sfp_page_config_nlvorm_eigen_aanbod( $pagina ), 'trainingspagina met groepen: eigen aanbod' );
+$is( false, sfp_page_config_nlvorm_eigen_aanbod( $pagina2 ), 'verwijderde pagina zonder groepen: geen eigen aanbod' );
+$sr  = '<meta name="x" content="y"><script type="application/ld+json" id="surerank-schema">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"a"},{"@type":"Course","name":"Oud"},{"@type":["Service"],"name":"Oud"}]}</script>';
+$uit = sfp_page_config_nlvorm_zonder_aanbod( $sr );
+$bevat( '"Course"', $uit, 'Course van SureRank weg', false );
+$bevat( 'Service', $uit, 'Service van SureRank weg', false );
+$bevat( '"WebPage"', $uit, 'de rest van SureRank blijft' );
+$bevat( '<meta name="x" content="y">', $uit, 'andere uitvoer van SureRank blijft letterlijk' );
+$alleen = '<script type="application/ld+json" id="surerank-schema">{"@graph":[{"@type":"Course"}]}</script>';
+$is( '', sfp_page_config_nlvorm_zonder_aanbod( $alleen ), 'alleen een Course: geen leeg script' );
+$zonder = '<script type="application/ld+json" id="surerank-schema">{"@graph":[{"@type":"WebPage"}]}</script>';
+$is( $zonder, sfp_page_config_nlvorm_zonder_aanbod( $zonder ), 'zonder aanbod letterlijk gelijk' );
 
 /* ---------- Opruimen ---------- */
 wp_reset_postdata();
