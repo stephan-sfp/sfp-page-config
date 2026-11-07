@@ -127,5 +127,7 @@ function sfp_page_config_leestekens_css() {
     // zet op de H1-maat van branding.md (34 px) maar 24 tekens op 680 px, dus
     // drie regels bij de meeste titels. Besluit Stephan 7-11-2026: de H1 van
     // artikel, begrip, tool en pijler op de H2-maat; de hero-H1 (h1-xl) niet.
-    echo '<style id="sfp-kop-leestekens">h1 .sfp-lt{margin-left:-.2em;margin-right:-.12em}h1 .sfp-lt-k{margin-left:-.12em;margin-right:-.12em}:root .sfp-artikel h1.sfp-art-titel{font-size:clamp(20px,2vw + 12px,28px)}</style>' . "\n";
+    // Met !important (3.29.1): de netwerknorm voor koppen staat in de Astra-
+    // Customizer-CSS met !important (.site-content h1) en won anders.
+    echo '<style id="sfp-kop-leestekens">h1 .sfp-lt{margin-left:-.2em;margin-right:-.12em}h1 .sfp-lt-k{margin-left:-.12em;margin-right:-.12em}:root .sfp-artikel h1.sfp-art-titel{font-size:clamp(20px,2vw + 12px,28px)!important}</style>' . "\n";
 }

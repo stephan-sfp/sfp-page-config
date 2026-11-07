@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.29.1] - 2026-11-07
+
+Terugdraaien: versie 3.29.0 terugzetten (zip uit de tag v3.29.0, map sfp-page-config).
+
+### Gerepareerd
+- H1 van artikel, begrip, tool en pijler op de H2-maat (3.29.0) kwam niet aan: de netwerknorm voor koppen in de Astra-Customizer-CSS (.site-content h1, !important) won. De regel van de plugin heeft nu ook !important; gemeten op DGA en SwS bleef de H1 anders 34 px.
+
 ## [3.29.0] - 2026-11-07
 
 Opvolging van de DGA-proef van de SwS-content uitrol (overdracht 7-11, punten 2 tot en met 6), tweede release na 3.28.0. Voorbeelden: eenvandaag.avrotros.nl (chips, citaat).
