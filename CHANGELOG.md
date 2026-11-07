@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.29.3] - 2026-11-07
+
+Terugdraaien: versie 3.29.2 terugzetten (zip uit de tag v3.29.2, map sfp-page-config).
+
+### Gewijzigd
+- Kopkaart, Engels: "Favourite on Google" wordt "Make favourite" (kort Favourite), gelijk aan Maak favoriet en Fonte favorita. Op SwS was de rij met het lange label 651 px en schoof hij 11 px in een kolom van 640.
+
 ## [3.29.2] - 2026-11-07
 
 Wens Stephan 7-11 (schermafdruk DGA): de actierij van de kopkaart hoort op één regel.

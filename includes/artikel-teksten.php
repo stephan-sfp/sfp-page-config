@@ -80,7 +80,7 @@ function sfp_page_config_artikel_teksten() {
             'leestijd'               => '%d min read',
             'gecheckt'               => 'Fact-checked',
             'delen'                  => 'Share',
-            'favoriet'               => 'Favourite on Google',
+            'favoriet'               => 'Make favourite',
             'favoriet_kort'          => 'Favourite',
             'tekstgrootte'           => 'Text size',
             'toegankelijkheid'       => 'Accessibility',
