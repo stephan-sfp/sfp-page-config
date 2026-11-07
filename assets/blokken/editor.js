@@ -637,6 +637,7 @@
 				uitleg( 'Voor een anekdote uit eigen praktijk. Het bijschrift zegt van wie en waarover.' ),
 			] ),
 			el( 'div', blockProps,
+				el( 'span', { className: 'sfp-citaat__icoon', 'aria-hidden': 'true' }, el( 'svg', { viewBox: '0 0 24 24' }, el( 'path', { fill: 'currentColor', d: 'M4.5 16.5c0-3.6 1.9-6.3 5.3-7.9l.8 1.3c-2 1-3.1 2.3-3.4 3.8.3-.1.6-.1.9-.1 1.6 0 2.8 1.2 2.8 2.8S9.7 19.2 8 19.2c-2.1 0-3.5-1.1-3.5-2.7zm9.2 0c0-3.6 1.9-6.3 5.3-7.9l.8 1.3c-2 1-3.1 2.3-3.4 3.8.3-.1.6-.1.9-.1 1.6 0 2.8 1.2 2.8 2.8s-1.2 2.8-2.9 2.8c-2.1 0-3.5-1.1-3.5-2.7z' } ) ) ),
 				el( 'blockquote', inner ),
 				el( 'footer', null, el( RichText, { tagName: 'span', value: a.bijschrift, placeholder: 'Bijschrift: van wie en waarover', allowedFormats: [ 'core/bold', 'core/italic' ], onChange: function ( v ) { props.setAttributes( { bijschrift: v } ); } } ) )
 			)

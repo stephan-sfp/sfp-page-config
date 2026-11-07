@@ -123,5 +123,9 @@ function sfp_page_config_leestekens_css() {
     if ( ! sfp_page_config_leestekens_aan() ) {
         return;
     }
-    echo '<style id="sfp-kop-leestekens">h1 .sfp-lt{margin-left:-.2em;margin-right:-.12em}h1 .sfp-lt-k{margin-left:-.12em;margin-right:-.12em}</style>' . "\n";
+    // Sinds 3.29.0 ook de H1-maat in de leeskolom: een monospace displayfont
+    // zet op de H1-maat van branding.md (34 px) maar 24 tekens op 680 px, dus
+    // drie regels bij de meeste titels. Besluit Stephan 7-11-2026: de H1 van
+    // artikel, begrip, tool en pijler op de H2-maat; de hero-H1 (h1-xl) niet.
+    echo '<style id="sfp-kop-leestekens">h1 .sfp-lt{margin-left:-.2em;margin-right:-.12em}h1 .sfp-lt-k{margin-left:-.12em;margin-right:-.12em}:root .sfp-artikel h1.sfp-art-titel{font-size:clamp(20px,2vw + 12px,28px)}</style>' . "\n";
 }

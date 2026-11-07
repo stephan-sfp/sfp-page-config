@@ -252,7 +252,7 @@ same(
 same( '1', get_option( 'sfp_settings' )['onderdelen']['kleurrollen'], 'Opslaan laat de onderdelen staan' );
 
 $stand = sfp_page_config_kleurrollen_stand();
-same( 11, count( $stand['rollen'] ), 'Stand: elf rollen' );
+same( 12, count( $stand['rollen'] ), 'Stand: twaalf rollen (label sinds 3.29.0)' );
 same( 9, count( $stand['palet'] ), 'Stand: negen paletkleuren' );
 same( null, $stand['rollen'][4]['slot'], 'Stand: hover niet gevoerd' );
 

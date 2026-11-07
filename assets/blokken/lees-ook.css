@@ -1,7 +1,7 @@
 /*
  * Bouwstenen: lees ook. Witte kaart met dunne rand; de hele kaart is de link.
  */
-:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 :root a.sfp-lees-ook{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:18px;align-items:center;margin:32px 0;padding:14px 20px 14px 14px;background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-kaart);text-decoration:none;transition:border-color .15s;box-sizing:border-box}
 :root a.sfp-lees-ook:is(:hover,:focus){border-color:var(--sfp-b-primair);text-decoration:none}
 .sfp-lees-ook__beeld{aspect-ratio:4/3;border-radius:var(--sfp-b-r-kaart,6px);overflow:hidden;display:block;background:var(--sfp-b-tint2)}

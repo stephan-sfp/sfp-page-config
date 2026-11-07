@@ -3,7 +3,7 @@
  * rand en bovenrand in de secundaire kleur; de punten zijn een gewone lijst.
  * Het deelbeeld klapt open onder de punten.
  */
-:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 :root .sfp-samenvatting{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-top:4px solid var(--sfp-b-secundair);border-radius:var(--sfp-b-r-kaart);padding:20px 24px 22px;margin:24px 0 28px;box-sizing:border-box}
 .sfp-samenvatting [hidden]{display:none!important}
 .sfp-samenvatting__kop{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}

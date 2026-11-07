@@ -3,7 +3,7 @@
  * pijllink (tweede keus) en hoogstens één knop. De knop voert de rol links
  * en knoppen, met de knoptekst van het merk.
  */
-:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 :root .sfp-vervolg{border:1px solid var(--sfp-b-lijn);border-top:4px solid var(--sfp-b-secundair);border-radius:var(--sfp-b-r-kaart);margin:28px 0 0;display:grid;grid-template-columns:minmax(0,1fr);background:var(--sfp-b-wit);box-sizing:border-box}
 :root .sfp-vervolg--twee{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .sfp-vervolg__vlak{padding:26px 28px;display:grid;gap:10px;align-content:start;min-width:0}

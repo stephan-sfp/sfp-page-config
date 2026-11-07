@@ -856,8 +856,19 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     // Voorkeursbron bij Google.
     if ( '1' === (string) sfp_page_config_get_setting( 'artikel_voorkeursbron', '' ) ) {
         $host    = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
-        $acties .= '<a class="sfp-art-actie" href="' . esc_url( 'https://www.google.com/preferences/source?q=' . rawurlencode( $host ) ) . '" target="_blank" rel="noopener">' . sfp_page_config_artikel_icoon( 'ster' ) . '<span class="sfp-lang">' . esc_html( $t( 'favoriet' ) ) . '</span><span class="sfp-kort">' . esc_html( $t( 'favoriet_kort' ) ) . '</span></a>';
+        $acties .= '<a class="sfp-art-actie" href="' . esc_url( 'https://www.google.com/preferences/source?q=' . rawurlencode( $host ) ) . '" target="_blank" rel="noopener">' . sfp_page_config_artikel_icoon( 'google' ) . '<span class="sfp-lang">' . esc_html( $t( 'favoriet' ) ) . '</span><span class="sfp-kort">' . esc_html( $t( 'favoriet_kort' ) ) . '</span></a>';
     }
+
+    // Tekstgrootte (3.29.0): de lezer kiest Normaal, Groter of Grootst voor de
+    // leeskolom; de keuze blijft in de browser. Het kleine script zet de keuze
+    // al vóór de inhoud, zodat er niets verspringt.
+    $acties  .= $knop( 'sfp-art-paneel-tekst', 'tekst', esc_html( $t( 'tekstgrootte' ) ) );
+    $groottes = '';
+    foreach ( array( '' => 'tekst_normaal', 'groter' => 'tekst_groter', 'grootst' => 'tekst_grootst' ) as $waarde => $sleutel ) {
+        $groottes .= '<button type="button" data-sfp-tekstgrootte="' . esc_attr( $waarde ) . '" aria-pressed="' . ( '' === $waarde ? 'true' : 'false' ) . '">' . esc_html( $t( $sleutel ) ) . '</button>';
+    }
+    $panelen .= '<div class="sfp-art-paneel" id="sfp-art-paneel-tekst" hidden><div class="sfp-art-tekst" role="group" aria-label="' . esc_attr( $t( 'tekstgrootte' ) ) . '">' . $groottes . '</div></div>'
+        . '<script nowprocket>try{var g=localStorage.getItem("sfp_tekstgrootte");if(g==="groter"||g==="grootst"){document.documentElement.classList.add("sfp-tekst--"+g);}}catch(e){}</script>';
 
     // Pijler: de Thermometer staat op de plek van de warming-up (besluit
     // Stephan 18-10-2026). De zelftest staat op een pijler alleen in de promokaart.

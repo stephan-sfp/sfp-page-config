@@ -30,6 +30,15 @@ function sfp_page_config_db_rgb( $hex ) {
     return array( hexdec( substr( $hex, 0, 2 ) ), hexdec( substr( $hex, 2, 2 ) ), hexdec( substr( $hex, 4, 2 ) ) );
 }
 
+/** Dezelfde kleur, een deel donkerder (0..1): 0.12 is 12% naar zwart. Besluit Stephan 7-11-2026 voor het rechter vlak. */
+function sfp_page_config_db_donkerder( $hex, $deel ) {
+    list( $r, $g, $b ) = sfp_page_config_db_rgb( $hex );
+    $k = static function ( $v ) use ( $deel ) {
+        return (int) round( $v * ( 1 - $deel ) );
+    };
+    return sprintf( '#%02x%02x%02x', $k( $r ), $k( $g ), $k( $b ) );
+}
+
 /** Kleur met dekking 0..1. */
 function sfp_page_config_db_kleur( $im, $hex, $dekking = 1.0 ) {
     list( $r, $g, $b ) = sfp_page_config_db_rgb( $hex );
@@ -124,7 +133,7 @@ function sfp_page_config_db_schrijf_regels( $im, $regels, $spatie, $x, $y, $font
     return $y;
 }
 
-/** Schuine band in de secundaire kleur, zoals het ::after-vlak in de dummy. */
+/** Schuine band (sinds 3.29.0 in het primair 12% donkerder, zoals het ::after-vlak in de deelkaart). */
 function sfp_page_config_db_band( $im, $B, $H, $kleur, $rechts, $boven, $breedte, $hoogte ) {
     $w  = $B * $breedte;
     $h  = $H * $hoogte;
@@ -191,6 +200,7 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
 
     $wit   = sfp_page_config_db_kleur( $im, $s['wit'] );
     $sec   = sfp_page_config_db_kleur( $im, $s['secundair'] );
+    $prim  = sfp_page_config_db_kleur( $im, $s['primair'] );
     $kop   = $s['fonts']['kop'];
     $tekst = $s['fonts']['tekst'];
     $vet   = $s['fonts']['vet'];
@@ -200,7 +210,7 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
     };
 
     if ( $inzicht ) {
-        sfp_page_config_db_band( $im, $B, $H, sfp_page_config_db_kleur( $im, $s['secundair'], .16 ), -0.12, -0.30, 0.55, 1.60 );
+        sfp_page_config_db_band( $im, $B, $H, sfp_page_config_db_kleur( $im, sfp_page_config_db_donkerder( $s['primair'], 0.12 ) ), -0.12, -0.30, 0.55, 1.60 );
         $rand = 64 * $f;
         // Label.
         sfp_page_config_db_schrijf( $im, mb_strtoupper( $s['label'] ), $rand, $rand + 21 * $f, $kop, $pt( 21 ), $sec, 21 * $f * .1 );
@@ -226,7 +236,7 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
         $y    = $boven + ( ( $onder - $boven ) - $blok ) / 2 + $maat * $f * 0.86;
         sfp_page_config_db_schrijf_regels( $im, $regels, $spatie, $rand, $y, $kop, $pt( $maat ), $rh, $wit, $sec );
     } else {
-        sfp_page_config_db_band( $im, $B, $H, sfp_page_config_db_kleur( $im, $s['secundair'], .14 ), -0.30, -0.20, 0.70, 1.40 );
+        sfp_page_config_db_band( $im, $B, $H, sfp_page_config_db_kleur( $im, sfp_page_config_db_donkerder( $s['primair'], 0.12 ) ), -0.30, -0.20, 0.70, 1.40 );
         $rand = 70 * $f;
         $y    = $rand + 30 * $f;
         sfp_page_config_db_schrijf( $im, mb_strtoupper( $s['label'] ), $rand, $y, $kop, $pt( 30 ), $sec, 30 * $f * .1 );
@@ -277,7 +287,8 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
             $nb = imagettfbbox( $nm, 0, $kop, (string) $nr );
             $nx = $cx - ( $nb[0] + $nb[2] ) / 2;
             $ny = $cy - ( $nb[1] + $nb[7] ) / 2;
-            imagettftext( $im, $nm, 0, (int) round( $nx ), (int) round( $ny ), $wit, $kop, (string) $nr );
+            // Het cijfer in het primair op het secundaire rondje (contrast 6,9 op DGA; wit gaf 1,7).
+            imagettftext( $im, $nm, 0, (int) round( $nx ), (int) round( $ny ), $prim, $kop, (string) $nr );
             $y = sfp_page_config_db_schrijf_regels( $im, $set[0], $set[1], $rand + $inspr, $y, $tekst, $pt( $maat ), $rh, $wit, $wit ) + $tussen;
             ++$nr;
         }

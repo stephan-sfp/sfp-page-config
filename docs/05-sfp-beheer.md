@@ -31,7 +31,7 @@ Elk onderdeel staat Aan of Uit; de meeste hebben Instellen. Stand SwS 3-11: 23 a
 | Zelftest | De zelftest van de site | Zie 07 |
 | Pijler, Begrip | De vormen | aan of uit |
 | Online tools | Tools op de motor | Adres voor tekstfeedback; lijst van tools met soort, meldingen, duimpjes |
-| Kleurrollen | Welke Astra-paletkleur elke merkrol draagt | Per rol een paletkleur of Niet gevoerd; de kleuren zelf staan in Astra |
+| Kleurrollen | Welke Astra-paletkleur elke merkrol draagt | Per rol een paletkleur of Niet gevoerd; de kleuren zelf staan in Astra. Sinds 3.29.0 ook de rol Label (bloklabels zoals Inhoud en Samenvatting): norm het primair, zonder keuze valt hij daarop terug |
 | Kopfont als variabele | Kopfont beschikbaar voor kaarten, reviews en tools | aan of uit |
 | Berichttypes | Begrippen en tools als eigen berichttype met adres en naam | aan of uit |
 | Paginabeheer voor AI | Lezen en bijwerken via de MCP-koppeling, met revisiecontrole | aan of uit |

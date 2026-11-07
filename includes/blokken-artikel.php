@@ -340,7 +340,16 @@ function sfp_page_config_render_citaat( $attrs, $content ) {
         $voet = '<footer>' . $foto . '<span>' . $bijschrift . '</span></footer>';
     }
     return sfp_page_config_blokken_css_vangnet( 'sfp/citaat' )
-        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-citaat' ) ) . '><blockquote>' . $content . '</blockquote>' . $voet . '</div>';
+        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-citaat' ) ) . '>' . sfp_page_config_citaat_icoon() . '<blockquote>' . $content . '</blockquote>' . $voet . '</div>';
+}
+
+/**
+ * Het vierkante icoontje met aanhalingstekens boven een citaat (3.29.0).
+ *
+ * @return string
+ */
+function sfp_page_config_citaat_icoon() {
+    return '<span class="sfp-citaat__icoon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 16.5c0-3.6 1.9-6.3 5.3-7.9l.8 1.3c-2 1-3.1 2.3-3.4 3.8.3-.1.6-.1.9-.1 1.6 0 2.8 1.2 2.8 2.8S9.7 19.2 8 19.2c-2.1 0-3.5-1.1-3.5-2.7zm9.2 0c0-3.6 1.9-6.3 5.3-7.9l.8 1.3c-2 1-3.1 2.3-3.4 3.8.3-.1.6-.1.9-.1 1.6 0 2.8 1.2 2.8 2.8s-1.2 2.8-2.9 2.8c-2.1 0-3.5-1.1-3.5-2.7z"/></svg></span>';
 }
 
 /**

@@ -44,7 +44,7 @@
 :root .sfp-uitklap--kaart .sfp-uitklap__inhoud>p{padding:12px 22px 20px;font-size:14px;margin:0}
 
 /* verhaal: lang voorbeeld in een artikel */
-:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 :root .sfp-uitklap--verhaal{margin:24px 0;border-top:1px solid var(--sfp-b-lijn-sterk)}
 .sfp-uitklap--verhaal .sfp-uitklap__regel{border-bottom:1px solid var(--sfp-b-lijn-sterk)}
 .sfp-uitklap--verhaal :is(summary,:where(.sfp-uitklap__kop)){padding:20px 0;display:flex;gap:16px;align-items:center;justify-content:space-between}
