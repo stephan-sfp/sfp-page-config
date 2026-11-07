@@ -4,6 +4,24 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.28.0] - 2026-11-07
+
+Opvolging van de DGA-proef van de SwS-content uitrol (overdracht 7-11, punten 1, 8 en 9). Eerste van twee releases; de kopkaart, het deelbeeld, de rol label, de H1-maat en het citaatblok volgen in 3.29.0.
+
+Terugdraaien: versie 3.27.1 terugzetten (zip uit de tag v3.27.1, map sfp-page-config).
+
+### Toegevoegd
+- Tool: vinkje Alleen in artikel in Deze pagina (metaveld sfp_tool_alleen_artikel, ook via REST). Zo'n tool blijft gepubliceerd en rendert gewoon in het blok Tool, maar staat niet in het tooloverzicht, niet in een berichtenraster van tools, niet in Andere tools en niet in de sitemap (SureRank en WordPress). Zijn eigen adres stuurt met 301 door naar het artikel dat hem plaatst, met een eventuele deellink erbij; zonder artikel geeft het adres 404 en noindex. Reden: tests die bij één artikel horen, stonden op DGA tussen de generatoren op /tools/. Het beheer (wp-admin, REST, WP-CLI) en de keuzelijst van het blok Tool tonen alle tools, met het label "alleen in artikel".
+
+### Gewijzigd
+- Begrip: dezelfde zijkolom als een artikel (inhoudsopgave vanaf twee hoofdstukken, bronnen, promokaart). Tot nu stond in de zijkolom alleen de promokaart, waardoor een begrip op een site zonder boek gecentreerd zonder zijkolom stond (DGA).
+
+### Gerepareerd
+- Tool in concept rendert nu op zijn voorbeeldlink (/sfp/v1/voorbeeld) voor wie niet is ingelogd; tot nu toonde de voorbeeldlink de pagina zonder de tool.
+
+### Documentatie
+- docs/08: Een tool die bij één artikel hoort, Voorbeeldlink van een concept. docs/01: de zijkolom bij een begrip.
+
 ## [3.27.1-beta.1] - 2026-11-05
 
 Proefversie op SwS: de Pijllink in een klikbare kaart volgens branding.md (bodyfont, 700, altijd onderstreept). Inhoud gelijk aan 3.27.1 hieronder.

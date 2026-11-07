@@ -428,6 +428,16 @@
 		if ( ! S.tools ) {
 			stukken.push( melding( 'Het onderdeel Online tools staat uit (SFP Beheer, Onderdelen). De beschrijving kun je wel al invullen.', 'let' ) );
 		}
+		// Sinds 3.28.0: een tool die bij één artikel hoort, blijft uit het
+		// overzicht, de kaarten Andere tools en de sitemap; het blok Tool
+		// toont hem gewoon en zijn eigen adres stuurt door naar het artikel.
+		stukken.push( el( c.ToggleControl, {
+			label: 'Alleen in artikel',
+			checked: !! meta.sfp_tool_alleen_artikel,
+			onChange: function ( v ) { props.zetMeta( 'sfp_tool_alleen_artikel', !! v ); },
+			help: 'Niet op de toolpagina, niet in Andere tools, niet in de sitemap. Plaats de tool met het blok Tool in het artikel; het eigen adres stuurt daarheen door.',
+			__nextHasNoMarginBottom: true,
+		} ) );
 		// Sinds 3.16.0: de teksten typ je in de tool in het canvas. Hier de
 		// keuzes over de vorm; de beschrijving zelf staat onder Geavanceerd.
 		var b = null;

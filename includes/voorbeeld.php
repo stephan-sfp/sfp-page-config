@@ -86,6 +86,22 @@ function sfp_page_config_voorbeeld_rest() {
 add_action( 'pre_get_posts', 'sfp_page_config_voorbeeld_aanvraag' );
 
 /**
+ * Voor welk bericht deze aanvraag een geldige voorbeeldsleutel droeg (3.28.0).
+ * Zo kan een onderdeel dat anders alleen gepubliceerd werk toont, zoals de
+ * tool, het concept op de voorbeeldlink toch laten zien.
+ *
+ * @param  int|null $zet Bericht-id om te onthouden.
+ * @return int               Bericht-id, of 0.
+ */
+function sfp_page_config_voorbeeld_geldig( $zet = null ) {
+    static $id = 0;
+    if ( null !== $zet ) {
+        $id = (int) $zet;
+    }
+    return $id;
+}
+
+/**
  * Een aanvraag met een geldige sleutel mag het concept zien.
  *
  * @param WP_Query $query De hoofdquery.
@@ -103,6 +119,7 @@ function sfp_page_config_voorbeeld_aanvraag( $query ) {
     if ( ! is_array( $bewaard ) || empty( $bewaard['sleutel'] ) || empty( $bewaard['tot'] ) || (int) $bewaard['tot'] < time() || ! hash_equals( (string) $bewaard['sleutel'], $sleutel ) ) {
         return;
     }
+    sfp_page_config_voorbeeld_geldig( $post_id );
 
     // Niet in een cache en niet in een zoekmachine.
     if ( ! defined( 'DONOTCACHEPAGE' ) ) {

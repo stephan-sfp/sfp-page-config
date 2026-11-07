@@ -1228,7 +1228,7 @@
 		var rijen = T.tools.map(function (t) {
 			var stand = ! t.motor ? 'geen beschrijving' : (t.fouten ? 'beschrijving klopt niet' : (t.soort || 'onbekend'));
 			return el('tr', {}, [
-				el('td', {}, [el('a', { href: t.bewerk, text: t.titel }), t.status !== 'publish' ? el('span', { class: 'sfpb-tag', text: t.status }) : null]),
+				el('td', {}, [el('a', { href: t.bewerk, text: t.titel }), t.status !== 'publish' ? el('span', { class: 'sfpb-tag', text: t.status }) : null, t.alleen_artikel ? el('span', { class: 'sfpb-tag', text: 'alleen in artikel' }) : null]),
 				el('td', { text: stand, class: t.fouten || ! t.motor ? 'sfpb-fout' : '' }),
 				el('td', { text: t.meldingen ? String(t.meldingen) : '' }),
 				el('td', { text: '\uD83D\uDC4D ' + t.omhoog + '   \uD83D\uDC4E ' + t.omlaag })

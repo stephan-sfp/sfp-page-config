@@ -320,6 +320,7 @@ function sfp_page_config_tool_beheer_stand() {
                 'order'            => 'ASC',
                 'no_found_rows'    => true,
                 'suppress_filters' => true,
+                'sfp_alle_tools'   => true,
             )
         );
         foreach ( $alle as $p ) {
@@ -345,6 +346,7 @@ function sfp_page_config_tool_beheer_stand() {
                 'omlaag'    => isset( $tellingen[ $slug ]['omlaag'] ) ? (int) $tellingen[ $slug ]['omlaag'] : 0,
                 'bewerk'    => get_edit_post_link( $p->ID, 'raw' ),
                 'link'      => get_permalink( $p ),
+                'alleen_artikel' => sfp_page_config_tool_alleen_artikel( $p ),
             );
         }
     }
