@@ -183,6 +183,12 @@ function sfp_zelftest_cta_blok( $blokken ) {
                 'type'    => 'boolean',
                 'default' => false,
             ),
+            // Sinds 3.30.0: knop omlijnd (NL-vorm; de actiekleur blijft voor inschrijven).
+            'knop'  => array(
+                'type'    => 'string',
+                'default' => 'vol',
+                'enum'    => array( 'vol', 'omlijnd' ),
+            ),
         ),
         'render'       => 'sfp_zelftest_cta_render',
     );
@@ -224,9 +230,10 @@ function sfp_zelftest_cta_render( $attrs, $content = '' ) {
     }
     $icoon = isset( $attrs['icoon'] ) && in_array( $attrs['icoon'], array( true, 1, '1', 'true', 'ja' ), true );
     $extra = function_exists( 'get_block_wrapper_attributes' ) && class_exists( 'WP_Block_Supports' ) && ! empty( WP_Block_Supports::$block_to_render )
-        ? sfp_page_config_blok_omhulling( array( 'sfp-zt-cta', $icoon ? 'sfp-zt-cta--icoon' : '' ) )
+        ? sfp_page_config_blok_omhulling( array( 'sfp-zt-cta', $icoon ? 'sfp-zt-cta--icoon' : '', 'omlijnd' === sfp_page_config_blok_attr( $attrs, 'knop' ) ? 'sfp-zt-cta--omlijnd' : '' ) )
         : '';
-    return sfp_page_config_blokken_css_vangnet( 'sfp/zelftest-cta' ) . sfp_zelftest_cta_html( $g, $extra, $icoon );
+    $omlijnd = 'omlijnd' === sfp_page_config_blok_attr( $attrs, 'knop' ) && function_exists( 'sfp_page_config_blokken_css_vangnet_bestand' ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inhoud' ) : '';
+    return sfp_page_config_blokken_css_vangnet( 'sfp/zelftest-cta' ) . $omlijnd . sfp_zelftest_cta_html( $g, $extra, $icoon );
 }
 
 add_action( 'init', 'sfp_zelftest_cta_code', 20 );

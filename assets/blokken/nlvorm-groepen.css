@@ -1,0 +1,41 @@
+/*
+ * Bouwstenen: NL-vorm (3.30.0), deel groepen, de trainingspagina van de NL-labels.
+ * Bron: dummy nl-vormen, trainingspagina versie 63 (akkoord 7-11-2026).
+ * Wit als hoofdkleur, secties wisselen wit en Tint 3 af, kop, kernzin en
+ * inhoud links op één lijn. Breekpunten 980 (tablet), 700 (telefoon), 430.
+ *
+ * Laadt alleen op een pagina met de held "wit", Groepskaarten of het
+ * Founder-citaat (includes/nlvorm.php), of met een variant die erom vraagt.
+ * Regels op bestaande klassen staan onder :root:has(.sfp-held--wit), zodat
+ * ze in de editor ook alleen gelden op zo'n pagina.
+ */
+
+/* ---------- A7 Groepskaarten ---------- */
+:root .sfp-groepen{display:grid;gap:0}
+:root .sfp-kolommen--groepen{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin:8px 0 0}
+:root .sfp-kolommen--groepen>.sfp-kaart{display:grid;grid-template-columns:minmax(0,1fr);justify-content:stretch;gap:14px;align-content:start;padding:40px;box-shadow:none;background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-top:4px solid var(--sfp-b-secundair)}
+:root .sfp-kolommen--groepen>.sfp-kaart:hover{box-shadow:0 12px 32px color-mix(in srgb,var(--sfp-b-primair) 14%,transparent)}
+:root .sfp-kolommen--groepen>.sfp-kaart>*{justify-self:stretch;max-width:none;margin:0}
+:root .sfp-kolommen--groepen>.sfp-kaart>h3{padding:0;font-size:clamp(18px,1vw + 12px,22px)}
+:root .sfp-groep__kopregel{display:flex;align-items:center;justify-content:space-between;gap:12px}
+:root .sfp-groep__kopregel .is-style-sfp-label{margin:0}
+:root .sfp-groep__status{font-size:12px;font-weight:700;color:var(--sfp-b-primair);background:var(--sfp-b-tint3);border:1px solid var(--sfp-b-lijn-sterk);border-radius:999px;padding:3px 10px;white-space:nowrap}
+:root .sfp-groep__data{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--sfp-b-lijn-sterk)}
+:root .sfp-groep__data li{margin:0;padding:9px 0;border-bottom:1px solid var(--sfp-b-lijn-sterk);font-weight:700;font-size:15px;color:var(--sfp-b-primair);display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:baseline}
+:root .sfp-groep__data li::before{content:none}
+:root .sfp-groep__dag{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--sfp-b-body)}
+:root .sfp-groep__meta{margin:0;font-size:15px;color:var(--sfp-b-body)}
+:root .sfp-kolommen--groepen .is-style-sfp-prijs{margin-top:16px;padding-top:22px;border-top:1px solid var(--sfp-b-lijn);font-size:26px;color:var(--sfp-b-primair)}
+:root .sfp-kolommen--groepen .sfp-tekstlink{justify-self:start;margin-top:10px}
+:root .sfp-groep--vol{opacity:.65}
+:root .sfp-sectie p.sfp-wachtlijstregel,:root p.sfp-wachtlijstregel{text-align:left;margin:40px 0 0;color:var(--sfp-b-body)}
+:root .sfp-groepen--leeg p.sfp-wachtlijstregel{margin-top:0}
+@media (min-width:701px) and (max-width:980px){:root .sfp-kolommen--groepen{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+@media (max-width:980px){:root .sfp-kolommen--groepen>.sfp-kaart{padding:28px 24px}}
+@media (max-width:700px){:root .sfp-kolommen--groepen{grid-template-columns:minmax(0,1fr);gap:16px}:root .sfp-kolommen--groepen>.sfp-kaart h3{font-size:18px;letter-spacing:0}}
+
+/* tekstlink buiten een knop (Groepskaarten): het bodyfont op 700, met pijl */
+:root .sfp-tekstlink{font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-transform:none;letter-spacing:0}
+:root .sfp-tekstlink::after{content:"\00a0\2192"}
+:root .sfp-tekstlink:hover{text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
+

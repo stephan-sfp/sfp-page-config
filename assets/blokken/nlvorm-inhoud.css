@@ -1,0 +1,103 @@
+/*
+ * Bouwstenen: NL-vorm (3.30.0), deel inhoud, de trainingspagina van de NL-labels.
+ * Bron: dummy nl-vormen, trainingspagina versie 63 (akkoord 7-11-2026).
+ * Wit als hoofdkleur, secties wisselen wit en Tint 3 af, kop, kernzin en
+ * inhoud links op één lijn. Breekpunten 980 (tablet), 700 (telefoon), 430.
+ *
+ * Laadt alleen op een pagina met de held "wit", Groepskaarten of het
+ * Founder-citaat (includes/nlvorm.php), of met een variant die erom vraagt.
+ * Regels op bestaande klassen staan onder :root:has(.sfp-held--wit), zodat
+ * ze in de editor ook alleen gelden op zo'n pagina.
+ */
+
+/* ---------- A4 Probleemsectie: vier situaties 2x2 ---------- */
+:root .sfp-kolommen--situaties{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:20px}
+:root .sfp-kolommen--situaties>.sfp-kolom{background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:24px 26px;display:grid;gap:8px;align-content:start;border-left:3px solid var(--sfp-b-secundair)}
+:root .sfp-kolommen--situaties>.sfp-kolom>*{margin:0}
+:root .sfp-kolommen--situaties>.sfp-kolom :is(h3,h4){margin:0;padding:0;font-size:17px;text-transform:none;letter-spacing:0;line-height:1.3}
+:root .sfp-kolommen--situaties>.sfp-kolom p{margin:0;font-size:16px;line-height:1.5;color:var(--sfp-b-body)}
+:root .sfp-sectie__binnen>.sfp-kolommen--situaties+p.is-style-sfp-kernzin{margin:20px 0 0;font-size:18px;max-width:60ch}
+:root:has(.sfp-held--wit) .sfp-sectie__binnen>.is-style-sfp-label+h2{margin-top:18px}
+:root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p:not([class*="is-style-"]){margin-top:18px;max-width:62ch;font-size:17px}
+@media (max-width:700px){:root .sfp-kolommen--situaties{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- A5 Zelftest-oproep ---------- */
+:root:has(.sfp-held--wit) .sfp-zt-cta{background:none;padding:0;box-shadow:none;border:0}
+:root:has(.sfp-held--wit) .sfp-zt-cta__kop{font-size:clamp(20px,2vw + 12px,28px)}
+:root .sfp-zt-cta--omlijnd .sfp-zt-cta__knop .wp-block-button__link{background:transparent!important;color:var(--sfp-b-primair)!important;border:2px solid var(--sfp-b-primair)!important}
+:root .sfp-zt-cta--omlijnd .sfp-zt-cta__knop .wp-block-button__link:hover{background:var(--sfp-b-primair)!important;color:var(--sfp-b-wit)!important}
+@media (max-width:980px){
+  :root:has(.sfp-held--wit) :is(.sfp-kolommen:has(.wp-block-image) .sfp-zt-cta,.sfp-zt-cta.met-beeld){text-align:left;justify-items:start}
+  :root:has(.sfp-held--wit) :is(.sfp-kolommen:has(.wp-block-image) .sfp-zt-cta,.sfp-zt-cta.met-beeld) .sfp-zt-cta__tekst{justify-items:start}
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image{justify-self:center;width:100%;text-align:center;margin-bottom:16px}
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image img{margin:0 auto;width:92%;max-height:none;filter:drop-shadow(0 8px 12px #0002)}
+  :root:has(.sfp-held--wit) .sfp-zt-cta__knop a{display:inline-flex;text-align:left}
+}
+@media (min-width:701px) and (max-width:980px){
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta){grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center}
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image{order:1;justify-self:end}
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image img{width:auto;max-height:380px;margin:0}
+}
+@media (max-width:700px){
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta){display:flex;flex-direction:column;gap:20px}
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .sfp-kolom,:root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .sfp-zt-cta{display:contents}
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .sfp-zt-cta__tekst{order:0}
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image{order:1;margin:0;text-align:left}
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .sfp-zt-cta__knop{order:2;margin:0}
+  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image img{width:100%;margin:0;border-radius:var(--sfp-b-r-kaart);box-shadow:0 12px 32px color-mix(in srgb,var(--sfp-b-primair) 14%,transparent);filter:none;border:1px solid color-mix(in srgb,var(--sfp-b-primair) 10%,transparent)}
+}
+
+/* ---------- A6 Uitkomsten: 01 tot 03 ---------- */
+:root .sfp-stappen.sfp-uitkomsten{counter-reset:sfp-uitkomst;list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:0;border-top:2px solid var(--sfp-b-secundair)}
+:root .sfp-uitkomsten>.sfp-stap{counter-increment:sfp-uitkomst;position:static;margin:0;padding:32px 0;border-top:0;border-bottom:1px solid var(--sfp-b-lijn-sterk);display:grid;grid-template-columns:48px minmax(0,1fr);gap:6px 24px;align-items:start;background:none;border-radius:0;box-shadow:none}
+:root .sfp-uitkomsten>.sfp-stap::before{content:counter(sfp-uitkomst,decimal-leading-zero);position:static;grid-row:1/span 9;grid-column:1;width:auto;height:auto;background:none;border:0;border-radius:0;font-family:var(--sfp-b-kop);font-weight:900;font-size:22px;color:var(--sfp-b-secundair);line-height:1.3;display:block;text-align:left}
+:root .sfp-uitkomsten>.sfp-stap>*{grid-column:2;margin:0}
+:root .sfp-uitkomsten>.sfp-stap :is(h3,h4){padding:0;font-size:clamp(18px,1vw + 12px,22px);text-transform:none;letter-spacing:0;line-height:1.3}
+:root .sfp-uitkomsten>.sfp-stap p{max-width:68ch;font-size:17px}
+:root .sfp-uitkomsten>.sfp-stap>.sfp-review-kaart{margin:12px 0 0;padding:18px 22px;max-width:60ch;text-align:left;border:0;border-left:3px solid var(--sfp-b-secundair);background:var(--sfp-b-tint3);border-radius:0 var(--sfp-b-r-kaart) var(--sfp-b-r-kaart) 0;display:grid;gap:8px}
+:root .sfp-uitkomsten>.sfp-stap>.sfp-review-kaart .sfp-review-kaart__sterren{justify-content:flex-start;margin:0}
+:root .sfp-uitkomsten>.sfp-stap>.sfp-review-kaart .sfp-review-kaart__ster{width:16px;height:16px}
+:root .sfp-uitkomsten>.sfp-stap>.sfp-review-kaart .sfp-review-kaart__tekst{font-size:17px;font-weight:500}
+:root .sfp-uitkomsten>.sfp-stap>.sfp-review-kaart :is(.sfp-review-kaart__naam,.sfp-review-kaart__bron){margin:0;font-size:14px}
+@media (max-width:700px){:root .sfp-uitkomsten>.sfp-stap{grid-template-columns:36px minmax(0,1fr);gap:6px 14px;padding:24px 0}}
+
+/* ---------- A8 Reviews naast elkaar ---------- */
+:root .sfp-kolommen--reviews{margin-top:40px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
+:root .sfp-kolommen--reviews>.sfp-kolom{display:flex}
+:root .sfp-kolommen--reviews .sfp-review-kaart{margin:0;max-width:none;width:100%;background:var(--sfp-b-wit);box-shadow:none;border:1px solid color-mix(in srgb,var(--sfp-b-primair) 10%,transparent);text-align:left;padding:24px 26px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+:root .sfp-kolommen--reviews .sfp-review-kaart__sterren{justify-content:flex-start;margin:0}
+:root .sfp-kolommen--reviews .sfp-review-kaart__tekst{flex:1;font-size:16px;line-height:1.55}
+:root .sfp-kolommen--reviews .sfp-review-kaart__tekst p{font-size:16px;line-height:1.55;margin:0}
+:root .sfp-kolommen--reviews :is(.sfp-review-kaart__naam,.sfp-review-kaart__bron){margin:0}
+@media (max-width:980px){:root .sfp-kolommen--reviews{grid-template-columns:minmax(0,1fr);gap:14px}}
+
+/* ---------- A9 Programma per dag ---------- */
+:root .sfp-uitklap--programma{margin:56px 0 0;max-width:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch}
+:root .sfp-uitklap--programma.sfp-uitklap--gestapeld{grid-template-columns:minmax(0,1fr)}
+:root .sfp-uitklap--programma.sfp-uitklap--gestapeld .sfp-uitklap__inhoud{max-width:760px}
+:root .sfp-uitklap--programma .sfp-uitklap__regel{display:flex;flex-direction:column;box-shadow:none;margin:0}
+:root .sfp-uitklap--programma :is(summary,.sfp-uitklap__kop){padding:22px;font-size:20px;font-family:var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.02em}
+:root .sfp-uitklap--programma .sfp-uitklap__titel{display:grid;gap:6px}
+:root .sfp-uitklap--programma .sfp-uitklap__titel .is-style-sfp-label,:root .sfp-uitklap--programma .sfp-uitklap__label{margin:0;font-size:12px}
+:root .sfp-uitklap--programma .sfp-uitklap__inhoud{padding:0 22px 28px;display:grid;gap:18px}
+:root .sfp-uitklap--programma .sfp-uitklap__inhoud>p{padding:0;margin:0;font-size:16px;max-width:66ch}
+:root .sfp-uitklap--programma .sfp-lijst--vink ul{display:grid;gap:8px;margin:0}
+:root .sfp-uitklap--programma .sfp-lijst--vink li{margin:0 0 10px;font-size:16px;padding-left:28px;line-height:1.5}
+@media (max-width:700px){
+  :root .sfp-uitklap--programma{grid-template-columns:minmax(0,1fr);gap:12px}
+  :root .sfp-uitklap--programma :is(summary,.sfp-uitklap__kop){padding:18px 20px;font-size:17px;gap:12px}
+  :root .sfp-uitklap--programma :is(summary,.sfp-uitklap__kop)::after{flex:0 0 30px;height:30px;font-size:18px}
+  :root .sfp-uitklap--programma .sfp-uitklap__titel{gap:4px}
+  :root .sfp-uitklap--programma .sfp-uitklap__inhoud{padding:0 20px 22px}
+}
+
+/* ---------- A10 Inbegrepen: vakjes op een rij ---------- */
+:root p.is-style-sfp-label:has(+.sfp-lijst--rij){margin:32px 0 0;padding-top:28px;border-top:1px solid var(--sfp-b-lijn)}
+:root p.is-style-sfp-label+.sfp-lijst--rij{margin-top:16px}
+:root .sfp-lijst--rij ul{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0;padding:0}
+:root .sfp-lijst--rij li{position:relative;background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:14px 14px 14px 42px;font-size:15px;line-height:1.35;min-height:48px;display:flex;align-items:center;margin:0;white-space:normal}
+:root .sfp-lijst--rij li::before{left:14px;top:50%;transform:translateY(-50%)}
+:root .sfp-lijst--rij li a{color:var(--sfp-b-primair);font-weight:700}
+@media (max-width:1100px){:root .sfp-lijst--rij ul{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:700px){:root p.is-style-sfp-label+.sfp-lijst--rij{margin-top:14px}:root .sfp-lijst--rij ul{grid-template-columns:minmax(0,1fr);gap:10px}}
+

@@ -74,6 +74,7 @@ function sfp_page_config_cursusdata_paginas() {
             'link'   => (string) get_permalink( $id ),
             'bewerk' => (string) get_edit_post_link( $id, 'raw' ),
             'data'   => is_array( $data ) ? array_values( $data ) : array(),
+            'info'   => sfp_page_config_cursusinfo( $id ),
         );
     }
     return $uit;
@@ -124,6 +125,11 @@ function sfp_page_config_cursusdata_schoon( $data ) {
         if ( '' !== $eind ) {
             $group['eind'] = $eind;
         }
+        // De status van de groep voor de groepskaart (3.30.0): leeg is
+        // "nog plekken vrij", verder alleen "laatste" of "vol".
+        if ( isset( $sm['status'] ) && in_array( $sm['status'], sfp_page_config_cursus_statussen(), true ) ) {
+            $group['status'] = (string) $sm['status'];
+        }
         $clean[] = $group;
     }
 
@@ -134,6 +140,61 @@ function sfp_page_config_cursusdata_schoon( $data ) {
         }
     );
     return $clean;
+}
+
+/**
+ * Statussen van een groep naast "nog plekken vrij" (3.30.0).
+ *
+ * @return string[]
+ */
+function sfp_page_config_cursus_statussen() {
+    return array( 'laatste', 'vol' );
+}
+
+/**
+ * Plaats en prijs van een training (3.30.0), meta `sfp_cursusinfo`.
+ *
+ * Prijs in hele euro's exclusief btw; leeg of 0 betekent: geen prijs tonen.
+ *
+ * @param  int $post_id Pagina.
+ * @return array{plaats: string, prijs: int}
+ */
+function sfp_page_config_cursusinfo( $post_id ) {
+    $ruw = get_post_meta( (int) $post_id, 'sfp_cursusinfo', true );
+    $ruw = is_string( $ruw ) && '' !== $ruw ? json_decode( $ruw, true ) : $ruw;
+    return sfp_page_config_cursusinfo_schoon( is_array( $ruw ) ? $ruw : array() );
+}
+
+/**
+ * Schoon plaats en prijs op.
+ *
+ * @param  mixed $ruw Ruwe gegevens.
+ * @return array{plaats: string, prijs: int}
+ */
+function sfp_page_config_cursusinfo_schoon( $ruw ) {
+    $ruw   = is_array( $ruw ) ? $ruw : array();
+    $prijs = isset( $ruw['prijs'] ) ? preg_replace( '/[^0-9]/', '', (string) $ruw['prijs'] ) : '';
+    return array(
+        'plaats' => isset( $ruw['plaats'] ) ? mb_substr( sanitize_text_field( (string) $ruw['plaats'] ), 0, 120 ) : '',
+        'prijs'  => '' === $prijs ? 0 : min( 99999, (int) $prijs ),
+    );
+}
+
+/**
+ * Bewaar plaats en prijs van een training.
+ *
+ * @param  int   $post_id Pagina.
+ * @param  mixed $ruw     Ruwe gegevens.
+ * @return array{plaats: string, prijs: int}
+ */
+function sfp_page_config_cursusinfo_bewaar( $post_id, $ruw ) {
+    $info = sfp_page_config_cursusinfo_schoon( $ruw );
+    if ( '' === $info['plaats'] && 0 === $info['prijs'] ) {
+        delete_post_meta( (int) $post_id, 'sfp_cursusinfo' );
+    } else {
+        update_post_meta( (int) $post_id, 'sfp_cursusinfo', wp_slash( wp_json_encode( $info ) ) );
+    }
+    return $info;
 }
 
 /**

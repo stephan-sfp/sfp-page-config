@@ -1,0 +1,105 @@
+/*
+ * Bouwstenen: NL-vorm (3.30.0), deel held, de trainingspagina van de NL-labels.
+ * Bron: dummy nl-vormen, trainingspagina versie 63 (akkoord 7-11-2026).
+ * Wit als hoofdkleur, secties wisselen wit en Tint 3 af, kop, kernzin en
+ * inhoud links op één lijn. Breekpunten 980 (tablet), 700 (telefoon), 430.
+ *
+ * Laadt alleen op een pagina met de held "wit", Groepskaarten of het
+ * Founder-citaat (includes/nlvorm.php), of met een variant die erom vraagt.
+ * Regels op bestaande klassen staan onder :root:has(.sfp-held--wit), zodat
+ * ze in de editor ook alleen gelden op zo'n pagina.
+ */
+
+/* ---------- Pagina ---------- */
+html:has(.sfp-held--wit){scroll-behavior:auto!important}
+:root:has(.sfp-held--wit) .sfp-sectie{padding-block:96px}
+:root:has(.sfp-held--wit) .sfp-sectie--tint{background:var(--sfp-b-tint3)}
+:root:has(.sfp-held--wit) .sfp-sectie :is(h2,h3).has-text-align-center{margin-bottom:0}
+:root:has(.sfp-held--wit) :is(.is-style-sfp-label,.sfp-blok-label,.sfp-logostrook__label){color:var(--sfp-b-primair)}
+:root:has(.sfp-held--wit) .sfp-logostrook__label{font-size:clamp(18px,.6vw + 14px,22px)}
+:root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin{margin:16px 0 0;max-width:52ch}
+:root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+*{margin-top:48px}
+:root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+:is(.sfp-kolommen,.sfp-uitklap--programma,.sfp-groepen){margin-top:56px}
+@media (min-width:701px) and (max-width:980px){
+  :root:has(.sfp-held--wit) .sfp-logostrook__logos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));justify-items:center;gap:28px 32px}
+}
+@media (max-width:700px){
+  :root:has(.sfp-held--wit) .sfp-sectie{padding-block:64px}
+  :root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+*{margin-top:32px}
+  :root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+:is(.sfp-kolommen,.sfp-uitklap--programma,.sfp-groepen){margin-top:36px}
+}
+
+/* ---------- A2 Held wit ---------- */
+:root .sfp-held--wit{background:var(--sfp-b-wit);color:var(--sfp-b-body);padding-block:72px;min-height:0;display:block;overflow:visible}
+:root .sfp-held--wit::before,:root .sfp-held--wit::after,:root body.ast-theme-transparent-header .sfp-held--wit::before{content:none}
+:root .sfp-held--wit .sfp-held__binnen{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);grid-template-areas:none;gap:64px;align-items:start;max-width:1180px;margin:0 auto;padding:0 24px}
+:root body .entry-content .sfp-held--wit>.sfp-held__binnen{max-width:1180px}
+:root .sfp-held--wit .sfp-held__binnen>*{grid-area:auto}
+:root .sfp-held--wit .sfp-held__tekst{display:grid;gap:20px;min-width:0}
+:root .sfp-held--wit .sfp-held__tekst>*{margin:0;max-width:none}
+:root .sfp-held--wit h1{color:var(--sfp-b-primair);text-shadow:none;padding:0;overflow-wrap:normal}
+/* kapcorrectie: de bovenkant van de hoofdletters op de bovenrand van de foto (gemeten per kopfont, includes/nlvorm.php) */
+:root .sfp-held--wit .sfp-held__tekst>h1{margin-top:calc(-1 * var(--sfp-kapcorrectie,0px))}
+:root .sfp-held--wit .sfp-held__tekst>p:not([class*="sfp-held__"]){display:block;color:var(--sfp-b-primair);opacity:1;text-shadow:none}
+:root .sfp-held--wit .wp-block-buttons{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;justify-content:flex-start;margin-top:6px;padding:0}
+/* !important zoals in de dummy: de held recht zet het beeld met een hogere specificiteit absoluut over de rechterhelft */
+:root .sfp-held--wit .sfp-held__binnen>.wp-block-image{position:relative!important;inset:auto!important;left:auto!important;width:auto!important;height:auto!important;max-width:none!important;margin:0!important;-webkit-mask-image:none!important;mask-image:none!important;z-index:auto}
+:root .sfp-held--wit .sfp-held__binnen>.wp-block-image img{position:relative;z-index:1;display:block;width:100%!important;height:auto!important;aspect-ratio:4/3!important;object-fit:cover;object-position:50% 30%;border-radius:var(--sfp-b-r-kaart)}
+/* accent: één zinsdeel van de H1 met een band in Tint 2 onder de onderste helft van de letters */
+:root .sfp-held .sfp-accent{background:none;color:inherit;padding:0}
+:root .sfp-held--wit .sfp-accent{background:linear-gradient(transparent 58%,var(--sfp-b-tint2) 58%);color:inherit;padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+/* feitenkaart linksonder over de foto */
+:root .sfp-held--wit .sfp-held__binnen>.wp-block-image:has(.sfp-held__feit){margin:0 0 36px 0!important}
+:root .sfp-held__feit{display:flex;position:absolute;left:-28px;bottom:-36px;background:var(--sfp-b-wit);border-radius:var(--sfp-b-r-kaart);box-shadow:0 12px 32px color-mix(in srgb,var(--sfp-b-primair) 14%,transparent);padding:0;z-index:2;overflow:hidden}
+:root .sfp-held__feit>div{display:grid;gap:6px;padding:18px 24px;border-left:1px solid color-mix(in srgb,var(--sfp-b-primair) 10%,transparent)}
+:root .sfp-held__feit>div:first-child{border-left:4px solid var(--sfp-b-secundair);padding-left:22px}
+:root .sfp-held__feit .is-style-sfp-label{font-size:11px;letter-spacing:.14em;margin:0;color:var(--sfp-b-body)}
+:root .sfp-held__feit strong{font-family:var(--sfp-b-tekst);font-weight:700;color:var(--sfp-b-primair);font-size:17px;line-height:1.2;white-space:nowrap}
+/* bewijsregel onder de knoppen */
+:root .sfp-held__bewijs{display:flex;align-items:center;gap:0;margin:4px 0 0;font-size:15px;color:var(--sfp-b-body)}
+:root .sfp-held__bewijs strong{color:var(--sfp-b-primair)}
+:root .sfp-held .sfp-held__score{display:inline-flex;align-items:center;gap:8px;color:var(--sfp-b-primair);text-decoration:none!important;padding-right:16px;border-right:1px solid var(--sfp-b-lijn-sterk);margin-right:16px}
+:root .sfp-held__score:last-child{border-right:0;padding-right:0;margin-right:0}
+:root a.sfp-held__score:hover span:last-child{text-decoration:underline;text-underline-offset:3px}
+:root .sfp-held__sterren{color:var(--sfp-b-ster);letter-spacing:1px;font-size:16px}
+:root .sfp-held__deelnemers{display:inline-flex;align-items:center;gap:10px}
+:root .sfp-held__koppen{display:inline-flex}
+:root .sfp-held__koppen span{width:34px;height:34px;border-radius:50%;background:var(--sfp-b-tint2);color:var(--sfp-b-primair);border:2px solid var(--sfp-b-wit);display:grid;place-items:center;font:700 12px/1 var(--sfp-b-tekst);margin-left:-8px}
+:root .sfp-held__koppen span:first-child{margin-left:0}
+@media (max-width:980px){
+  :root .sfp-held--wit{padding-block:32px 56px}
+  :root .sfp-held--wit .sfp-held__binnen{grid-template-columns:minmax(0,1fr);gap:28px}
+  :root .sfp-held--wit .sfp-held__binnen>.wp-block-image{order:-1;margin:0!important}
+  :root .sfp-held--wit .sfp-held__binnen>.wp-block-image:has(.sfp-held__feit){margin:0 0 8px 0!important;display:block}
+  :root .sfp-held--wit .sfp-held__tekst>h1{margin-top:0}
+  :root .sfp-held__feit{position:static;left:auto;bottom:auto;margin-top:12px;box-shadow:none;border:1px solid color-mix(in srgb,var(--sfp-b-primair) 10%,transparent);width:100%}
+  :root .sfp-held__feit>div{padding:12px 14px;flex:1 1 0;min-width:0}
+  :root .sfp-held__feit>div:first-child{padding-left:14px}
+  :root .sfp-held__feit strong{font-size:15px;white-space:normal}
+  :root .sfp-held__bewijs{flex-wrap:wrap;row-gap:8px}
+}
+@media (min-width:701px) and (max-width:980px){
+  :root .sfp-held--wit .sfp-held__binnen>.wp-block-image img{aspect-ratio:16/9!important;max-height:360px}
+}
+@media (max-width:700px){
+  :root .sfp-held--wit .sfp-held__binnen{display:flex;flex-direction:column;align-items:stretch}
+  :root .sfp-held--wit .sfp-held__binnen>.wp-block-image{order:0}
+  :root .sfp-held--wit .sfp-held__tekst{display:contents}
+  :root .sfp-held--wit .sfp-held__tekst>h1{order:-1;margin-bottom:20px}
+  :root .sfp-held--wit .sfp-held__tekst>:not(h1){order:1}
+  :root .sfp-held--wit .wp-block-buttons{flex-direction:column;align-items:stretch;gap:12px}
+  :root .sfp-held--wit .wp-block-button{width:100%}
+  :root .sfp-held--wit .wp-block-button__link{width:100%;box-sizing:border-box}
+  :root .sfp-held--wit .is-style-sfp-tekst .wp-block-button__link{justify-content:center}
+  :root .sfp-held__feit>div{padding:10px}
+  :root .sfp-held__feit>div:first-child{padding-left:12px}
+  :root .sfp-held__feit .is-style-sfp-label{font-size:10px;white-space:nowrap;letter-spacing:.08em}
+  :root .sfp-held__feit strong{font-size:14px;white-space:nowrap}
+  :root .sfp-held__feit>div:nth-child(n+4){display:none}
+  :root .sfp-held__feit .sfp-lang{display:none}
+  :root .sfp-held__score{border-right:0;padding-right:0;margin-right:0}
+}
+@media (max-width:430px){
+  :root .site-content .sfp-held--wit h1,:root .sfp-held--wit h1{font-size:26px!important}
+}
+

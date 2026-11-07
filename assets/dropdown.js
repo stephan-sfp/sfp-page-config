@@ -30,6 +30,10 @@
     var PLACEHOLDER = CFG.kiesGroep || 'Kies een groep';
     var GEEN_DATA = CFG.geenData || 'Neem contact op voor de eerstvolgende startdata.';
     var GROEP = CFG.groep || 'Groep %d';
+    // Sinds 3.30.0: "Geen van beide: wachtlijst" als laatste keuze, alleen
+    // op een pagina met Groepskaarten (een link met data-sfp-groep).
+    var WACHTLIJST = CFG.wachtlijst || '';
+    var gekozen = null; // Groep die een link of ?groep= vroeg, tot het menu er is.
     var KLASSE = 'sfp-startmoment-select';
     // Veldnamen van SureForms (srfm-slug-...) die over het startmoment gaan.
     var SLUG = /(^|\s)srfm-slug-(datum|data|datas|startmoment|startmomenten|startdatum|startdata|startdate|startdates|date|dates|turma)(-\d+)?(\s|$)/;
@@ -91,8 +95,58 @@
                 label: label
             });
         }
+        if (WACHTLIJST && document.querySelector('[data-sfp-groep="wachtlijst"]')) {
+            options.push({ value: 'wachtlijst', label: WACHTLIJST });
+        }
         return options;
     }
+
+    /**
+     * Kies een groep in elk keuzemenu met startmomenten (3.30.0). Werkt met
+     * het gewone menu en met Tom Select van SureForms.
+     */
+    function kies(waarde) {
+        var selects = document.querySelectorAll('.sfp-startmoment-select select, select.sfp-startmoment-select');
+        if (!selects.length) return false;
+        var gelukt = false;
+        selects.forEach(function (select) {
+            var bestaat = false;
+            for (var i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === waarde) { bestaat = true; break; }
+            }
+            if (select.tomselect && select.tomselect.options && select.tomselect.options[waarde]) {
+                bestaat = true;
+            }
+            if (!bestaat) return;
+            if (select.tomselect) {
+                select.tomselect.setValue(waarde);
+                gelukt = true;
+            } else {
+                select.value = waarde;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                // SureForms zet Tom Select er later overheen en wist dan de
+                // keuze: blijf wachten tot Tom Select er is.
+                gelukt = !select.classList.contains('srfm-dropdown-input');
+            }
+        });
+        return gelukt;
+    }
+
+    function vraag(groep) {
+        var waarde = groep === 'wachtlijst' ? 'wachtlijst' : 'groep-' + parseInt(groep, 10);
+        if (!kies(waarde)) gekozen = waarde;
+    }
+
+    // Een link van een groepskaart kiest die groep; de ankerlink springt zelf.
+    document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a[data-sfp-groep]') : null;
+        if (a) vraag(a.getAttribute('data-sfp-groep'));
+    });
+    // Terugval: ?groep=2 of ?groep=wachtlijst in het adres.
+    (function () {
+        var m = /[?&]groep=([^&#]+)/.exec(window.location.search);
+        if (m) vraag(decodeURIComponent(m[1]));
+    })();
 
     function fillNativeSelect(select, options) {
         isPatching = true;
@@ -140,6 +194,7 @@
         ts.refreshOptions(false);
 
         isPatching = false;
+        if (gekozen && kies(gekozen)) gekozen = null;
     }
 
     function run() {
@@ -176,6 +231,7 @@
 
         // Mark native options as filled after processing all containers.
         nativeOptionsFilled = true;
+        if (gekozen && kies(gekozen)) gekozen = null;
     }
 
     // Phase 1: Fill native <option>s as early as possible.
