@@ -59,7 +59,8 @@ function sfp_page_config_teksten_register() {
         'knop_coaching'               => array(
             'groep'  => 'Knop onderaan',
             'label'  => 'Coaching',
-            'nl'     => 'Boek je gratis proefsessie',
+            // Sinds 3.31.0 (besluit Stephan 7-11, NL-vorm coachpagina).
+            'nl'     => 'Plan je proefsessie',
             'en'     => 'Book a discovery call',
             'pt'     => 'Agende uma conversa',
             'opslag' => 'sticky_cta.coaching.text',

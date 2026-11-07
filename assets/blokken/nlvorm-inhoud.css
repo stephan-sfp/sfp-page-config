@@ -104,3 +104,7 @@
 @media (max-width:1100px){:root .sfp-lijst--rij ul{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:700px){:root p.is-style-sfp-label+.sfp-lijst--rij{margin-top:14px}:root .sfp-lijst--rij ul{grid-template-columns:minmax(0,1fr);gap:10px}}
 
+
+/* zelftestbeeld (3.31.0, C8): op de rechterlijn op computer en tablet, op een telefoon over de volle contentbreedte */
+@media (min-width:701px){:root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image{justify-self:end!important;margin-left:auto!important;margin-right:0!important;text-align:right}:root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image img{margin:0 0 0 auto!important}}
+@media (max-width:700px){:root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image{width:100%!important;max-width:none!important;margin:4px 0!important;align-self:stretch!important}:root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image img{width:100%!important;max-width:none!important;margin:0!important}}

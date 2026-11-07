@@ -306,7 +306,8 @@ function sfp_page_config_nlvorm_feitenkaart( $attrs ) {
     foreach ( $feiten as $f ) {
         $uit .= '<div><span class="is-style-sfp-label">' . $f[0] . '</span><strong>' . $f[1] . '</strong></div>';
     }
-    return '<div class="sfp-held__feit" role="group" aria-label="' . esc_attr( sfp_page_config_tekst( 'held_kerngegevens' ) ) . '">' . $uit . '</div>';
+    $afbreken = ! empty( $attrs['afbreken'] ) ? ' sfp-held__feit--afbreken' : '';
+    return '<div class="sfp-held__feit' . $afbreken . '" role="group" aria-label="' . esc_attr( sfp_page_config_tekst( 'held_kerngegevens' ) ) . '">' . $uit . '</div>';
 }
 
 /**
@@ -434,8 +435,14 @@ function sfp_page_config_nlvorm_kap_script() {
         // padding, de halve regelafstand (ten opzichte van de hoogte van het
         // font, niet van de lettergrootte) en de ruimte boven de hoofdletter.
         . 'var p=parseFloat(s.paddingTop)||0;h.style.setProperty("--sfp-kapcorrectie",(p+(l-(a+d))/2+(a-b)).toFixed(2)+"px");});}'
-        . 'if(document.fonts&&document.fonts.ready){document.fonts.ready.then(k);}else{k();}'
-        . 'var t;window.addEventListener("resize",function(){clearTimeout(t);t=setTimeout(k,150);});})();';
+        // Telefoon (3.31.0, C7): de H1 krimpt in stappen van 0,5 px tot het
+        // langste woord in zijn vak past, minimaal 20 px; vóór de kapcorrectie.
+        . 'function p(){document.querySelectorAll(".sfp-held--wit h1").forEach(function(h){h.style.fontSize="";if(innerWidth>700)return;'
+        . 'var f=parseFloat(getComputedStyle(h).fontSize);function b(){var r=h.getBoundingClientRect(),g=document.createRange();g.selectNodeContents(h);var q=g.getClientRects();for(var i=0;i<q.length;i++){if(q[i].right>r.right+0.5)return true;}return false;}'
+        . 'while(b()&&f>20){f-=0.5;h.style.fontSize=f+"px";}});}'
+        . 'function a(){p();k();}'
+        . 'if(document.fonts&&document.fonts.ready){document.fonts.ready.then(a);}else{a();}'
+        . 'var t;window.addEventListener("resize",function(){clearTimeout(t);t=setTimeout(a,150);});})();';
     echo '<script id="sfp-kapcorrectie" nowprocket>' . $js . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste JS uit dit bestand.
 }
 
@@ -510,6 +517,16 @@ function sfp_page_config_nlvorm_bestanden( $bestanden, $post ) {
 }
 
 /**
+ * Een focuspunt als "x% y%", anders de standaard (3.31.0).
+ *
+ * @param  string $focus Focuspunt.
+ * @return string
+ */
+function sfp_page_config_nlvorm_focus( $focus ) {
+    return preg_match( '/^\d{1,3}% \d{1,3}%$/', (string) $focus ) ? (string) $focus : '50% 30%';
+}
+
+/**
  * Welke delen van de NL-vorm horen bij deze inhoud?
  *
  * @param  string $inhoud Berichtinhoud.
@@ -529,6 +546,9 @@ function sfp_page_config_nlvorm_delen( $inhoud ) {
     }
     if ( false !== strpos( $inhoud, '<!-- wp:sfp/founder' ) || preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"(boek|inschrijven)"/', $inhoud ) ) {
         $delen[] = 'nlvorm-inschrijven';
+    }
+    if ( preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"pakketten"|<!-- wp:sfp\/uitklap \{[^}]*"variant":"vergelijk"/', $inhoud ) ) {
+        $delen[] = 'nlvorm-coach';
     }
     return $delen;
 }
@@ -810,4 +830,135 @@ function sfp_page_config_nlvorm_wachtlijstknop( $html, $block ) {
     }
     $tekst = esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) );
     return (string) preg_replace( '/(<div class="srfm-submit-wrap">)\s*[^<]*?\s*(<div class="srfm-loader")/', '$1' . $tekst . '$2', $html, 1 );
+}
+
+/* =========================================================================
+ * Rolregel uit de labelnaam (3.31.0, C9)
+ * ====================================================================== */
+
+add_filter( 'render_block', 'sfp_page_config_nlvorm_labelnaam', 10, 2 );
+
+/**
+ * In een regel Naam met portret wordt [label] of [labelnaam] de naam van de
+ * site, zodat "Oprichter van [label]" nooit vaste tekst is.
+ *
+ * @param  string $html  Getekend blok.
+ * @param  array  $block Blok.
+ * @return string
+ */
+function sfp_page_config_nlvorm_labelnaam( $html, $block ) {
+    if ( empty( $block['blockName'] ) || 'core/paragraph' !== $block['blockName'] || false === strpos( (string) $html, '[label' ) ) {
+        return $html;
+    }
+    if ( false === strpos( (string) ( $block['attrs']['className'] ?? '' ), 'is-style-sfp-wie' ) ) {
+        return $html;
+    }
+    $naam = esc_html( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES, 'UTF-8' ) );
+    return str_replace( array( '[labelnaam]', '[label]' ), $naam, $html );
+}
+
+/* =========================================================================
+ * Service-schema voor coaching (3.31.0, C5)
+ * ====================================================================== */
+
+add_action( 'wp_footer', 'sfp_page_config_nlvorm_service_schema', 30 );
+
+/**
+ * Service met een Offer per pakket, zonder prijs (besluit Stephan 7-11), op
+ * een coachpagina met Kolommen, Pakketten.
+ */
+function sfp_page_config_nlvorm_service_schema() {
+    if ( is_admin() || ! is_singular() ) {
+        return;
+    }
+    $post_id = (int) get_queried_object_id();
+    if ( 'coaching' !== get_post_meta( $post_id, 'sfp_page_type', true ) || ! (bool) apply_filters( 'sfp_page_config_service_schema', true, $post_id ) ) {
+        return;
+    }
+    $data = sfp_page_config_nlvorm_service_data( $post_id, (string) get_post_field( 'post_content', $post_id ) );
+    if ( $data ) {
+        echo '<script type="application/ld+json" id="sfp-service-schema">' . wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON van wp_json_encode.
+    }
+}
+
+/**
+ * De pakketten uit de inhoud: per kaart in Kolommen, Pakketten de kop (H3)
+ * en de omvang (alinea Omvang).
+ *
+ * @param  string $inhoud Berichtinhoud.
+ * @return array<int, array{naam: string, omvang: string}>
+ */
+function sfp_page_config_nlvorm_pakketten( $inhoud ) {
+    $uit = array();
+    $zoek = function ( $blokken ) use ( &$zoek, &$uit ) {
+        foreach ( $blokken as $b ) {
+            if ( 'sfp/kolommen' === ( $b['blockName'] ?? '' ) && 'pakketten' === ( $b['attrs']['indeling'] ?? '' ) ) {
+                foreach ( $b['innerBlocks'] as $kaart ) {
+                    $naam   = '';
+                    $omvang = '';
+                    foreach ( $kaart['innerBlocks'] ?? array() as $kind ) {
+                        $tekst = trim( html_entity_decode( wp_strip_all_tags( (string) ( $kind['innerHTML'] ?? '' ) ), ENT_QUOTES, 'UTF-8' ) );
+                        if ( '' === $naam && 'core/heading' === ( $kind['blockName'] ?? '' ) ) {
+                            $naam = $tekst;
+                        } elseif ( '' === $omvang && false !== strpos( (string) ( $kind['attrs']['className'] ?? '' ), 'is-style-sfp-omvang' ) ) {
+                            $omvang = $tekst;
+                        }
+                    }
+                    if ( '' !== $naam ) {
+                        $uit[] = array(
+                            'naam'   => $naam,
+                            'omvang' => $omvang,
+                        );
+                    }
+                }
+            } elseif ( ! empty( $b['innerBlocks'] ) ) {
+                $zoek( $b['innerBlocks'] );
+            }
+        }
+    };
+    $zoek( parse_blocks( (string) $inhoud ) );
+    return $uit;
+}
+
+/**
+ * Het Service-schema als array, of leeg zonder pakketten.
+ *
+ * @param  int    $post_id Pagina.
+ * @param  string $inhoud  Berichtinhoud.
+ * @return array
+ */
+function sfp_page_config_nlvorm_service_data( $post_id, $inhoud ) {
+    $pakketten = sfp_page_config_nlvorm_pakketten( $inhoud );
+    if ( ! $pakketten ) {
+        return array();
+    }
+    $offers = array();
+    foreach ( $pakketten as $p ) {
+        $offer = array(
+            '@type' => 'Offer',
+            'name'  => $p['naam'],
+        );
+        if ( '' !== $p['omvang'] ) {
+            $offer['description'] = $p['omvang'];
+        }
+        $offers[] = $offer;
+    }
+    $data = array(
+        '@context'   => 'https://schema.org',
+        '@type'      => 'Service',
+        '@id'        => get_permalink( $post_id ) . '#service',
+        'name'       => html_entity_decode( get_the_title( $post_id ), ENT_QUOTES, 'UTF-8' ),
+        'url'        => get_permalink( $post_id ),
+        'provider'   => array( '@id' => home_url( '/' ) . '#organization' ),
+        'performer'  => array( '@id' => 'https://stephanborggreve.com/#person' ),
+        'areaServed' => array(
+            '@type' => 'Country',
+            'name'  => 'NL',
+        ),
+        'offers'     => $offers,
+    );
+    if ( preg_match( '/<p[^>]*class="[^"]*is-style-sfp-kernzin[^"]*"[^>]*>(.*?)<\/p>/s', (string) $inhoud, $m ) ) {
+        $data['description'] = trim( html_entity_decode( wp_strip_all_tags( $m[1] ), ENT_QUOTES, 'UTF-8' ) );
+    }
+    return $data;
 }

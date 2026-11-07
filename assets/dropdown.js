@@ -151,7 +151,30 @@
     document.addEventListener('click', function (e) {
         var a = e.target && e.target.closest ? e.target.closest('a[data-sfp-groep]') : null;
         if (a) vraag(a.getAttribute('data-sfp-groep'));
+        // Sinds 3.31.0: een link op een pakketkaart kiest dat pakket in het
+        // keuzemenu met de keuze die met de naam van het pakket begint.
+        var p = e.target && e.target.closest ? e.target.closest('.sfp-kolommen--pakketten a[href^="#"]') : null;
+        if (p) {
+            var kop = p.closest('.sfp-kaart') ? p.closest('.sfp-kaart').querySelector('h3') : null;
+            if (kop) kiesPakket(kop.textContent.trim());
+        }
     });
+
+    /** Kies in elk keuzemenu van een formulier de keuze die met de naam begint (3.31.0). */
+    function kiesPakket(naam) {
+        var laag = naam.toLowerCase();
+        document.querySelectorAll('.srfm-dropdown-block select').forEach(function (select) {
+            if (select.closest('.sfp-startmoment-select')) return;
+            var ts = select.tomselect, waarde = null;
+            var lijst = ts ? Object.keys(ts.options).map(function (k) { return { v: k, t: String(ts.options[k].text || ts.options[k].label || k) }; })
+                : Array.prototype.map.call(select.options, function (o) { return { v: o.value, t: o.textContent }; });
+            for (var i = 0; i < lijst.length; i++) {
+                if (lijst[i].t.trim().toLowerCase().indexOf(laag) === 0) { waarde = lijst[i].v; break; }
+            }
+            if (waarde === null) return;
+            if (ts) { ts.setValue(waarde); } else { select.value = waarde; select.dispatchEvent(new Event('change', { bubbles: true })); }
+        });
+    }
     // Terugval: ?groep=2 of ?groep=wachtlijst in het adres.
     (function () {
         var m = /[?&]groep=([^&#]+)/.exec(window.location.search);

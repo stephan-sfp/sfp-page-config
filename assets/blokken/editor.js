@@ -312,6 +312,8 @@
 			uitleg( 'Hoogstens drie feiten op de foto. Geen prijs.' ),
 			tekstveld( 'Deelnemers', a.deelnemers, function ( v ) { props.setAttributes( { deelnemers: v } ); }, 'Onder de knoppen, naast het Google-cijfer. Bijvoorbeeld: meer dan 2.000 deelnemers. Leeg: alleen het cijfer.' ),
 			tekstveld( 'Initialen', a.initialen, function ( v ) { props.setAttributes( { initialen: v } ); }, 'Drie keer twee letters met een spatie ertussen, bijvoorbeeld: JK MV SB.' ),
+			keuze( 'Wat blijft in beeld op de foto', a.focus || '50% 30%', [ { label: 'Midden, iets boven', value: '50% 30%' }, { label: 'Boven', value: '50% 15%' }, { label: 'Midden', value: '50% 50%' }, { label: 'Links', value: '25% 30%' }, { label: 'Rechts', value: '75% 30%' } ], function ( v ) { props.setAttributes( { focus: v } ); } ),
+			schakelaar( 'Feiten mogen afbreken op een telefoon', !! a.afbreken, function ( v ) { props.setAttributes( { afbreken: v } ); }, 'Voor een feit dat langer is dan één regel.' ),
 		] ) : [];
 		return el( Fragment, null,
 			paneel( 'Bovenkant van de pagina', [
@@ -335,6 +337,7 @@
 		{ label: 'Reviews naast elkaar', value: 'reviews', vorm: 'n:1,1,1' },
 		{ label: 'Boek en tekst', value: 'boek', vorm: 'n:0.9,1.4' },
 		{ label: 'Inschrijven', value: 'inschrijven', vorm: 'n:1,1.1' },
+		{ label: 'Pakketten', value: 'pakketten', vorm: 'n:1,1,1', rand: true },
 	];
 	blok( 'sfp/kolommen', function ( props ) {
 		var a = props.attributes;
@@ -415,24 +418,26 @@
 		{ label: 'Kaarten', value: 'kaart', vorm: 'n:1,1' },
 		{ label: 'Verhaal', value: 'verhaal', vorm: 'o:.4,1' },
 		{ label: 'Programma', value: 'programma', vorm: 'n:1,1', rand: true },
+		{ label: 'Vergelijk', value: 'vergelijk', vorm: 'o:1' },
 	];
 	var uitklapUitleg = {
 		groot: 'Elke regel is een brede balk met de titel.',
 		compact: 'Eén regel die de rest van de tekst laat zien.',
 		kaart: 'Regels als kaarten, met een regel onder de titel.',
 		verhaal: 'Een verhaal in een artikel, met een label boven de titel.',
+		vergelijk: 'Eén kaart met een tabel die de pakketten vergelijkt. Op een telefoon schuift de tabel in zijn eigen vak.',
 		programma: 'Het programma per dag: label Dag n, titel, alinea en vinklijst. Twee dagen staan naast elkaar en gaan samen open; meer dagen staan onder elkaar.',
 	};
 	blok( 'sfp/uitklap', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-uitklap sfp-uitklap--' + a.variant + ( 'programma' === a.variant ? ' sfp-uitklap--kaart' : '' ) } );
+		var blockProps = useBlockProps( { className: 'sfp-uitklap sfp-uitklap--' + a.variant + ( 'programma' === a.variant || 'vergelijk' === a.variant ? ' sfp-uitklap--kaart' : '' ) } );
 		var inner = useInnerBlocksProps( blockProps, { allowedBlocks: [ 'sfp/uitklap-regel' ], template: [ [ 'sfp/uitklap-regel' ] ] } );
 		return el( Fragment, null,
 			paneel( 'Uitklap', [
 				vormkeuze( 'Vorm', a.variant, uitklapVormen, function ( v ) { props.setAttributes( { variant: v } ); } ),
 				uitleg( uitklapUitleg[ a.variant ] || '' ),
 				// Een verhaal is één regel: daar doet de schakelaar niets (sinds 3.19.0 alleen bij de andere vormen).
-				'verhaal' !== a.variant && 'programma' !== a.variant ? schakelaar( 'Eén regel tegelijk open', a.eenTegelijk, function ( v ) { props.setAttributes( { eenTegelijk: v } ); } ) : null,
+				'verhaal' !== a.variant && 'programma' !== a.variant && 'vergelijk' !== a.variant ? schakelaar( 'Eén regel tegelijk open', a.eenTegelijk, function ( v ) { props.setAttributes( { eenTegelijk: v } ); } ) : null,
 			] ),
 			el( 'div', inner )
 		);
@@ -1081,7 +1086,7 @@
 				keuze( 'Test', a.test || '', opties, function ( v ) { props.setAttributes( { test: v } ); } ),
 				tekstveld( 'Bronlabel', a.bron, function ( v ) { props.setAttributes( { bron: v } ); }, 'Komt als ?bron= in de link, voor GA4. Leeg: het soort pagina en het adres, bijvoorbeeld pagina-presenteren-training.' ),
 				schakelaar( 'Icoon tonen', !! a.icoon, function ( v ) { props.setAttributes( { icoon: v } ); }, 'Standaard zonder icoon.' ),
-				schakelaar( 'Knop omlijnd', 'omlijnd' === a.knop, function ( v ) { props.setAttributes( { knop: v ? 'omlijnd' : 'vol' } ); }, 'Rand en tekst in primair. Op een pagina met een inschrijfknop blijft de actiekleur voor inschrijven.' ),
+				schakelaar( 'Knop omlijnd (stijl Tweede)', 'omlijnd' === a.knop, function ( v ) { props.setAttributes( { knop: v ? 'omlijnd' : 'vol' } ); }, 'Rand en tekst in primair. Op een pagina met een inschrijfknop blijft de actiekleur voor inschrijven.' ),
 				uitleg( 'Kop, zin en knoptekst staan in SFP Beheer, Zelftest, en gelden voor elke oproep en de promokaart van een pijler. Niet voor toolpagina\'s: de zelftest is geen tool.' ),
 			] ),
 			gegeven( 'sfp/zelftest-cta', null, props, leeg )

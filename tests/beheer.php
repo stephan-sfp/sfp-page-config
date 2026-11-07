@@ -222,7 +222,7 @@ $GLOBALS['posts'] = array(
 /* ---------- Teksten per taal ---------- */
 
 same( 'nl', sfp_page_config_taal(), 'nl_NL is Nederlands' );
-same( 'Boek je gratis proefsessie', sfp_page_config_tekst( 'knop_coaching' ), 'Nederlandse standaard gelijk aan 2.12.0' );
+same( 'Plan je proefsessie', sfp_page_config_tekst( 'knop_coaching' ), 'Nederlandse standaard coaching sinds 3.31.0' );
 same( 'Plan een kennismaking in', sfp_page_config_tekst( 'knop_training' ), 'Nederlandse standaard training gelijk aan 2.12.0' );
 same( 'Plan je adviesgesprek', sfp_page_config_tekst( 'knop_incompany' ), 'Netwerknorm incompany (besluit 11-10-2026)' );
 same( 'Groep 2', sfp_page_config_tekst_f( 'groep', 2 ), 'Groep met nummer' );
@@ -340,7 +340,7 @@ same( null, sfp_page_config_get_sticky_cta( 'onbekend' ), 'Onbekende soort pagin
 $GLOBALS['options']['sfp_settings'] = array();
 same(
     array(
-        'text'   => 'Boek je gratis proefsessie',
+        'text'   => 'Plan je proefsessie',
         'doel'   => 'form',
         'href'   => '',
         'target' => '_self'
@@ -362,7 +362,7 @@ same( 'Oud', sfp_page_config_get_sticky_cta( 'coaching' )['text'], 'Oude tekst b
 $GLOBALS['options']['sfp_settings'] = array( 'sticky_cta' => array( 'coaching' => array( 'href' => 'https://elders.test/boek' ) ) );
 same(
     array(
-        'text'   => 'Boek je gratis proefsessie',
+        'text'   => 'Plan je proefsessie',
         'doel'   => 'link',
         'href'   => 'https://elders.test/boek',
         'target' => '_blank'

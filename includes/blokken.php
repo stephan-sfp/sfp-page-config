@@ -111,6 +111,15 @@ function sfp_page_config_blokken() {
                 ),
                 'deelnemers'    => $tekst,
                 'initialen'     => $tekst,
+                // Sinds 3.31.0: focuspunt van de foto en feiten die mogen afbreken.
+                'focus'         => array(
+                    'type'    => 'string',
+                    'default' => '50% 30%'
+                ),
+                'afbreken'      => array(
+                    'type'    => 'boolean',
+                    'default' => false
+                ),
             ),
             'render'      => 'sfp_page_config_render_held',
         ),
@@ -123,7 +132,7 @@ function sfp_page_config_blokken() {
                 'indeling'   => array(
                     'type'    => 'string',
                     'default' => 'twee',
-                    'enum'    => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven' )
+                    'enum'    => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten' )
                 ),
                 // Verticale uitlijning (3.22.0). Leeg: zoals de indeling het doet.
                 'uitlijning' => array(
@@ -198,7 +207,7 @@ function sfp_page_config_blokken() {
                 'variant'     => array(
                     'type'    => 'string',
                     'default' => 'groot',
-                    'enum'    => array( 'groot', 'compact', 'kaart', 'verhaal', 'programma' )
+                    'enum'    => array( 'groot', 'compact', 'kaart', 'verhaal', 'programma', 'vergelijk' )
                 ),
                 'eenTegelijk' => array(
                     'type'    => 'boolean',
@@ -327,6 +336,8 @@ function sfp_page_config_blokstijlen() {
             'sfp-klein'        => 'Klein',
             'sfp-lead'         => 'Lead (eerste alinea van een artikel)',
             'sfp-kernzin'      => 'Kernzin (vet, onder een kop)',
+            'sfp-omvang'       => 'Omvang (pakket)',
+            'sfp-plus'         => 'Plus-regel (pakket: Alles in X, plus)',
         ),
         'core/table'     => array(
             'sfp-tabel' => 'Huisstijl',
@@ -344,7 +355,6 @@ function sfp_page_config_blokstijlen() {
             'sfp-licht'  => 'Licht (op donker)',
             'sfp-tweede' => 'Tweede (op licht)',
             'sfp-tekst'  => 'Tekstlink (tweede keus naast een volle knop)',
-            'sfp-omlijnd' => 'Omlijnd (rand en tekst in primair)',
         ),
         'sfp/kolom'      => array(
             'sfp-wachtlijst' => 'Wachtlijst (veld en knop op één regel)',
@@ -956,7 +966,7 @@ function sfp_page_config_blokken_editor_css() {
  * @return string[]
  */
 function sfp_page_config_blokken_editor_bestanden() {
-    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'editor' );
+    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'editor' );
 }
 
 /**
@@ -1109,7 +1119,7 @@ function sfp_page_config_render_held( $attrs, $content, $blok = null ) {
     // Held wit (3.30.0, NL-vorm): tekst links, foto rechts met feitenkaart.
     if ( 'wit' === $variant && function_exists( 'sfp_page_config_nlvorm_held' ) ) {
         return sfp_page_config_blokken_css_vangnet( 'sfp/held' ) . sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-held' )
-            . '<section ' . sfp_page_config_blok_omhulling( array( 'sfp-held', 'sfp-held--wit', 'held-feit', 'held-accent', 'held-bewijs' ), sfp_page_config_blok_attr( $attrs, 'anker' ) ) . '>'
+            . str_replace( '<section ', '<section style="--sfp-held-focus:' . esc_attr( sfp_page_config_nlvorm_focus( sfp_page_config_blok_attr( $attrs, 'focus', '50% 30%' ) ) ) . '" ', '<section ' . sfp_page_config_blok_omhulling( array( 'sfp-held', 'sfp-held--wit', 'held-feit', 'held-accent', 'held-bewijs' ), sfp_page_config_blok_attr( $attrs, 'anker' ) ) . '>' )
             . sfp_page_config_nlvorm_held( $attrs, $blok, $content ) . '</section>';
     }
     $klassen = array( 'sfp-held', 'sfp-held--recht', 'breed' === $variant ? 'sfp-held--breed' : '' );
@@ -1129,10 +1139,11 @@ function sfp_page_config_render_held( $attrs, $content, $blok = null ) {
  * @return string
  */
 function sfp_page_config_render_kolommen( $attrs, $content ) {
-    $indeling   = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'indeling', 'twee' ), array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven' ) );
+    $indeling   = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'indeling', 'twee' ), array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten' ) );
     // De indelingen van de NL-vorm (3.30.0) hebben nlvorm.css nodig.
     $nlvorm     = in_array( $indeling, array( 'situaties', 'reviews' ), true ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inhoud' ) : '';
     $nlvorm    .= in_array( $indeling, array( 'boek', 'inschrijven' ), true ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inschrijven' ) : '';
+    $nlvorm    .= 'pakketten' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-coach' ) : '';
     $uitlijning = sfp_page_config_blok_attr( $attrs, 'uitlijning' );
     $uitlijning = in_array( $uitlijning, array( 'boven', 'midden', 'onder', 'rekken' ), true ) ? 'sfp-kolommen--' . $uitlijning : '';
     return sfp_page_config_blokken_css_vangnet( 'sfp/kolommen' ) . $nlvorm
@@ -1230,7 +1241,12 @@ function sfp_page_config_blok_titel_kses() {
  * @return string
  */
 function sfp_page_config_render_uitklap( $attrs, $content, $block = null ) {
-    $variant = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'variant', 'groot' ), array( 'groot', 'compact', 'kaart', 'verhaal', 'programma' ) );
+    $variant = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'variant', 'groot' ), array( 'groot', 'compact', 'kaart', 'verhaal', 'programma', 'vergelijk' ) );
+    // Vergelijk (3.31.0, NL-vorm coach): uitklap als kaart met een vergelijktabel.
+    if ( 'vergelijk' === $variant ) {
+        return sfp_page_config_blokken_css_vangnet( 'sfp/uitklap' ) . sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-coach' )
+            . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-uitklap', 'sfp-uitklap--kaart', 'sfp-uitklap--vergelijk' ) ) . '>' . $content . '</div>';
+    }
     // Programma (3.30.0, NL-vorm): kaarten; twee dagen naast elkaar en samen
     // open, meer dan twee gestapeld.
     if ( 'programma' === $variant ) {

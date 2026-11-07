@@ -50,17 +50,15 @@
 :root :is(.sfp-sectie,.sfp-held) .wp-block-button__link:hover{background:var(--sfp-b-hover);border-color:var(--sfp-b-hover);color:var(--sfp-b-wit)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link{background:transparent;border-color:rgba(255,255,255,.55);color:var(--sfp-b-wit)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-wit);color:var(--sfp-b-wit)}
-:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link{background:transparent;border-color:var(--sfp-b-lijn-sterk);color:var(--sfp-b-primair)}
-:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link{background:transparent;border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
+/* Tweede is de omlijnde knop (3.31.0, besluit 7-11): rand en tekst in primair, bij hover gevuld */
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link:hover{background:var(--sfp-b-primair);border-color:var(--sfp-b-primair);color:var(--sfp-b-wit)}
 /* tekstlink: tweede keus naast een volle knop (branding.md, 3.30.0): het bodyfont op 700, gewone letters, onderstreept, met pijl */
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link{background:transparent;border-color:transparent;color:var(--sfp-b-tekstlink);padding-left:0;padding-right:0;font-family:var(--sfp-b-tekst);font-weight:700!important;font-size:16px;text-transform:none;letter-spacing:0;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link::after{content:"\00a0\2192"}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link:hover{background:transparent;border-color:transparent;color:var(--sfp-b-tekstlink);text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
 :root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link,:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link:hover{color:var(--sfp-b-wit)}
 :root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link:hover{text-decoration-color:var(--sfp-b-secundair)}
-/* omlijnd (3.30.0): rand en tekst in primair, bij hover gevuld */
-:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-omlijnd .wp-block-button__link{background:transparent;border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
-:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-omlijnd .wp-block-button__link:hover{background:var(--sfp-b-primair);border-color:var(--sfp-b-primair);color:var(--sfp-b-wit)}
 
 /* alinea-stijlen */
 /* kernzin (branding.md, 3.30.0): bodyfont 700, primair, meeschalend onder een kop */
