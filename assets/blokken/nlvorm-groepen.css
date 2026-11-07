@@ -39,3 +39,8 @@
 :root .sfp-tekstlink::after{content:"\00a0\2192"}
 :root .sfp-tekstlink:hover{text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
 
+/* wachtlijstkaart (3.31.0): geen geplande groep, één kaart zonder datumrijen */
+:root .sfp-kolommen--groepen.sfp-kolommen--een{grid-template-columns:minmax(0,1fr);max-width:calc((100% - 32px)/2)}
+:root .sfp-groep__zin{margin:0;font-size:16px;color:var(--sfp-b-body);max-width:52ch}
+:root .sfp-groep--wachtlijst .sfp-groep__status{background:var(--sfp-b-tint2);border-color:transparent}
+@media (max-width:980px){:root .sfp-kolommen--groepen.sfp-kolommen--een{max-width:none}}

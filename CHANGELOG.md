@@ -4,6 +4,31 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.31.0] - 2026-11-07
+
+Aanvullingen op 3.30.0 uit de sitechats van DST, DGA en de coachpagina (C1 tot C10). 3.30.0 is niet uitgerold; deze versie bevat alles.
+
+Terugdraaien: versie 3.29.3 terugzetten (zip uit de tag v3.29.3, map sfp-page-config). Pagina's die al een nieuw blok gebruiken tonen dat blok dan niet meer.
+
+### Toegevoegd
+- Groepskaarten zonder geplande groep: één kaart Wachtlijst met plaats en prijs, zonder data. Het keuzemenu toont dan alleen de wachtlijst, en de verzendknop en de knop onderaan krijgen de tekst Zet mij op de wachtlijst.
+- Reviews naast elkaar werkt met één, twee of drie reviews; één review staat gecentreerd op hoogstens 760 pixels.
+- Reviewblok: Google-reviews zijn te kiezen naast de eigen reviews, en een review mag zonder tekst (alleen naam en sterren).
+- Held Wit: uitsnede van de foto instelbaar, de feiten mogen afbreken over twee regels, een lange H1 krimpt op een telefoon tot hij past. Op een tablet staat de foto in 16:9.
+- Kolommen, indeling Pakketten (coachpagina): de link op een pakketkaart kiest dat pakket in het aanvraagformulier. Uitklap, vorm Vergelijk, voor de vergelijking van de pakketten.
+- Service-schema op coachpagina's met Pakketten: een aanbod per pakket, zonder prijs.
+- Alinea in de stijl Wie: [label] wordt de naam van de site.
+- Zelftest-oproep: beeld rechts op een computer, over de volle breedte op een telefoon.
+- Opmaakdeel nlvorm-coach (onder de 10 KB), alleen op pagina's met Pakketten of Vergelijk.
+
+### Gewijzigd
+- Knopstijl Tweede: rand en tekst in de primaire kleur, gevuld bij aanwijzen. Op alle sites gelijk; op SwS raakt dat één pagina.
+- Standaardtekst van de coachknop in het Nederlands: Plan je proefsessie (was Boek je gratis proefsessie). Engels en Portugees ongewijzigd.
+- Zelftest-oproep: de knop is nu overal omlijnd.
+
+### Verwijderd
+- Knopstijl Omlijnd (uit 3.30.0, nergens in gebruik): de stijl Tweede doet nu hetzelfde.
+
 ## [3.30.0] - 2026-11-07
 
 Bouwstenen voor de nieuwe trainingspagina van de NL-labels (DPS, DGA, CVD, DST), naar de dummy nl-vormen versie 63 en de bouwlijst A1 tot A18. De pagina's zelf bouwen de sitechats.

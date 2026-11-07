@@ -176,6 +176,11 @@ function sfp_page_config_wachtlijst_formulier_wissel( $block ) {
     if ( ! $post_id || ! sfp_page_config_wachtlijst_stand( $post_id ) ) {
         return $block;
     }
+    // Sinds 3.31.0: met Groepskaarten op de pagina blijft het gewone
+    // formulier staan, met alleen de wachtlijst in het keuzemenu (NL-vorm).
+    if ( function_exists( 'sfp_page_config_nlvorm_alleen_wachtlijst' ) && sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
+        return $block;
+    }
     $inschrijf  = sfp_page_config_wachtlijst_formulier_id( 'inschrijf_formulier' );
     $wachtlijst = sfp_page_config_wachtlijst_formulier_id( 'wachtlijst_formulier' );
     if ( ! $inschrijf || ! $wachtlijst || empty( $block['attrs']['id'] ) || (int) $block['attrs']['id'] !== $inschrijf ) {

@@ -90,6 +90,35 @@ $bewijs = sfp_page_config_nlvorm_bewijsregel( array( 'deelnemers' => 'meer dan 2
 preg_match( '/<span class="sfp-held__koppen"[^>]*>(.*?)<\/span><\/span>/', $bewijs, $k );
 $is( 3, isset( $k[1] ) ? substr_count( $k[1], '<span>' ) : 0, 'hoogstens drie initialen' );
 
+/* ---------- Zonder geplande groep: wachtlijstkaart (3.31.0) ---------- */
+// Eigen post_id: de toekomstige groepen worden per post_id onthouden.
+$pagina2 = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'NL-vorm test zonder groep', 'post_content' => '<!-- wp:sfp/groepskaarten /-->' ) );
+update_post_meta( $pagina2, 'sfp_page_type', 'training' );
+sfp_page_config_cursusdata_bewaar( $pagina2, array( array( 'data' => array( '2000-01-01' ) ) ) );
+$GLOBALS['post'] = get_post( $pagina2 );
+setup_postdata( $GLOBALS['post'] );
+$leeg = sfp_page_config_render_groepskaarten( array() );
+$bevat( 'sfp-groep--wachtlijst', $leeg, 'wachtlijstkaart zonder groep' );
+$bevat( 'class="sfp-groep__data"', $leeg, 'wachtlijstkaart zonder datumrijen', false );
+$bevat( 'data-sfp-groep="wachtlijst"', $leeg, 'wachtlijstkaart linkt naar de wachtlijst' );
+$is( true, sfp_page_config_nlvorm_alleen_wachtlijst( $pagina2 ), 'pagina met Groepskaarten zonder groep: alleen wachtlijst' );
+$is( false, sfp_page_config_nlvorm_alleen_wachtlijst( $pagina ), 'pagina met groepen: niet alleen wachtlijst' );
+wp_delete_post( $pagina2, true );
+
+/* ---------- Coachpagina (3.31.0): labelnaam, pakketten, Service ---------- */
+$p = sfp_page_config_nlvorm_labelnaam( '<p class="is-style-sfp-wie">Oprichter van [label]</p>', array( 'blockName' => 'core/paragraph', 'attrs' => array( 'className' => 'is-style-sfp-wie' ) ) );
+$bevat( get_bloginfo( 'name' ), $p, 'labelnaam vervangen door de sitenaam' );
+$bevat( '[label]', $p, 'geen [label] meer over', false );
+$coach = '<!-- wp:sfp/kolommen {"indeling":"pakketten"} --><!-- wp:sfp/kolom --><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Spoed</h3><!-- /wp:heading --><!-- wp:paragraph {"className":"is-style-sfp-omvang"} --><p class="is-style-sfp-omvang">2 tot 4 sessies</p><!-- /wp:paragraph --><!-- /wp:sfp/kolom --><!-- wp:sfp/kolom --><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Intensief</h3><!-- /wp:heading --><!-- /wp:sfp/kolom --><!-- /wp:sfp/kolommen -->';
+$pk = sfp_page_config_nlvorm_pakketten( $coach );
+$is( 2, count( $pk ), 'twee pakketten gelezen' );
+$pagina3 = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Coaching test', 'post_content' => $coach ) );
+$sd = sfp_page_config_nlvorm_service_data( $pagina3, $coach );
+$is( 'Service', isset( $sd['@type'] ) ? $sd['@type'] : '', 'Service-schema' );
+$is( 2, isset( $sd['offers'] ) ? count( $sd['offers'] ) : 0, 'een aanbod per pakket' );
+$is( array(), sfp_page_config_nlvorm_service_data( $pagina3, '<!-- wp:paragraph --><p>x</p><!-- /wp:paragraph -->' ), 'zonder pakketten geen Service' );
+wp_delete_post( $pagina3, true );
+
 /* ---------- Opruimen ---------- */
 wp_reset_postdata();
 wp_delete_post( $pagina, true );

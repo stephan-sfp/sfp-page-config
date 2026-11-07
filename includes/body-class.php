@@ -126,6 +126,10 @@ function sfp_page_config_knop_voor_pagina( $post_id, $type ) {
     if ( '' !== $eigen_tekst ) {
         $config['text'] = $eigen_tekst;
     }
+    // Sinds 3.31.0: Groepskaarten zonder geplande groep, dan naar de wachtlijst.
+    if ( 'training' === $type && function_exists( 'sfp_page_config_nlvorm_alleen_wachtlijst' ) && sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
+        $config['text'] = sfp_page_config_tekst( 'groep_wachtlijst_link' );
+    }
 
     // Ankers waaraan het formulier te herkennen is. Het oude veld per soort
     // pagina telt nog mee voor sites die daar iets eigens hadden ingevuld.

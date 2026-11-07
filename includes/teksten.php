@@ -59,7 +59,8 @@ function sfp_page_config_teksten_register() {
         'knop_coaching'               => array(
             'groep'  => 'Knop onderaan',
             'label'  => 'Coaching',
-            'nl'     => 'Boek je gratis proefsessie',
+            // Sinds 3.31.0 (besluit Stephan 7-11, NL-vorm coachpagina).
+            'nl'     => 'Plan je proefsessie',
             'en'     => 'Book a discovery call',
             'pt'     => 'Agende uma conversa',
             'opslag' => 'sticky_cta.coaching.text',
@@ -502,6 +503,41 @@ function sfp_page_config_teksten_register() {
             'nl'    => 'Geen van beide: wachtlijst',
             'en'    => 'Neither: waiting list',
             'pt'    => 'Nenhuma: lista de espera',
+        ),
+        'review_google_bron' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Review: bron bij een Google-review',
+            'nl'    => 'Google-review',
+            'en'    => 'Google review',
+            'pt'    => 'Avaliação no Google',
+        ),
+        'groep_wachtlijst_status' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Wachtlijstkaart: status',
+            'nl'    => 'Wachtlijst',
+            'en'    => 'Waiting list',
+            'pt'    => 'Lista de espera',
+        ),
+        'groep_wachtlijst_label' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Wachtlijstkaart: label',
+            'nl'    => 'Volgende groep',
+            'en'    => 'Next group',
+            'pt'    => 'Próxima turma',
+        ),
+        'groep_wachtlijst_kop' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Wachtlijstkaart: kop',
+            'nl'    => 'Nog geen datum gepland',
+            'en'    => 'No date scheduled yet',
+            'pt'    => 'Ainda sem data marcada',
+        ),
+        'groep_wachtlijst_zin' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Wachtlijstkaart: zin',
+            'nl'    => 'Zet je op de wachtlijst en je hoort als eerste wanneer de volgende groep start.',
+            'en'    => 'Join the waiting list and be the first to hear when the next group starts.',
+            'pt'    => 'Entre na lista de espera e seja o primeiro a saber quando a próxima turma começar.',
         ),
         'held_kerngegevens' => array(
             'groep' => 'Trainingspagina',

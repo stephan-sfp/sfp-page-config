@@ -44,7 +44,7 @@ html:has(.sfp-held--wit){scroll-behavior:auto!important}
 :root .sfp-held--wit .wp-block-buttons{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;justify-content:flex-start;margin-top:6px;padding:0}
 /* !important zoals in de dummy: de held recht zet het beeld met een hogere specificiteit absoluut over de rechterhelft */
 :root .sfp-held--wit .sfp-held__binnen>.wp-block-image{position:relative!important;inset:auto!important;left:auto!important;width:auto!important;height:auto!important;max-width:none!important;margin:0!important;-webkit-mask-image:none!important;mask-image:none!important;z-index:auto}
-:root .sfp-held--wit .sfp-held__binnen>.wp-block-image img{position:relative;z-index:1;display:block;width:100%!important;height:auto!important;aspect-ratio:4/3!important;object-fit:cover;object-position:50% 30%;border-radius:var(--sfp-b-r-kaart)}
+:root .sfp-held--wit .sfp-held__binnen>.wp-block-image img{position:relative;z-index:1;display:block;width:100%!important;height:auto!important;aspect-ratio:4/3!important;object-fit:cover;object-position:var(--sfp-held-focus,50% 30%)!important;border-radius:var(--sfp-b-r-kaart)}
 /* accent: één zinsdeel van de H1 met een band in Tint 2 onder de onderste helft van de letters */
 :root .sfp-held .sfp-accent{background:none;color:inherit;padding:0}
 :root .sfp-held--wit .sfp-accent{background:linear-gradient(transparent 58%,var(--sfp-b-tint2) 58%);color:inherit;padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
@@ -79,7 +79,7 @@ html:has(.sfp-held--wit){scroll-behavior:auto!important}
   :root .sfp-held__bewijs{flex-wrap:wrap;row-gap:8px}
 }
 @media (min-width:701px) and (max-width:980px){
-  :root .sfp-held--wit .sfp-held__binnen>.wp-block-image img{aspect-ratio:16/9!important;max-height:360px}
+  :root .sfp-held--wit .sfp-held__binnen>.wp-block-image img{aspect-ratio:16/9!important;max-height:none!important}
 }
 @media (max-width:700px){
   :root .sfp-held--wit .sfp-held__binnen{display:flex;flex-direction:column;align-items:stretch}
@@ -97,6 +97,7 @@ html:has(.sfp-held--wit){scroll-behavior:auto!important}
   :root .sfp-held__feit strong{font-size:14px;white-space:nowrap}
   :root .sfp-held__feit>div:nth-child(n+4){display:none}
   :root .sfp-held__feit .sfp-lang{display:none}
+  :root .sfp-held__feit--afbreken strong{white-space:normal;line-height:1.25}
   :root .sfp-held__score{border-right:0;padding-right:0;margin-right:0}
 }
 @media (max-width:430px){

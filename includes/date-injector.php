@@ -109,6 +109,11 @@ function sfp_page_config_inject_course_data() {
         );
     }
 
+    // Sinds 3.31.0: Groepskaarten zonder geplande groep, alleen de wachtlijst.
+    if ( empty( $startmomenten ) && function_exists( 'sfp_page_config_nlvorm_alleen_wachtlijst' ) && sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
+        $output .= 'window.sfpAlleenWachtlijst=true;';
+    }
+
     if ( $output ) {
         printf( '<script>%s</script>', $output );
     }
@@ -130,7 +135,10 @@ function sfp_page_config_enqueue_dropdown_script() {
     }
 
     $type = get_post_meta( get_queried_object_id(), 'sfp_page_type', true );
-    if ( 'training' !== $type || ! sfp_page_config_onderdeel_aan( 'cursusdata' ) ) {
+    // Sinds 3.31.0 ook op een coachpagina met Pakketten: de link op een
+    // pakketkaart kiest het pakket in het aanvraagformulier.
+    $pakketten = 'coaching' === $type && false !== strpos( (string) get_post_field( 'post_content', get_queried_object_id() ), '"indeling":"pakketten"' );
+    if ( ! $pakketten && ( 'training' !== $type || ! sfp_page_config_onderdeel_aan( 'cursusdata' ) ) ) {
         return;
     }
 

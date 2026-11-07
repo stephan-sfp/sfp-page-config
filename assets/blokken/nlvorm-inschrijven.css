@@ -100,3 +100,4 @@
   :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-submit-container :is(.wp-block-button__link,button,#srfm-submit-btn){width:100%}
 }
 :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-block textarea{min-height:110px;resize:vertical}
+:root .sfp-kolommen--inschrijven .srfm-form-container .srfm-textarea-block{flex:1 1 100%!important}
