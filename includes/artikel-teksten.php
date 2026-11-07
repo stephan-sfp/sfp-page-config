@@ -83,6 +83,7 @@ function sfp_page_config_artikel_teksten() {
             'favoriet'               => 'Favourite on Google',
             'favoriet_kort'          => 'Favourite',
             'tekstgrootte'           => 'Text size',
+            'toegankelijkheid'       => 'Accessibility',
             'tekst_normaal'          => 'Normal',
             'tekst_groter'           => 'Larger',
             'tekst_grootst'          => 'Largest',
@@ -286,6 +287,7 @@ function sfp_page_config_artikel_teksten() {
             'favoriet'               => 'Maak favoriet',
             'favoriet_kort'          => 'Favoriet',
             'tekstgrootte'           => 'Tekstgrootte',
+            'toegankelijkheid'       => 'Toegankelijkheid',
             'tekst_normaal'          => 'Normaal',
             'tekst_groter'           => 'Groter',
             'tekst_grootst'          => 'Grootst',
@@ -489,6 +491,7 @@ function sfp_page_config_artikel_teksten() {
             'favoriet'               => 'Fonte favorita',
             'favoriet_kort'          => 'Favorita',
             'tekstgrootte'           => 'Tamanho do texto',
+            'toegankelijkheid'       => 'Acessibilidade',
             'tekst_normaal'          => 'Normal',
             'tekst_groter'           => 'Maior',
             'tekst_grootst'          => 'Máximo',
@@ -678,6 +681,7 @@ function sfp_page_config_artikel_icoon( $naam ) {
         // Het Google-G in de kleuren van Google zelf (zoals de reviewster, branding.md Functionele kleuren):
         // een merkkleur zou de herkomst van de actie verhullen.
         'google'   => '<svg viewBox="0 0 18 18" aria-hidden="true"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.8.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.71H.96v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.97 10.71A5.41 5.41 0 0 1 3.69 9c0-.6.1-1.17.28-1.71V4.96H.96A9 9 0 0 0 0 9c0 1.45.35 2.83.96 4.04l3.01-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.9 11.43 0 9 0A9 9 0 0 0 .96 4.96l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58z"/></svg>',
+        'toegang'  => '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="2.6" r="1.4" fill="currentColor"/><path d="M2.5 5.5h11M8 5.5v4M8 9.5l-2.6 4.2M8 9.5l2.6 4.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         'tekst'    => '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 4.5V2.5h9v2M6 2.5v11M4 13.5h4M11.5 7.5v-1.5h4v1.5M13.5 6v7.5M12.3 13.5h2.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         'ster'     => '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.6l-3.8 2 .7-4.3-3.1-3 4.3-.6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>',
         'vraag'    => '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.3 6.2a1.8 1.8 0 113 1.4c-.7.4-1.3.8-1.3 1.6M8 11.2v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',

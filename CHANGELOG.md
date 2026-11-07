@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.29.2] - 2026-11-07
+
+Wens Stephan 7-11 (schermafdruk DGA): de actierij van de kopkaart hoort op één regel.
+
+Terugdraaien: versie 3.29.1 terugzetten (zip uit de tag v3.29.1, map sfp-page-config).
+
+### Gewijzigd
+- Kopkaart: de chips staan altijd op één regel; op een smal scherm schuift de rij zijwaarts (geen zichtbare schuifbalk). Warming-up voert overal het korte label (het aantal vragen staat in het paneel en in de naam voor schermlezers).
+- Tekstgrootte staat niet meer als chip in de rij maar in een paneel Toegankelijkheid, achter een chip met alleen een icoon aan het eind van de rij. Daar komt later ook het voorlezen. Op DGA meet de rij nu 626 px op desktop (was 701 in twee regels).
+
 ## [3.29.1] - 2026-11-07
 
 Terugdraaien: versie 3.29.0 terugzetten (zip uit de tag v3.29.0, map sfp-page-config).
