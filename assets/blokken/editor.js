@@ -1387,7 +1387,7 @@
 				icon: 'format-quote',
 				label: 'Review',
 				instructions: a.review ? 'Deze review bestaat niet meer in SFP Beheer. Kies een andere; bezoekers zien hier niets.'
-					: ( opties.length > 1 ? 'Kies een eigen review uit SFP Beheer. Bezoekers zien pas iets als er een review gekozen is.' : 'Er zijn nog geen eigen reviews. Voeg ze toe in SFP Beheer, Reviews.' ),
+					: ( opties.length > 1 ? 'Kies een eigen review uit SFP Beheer of een Google-review. Bezoekers zien pas iets als er een review gekozen is.' : 'Er zijn nog geen reviews: geen eigen reviews in SFP Beheer en geen opgehaalde Google-reviews.' ),
 			},
 				opties.length > 1 ? keuze( 'Review', gekozen ? a.review : '', opties, zet ) : null,
 				beheer

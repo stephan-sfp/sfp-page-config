@@ -157,13 +157,49 @@ function sfp_page_config_render_logostrook( $attrs ) {
  * ====================================================================== */
 
 /**
- * Eén eigen review op ID, of null.
+ * De Google-reviews van de site uit de bewaarde ophaling, met een vast id
+ * per review (3.31.0): google- plus een korte hash van naam en tekst.
+ *
+ * @return array<int, array>
+ */
+function sfp_page_config_review_google_lijst() {
+    if ( ! function_exists( 'sfp_page_config_reviews_opties' ) ) {
+        return array();
+    }
+    $opts = sfp_page_config_reviews_opties();
+    if ( empty( $opts['place_id'] ) ) {
+        return array();
+    }
+    $data = get_transient( 'sfp_reviews_' . md5( (string) $opts['place_id'] ) );
+    $uit  = array();
+    foreach ( is_array( $data ) && ! empty( $data['reviews'] ) && is_array( $data['reviews'] ) ? $data['reviews'] : array() as $r ) {
+        if ( ! is_array( $r ) || empty( $r['author'] ) ) {
+            continue;
+        }
+        $r['id']         = 'google-' . substr( md5( (string) $r['author'] . '|' . (string) ( $r['text'] ?? '' ) ), 0, 10 );
+        $r['vermelding'] = isset( $r['vermelding'] ) && '' !== (string) $r['vermelding'] ? (string) $r['vermelding'] : ( function_exists( 'sfp_page_config_tekst' ) ? sfp_page_config_tekst( 'review_google_bron' ) : 'Google' );
+        $uit[]           = $r;
+    }
+    return $uit;
+}
+
+/**
+ * Eén review op ID, of null: een eigen review, of sinds 3.31.0 een
+ * Google-review (id google-...).
  *
  * @param  string $id ID van de review.
  * @return array|null
  */
 function sfp_page_config_review_kaart_vind( $id ) {
     $id = (string) $id;
+    if ( 0 === strpos( $id, 'google-' ) ) {
+        foreach ( sfp_page_config_review_google_lijst() as $review ) {
+            if ( $review['id'] === $id ) {
+                return $review;
+            }
+        }
+        return null;
+    }
     if ( '' === $id || ! class_exists( 'SFP_Reviews_Manual' ) ) {
         return null;
     }
@@ -229,16 +265,18 @@ function sfp_page_config_render_review_kaart( $attrs ) {
         return '';
     }
     $tekst = sfp_page_config_review_kaart_alineas( isset( $review['text'] ) ? $review['text'] : '' );
-    if ( '' === $tekst ) {
+    $naam       = isset( $review['author'] ) ? trim( (string) $review['author'] ) : '';
+    // Sinds 3.31.0 ook zonder tekst (een Google-review met alleen sterren):
+    // dan sterren, naam en bron. Zonder tekst en zonder naam: niets.
+    if ( '' === $tekst && '' === $naam ) {
         return '';
     }
-    $naam       = isset( $review['author'] ) ? trim( (string) $review['author'] ) : '';
     $vermelding = isset( $review['vermelding'] ) ? trim( (string) $review['vermelding'] ) : '';
 
     return sfp_page_config_blokken_css_vangnet( 'sfp/review' )
         . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-review-kaart' ) ) . '>'
         . sfp_page_config_review_kaart_sterren( isset( $review['rating'] ) ? $review['rating'] : 5 )
-        . '<div class="sfp-review-kaart__tekst">' . $tekst . '</div>'
+        . ( '' !== $tekst ? '<div class="sfp-review-kaart__tekst">' . $tekst . '</div>' : '' )
         . ( '' !== $naam ? '<p class="sfp-review-kaart__naam">' . esc_html( $naam ) . '</p>' : '' )
         . ( '' !== $vermelding ? '<p class="sfp-review-kaart__bron">' . esc_html( $vermelding ) . '</p>' : '' )
         . '</div>';
@@ -271,6 +309,15 @@ function sfp_page_config_bewijs_editor_data() {
                 'begin'  => mb_strlen( $tekst ) > 60 ? rtrim( mb_substr( $tekst, 0, 60 ) ) . '…' : $tekst,
             );
         }
+    }
+    // Sinds 3.31.0 ook de Google-reviews, achter de eigen reviews.
+    foreach ( sfp_page_config_review_google_lijst() as $review ) {
+        $tekst     = trim( preg_replace( '/\s+/', ' ', (string) ( $review['text'] ?? '' ) ) );
+        $reviews[] = array(
+            'id'     => (string) $review['id'],
+            'author' => (string) $review['author'] . ' (Google)',
+            'begin'  => '' === $tekst ? '' : ( mb_strlen( $tekst ) > 60 ? rtrim( mb_substr( $tekst, 0, 60 ) ) . '…' : $tekst ),
+        );
     }
     $data = array(
         'aan'     => function_exists( 'sfp_page_config_reviews_actief' ) ? sfp_page_config_reviews_actief() : false,

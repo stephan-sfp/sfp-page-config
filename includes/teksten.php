@@ -503,6 +503,13 @@ function sfp_page_config_teksten_register() {
             'en'    => 'Neither: waiting list',
             'pt'    => 'Nenhuma: lista de espera',
         ),
+        'review_google_bron' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Review: bron bij een Google-review',
+            'nl'    => 'Google-review',
+            'en'    => 'Google review',
+            'pt'    => 'Avaliação no Google',
+        ),
         'groep_wachtlijst_status' => array(
             'groep' => 'Trainingspagina',
             'label' => 'Wachtlijstkaart: status',
