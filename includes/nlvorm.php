@@ -1089,3 +1089,46 @@ function sfp_page_config_nlvorm_zonder_aanbod( $html ) {
         $html
     );
 }
+
+/* =========================================================================
+ * Held wit in de editor: gegevens voor het voorbeeld (sinds 3.31.3)
+ *
+ * De feitenkaart en de bewijsregel maakt de plugin op de site. In de editor
+ * tekent editor.js een voorbeeld; daarvoor de eerstvolgende start uit de
+ * cursusdata van dit bericht en het Google-cijfer.
+ * ====================================================================== */
+
+add_action( 'enqueue_block_editor_assets', 'sfp_page_config_nlvorm_editor_data' );
+
+/**
+ * De eerstvolgende start (niet vol) als label en waarde, of null.
+ *
+ * @param  int $post_id Bericht.
+ * @return array{label: string, waarde: string}|null
+ */
+function sfp_page_config_nlvorm_volgende_start( $post_id ) {
+    foreach ( sfp_page_config_nlvorm_groepen( (int) $post_id ) as $g ) {
+        if ( 'vol' === $g['status'] ) {
+            continue;
+        }
+        $deel = sfp_page_config_nlvorm_datum( $g['data'][0] );
+        return array(
+            'label'  => sfp_page_config_tekst( 'held_volgende_start' ),
+            'waarde' => trim( $deel['dag'] . ' ' . $deel['nr'] . ' ' . $deel['maand'] ),
+        );
+    }
+    return null;
+}
+
+/**
+ * Zet window.sfpHeldWit voor de editor.
+ */
+function sfp_page_config_nlvorm_editor_data() {
+    $post_id = (int) get_the_ID();
+    $data    = array(
+        'volgende' => $post_id ? sfp_page_config_nlvorm_volgende_start( $post_id ) : null,
+        'cijfer'   => sfp_page_config_nlvorm_google_cijfer(),
+        'opGoogle' => sfp_page_config_tekst( 'held_op_google' ),
+    );
+    wp_add_inline_script( 'sfp-blokken-editor', 'window.sfpHeldWit=' . wp_json_encode( $data ) . ';', 'before' );
+}

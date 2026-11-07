@@ -315,13 +315,31 @@
 			keuze( 'Wat blijft in beeld op de foto', a.focus || '50% 30%', [ { label: 'Midden, iets boven', value: '50% 30%' }, { label: 'Boven', value: '50% 15%' }, { label: 'Midden', value: '50% 50%' }, { label: 'Links', value: '25% 30%' }, { label: 'Rechts', value: '75% 30%' } ], function ( v ) { props.setAttributes( { focus: v } ); } ),
 			schakelaar( 'Feiten mogen afbreken op een telefoon', !! a.afbreken, function ( v ) { props.setAttributes( { afbreken: v } ); }, 'Voor een feit dat langer is dan één regel.' ),
 		] ) : [];
+		/* Voorbeeld van de feitenkaart en de bewijsregel (3.31.3): op de site maakt de plugin ze (includes/nlvorm.php). */
+		var H = window.sfpHeldWit || {};
+		var voorbeeld = [];
+		if ( wit ) {
+			var opKaart = ( a.volgendeStart !== false && H.volgende ? [ H.volgende ] : [] ).concat( ( a.feiten || [] ).filter( function ( f ) { return f && f.label && f.waarde; } ) ).slice( 0, 3 );
+			if ( opKaart.length ) {
+				voorbeeld.push( el( 'div', { key: 'sfp-feit', className: 'sfp-held__feit sfp-held__feit--editor' + ( a.afbreken ? ' sfp-held__feit--afbreken' : '' ), 'aria-hidden': 'true' }, opKaart.map( function ( f, i ) {
+					return el( 'div', { key: i }, el( 'span', { className: 'is-style-sfp-label' }, f.label ), el( 'strong', null, f.waarde ) );
+				} ) ) );
+			}
+			var koppen = ( a.initialen || '' ).split( /[\s,]+/ ).filter( Boolean ).slice( 0, 3 );
+			if ( H.cijfer || a.deelnemers ) {
+				voorbeeld.push( el( 'p', { key: 'sfp-bewijs', className: 'sfp-held__bewijs sfp-held__bewijs--editor', 'aria-hidden': 'true' },
+					H.cijfer ? el( 'span', { className: 'sfp-held__score' }, el( 'span', { className: 'sfp-held__sterren' }, '\u2605\u2605\u2605\u2605\u2605' ), el( 'span', null, el( 'strong', null, H.cijfer ), ' ' + ( H.opGoogle || '' ) ) ) : null,
+					a.deelnemers ? el( 'span', { className: 'sfp-held__deelnemers' }, koppen.length ? el( 'span', { className: 'sfp-held__koppen' }, koppen.map( function ( k, i ) { return el( 'span', { key: i }, k.slice( 0, 2 ) ); } ) ) : null, el( 'span', null, a.deelnemers ) ) : null
+				) );
+			}
+		}
 		return el( Fragment, null,
 			paneel( 'Bovenkant van de pagina', [
 				vormkeuze( 'Beeld', a.variant, [ { label: 'Tekst naast beeld', value: 'recht', vorm: 'n:1.2,1' }, { label: 'Beeld over de volle breedte', value: 'breed', vorm: 'o:1' }, { label: 'Wit met feitenkaart', value: 'wit', vorm: 'n:1.2,1', rand: true } ], function ( v ) { props.setAttributes( { variant: v } ); } ),
 				wit ? null : uitleg( 'Titel, intro, beeld en knoppen typ je in het blok zelf. Op een telefoon valt de intro weg.' ),
 				a.anker ? linkNaarBlok( props, function () { return a.anker; } ) : null,
 			].concat( witVelden ) ),
-			el( 'section', blockProps, el( 'div', inner ) )
+			el( 'section', blockProps, el( 'div', inner, inner.children, voorbeeld ) )
 		);
 	} );
 
