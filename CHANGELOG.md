@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.31.2] - 2026-11-07
+
+Terugdraaien: versie 3.31.1 terugzetten (zip uit de tag v3.31.1, map sfp-page-config). Alleen de editor verandert; de site niet.
+
+### Gerepareerd
+- Held, variant Wit, in de editor: kop, kernzin en knoppen staan weer links onder elkaar en het beeld rechts, zoals op de site. Ze vielen los in een raster van twee bij twee, en de kernzin stond rechtsboven in witte letters met schaduw (de regel van de held met foto).
+
 ## [3.31.1] - 2026-11-07
 
 Terugdraaien: versie 3.31.0 terugzetten (zip uit de tag v3.31.0, map sfp-page-config).
