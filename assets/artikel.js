@@ -69,6 +69,27 @@
         });
     });
 
+    /* Tekstgrootte (3.29.0): Normaal, Groter of Grootst op de leeskolom; de keuze blijft in deze browser. */
+    alle('.sfp-art-tekst').forEach(function (groep) {
+        var knoppenTekst = alle('button[data-sfp-tekstgrootte]', groep);
+        var huidige = '';
+        try { huidige = localStorage.getItem('sfp_tekstgrootte') || ''; } catch (e) {}
+        if (huidige !== 'groter' && huidige !== 'grootst') { huidige = ''; }
+        function toon(waarde) {
+            doc.documentElement.classList.remove('sfp-tekst--groter', 'sfp-tekst--grootst');
+            if (waarde) { doc.documentElement.classList.add('sfp-tekst--' + waarde); }
+            knoppenTekst.forEach(function (k) { k.setAttribute('aria-pressed', k.getAttribute('data-sfp-tekstgrootte') === waarde ? 'true' : 'false'); });
+        }
+        toon(huidige);
+        knoppenTekst.forEach(function (k) {
+            k.addEventListener('click', function () {
+                var waarde = k.getAttribute('data-sfp-tekstgrootte') || '';
+                toon(waarde);
+                try { if (waarde) { localStorage.setItem('sfp_tekstgrootte', waarde); } else { localStorage.removeItem('sfp_tekstgrootte'); } } catch (e) {}
+            });
+        });
+    });
+
     /* Link kopiëren. */
     alle('[data-sfp-kopieer]').forEach(function (knop) {
         var label = knop.querySelector('span');

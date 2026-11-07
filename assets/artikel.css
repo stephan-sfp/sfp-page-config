@@ -33,7 +33,7 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-artikel button:is(:hover,:focus,:active),:root .sfp-art-balk button:is(:hover,:focus,:active){background:none;color:inherit;box-shadow:none;border-color:transparent}
 
 /* labels: het kleine opschrift boven een onderdeel */
-:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 
 /* pijllink: de tweede call-to-action (merkbron: bodyfont 900, gewone letters, onderstreept) */
 :root .sfp-pijl{font-weight:700;font-size:15px;line-height:1.4;color:var(--sfp-b-links);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
@@ -72,11 +72,21 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-art-kop__affiliate a:is(:hover,:focus){color:var(--sfp-b-primair)}
 
 /* acties */
-.sfp-art-acties{display:flex;flex-wrap:wrap;gap:0 12px;justify-content:space-between;align-items:center;padding:4px 0}
-:root .sfp-art-kop .sfp-art-actie{display:inline-flex;align-items:center;justify-content:flex-start;gap:8px;min-height:44px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);text-decoration:none;text-align:left}
-:root .sfp-art-kop .sfp-art-actie:is(:hover,:focus-visible){color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:4px}
+/* acties als chips (3.29.0): losse knopjes met rand, ze lopen door op een nieuwe regel */
+.sfp-art-acties{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;align-items:center;padding:8px 0 4px}
+:root .sfp-art-kop .sfp-art-actie{display:inline-flex;align-items:center;justify-content:flex-start;gap:8px;min-height:36px;padding:0 12px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);text-decoration:none;text-align:left;cursor:pointer}
+:root .sfp-art-kop .sfp-art-actie:is(:hover,:focus-visible){color:var(--sfp-b-primair);background:var(--sfp-b-tint3);border-color:var(--sfp-b-primair);text-decoration:none}
+:root .sfp-art-kop .sfp-art-actie[aria-expanded="true"]{background:var(--sfp-b-tint2);border-color:var(--sfp-b-primair)}
 .sfp-art-actie svg{width:16px;height:16px;flex:0 0 auto;color:var(--sfp-b-secundair)}
 .sfp-art-actie .sfp-kort{display:none}
+
+/* tekstgrootte (3.29.0): keuze in een paneel, de klasse staat op html */
+.sfp-art-tekst{display:flex;flex-wrap:wrap;gap:8px}
+:root .sfp-art-tekst button{display:inline-flex;align-items:center;min-height:42px;padding:0 14px;font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.04em;color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);cursor:pointer}
+:root .sfp-art-tekst button:is(:hover,:focus-visible){border-color:var(--sfp-b-primair);background:var(--sfp-b-tint3)}
+:root .sfp-art-tekst button[aria-pressed="true"]{background:var(--sfp-b-primair);border-color:var(--sfp-b-primair);color:var(--sfp-b-wit)}
+html.sfp-tekst--groter .sfp-artikel__kolom{font-size:19px}
+html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
 
 /* panelen in de kopkaart */
 .sfp-art-paneel{padding:20px 0 16px}
@@ -345,8 +355,10 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
   .sfp-art-kop__meta{grid-column:1/-1;gap:3px 0}
   .sfp-art-kop__meta>.sfp-art-kop__breek{display:block;flex:0 0 100%;height:0}
   :root .sfp-art-kop__affiliate{grid-column:1/-1}
-  .sfp-art-acties{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
-  :root .sfp-art-kop .sfp-art-actie{font-size:12px}
+  .sfp-art-acties{gap:6px}
+  :root .sfp-art-kop .sfp-art-actie{font-size:12px;min-height:34px;padding:0 10px}
+  html.sfp-tekst--groter .sfp-artikel__kolom{font-size:18px}
+  html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:20px}
   .sfp-art-actie .sfp-lang{display:none}
   .sfp-art-actie .sfp-kort{display:inline}
   .sfp-art-deel{grid-template-columns:1fr 1fr}

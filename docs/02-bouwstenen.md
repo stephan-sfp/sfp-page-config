@@ -40,7 +40,7 @@ Per blok: instellingen in het zijpaneel, wanneer, hoe, wat je niet doet.
 
 **Kader** (`sfp/kader`). Soort: Wist je dat, Kanttekening, Grondslag, Reflectievraag, Checklist, Eigen label of geen. Alle soorten hebben dezelfde vorm; alleen het label verschilt. De kaderkop is geen kop in de structuur. Wanneer: een feit of nuance die buiten de lijn van de tekst valt.
 
-**Citaat** (`sfp/citaat`). Citaat of anekdote met foto van de auteur (aan/uit) en een bijschrift dat zegt van wie en waarover. Wanneer: een ervaring uit de eigen praktijk. De stijl **Uit de trainingspraktijk** op core/quote (praktijkblok) doet hetzelfde voor een trainerservaring met naam en merk eronder.
+**Citaat** (`sfp/citaat`). Citaat of anekdote: een vierkant icoontje met aanhalingstekens in het secundair, het citaat groot in het kopfont, de bronregel in de bodykleur eronder, zonder kader (sinds 3.29.0); foto van de auteur (aan/uit) en een bijschrift dat zegt van wie en waarover. Wanneer: een ervaring uit de eigen praktijk. De stijl **Uit de trainingspraktijk** op core/quote (praktijkblok) doet hetzelfde voor een trainerservaring met naam en merk eronder.
 
 **Inzicht** (`sfp/inzicht`). Eén kernzin als deelbaar beeld met deelknoppen; de server maakt het beeld bij opslaan. Zet het woord dat moet opvallen cursief: dat krijgt de accentkleur. Het eerste inzicht wordt het beeld om het artikel te delen. Wanneer: één keer per artikel, bij de kerngedachte.
 

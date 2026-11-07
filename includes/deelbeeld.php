@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Versie van het ontwerp. Ophogen laat alle beelden opnieuw maken bij de
  * eerstvolgende keer opslaan.
  */
-define( 'SFP_PAGE_CONFIG_DEELBEELD_ONTWERP', 3 );
+define( 'SFP_PAGE_CONFIG_DEELBEELD_ONTWERP', 4 );
 
 /* =========================================================================
  * Wat de server kan

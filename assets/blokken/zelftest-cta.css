@@ -9,7 +9,7 @@
  *
  * Kleuren en fonts alleen uit de rolvariabelen; geen merkkleur of fontnaam.
  */
-:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 :root .sfp-zt-cta{display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;gap:20px;background:var(--sfp-b-tint3);border:0;border-radius:var(--sfp-b-r-kaart);max-width:760px;padding:40px 40px 44px;margin:32px auto;box-sizing:border-box}
 .sfp-zt-cta__icoon{width:64px;height:64px;border-radius:var(--sfp-b-r-kaart,6px);background:var(--sfp-b-primair);color:var(--sfp-b-secundair);display:grid;place-items:center}
 .sfp-zt-cta__icoon svg{width:32px;height:32px}

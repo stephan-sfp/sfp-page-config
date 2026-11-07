@@ -59,6 +59,7 @@ function sfp_page_config_kleurrollen_rollen() {
         'wit'       => 'Wit',
         'body'      => 'Bodytekst',
         'pijl'      => 'Pijlen (vorige en volgende)',
+        'label'     => 'Label (boven een blok)',
     );
 }
 

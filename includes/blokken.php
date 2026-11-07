@@ -714,6 +714,9 @@ function sfp_page_config_blokken_css_variabelen() {
     return ':root{'
         . '--sfp-b-primair:var(--sfp-rol-primair,' . $primair . ');'
         . '--sfp-b-secundair:var(--sfp-rol-secundair,var(--sfp-b-primair));'
+        // Rol label (3.29.0): de kleur van een bloklabel (Inhoud, Samenvatting, Gids). Besluit Stephan
+        // 7-11-2026: het primair op alle acht; zonder eigen slot valt de rol daarop terug.
+        . '--sfp-b-label:var(--sfp-rol-label,var(--sfp-b-primair));'
         . '--sfp-b-links:var(--sfp-rol-links,' . $links . ');'
         . '--sfp-b-hover:var(--sfp-rol-hover,' . $hover . ');'
         . '--sfp-b-tekstlink:var(--sfp-rol-tekstlink,' . $link . ');'

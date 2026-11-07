@@ -4,6 +4,22 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.29.0] - 2026-11-07
+
+Opvolging van de DGA-proef van de SwS-content uitrol (overdracht 7-11, punten 2 tot en met 6), tweede release na 3.28.0. Voorbeelden: eenvandaag.avrotros.nl (chips, citaat).
+
+Terugdraaien: versie 3.28.0 terugzetten (zip uit de tag v3.28.0, map sfp-page-config). Deelbeelden die met 3.29.0 zijn gemaakt, worden bij de volgende opslag opnieuw getekend.
+
+### Gewijzigd
+- Kopkaart: de acties staan als chips (losse knopjes met rand, 36 px hoog) die doorlopen op een nieuwe regel, in plaats van een rij die op DGA in twee regels brak. Het label van de voorkeursbron is "Maak favoriet" (kort Favoriet) met het Google-G als icoon in de kleuren van Google; Portugees "Fonte favorita" (kort Favorita); Engels ongewijzigd.
+- Deelbeeld: het schuine rechter vlak is het primair 12% donkerder, zonder menging met het secundair (dat werd bordeaux bij een warm secundair); de cijfers in de rondjes staan in het primair (contrast op DGA 6,9, wit gaf 1,7). Ontwerpversie 4: elk deelbeeld wordt bij de volgende opslag opnieuw gemaakt. De deelkaart in HTML volgt dezelfde kleuren.
+- Bloklabels (Inhoud, Samenvatting, Gids, Verwante begrippen, bovenschrift) voeren de nieuwe rol label; die staat op het primair (besluit Stephan 7-11: contrast van het secundair op wit was 1,4 tot 3,5). In SFP Beheer, Kleurrollen, is label de twaalfde rol; zonder keuze valt hij terug op het primair.
+- H1 van artikel, begrip, tool en pijler op de H2-maat clamp(20px, 2vw + 12px, 28px) op de sites met K28 aan (monospace displayfont: DGA, DST, SLB, SwS, FL); de hero-H1 (h1-xl) niet. Reden: op 34 px past een monospace letter 24 tekens per regel, de meeste titels werden drie regels.
+- Citaat: vierkant icoontje met aanhalingstekens in het secundair, het citaat in het kopfont op clamp(20px, 1.2vw + 15px, 26px) in het primair, de bronregel in de bodykleur eronder; de lijn links is weg. Ook zo in de editor.
+
+### Toegevoegd
+- Kopkaart: actie Tekstgrootte (Normaal, Groter, Grootst) voor de leeskolom; de keuze blijft in de browser van de lezer (localStorage) en staat al voor het laden van de inhoud, zodat niets verspringt. Teksten in nl, en en pt.
+
 ## [3.28.0] - 2026-11-07
 
 Opvolging van de DGA-proef van de SwS-content uitrol (overdracht 7-11, punten 1, 8 en 9). Eerste van twee releases; de kopkaart, het deelbeeld, de rol label, de H1-maat en het citaatblok volgen in 3.29.0.

@@ -3,7 +3,7 @@
  * bovenin, en het blok In a talk op een donker vlak. Kleuren alleen uit de
  * rolvariabelen; geen merkkleur of fontnaam.
  */
-:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 :root .sfp-definitie{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-top:4px solid var(--sfp-b-secundair);border-radius:var(--sfp-b-r-kaart);padding:22px 24px 20px;margin:0 0 28px;display:grid;gap:14px;box-sizing:border-box}
 .sfp-definitie__maker{background:var(--sfp-b-tint3);margin:-22px -24px 6px;padding:14px 24px;border-bottom:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart,6px) var(--sfp-b-r-kaart,6px) 0 0}
 :root .sfp-definitie__zin{margin:0;font-size:21px;line-height:1.5;color:var(--sfp-b-primair)}

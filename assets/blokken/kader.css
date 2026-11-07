@@ -3,7 +3,7 @@
  * grondslag, reflectievraag, checklist en een vrij label; alleen het label
  * verschilt. De checklist krijgt aankruisvakjes.
  */
-:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-secundair)}
+:root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 :root .sfp-kader{background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:26px 28px;margin:24px 0;box-sizing:border-box}
 :root .sfp-kader>.sfp-blok-label{font-size:13px;margin:0 0 14px}
 :root .sfp-kader :is(h2,h3,h4){margin:0 0 8px;padding:0}
