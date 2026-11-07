@@ -73,3 +73,15 @@
 .sfp-held--tool .sfp-held__binnen>.wp-block-sfp-tool .sfp-tool__voorlopig{pointer-events:none}
 /* De paginatitel waar de site hem ook niet toont (zie editor.js). */
 .sfp-titel-uit .editor-visual-editor__post-title-wrapper,.sfp-titel-uit .editor-post-title{display:none}
+/* Held wit in de editor (3.31.2): op de site zet de plugin kop, kernzin en knoppen in een tekstkolom (.sfp-held__tekst); in de editor staan ze los in het raster. Hier dezelfde verdeling: tekst links onder elkaar, het eerste beeld rechts. */
+:root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout{grid-template-rows:repeat(8,auto) 1fr;row-gap:20px}
+:root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>*{grid-column:1;margin:0;max-width:none}
+:root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>.wp-block-image:not(.wp-block-image~.wp-block-image){grid-column:2;grid-row:1 / -1}
+:root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>p{display:block;position:static;color:var(--sfp-b-primair);opacity:1;text-shadow:none;font-size:inherit;line-height:inherit}
+/* gelijk aan .is-style-sfp-kernzin in basis.css: de regel voor de held met foto (held.css) wint hier anders */
+:root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>p.is-style-sfp-kernzin{font-size:clamp(18px,1.5vw + 12px,24px);line-height:1.4}
+@media (max-width:980px){
+  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout{grid-template-rows:none}
+  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>*{grid-column:auto}
+  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>.wp-block-image:not(.wp-block-image~.wp-block-image){grid-column:auto;grid-row:auto;order:-1}
+}
