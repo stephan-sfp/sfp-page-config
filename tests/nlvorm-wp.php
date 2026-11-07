@@ -141,6 +141,10 @@ $is( '', sfp_page_config_nlvorm_zonder_aanbod( $alleen ), 'alleen een Course: ge
 $zonder = '<script type="application/ld+json" id="surerank-schema">{"@graph":[{"@type":"WebPage"}]}</script>';
 $is( $zonder, sfp_page_config_nlvorm_zonder_aanbod( $zonder ), 'zonder aanbod letterlijk gelijk' );
 
+/* ---------- Editorvoorbeeld (3.31.3) ---------- */
+$vs = sfp_page_config_nlvorm_volgende_start( $pagina );
+$is( true, is_array( $vs ) && '' !== $vs['waarde'] && false !== strpos( $vs['waarde'], 'jan' ), 'volgende start voor de editor: eerste groep die niet vol is' );
+
 /* ---------- Opruimen ---------- */
 wp_reset_postdata();
 wp_delete_post( $pagina, true );

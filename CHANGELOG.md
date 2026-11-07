@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.31.3] - 2026-11-08
+
+Terugdraaien: versie 3.31.2 terugzetten (zip uit de tag v3.31.2, map sfp-page-config). Alleen de editor verandert; de site niet.
+
+### Toegevoegd
+- Held, variant Wit, in de editor: een voorbeeld van de feitenkaart (over de linkeronderhoek van het beeld, op een tablet eronder) en van de bewijsregel onder de knoppen, met de eerstvolgende start uit de cursusdata en het Google-cijfer. Niet aanklikbaar; invullen blijft in de zijbalk.
+
+### Gerepareerd
+- Held, variant Wit, in de editor: geen lege ruimte meer onder de held (de tussenruimte van lege rasterrijen uit 3.31.2).
+
 ## [3.31.2] - 2026-11-07
 
 Terugdraaien: versie 3.31.1 terugzetten (zip uit de tag v3.31.1, map sfp-page-config). Alleen de editor verandert; de site niet.

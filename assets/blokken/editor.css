@@ -74,14 +74,25 @@
 /* De paginatitel waar de site hem ook niet toont (zie editor.js). */
 .sfp-titel-uit .editor-visual-editor__post-title-wrapper,.sfp-titel-uit .editor-post-title{display:none}
 /* Held wit in de editor (3.31.2): op de site zet de plugin kop, kernzin en knoppen in een tekstkolom (.sfp-held__tekst); in de editor staan ze los in het raster. Hier dezelfde verdeling: tekst links onder elkaar, het eerste beeld rechts. */
-:root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout{grid-template-rows:repeat(8,auto) 1fr;row-gap:20px}
-:root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>*{grid-column:1;margin:0;max-width:none}
+/* ruimte tussen de tekstblokken met een marge, niet met row-gap: lege rasterrijen zouden anders elk 20px toevoegen */
+:root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout{grid-template-rows:repeat(8,auto) 1fr;row-gap:0}
+:root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>*{grid-column:1;margin:0 0 20px;max-width:none}
 :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>.wp-block-image:not(.wp-block-image~.wp-block-image){grid-column:2;grid-row:1 / -1}
 :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>p{display:block;position:static;color:var(--sfp-b-primair);opacity:1;text-shadow:none;font-size:inherit;line-height:inherit}
 /* gelijk aan .is-style-sfp-kernzin in basis.css: de regel voor de held met foto (held.css) wint hier anders */
 :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>p.is-style-sfp-kernzin{font-size:clamp(18px,1.5vw + 12px,24px);line-height:1.4}
+/* Voorbeeld van feitenkaart en bewijsregel (3.31.3): niet aanklikbaar; de kaart over de linkeronderhoek van het beeld zoals op de site. */
+:root .sfp-held__binnen>.sfp-held__feit--editor,:root .sfp-held__binnen>.sfp-held__bewijs--editor{pointer-events:none;user-select:none}
+@media (min-width:981px){
+  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout:has(>.sfp-held__feit--editor){padding-bottom:36px}
+  /* in het rastervak van het beeld; marge in procenten rekent met de breedte, dus 75% is de onderrand van een beeld in 4:3 */
+  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout{position:relative}
+  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>.sfp-held__feit--editor{grid-column:2;grid-row:1 / -1;position:absolute;top:0;left:-28px;bottom:auto;margin:75% 0 0;transform:translateY(calc(36px - 100%))}
+}
 @media (max-width:980px){
-  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout{grid-template-rows:none}
-  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>*{grid-column:auto}
+  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout{grid-template-rows:none;row-gap:28px}
+  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>*{grid-column:auto;margin:0}
+  /* direct onder het beeld, 12px zoals op de site (28px rasterruimte min 16) */
+  :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>.sfp-held__feit--editor{order:-1;margin-top:-16px}
   :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>.wp-block-image:not(.wp-block-image~.wp-block-image){grid-column:auto;grid-row:auto;order:-1}
 }
