@@ -162,12 +162,6 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
     $doel    = '' !== $doel ? $doel : 'inschrijven';
     $css     = sfp_page_config_blokken_css_vangnet( 'sfp/groepskaarten' );
 
-    if ( ! $groepen ) {
-        // Geen groep meer: dezelfde tekst als [cursus_datum] (includes/wachtlijst.php).
-        $link = '<a class="sfp-tekstlink" href="#' . esc_attr( $doel ) . '" data-sfp-groep="wachtlijst">' . esc_html( sfp_page_config_tekst( 'wachtlijst_link' ) ) . '</a>';
-        return $css . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-groepen', 'sfp-groepen--leeg' ) ) . '><p class="sfp-wachtlijstregel">' . sprintf( esc_html( sfp_page_config_tekst( 'wachtlijst_tekst' ) ), $link ) . '</p></div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- link hierboven opgebouwd.
-    }
-
     $prijs = '';
     if ( $info['prijs'] > 0 ) {
         $prijs = '<p class="is-style-sfp-prijs">&euro;&nbsp;' . esc_html( number_format_i18n( $info['prijs'] ) ) . ' <span class="sfp-excl">' . esc_html( sfp_page_config_tekst( 'groep_excl_btw' ) ) . '</span></p>';
@@ -177,6 +171,21 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
         'laatste' => sfp_page_config_tekst( 'groep_laatste' ),
         'vol'     => sfp_page_config_tekst( 'groep_vol' ),
     );
+
+    if ( ! $groepen ) {
+        // Geen groep gepland (3.31.0): één wachtlijstkaart, zonder datumrijen.
+        $link = '<a class="sfp-tekstlink" href="#' . esc_attr( $doel ) . '" data-sfp-groep="wachtlijst">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) ) . '</a>';
+        return $css . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-groepen', 'sfp-groepen--leeg' ) ) . '>'
+            . '<div class="sfp-kolommen sfp-kolommen--groepen sfp-kolommen--een"><div class="sfp-kaart sfp-kaart--accent sfp-groep sfp-groep--wachtlijst">'
+            . '<div class="sfp-groep__kopregel"><p class="is-style-sfp-label">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_label' ) ) . '</p>'
+            . '<span class="sfp-groep__status sfp-groep__status--wachtlijst">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_status' ) ) . '</span></div>'
+            . '<h3>' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_kop' ) ) . '</h3>'
+            . '<p class="sfp-groep__zin">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_zin' ) ) . '</p>'
+            . ( '' !== $info['plaats'] ? '<p class="sfp-groep__meta">' . esc_html( $info['plaats'] ) . '</p>' : '' )
+            . $prijs
+            . $link
+            . '</div></div></div>';
+    }
 
     $kaarten = '';
     foreach ( $groepen as $g ) {
@@ -756,4 +765,49 @@ function sfp_page_config_nlvorm_schema_data( $post_id, array $groepen, array $in
         );
     }
     return $data;
+}
+
+/* =========================================================================
+ * Alleen de wachtlijst (3.31.0): Groepskaarten zonder geplande groep
+ * ====================================================================== */
+
+/**
+ * Staat er op deze trainingspagina Groepskaarten zonder geplande groep? Dan
+ * blijft het gewone inschrijfformulier staan, met in het keuzemenu alleen
+ * de wachtlijst, en heten de verzendknop en de knop onderaan "Zet mij op de
+ * wachtlijst".
+ *
+ * @param  int $post_id Pagina.
+ * @return bool
+ */
+function sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) {
+    $post_id = (int) $post_id;
+    if ( ! $post_id || 'training' !== get_post_meta( $post_id, 'sfp_page_type', true ) ) {
+        return false;
+    }
+    if ( false === strpos( (string) get_post_field( 'post_content', $post_id ), '<!-- wp:sfp/groepskaarten' ) ) {
+        return false;
+    }
+    return ! sfp_page_config_nlvorm_groepen( $post_id );
+}
+
+add_filter( 'render_block', 'sfp_page_config_nlvorm_wachtlijstknop', 10, 2 );
+
+/**
+ * De verzendknop van het formulier heet "Zet mij op de wachtlijst".
+ *
+ * @param  string $html  Getekend blok.
+ * @param  array  $block Blok.
+ * @return string
+ */
+function sfp_page_config_nlvorm_wachtlijstknop( $html, $block ) {
+    if ( empty( $block['blockName'] ) || 'srfm/form' !== $block['blockName'] || is_admin() ) {
+        return $html;
+    }
+    $post_id = function_exists( 'sfp_page_config_wachtlijst_pagina' ) ? sfp_page_config_wachtlijst_pagina() : 0;
+    if ( ! $post_id || ! sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
+        return $html;
+    }
+    $tekst = esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) );
+    return (string) preg_replace( '/(<div class="srfm-submit-wrap">)\s*[^<]*?\s*(<div class="srfm-loader")/', '$1' . $tekst . '$2', $html, 1 );
 }

@@ -109,6 +109,11 @@ function sfp_page_config_inject_course_data() {
         );
     }
 
+    // Sinds 3.31.0: Groepskaarten zonder geplande groep, alleen de wachtlijst.
+    if ( empty( $startmomenten ) && function_exists( 'sfp_page_config_nlvorm_alleen_wachtlijst' ) && sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
+        $output .= 'window.sfpAlleenWachtlijst=true;';
+    }
+
     if ( $output ) {
         printf( '<script>%s</script>', $output );
     }

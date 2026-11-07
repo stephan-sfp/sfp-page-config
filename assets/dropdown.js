@@ -102,6 +102,16 @@
     }
 
     /**
+     * De keuzes voor het menu, of null als het menu weg moet (3.31.0).
+     */
+    function opties() {
+        var d = window.sfpCourseData;
+        if (d && d.length) return buildOptions(d);
+        if (window.sfpAlleenWachtlijst && WACHTLIJST) return buildOptions([]);
+        return null;
+    }
+
+    /**
      * Kies een groep in elk keuzemenu met startmomenten (3.30.0). Werkt met
      * het gewone menu en met Tom Select van SureForms.
      */
@@ -200,9 +210,16 @@
     function run() {
         markeer();
         var data = window.sfpCourseData;
-        if (!data || !data.length) {
+        // Sinds 3.31.0: Groepskaarten zonder geplande groep, dan alleen de
+        // wachtlijst in het keuzemenu, al gekozen.
+        var alleenWachtlijst = (!data || !data.length) && window.sfpAlleenWachtlijst && WACHTLIJST;
+        if ((!data || !data.length) && !alleenWachtlijst) {
             hideDropdowns();
             return;
+        }
+        if (alleenWachtlijst) {
+            data = [];
+            if (!gekozen) gekozen = 'wachtlijst';
         }
 
         var options = buildOptions(data);
@@ -271,9 +288,9 @@
                         }
                     }
                     if (needsPatch) {
-                        var data = window.sfpCourseData;
-                        if (data && data.length) {
-                            patchTomSelect(ts, buildOptions(data));
+                        var o1 = opties();
+                        if (o1) {
+                            patchTomSelect(ts, o1);
                         }
                     }
                 }
@@ -282,9 +299,8 @@
                 // Tom Select if it has appeared since last check.
                 var sel2 = document.querySelector('.sfp-startmoment-select select');
                 if (sel2 && sel2.tomselect) {
-                    var data2 = window.sfpCourseData;
-                    if (data2 && data2.length) {
-                        var opts = buildOptions(data2);
+                    var opts = opties();
+                    if (opts) {
                         patchTomSelect(sel2.tomselect, opts);
                         tomSelectPatched = true;
                     }
