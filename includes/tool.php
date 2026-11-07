@@ -87,6 +87,23 @@ function sfp_page_config_tool_meta() {
             },
         )
     );
+    // Alleen in artikel (3.28.0): de tool hoort bij een artikel en staat
+    // niet op /tools/, niet in Andere tools, niet in de sitemap. Het blok
+    // sfp/tool toont hem gewoon; zijn eigen adres stuurt door naar het artikel.
+    register_post_meta(
+        'tool',
+        'sfp_tool_alleen_artikel',
+        array(
+            'type'              => 'boolean',
+            'single'            => true,
+            'show_in_rest'      => true,
+            'default'           => false,
+            'sanitize_callback' => 'rest_sanitize_boolean',
+            'auth_callback'     => function ( $toegestaan, $sleutel, $post_id ) {
+                return current_user_can( 'edit_post', $post_id );
+            },
+        )
+    );
 }
 
 /**
@@ -233,22 +250,28 @@ function sfp_page_config_tool_soorten() {
 
 /**
  * Alle gepubliceerde tools van de site, voor het blok Tool en Andere tools.
+ * Zonder de tools die alleen in een artikel staan (3.28.0), tenzij gevraagd.
  *
+ * @param  bool $ook_alleen_artikel Ook de tools die alleen in een artikel staan (voor de keuzelijst in de editor).
  * @return WP_Post[]
  */
-function sfp_page_config_tools() {
+function sfp_page_config_tools( $ook_alleen_artikel = false ) {
     if ( ! post_type_exists( 'tool' ) ) {
         return array();
     }
-    return get_posts(
-        array(
-            'post_type'        => 'tool',
-            'post_status'      => 'publish',
-            'posts_per_page'   => 100,
-            'orderby'          => 'title',
-            'order'            => 'ASC',
-            'no_found_rows'    => true,
-            'suppress_filters' => true,
-        )
+    $args = array(
+        'post_type'        => 'tool',
+        'post_status'      => 'publish',
+        'posts_per_page'   => 100,
+        'orderby'          => 'title',
+        'order'            => 'ASC',
+        'no_found_rows'    => true,
+        'suppress_filters' => true,
     );
+    if ( $ook_alleen_artikel ) {
+        $args['sfp_alle_tools'] = true;
+    } else {
+        $args['meta_query'] = sfp_page_config_tool_alleen_artikel_meta_query(); // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- hoogstens 100 tools.
+    }
+    return get_posts( $args );
 }

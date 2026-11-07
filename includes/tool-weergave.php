@@ -176,8 +176,10 @@ function sfp_page_config_tool_html( $post, $weergave = 'volledig' ) {
         return '';
     }
     // Een concept, privé-tool of tool met wachtwoord alleen voor wie hem mag
-    // bewerken, en nooit voor het wachtwoordformulier uit.
-    if ( post_password_required( $post ) || ( 'publish' !== $post->post_status && ! current_user_can( 'edit_post', $post->ID ) ) ) {
+    // bewerken of wie de voorbeeldlink van dat concept volgt (3.28.0), en
+    // nooit voor het wachtwoordformulier uit.
+    $voorbeeld = function_exists( 'sfp_page_config_voorbeeld_geldig' ) && (int) $post->ID === sfp_page_config_voorbeeld_geldig() && in_array( $post->post_status, array( 'draft', 'pending', 'future' ), true );
+    if ( post_password_required( $post ) || ( 'publish' !== $post->post_status && ! $voorbeeld && ! current_user_can( 'edit_post', $post->ID ) ) ) {
         return '';
     }
     $b = sfp_page_config_tool_beschrijving( $post );
@@ -408,11 +410,11 @@ function sfp_page_config_tool_editor_lijst() {
         return;
     }
     $lijst = array();
-    foreach ( sfp_page_config_tools() as $p ) {
+    foreach ( sfp_page_config_tools( true ) as $p ) {
         $b       = sfp_page_config_tool_beschrijving( $p );
         $lijst[] = array(
             'id'    => (int) $p->ID,
-            'naam'  => wp_strip_all_tags( get_the_title( $p ) ),
+            'naam'  => wp_strip_all_tags( get_the_title( $p ) ) . ( sfp_page_config_tool_alleen_artikel( $p ) ? ' (alleen in artikel)' : '' ),
             'soort' => $b ? $b['soort'] : '',
         );
     }

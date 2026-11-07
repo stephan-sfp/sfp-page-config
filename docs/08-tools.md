@@ -51,6 +51,21 @@ De plugin zet een noscript-tekst: "This tool needs JavaScript. The statements an
 
 **Tool** (`sfp/tool`): kies de tool; weergave Hele tool of Compact. Compact in de held van een pagina maakt een tool-held (SwS /last-minute-presentation/, tool 1076 in de tweede kolom van de Held). Op de pagina van de tool zelf plaats je het blok niet.
 
+## Een tool die bij één artikel hoort (alleen in artikel)
+
+Sinds 3.28.0. Een test die bij één artikel hoort (de korte tests in de DGA-artikelen), hoort niet op /tools/. Zet in Deze pagina van de tool het vinkje **Alleen in artikel** aan (metaveld `sfp_tool_alleen_artikel`, ook via REST te zetten). De tool blijft gepubliceerd, zodat het blok Tool hem in het artikel toont en de deellink, de duimpjes en de mail werken. Verder:
+
+- niet in het tooloverzicht /tools/ en niet in een berichtenraster van tools;
+- niet in de kaarten Andere tools onder een andere tool;
+- niet in de sitemap (SureRank en de sitemap van WordPress);
+- het eigen adres stuurt door (301) naar het artikel dat hem met het blok Tool of de code `[sfp_tool]` plaatst, met de vraagtekens van een deellink erbij; is er geen artikel, dan geeft het adres 404 en noindex.
+
+In de keuzelijst van het blok Tool staat zo'n tool met "(alleen in artikel)" erachter; SFP Beheer, Online tools, toont hetzelfde label. Het beheer (wp-admin, REST, WP-CLI) ziet altijd alle tools.
+
+## Voorbeeldlink van een concept
+
+Sinds 3.28.0 rendert een tool in concept ook op zijn voorbeeldlink (knop Voorbeeldlink in Deze pagina), voor wie niet is ingelogd. De routes van de tool (mail naar jezelf, duimpjes) werken pas na publicatie.
+
 ## Meting
 
 Elke tool stuurt het event `sfp_tool` naar de dataLayer met actie (start, stap, afgerond, kopieren, download_pdf, download_word, slides_prompt, opnieuw, hulp), tool_id, tool_slug, stap_nummer, stap_totaal en weergave. Nooit antwoorden of ingevulde tekst. GTM per site stuurt het naar GA4; "afgerond" is geen sleutelgebeurtenis. Tekstfeedback bij een duimpje gaat naar het adres in SFP Beheer, Online tools.

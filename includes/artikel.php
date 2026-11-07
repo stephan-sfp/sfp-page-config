@@ -1109,10 +1109,10 @@ function sfp_page_config_artikel_render( $post ) {
     // inhoudsopgave, promokaart of zijkolom; de makerskaart Made by onderaan,
     // daarna Andere tools en het vervolg.
     $tool = function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post );
-    $zij  = $tool ? '' : ( $begrip ? sfp_page_config_artikel_promokaart( 'zij', $post ) : sfp_page_config_artikel_zijkolom( $post, $hoofdstukken ) );
-    if ( $begrip && '' !== $zij ) {
-        $zij = '<aside class="sfp-artikel__zij" aria-label="' . esc_attr( sfp_page_config_artikel_tekst( 'zij_label' ) ) . '">' . $zij . '</aside>';
-    }
+    // Een begrip krijgt sinds 3.28.0 dezelfde zijkolom als een artikel
+    // (inhoudsopgave, bronnen, promokaart); tot 3.27.1 alleen de promokaart,
+    // waardoor een begrip zonder boek gecentreerd zonder zijkolom stond.
+    $zij = $tool ? '' : sfp_page_config_artikel_zijkolom( $post, $hoofdstukken );
     $kaal = $begrip || $tool;
 
     $html  = '<article id="post-' . (int) $post->ID . '" class="' . esc_attr( implode( ' ', get_post_class( 'sfp-artikel' . ( $begrip ? ' sfp-artikel--begrip' : '' ) . ( $tool ? ' sfp-artikel--tool' : '' ) . ( '' === $zij ? ' sfp-artikel--zonder-zij' : '' ), $post ) ) ) . '">';

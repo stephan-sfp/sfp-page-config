@@ -51,9 +51,9 @@ Gemeten: SwS 759 (artikel), 863 (begrip), 1076 (tool). Op SwS bestaat op 3-11 no
 4. Tekst met 6 tot 8 H2's. Eén blok **In een presentatie** (In a talk): één voorbeeldzin en één regel uitleg. Optioneel **Check je begrip**: één tot drie vragen. Optioneel een verhaal als Uitklap-variant Verhaal, niet direct naast In a talk. FAQ alleen met echte vragen.
 5. Uitgelichte afbeelding instellen; de pagina toont hem niet.
 
-**Wat vanzelf komt.** Pijlerregel "Glossary term in [pijler]", makersregel als band boven de definitie (auteur, rol, wijzigingsdatum, leestijd, Fact-checked, Sources), promokaart, Used in (artikelen die het begrip noemen), All terms A to Z, vervolg, tooltip met de definitie in artikelen die het begrip markeren, DefinedTerm en DefinedTermSet.
+**Wat vanzelf komt.** Pijlerregel "Glossary term in [pijler]", makersregel als band boven de definitie (auteur, rol, wijzigingsdatum, leestijd, Fact-checked, Sources), zijkolom rechts zoals bij een artikel (inhoudsopgave vanaf twee H2's, bronnen, promokaart; sinds 3.28.0, tot dan alleen de promokaart), Used in (artikelen die het begrip noemen), All terms A to Z, vervolg, tooltip met de definitie in artikelen die het begrip markeren, DefinedTerm en DefinedTermSet.
 
-**Wat je niet doet.** Geen kopkaart, inhoudsopgave of bronnenlijst in de zijkolom verwachten (een begrip heeft die niet), geen Samenvatting, geen Warming-up, geen definitie als gewone alinea, geen metazin als eerste woorden.
+**Wat je niet doet.** Geen kopkaart of hoofdstukbalk verwachten (een begrip heeft die niet), geen Samenvatting, geen Warming-up, geen definitie als gewone alinea, geen metazin als eerste woorden.
 
 ## Tool
 
