@@ -450,7 +450,7 @@
 			if (m.actie === 'bestemming') {
 				knoppen.appendChild(el('span', { class: 'sfpb-hulp', text: p.type === 'page' ? 'Kies hieronder een andere bestemming, of zet een formulier op de pagina.' : 'Zet een formulier in de tekst, of kies in de editor een andere bestemming.' }));
 			} else if (m.actie === 'cursusdata') {
-				knoppen.appendChild(el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Naar Cursusdata', klik: function () { ui.cdOpen = p.id; ui.cdData = null; ga('cursusdata'); } }));
+				knoppen.appendChild(el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Naar Cursusdata', klik: function () { ui.cdOpen = p.id; ui.cdData = null; ui.cdInfo = null; ga('cursusdata'); } }));
 			} else if (m.actie === 'editor') {
 				knoppen.appendChild(el('a', { class: 'sfpb-knop sfpb-klein', href: p.bewerk, text: 'Open in de editor' }));
 			}
@@ -1220,6 +1220,46 @@
 		]);
 	}
 
+	/* ---------- Onderdeel: USP-strook (sinds 3.30.0) ---------- */
+
+	function detailUspstrook() {
+		var U = S.uspstrook || { usps: [], telefoon: '', soorten: ['training', 'coaching'] };
+		if (!ui.uspstrook) ui.uspstrook = JSON.parse(JSON.stringify({ usps: U.usps || [], telefoon: U.telefoon || '', soorten: U.soorten || ['training', 'coaching'] }));
+		var I = ui.uspstrook;
+		while (I.usps.length < 3) I.usps.push('');
+		var velden = I.usps.map(function (u, i) {
+			var inp = el('input', { type: 'text', value: u, maxlength: '60', 'aria-label': 'Reden ' + (i + 1), placeholder: i === 0 ? 'Bijvoorbeeld: Twee online coachsessies inbegrepen' : '' });
+			inp.addEventListener('input', function () { I.usps[i] = inp.value; });
+			return veld('Reden ' + (i + 1), inp, i === 0 ? 'Kort, zonder punt. Op een tablet staat alleen de eerste.' : null, 'sfpb-usp-' + i);
+		});
+		var tel = el('input', { type: 'tel', value: I.telefoon, maxlength: '20', 'aria-label': 'Telefoonnummer', placeholder: '085 060 13 55' });
+		tel.addEventListener('input', function () { I.telefoon = tel.value; });
+		var soorten = [['training', 'Trainingen'], ['coaching', 'Coaching'], ['incompany', 'Incompany']].map(function (s) {
+			return schakel(I.soorten.indexOf(s[0]) > -1, s[1], function (aan) {
+				var i = I.soorten.indexOf(s[0]);
+				if (aan && i < 0) I.soorten.push(s[0]);
+				if (!aan && i > -1) I.soorten.splice(i, 1);
+			});
+		});
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('USP-strook', 'Eén regel onder de header: drie redenen om te kiezen, het Google-cijfer (als de reviews gekoppeld zijn) en een belknop. Niet op een telefoon. Staat in de held de bewijsregel met het Google-cijfer, dan laat de strook het cijfer weg.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [el('h2', { text: 'Redenen' })].concat(velden)),
+				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [el('h2', { text: 'Belknop' }), veld('Telefoonnummer', tel, 'Leeg: geen belknop.', 'sfpb-usp-tel')]),
+				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [el('h2', { text: 'Op welke pagina\'s' })].concat(soorten).concat([el('p', { class: 'sfpb-hulp', text: 'Naar de soort van de pagina (Pagina\'s, soort).' })])),
+				el('p', { class: 'sfpb-hulp', text: 'De caches leegt de plugin niet: doe dat na opslaan.' }),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						bewaarInstellingen(this, 'uspstrook', { uspstrook: { usps: I.usps.filter(function (u) { return u.trim() !== ''; }), telefoon: I.telefoon, soorten: I.soorten } }, null, function () { ui.uspstrook = null; });
+					} }),
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Annuleren', klik: function () { ui.uspstrook = null; teken(); } }),
+					flitsPlek('uspstrook')
+				])
+			])
+		]);
+	}
+
 	/* ---------- Onderdeel: tools (sinds 3.8.0) ---------- */
 
 	function detailTools() {
@@ -1602,7 +1642,7 @@
 			var rij = el('div', { class: 'sfpb-regel' }, [
 				el('span', { class: 'sfpb-groei' }, [el('b', { text: p.titel }), el('br'), samenvatting]),
 				flitsPlek('cd-' + p.id),
-				open ? null : el('button', { class: 'sfpb-knop', type: 'button', text: 'Bewerken', klik: function () { ui.cdOpen = p.id; ui.cdData = null; teken(); } })
+				open ? null : el('button', { class: 'sfpb-knop', type: 'button', text: 'Bewerken', klik: function () { ui.cdOpen = p.id; ui.cdData = null; ui.cdInfo = null; teken(); } })
 			]);
 			lijst.appendChild(rij);
 			if (open) {
@@ -1622,19 +1662,40 @@
 							sm.data.length > 1 ? el('button', { class: 'sfpb-knop sfpb-klein sfpb-weg', type: 'button', text: 'Weghalen', 'aria-label': 'Dag ' + (di + 1) + ' weghalen', klik: function () { sm.data.splice(di, 1); teken(); } }) : null
 						]));
 					});
+					var status = el('select', { 'aria-label': 'Status van startmoment ' + (si + 1) }, [
+						el('option', { value: '', text: 'Nog plekken vrij' }),
+						el('option', { value: 'laatste', text: 'Laatste plekken' }),
+						el('option', { value: 'vol', text: 'Vol' })
+					]);
+					status.value = sm.status || '';
+					status.addEventListener('change', function () { sm.status = status.value; });
 					bewerk.appendChild(el('div', { class: 'sfpb-sm' }, [
 						el('div', { class: 'sfpb-rij sfpb-tussen' }, [el('h3', { text: 'Startmoment ' + (si + 1) }), el('button', { class: 'sfpb-knop sfpb-klein sfpb-weg', type: 'button', text: 'Startmoment weghalen', klik: function () { data.splice(si, 1); teken(); } })]),
 						el('div', { class: 'sfpb-rij' }, [el('span', { style: 'min-width:52px', text: 'Lestijd' }), start, 'tot', eind]),
+						el('div', { class: 'sfpb-rij' }, [el('span', { style: 'min-width:52px', text: 'Status' }), status]),
 						dagen,
 						(sm.data || []).length < 10 ? el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', style: 'align-self:flex-start', text: 'Dag toevoegen', klik: function () { sm.data.push(''); teken(); } }) : null
 					]));
 				});
+				if (!ui.cdInfo) {
+					ui.cdInfo = Object.assign({ plaats: '', prijs: 0 }, p.info || {});
+				}
+				var info = ui.cdInfo;
+				var plaats = el('input', { type: 'text', value: info.plaats || '', placeholder: 'Bijvoorbeeld: Utrecht, op loopafstand van Centraal Station', 'aria-label': 'Plaats' });
+				plaats.addEventListener('input', function () { info.plaats = plaats.value; });
+				var prijs = el('input', { type: 'number', min: '0', step: '1', value: info.prijs ? String(info.prijs) : '', 'aria-label': 'Prijs in euro exclusief btw' });
+				prijs.addEventListener('input', function () { info.prijs = prijs.value; });
+				bewerk.appendChild(el('div', { class: 'sfpb-sm' }, [
+					el('h3', { text: 'Op de groepskaarten' }),
+					el('div', { class: 'sfpb-veld' }, [el('span', { class: 'sfpb-label', text: 'Plaats' }), plaats]),
+					el('div', { class: 'sfpb-veld' }, [el('span', { class: 'sfpb-label', text: 'Prijs in euro, exclusief btw' }), prijs, el('span', { class: 'sfpb-hulp', text: 'Leeg: de groepskaarten tonen geen prijs.' })])
+				]));
 				bewerk.appendChild(el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop', type: 'button', text: 'Startmoment toevoegen', klik: function () { data.push({ data: [''] }); teken(); } }),
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-						doe(this, 'cd-' + p.id, api('/cursusdata/' + p.id, 'POST', { data: data }), null, function () { ui.cdOpen = 0; ui.cdData = null; });
+						doe(this, 'cd-' + p.id, api('/cursusdata/' + p.id, 'POST', { data: data, info: ui.cdInfo }), null, function () { ui.cdOpen = 0; ui.cdData = null; ui.cdInfo = null; ui.cursusdata.oud = true; });
 					} }),
-					el('button', { class: 'sfpb-knop', type: 'button', text: 'Annuleren', klik: function () { ui.cdOpen = 0; ui.cdData = null; teken(); } })
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Annuleren', klik: function () { ui.cdOpen = 0; ui.cdData = null; ui.cdInfo = null; teken(); } })
 				]));
 				lijst.appendChild(bewerk);
 			}
@@ -1849,12 +1910,13 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, merkwaarden: detailMerkwaarden };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 
 		if (ui.detail !== 'footer') ui.footer = null;
 		if (ui.detail !== 'banner') ui.banner = null;
+		if (ui.detail !== 'uspstrook') ui.uspstrook = null;
 		if (ui.detail !== 'merkwaarden') { ui.mwTaal = ''; ui.mwUitslag = null; }
 
 		var y = window.pageYOffset;

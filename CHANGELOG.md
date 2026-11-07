@@ -4,6 +4,29 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.30.0] - 2026-11-07
+
+Bouwstenen voor de nieuwe trainingspagina van de NL-labels (DPS, DGA, CVD, DST), naar de dummy nl-vormen versie 63 en de bouwlijst A1 tot A18. De pagina's zelf bouwen de sitechats.
+
+Terugdraaien: versie 3.29.3 terugzetten (zip uit de tag v3.29.3, map sfp-page-config). Pagina's die al een nieuw blok gebruiken tonen dat blok dan niet meer.
+
+### Toegevoegd
+- Held, variant Wit met feitenkaart: tekst links, foto rechts, feitenkaart linksonder over de foto (eerstvolgende start uit de cursusdata plus twee eigen feiten, geen prijs) en een bewijsregel onder de knoppen (Google-cijfer als link naar het profiel, initialen en aantal deelnemers).
+- Opmaak Accent voor één zinsdeel in de H1, met een band in Tint 2.
+- Kapcorrectie: de bovenkant van de hoofdletters van de H1 staat op de bovenrand van de foto, gemeten met het kopfont van de site (Nunito en Rubik getest).
+- Blok Groepskaarten: per groep uit de cursusdata label, status, kop Start, dagen, plaats, prijs en een link die de groep in het inschrijfformulier kiest. Daaronder de regel naar de wachtlijst. Levert ook het Course-schema met een instantie per groep.
+- Cursusdata: status per startmoment (Nog plekken vrij, Laatste plekken, Vol) en plaats en prijs per training, in SFP Beheer, Cursusdata. Een volle groep staat niet in het keuzemenu.
+- Keuzemenu Startmoment: de keuze Geen van beide: wachtlijst (alleen op een pagina met Groepskaarten) en voorselectie vanuit de links op de groepskaarten of met ?groep= in het adres. SureForms zelf is niet aangepast.
+- Blok Founder-citaat: foto met instelbare uitsnede, het netwerkcitaat (geen kop), naam en rol, alleen vanaf 981 pixels.
+- Onderdeel USP-strook: drie redenen, het Google-cijfer en een belknop onder de header op trainings- en coachpagina's, niet op een telefoon.
+- Kolommen: indelingen Situaties (2x2), Reviews naast elkaar, Boek en tekst, en Inschrijven. Stappen: vorm Uitkomsten 01 tot 03. Uitklap: vorm Programma (twee dagen naast elkaar en samen open, meer dagen gestapeld). Lijst: Vakjes naast elkaar (Inbegrepen). Zelftest-oproep: knop omlijnd.
+- Stijlen: alinea Kernzin, knop Omlijnd, beeld Alleen op een telefoon en Niet op een telefoon.
+- Formulierstijl voor SureForms in Kolommen, Inschrijven: 20 pixels tussen de velden, velden en keuzemenu 50 pixels met een eigen pijl, twee velden naast elkaar van 601 tot 980 pixels.
+- Opmaak in vier delen onder de 10 KB (nlvorm-held, -inhoud, -groepen, -inschrijven), alleen op pagina's die ze gebruiken. Op zo'n pagina springen ankerlinks zonder animatie.
+
+### Gewijzigd
+- Knopstijl Tekstlink volgens branding.md: het bodyfont op 700, gewone letters, onderstreept, met pijl. Geldt op alle sites; op SwS raakt dat zes pagina's.
+
 ## [3.29.3] - 2026-11-07
 
 Terugdraaien: versie 3.29.2 terugzetten (zip uit de tag v3.29.2, map sfp-page-config).

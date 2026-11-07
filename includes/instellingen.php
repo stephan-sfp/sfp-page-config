@@ -157,6 +157,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Eén regel boven de header: een boek of e-course in een periode die je kiest, anders vanzelf de eerstvolgende groep uit de cursusdata.',
             'detail' => true,
         ),
+        'uspstrook'    => array(
+            'naam'   => 'USP-strook',
+            'uitleg' => 'Eén regel onder de header op trainings- en coachpagina\'s: drie redenen om te kiezen, het Google-cijfer en een belknop. Niet op een telefoon.',
+            'detail' => true,
+        ),
         'kopieerblok'  => array(
             'naam'   => 'Kopieerblok',
             'uitleg' => 'Tekst die de lezer met één klik kopieert, zoals een prompt. Lange tekst staat ingeklapt met Toon alles.',
@@ -280,6 +285,9 @@ function sfp_page_config_onderdeel_standaard( $id ) {
         case 'banner':
             // Verschijnt op elke pagina: per site aan na het overzetten van de Astra-layout.
             return false;
+        case 'uspstrook':
+            // Zonder ingevulde USP's toont de strook niets (3.30.0).
+            return true;
         case 'zelftest':
             // Verzamelt gegevens van bezoekers: alleen aan als iemand dat kiest.
             return false;
@@ -783,6 +791,11 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
             case 'banner':
                 $alle['banner'] = function_exists( 'sfp_page_config_banner_schoon' ) ? sfp_page_config_banner_schoon( $ruw ) : array();
                 $bewaard[]      = $sleutel;
+                break;
+
+            case 'uspstrook':
+                $alle['uspstrook'] = function_exists( 'sfp_page_config_uspstrook_schoon' ) ? sfp_page_config_uspstrook_schoon( $ruw ) : array();
+                $bewaard[]         = $sleutel;
                 break;
 
             case 'inschrijf_formulier':

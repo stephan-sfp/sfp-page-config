@@ -52,13 +52,23 @@
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-wit);color:var(--sfp-b-wit)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link{background:transparent;border-color:var(--sfp-b-lijn-sterk);color:var(--sfp-b-primair)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
-/* tekstlink: tweede keus naast een volle knop, zonder rand of vlak */
-:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link{background:transparent;border-color:transparent;color:var(--sfp-b-primair);padding-left:6px;padding-right:6px;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
-:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link:hover{background:transparent;border-color:transparent;color:var(--sfp-b-links)}
-:root .sfp-held .is-style-sfp-tekst .wp-block-button__link,:root .sfp-held .is-style-sfp-tekst .wp-block-button__link:hover{color:var(--sfp-b-wit)}
-:root .sfp-held .is-style-sfp-tekst .wp-block-button__link:hover{text-decoration-color:var(--sfp-b-secundair)}
+/* tekstlink: tweede keus naast een volle knop (branding.md, 3.30.0): het bodyfont op 700, gewone letters, onderstreept, met pijl */
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link{background:transparent;border-color:transparent;color:var(--sfp-b-tekstlink);padding-left:0;padding-right:0;font-family:var(--sfp-b-tekst);font-weight:700!important;font-size:16px;text-transform:none;letter-spacing:0;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link::after{content:"\00a0\2192"}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link:hover{background:transparent;border-color:transparent;color:var(--sfp-b-tekstlink);text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
+:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link,:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link:hover{color:var(--sfp-b-wit)}
+:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link:hover{text-decoration-color:var(--sfp-b-secundair)}
+/* omlijnd (3.30.0): rand en tekst in primair, bij hover gevuld */
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-omlijnd .wp-block-button__link{background:transparent;border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-omlijnd .wp-block-button__link:hover{background:var(--sfp-b-primair);border-color:var(--sfp-b-primair);color:var(--sfp-b-wit)}
 
 /* alinea-stijlen */
+/* kernzin (branding.md, 3.30.0): bodyfont 700, primair, meeschalend onder een kop */
+:root .is-style-sfp-kernzin{font-family:var(--sfp-b-tekst);font-weight:700;color:var(--sfp-b-primair);font-size:clamp(18px,1.5vw + 12px,24px);line-height:1.4;text-wrap:pretty;max-width:52ch}
+:root :is(.sfp-sectie,.sfp-held) :is(h1,h2,h3)+p.is-style-sfp-kernzin{margin-top:16px}
+/* beeld alleen op een telefoon, of juist niet (3.30.0; grens 700 pixels) */
+@media (min-width:701px){:root .is-style-sfp-alleen-telefoon{display:none!important}}
+@media (max-width:700px){:root .is-style-sfp-niet-telefoon{display:none!important}}
 :root .sfp-sectie .is-style-sfp-intro{font-size:19px;line-height:1.6;max-width:34em}
 .is-style-sfp-pijl{font-family:var(--sfp-b-kop);font-weight:700;font-size:15px;line-height:1.3;letter-spacing:0}
 .is-style-sfp-pijl a{color:var(--sfp-b-links);text-decoration:none}

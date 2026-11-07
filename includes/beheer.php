@@ -467,6 +467,7 @@ function sfp_page_config_beheer_stand() {
             'formulieren'          => sfp_page_config_beheer_formulieren(),
         ),
         'banner'           => function_exists( 'sfp_page_config_banner_stand' ) ? sfp_page_config_banner_stand() : array(),
+        'uspstrook'        => function_exists( 'sfp_page_config_uspstrook_instelling' ) ? sfp_page_config_uspstrook_instelling() : array(),
         'merkwaarden'      => function_exists( 'sfp_page_config_merkwaarden_stand' ) ? sfp_page_config_merkwaarden_stand() : null,
         'formulierbewaking' => function_exists( 'sfp_page_config_formulierbewaking_stand' ) ? sfp_page_config_formulierbewaking_stand() : null,
         // Sinds 3.22.0 alleen wat het overzicht nodig heeft: de pagina's die
@@ -703,6 +704,9 @@ function sfp_page_config_beheer_rest() {
                     return new WP_Error( 'sfp_cursusdata_geen_pagina', 'Deze pagina bestaat niet.', array( 'status' => 404 ) );
                 }
                 sfp_page_config_cursusdata_bewaar( (int) $verzoek['id'], isset( $gegevens['data'] ) ? $gegevens['data'] : array() );
+                if ( isset( $gegevens['info'] ) ) {
+                    sfp_page_config_cursusinfo_bewaar( (int) $verzoek['id'], $gegevens['info'] );
+                }
                 return rest_ensure_response( sfp_page_config_beheer_stand() );
             },
         )

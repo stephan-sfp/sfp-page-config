@@ -81,6 +81,8 @@ function sfp_page_config_inject_course_data() {
                     isset( $sm['eind'] ) ? $sm['eind'] : ''
                 );
                 $startmomenten[] = array(
+                    // Sinds 3.30.0: een volle groep staat niet in het keuzemenu.
+                    'vol'   => isset( $sm['status'] ) && 'vol' === $sm['status'],
                     'index' => $index + 1,
                     'label' => sfp_page_config_tekst_f( 'groep', $index + 1 ) . ': ' . implode( ' • ', $dates_formatted ) . ( '' !== $tijd ? ' (' . $tijd . ')' : '' ),
                     'value' => 'groep-' . ( $index + 1 ),
@@ -89,6 +91,16 @@ function sfp_page_config_inject_course_data() {
             }
         }
     }
+
+    // Sinds 3.30.0 niet in het keuzemenu: een volle groep.
+    $startmomenten = array_values(
+        array_filter(
+            $startmomenten,
+            function ( $sm ) {
+                return empty( $sm['vol'] );
+            }
+        )
+    );
 
     if ( ! empty( $startmomenten ) ) {
         $output .= sprintf(
@@ -141,6 +153,8 @@ function sfp_page_config_enqueue_dropdown_script() {
             'kiesGroep' => sfp_page_config_tekst( 'kies_groep' ),
             'geenData'  => sfp_page_config_tekst( 'geen_data' ),
             'groep'     => sfp_page_config_tekst( 'groep' ),
+            // Sinds 3.30.0: de laatste keuze naast de groepen (alleen met Groepskaarten op de pagina).
+            'wachtlijst' => sfp_page_config_tekst( 'groep_wachtlijst_optie' ),
         )
     );
 }

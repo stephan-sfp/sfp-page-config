@@ -278,21 +278,47 @@
 		var metTool = wp.data.useSelect( function ( select ) {
 			return ( select( 'core/block-editor' ).getBlocks( props.clientId ) || [] ).some( function ( x ) { return 'sfp/tool' === x.name; } );
 		}, [ props.clientId ] );
-		var blockProps = useBlockProps( { className: 'sfp-held sfp-held--recht' + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) + ( metTool ? ' sfp-held--tool' : '' ) } );
+		var wit = 'wit' === a.variant;
+		var blockProps = useBlockProps( { className: 'sfp-held' + ( wit ? ' sfp-held--wit held-feit held-accent held-bewijs' : ' sfp-held--recht' ) + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) + ( metTool ? ' sfp-held--tool' : '' ) } );
 		var inner = useInnerBlocksProps( { className: 'sfp-held__binnen' }, {
-			template: [
+			template: wit ? [
+				[ 'core/heading', { level: 1, className: 'h1-xl' } ],
+				[ 'core/paragraph', { className: 'is-style-sfp-kernzin' } ],
+				[ 'core/buttons', {}, [ [ 'core/button' ], [ 'core/button', { className: 'is-style-sfp-tekst' } ] ] ],
+				[ 'core/image', { className: 'is-style-sfp-afgerond' } ],
+			] : [
 				[ 'core/heading', { level: 1 } ],
 				[ 'core/paragraph', { className: 'is-style-sfp-intro' } ],
 				[ 'core/image', {} ],
 				[ 'core/buttons', {}, [ [ 'core/button' ], [ 'core/button', { className: 'is-style-sfp-licht' } ] ] ],
 			],
 		} );
+		var feiten = ( a.feiten || [] ).slice( 0, 3 );
+		while ( feiten.length < 2 ) { feiten.push( { label: '', waarde: '' } ); }
+		function zetFeit( i, sleutel, v ) {
+			var nieuw = feiten.map( function ( f ) { return { label: f.label || '', waarde: f.waarde || '' }; } );
+			nieuw[ i ][ sleutel ] = v;
+			props.setAttributes( { feiten: nieuw.filter( function ( f ) { return f.label || f.waarde; } ) } );
+		}
+		var witVelden = wit ? [
+			uitleg( 'Tekst links, foto rechts. Zet het zinsdeel dat moet opvallen in de titel op Accent (knoppenbalk, pijltje naast de opmaak). De tweede knop staat als Tekstlink.' ),
+			schakelaar( 'Volgende start uit de cursusdata', a.volgendeStart !== false, function ( v ) { props.setAttributes( { volgendeStart: v } ); }, 'Eerste feit op de foto. Geen groep gepland: dan valt dit feit weg.' ),
+		].concat( feiten.map( function ( f, i ) {
+			return el( 'div', { key: 'feit-' + i, className: 'sfp-linkveld' },
+				tekstveld( 'Feit ' + ( i + 1 ) + ': label', f.label, function ( v ) { zetFeit( i, 'label', v ); }, i === 0 ? 'Bijvoorbeeld: Waar' : 'Bijvoorbeeld: Groep' ),
+				tekstveld( 'Feit ' + ( i + 1 ) + ': waarde', f.waarde, function ( v ) { zetFeit( i, 'waarde', v ); }, i === 0 ? 'Bijvoorbeeld: Utrecht, bij CS' : 'Bijvoorbeeld: 4 tot 8' )
+			);
+		} ) ).concat( [
+			uitleg( 'Hoogstens drie feiten op de foto. Geen prijs.' ),
+			tekstveld( 'Deelnemers', a.deelnemers, function ( v ) { props.setAttributes( { deelnemers: v } ); }, 'Onder de knoppen, naast het Google-cijfer. Bijvoorbeeld: meer dan 2.000 deelnemers. Leeg: alleen het cijfer.' ),
+			tekstveld( 'Initialen', a.initialen, function ( v ) { props.setAttributes( { initialen: v } ); }, 'Drie keer twee letters met een spatie ertussen, bijvoorbeeld: JK MV SB.' ),
+		] ) : [];
 		return el( Fragment, null,
 			paneel( 'Bovenkant van de pagina', [
-				vormkeuze( 'Beeld', a.variant, [ { label: 'Tekst naast beeld', value: 'recht', vorm: 'n:1.2,1' }, { label: 'Beeld over de volle breedte', value: 'breed', vorm: 'o:1' } ], function ( v ) { props.setAttributes( { variant: v } ); } ),
-				uitleg( 'Titel, intro, beeld en knoppen typ je in het blok zelf. Op een telefoon valt de intro weg.' ),
+				vormkeuze( 'Beeld', a.variant, [ { label: 'Tekst naast beeld', value: 'recht', vorm: 'n:1.2,1' }, { label: 'Beeld over de volle breedte', value: 'breed', vorm: 'o:1' }, { label: 'Wit met feitenkaart', value: 'wit', vorm: 'n:1.2,1', rand: true } ], function ( v ) { props.setAttributes( { variant: v } ); } ),
+				wit ? null : uitleg( 'Titel, intro, beeld en knoppen typ je in het blok zelf. Op een telefoon valt de intro weg.' ),
 				a.anker ? linkNaarBlok( props, function () { return a.anker; } ) : null,
-			] ),
+			].concat( witVelden ) ),
 			el( 'section', blockProps, el( 'div', inner ) )
 		);
 	} );
@@ -305,10 +331,14 @@
 		{ label: 'Tekst en boek', value: 'tekst-boek', vorm: 'n:1.4,1' },
 		{ label: 'Tekst en boekkaart', value: 'boeking', vorm: 'n:0.9,1.1' },
 		{ label: 'Breed en smal', value: 'breed-smal', vorm: 'n:1.2,1' },
+		{ label: 'Situaties (2x2)', value: 'situaties', vorm: 'n:1,1' },
+		{ label: 'Reviews naast elkaar', value: 'reviews', vorm: 'n:1,1,1' },
+		{ label: 'Boek en tekst', value: 'boek', vorm: 'n:0.9,1.4' },
+		{ label: 'Inschrijven', value: 'inschrijven', vorm: 'n:1,1.1' },
 	];
 	blok( 'sfp/kolommen', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling + ( a.uitlijning ? ' sfp-kolommen--' + a.uitlijning : '' ) + ( 'boeking' === a.indeling ? ' sfp-boekkaart' : '' ) } );
+		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling + ( a.uitlijning ? ' sfp-kolommen--' + a.uitlijning : '' ) + ( 'boeking' === a.indeling ? ' sfp-boekkaart' : '' ) + ( 'reviews' === a.indeling ? ' sfp-reviews-rij' : '' ) } );
 		var inner = useInnerBlocksProps( blockProps, { orientation: 'horizontal', template: [ [ 'sfp/kolom' ], [ 'sfp/kolom' ] ] } );
 		return el( Fragment, null,
 			paneel( 'Kolommen', [
@@ -360,10 +390,17 @@
 	}, { __experimentalLabel: overzichtsnaam( 'Kaart' ) } );
 
 	/* sfp/stappen en sfp/stap */
-	blok( 'sfp/stappen', function () {
-		var blockProps = useBlockProps( { className: 'sfp-stappen' } );
+	blok( 'sfp/stappen', function ( props ) {
+		var a = props.attributes;
+		var blockProps = useBlockProps( { className: 'sfp-stappen' + ( 'uitkomsten' === a.vorm ? ' sfp-uitkomsten' : '' ) } );
 		var inner = useInnerBlocksProps( blockProps, { allowedBlocks: [ 'sfp/stap' ], template: [ [ 'sfp/stap' ], [ 'sfp/stap' ], [ 'sfp/stap' ] ] } );
-		return el( 'ol', inner );
+		return el( Fragment, null,
+			paneel( 'Stappen', [
+				vormkeuze( 'Vorm', a.vorm || 'stappen', [ { label: 'Stappen', value: 'stappen', vorm: 'o:1,1,1' }, { label: 'Uitkomsten 01 tot 03', value: 'uitkomsten', vorm: 'o:.3,1' } ], function ( v ) { props.setAttributes( { vorm: v } ); } ),
+				'uitkomsten' === a.vorm ? uitleg( 'Per uitkomst een kop (H3) en een alinea. Een review per uitkomst kan erbij (blok Review in de stap).' ) : null,
+			] ),
+			el( 'ol', inner )
+		);
 	} );
 	blok( 'sfp/stap', function () {
 		var blockProps = useBlockProps( { className: 'sfp-stap' } );
@@ -377,23 +414,25 @@
 		{ label: 'Lees meer', value: 'compact', vorm: 'o:1' },
 		{ label: 'Kaarten', value: 'kaart', vorm: 'n:1,1' },
 		{ label: 'Verhaal', value: 'verhaal', vorm: 'o:.4,1' },
+		{ label: 'Programma', value: 'programma', vorm: 'n:1,1', rand: true },
 	];
 	var uitklapUitleg = {
 		groot: 'Elke regel is een brede balk met de titel.',
 		compact: 'Eén regel die de rest van de tekst laat zien.',
 		kaart: 'Regels als kaarten, met een regel onder de titel.',
 		verhaal: 'Een verhaal in een artikel, met een label boven de titel.',
+		programma: 'Het programma per dag: label Dag n, titel, alinea en vinklijst. Twee dagen staan naast elkaar en gaan samen open; meer dagen staan onder elkaar.',
 	};
 	blok( 'sfp/uitklap', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-uitklap sfp-uitklap--' + a.variant } );
+		var blockProps = useBlockProps( { className: 'sfp-uitklap sfp-uitklap--' + a.variant + ( 'programma' === a.variant ? ' sfp-uitklap--kaart' : '' ) } );
 		var inner = useInnerBlocksProps( blockProps, { allowedBlocks: [ 'sfp/uitklap-regel' ], template: [ [ 'sfp/uitklap-regel' ] ] } );
 		return el( Fragment, null,
 			paneel( 'Uitklap', [
 				vormkeuze( 'Vorm', a.variant, uitklapVormen, function ( v ) { props.setAttributes( { variant: v } ); } ),
 				uitleg( uitklapUitleg[ a.variant ] || '' ),
 				// Een verhaal is één regel: daar doet de schakelaar niets (sinds 3.19.0 alleen bij de andere vormen).
-				'verhaal' !== a.variant ? schakelaar( 'Eén regel tegelijk open', a.eenTegelijk, function ( v ) { props.setAttributes( { eenTegelijk: v } ); } ) : null,
+				'verhaal' !== a.variant && 'programma' !== a.variant ? schakelaar( 'Eén regel tegelijk open', a.eenTegelijk, function ( v ) { props.setAttributes( { eenTegelijk: v } ); } ) : null,
 			] ),
 			el( 'div', inner )
 		);
@@ -537,10 +576,11 @@
 	/* sfp/lijst */
 	blok( 'sfp/lijst', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-lijst sfp-lijst--' + a.stijl } );
+		var blockProps = useBlockProps( { className: 'sfp-lijst sfp-lijst--' + a.stijl + ( a.rij ? ' sfp-lijst--rij' : '' ) } );
 		var inner = useInnerBlocksProps( blockProps, { allowedBlocks: [ 'core/list' ], template: [ [ 'core/list' ] ], templateLock: 'insert' } );
 		return el( Fragment, null,
 			paneel( 'Lijst', [
+				schakelaar( 'Vakjes naast elkaar', !! a.rij, function ( v ) { props.setAttributes( { rij: v } ); }, 'Elk punt als vakje, even hoog, op een rij. Bijvoorbeeld voor Inbegrepen, met een Label erboven.' ),
 				keuze( 'Teken voor elk punt', a.stijl, [ { label: 'Vink', value: 'vink' }, { label: 'Kruis', value: 'kruis' }, { label: 'Nummers', value: 'nummers' }, { label: 'Regels', value: 'regels' }, { label: 'Letters', value: 'letters' } ], function ( v ) { props.setAttributes( { stijl: v } ); }, 'letters' === a.stijl ? 'Begin elk punt met een vette letter.' : undefined ),
 			] ),
 			el( 'div', inner )
@@ -1041,6 +1081,7 @@
 				keuze( 'Test', a.test || '', opties, function ( v ) { props.setAttributes( { test: v } ); } ),
 				tekstveld( 'Bronlabel', a.bron, function ( v ) { props.setAttributes( { bron: v } ); }, 'Komt als ?bron= in de link, voor GA4. Leeg: het soort pagina en het adres, bijvoorbeeld pagina-presenteren-training.' ),
 				schakelaar( 'Icoon tonen', !! a.icoon, function ( v ) { props.setAttributes( { icoon: v } ); }, 'Standaard zonder icoon.' ),
+				schakelaar( 'Knop omlijnd', 'omlijnd' === a.knop, function ( v ) { props.setAttributes( { knop: v ? 'omlijnd' : 'vol' } ); }, 'Rand en tekst in primair. Op een pagina met een inschrijfknop blijft de actiekleur voor inschrijven.' ),
 				uitleg( 'Kop, zin en knoptekst staan in SFP Beheer, Zelftest, en gelden voor elke oproep en de promokaart van een pijler. Niet voor toolpagina\'s: de zelftest is geen tool.' ),
 			] ),
 			gegeven( 'sfp/zelftest-cta', null, props, leeg )
@@ -1065,6 +1106,67 @@
 			gegeven( 'sfp/tool', null, props, leeg )
 		);
 	} );
+
+	/* =====================================================================
+	 * NL-vorm (sinds 3.30.0): Groepskaarten, Founder-citaat, Accent
+	 * ================================================================== */
+
+	blok( 'sfp/groepskaarten', function ( props ) {
+		var a = props.attributes;
+		return el( Fragment, null,
+			paneel( 'Groepskaarten', [
+				uitleg( 'De groepen komen uit SFP Beheer, Cursusdata: data, status, plaats en prijs. Alleen groepen met een eerste dag vandaag of later. De link op een kaart kiest de groep in het inschrijfformulier.' ),
+				schakelaar( 'Regel naar de wachtlijst', a.wachtlijst !== false, function ( v ) { props.setAttributes( { wachtlijst: v } ); }, 'Past geen datum? Zet mij op de wachtlijst.' ),
+				tekstveld( 'Anker van het formulier', a.doel, function ( v ) { props.setAttributes( { doel: v } ); }, 'Waar de links heen springen, zonder #. Standaard: inschrijven.' ),
+			] ),
+			gegeven( 'sfp/groepskaarten', null, props, 'Geen groep gepland. Op de site staat hier de wachtlijsttekst.' )
+		);
+	} );
+
+	blok( 'sfp/founder', function ( props ) {
+		var a = props.attributes;
+		var blockProps = useBlockProps( { className: 'sfp-founder sfp-editor-founder' } );
+		var MediaUpload = be.MediaUpload;
+		var kiesFoto = MediaUpload ? el( MediaUpload, {
+			onSelect: function ( m ) { props.setAttributes( { fotoId: m.id || 0, fotoUrl: ( m.sizes && m.sizes.large && m.sizes.large.url ) || m.url || '', fotoAlt: m.alt || '' } ); },
+			allowedTypes: [ 'image' ],
+			value: a.fotoId,
+			render: function ( o ) { return el( c.Button, { variant: 'secondary', onClick: o.open }, a.fotoUrl ? 'Andere foto' : 'Kies een foto' ); },
+		} ) : null;
+		return el( Fragment, null,
+			paneel( 'Founder-citaat', [
+				uitleg( 'Alleen op een groot scherm (vanaf 981 pixels), naast het inschrijfformulier in Kolommen, Inschrijven. Het citaat is geen kop.' ),
+				kiesFoto,
+				keuze( 'Uitsnede', a.focus || '50% 30%', [ { label: 'Midden, iets boven', value: '50% 30%' }, { label: 'Midden', value: '50% 50%' }, { label: 'Links', value: '25% 30%' }, { label: 'Rechts', value: '75% 30%' }, { label: 'Boven', value: '50% 10%' } ], function ( v ) { props.setAttributes( { focus: v } ); } ),
+				tekstveld( 'Naam', a.naam, function ( v ) { props.setAttributes( { naam: v } ); } ),
+				tekstveld( 'Rol', a.rol, function ( v ) { props.setAttributes( { rol: v } ); }, 'Leeg: Oprichter van en de naam van de site.' ),
+			] ),
+			el( 'figure', blockProps,
+				a.fotoUrl ? el( 'img', { className: 'sfp-founder__foto', src: a.fotoUrl, alt: '', style: { objectPosition: a.focus || '50% 30%' } } ) : null,
+				el( 'figcaption', { className: 'sfp-founder__tekst' },
+					el( RichText, { tagName: 'p', className: 'sfp-founder__citaat-tekst', value: a.citaat, placeholder: 'Leeg: het netwerkcitaat uit SFP Beheer, Teksten. Shift+Enter voor een nieuwe regel.', allowedFormats: [], onChange: function ( v ) { props.setAttributes( { citaat: v } ); } } ),
+					el( 'p', { className: 'sfp-founder__wie' }, el( 'strong', null, a.naam || '' ), el( 'span', null, a.rol || 'Oprichter van de site' ) )
+				)
+			)
+		);
+	} );
+
+	// Accent: één zinsdeel in de titel van de held wit, met een band in Tint 2 eronder.
+	if ( wp.richText && wp.richText.registerFormatType && be.RichTextToolbarButton && ! ( wp.richText.select && wp.richText.select( 'core/rich-text' ) && wp.richText.select( 'core/rich-text' ).getFormatType( 'sfp/accent' ) ) ) {
+		wp.richText.registerFormatType( 'sfp/accent', {
+			title: 'Accent',
+			tagName: 'mark',
+			className: 'sfp-accent',
+			edit: function ( props ) {
+				return el( be.RichTextToolbarButton, {
+					icon: 'admin-customizer',
+					title: 'Accent',
+					isActive: props.isActive,
+					onClick: function () { props.onChange( wp.richText.toggleFormat( props.value, { type: 'sfp/accent' } ) ); },
+				} );
+			},
+		} );
+	}
 
 	/* =====================================================================
 	 * Gegevens van de site (sinds 3.1.0)
