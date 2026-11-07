@@ -33,6 +33,11 @@
     // Sinds 3.30.0: "Geen van beide: wachtlijst" als laatste keuze, alleen
     // op een pagina met Groepskaarten (een link met data-sfp-groep).
     var WACHTLIJST = CFG.wachtlijst || '';
+    // Sinds 3.31.4 ook uit de configuratie: WP Rocket stelt het losse
+    // regeltje window.sfpAlleenWachtlijst uit tot de eerste aanraking.
+    function alleenWachtlijstVlag() {
+        return !!(window.sfpAlleenWachtlijst || (CFG.alleenWachtlijst && CFG.alleenWachtlijst !== '0'));
+    }
     var gekozen = null; // Groep die een link of ?groep= vroeg, tot het menu er is.
     var KLASSE = 'sfp-startmoment-select';
     // Veldnamen van SureForms (srfm-slug-...) die over het startmoment gaan.
@@ -79,6 +84,22 @@
         dropdownsHidden = true;
     }
 
+    /**
+     * Sinds 3.31.4: komen de keuzes later toch (uitgestelde data), dan gaat
+     * de melding weg en is het menu weer zichtbaar.
+     */
+    function showDropdowns() {
+        if (!dropdownsHidden) return;
+        document.querySelectorAll('.sfp-no-coursedata-notice').forEach(function (n) {
+            if (n.parentNode) n.parentNode.removeChild(n);
+        });
+        document.querySelectorAll('.sfp-startmoment-select').forEach(function (container) {
+            var target = container.closest('.srfm-block') || container;
+            target.style.display = '';
+        });
+        dropdownsHidden = false;
+    }
+
     function buildOptions(data) {
         var options = [];
         for (var i = 0; i < data.length; i++) {
@@ -107,7 +128,7 @@
     function opties() {
         var d = window.sfpCourseData;
         if (d && d.length) return buildOptions(d);
-        if (window.sfpAlleenWachtlijst && WACHTLIJST) return buildOptions([]);
+        if (alleenWachtlijstVlag() && WACHTLIJST) return buildOptions([]);
         return null;
     }
 
@@ -235,11 +256,12 @@
         var data = window.sfpCourseData;
         // Sinds 3.31.0: Groepskaarten zonder geplande groep, dan alleen de
         // wachtlijst in het keuzemenu, al gekozen.
-        var alleenWachtlijst = (!data || !data.length) && window.sfpAlleenWachtlijst && WACHTLIJST;
+        var alleenWachtlijst = (!data || !data.length) && alleenWachtlijstVlag() && WACHTLIJST;
         if ((!data || !data.length) && !alleenWachtlijst) {
             hideDropdowns();
             return;
         }
+        showDropdowns();
         if (alleenWachtlijst) {
             data = [];
             if (!gekozen) gekozen = 'wachtlijst';

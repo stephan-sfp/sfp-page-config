@@ -103,6 +103,29 @@ $bevat( 'class="sfp-groep__data"', $leeg, 'wachtlijstkaart zonder datumrijen', f
 $bevat( 'data-sfp-groep="wachtlijst"', $leeg, 'wachtlijstkaart linkt naar de wachtlijst' );
 $is( true, sfp_page_config_nlvorm_alleen_wachtlijst( $pagina2 ), 'pagina met Groepskaarten zonder groep: alleen wachtlijst' );
 $is( false, sfp_page_config_nlvorm_alleen_wachtlijst( $pagina ), 'pagina met groepen: niet alleen wachtlijst' );
+
+/* ---------- Wachtlijststand: alleen het inschrijfformulier (3.31.4) ---------- */
+$vorig_query             = $GLOBALS['wp_query'];
+$GLOBALS['wp_query']     = new WP_Query( array( 'page_id' => $pagina2 ) );
+$GLOBALS['wp_the_query'] = $GLOBALS['wp_query'];
+$vorm_html = function ( $knop ) {
+    return '<form id="srfm-form-1"><div class="srfm-submit-wrap">' . $knop . '<div class="srfm-loader"></div></div></form>';
+};
+$lead = $vorm_html( 'Ja, stuur mij het stappenplan' );
+$insc = $vorm_html( 'JA, SCHRIJF MIJ IN!' );
+$is( $lead, sfp_page_config_nlvorm_wachtlijstknop( $lead, array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 1 ) ) ), 'los formulier (leadmagnet) houdt zijn eigen knoptekst' );
+$is( $lead, sfp_page_config_nlvorm_wachtlijstknop( $lead, array( 'blockName' => 'sfp/kolommen', 'attrs' => array( 'indeling' => 'tekst-beeld' ) ) ), 'formulier in andere kolommen houdt zijn eigen knoptekst' );
+$uit_ins = sfp_page_config_nlvorm_wachtlijstknop( '<div class="sfp-kolommen">' . $insc . '</div>', array( 'blockName' => 'sfp/kolommen', 'attrs' => array( 'indeling' => 'inschrijven' ) ) );
+$bevat( 'srfm-submit-wrap">' . sfp_page_config_tekst( 'groep_wachtlijst_link' ) . '<div class="srfm-loader"', $uit_ins, 'formulier in Inschrijven krijgt de wachtlijsttekst' );
+$bevat( 'SCHRIJF MIJ IN', $uit_ins, 'oude knoptekst weg', false );
+$GLOBALS['wp_query']     = new WP_Query( array( 'page_id' => $pagina ) );
+$GLOBALS['wp_the_query'] = $GLOBALS['wp_query'];
+$is( $insc, sfp_page_config_nlvorm_wachtlijstknop( $insc, array( 'blockName' => 'sfp/kolommen', 'attrs' => array( 'indeling' => 'inschrijven' ) ) ), 'pagina met groepen: inschrijfknop ongewijzigd' );
+$GLOBALS['wp_query']     = $vorig_query;
+$GLOBALS['wp_the_query'] = $vorig_query;
+$is( true, sfp_page_config_cursusdata_heeft_keuze( $pagina ), 'pagina met toekomstige groep heeft een keuze' );
+$is( false, sfp_page_config_cursusdata_heeft_keuze( $pagina2 ), 'pagina zonder toekomstige groep heeft geen keuze' );
+$bevat( 'sfpAlleenWachtlijst', implode( ' ', sfp_page_config_rocket_delay_lijst() ), 'wachtlijstvlag niet uitgesteld door WP Rocket' );
 wp_delete_post( $pagina2, true );
 
 /* ---------- Coachpagina (3.31.0): labelnaam, pakketten, Service ---------- */

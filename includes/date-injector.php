@@ -163,6 +163,25 @@ function sfp_page_config_enqueue_dropdown_script() {
             'groep'     => sfp_page_config_tekst( 'groep' ),
             // Sinds 3.30.0: de laatste keuze naast de groepen (alleen met Groepskaarten op de pagina).
             'wachtlijst' => sfp_page_config_tekst( 'groep_wachtlijst_optie' ),
+            // Sinds 3.31.4 hier: WP Rocket stelt het losse regeltje
+            // window.sfpAlleenWachtlijst uit, deze configuratie niet.
+            'alleenWachtlijst' => 'training' === $type && function_exists( 'sfp_page_config_nlvorm_alleen_wachtlijst' ) && ! sfp_page_config_cursusdata_heeft_keuze( get_queried_object_id() ) && sfp_page_config_nlvorm_alleen_wachtlijst( get_queried_object_id() ),
         )
     );
+}
+
+/**
+ * Heeft de pagina een groep die in het keuzemenu komt (toekomstig en niet vol)?
+ * Zelfde regel als sfp_page_config_inject_course_data().
+ *
+ * @param  int $post_id Pagina.
+ * @return bool
+ */
+function sfp_page_config_cursusdata_heeft_keuze( $post_id ) {
+    foreach ( (array) sfp_page_config_cursusdata_toekomst( $post_id ) as $sm ) {
+        if ( ! empty( $sm['data'] ) && is_array( $sm['data'] ) && ! ( isset( $sm['status'] ) && 'vol' === $sm['status'] ) ) {
+            return true;
+        }
+    }
+    return false;
 }

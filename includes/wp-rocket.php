@@ -179,6 +179,7 @@ function sfp_page_config_rocket_delay_lijst() {
         'assets/zelftest/',
         'sfpStickyConfig',
         'sfpCourseData',
+        'sfpAlleenWachtlijst',
         'sfpDropdownConfig',
         'sfpToolConfig',
         'sfpZelftest',

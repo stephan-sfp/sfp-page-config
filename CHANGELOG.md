@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.31.4] - 2026-11-08
+
+Terugdraaien: versie 3.31.3 terugzetten (zip uit de tag v3.31.3, map sfp-page-config). Formulieren en velden in SureForms veranderen niet.
+
+### Gerepareerd
+- Wachtlijststand (trainingspagina zonder groep): alleen het formulier in Kolommen, Inschrijven krijgt de knop "Zet mij op de wachtlijst". Een ander formulier op de pagina, zoals een leadmagnet, houdt zijn eigen knoptekst uit SureForms. Tot nu wisselde elk formulier (gezien op CVD 23123, formulier 23807).
+- Wachtlijststand: het keuzemenu Datum toonde voor bezoekers de rode tekst "Neem contact op voor de eerstvolgende startdata." in plaats van het menu met de wachtlijstoptie (DPS, DGA, CVD). WP Rocket stelde het regeltje met de wachtlijstvlag uit, het script van het menu niet. De vlag zit nu ook in sfpDropdownConfig en staat op de lijst die WP Rocket niet uitstelt.
+- Keuzemenu Datum: komen de keuzes later toch, dan haalt het script de melding weg en toont het het menu weer.
+
 ## [3.31.3] - 2026-11-08
 
 Terugdraaien: versie 3.31.2 terugzetten (zip uit de tag v3.31.2, map sfp-page-config). Alleen de editor verandert; de site niet.

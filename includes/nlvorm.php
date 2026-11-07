@@ -814,22 +814,40 @@ function sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) {
 add_filter( 'render_block', 'sfp_page_config_nlvorm_wachtlijstknop', 10, 2 );
 
 /**
- * De verzendknop van het formulier heet "Zet mij op de wachtlijst".
+ * De verzendknop van het inschrijfformulier heet "Zet mij op de wachtlijst".
+ *
+ * Sinds 3.31.4 alleen het formulier in Kolommen, Inschrijven: een ander
+ * formulier op de pagina (een leadmagnet, een stappenplan) houdt de tekst
+ * die het in SureForms heeft. Tot 3.31.3 wisselde elk formulier op de pagina.
  *
  * @param  string $html  Getekend blok.
  * @param  array  $block Blok.
  * @return string
  */
 function sfp_page_config_nlvorm_wachtlijstknop( $html, $block ) {
-    if ( empty( $block['blockName'] ) || 'srfm/form' !== $block['blockName'] || is_admin() ) {
+    if ( empty( $block['blockName'] ) || 'sfp/kolommen' !== $block['blockName'] || is_admin() ) {
+        return $html;
+    }
+    if ( 'inschrijven' !== ( $block['attrs']['indeling'] ?? '' ) || false === strpos( (string) $html, 'srfm-submit-wrap' ) ) {
         return $html;
     }
     $post_id = function_exists( 'sfp_page_config_wachtlijst_pagina' ) ? sfp_page_config_wachtlijst_pagina() : 0;
     if ( ! $post_id || ! sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
         return $html;
     }
-    $tekst = esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) );
-    return (string) preg_replace( '/(<div class="srfm-submit-wrap">)\s*[^<]*?\s*(<div class="srfm-loader")/', '$1' . $tekst . '$2', $html, 1 );
+    return sfp_page_config_nlvorm_knoptekst( $html, sfp_page_config_tekst( 'groep_wachtlijst_link' ) );
+}
+
+/**
+ * Zet de tekst van de verzendknop(pen) van SureForms in getekende HTML.
+ *
+ * @param  string $html  HTML met een of meer formulieren.
+ * @param  string $tekst Nieuwe knoptekst (onbewerkt).
+ * @return string
+ */
+function sfp_page_config_nlvorm_knoptekst( $html, $tekst ) {
+    $tekst = str_replace( array( '\\', '$' ), array( '\\\\', '\\$' ), esc_html( $tekst ) );
+    return (string) preg_replace( '/(<div class="srfm-submit-wrap">)\s*[^<]*?\s*(<div class="srfm-loader")/', '$1' . $tekst . '$2', (string) $html );
 }
 
 /* =========================================================================
