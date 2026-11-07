@@ -859,15 +859,17 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
         $acties .= '<a class="sfp-art-actie" href="' . esc_url( 'https://www.google.com/preferences/source?q=' . rawurlencode( $host ) ) . '" target="_blank" rel="noopener">' . sfp_page_config_artikel_icoon( 'google' ) . '<span class="sfp-lang">' . esc_html( $t( 'favoriet' ) ) . '</span><span class="sfp-kort">' . esc_html( $t( 'favoriet_kort' ) ) . '</span></a>';
     }
 
-    // Tekstgrootte (3.29.0): de lezer kiest Normaal, Groter of Grootst voor de
-    // leeskolom; de keuze blijft in de browser. Het kleine script zet de keuze
-    // al vóór de inhoud, zodat er niets verspringt.
-    $acties  .= $knop( 'sfp-art-paneel-tekst', 'tekst', esc_html( $t( 'tekstgrootte' ) ) );
+    // Toegankelijkheid (3.29.2, wens Stephan 7-11: de rij op één regel): een
+    // chip met alleen een icoon, achteraan, opent het paneel met de
+    // tekstgrootte (Normaal, Groter, Grootst; keuze blijft in de browser) en
+    // later het voorlezen. Het kleine script zet de keuze al vóór de inhoud.
+    $toegang  = '';
     $groottes = '';
     foreach ( array( '' => 'tekst_normaal', 'groter' => 'tekst_groter', 'grootst' => 'tekst_grootst' ) as $waarde => $sleutel ) {
         $groottes .= '<button type="button" data-sfp-tekstgrootte="' . esc_attr( $waarde ) . '" aria-pressed="' . ( '' === $waarde ? 'true' : 'false' ) . '">' . esc_html( $t( $sleutel ) ) . '</button>';
     }
-    $panelen .= '<div class="sfp-art-paneel" id="sfp-art-paneel-tekst" hidden><div class="sfp-art-tekst" role="group" aria-label="' . esc_attr( $t( 'tekstgrootte' ) ) . '">' . $groottes . '</div></div>'
+    $toegang .= '<button type="button" class="sfp-art-actie sfp-art-actie--icoon" aria-expanded="false" aria-controls="sfp-art-paneel-toegang" data-sfp-paneel data-sfp-groep="kop" aria-label="' . esc_attr( $t( 'toegankelijkheid' ) ) . '" title="' . esc_attr( $t( 'toegankelijkheid' ) ) . '">' . sfp_page_config_artikel_icoon( 'toegang' ) . '</button>';
+    $panelen .= '<div class="sfp-art-paneel" id="sfp-art-paneel-toegang" hidden><div class="sfp-art-toegang"><span class="sfp-blok-label">' . esc_html( $t( 'tekstgrootte' ) ) . '</span><div class="sfp-art-tekst" role="group" aria-label="' . esc_attr( $t( 'tekstgrootte' ) ) . '">' . $groottes . '</div></div></div>'
         . '<script nowprocket>try{var g=localStorage.getItem("sfp_tekstgrootte");if(g==="groter"||g==="grootst"){document.documentElement.classList.add("sfp-tekst--"+g);}}catch(e){}</script>';
 
     // Pijler: de Thermometer staat op de plek van de warming-up (besluit
@@ -888,7 +890,8 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
             $titels[ $h['id'] ] = $h['titel'];
         }
         $aantal  = count( $vragen );
-        $acties .= $knop( 'sfp-art-paneel-warm', 'vraag', esc_html( sprintf( $t( 'warm' ), $aantal ) ), esc_html( $t( 'warm_kort' ) ) );
+        // Sinds 3.29.2 het korte label op elk scherm (de rij past dan op één regel); het aantal vragen staat in het paneel.
+        $acties .= str_replace( 'class="sfp-art-actie"', 'class="sfp-art-actie" aria-label="' . esc_attr( sprintf( $t( 'warm' ), $aantal ) ) . '"', $knop( 'sfp-art-paneel-warm', 'vraag', esc_html( $t( 'warm_kort' ) ) ) );
         // Een klik op een antwoord gaat door naar de volgende vraag. Na de
         // laatste vraag volgt de uitslag: per vraag het gekozen antwoord en
         // het hoofdstuk waar het antwoord staat.
@@ -925,7 +928,7 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     }
 
     return '<div class="sfp-art-kop"><div class="sfp-art-kop__wie' . ( '' === $foto ? ' sfp-art-kop__wie--zonder-foto' : '' ) . '">' . $foto . $wie . '<div class="sfp-art-kop__meta">' . $meta . '</div>' . $affiliate . '</div>'
-        . '<div class="sfp-art-acties">' . $acties . '</div>' . $panelen . '</div>';
+        . '<div class="sfp-art-acties">' . $acties . $toegang . '</div>' . $panelen . '</div>';
 }
 
 /**
