@@ -468,6 +468,10 @@ function sfp_page_config_beheer_stand() {
         ),
         'banner'           => function_exists( 'sfp_page_config_banner_stand' ) ? sfp_page_config_banner_stand() : array(),
         'uspstrook'        => function_exists( 'sfp_page_config_uspstrook_instelling' ) ? sfp_page_config_uspstrook_instelling() : array(),
+        'coach'            => array(
+            'url'  => (string) sfp_page_config_get_setting( 'coach_persoon', '' ),
+            'norm' => function_exists( 'sfp_page_config_coach_norm' ) ? sfp_page_config_coach_norm() : '',
+        ),
         'merkwaarden'      => function_exists( 'sfp_page_config_merkwaarden_stand' ) ? sfp_page_config_merkwaarden_stand() : null,
         'formulierbewaking' => function_exists( 'sfp_page_config_formulierbewaking_stand' ) ? sfp_page_config_formulierbewaking_stand() : null,
         // Sinds 3.22.0 alleen wat het overzicht nodig heeft: de pagina's die

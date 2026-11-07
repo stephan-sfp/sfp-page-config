@@ -309,7 +309,10 @@ $d->set_body_params(
         'website' => ''
     )
 );
-$check( 'duim: 200', 200 === sfp_page_config_tool_rest_duim( $d )->get_status() );
+$antwoord = sfp_page_config_tool_rest_duim( $d );
+$check( 'duim: 200', 200 === $antwoord->get_status() );
+// Sinds de beveiliging van de wissel: zonder bewijs van de vorige stem gaat er niets af.
+$bewijs = isset( $antwoord->get_data()['bewijs'] ) ? (string) $antwoord->get_data()['bewijs'] : '';
 $tel = get_option( 'sfp_page_config_tool_feedback' );
 $check( 'duim: oude telling overgenomen plus één (8)', isset( $tel['proef-tool']['omhoog'] ) && 8 === (int) $tel['proef-tool']['omhoog'] && 2 === (int) $tel['proef-tool']['omlaag'] );
 $voor = count( $gemaild );
@@ -346,6 +349,7 @@ $d->set_body_params(
         'tool'    => 'proef-tool',
         'stem'    => 'omlaag',
         'vorige'  => 'omhoog',
+        'bewijs'  => $bewijs,
         'website' => ''
     )
 );

@@ -34,7 +34,7 @@ $check  = function ( $naam, $ok, $detail = '' ) use ( &$fouten, &$goed ) {
     echo "FOUT: $naam" . ( '' !== $detail ? ' (' . $detail . ')' : '' ) . "\n";
 };
 
-$pad  = isset( $args[0] ) && '' !== $args[0] ? $args[0] : SFP_PAGE_CONFIG_DIR . 'tests/tool-voorbeelden/sws/fast-kaart.json';
+$pad  = isset( $args[0] ) && '' !== $args[0] ? $args[0] : __DIR__ . '/tool-voorbeelden/sws/fast-kaart.json';
 $json = (string) file_get_contents( $pad );
 $ruw  = json_decode( $json, true );
 $check( 'voorbeeld gelezen', is_array( $ruw ) );
@@ -48,7 +48,8 @@ if ( ! post_type_exists( 'tool' ) ) {
     sfp_page_config_tool_meta();
 }
 
-/* De beschrijving. */
+/* De beschrijving. De toolmotor laadt sinds 3.22.0 pas op verzoek. */
+sfp_page_config_tool_motor();
 $b = sfp_page_config_tool_normaliseer( $ruw );
 $c = sfp_page_config_tool_controleer( $b );
 $check( 'geen fouten: ' . implode( ' ', $c['fouten'] ), empty( $c['fouten'] ) );

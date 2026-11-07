@@ -950,7 +950,7 @@ function sfp_page_config_nlvorm_service_data( $post_id, $inhoud ) {
         'name'       => html_entity_decode( get_the_title( $post_id ), ENT_QUOTES, 'UTF-8' ),
         'url'        => get_permalink( $post_id ),
         'provider'   => array( '@id' => home_url( '/' ) . '#organization' ),
-        'performer'  => array( '@id' => 'https://stephanborggreve.com/#person' ),
+        'performer'  => array( '@id' => sfp_page_config_coach_id() ),
         'areaServed' => array(
             '@type' => 'Country',
             'name'  => 'NL',
@@ -961,4 +961,131 @@ function sfp_page_config_nlvorm_service_data( $post_id, $inhoud ) {
         $data['description'] = trim( html_entity_decode( wp_strip_all_tags( $m[1] ), ENT_QUOTES, 'UTF-8' ) );
     }
     return $data;
+}
+
+/* =========================================================================
+ * Coach in de gegevens voor Google (sinds 3.31.1)
+ * ====================================================================== */
+
+/**
+ * De standaard van het netwerk voor de coach: de site van Stephan.
+ *
+ * @return string
+ */
+function sfp_page_config_coach_norm() {
+    return 'https://stephanborggreve.com/';
+}
+
+/**
+ * Het @id van de coach (performer in het Service-schema): de ingestelde
+ * site met #person, zoals de Person die SureRank op die site zet.
+ *
+ * @return string
+ */
+function sfp_page_config_coach_id() {
+    $url   = trim( (string) sfp_page_config_get_setting( 'coach_persoon', '' ) );
+    $delen = wp_parse_url( '' !== $url ? $url : sfp_page_config_coach_norm() );
+    if ( empty( $delen['host'] ) ) {
+        $delen = wp_parse_url( sfp_page_config_coach_norm() );
+    }
+    return ( isset( $delen['scheme'] ) ? $delen['scheme'] : 'https' ) . '://' . $delen['host'] . '/#person';
+}
+
+/* =========================================================================
+ * Geen tweede aanbod van SureRank (sinds 3.31.1)
+ *
+ * Op een pagina waar deze plugin het Course- of Service-schema levert, haalt
+ * de plugin de Course en de Service uit het schema van SureRank. Anders krijgt
+ * Google twee beschrijvingen van hetzelfde aanbod die elkaar deels
+ * tegenspreken. De rest van het schema van SureRank blijft staan.
+ * ====================================================================== */
+
+add_action( 'surerank_print_meta', 'sfp_page_config_nlvorm_surerank_begin', 9 );
+add_action( 'surerank_print_meta', 'sfp_page_config_nlvorm_surerank_eind', 11 );
+
+/**
+ * Levert deze plugin op de getoonde pagina een eigen aanbod (Course of Service)?
+ *
+ * @param  int $post_id Pagina; 0 is de getoonde pagina.
+ * @return bool
+ */
+function sfp_page_config_nlvorm_eigen_aanbod( $post_id = 0 ) {
+    if ( ! $post_id ) {
+        if ( is_admin() || ! is_singular() ) {
+            return false;
+        }
+        $post_id = (int) get_queried_object_id();
+    }
+    $soort = get_post_meta( $post_id, 'sfp_page_type', true );
+    if ( 'training' === $soort ) {
+        return has_block( 'sfp/groepskaarten', $post_id )
+            && array() !== sfp_page_config_nlvorm_groepen( $post_id )
+            && (bool) apply_filters( 'sfp_page_config_course_schema', true, $post_id );
+    }
+    if ( 'coaching' === $soort ) {
+        return (bool) apply_filters( 'sfp_page_config_service_schema', true, $post_id )
+            && array() !== sfp_page_config_nlvorm_service_data( $post_id, (string) get_post_field( 'post_content', $post_id ) );
+    }
+    return false;
+}
+
+/**
+ * Vang de uitvoer van SureRank op een pagina met eigen aanbod.
+ */
+function sfp_page_config_nlvorm_surerank_begin() {
+    $GLOBALS['sfp_page_config_surerank_buffer'] = false;
+    if ( ! (bool) apply_filters( 'sfp_page_config_surerank_aanbod_weg', true ) || ! sfp_page_config_nlvorm_eigen_aanbod() ) {
+        return;
+    }
+    ob_start();
+    $GLOBALS['sfp_page_config_surerank_buffer'] = true;
+}
+
+/**
+ * Geef de uitvoer van SureRank terug zonder Course en Service.
+ */
+function sfp_page_config_nlvorm_surerank_eind() {
+    if ( empty( $GLOBALS['sfp_page_config_surerank_buffer'] ) ) {
+        return;
+    }
+    $GLOBALS['sfp_page_config_surerank_buffer'] = false;
+    echo sfp_page_config_nlvorm_zonder_aanbod( (string) ob_get_clean() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- uitvoer van SureRank, alleen het schema is opnieuw gecodeerd.
+}
+
+/**
+ * Haal Course en Service uit het schema van SureRank (script surerank-schema).
+ * Alles daarbuiten blijft letterlijk staan.
+ *
+ * @param  string $html Uitvoer van SureRank.
+ * @return string
+ */
+function sfp_page_config_nlvorm_zonder_aanbod( $html ) {
+    return (string) preg_replace_callback(
+        '#(<script[^>]*id="surerank-schema"[^>]*>)(.*?)(</script>)#s',
+        function ( $m ) {
+            $data = json_decode( $m[2], true );
+            if ( ! is_array( $data ) || ! isset( $data['@graph'] ) || ! is_array( $data['@graph'] ) ) {
+                return $m[0];
+            }
+            $weg = array( 'Course', 'Service' );
+            $rest = array_values(
+                array_filter(
+                    $data['@graph'],
+                    function ( $knoop ) use ( $weg ) {
+                        $type = is_array( $knoop ) && isset( $knoop['@type'] ) ? (array) $knoop['@type'] : array();
+                        return ! array_intersect( $type, $weg );
+                    }
+                )
+            );
+            if ( count( $rest ) === count( $data['@graph'] ) ) {
+                return $m[0];
+            }
+            if ( ! $rest ) {
+                return '';
+            }
+            $data['@graph'] = $rest;
+            return $m[1] . wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ) . $m[3];
+        },
+        $html
+    );
 }
