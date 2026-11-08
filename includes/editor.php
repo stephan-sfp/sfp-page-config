@@ -89,6 +89,33 @@ function sfp_page_config_editor_meta() {
                 )
             );
         }
+        // Sinds 3.31.4: eigen USP's voor de USP-strook op deze pagina.
+        foreach ( array( 'sfp_usp_1', 'sfp_usp_2', 'sfp_usp_3' ) as $sleutel ) {
+            register_post_meta(
+                $type,
+                $sleutel,
+                array(
+                    'type'              => 'string',
+                    'single'            => true,
+                    'show_in_rest'      => true,
+                    'sanitize_callback' => function ( $waarde ) {
+                        return mb_substr( trim( sanitize_text_field( (string) $waarde ) ), 0, 60 );
+                    },
+                    'auth_callback'     => $mag,
+                )
+            );
+        }
+        register_post_meta(
+            $type,
+            'sfp_usp_uit',
+            array(
+                'type'              => 'string',
+                'single'            => true,
+                'show_in_rest'      => true,
+                'sanitize_callback' => $vlag,
+                'auth_callback'     => $mag,
+            )
+        );
         register_post_meta(
             $type,
             'sfp_cta_pagina',
@@ -128,6 +155,10 @@ function sfp_page_config_editor_leeg_is_weg( $kort, $post_id, $sleutel, $waarde 
         'sfp_cta_pagina'   => array( '', '0' ),
         'sfp_hero_focal_x' => array( '50' ),
         'sfp_hero_focal_y' => array( '50' ),
+        'sfp_usp_1'        => array( '' ),
+        'sfp_usp_2'        => array( '' ),
+        'sfp_usp_3'        => array( '' ),
+        'sfp_usp_uit'      => array( '' ),
     );
     if ( null !== $kort || ! isset( $leeg[ $sleutel ] ) || is_array( $waarde ) || is_object( $waarde ) ) {
         return $kort;
@@ -238,6 +269,8 @@ function sfp_page_config_editor_gegevens( $post_type ) {
         'knop'          => sfp_page_config_onderdeel_aan( 'knop' ),
         'whatsapp'      => sfp_page_config_onderdeel_aan( 'whatsapp' ),
         'cursusdata'    => sfp_page_config_onderdeel_aan( 'cursusdata' ),
+        // Sinds 3.31.4: USP-strook per pagina; de set van de site als voorbeeld.
+        'uspstrook'     => function_exists( 'sfp_page_config_uspstrook_instelling' ) && sfp_page_config_onderdeel_aan( 'uspstrook' ) ? sfp_page_config_uspstrook_instelling() : null,
         'longread'      => in_array( $post_type, array( 'post', 'page' ), true ) && ! $artikel,
         'affiliate'     => 'post' === $post_type && function_exists( 'sfp_page_config_affiliate_vinkje_toont' ) && sfp_page_config_affiliate_vinkje_toont(),
         'pijler'        => function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan(),

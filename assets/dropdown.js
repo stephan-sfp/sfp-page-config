@@ -79,6 +79,22 @@
         dropdownsHidden = true;
     }
 
+    /**
+     * Sinds 3.32.0: komen de keuzes later toch (een uitgestelde vlag), dan
+     * gaat de melding weg en is het menu weer zichtbaar.
+     */
+    function showDropdowns() {
+        if (!dropdownsHidden) return;
+        document.querySelectorAll('.sfp-no-coursedata-notice').forEach(function (n) {
+            if (n.parentNode) n.parentNode.removeChild(n);
+        });
+        document.querySelectorAll('.sfp-startmoment-select').forEach(function (container) {
+            var target = container.closest('.srfm-block') || container;
+            target.style.display = '';
+        });
+        dropdownsHidden = false;
+    }
+
     function buildOptions(data) {
         var options = [];
         for (var i = 0; i < data.length; i++) {
@@ -240,6 +256,7 @@
             hideDropdowns();
             return;
         }
+        showDropdowns();
         if (alleenWachtlijst) {
             data = [];
             if (!gekozen) gekozen = 'wachtlijst';

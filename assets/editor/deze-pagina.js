@@ -249,6 +249,40 @@
 			) );
 		}
 
+		/* ---------- USP-strook (sinds 3.31.4 per pagina) ---------- */
+		if ( soortId && S.uspstrook && 'page' === editor.type ) {
+			var us = S.uspstrook;
+			var uit = '1' === meta.sfp_usp_uit;
+			var eigenUsp = [ meta.sfp_usp_1, meta.sfp_usp_2, meta.sfp_usp_3 ].some( function ( u ) { return !! ( u && u.trim() ); } );
+			var siteAan = ( us.soorten || [] ).indexOf( soortId ) !== -1 && ( us.usps || [] ).length > 0;
+			delen.push( el( 'div', { key: 'usp', className: 'sfp-dp-deel' },
+				kop( 'USP-strook' ),
+				el( c.ToggleControl, {
+					label: 'USP-strook op deze pagina',
+					checked: ! uit,
+					onChange: function ( v ) { zetMeta( 'sfp_usp_uit', v ? '' : '1' ); },
+					help: 'De strook met drie redenen onder de header.',
+					__nextHasNoMarginBottom: true,
+				} ),
+				uit ? null : [ 1, 2, 3 ].map( function ( n ) {
+					return el( c.TextControl, {
+						key: 'usp' + n,
+						label: 'Reden ' + n,
+						value: meta[ 'sfp_usp_' + n ] || '',
+						placeholder: ( us.usps || [] )[ n - 1 ] || '',
+						maxLength: 60,
+						onChange: function ( v ) { zetMeta( 'sfp_usp_' + n, v ); },
+						__nextHasNoMarginBottom: true,
+						__next40pxDefaultSize: true,
+					} );
+				} ),
+				uit ? null : melding( eigenUsp
+					? 'Deze pagina toont haar eigen redenen. Belknop en Google-cijfer komen uit SFP Beheer.'
+					: ( siteAan ? 'Leeg: de pagina toont de redenen uit SFP Beheer (grijs voorbeeld).' : 'Leeg: geen strook, want SFP Beheer heeft voor deze soort pagina geen redenen. Vul er hier een in om hem te tonen.' ) ),
+				el( c.ExternalLink, { href: S.beheer + '#onderdelen/uspstrook' }, 'USP-strook van de site' )
+			) );
+		}
+
 		/* ---------- Extra ---------- */
 		var extra = [];
 		if ( S.whatsapp ) {

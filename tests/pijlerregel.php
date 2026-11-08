@@ -1,7 +1,7 @@
 <?php
 /**
  * Pijlerregel boven de H1 (3.26.0): tikdoel van 24 px zonder ander uiterlijk,
- * en op de pijler de regel Pillar in Blog. Het beeld zelf controleer je in een
+ * en op de pijler de regel Guide in Blog (NL Gids in Blog). Het beeld zelf controleer je in een
  * browser (375, 768 en 1280 px).
  *
  * Draaien: php tests/pijlerregel.php
@@ -31,7 +31,7 @@ pr_is( false === strpos( $a, 'border-bottom' ), 'geen rand meer die met de opvul
 pr_is( false !== strpos( $a, 'linear-gradient(var(--sfp-b-secundair),var(--sfp-b-secundair)) left 0 bottom 3px/100% 2px no-repeat' ), 'streep 2 px in secundair op de plek van de oude rand' );
 pr_is( false !== strpos( $css, ':root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-primair);background-image:linear-gradient(var(--sfp-b-primair),var(--sfp-b-primair))}' ), 'aanwijzen: streep in primair, zoals de rand' );
 pr_is( ! preg_match( '/#[0-9a-fA-F]{3,8}\b/', $a ), 'geen hexkleur' );
-foreach ( array( "'pijler_regel'           => 'Pillar'", "'pijler_regel_in'        => 'Pillar in %s'", "'pijler_regel'           => 'Pijler'", "'pijler_regel_in'        => 'Pijler in %s'", "'pijler_regel'           => 'Pilar'", "'pijler_regel_in'        => 'Pilar em %s'" ) as $t ) {
+foreach ( array( "'pijler_regel'           => 'Guide'", "'pijler_regel_in'        => 'Guide in %s'", "'pijler_regel'           => 'Gids'", "'pijler_regel_in'        => 'Gids in %s'", "'pijler_regel'           => 'Guia'", "'pijler_regel_in'        => 'Guia em %s'" ) as $t ) {
     pr_is( false !== strpos( $tekst, $t ), "tekst $t" );
 }
 pr_is( false !== strpos( $php, "get_option( 'page_for_posts' )" ) && false !== strpos( $php, "sfp_page_config_artikel_tekst( 'pijler_regel_in' )" ), 'pijler: link naar de blogpagina' );

@@ -369,6 +369,33 @@ function sfp_page_config_nlvorm_bewijsregel( $attrs ) {
 }
 
 /**
+ * De H1 in de held wit krijgt altijd de klasse h1-xl (sinds 3.32.0), zodat
+ * de kop op elke trainings- en coachpagina dezelfde maat heeft, ook als die
+ * klasse in de editor ontbreekt (gemeten op DPS 22577, 8-11). De maat zelf
+ * komt uit Extra CSS van de site.
+ *
+ * @param  string $html Tekstdeel van de held.
+ * @return string
+ */
+function sfp_page_config_nlvorm_h1_xl( $html ) {
+    return (string) preg_replace_callback(
+        '/<h1\b([^>]*)>/i',
+        function ( $m ) {
+            $attr = $m[1];
+            if ( preg_match( '/\bclass="([^"]*)"/i', $attr, $k ) ) {
+                if ( preg_match( '/(^|\s)h1-xl(\s|$)/', $k[1] ) ) {
+                    return $m[0];
+                }
+                return '<h1' . str_replace( $k[0], 'class="' . trim( $k[1] . ' h1-xl' ) . '"', $attr ) . '>';
+            }
+            return '<h1 class="h1-xl"' . $attr . '>';
+        },
+        (string) $html,
+        1
+    );
+}
+
+/**
  * De held "wit" als HTML: tekst links, beeld rechts met de feitenkaart.
  *
  * @param  array         $attrs Attributen.
@@ -391,6 +418,7 @@ function sfp_page_config_nlvorm_held( $attrs, $blok, $content ) {
     } else {
         $tekst = $content;
     }
+    $tekst  = sfp_page_config_nlvorm_h1_xl( $tekst );
     $tekst .= sfp_page_config_nlvorm_bewijsregel( $attrs );
     $feit   = sfp_page_config_nlvorm_feitenkaart( $attrs );
     if ( '' !== $beeld && '' !== $feit ) {
@@ -437,9 +465,11 @@ function sfp_page_config_nlvorm_kap_script() {
         . 'var p=parseFloat(s.paddingTop)||0;h.style.setProperty("--sfp-kapcorrectie",(p+(l-(a+d))/2+(a-b)).toFixed(2)+"px");});}'
         // Telefoon (3.31.0, C7): de H1 krimpt in stappen van 0,5 px tot het
         // langste woord in zijn vak past, minimaal 20 px; vóór de kapcorrectie.
-        . 'function p(){document.querySelectorAll(".sfp-held--wit h1").forEach(function(h){h.style.fontSize="";if(innerWidth>700)return;'
+        // Sinds 3.31.4 met voorrang (important): de maat uit Extra CSS (h1-xl)
+        // heeft zelf voorrang, en won tot nu van de verkleining.
+        . 'function p(){document.querySelectorAll(".sfp-held--wit h1").forEach(function(h){h.style.removeProperty("font-size");if(innerWidth>700)return;'
         . 'var f=parseFloat(getComputedStyle(h).fontSize);function b(){var r=h.getBoundingClientRect(),g=document.createRange();g.selectNodeContents(h);var q=g.getClientRects();for(var i=0;i<q.length;i++){if(q[i].right>r.right+0.5)return true;}return false;}'
-        . 'while(b()&&f>20){f-=0.5;h.style.fontSize=f+"px";}});}'
+        . 'while(b()&&f>20){f-=0.5;h.style.setProperty("font-size",f+"px","important");}});}'
         . 'function a(){p();k();}'
         . 'if(document.fonts&&document.fonts.ready){document.fonts.ready.then(a);}else{a();}'
         . 'var t;window.addEventListener("resize",function(){clearTimeout(t);t=setTimeout(a,150);});})();';
@@ -607,12 +637,45 @@ function sfp_page_config_uspstrook_toon() {
         return;
     }
     $klaar = true;
-    $inst  = sfp_page_config_uspstrook_instelling();
-    $soort = (string) get_post_meta( (int) get_queried_object_id(), 'sfp_page_type', true );
-    if ( ! $inst['usps'] || ! in_array( $soort, $inst['soorten'], true ) ) {
+    $inst  = sfp_page_config_uspstrook_pagina( (int) get_queried_object_id() );
+    if ( ! $inst ) {
         return;
     }
     echo sfp_page_config_uspstrook_html( $inst ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- opgebouwd met escaping.
+}
+
+/**
+ * De USP-strook voor een pagina (sinds 3.31.4 per pagina instelbaar).
+ *
+ * Uit op de pagina: geen strook. Eigen USP's op de pagina: die, ook als de
+ * soort in SFP Beheer niet aanstaat. Anders de set van de site, op de soorten
+ * die in SFP Beheer aanstaan. Belknop en Google-cijfer komen altijd van de site.
+ *
+ * @param  int $post_id Pagina.
+ * @return array|null Instelling om te tonen, of null.
+ */
+function sfp_page_config_uspstrook_pagina( $post_id ) {
+    $post_id = (int) $post_id;
+    if ( ! $post_id || '1' === (string) get_post_meta( $post_id, 'sfp_usp_uit', true ) ) {
+        return null;
+    }
+    $inst  = sfp_page_config_uspstrook_instelling();
+    $eigen = array();
+    foreach ( array( 'sfp_usp_1', 'sfp_usp_2', 'sfp_usp_3' ) as $sleutel ) {
+        $u = mb_substr( trim( sanitize_text_field( (string) get_post_meta( $post_id, $sleutel, true ) ) ), 0, 60 );
+        if ( '' !== $u ) {
+            $eigen[] = $u;
+        }
+    }
+    if ( $eigen ) {
+        $inst['usps'] = $eigen;
+        return $inst;
+    }
+    $soort = (string) get_post_meta( $post_id, 'sfp_page_type', true );
+    if ( ! $inst['usps'] || ! in_array( $soort, $inst['soorten'], true ) ) {
+        return null;
+    }
+    return $inst;
 }
 
 /**
@@ -793,9 +856,11 @@ function sfp_page_config_nlvorm_schema_data( $post_id, array $groepen, array $in
 
 /**
  * Staat er op deze trainingspagina Groepskaarten zonder geplande groep? Dan
- * blijft het gewone inschrijfformulier staan, met in het keuzemenu alleen
- * de wachtlijst, en heten de verzendknop en de knop onderaan "Zet mij op de
- * wachtlijst".
+ * heet de knop onderaan "Zet mij op de wachtlijst". Sinds 3.32.0 wisselt het
+ * inschrijfformulier dan naar het wachtlijstformulier uit SFP Beheer
+ * (includes/wachtlijst.php); alleen zonder dat formulier blijft het gewone
+ * formulier staan, met in het keuzemenu alleen de wachtlijst en die tekst
+ * op de verzendknop.
  *
  * @param  int $post_id Pagina.
  * @return bool
@@ -828,8 +893,35 @@ function sfp_page_config_nlvorm_wachtlijstknop( $html, $block ) {
     if ( ! $post_id || ! sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
         return $html;
     }
+    // Sinds 3.32.0: het wachtlijstformulier heeft zijn eigen knop, en een
+    // ander formulier op de pagina (zoals een leadmagnet) houdt de zijne.
+    if ( function_exists( 'sfp_page_config_wachtlijst_wisselt' ) && sfp_page_config_wachtlijst_wisselt( $post_id ) ) {
+        return $html;
+    }
+    if ( ! sfp_page_config_nlvorm_is_inschrijfformulier( $block, $html ) ) {
+        return $html;
+    }
     $tekst = esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) );
     return (string) preg_replace( '/(<div class="srfm-submit-wrap">)\s*[^<]*?\s*(<div class="srfm-loader")/', '$1' . $tekst . '$2', $html, 1 );
+}
+
+/**
+ * Is dit blok het inschrijfformulier? Het formulier uit SFP Beheer
+ * (Cursusdata), of zonder die instelling een formulier met een keuzemenu
+ * voor het startmoment.
+ *
+ * @since  3.32.0
+ * @param  array  $block Blok.
+ * @param  string $html  Getekend blok.
+ * @return bool
+ */
+function sfp_page_config_nlvorm_is_inschrijfformulier( $block, $html ) {
+    $inschrijf = function_exists( 'sfp_page_config_wachtlijst_formulier_id' ) ? sfp_page_config_wachtlijst_formulier_id( 'inschrijf_formulier' ) : 0;
+    if ( $inschrijf ) {
+        return ! empty( $block['attrs']['id'] ) && (int) $block['attrs']['id'] === $inschrijf;
+    }
+    return false !== strpos( (string) $html, 'sfp-startmoment-select' )
+        || (bool) preg_match( '/srfm-slug-(datum|data|datas|startmoment|startmomenten|startdatum|startdata|startdate|startdates|date|dates|turma)(-\d+)?[\s"]/', (string) $html );
 }
 
 /* =========================================================================

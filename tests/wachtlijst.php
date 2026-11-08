@@ -119,6 +119,9 @@ function get_post_meta( $id, $key = '', $single = false ) {
 function wp_json_encode( $v, $flags = 0 ) {
     return json_encode( $v, $flags );
 }
+function get_post_field( $field, $id ) {
+    return 'post_content' === $field ? ( $GLOBALS['inhoud'][ $id ] ?? '' ) : '';
+}
 function get_permalink( $id ) {
     return 'https://voorbeeld.test/pagina-' . (int) $id . '/';
 }
@@ -164,6 +167,7 @@ require dirname( __DIR__ ) . '/includes/instellingen.php';
 require dirname( __DIR__ ) . '/includes/teksten.php';
 require dirname( __DIR__ ) . '/includes/wachtlijst.php';
 require dirname( __DIR__ ) . '/includes/shortcodes.php';
+require dirname( __DIR__ ) . '/includes/nlvorm.php';
 
 function training( $id, $groepen, $extra = array() ) {
     $GLOBALS['types'][ $id ]  = 'page';
@@ -312,6 +316,26 @@ $blok                   = sfp_page_config_wachtlijst_formulier_wissel(
 );
 same( 501, $blok['attrs']['id'], 'Wachtlijstformulier niet gepubliceerd: niets wisselen' );
 $GLOBALS['status'][502] = 'publish';
+
+/* ---------- Groepskaarten zonder groep (3.32.0) ---------- */
+
+$GLOBALS['pagina']     = 11;
+$GLOBALS['inhoud'][11] = '<!-- wp:sfp/groepskaarten /--><!-- wp:srfm/form {"id":501} /-->';
+$blok                  = sfp_page_config_wachtlijst_formulier_wissel( array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 501 ) ) );
+same( 502, $blok['attrs']['id'], 'Groepskaarten zonder groep: toch het wachtlijstformulier' );
+same( true, sfp_page_config_wachtlijst_wisselt( 11 ), 'Groepskaarten zonder groep: wisselt' );
+$knop = '<form><div class="srfm-submit-wrap">Inschrijven<div class="srfm-loader"></div></div></form>';
+same( $knop, sfp_page_config_nlvorm_wachtlijstknop( $knop, array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 502 ) ) ), 'Met wisselen: knop van het wachtlijstformulier blijft' );
+same( $knop, sfp_page_config_nlvorm_wachtlijstknop( $knop, array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 777 ) ) ), 'Met wisselen: knop van de leadmagnet blijft' );
+$GLOBALS['status'][502] = 'draft';
+same( false, sfp_page_config_wachtlijst_wisselt( 11 ), 'Zonder wachtlijstformulier: geen wissel' );
+bevat( 'Zet mij op de wachtlijst', sfp_page_config_nlvorm_wachtlijstknop( $knop, array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 501 ) ) ), 'Zonder wachtlijstformulier: knop van het inschrijfformulier wordt de wachtlijstknop' );
+same( $knop, sfp_page_config_nlvorm_wachtlijstknop( $knop, array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 777 ) ) ), 'Zonder wachtlijstformulier: knop van de leadmagnet blijft' );
+$GLOBALS['status'][502] = 'publish';
+$GLOBALS['pagina']      = 10;
+$GLOBALS['inhoud'][10]  = $GLOBALS['inhoud'][11];
+same( false, sfp_page_config_wachtlijst_wisselt( 10 ), 'Met toekomstige groep: geen wissel' );
+same( $knop, sfp_page_config_nlvorm_wachtlijstknop( $knop, array( 'blockName' => 'srfm/form', 'attrs' => array( 'id' => 501 ) ) ), 'Met toekomstige groep: knop blijft' );
 
 /* ---------- Klassen ---------- */
 

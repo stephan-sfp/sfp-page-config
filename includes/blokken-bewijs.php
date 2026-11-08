@@ -134,7 +134,7 @@ function sfp_page_config_render_logostrook( $attrs ) {
                 'class'    => 'sfp-logostrook__logo',
                 'loading'  => 'lazy',
                 'decoding' => 'async',
-                'sizes'    => '(max-width: 600px) 120px, 150px',
+                'sizes'    => '(max-width: 600px) 140px, 180px',
             )
         );
         if ( '' !== $img ) {
@@ -145,10 +145,22 @@ function sfp_page_config_render_logostrook( $attrs ) {
         return '';
     }
 
+    // Sinds 3.32.0: meer dan zes logo's lopen als carrousel (besluit Stephan
+    // 8-11). Alleen CSS; de tweede reeks is een kopie voor de naadloze lus
+    // en is verborgen voor schermlezers. Met "minder beweging" staan ze stil
+    // op een rij.
+    $loop = count( $ids ) > 6;
+    $lijst = '<ul class="sfp-logostrook__logos" role="list">' . $items . '</ul>';
+    if ( $loop ) {
+        $kopie = str_replace( array( 'loading="lazy"', '<li>' ), array( 'loading="lazy" alt=""', '<li aria-hidden="true">' ), preg_replace( '/\salt="[^"]*"/', '', $items ) );
+        $lijst = '<div class="sfp-logostrook__venster" style="--sfp-logo-duur:' . (int) ( count( $ids ) * 4 ) . 's">'
+            . '<ul class="sfp-logostrook__logos sfp-logostrook__logos--loop" role="list">' . $items . $kopie . '</ul></div>';
+    }
+
     return sfp_page_config_blokken_css_vangnet( 'sfp/logostrook' )
-        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-logostrook' ) ) . '>'
+        . '<div ' . sfp_page_config_blok_omhulling( $loop ? array( 'sfp-logostrook', 'sfp-logostrook--loop' ) : array( 'sfp-logostrook' ) ) . '>'
         . ( '' !== $label ? '<p class="sfp-logostrook__label">' . esc_html( $label ) . '</p>' : '' )
-        . '<ul class="sfp-logostrook__logos" role="list">' . $items . '</ul>'
+        . $lijst
         . '</div>';
 }
 
