@@ -4,6 +4,23 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.33.0] - 2026-11-08
+
+Terugdraaien: versie 3.32.0 terugzetten (zip uit de tag v3.32.0, map sfp-page-config). Een pagina met de vorm Pijler is dan weer een gewone pagina; links naar de categorie gaan dan weer naar het archief (op DPS zet het snippet Spreekangst wel naar /spreekangst/).
+
+### Gewijzigd
+- Een pijler is een pagina, geen bericht (besluit Stephan 8-11). In de editor kies je de vorm Pijler en de categorie bij een pagina; bij berichten is de pijler niet meer te kiezen. Een bericht dat al pijler was, wordt een gewoon artikel.
+- Het adres van een pijler is het adres van zijn pagina. De plugin zet een pijler niet meer op het adres van de categorie en stuurt niet meer door. Daardoor gaf DPS /spreekangst/ op 7-11 een 404: een snippet zette de categorie op het adres van de pagina, die toen concept was.
+- Links naar een categorie met een pijler (kruimelpad, categorielinks, regel boven de titel) gaan naar de pijlerpagina, op alle sites. Het archief van de categorie blijft bestaan; de link Alle in de kaart gaat daarheen.
+- Uitleg van het onderdeel Pijler in SFP Beheer volgt de pagina.
+
+### Toegevoegd
+- Pijlerpagina in de artikelopmaak: kopkaart, zijkolom, kaart In this guide, auteurskaart, vervolg van de pijler en zelftest of boek als promokaart. De meelopende inhoudsopgave van de pagina staat daar uit.
+- Structured data van een pijlerpagina: een volledig Article (titel, auteur, data, beeld, taal, onderwerp), gekoppeld aan de WebPage en de organisatie van SureRank, met artikelen, begrippen en bronnen. SureRank geeft een pagina alleen WebPage.
+
+### Verwijderd
+- Keuze Adres (categorie of eigen adres) en het doorsturen tussen pijler en categorie.
+
 ## [3.32.0] - 2026-11-08
 
 Terugdraaien: versie 3.31.3 terugzetten (zip uit de tag v3.31.3, map sfp-page-config).

@@ -185,13 +185,14 @@ $check( 'vervolg laat het blok toe', in_array( 'sfp/zelftest-cta', sfp_page_conf
 $term       = wp_insert_term( 'Proef pijler ' . wp_generate_password( 6, false ), 'category' );
 $gids       = wp_insert_post(
     array(
-        'post_title'    => 'Proefgids',
-        'post_status'   => 'publish',
-        'post_category' => array( $term['term_id'] )
+        'post_type'   => 'page',
+        'post_title'  => 'Proefgids',
+        'post_status' => 'publish',
     )
 );
 $opruimen[] = $gids;
 update_post_meta( $gids, 'sfp_vorm', 'pijler' );
+update_post_meta( $gids, 'sfp_gids_van', (int) $term['term_id'] );
 delete_transient( 'sfp_pc_gidsen' );
 $kaart = sfp_page_config_artikel_promokaart( 'zij', $gids );
 $check( 'pijler: zelftest op de plek van het boek', false !== strpos( $kaart, 'sfp-art-promo--test' ) && false !== strpos( $kaart, 'bron=pijler-promo' ) && false !== strpos( $kaart, 'How strong is your presence?' ) );

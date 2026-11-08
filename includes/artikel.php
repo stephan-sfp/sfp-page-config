@@ -68,7 +68,14 @@ function sfp_page_config_artikel_actief() {
     if ( is_admin() || ! sfp_page_config_artikel_aan() ) {
         return false;
     }
-    return is_singular( sfp_page_config_artikel_posttypes() ) && ! is_feed() && ! is_embed();
+    if ( is_feed() || is_embed() ) {
+        return false;
+    }
+    if ( is_singular( sfp_page_config_artikel_posttypes() ) ) {
+        return true;
+    }
+    // Een pijler is sinds 3.33.0 een pagina en krijgt de artikelopmaak.
+    return is_page() && function_exists( 'sfp_page_config_is_pijlerpagina' ) && sfp_page_config_is_pijlerpagina( get_queried_object_id() );
 }
 
 /* =========================================================================

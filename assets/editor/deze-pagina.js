@@ -211,7 +211,8 @@
 		}
 
 		/* ---------- Vorm en pijler ---------- */
-		if ( ( S.pijler && 'post' === editor.type ) || ( ( S.pijler || S.begrip || S.tools ) && ( 'begrippen' === editor.type || 'tool' === editor.type ) ) ) {
+		// Sinds 3.33.0 is een pijler een pagina: de keuze staat bij pagina's, niet meer bij berichten.
+		if ( ( S.pijler && 'page' === editor.type ) || ( ( S.pijler || S.begrip || S.tools ) && ( 'begrippen' === editor.type || 'tool' === editor.type ) ) ) {
 			delen.push( el( Vorm, { key: 'vorm', meta: meta, zetMeta: zetMeta, editor: editor, stand: stand } ) );
 		}
 
@@ -295,7 +296,7 @@
 				__nextHasNoMarginBottom: true,
 			} ) );
 		}
-		if ( S.longread && ! soortId ) {
+		if ( S.longread && ! soortId && ! ( 'page' === editor.type && 'pijler' === meta.sfp_vorm ) ) {
 			var koppen = alleBlokken( editor.blokken ).filter( function ( b ) { return 'core/heading' === b.name && 2 === ( b.attributes.level || 2 ); } ).length;
 			extra.push( el( c.ToggleControl, {
 				key: 'lr',
@@ -369,7 +370,7 @@
 		};
 
 		// Begrip en tool: bij welke pijler hoort dit?
-		if ( 'post' !== editor.type ) {
+		if ( 'page' !== editor.type ) {
 			var isBegrip = 'begrippen' === editor.type;
 			var stukken = [
 				kop( isBegrip ? 'Bij dit begrip' : 'Bij deze tool' ),
@@ -402,28 +403,18 @@
 		var delen = [
 			kop( 'Vorm' ),
 			el( c.SelectControl, {
-				label: 'Dit bericht is',
+				label: 'Deze pagina is',
 				value: pijler ? 'pijler' : '',
-				options: [ { value: '', label: 'Een artikel' }, { value: 'pijler', label: 'Een pijler (de gids van een categorie)' } ],
+				options: [ { value: '', label: 'Een gewone pagina' }, { value: 'pijler', label: 'Een pijler (de gids van een categorie)' } ],
 				onChange: function ( v ) { props.zetMeta( 'sfp_vorm', v ); },
-				help: pijler ? 'Krijgt de kaart In this guide met alle artikelen en begrippen van de categorie.' : 'Een gewoon artikel in de artikelopmaak.',
+				help: pijler ? 'Krijgt de artikelopmaak en de kaart In this guide met alle artikelen en begrippen van de categorie. Het adres blijft dat van deze pagina. Sla op en laad opnieuw voor de opmaak in de editor.' : 'Een gewone pagina.',
 				__nextHasNoMarginBottom: true,
 				__next40pxDefaultSize: true,
 			} ),
 		];
 		if ( pijler ) {
-			var auto = stand.vorm && stand.vorm.automatisch ? stand.vorm.automatisch : '';
-			delen.push( stuk( 'Dit is de gids van', 'Leeg: de categorie van dit bericht' + ( auto ? ' (' + auto + ')' : '' ) + '.', 'sfp_gids_van',
-				[ { value: '0', label: auto ? 'Automatisch: ' + auto : 'Automatisch' } ].concat( catOpties ), true ) );
-			delen.push( el( c.SelectControl, {
-				label: 'Adres',
-				value: '1' === meta.sfp_eigen_adres ? '1' : '',
-				options: [ { value: '', label: 'Het adres van de categorie' }, { value: '1', label: 'Het eigen adres van dit bericht' } ],
-				onChange: function ( v ) { props.zetMeta( 'sfp_eigen_adres', v ); },
-				help: '1' === meta.sfp_eigen_adres ? 'De categorie verwijst naar dit bericht.' : 'Het eigen adres van dit bericht verwijst naar de categorie.',
-				__nextHasNoMarginBottom: true,
-				__next40pxDefaultSize: true,
-			} ) );
+			delen.push( stuk( 'Dit is de gids van', 'De categorie met de artikelen van deze pijler. Links naar die categorie gaan naar deze pagina.', 'sfp_gids_van',
+				[ { value: '0', label: 'Kies de categorie' } ].concat( catOpties ), true ) );
 			var zt = stand.vorm && stand.vorm.zelftests ? stand.vorm.zelftests : { tests: [], site: '' };
 			var siteNaam = '';
 			zt.tests.forEach( function ( t ) { if ( t.test === zt.site ) { siteNaam = t.naam; } } );
@@ -439,6 +430,9 @@
 				}
 				if ( stand.vorm.adres ) {
 					delen.push( regel( 'Staat op', stand.vorm.adres ) );
+				}
+				if ( stand.vorm.archief ) {
+					delen.push( regel( 'Archief van de categorie', stand.vorm.archief ) );
 				}
 			}
 			( stand.vorm && stand.vorm.meldingen ? stand.vorm.meldingen : [] ).forEach( function ( m, i ) {

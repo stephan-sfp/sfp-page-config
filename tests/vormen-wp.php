@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests voor de vormen (3.6.0): pijler, adres, kaart, promokaart per vorm,
+ * Tests voor de vormen (3.6.0, pijler als pagina sinds 3.33.0): pijler, adres, kaart, promokaart per vorm,
  * leestekens in de H1 en de controle.
  *
  * Draait in een lokale WordPress (nooit op een live site):
@@ -64,51 +64,37 @@ for ( $i = 0; $i < 6; $i++ ) {
 }
 $opruimen   = array_merge( $opruimen, $artikelen );
 $lead       = trim( str_repeat( 'woord ', 60 ) );
-$gids       = wp_insert_post(
-    array(
-        'post_title'    => 'Gids: een test-titel, klaar.',
-        'post_status'   => 'publish',
-        'post_content'  => '<!-- wp:paragraph --><p>' . $lead . '</p><!-- /wp:paragraph --><!-- wp:paragraph --><p><a href="' . get_permalink( $artikelen[0] ) . '">oud</a></p><!-- /wp:paragraph --><!-- wp:sfp/lees-ook {"postId":' . $artikelen[2] . '} /-->',
-        'post_category' => array( $pijler['term_id'] ),
-    )
-);
+// Een pijler is een pagina (3.33.0).
+$maak_gids  = function ( $titel, $status, $inhoud, $term_id ) {
+    $id = wp_insert_post(
+        array(
+            'post_type'    => 'page',
+            'post_title'   => $titel,
+            'post_status'  => $status,
+            'post_content' => $inhoud,
+        )
+    );
+    update_post_meta( $id, 'sfp_vorm', 'pijler' );
+    update_post_meta( $id, 'sfp_gids_van', (int) $term_id );
+    delete_transient( 'sfp_pc_gidsen' );
+    return $id;
+};
+$gids       = $maak_gids( 'Gids: een test-titel, klaar.', 'publish', '<!-- wp:paragraph --><p>' . $lead . '</p><!-- /wp:paragraph --><!-- wp:paragraph --><p><a href="' . get_permalink( $artikelen[0] ) . '">oud</a></p><!-- /wp:paragraph --><!-- wp:sfp/lees-ook {"postId":' . $artikelen[2] . '} /-->', $pijler['term_id'] );
 $opruimen[] = $gids;
-update_post_meta( $gids, 'sfp_vorm', 'pijler' );
 
 // Vorm.
 $check( 'vorm pijler', 'pijler' === sfp_page_config_vorm( $gids ) );
 $check( 'vorm artikel', 'artikel' === sfp_page_config_vorm( $artikelen[0] ) );
 $check( 'gids van de categorie', $gids === sfp_page_config_gids_van_term( $pijler['term_id'] ) );
+update_post_meta( $artikelen[1], 'sfp_vorm', 'pijler' );
+$check( 'bericht is nooit een pijler', 'artikel' === sfp_page_config_vorm( $artikelen[1] ) );
+delete_post_meta( $artikelen[1], 'sfp_vorm' );
 
-// Adres: de gids staat op het adres van de categorie.
-$check( 'adres is categorie', get_permalink( $gids ) === get_term_link( $pijler['term_id'], 'category' ) );
-update_post_meta( $gids, 'sfp_eigen_adres', '1' );
-$check( 'eigen adres', get_permalink( $gids ) !== get_term_link( $pijler['term_id'], 'category' ) );
-delete_post_meta( $gids, 'sfp_eigen_adres' );
-
-// Verzoek op het categorieadres wordt de gids.
+// Adres: de pijler houdt zijn eigen adres, de categorie verwijst naar de pijler.
 $term = get_term( $pijler['term_id'], 'category' );
-$vars = sfp_page_config_gids_verzoek(
-    array(
-        'category_name' => get_term_parents_list(
-            $term->term_id,
-            'category',
-            array(
-                'format'    => 'slug',
-                'separator' => '/',
-                'link'      => false
-            )
-        )
-    )
-);
-$check( 'verzoek categorie wordt gids', isset( $vars['p'] ) && (int) $vars['p'] === $gids );
-$vars = sfp_page_config_gids_verzoek(
-    array(
-        'category_name' => $term->slug,
-        'feed'          => 'feed'
-    )
-);
-$check( 'feed blijft categorie', ! isset( $vars['p'] ) );
+$check( 'adres is de pagina', false !== strpos( get_permalink( $gids ), get_post_field( 'post_name', $gids ) ) );
+$check( 'categorielink is de pijler', get_permalink( $gids ) === get_term_link( $pijler['term_id'], 'category' ) );
+$check( 'archief blijft', get_permalink( $gids ) !== sfp_page_config_categorie_archief_url( $term ) && '' !== sfp_page_config_categorie_archief_url( $term ) );
 
 // Volgorde in de kaart: eerst wat de gids noemt (link, dan Lees ook), dan nieuwste eerst.
 $lijst = sfp_page_config_pijler_artikelen( $term, get_post( $gids ) );
@@ -145,16 +131,8 @@ if ( post_type_exists( 'begrippen' ) ) {
 }
 
 // Hoofdpijler gegroepeerd.
-$hoofdgids  = wp_insert_post(
-    array(
-        'post_title'    => 'Hoofdgids',
-        'post_status'   => 'publish',
-        'post_content'  => '<!-- wp:paragraph --><p>' . $lead . '</p><!-- /wp:paragraph -->',
-        'post_category' => array( $hoofd['term_id'] ),
-    )
-);
+$hoofdgids  = $maak_gids( 'Hoofdgids', 'publish', '<!-- wp:paragraph --><p>' . $lead . '</p><!-- /wp:paragraph -->', $hoofd['term_id'] );
 $opruimen[] = $hoofdgids;
-update_post_meta( $hoofdgids, 'sfp_vorm', 'pijler' );
 $kaart = sfp_page_config_gids_kaart( get_post( $hoofdgids ) );
 $check( 'hoofdpijler gegroepeerd', false !== strpos( $kaart, 'sfp-gids--groepen' ) );
 $check( 'hoogstens vier per groep', 4 === substr_count( $kaart, '<li>' ) );
@@ -163,17 +141,9 @@ $check( 'link alle in pijler', false !== strpos( $kaart, 'sfp-gids__alle' ) );
 $check( 'pijlerregel hoofdpijler', 1 === preg_match( '#>(Guide|Gids|Guia)(</p>| (in|em) <a)#', sfp_page_config_artikel_pijlerregel( get_post( $hoofdgids ) ) ) );
 $check( 'pijlerregel pijler in', 1 === preg_match( '#(Guide in|Gids in|Guia em) <a#', sfp_page_config_artikel_pijlerregel( get_post( $gids ) ) ) );
 
-// Een concept-pijler toont zijn kaart (voorbeeldlink), maar houdt zijn eigen adres.
-$concept    = wp_insert_post(
-    array(
-        'post_title'    => 'Concept pijler',
-        'post_status'   => 'draft',
-        'post_content'  => '<!-- wp:paragraph --><p>Lead</p><!-- /wp:paragraph -->',
-        'post_category' => array( $pijler['term_id'] ),
-    )
-);
+// Een concept-pijler toont zijn kaart (voorbeeldlink).
+$concept    = $maak_gids( 'Concept pijler', 'draft', '<!-- wp:paragraph --><p>Lead</p><!-- /wp:paragraph -->', $pijler['term_id'] );
 $opruimen[] = $concept;
-update_post_meta( $concept, 'sfp_vorm', 'pijler' );
 $check( 'concept: kaart', '' !== sfp_page_config_gids_kaart( get_post( $concept ) ) );
 $check( 'concept: telt niet als gids', $gids === sfp_page_config_gids_van_term( $pijler['term_id'] ) );
 
@@ -184,16 +154,8 @@ $html = sfp_page_config_gids_na_lead( '<h2>Kop</h2><p>Meer</p>', '<nav>K</nav>' 
 $check( 'kaart bovenaan zonder lead', 0 === strpos( $html, '<nav>K</nav>' ) );
 
 // Twee gidsen voor één categorie: de oudste telt, de controle meldt het.
-$tweede     = wp_insert_post(
-    array(
-        'post_title'    => 'Tweede gids',
-        'post_status'   => 'publish',
-        'post_content'  => '<!-- wp:paragraph --><p>kort</p><!-- /wp:paragraph -->',
-        'post_category' => array( $pijler['term_id'] ),
-    )
-);
+$tweede     = $maak_gids( 'Tweede gids', 'publish', '<!-- wp:paragraph --><p>kort</p><!-- /wp:paragraph -->', $pijler['term_id'] );
 $opruimen[] = $tweede;
-update_post_meta( $tweede, 'sfp_vorm', 'pijler' );
 $check( 'oudste gids telt', $gids === sfp_page_config_gids_van_term( $pijler['term_id'] ) );
 $codes = wp_list_pluck( sfp_page_config_pijler_controle( get_post( $tweede ) ), 'code' );
 $check( 'controle dubbel', in_array( 'pijler-dubbel', $codes, true ) );
@@ -204,7 +166,7 @@ $check( 'artikelen zonder verwijzing gemeld', in_array( 'pijler-verwijzing', $co
 $codes = wp_list_pluck( sfp_page_config_pijler_controle( get_post( $hoofdgids ) ), 'code' );
 $check( 'hoofdpijler: geen melding verwijzing', ! in_array( 'pijler-verwijzing', $codes, true ) );
 
-// Gekozen categorie gaat voor de eigen categorie.
+// Een andere gekozen categorie.
 update_post_meta( $tweede, 'sfp_gids_van', $ander['term_id'] );
 $check( 'gekozen categorie', $tweede === sfp_page_config_gids_van_term( $ander['term_id'] ) );
 
