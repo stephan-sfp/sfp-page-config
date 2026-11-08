@@ -78,6 +78,11 @@ function sfp_page_config_is_longread( $post_id = null ) {
         && in_array( $post_type, sfp_page_config_artikel_posttypes(), true ) ) {
         return false;
     }
+    // Een pijlerpagina staat sinds 3.33.0 in de artikelopmaak.
+    if ( function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan()
+        && function_exists( 'sfp_page_config_is_pijlerpagina' ) && sfp_page_config_is_pijlerpagina( $post_id ) ) {
+        return false;
+    }
 
     // Check meta toggles (new key first, legacy key as fallback).
     if ( '1' === get_post_meta( $post_id, 'sfp_longread', true ) ) {

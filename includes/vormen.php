@@ -3,14 +3,17 @@
  * SFP Page Config - Vormen: artikel, pijler, begrip en tool
  *
  * De vorm volgt het berichttype (besluit Stephan 18-10-2026): een bericht is
- * een artikel of een pijler, een begrip is een begrip, een tool een tool.
- * Dit bestand regelt wat de vormen delen en de pijler:
+ * een artikel, een begrip is een begrip, een tool een tool. Een pijler is
+ * sinds 3.33.0 een pagina (besluit Stephan 8-11-2026: een pijler is
+ * universeler dan een blogbericht); bij berichten is de pijler niet meer te
+ * kiezen. Dit bestand regelt wat de vormen delen en de pijler:
  *
- *   - de gegevens per bericht (vorm, gids van, eigen adres, zelftest, en bij
+ *   - de gegevens per pagina of bericht (vorm, gids van, zelftest, en bij
  *     begrippen en tools: hoort bij de pijler);
  *   - welke categorie welke gids heeft;
- *   - het adres: de gids staat op het adres van zijn categorie, tenzij hij
- *     zijn eigen adres houdt (dan verwijst de categorie naar de gids);
+ *   - het adres: de pijler houdt het adres van zijn pagina; links naar de
+ *     categorie (kruimelpad, categorielinks) gaan naar de pijler, het
+ *     archief van de categorie blijft bestaan (besluit Stephan 8-11-2026);
  *   - de kaart In this guide, de gegevens voor Google en de controle.
  *
  * De pijler staat aan per site (onderdeel Pijler, standaard uit) en werkt
@@ -53,13 +56,26 @@ function sfp_page_config_vorm( $post ) {
     }
     switch ( $post->post_type ) {
         case 'post':
-            return ( sfp_page_config_pijler_aan() && 'pijler' === get_post_meta( $post->ID, 'sfp_vorm', true ) ) ? 'pijler' : 'artikel';
+            return 'artikel';
+        case 'page':
+            return ( sfp_page_config_pijler_aan() && 'pijler' === get_post_meta( $post->ID, 'sfp_vorm', true ) ) ? 'pijler' : '';
         case 'begrippen':
             return 'begrip';
         case 'tool':
             return 'tool';
     }
     return '';
+}
+
+/**
+ * Is dit een pagina in de vorm Pijler? Dan krijgt hij de artikelopmaak.
+ *
+ * @param  WP_Post|int|null $post Pagina.
+ * @return bool
+ */
+function sfp_page_config_is_pijlerpagina( $post ) {
+    $post = get_post( $post );
+    return $post && 'page' === $post->post_type && 'pijler' === sfp_page_config_vorm( $post );
 }
 
 add_action( 'init', 'sfp_page_config_vormen_meta', 12 );
@@ -71,12 +87,10 @@ function sfp_page_config_vormen_meta() {
     $mag  = function ( $toegestaan, $sleutel, $post_id ) {
         return current_user_can( 'edit_post', $post_id );
     };
-    $vlag = function ( $waarde ) {
-        return '1' === (string) $waarde || true === $waarde ? '1' : '';
-    };
 
+    // Sinds 3.33.0 op pagina's: een pijler is een pagina.
     register_post_meta(
-        'post',
+        'page',
         'sfp_vorm',
         array(
             'type'              => 'string',
@@ -92,7 +106,7 @@ function sfp_page_config_vormen_meta() {
     // De zelftest van een pijler (sinds 3.6.0-beta.5): een test uit het
     // onderdeel Zelftest. Leeg: de test van de site; '-': geen zelftest.
     register_post_meta(
-        'post',
+        'page',
         'sfp_zelftest',
         array(
             'type'              => 'string',
@@ -105,27 +119,14 @@ function sfp_page_config_vormen_meta() {
             'auth_callback'     => $mag,
         )
     );
-    foreach ( array( 'sfp_gids_van' ) as $sleutel ) {
-        register_post_meta(
-            'post',
-            $sleutel,
-            array(
-                'type'              => 'integer',
-                'single'            => true,
-                'show_in_rest'      => true,
-                'sanitize_callback' => 'absint',
-                'auth_callback'     => $mag,
-            )
-        );
-    }
     register_post_meta(
-        'post',
-        'sfp_eigen_adres',
+        'page',
+        'sfp_gids_van',
         array(
-            'type'              => 'string',
+            'type'              => 'integer',
             'single'            => true,
             'show_in_rest'      => true,
-            'sanitize_callback' => $vlag,
+            'sanitize_callback' => 'absint',
             'auth_callback'     => $mag,
         )
     );
@@ -149,10 +150,10 @@ function sfp_page_config_vormen_meta() {
  * ====================================================================== */
 
 /**
- * De categorie waarvan een pijler de gids is: de gekozen categorie, anders
- * de diepste categorie van het bericht.
+ * De categorie waarvan een pijler de gids is: de gekozen categorie. Een
+ * pagina heeft geen eigen categorie, dus zonder keuze is er geen.
  *
- * @param  WP_Post|int $post Bericht.
+ * @param  WP_Post|int $post Pagina.
  * @return WP_Term|null
  */
 function sfp_page_config_gids_term( $post ) {
@@ -167,7 +168,7 @@ function sfp_page_config_gids_term( $post ) {
             return $term;
         }
     }
-    return function_exists( 'sfp_page_config_vervolg_pijler' ) ? sfp_page_config_vervolg_pijler( $post ) : null;
+    return null;
 }
 
 /**
@@ -195,7 +196,7 @@ function sfp_page_config_gidsen( $vers = false ) {
     }
     $ids   = get_posts(
         array(
-            'post_type'        => 'post',
+            'post_type'        => 'page',
             'post_status'      => 'publish',
             'posts_per_page'   => 200,
             'fields'           => 'ids',
@@ -233,12 +234,12 @@ function sfp_page_config_gids_van_term( $term_id ) {
 /**
  * Is dit bericht de gids van een categorie? Geeft die categorie.
  *
- * @param  WP_Post|int $post Bericht.
+ * @param  WP_Post|int $post Pagina.
  * @return WP_Term|null
  */
 function sfp_page_config_is_gids( $post ) {
     $post = get_post( $post );
-    if ( ! $post || 'post' !== $post->post_type ) {
+    if ( ! $post || 'page' !== $post->post_type ) {
         return null;
     }
     // Een pijler die nog niet gepubliceerd is (concept, voorbeeldlink): toon
@@ -262,7 +263,7 @@ function sfp_page_config_gidsen_wis() {
     delete_transient( 'sfp_pc_gidsen' );
     $GLOBALS['sfp_page_config_gidsen_stand'] = ( isset( $GLOBALS['sfp_page_config_gidsen_stand'] ) ? (int) $GLOBALS['sfp_page_config_gidsen_stand'] : 0 ) + 1; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- prefix staat erin.
 }
-add_action( 'save_post_post', 'sfp_page_config_gidsen_wis' );
+add_action( 'save_post_page', 'sfp_page_config_gidsen_wis' );
 add_action( 'deleted_post', 'sfp_page_config_gidsen_wis' );
 add_action( 'trashed_post', 'sfp_page_config_gidsen_wis' );
 add_action( 'untrashed_post', 'sfp_page_config_gidsen_wis' );
@@ -283,7 +284,7 @@ add_action( 'deleted_post_meta', 'sfp_page_config_gidsen_meta_wis', 10, 3 );
  * @param  string    $sleutel  Meta-sleutel.
  */
 function sfp_page_config_gidsen_meta_wis( $meta_id, $post_id, $sleutel ) {
-    if ( in_array( $sleutel, array( 'sfp_vorm', 'sfp_gids_van', 'sfp_eigen_adres' ), true ) ) {
+    if ( in_array( $sleutel, array( 'sfp_vorm', 'sfp_gids_van' ), true ) ) {
         sfp_page_config_gidsen_wis();
     }
 }
@@ -292,109 +293,47 @@ function sfp_page_config_gidsen_meta_wis( $meta_id, $post_id, $sleutel ) {
  * Het adres van de pijler
  * ====================================================================== */
 
-/**
- * Houdt deze gids zijn eigen adres?
- *
- * @param  int $post_id Gids.
- * @return bool
- */
-function sfp_page_config_gids_eigen_adres( $post_id ) {
-    return '1' === (string) get_post_meta( (int) $post_id, 'sfp_eigen_adres', true );
-}
-
-add_filter( 'post_link', 'sfp_page_config_gids_link', 20, 2 );
+add_filter( 'term_link', 'sfp_page_config_gids_categorie_link', 20, 3 );
 
 /**
- * Het adres van een gids is het adres van zijn categorie.
+ * Links naar een categorie met een pijler gaan naar de pijler: het
+ * kruimelpad, de categorielinks en de regel boven de titel (besluit Stephan
+ * 8-11-2026). De pijler houdt het adres van zijn pagina; het archief van de
+ * categorie blijft op zijn eigen adres bestaan.
  *
- * @param  string  $url  Adres.
- * @param  WP_Post $post Bericht.
+ * Tot 3.33.0 kreeg een pijlerbericht het adres van zijn categorie. Op DPS
+ * zette een snippet dat adres op /spreekangst/, het adres van een pagina:
+ * zo gaf de pijler op 7-11-2026 een 404.
+ *
+ * @param  string  $url      Adres.
+ * @param  WP_Term $term     Term.
+ * @param  string  $taxonomy Taxonomie.
  * @return string
  */
-function sfp_page_config_gids_link( $url, $post ) {
-    if ( ! $post instanceof WP_Post || 'publish' !== $post->post_status ) {
+function sfp_page_config_gids_categorie_link( $url, $term, $taxonomy ) {
+    if ( 'category' !== $taxonomy || ! $term instanceof WP_Term || ! sfp_page_config_pijler_aan() ) {
         return $url;
-    }
-    $term = sfp_page_config_is_gids( $post );
-    if ( ! $term || sfp_page_config_gids_eigen_adres( $post->ID ) ) {
-        return $url;
-    }
-    $link = get_term_link( $term );
-    return is_wp_error( $link ) ? $url : $link;
-}
-
-add_filter( 'request', 'sfp_page_config_gids_verzoek', 20 );
-
-/**
- * Een verzoek om een categorie met een gids toont de gids op dat adres.
- * Feeds en pagina 2 en verder van de categorie blijven gewoon.
- *
- * @param  array $vars Queryvariabelen.
- * @return array
- */
-function sfp_page_config_gids_verzoek( $vars ) {
-    if ( is_admin() || empty( $vars['category_name'] ) || ! empty( $vars['feed'] ) || ! empty( $vars['paged'] ) || ! sfp_page_config_pijler_aan() ) {
-        return $vars;
-    }
-    $pad  = trim( (string) $vars['category_name'], '/' );
-    $term = get_category_by_path( $pad, true );
-    if ( ! $term || is_wp_error( $term ) ) {
-        return $vars;
     }
     $gids = sfp_page_config_gids_van_term( $term->term_id );
-    if ( ! $gids || sfp_page_config_gids_eigen_adres( $gids ) || 'publish' !== get_post_status( $gids ) ) {
-        return $vars;
+    if ( ! $gids || 'publish' !== get_post_status( $gids ) ) {
+        return $url;
     }
-    $GLOBALS['sfp_page_config_gids_op_categorie'] = $gids; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- prefix staat erin.
-    $nieuw                                        = array(
-        'p'         => $gids,
-        'post_type' => 'post',
-    );
-    foreach ( array( 'preview', 'sfp_voorbeeld' ) as $houd ) {
-        if ( isset( $vars[ $houd ] ) ) {
-            $nieuw[ $houd ] = $vars[ $houd ];
-        }
-    }
-    return $nieuw;
+    $link = get_permalink( $gids );
+    return $link ? $link : $url;
 }
 
-add_action( 'template_redirect', 'sfp_page_config_gids_doorsturen', 5 );
-
 /**
- * Stuur door naar het ene adres van een pijler:
- *   - een gids op het categorieadres: zijn eigen adres gaat naar de categorie;
- *   - een gids met eigen adres: de categorie gaat naar de gids.
+ * Het adres van het archief van een categorie, ook als die een pijler heeft
+ * (de link van de categorie gaat dan naar de pijler).
+ *
+ * @param  WP_Term $term Categorie.
+ * @return string
  */
-function sfp_page_config_gids_doorsturen() {
-    if ( ! sfp_page_config_pijler_aan() || is_preview() || is_feed() ) {
-        return;
-    }
-    if ( is_category() && ! is_paged() ) {
-        $term = get_queried_object();
-        if ( $term instanceof WP_Term ) {
-            $gids = sfp_page_config_gids_van_term( $term->term_id );
-            if ( $gids && sfp_page_config_gids_eigen_adres( $gids ) && 'publish' === get_post_status( $gids ) ) {
-                wp_safe_redirect( get_permalink( $gids ), 301 );
-                exit;
-            }
-        }
-        return;
-    }
-    if ( ! is_singular( 'post' ) ) {
-        return;
-    }
-    $post = get_queried_object();
-    if ( ! $post instanceof WP_Post || ! empty( $GLOBALS['sfp_page_config_gids_op_categorie'] ) ) {
-        return;
-    }
-    $term = sfp_page_config_is_gids( $post );
-    if ( $term && ! sfp_page_config_gids_eigen_adres( $post->ID ) && 'publish' === $post->post_status ) {
-        $link = get_term_link( $term );
-        if ( ! is_wp_error( $link ) ) {
-            wp_safe_redirect( $link, 301 );
-            exit;
-        }
-    }
+function sfp_page_config_categorie_archief_url( $term ) {
+    remove_filter( 'term_link', 'sfp_page_config_gids_categorie_link', 20 );
+    $url = get_term_link( $term );
+    add_filter( 'term_link', 'sfp_page_config_gids_categorie_link', 20, 3 );
+    return is_wp_error( $url ) ? '' : $url;
 }
 
 /* =========================================================================
@@ -402,7 +341,7 @@ function sfp_page_config_gids_doorsturen() {
  * ====================================================================== */
 
 /**
- * De artikelen van een categorie (zonder gidsen), in de volgorde van de
+ * De artikelen van een categorie, in de volgorde van de
  * kaart: eerst wat de gids zelf noemt, in die volgorde; daarna de rest,
  * nieuwste eerst.
  *
@@ -412,15 +351,14 @@ function sfp_page_config_gids_doorsturen() {
  * @return WP_Post[]
  */
 function sfp_page_config_pijler_artikelen( $term, $gids = null, $diep = false ) {
-    $gidsen = array_values( sfp_page_config_gidsen() );
-    $posts  = get_posts(
+    // Een pijler is een pagina en staat dus nooit tussen de berichten.
+    $posts = get_posts(
         array(
             'post_type'        => 'post',
             'post_status'      => 'publish',
             'posts_per_page'   => 300,
             'orderby'          => 'date',
             'order'            => 'DESC',
-            'post__not_in'     => $gidsen, // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- korte lijst gidsen.
             'no_found_rows'    => true,
             'suppress_filters' => false,
             'tax_query'        => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
@@ -671,12 +609,15 @@ function sfp_page_config_gids_kaart( $gids ) {
             foreach ( array_slice( $lijst, 0, 4 ) as $p ) {
                 $items .= '<li><a href="' . esc_url( get_permalink( $p ) ) . '">' . esc_html( wp_strip_all_tags( get_the_title( $p ) ) ) . '</a></li>';
             }
+            // De kop gaat naar de pijler van de groep (of het archief), de
+            // link Alle naar het archief met alle artikelen (sinds 3.33.0).
             $kind_url = get_term_link( $kind );
             $kind_url = is_wp_error( $kind_url ) ? '' : $kind_url;
+            $alle_url = sfp_page_config_categorie_archief_url( $kind );
             $html    .= '<div class="sfp-gids__groep">'
                 . ( '' !== $kind_url ? '<a class="sfp-pijl" href="' . esc_url( $kind_url ) . '">' . esc_html( $kind->name ) . '</a>' : '<b>' . esc_html( $kind->name ) . '</b>' )
                 . '<ul>' . $items . '</ul>'
-                . ( count( $lijst ) > 4 && '' !== $kind_url ? '<a class="sfp-gids__alle" href="' . esc_url( $kind_url ) . '">' . esc_html( sprintf( $t( 'alle_in' ), count( $lijst ), $kind->name ) ) . '</a>' : '' )
+                . ( count( $lijst ) > 4 && '' !== $alle_url ? '<a class="sfp-gids__alle" href="' . esc_url( $alle_url ) . '">' . esc_html( sprintf( $t( 'alle_in' ), count( $lijst ), $kind->name ) ) . '</a>' : '' )
                 . '</div>';
         }
         $tel = sfp_page_config_gids_tel( count( $groepen ), 'n_gidsen' ) . ' • ' . sfp_page_config_gids_tel( $totaal, 'n_artikelen' );
@@ -834,12 +775,14 @@ function sfp_page_config_promo_zelftest( array $g, $variant ) {
 add_action( 'wp_head', 'sfp_page_config_gids_schema', 30 );
 
 /**
- * Vul de Article van SureRank aan voor een pijler: dezelfde @id, met de
- * artikelen (hasPart), de begrippen (mentions), de bronnen (citation) en de
- * wijzigingsdatum. Alle artikelen staan erin, ook die achter de slider.
+ * Het Article van een pijler. SureRank geeft een pagina alleen WebPage;
+ * sinds 3.33.0 (pijler is een pagina) levert de plugin daarom het hele
+ * Article: titel, auteur, data, beeld, de pagina en de uitgever van SureRank
+ * (zelfde @id's), met de artikelen (hasPart), de begrippen (mentions) en de
+ * bronnen (citation). Alle artikelen staan erin, ook die achter de slider.
  */
 function sfp_page_config_gids_schema() {
-    if ( ! is_singular( 'post' ) || ! sfp_page_config_pijler_aan() ) {
+    if ( ! is_singular( 'page' ) || ! sfp_page_config_pijler_aan() ) {
         return;
     }
     $gids = get_queried_object();
@@ -868,12 +811,44 @@ function sfp_page_config_gids_schema() {
     $bronnen = ( function_exists( 'sfp_page_config_citation_door_snippet' ) && sfp_page_config_citation_door_snippet() )
         ? array()
         : ( function_exists( 'sfp_page_config_citation_werken' ) ? sfp_page_config_citation_werken( $gids->post_content ) : array() );
+    $adres    = get_permalink( $gids );
+    $home     = trailingslashit( home_url( '/' ) );
+    $auteur   = (int) $gids->post_author;
     $gegevens = array(
-        '@context'     => 'https://schema.org',
-        '@type'        => 'Article',
-        '@id'          => get_permalink( $gids ) . '#article',
-        'dateModified' => wp_date( 'c', (int) get_post_timestamp( $gids, 'modified' ) ),
+        '@context'         => 'https://schema.org',
+        '@type'            => 'Article',
+        '@id'              => $adres . '#article',
+        'headline'         => wp_strip_all_tags( get_the_title( $gids ) ),
+        'url'              => $adres,
+        'mainEntityOfPage' => array( '@id' => $adres . '#webpage' ),
+        'isPartOf'         => array( '@id' => $home . '#website' ),
+        'publisher'        => array( '@id' => $home . '#organization' ),
+        'inLanguage'       => get_bloginfo( 'language' ),
+        'datePublished'    => wp_date( 'c', (int) get_post_timestamp( $gids, 'date' ) ),
+        'dateModified'     => wp_date( 'c', (int) get_post_timestamp( $gids, 'modified' ) ),
+        'about'            => array(
+            '@type' => 'Thing',
+            'name'  => html_entity_decode( $term->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+        ),
     );
+    $omschrijving = has_excerpt( $gids ) ? wp_strip_all_tags( get_the_excerpt( $gids ) ) : '';
+    if ( '' !== $omschrijving ) {
+        $gegevens['description'] = $omschrijving;
+    }
+    if ( $auteur ) {
+        $naam = get_the_author_meta( 'display_name', $auteur );
+        if ( '' !== (string) $naam ) {
+            $gegevens['author'] = array(
+                '@type' => 'Person',
+                'name'  => (string) $naam,
+                'url'   => get_author_posts_url( $auteur ),
+            );
+        }
+    }
+    $beeld = get_the_post_thumbnail_url( $gids, 'full' );
+    if ( $beeld ) {
+        $gegevens['image'] = $beeld;
+    }
     if ( $delen ) {
         $gegevens['hasPart'] = $delen;
     }
@@ -917,7 +892,7 @@ function sfp_page_config_lead_woorden( $content ) {
  * De meldingen voor een pijler, in hetzelfde formaat als de controle van
  * SFP Beheer.
  *
- * @param  WP_Post $post Bericht.
+ * @param  WP_Post $post Pagina.
  * @return array
  */
 function sfp_page_config_pijler_controle( $post ) {
@@ -930,7 +905,7 @@ function sfp_page_config_pijler_controle( $post ) {
         $meldingen[] = array(
             'code'  => 'pijler-categorie',
             'kort'  => 'Pijler zonder categorie',
-            'tekst' => 'Deze pijler hoort bij geen categorie. Kies in het paneel Deze pagina van welke categorie dit de gids is.',
+            'tekst' => 'Deze pijler hoort bij geen categorie. Kies in het paneel Deze pagina van welke categorie dit de gids is; zonder categorie heeft de pijler geen artikelen.',
             'actie' => 'editor',
         );
         return $meldingen;
@@ -940,7 +915,7 @@ function sfp_page_config_pijler_controle( $post ) {
         $meldingen[] = array(
             'code'  => 'pijler-dubbel',
             'kort'  => 'Categorie heeft al een gids',
-            'tekst' => 'De categorie ' . $term->name . ' heeft al een gids: ' . get_the_title( $gids ) . '. Deze pijler wordt daarom niet getoond op het adres van de categorie.',
+            'tekst' => 'De categorie ' . $term->name . ' heeft al een gids: ' . get_the_title( $gids ) . '. Links naar de categorie gaan naar die gids, niet naar deze pagina.',
             'actie' => 'editor',
         );
     }

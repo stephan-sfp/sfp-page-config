@@ -132,6 +132,7 @@ function sfp_page_config_inhoud_head() {
     // alsnog neer (sfp_page_config_auteursbio_vinkjes).
     $bio_post = get_queried_object();
     if ( sfp_page_config_inhoud_aan( 'auteursbio' ) && ( is_author() || is_singular( 'post' )
+        || ( function_exists( 'sfp_page_config_artikel_actief' ) && sfp_page_config_artikel_actief() )
         || ( is_singular() && $bio_post instanceof WP_Post && false !== strpos( (string) $bio_post->post_content, 'wp:post-author-biography' ) ) ) ) {
         $uit .= sfp_page_config_inhoud_css( 'auteursbio' );
     }

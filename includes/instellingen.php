@@ -119,7 +119,7 @@ function sfp_page_config_onderdelen() {
         ),
         'pijler'       => array(
             'naam'   => 'Pijler',
-            'uitleg' => 'Een bericht kan de gids van een categorie zijn: op het adres van de categorie, met de kaart van alle artikelen en begrippen erin.',
+            'uitleg' => 'Een pagina kan de gids van een categorie zijn: in de artikelopmaak, met de kaart van alle artikelen en begrippen erin. Links naar de categorie gaan naar die pagina.',
             'detail' => false,
         ),
         'begrip'       => array(

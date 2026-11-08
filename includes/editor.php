@@ -363,14 +363,12 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
         );
     }
 
-    // Vorm en pijler.
-    if ( 'post' === $post->post_type && function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan() ) {
-        $eigen = function_exists( 'sfp_page_config_vervolg_pijler' ) ? sfp_page_config_vervolg_pijler( $post ) : null;
-        $vorm  = array(
-            'vorm'        => sfp_page_config_vorm( $post ),
-            'automatisch' => $eigen ? html_entity_decode( $eigen->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '',
-            'adres'       => '',
-            'meldingen'   => array(),
+    // Vorm en pijler: sinds 3.33.0 is een pijler een pagina.
+    if ( 'page' === $post->post_type && function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan() ) {
+        $vorm = array(
+            'vorm'      => sfp_page_config_vorm( $post ),
+            'adres'     => '',
+            'meldingen' => array(),
         );
         if ( 'pijler' === $vorm['vorm'] ) {
             $vorm['meldingen'] = sfp_page_config_pijler_controle( $post );
@@ -394,8 +392,10 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
                     );
                 }
             }
-            if ( 'publish' === $post->post_status && sfp_page_config_is_gids( $post ) ) {
-                $vorm['adres'] = get_permalink( $post );
+            if ( $term && 'publish' === $post->post_status ) {
+                $archief         = function_exists( 'sfp_page_config_categorie_archief_url' ) ? sfp_page_config_categorie_archief_url( $term ) : '';
+                $vorm['adres']   = get_permalink( $post );
+                $vorm['archief'] = $archief;
             }
         }
         $stand['vorm'] = $vorm;

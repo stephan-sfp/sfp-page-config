@@ -156,3 +156,11 @@ php tests/formulierbewaking.php
 ```
 
 Toolmeting: de events `sfp_tool` van de motor met een kleine nep-DOM (node): start pas bij een interactie, stap alleen bij een wissel, afgerond een keer per sessie, kopiëren uit een deel met `data-sfp-meet`, altijd dezelfde zeven sleutels, niets zonder dataLayer. Boekkaart: de vaste waarden van de DPS-kaart in kolommen.css, geen hexkleur of fontnaam, de klasse sfp-boekkaart en de blokstijl Label. Formulierbewaking: de route /sfp/v1/logs met dezelfde antwoordvorm als het snippet, de testinzending, de foutmail en niets dubbel zolang de snippets draaien. Het beeld van de boekkaart controleer je in een browser.
+
+# Pijler als pagina (3.33.0)
+
+```sh
+php tests/pijler-pagina.php
+```
+
+Checks with small WordPress stubs that the form Pijler belongs to a page and no longer to a post, that a pillar keeps the address of its page, that links to its category go to the pillar while the category archive stays reachable, and that the article layout, follow-up, editor panel and structured data follow the page. It does not replace a run in a real WordPress with a browser.
