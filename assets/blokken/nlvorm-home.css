@@ -92,6 +92,7 @@
   :root .sfp-kolommen--drie>.sfp-kaart.sfp-kaart--beeld>.wp-block-image{flex:0 0 40%;position:relative;min-height:200px}
   :root .sfp-kolommen--drie>.sfp-kaart.sfp-kaart--beeld>.wp-block-image img{position:absolute;inset:0;height:100%;aspect-ratio:auto}
   :root .sfp-kolommen--drie>.sfp-kaart.sfp-kaart--beeld>.sfp-geenbeeld{aspect-ratio:auto;min-height:200px}
+  :root .sfp-kolommen--drie>.sfp-kaart.sfp-kaart--beeld>.sfp-geenbeeld img{position:static;inset:auto}
   :root .sfp-kolommen--reviews.sfp-reviews-rij--carrousel{grid-template-columns:repeat(2,minmax(0,1fr))}
   :root .sfp-kolommen--reviews.sfp-reviews-rij--carrousel>:nth-child(n+3){display:none}
 }
@@ -100,7 +101,7 @@
   :root .sfp-kaart.sfp-artikel>.wp-block-image{flex:0 0 112px;position:relative;min-height:120px}
   :root .sfp-kaart.sfp-artikel>.wp-block-image img{position:absolute;inset:0;height:100%;aspect-ratio:auto}
   :root .sfp-kaart.sfp-artikel>.sfp-geenbeeld{aspect-ratio:auto;min-height:120px}
-  :root .sfp-kaart.sfp-artikel>.sfp-geenbeeld img{width:56%!important}
+  :root .sfp-kaart.sfp-artikel>.sfp-geenbeeld img{width:56%!important;position:static;inset:auto}
   :root .sfp-kaart.sfp-artikel .sfp-kaart__tekst{padding:14px 16px;gap:6px}
   :root .sfp-artikel h3{font-size:16px}
   :root .sfp-artikel .is-style-sfp-pijl,:root .sfp-artikel .sfp-artikel__uittreksel{display:none}

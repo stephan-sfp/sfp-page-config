@@ -4,6 +4,26 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.35.0] - 2026-11-08
+
+Bouwstenen voor de archieven en de leeskolom van de NL-labels (dummy nl-vormen, Blogoverzicht, Categorie, Zoekresultaten, Auteur, Begrippen, Tools en Leeskolom versie 97, akkoord Stephan 8-11). Bestaande pagina's en layouts veranderen niet: de blokken verschijnen pas als ze in een layout of op een pagina staan. Terugdraaien: versie 3.34.0 terugzetten (zip uit de tag v3.34.0, map sfp-page-config); layouts met de nieuwe blokken tonen die blokken dan niet.
+
+### Toegevoegd
+- Blok Archiefkop (R1): label, titel met accent, kernzin, zoekveld en de categorieën als filterrij (op een telefoon een veegrij met vervaging), bij de begrippen het alfabet. Teksten van blog, begrippen en tools typ je per soort in het blok; categorie en zoeken vullen zichzelf.
+- Blok Gidsen (R2): de pijlerpagina's als brede kaart in een tintsectie; op een categorie alleen de eigen gids. Zonder gids staat er niets.
+- Blok Artikelraster (R3): de artikelen van het archief als kaarten met label, drie regels uittreksel, auteur en datum, en paginering. Gebouwd op de kaart van H3 en H4; op een tablet en telefoon als lijst.
+- Blok Auteurskop (R4): foto, naam, rol, biografie met vinkjes en links uit het profiel. Nieuwe profielvelden Foto, Rol, Profielpagina en LinkedIn.
+- Blok Contactgegevens (L1) en het onderdeel Contact in SFP Beheer: telefoon, WhatsApp, e-mail en adres in twee kolommen, met een link naar Google Maps in plaats van een kaart achter de cookiemelding.
+- Uitklap van WordPress in de leeskolom in de stijl Grote regels (L2), zoals in de verklaring van Complianz.
+- Alfabet bij de begrippen: ?letter=A toont alleen de begrippen met die beginletter.
+- Telefoonnummers in de netwerknotatie 085 060 1355 (besluit Stephan 8-11).
+
+### Gewijzigd
+- De kaart van Laatste artikelen kan een label, een eigen uittreksel en geen pijllink krijgen; op de home blijft hij gelijk.
+
+### Gerepareerd
+- Kaart zonder foto op tablet en telefoon: het site-icoon staat weer in het midden van het vlak in plaats van linksboven.
+
 ## [3.34.0] - 2026-11-08
 
 Bouwstenen voor de home en de Over-pagina van de NL-labels (dummy nl-vormen, Home versie 86 en Over versie 90, akkoord Stephan 8-11). Bestaande pagina's veranderen niet, behalve de bewijsregel op een telefoon (H7). Terugdraaien: versie 3.33.0 terugzetten (zip uit de tag v3.33.0, map sfp-page-config); pagina's met de nieuwe blokken tonen die blokken dan niet.

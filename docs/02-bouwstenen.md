@@ -34,6 +34,22 @@ Per blok: instellingen in het zijpaneel, wanneer, hoe, wat je niet doet.
 
 **Startmomenten** (`sfp/cursusdatum`), **Lestijd** (`sfp/lestijd`). Alleen op trainingspagina's met het onderdeel Cursusdata aan: data en lestijd van de groep uit SFP Beheer. Instelling groep, toon alle of eerste, indeling regel of lijst. **Leestijd** (`sfp/leestijd`): leesduur van de pagina.
 
+## Archieven en leeskolom (3.35.0)
+
+Deze blokken staan in de Astra-layouts van de archieven (Blogarchief, Auteursarchief, Begrippen, Tools, Zoekresultaten), onder elkaar, zonder Sectie eromheen: elk blok maakt zijn eigen sectie. Contactgegevens staat in de leeskolom van de contactpagina.
+
+**Archiefkop** (`sfp/archiefkop`). Label, H1, kernzin, zoekveld; op blog en categorie de categorieën als filterrij (op een telefoon een veegrij), bij begrippen het alfabet. Label, titel en kernzin typ je in het blok, per soort (Blog en categorieën, Begrippen, Tools) via Teksten voor; geef in de titel één zinsdeel het Accent. Op een categorie staan vanzelf de naam (met accent) en de omschrijving van de categorie, bij zoeken de zoekterm en het aantal. Niet: een eigen H1 erboven.
+
+**Gidsen** (`sfp/gidsen`). De pagina's met de vorm Pijler als brede kaart: beeld, Gids in Blog, titel, samenvatting van de pagina, aantal artikelen, Lees de gids. Op een categorie alleen de gids van die categorie, met de kop Lees eerst de gids. Zonder gids: niets, ook geen sectie.
+
+**Artikelraster** (`sfp/artikelraster`). De artikelen van het archief zelf, drie naast elkaar, op tablet en telefoon als lijst. Per kaart: beeld (zonder uitgelichte afbeelding een vlak met het site-icoon), label (de categorie; bij zoeken de soort), titel, drie regels uittreksel (niet op een telefoon), auteur en datum. Paginering met Volgende; bij één pagina het aantal. Achtergrond Vanzelf: wit na Gidsen, anders tint. Label en kop zijn per soort te typen; op categorie, zoeken en auteur staan ze vanzelf.
+
+**Auteurskop** (`sfp/auteurskop`). Op de auteurspagina: foto, Profiel, naam als H1, rol, biografie, links. Alles uit het profiel van de gebruiker (Gebruikers, profiel, Auteurskop): foto, rol, profielpagina, LinkedIn. Regels in de biografie die met √ beginnen worden een lijst met vinkjes.
+
+**Contactgegevens** (`sfp/contactgegevens`). Telefoon, WhatsApp, e-mail en adres met de link Bekijk op Google Maps, in twee kolommen (telefoon: één). Uit SFP Beheer, Onderdelen, Contact. Niet: een kaart van OpenStreetMap ernaast.
+
+**Uitklap in de leeskolom**. De uitklap van WordPress (Details), zoals Complianz hem in een verklaring zet, krijgt in de leeskolom vanzelf de stijl Grote regels.
+
 ## Artikelbouwstenen
 
 **Samenvatting** (`sfp/samenvatting`). "What you need to know": drie of vier punten in een kaart met deelbaar beeld. Label en punten typ je in het blok; Onderwerp op het beeld (leeg: de titel). Wanneer: in elk artikel direct na de lead; niet op een pijler of begrip. Elk punt een volledige bewering van circa 70 tekens.

@@ -1,0 +1,115 @@
+/*
+ * Bouwstenen: NL-vorm (3.35.0), archieven en leeskolom. Bron: dummy
+ * nl-vormen, Blogoverzicht, Categorie, Zoekresultaten, Auteur, Begrippen,
+ * Tools en Leeskolom versie 97 (akkoord 8-11-2026). Archiefkop (R1), Gidsen
+ * (R2), Artikelraster (R3, de kaart van H3 en H4), Auteurskop (R4),
+ * Contactgegevens (L1). Breekpunten 980 (tablet) en 700 (telefoon).
+ * Kleuren en letters uit de merkvariabelen (--sfp-b-*), nooit vast.
+ */
+
+/* Tekstlink in het bodyfont (branding.md), ook als nlvorm-groepen niet op de pagina staat. */
+:root :is(.sfp-archiefgids,.sfp-paginering,.sfp-auteur,.sfp-gegevens) .sfp-tekstlink{font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-transform:none;letter-spacing:0}
+:root :is(.sfp-archiefgids,.sfp-paginering,.sfp-auteur,.sfp-gegevens) .sfp-tekstlink:is(:hover,:focus-visible){text-decoration-thickness:3px}
+:root :is(.sfp-archiefgids,.sfp-paginering,.sfp-auteur,.sfp-gegevens) .sfp-tekstlink::after{content:"\00a0\2192"}
+:root .sfp-paginering .sfp-paginering__vorige::after{content:none}
+:root .sfp-paginering .sfp-paginering__vorige::before{content:"\2190\00a0"}
+
+/* ---------- R1 Archiefkop ---------- */
+:root .sfp-archiefkop .sfp-sectie__binnen{padding-bottom:40px}
+:root .sfp-archiefkop .sfp-sectie__binnen>h1{margin:6px 0 0;padding:0}
+:root .sfp-archiefkop .sfp-sectie__binnen>.is-style-sfp-label+h1{margin-top:6px}
+:root .sfp-archiefkop .sfp-accent{background:linear-gradient(transparent 58%,var(--sfp-b-tint2) 58%);color:inherit;padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+:root .sfp-archiefkop .sfp-sectie__binnen>h1+p.sfp-archiefkop__kernzin{margin-top:14px}
+:root .sfp-zoek{display:flex;gap:12px;margin:36px 0 0;max-width:640px}
+:root .sfp-zoek input[type=search]{flex:1;min-width:0;height:48px;box-sizing:border-box;padding:0 16px;margin:0;border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-kaart);background:var(--sfp-b-wit);color:var(--sfp-b-body);font:inherit;font-size:16px}
+:root .sfp-zoek input[type=search]:focus-visible{outline:2px solid var(--sfp-b-secundair);outline-offset:1px}
+:root :is(.sfp-sectie,.sfp-held) .sfp-zoek .wp-block-button__link{height:48px;min-height:48px;width:auto;flex:none;padding:0 22px;cursor:pointer;margin:0}
+:root .sfp-filter{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 0}
+:root .sfp-filter a{padding:8px 14px;border:1px solid var(--sfp-b-lijn-sterk);border-radius:999px;font-size:14px;line-height:1.3;text-decoration:none;color:var(--sfp-b-primair);background:var(--sfp-b-wit);white-space:nowrap}
+:root .sfp-filter a:hover{border-color:var(--sfp-b-primair)}
+:root .sfp-filter a.is-actief{background:var(--sfp-b-primair);border-color:var(--sfp-b-primair);color:var(--sfp-b-wit)}
+:root .sfp-filter--abc a{min-width:36px;text-align:center;padding:7px 10px;box-sizing:border-box}
+
+/* ---------- R2 Gidsen ---------- */
+:root .sfp-sectie.sfp-sectie--gidsen{padding-top:28px;padding-bottom:28px}
+:root .sfp-sectie--gidsen h2{font-size:clamp(20px,1vw + 14px,24px)}
+:root .sfp-archiefgidsen{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:20px}
+:root .sfp-sectie--gidsen .sfp-sectie__binnen>h2+.sfp-archiefgidsen{margin-top:20px}
+:root .sfp-kaart.sfp-archiefgids{padding:0;gap:0;overflow:hidden;border-top-width:1px}
+:root .sfp-archiefgids__beeld{margin:0}
+:root .sfp-archiefgids__beeld img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:0}
+:root .sfp-archiefgids__beeld.sfp-geenbeeld{aspect-ratio:16/9;background:var(--sfp-b-tint2);display:grid;place-items:center}
+:root .sfp-archiefgids__beeld.sfp-geenbeeld img{width:30%;height:auto;aspect-ratio:1/1;object-fit:contain}
+:root .sfp-archiefgids__tekst{display:flex;flex-direction:column;gap:8px;padding:24px 28px 28px}
+:root .sfp-archiefgids__tekst>*{margin:0}
+:root .sfp-archiefgids__titel{font-family:var(--sfp-b-kop);text-transform:uppercase;color:var(--sfp-b-primair);font-size:22px;line-height:1.15;padding:0}
+:root .sfp-archiefgids__zin{font-size:15px}
+:root .sfp-archiefgids__meta{font-size:14px;color:color-mix(in srgb,var(--sfp-b-body) 70%,transparent)}
+:root .sfp-archiefgids__link{margin-top:6px}
+
+/* ---------- R3 Artikelraster ---------- */
+:root .sfp-archiefraster .sfp-sectie__binnen>h2+.sfp-raster{margin-top:32px}
+:root .sfp-kolommen.sfp-raster{row-gap:28px}
+:root .sfp-raster .sfp-artikel h3{font-size:18px}
+:root .sfp-raster .sfp-artikel h3 a{color:inherit;text-decoration:none}
+:root .sfp-raster .sfp-artikel .sfp-artikel__meta{margin-top:auto;padding-top:4px}
+:root .sfp-paginering{display:flex;align-items:center;gap:8px;margin-top:40px;flex-wrap:wrap}
+:root .sfp-paginering>.page-numbers{min-width:40px;height:40px;box-sizing:border-box;padding:0 8px;display:inline-grid;place-items:center;border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);text-decoration:none;color:var(--sfp-b-primair);font-weight:700;background:var(--sfp-b-wit)}
+:root .sfp-paginering>.page-numbers.dots{border-color:transparent;background:none}
+:root .sfp-paginering>.page-numbers.is-actief{background:var(--sfp-b-primair);color:var(--sfp-b-wit);border-color:var(--sfp-b-primair)}
+:root .sfp-paginering>a.page-numbers:hover{border-color:var(--sfp-b-primair)}
+:root .sfp-paginering>.sfp-paginering__volgende{margin-left:12px}
+:root .sfp-paginering>.sfp-paginering__vorige{margin-right:12px}
+:root .sfp-aantal{margin:32px 0 0;font-size:15px;color:color-mix(in srgb,var(--sfp-b-body) 75%,transparent)}
+
+/* ---------- R4 Auteurskop ---------- */
+:root .sfp-auteur{display:grid;grid-template-columns:280px minmax(0,1fr);gap:56px;align-items:start}
+:root .sfp-auteur--zonder-foto{grid-template-columns:minmax(0,1fr)}
+:root .sfp-auteur__foto{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:50% 15%;border-radius:var(--sfp-b-r-kaart);background:color-mix(in srgb,var(--sfp-b-secundair) 10%,var(--sfp-b-wit))}
+:root .sfp-auteur__tekst{display:grid;gap:14px;max-width:44em}
+:root .sfp-auteur__tekst>*{margin:0}
+:root .sfp-auteur__tekst>h1{padding:0}
+:root .sfp-auteur__rol{font-weight:700;color:var(--sfp-b-primair)}
+:root .sfp-auteur__links{display:flex;gap:28px;flex-wrap:wrap}
+
+/* ---------- L1 Contactgegevens ---------- */
+:root .sfp-gegevens{display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;margin:36px 0 48px;padding:28px 0;border-top:1px solid var(--sfp-b-lijn);border-bottom:1px solid var(--sfp-b-lijn)}
+:root .sfp-gegevens>div{min-width:0}
+:root .sfp-gegevens dt{margin:0 0 6px}
+:root .sfp-gegevens dd{margin:0;color:var(--sfp-b-primair);font-weight:700;line-height:1.5;overflow-wrap:anywhere}
+:root .sfp-gegevens dd a:not(.sfp-tekstlink){color:var(--sfp-b-tekstlink);text-underline-offset:4px}
+:root .sfp-gegevens .sfp-tekstlink{display:inline-block;margin-top:6px;font-size:15px}
+
+/* ---------- Tablet ---------- */
+@media (max-width:980px){
+  :root .sfp-auteur{grid-template-columns:200px minmax(0,1fr);gap:32px}
+  :root .sfp-auteur--zonder-foto{grid-template-columns:minmax(0,1fr)}
+}
+
+/* ---------- Telefoon ---------- */
+@media (max-width:700px){
+  /* Filterrij: één rij die veegt, met een vervaging aan de rechterkant. */
+  :root .sfp-filter{flex-wrap:nowrap;overflow-x:auto;margin-right:-16px;padding-right:40px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 56px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 56px),transparent 100%)}
+  :root .sfp-filter::-webkit-scrollbar{display:none}
+  :root .sfp-filter--abc{flex-wrap:wrap;overflow:visible;margin-right:0;padding-right:0;-webkit-mask-image:none;mask-image:none}
+  :root :is(.sfp-sectie,.sfp-held) .sfp-zoek .wp-block-button__link{padding:0 16px;width:auto}
+  :root .sfp-archiefgidsen{grid-template-columns:minmax(0,1fr)}
+  :root .sfp-kaart.sfp-archiefgids{flex-direction:row}
+  :root .sfp-archiefgids__beeld{flex:0 0 112px;position:relative;min-height:112px}
+  :root .sfp-archiefgids__beeld img{position:absolute;inset:0;height:100%;aspect-ratio:auto}
+  :root .sfp-archiefgids__beeld.sfp-geenbeeld{aspect-ratio:auto}
+  :root .sfp-archiefgids__beeld.sfp-geenbeeld img{position:static;width:56%}
+  :root .sfp-archiefgids__tekst{padding:14px 16px;gap:4px}
+  :root .sfp-archiefgids__titel{font-size:18px}
+  :root .sfp-archiefgids__zin,:root .sfp-archiefgids__link{display:none}
+  :root .sfp-kolommen.sfp-raster{row-gap:12px}
+  :root .sfp-raster .sfp-artikel h3{font-size:15px;line-height:1.3}
+  :root .sfp-raster .sfp-artikel .is-style-sfp-label{font-size:11px}
+  :root .sfp-auteur{grid-template-columns:minmax(0,1fr);gap:20px}
+  :root .sfp-auteur__foto{width:120px;border-radius:50%}
+  :root .sfp-gegevens{grid-template-columns:1fr;gap:20px;margin:28px 0 36px;padding:24px 0}
+}
+@media (min-width:701px){
+  /* Eén gids: halve breedte, zoals in de dummy (computer en tablet). */
+  :root .sfp-archiefgidsen:not(.sfp-archiefgidsen--meer){grid-template-columns:minmax(0,calc((100% - 24px)/2))}
+}

@@ -193,11 +193,16 @@ function sfp_page_config_artikelen_lijst( $aantal, $categorie = 0, $niet = 0 ) {
  * Eén artikelkaart: beeld boven, kop, auteur en datum, een pijllink. Zonder
  * uitgelichte afbeelding een vlak in tint met het site-icoon (R3).
  *
+ * Sinds 3.35.0 ook voor het Artikelraster (R3): met $opties een label boven
+ * de titel, een eigen regel onder de kaart (leeg: geen regel), een eigen
+ * uittreksel en zonder pijllink.
+ *
  * @param  WP_Post $post       Bericht.
  * @param  bool    $uittreksel Met de eerste regels van het artikel.
+ * @param  array   $opties     label, meta, uittreksel (tekst), pijl (bool).
  * @return string
  */
-function sfp_page_config_artikel_kaart( WP_Post $post, $uittreksel = false ) {
+function sfp_page_config_artikel_kaart( WP_Post $post, $uittreksel = false, array $opties = array() ) {
     $link  = get_permalink( $post );
     $titel = get_the_title( $post );
     $beeld = has_post_thumbnail( $post )
@@ -217,18 +222,27 @@ function sfp_page_config_artikel_kaart( WP_Post $post, $uittreksel = false ) {
         $icoon = get_site_icon_url( 192 );
         $beeld = '<figure class="wp-block-image sfp-geenbeeld" aria-hidden="true">' . ( $icoon ? '<img src="' . esc_url( $icoon ) . '" alt="" loading="lazy" decoding="async" width="96" height="96">' : '' ) . '</figure>';
     }
-    $auteur = get_the_author_meta( 'display_name', (int) $post->post_author );
-    $datum  = wp_date( 'j F Y', (int) get_post_timestamp( $post ) );
-    $meta   = trim( ( '' !== (string) $auteur ? $auteur . ' · ' : '' ) . $datum );
-    $tekst  = '';
+    if ( array_key_exists( 'meta', $opties ) ) {
+        $meta = trim( (string) $opties['meta'] );
+    } else {
+        $auteur = get_the_author_meta( 'display_name', (int) $post->post_author );
+        $datum  = wp_date( 'j F Y', (int) get_post_timestamp( $post ) );
+        $meta   = trim( ( '' !== (string) $auteur ? $auteur . ' · ' : '' ) . $datum );
+    }
+    $tekst = '';
     if ( $uittreksel ) {
-        $tekst = wp_trim_words( wp_strip_all_tags( has_excerpt( $post ) ? $post->post_excerpt : strip_shortcodes( $post->post_content ) ), 30 );
+        $tekst = isset( $opties['uittreksel'] ) ? (string) $opties['uittreksel'] : wp_trim_words( wp_strip_all_tags( has_excerpt( $post ) ? $post->post_excerpt : strip_shortcodes( $post->post_content ) ), 30 );
         $tekst = '' !== $tekst ? '<p class="sfp-artikel__uittreksel">' . esc_html( $tekst ) . '</p>' : '';
     }
+    $label = isset( $opties['label'] ) ? trim( (string) $opties['label'] ) : '';
+    $pijl  = ! isset( $opties['pijl'] ) || $opties['pijl'];
+    // Zonder pijllink staat de titel zelf als link (voor schermlezers en het toetsenbord).
+    $kop = $pijl ? esc_html( $titel ) : '<a href="' . esc_url( $link ) . '">' . esc_html( $titel ) . '</a>';
     return '<article class="sfp-kaart sfp-kaart--vlak sfp-kaart--beeld sfp-kaart--link sfp-artikel">' . $beeld
-        . '<div class="sfp-kaart__tekst"><h3 class="wp-block-heading">' . esc_html( $titel ) . '</h3>' . $tekst
-        . '<p class="sfp-artikel__meta">' . esc_html( $meta ) . '</p>'
-        . '<p class="is-style-sfp-pijl"><a href="' . esc_url( $link ) . '">' . esc_html( sfp_page_config_tekst( 'artikel_lees' ) ) . '</a></p></div>'
+        . '<div class="sfp-kaart__tekst">' . ( '' !== $label ? '<p class="is-style-sfp-label">' . esc_html( $label ) . '</p>' : '' )
+        . '<h3 class="wp-block-heading">' . $kop . '</h3>' . $tekst
+        . ( '' !== $meta ? '<p class="sfp-artikel__meta">' . esc_html( $meta ) . '</p>' : '' )
+        . ( $pijl ? '<p class="is-style-sfp-pijl"><a href="' . esc_url( $link ) . '">' . esc_html( sfp_page_config_tekst( 'artikel_lees' ) ) . '</a></p>' : '' ) . '</div>'
         . '<a class="sfp-kaart__link" href="' . esc_url( $link ) . '" tabindex="-1" aria-hidden="true"></a></article>';
 }
 
