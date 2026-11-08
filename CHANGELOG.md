@@ -4,6 +4,26 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.36.0-beta.1] - 2026-11-08
+
+Proefversie voor DPS: de incompanycalculator als nieuw onderdeel, en het blok Bedrijfsgegevens in SFP Beheer. Het onderdeel Calculator staat overal uit tot een site het aanzet; in proefmodus zien alleen beheerders hem. Besluiten: claude/incompanycalculator-besluitenlog.md. Terugdraaien: het onderdeel uitzetten verbergt de calculator; anders versie 3.35.0 terugzetten (zip uit de tag v3.35.0, map sfp-page-config). De tabel wp_sfp_calculator blijft dan staan.
+
+### Toegevoegd
+- Onderdeel Incompanycalculator: blok sfp/calculator en code [sfp_calculator]. Volledig op de calculatorpagina (eigen sjabloon zonder kop en voet van het thema), ingebed op de incompany-pagina's met route en aantal mensen en daarna door naar de calculatorpagina.
+- Routes: training voor het team (A), sprekers voor een eigen evenement (B, norm aan op DPS, SFP en SwS) en meerdere aanbieders (C, geen begroting, direct naar het gesprek).
+- Stappen voor route A: situatie, aantal mensen met doelgroep, vorm (1, 2 of 3 dagen), extra's met uitleg bij het i-teken, groepsvoordeel vanaf de 3e groep, locatie, intern proces met het vakje voor inkoop, gegevens via een SureForms-formulier, eindscherm met adviesgesprek, offerte en pdf.
+- Rekenregel in JavaScript (scherm) en PHP (server), met tests/calculator-reken.php die beide op 40 scenario's vergelijkt en de besluiten B1 tot B12 controleert.
+- Netwerknorm voor prijzen, groepen en extra's in de code; afwijkingen per site in SFP Beheer, Calculator, en zichtbaar bij Overzicht.
+- Opslag in een eigen tabel met een kenmerk per begroting (DPS-B-26-0042, een teller per site en jaar). De server rekent zelf en vult bij de inzending de verborgen velden van het formulier opnieuw, zodat een aangepaste waarde in de browser niet doorkomt.
+- Pdf via Cloudflare Browser Run (zelfde instelling en wachtrij als de zelftest), met kleuren en fonts van de site, btw per tarief en de blokken Voor wie beslist, programma, contactpersoon, begroting, voorwaarden, leveranciersgegevens en Voor inkoop. Link met kenmerk en sleutel, noindex en zonder cache, 60 dagen geldig.
+- Beveiligd adres voor de offertebouwer: GET /wp-json/sfp/v1/calculator/begroting/<kenmerk> (alleen beheerders) geeft de hele begroting als JSON.
+- SFP Beheer, Calculator: sitecode, proefmodus, pagina's, formulier met controle op de verborgen velden en de bevestiging, contactpersoon, labelteksten, norm en afwijking, proefbegroting, export en import, tellingen en logboek.
+- Onderdeel Bedrijfsgegevens: juridische naam, rechtsvorm, KvK, btw-nummer, IBAN en adres per site, met de labelnaam.
+- Bewaartermijn: begroting zonder inzending na 24 uur weg, pdf na 60 dagen, persoonsgegevens na 2 jaar; wisser en exporteur voor de AVG.
+
+### Gewijzigd
+- WP Rocket: script en stijl van de calculator niet uitstellen en de inline stijl niet laten weghalen; de pdf-link nooit in de cache.
+
 ## [3.35.0] - 2026-11-08
 
 Bouwstenen voor de archieven en de leeskolom van de NL-labels (dummy nl-vormen, Blogoverzicht, Categorie, Zoekresultaten, Auteur, Begrippen, Tools en Leeskolom versie 97, akkoord Stephan 8-11). Bestaande pagina's en layouts veranderen niet: de blokken verschijnen pas als ze in een layout of op een pagina staan. Terugdraaien: versie 3.34.0 terugzetten (zip uit de tag v3.34.0, map sfp-page-config); layouts met de nieuwe blokken tonen die blokken dan niet.

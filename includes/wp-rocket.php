@@ -92,6 +92,8 @@ function sfp_page_config_css_inline_handles() {
         'sfp-tool-kaart',
         'sfp-longread-nav',
         'sfp-zelftest',
+        // Sinds 3.36.0: de incompanycalculator.
+        'sfp-calculator',
     );
 }
 
@@ -177,6 +179,9 @@ function sfp_page_config_rocket_delay_lijst() {
         'sfp-page-config/assets/tooltip/',
         'sfp-page-config/assets/footer-groepen',
         'assets/zelftest/',
+        // Sinds 3.36.0: de incompanycalculator en zijn configuratie.
+        'assets/calculator/',
+        'sfpCalculator',
         'sfpStickyConfig',
         'sfpCourseData',
         // Sinds 3.32.0: anders draait het keuzemenu eerst zonder deze vlag,
@@ -193,6 +198,7 @@ function sfp_page_config_rocket_delay_lijst() {
         'sfp-footer-groepen-js',
         'sfp-fj__groep',
         'sfp-zelftest',
+        'sfp-calculator',
     );
 }
 
