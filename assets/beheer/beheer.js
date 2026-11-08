@@ -1384,6 +1384,231 @@
 		]);
 	}
 
+	/* ---------- Onderdeel: bedrijfsgegevens (sinds 3.36.0) ---------- */
+
+	function detailBedrijf() {
+		var B = S.bedrijf || { velden: {}, waarden: {} };
+		var invoer = {};
+		var rijen = Object.keys(B.velden).map(function (k) {
+			invoer[k] = k === 'adres' ? el('textarea', { value: B.waarden[k] || '', rows: '3' }) : tekstInvoer(B.waarden[k] || '', '');
+			return veld(B.velden[k], invoer[k], k === 'label' ? 'De naam van het label, zoals hij boven de gegevens staat.' : null, 'sfpb-bd-' + k);
+		});
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Bedrijfsgegevens', 'Eén set per site. De begroting van de incompanycalculator leest ze hier; later ook de footer en de feitelijke verantwoording. Bij de overgang van vof naar bv pas je ze hier per site aan.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, rijen.concat([
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						var w = {}; Object.keys(invoer).forEach(function (k) { w[k] = invoer[k].value; });
+						bewaarInstellingen(this, 'bedrijf', { bedrijf: w });
+					} }),
+					flitsPlek('bedrijf')
+				])
+			]))
+		]);
+	}
+
+	/* ---------- Onderdeel: incompanycalculator (sinds 3.36.0) ---------- */
+
+	/** Aanroep naar /sfp/v1/calculator; het antwoord vervangt S.calculator. */
+	function calc(knop, sleutel, pad, gegevens, klaarTekst, extra) {
+		return doe(knop, sleutel, wp.apiFetch({ path: '/sfp/v1/calculator' + pad, method: 'POST', data: gegevens }).then(function (a) {
+			var stand = a && a.stand ? a.stand : a;
+			if (stand && stand.instellingen) S.calculator = stand;
+			if (extra) extra(a);
+			return null;
+		}), klaarTekst);
+	}
+
+	/** Een afbeelding uit de mediabibliotheek. Geeft { node, waarde() }. */
+	function beeldKeuze(label, id, url, hulp) {
+		var beeld = { id: id || 0, url: url || '' };
+		var klein = el('img', { class: 'sfpb-logo-voorb', alt: '' });
+		var kies = el('button', { class: 'sfpb-knop', type: 'button' });
+		var weg = el('button', { class: 'sfpb-knop sfpb-zacht', type: 'button', text: 'Weghalen' });
+		function ververs() {
+			if (beeld.url) klein.src = beeld.url; else klein.removeAttribute('src');
+			klein.hidden = !beeld.url;
+			kies.textContent = beeld.id ? 'Kies een andere' : 'Kies een afbeelding';
+			weg.hidden = !beeld.id;
+		}
+		kies.addEventListener('click', function () {
+			if (!window.wp || !wp.media) return;
+			var kader = wp.media({ title: label, library: { type: 'image' }, multiple: false, button: { text: 'Gebruik deze' } });
+			kader.on('select', function () {
+				var k = kader.state().get('selection').first().toJSON();
+				beeld.id = k.id;
+				beeld.url = k.sizes && k.sizes.thumbnail ? k.sizes.thumbnail.url : k.url;
+				ververs();
+			});
+			kader.open();
+		});
+		weg.addEventListener('click', function () { beeld.id = 0; beeld.url = ''; ververs(); });
+		ververs();
+		return {
+			node: el('div', { class: 'sfpb-veld' }, [el('label', { text: label }), el('div', { class: 'sfpb-rij' }, [klein, kies, weg]), hulp ? el('span', { class: 'sfpb-hulp', text: hulp }) : null]),
+			waarde: function () { return beeld.id; }
+		};
+	}
+
+	function detailCalculator() {
+		var K = S.calculator;
+		if (!K) return el('section', { class: 'sfpb-scherm' }, [terugKnop(), kop('Incompanycalculator', 'De stand kon niet worden gelezen.')]);
+		var I = K.instellingen;
+		var c = K.tellingen;
+		var f = K.formulier_ok || {};
+
+		var aandacht = [];
+		if (!K.aan) aandacht.push('Het onderdeel staat uit. Zet het aan bij Onderdelen.');
+		if (I.proefmodus === '1') aandacht.push('Proefmodus staat aan: alleen beheerders zien de calculator, de pdf draagt het woord Proef.');
+		if (!I.code) aandacht.push('Vul de sitecode in (bijvoorbeeld DPS): die staat vooraan in elk kenmerk.');
+		if (!I.calculatorpagina) aandacht.push('Kies de calculatorpagina (/incompany/calculator/). Daar komt het blok Incompanycalculator en daaronder de link naar de pdf.');
+		if (!f.gekozen) aandacht.push('Kies het SureForms-formulier voor stap 8. Zonder formulier stopt de calculator bij stap 7.');
+		else {
+			if (f.ontbreekt && f.ontbreekt.length) aandacht.push('Het formulier mist verborgen velden met deze labels: ' + f.ontbreekt.join(', ') + '.');
+			if (f.bevestiging && f.bevestiging !== 'same page') aandacht.push('Zet de bevestiging van het formulier op "bericht op dezelfde pagina" (nu: ' + f.bevestiging + '). Anders verlaat de bezoeker de pagina voor het eindscherm.');
+		}
+		if (!K.cloudflare_ok) aandacht.push('Cloudflare is niet ingesteld (Onderhoud, Zelftest): er komt geen pdf.');
+		if (K.bedrijf_mist && K.bedrijf_mist.length) aandacht.push('Bedrijfsgegevens ontbreken in de pdf: ' + K.bedrijf_mist.join(', ') + ' (Onderdelen, Bedrijfsgegevens).');
+		if (!I.contact.naam) aandacht.push('Vul de contactpersoon in: die staat met profiel in de pdf.');
+
+		var code = tekstInvoer(I.code, 'DPS');
+		var proef = { aan: I.proefmodus === '1' };
+		var paginas = {};
+		[['calculatorpagina', 'Calculatorpagina', 'De pagina met het volledige blok. De pdf-link wordt: /' + K.pdf_pad + '/'], ['boekpagina', 'Boekpagina adviesgesprek', 'Alleen bereikbaar via de calculator, met de eigen dienst in LatePoint.'], ['offertepagina', 'Pagina voor "Vraag de offerte aan"', 'Leeg: geen knop.'], ['voorwaarden', 'Algemene voorwaarden', 'De link in de pdf.'], ['coaching_pagina', 'Individuele coaching', 'Voor de melding bij 1 tot 3 deelnemers.'], ['open_pagina', 'Open inschrijving', 'Voor de melding bij 1 tot 3 deelnemers.']].forEach(function (p) {
+			paginas[p[0]] = { invoer: paginaKeuze(I[p[0]], 'Geen'), label: p[1], hulp: p[2] };
+		});
+		var form = el('select');
+		form.appendChild(el('option', { value: '', text: 'Geen' }));
+		(K.formulieren || []).forEach(function (x) { form.appendChild(el('option', { value: String(x.id), text: x.titel + ' (' + x.id + ')' })); });
+		form.value = I.formulier ? String(I.formulier) : '';
+		var logo = beeldKeuze('Logo op de calculatorpagina en de pdf', I.logo, K.logo_url, 'Leeg: het logo van de site.');
+		var foto = beeldKeuze('Foto van de contactpersoon', I.contact.foto, K.foto_url, null);
+		var ct = {};
+		['naam', 'functie', 'telefoon', 'email'].forEach(function (k) { ct[k] = tekstInvoer(I.contact[k] || '', ''); });
+		ct.profiel = el('textarea', { value: I.contact.profiel || '', rows: '4' });
+		var methode = tekstInvoer(I.methode, 'Impact-driehoek');
+		var programma = {};
+		['1', '2', '3'].forEach(function (v) { programma[v] = el('textarea', { value: I.programma[v] || '', rows: '5' }); });
+		var dgNamen = { starters: 'Starters', ervaren: 'Ervaren medewerkers', senioren: 'Senioren of specialisten', leidinggevend: 'Leidinggevenden', gemengd: 'Gemengd', anders: 'Anders' };
+		var dg = {};
+		Object.keys(dgNamen).forEach(function (k) { dg[k] = tekstInvoer(I.doelgroepzin[k] || '', ''); });
+		var uitNamen = { begeleiding: 'Persoonlijke begeleiding', coachuren: 'Extra coachuren', clinic: 'Presentation Clinic', boek: 'Boek', acteur: 'Trainingsacteur', terugkom: 'Terugkomsessie', lotj: 'Learning on the job', scan: 'Scan', voordeel: 'Groepsvoordeel' };
+		var uit = {};
+		Object.keys(uitNamen).forEach(function (k) { uit[k] = el('textarea', { value: I.uitleg[k] || '', rows: '2' }); });
+		var ref = { citaat: el('textarea', { value: I.referentie.citaat || '', rows: '3' }), naam: tekstInvoer(I.referentie.naam || '', ''), functie: tekstInvoer(I.referentie.functie || '', '') };
+
+		// Norm en afwijking.
+		var prijs = {};
+		var pRijen = Object.keys(K.prijs_paden).map(function (pad) {
+			var norm = pad.split('.').reduce(function (o, d) { return o ? o[d] : null; }, K.norm);
+			prijs[pad] = tekstInvoer(I.prijzen[pad] !== undefined ? String(I.prijzen[pad]) : '', 'Norm: ' + norm, 'number');
+			return veld(K.prijs_paden[pad], prijs[pad], null, 'sfpb-calc-p-' + pad.replace(/\./g, '-'));
+		});
+		var valuta = tekstInvoer(I.valuta || '', 'EUR (norm)');
+		function aanUit(waarde, normAan) {
+			var s = el('select', null, [el('option', { value: '', text: 'Norm (' + (normAan ? 'aan' : 'uit') + ')' }), el('option', { value: '1', text: 'Aan' }), el('option', { value: '0', text: 'Uit' })]);
+			s.value = waarde === undefined ? '' : String(waarde);
+			return s;
+		}
+		var ex = {};
+		Object.keys(K.norm.extras_aan).forEach(function (k) { ex[k] = aanUit(I.extras[k], K.norm.extras_aan[k]); });
+		var rt = {};
+		['A', 'B', 'C'].forEach(function (r) { rt[r] = aanUit(I.routes[r], r === 'B' ? ['DPS', 'SFP', 'SWS'].indexOf(I.code) > -1 : K.norm.routes_aan[r]); });
+
+		function verzamel() {
+			var w = { code: code.value, proefmodus: proef.aan, formulier: form.value, logo: logo.waarde(), methode: methode.value, valuta: valuta.value,
+				contact: { foto: foto.waarde(), profiel: ct.profiel.value }, programma: {}, doelgroepzin: {}, uitleg: {}, referentie: {}, prijzen: {}, extras: {}, routes: {} };
+			Object.keys(paginas).forEach(function (k) { w[k] = paginas[k].invoer.value; });
+			['naam', 'functie', 'telefoon', 'email'].forEach(function (k) { w.contact[k] = ct[k].value; });
+			Object.keys(programma).forEach(function (k) { w.programma[k] = programma[k].value; });
+			Object.keys(dg).forEach(function (k) { w.doelgroepzin[k] = dg[k].value; });
+			Object.keys(uit).forEach(function (k) { w.uitleg[k] = uit[k].value; });
+			Object.keys(ref).forEach(function (k) { w.referentie[k] = ref[k].value; });
+			Object.keys(prijs).forEach(function (k) { w.prijzen[k] = prijs[k].value; });
+			Object.keys(ex).forEach(function (k) { w.extras[k] = ex[k].value; });
+			Object.keys(rt).forEach(function (k) { w.routes[k] = rt[k].value; });
+			return w;
+		}
+		var opslaan = function () {
+			return el('div', { class: 'sfpb-rij' }, [
+				el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () { calc(this, 'calc', '/instellingen', verzamel()); } }),
+				flitsPlek('calc')
+			]);
+		};
+
+		var exportVak = el('textarea', { rows: '6', value: '' });
+		var proefUit = el('p', { class: 'sfpb-hulp' });
+		if (ui.calcProef) {
+			proefUit.appendChild(document.createTextNode('Proefbegroting ' + ui.calcProef.kenmerk + ' (pdf: ' + ui.calcProef.pdf_status + (ui.calcProef.fout ? ', ' + ui.calcProef.fout : '') + '): '));
+			proefUit.appendChild(el('a', { href: ui.calcProef.pdf_url, target: '_blank', rel: 'noopener', text: 'open de pdf' }));
+		}
+
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Incompanycalculator', 'Een begroting voor een incompanytraining. De prijzen en regels zijn de netwerknorm; hier staan de gegevens van deze site en elke afwijking van de norm.'),
+			aandacht.length ? el('div', { class: 'sfpb-let' }, aandacht.map(function (w) { return el('span', { text: w }); })) : null,
+			el('p', { class: 'sfpb-hulp', text: 'Gestart: ' + c.gestart + '. Afgerond: ' + c.afgerond + ' (laatste 30 dagen ' + c.afgerond_30 + '; route A ' + c.route_a + ', B ' + c.route_b + ', C ' + c.route_c + '). Pdf klaar ' + c.pdf_klaar + ', wacht ' + c.pdf_wacht + ', mislukt ' + c.pdf_mislukt + '. Proefbegrotingen tellen niet mee.' }),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				el('h2', { text: 'Basis' }),
+				veld('Sitecode', code, 'Twee tot vier letters, vooraan in het kenmerk (DPS-B-26-0042). Route B (eigen evenement) staat als norm aan bij DPS, SFP en SWS.', 'sfpb-calc-code'),
+				schakel(I.proefmodus === '1', 'Proefmodus: alleen beheerders zien de calculator, de pdf draagt het woord Proef', function (nu) { proef.aan = nu; }),
+				veld('SureForms-formulier (stap 8)', form, 'Met verborgen velden met deze labels: ' + (K.velden || []).join(', ') + '. Bevestiging: bericht op dezelfde pagina.', 'sfpb-calc-form')
+			].concat(Object.keys(paginas).map(function (k) { return veld(paginas[k].label, paginas[k].invoer, paginas[k].hulp, 'sfpb-calc-' + k); })).concat([
+				logo.node,
+				opslaan(),
+				el('h2', { text: 'Contactpersoon in de pdf' }),
+				veld('Naam', ct.naam, null, 'sfpb-calc-ct-naam'),
+				veld('Functie', ct.functie, null, 'sfpb-calc-ct-functie'),
+				veld('Profiel', ct.profiel, 'Een korte alinea.', 'sfpb-calc-ct-profiel'),
+				foto.node,
+				veld('Telefoon', ct.telefoon, null, 'sfpb-calc-ct-tel'),
+				veld('E-mail', ct.email, null, 'sfpb-calc-ct-mail'),
+				opslaan(),
+				el('h2', { text: 'Teksten van het label' }),
+				veld('Methode', methode, 'In de pdf: "Daarbinnen werken we met ...". De opbouw volgt altijd de activatiecurve.', 'sfpb-calc-methode'),
+				veld('Programma 1 dag', programma['1'], 'Per regel een dagdeel.', 'sfpb-calc-prog1'),
+				veld('Programma 2 dagen', programma['2'], 'Per regel een dagdeel.', 'sfpb-calc-prog2'),
+				veld('Programma 3 dagen', programma['3'], 'Per regel een dagdeel.', 'sfpb-calc-prog3'),
+				el('h3', { text: 'Een zin per doelgroep (programma in de pdf)' })
+			]).concat(Object.keys(dg).map(function (k) { return veld(dgNamen[k], dg[k], null, 'sfpb-calc-dg-' + k); })).concat([
+				el('h3', { text: 'Uitleg bij het i-teken' })
+			]).concat(Object.keys(uit).map(function (k) { return veld(uitNamen[k], uit[k], null, 'sfpb-calc-uit-' + k); })).concat([
+				el('h3', { text: 'Referentie' }),
+				veld('Citaat', ref.citaat, 'Letterlijk van de incompany-pagina.', 'sfpb-calc-ref-c'),
+				veld('Naam', ref.naam, null, 'sfpb-calc-ref-n'),
+				veld('Functie en organisatie', ref.functie, null, 'sfpb-calc-ref-f'),
+				opslaan(),
+				el('h2', { text: 'Norm en afwijking' }),
+				el('p', { class: 'sfpb-hulp', text: 'Leeg is de netwerknorm. Op de Nederlandse sites hoort overal de norm te staan; elke afwijking staat bij Overzicht.' })
+			]).concat(pRijen).concat([
+				veld('Valuta', valuta, 'Leeg: EUR.', 'sfpb-calc-valuta')
+			]).concat(Object.keys(ex).map(function (k) { return veld('Extra: ' + k, ex[k], null, 'sfpb-calc-ex-' + k); })).concat(['A', 'B', 'C'].map(function (r) { return veld('Route ' + r, rt[r], null, 'sfpb-calc-rt-' + r); })).concat([
+				opslaan(),
+				el('h2', { text: 'Proef' }),
+				el('p', { class: 'sfpb-hulp', text: 'Maakt een proefbegroting met vaste keuzes (20 deelnemers, 2 dagen) en meteen de pdf via Cloudflare. Telt niet mee en gaat niet naar het CRM.' }),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Maak een proefbegroting', klik: function () { calc(this, 'calc-proef', '/proef', {}, 'Klaar', function (a) { ui.calcProef = a; }); } }),
+					flitsPlek('calc-proef')
+				]),
+				proefUit,
+				el('h2', { text: 'Export en import' }),
+				el('p', { class: 'sfpb-hulp', text: 'De instellingen als JSON, om ze van een ander label over te nemen. Plak een export en kies Importeren.' }),
+				exportVak,
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Exporteren', klik: function () { exportVak.value = JSON.stringify({ instellingen: I }, null, 1); } }),
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Importeren', klik: function () {
+						var data; try { data = JSON.parse(exportVak.value); } catch (e) { window.alert('Dit is geen geldige JSON.'); return; }
+						calc(this, 'calc-import', '/instellingen', data, 'Geimporteerd');
+					} }),
+					flitsPlek('calc-import')
+				]),
+				K.log && K.log.length ? el('h2', { text: 'Logboek' }) : null,
+				K.log && K.log.length ? el('ul', { class: 'sfpb-hulp' }, K.log.map(function (r) { return el('li', { text: r.tijd + ' UTC, ' + r.soort + ': ' + r.tekst }); })) : null
+			]))
+		]);
+	}
+
 	/* ---------- Onderdeel: zelftest ---------- */
 
 	/** Aanroep naar /sfp/v1/zelftest; het antwoord vervangt S.zelftest. */
@@ -1993,7 +2218,7 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk, contact: detailContact };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk, contact: detailContact, bedrijf: detailBedrijf, calculator: detailCalculator };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 
