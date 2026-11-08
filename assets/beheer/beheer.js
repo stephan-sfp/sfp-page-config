@@ -1122,6 +1122,61 @@
 
 	/* ---------- Onderdeel: banner (sinds 3.17.0) ---------- */
 
+	/* Netwerk (3.34.0): de labels voor het blok Netwerk. */
+	function detailNetwerk() {
+		var N = S.netwerk || { labels: [], eigen: '' };
+		if (!ui.netwerk) ui.netwerk = JSON.parse(JSON.stringify(N.labels || []));
+		var L = ui.netwerk;
+		var kaarten = L.map(function (l, i) {
+			function invoer(veldnaam, plaatshouder, type) {
+				var x = tekstInvoer(l[veldnaam], plaatshouder, type);
+				x.addEventListener('input', function () { l[veldnaam] = x.value; });
+				return x;
+			}
+			var beeld = el('img', { src: l.icoon_url || '', alt: '', width: '48', height: '48', hidden: !l.icoon_url, style: 'border-radius:6px;object-fit:contain' });
+			var kies = el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: l.icoon ? 'Ander icoon' : 'Kies een icoon', klik: function () {
+				if (!window.wp || !wp.media) return;
+				var kader = wp.media({ title: 'Kies het icoon', library: { type: 'image' }, multiple: false, button: { text: 'Gebruik dit icoon' } });
+				kader.on('select', function () {
+					var k = kader.state().get('selection').first().toJSON();
+					l.icoon = k.id;
+					l.icoon_url = (k.sizes && k.sizes.thumbnail ? k.sizes.thumbnail.url : k.url);
+					teken();
+				});
+				kader.open();
+			} });
+			var host = (l.url || '').replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0].split(':')[0];
+			return el('div', { class: 'sfpb-sm sfpb-stapel' }, [
+				el('div', { class: 'sfpb-rij sfpb-tussen' }, [
+					el('h3', { text: (i + 1) + '. ' + (l.naam || 'Nieuw label') + (host && host === N.eigen ? ' (deze site: valt weg)' : '') }),
+					el('div', { class: 'sfpb-rij' }, [
+						i > 0 ? el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Hoger', klik: function () { L.splice(i - 1, 0, L.splice(i, 1)[0]); teken(); } }) : null,
+						el('button', { class: 'sfpb-knop sfpb-klein sfpb-weg', type: 'button', text: 'Weghalen', klik: function () { L.splice(i, 1); teken(); } })
+					])
+				]),
+				veld('Naam', invoer('naam', 'De Schrijftrainers'), null, 'sfpb-nw-naam-' + i),
+				veld('Adres', invoer('url', 'https://', 'url'), null, 'sfpb-nw-url-' + i),
+				veld('Zin', invoer('zin', 'Ontwikkel je schrijfvaardigheid in een zakelijke context.'), 'Eén zin, zonder link.', 'sfpb-nw-zin-' + i),
+				el('div', { class: 'sfpb-rij' }, [beeld, kies])
+			]);
+		});
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Netwerk', 'De labels van het netwerk voor het blok Netwerk: naam, adres, een zin en het icoon van het label. Het label van deze site valt op de pagina vanzelf weg. Hoogstens acht.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, kaarten.concat([
+				L.length < 8 ? el('button', { class: 'sfpb-knop', type: 'button', text: 'Label toevoegen', klik: function () { L.push({ naam: '', url: '', zin: '', icoon: 0, icoon_url: '' }); teken(); } }) : null,
+				el('p', { class: 'sfpb-hulp', text: 'De caches leegt de plugin niet: doe dat na opslaan.' }),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						bewaarInstellingen(this, 'netwerk', { netwerk: L.map(function (l) { return { naam: l.naam, url: l.url, zin: l.zin, icoon: l.icoon || 0 }; }) }, null, function () { ui.netwerk = null; });
+					} }),
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Annuleren', klik: function () { ui.netwerk = null; teken(); } }),
+					flitsPlek('netwerk')
+				])
+			]))
+		]);
+	}
+
 	function detailBanner() {
 		var B = S.banner || { instelling: { kleur: '', tekst_kleur: '', cursus: { aan: '1', waar: 'overal', ook: [], niet: [] }, aanbod: [] }, rollen: [], cursussen: [], nu: '', cursusdata: false };
 		if (!ui.banner) ui.banner = JSON.parse(JSON.stringify(B.instelling));
@@ -1237,7 +1292,7 @@
 		var coach = tekstInvoer(C.url, C.norm, 'url');
 		coach.setAttribute('aria-label', 'Site van de coach');
 		tel.addEventListener('input', function () { I.telefoon = tel.value; });
-		var soorten = [['training', 'Trainingen'], ['coaching', 'Coaching'], ['incompany', 'Incompany']].map(function (s) {
+		var soorten = [['training', 'Trainingen'], ['coaching', 'Coaching'], ['incompany', 'Incompany'], ['home', 'Home']].map(function (s) {
 			return schakel(I.soorten.indexOf(s[0]) > -1, s[1], function (aan) {
 				var i = I.soorten.indexOf(s[0]);
 				if (aan && i < 0) I.soorten.push(s[0]);
@@ -1914,13 +1969,14 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 
 		if (ui.detail !== 'footer') ui.footer = null;
 		if (ui.detail !== 'banner') ui.banner = null;
 		if (ui.detail !== 'uspstrook') ui.uspstrook = null;
+		if (ui.detail !== 'netwerk') ui.netwerk = null;
 		if (ui.detail !== 'merkwaarden') { ui.mwTaal = ''; ui.mwUitslag = null; }
 
 		var y = window.pageYOffset;

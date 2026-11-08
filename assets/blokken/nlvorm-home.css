@@ -1,0 +1,112 @@
+/*
+ * Bouwstenen: NL-vorm (3.34.0), deel home. Bron: dummy nl-vormen, Home
+ * versie 86 (akkoord 8-11-2026). Held foto (H1), slot met twee routes (H2),
+ * kaart met beeld boven (H3), laatste artikelen (H4), reviewkop met
+ * Google-cijfer en reviews als carrousel (H6), bewijsregel boven de knoppen
+ * op een telefoon (H7). Breekpunten 980 (tablet) en 700 (telefoon).
+ * Laadt alleen op een pagina met een van deze bouwstenen (includes/nlvorm.php).
+ */
+
+/* ---------- H1 Held foto ---------- */
+:root .sfp-held--foto{background:var(--sfp-b-primair);display:flex;align-items:center;min-height:clamp(560px,75vh,820px)}
+:root .sfp-held--foto>.sfp-held__achter{position:absolute;inset:0;margin:0;z-index:0;width:auto;max-width:none}
+:root .sfp-held--foto>.sfp-held__achter img{width:100%;height:100%;object-fit:cover;object-position:var(--sfp-held-focus,68% 40%);display:block;border-radius:0}
+:root .sfp-held--foto::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--sfp-b-primair) 94%,transparent) 0,color-mix(in srgb,var(--sfp-b-primair) 82%,transparent) 36%,color-mix(in srgb,var(--sfp-b-primair) 20%,transparent) 62%,transparent 78%)}
+:root .sfp-held--foto>.sfp-held__binnen{position:relative;z-index:2;grid-template-columns:minmax(0,580px);grid-template-areas:"kop""intro""knoppen""bewijs";padding:64px 24px}
+:root .sfp-held--foto .sfp-held__binnen>p:not(.sfp-held__bewijs){display:block;grid-area:intro;max-width:30em;margin:14px 0 0;opacity:1;color:var(--sfp-b-wit)}
+:root .sfp-held--foto .sfp-held__binnen>.wp-block-buttons{padding:28px 0 0;align-items:center;justify-content:flex-start;column-gap:32px}
+:root .sfp-held--foto .sfp-held__binnen>p.sfp-held__bewijs{display:flex;align-items:center;grid-area:bewijs;margin:30px 0 0;opacity:1;color:var(--sfp-b-wit);font-size:15px;text-shadow:none;gap:14px 28px;flex-wrap:wrap;max-width:none}
+:root .sfp-held--foto .sfp-held__bewijs strong,:root .sfp-held--foto .sfp-held__bewijs a,:root .sfp-held--foto .sfp-held__score{color:var(--sfp-b-wit)}
+:root .sfp-held--foto .sfp-held__bewijs>*{flex:none;white-space:nowrap}
+:root .sfp-held--foto .sfp-held__score{border-right:0;padding-right:0;margin-right:0}
+:root .sfp-held--foto .sfp-accent{color:var(--sfp-b-secundair);background:none}
+@media (min-width:701px) and (max-width:980px){
+  :root .sfp-held--foto{min-height:560px}
+  :root .sfp-held--foto>.sfp-held__achter{left:36%}
+  :root .sfp-held--foto>.sfp-held__achter img{object-position:66% 40%}
+  :root .sfp-held--foto::after{background:linear-gradient(90deg,var(--sfp-b-primair) 0,var(--sfp-b-primair) 40%,color-mix(in srgb,var(--sfp-b-primair) 70%,transparent) 52%,transparent 72%)}
+  :root .sfp-held--foto>.sfp-held__binnen{grid-template-columns:minmax(0,480px);padding:56px 24px}
+}
+@media (max-width:700px){
+  :root .sfp-held--foto{min-height:85svh;align-items:flex-end}
+  :root .sfp-held--foto>.sfp-held__achter img{object-position:var(--sfp-held-focus-m,60% 20%)}
+  :root .sfp-held--foto::after{background:linear-gradient(0deg,color-mix(in srgb,var(--sfp-b-primair) 96%,transparent) 0,color-mix(in srgb,var(--sfp-b-primair) 86%,transparent) 42%,color-mix(in srgb,var(--sfp-b-primair) 30%,transparent) 66%,transparent 82%)}
+  :root .sfp-held--foto>.sfp-held__binnen{padding:0 16px 32px;grid-template-columns:minmax(0,1fr);grid-template-areas:"kop""intro""bewijs""knoppen"}
+  :root .sfp-held--foto .sfp-held__binnen>p:not(.sfp-held__bewijs){font-size:17px}
+  /* H7: bewijsregel 22 px onder de kernzin, knoppen 26 px eronder, 22 px tussen knop en tekstlink */
+  :root .sfp-held--foto .sfp-held__binnen>p.sfp-held__bewijs{margin-top:22px;row-gap:14px}
+  :root .sfp-held--foto .sfp-held__binnen>.wp-block-buttons{padding-top:26px;align-items:stretch;row-gap:22px}
+}
+
+/* in de editor staat de foto als blok in de held: daar over de hele held */
+:root .sfp-held--editor-foto>.sfp-held__binnen{position:static}
+:root .sfp-held--editor-foto>.sfp-held__binnen>.wp-block-image{position:absolute!important;inset:0!important;width:auto!important;height:auto!important;max-width:none!important;margin:0!important;z-index:0!important;-webkit-mask-image:none!important;mask-image:none!important}
+:root .sfp-held--editor-foto>.sfp-held__binnen>.wp-block-image :is(img,div){width:100%!important;height:100%!important;max-width:none!important;object-fit:cover;object-position:var(--sfp-held-focus,68% 40%)}
+:root .sfp-held--editor-foto>.sfp-held__binnen>:not(.wp-block-image){position:relative;z-index:2}
+
+/* ---------- H3 Kaart met beeld boven ---------- */
+:root .sfp-kaart.sfp-kaart--beeld{padding:0;gap:0;overflow:hidden}
+:root .sfp-kaart.sfp-kaart--beeld>.wp-block-image{margin:0;flex:none}
+:root .sfp-kaart.sfp-kaart--beeld>.wp-block-image img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:50% 30%;border-radius:0}
+:root .sfp-kaart__tekst{display:flex;flex-direction:column;gap:10px;padding:24px 28px 28px;flex:1 1 auto;min-width:0}
+:root .sfp-kaart__tekst>*{margin:0}
+:root .sfp-kaart__tekst>:is(h2,h3){padding:0}
+:root .sfp-kaart__tekst>.is-style-sfp-pijl:last-child{margin-top:auto;padding-top:6px}
+:root .sfp-kaart.sfp-kaart--beeld>.sfp-geenbeeld{aspect-ratio:16/9;background:var(--sfp-b-tint2);display:grid;place-items:center}
+:root .sfp-kaart.sfp-kaart--beeld>.sfp-geenbeeld img{width:30%!important;height:auto!important;aspect-ratio:1/1!important;object-fit:contain!important}
+
+/* ---------- H4 Laatste artikelen ---------- */
+:root .sfp-artikel h3{font-size:19px;line-height:1.3}
+:root .sfp-artikel__meta{font-size:14px;color:color-mix(in srgb,var(--sfp-b-body) 70%,transparent)}
+:root .sfp-artikel__uittreksel{font-size:15px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+:root .sfp-sectie__binnen>h2+.sfp-artikelen{margin-top:36px}
+:root .sfp-artikelen+:is(p,.wp-block-buttons){margin-top:32px}
+
+/* ---------- H2 Slot met twee routes ---------- */
+:root .sfp-kolommen.sfp-kolommen--slot{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch}
+:root .sfp-kolommen.sfp-kolommen--slot>.sfp-kolom>.sfp-kaart{height:100%}
+:root .sfp-kolommen.sfp-kolommen--slot .sfp-kaart :is(.latepoint-book-form-wrapper,.wp-block-latepoint-book-form,.srfm-form-container){width:100%;margin:0}
+:root .sfp-kolommen.sfp-kolommen--slot .sfp-kaart>.is-style-sfp-wie{margin-top:auto;display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:12px;align-items:center}
+:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie img{grid-row:1/span 2}
+:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie strong{align-self:end}
+:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie span{align-self:start;font-size:14px}
+:root .sfp-sectie__binnen>:is(h2,p)+.sfp-kolommen--slot{margin-top:36px}
+
+/* ---------- H6 Reviewkop en carrousel ---------- */
+:root .sfp-reviews-kop{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+:root .sfp-reviews-kop__tekst>*{margin:0}
+:root .sfp-reviews-kop__tekst>:is(h2,h3){padding:0}
+:root .sfp-reviews-kop+*{margin-top:36px}
+:root .sfp-google-sam{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--sfp-b-body);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);padding:12px 18px}
+:root a.sfp-google-sam:hover{border-color:var(--sfp-b-lijn-sterk)}
+:root .sfp-google-sam__cijfer{font-family:var(--sfp-b-kop);font-weight:900;font-size:34px;line-height:1;color:var(--sfp-b-primair)}
+:root .sfp-google-sam__rechts{display:grid;gap:2px;font-size:14px}
+:root .sfp-google-sam__sterren{color:var(--sfp-b-ster);letter-spacing:2px;font-size:16px}
+
+/* ---------- Tablet en telefoon ---------- */
+@media (max-width:980px){
+  :root .sfp-kolommen.sfp-kolommen--slot{grid-template-columns:minmax(0,1fr)}
+}
+@media (min-width:701px) and (max-width:980px){
+  :root .sfp-kolommen--drie>.sfp-kaart.sfp-kaart--beeld{flex-direction:row}
+  :root .sfp-kolommen--drie>.sfp-kaart.sfp-kaart--beeld>.wp-block-image{flex:0 0 40%;position:relative;min-height:200px}
+  :root .sfp-kolommen--drie>.sfp-kaart.sfp-kaart--beeld>.wp-block-image img{position:absolute;inset:0;height:100%;aspect-ratio:auto}
+  :root .sfp-kolommen--drie>.sfp-kaart.sfp-kaart--beeld>.sfp-geenbeeld{aspect-ratio:auto;min-height:200px}
+  :root .sfp-kolommen--reviews.sfp-reviews-rij--carrousel{grid-template-columns:repeat(2,minmax(0,1fr))}
+  :root .sfp-kolommen--reviews.sfp-reviews-rij--carrousel>:nth-child(n+3){display:none}
+}
+@media (max-width:700px){
+  :root .sfp-kaart.sfp-artikel{flex-direction:row}
+  :root .sfp-kaart.sfp-artikel>.wp-block-image{flex:0 0 112px;position:relative;min-height:120px}
+  :root .sfp-kaart.sfp-artikel>.wp-block-image img{position:absolute;inset:0;height:100%;aspect-ratio:auto}
+  :root .sfp-kaart.sfp-artikel>.sfp-geenbeeld{aspect-ratio:auto;min-height:120px}
+  :root .sfp-kaart.sfp-artikel>.sfp-geenbeeld img{width:56%!important}
+  :root .sfp-kaart.sfp-artikel .sfp-kaart__tekst{padding:14px 16px;gap:6px}
+  :root .sfp-artikel h3{font-size:16px}
+  :root .sfp-artikel .is-style-sfp-pijl,:root .sfp-artikel .sfp-artikel__uittreksel{display:none}
+  :root .sfp-artikel__meta{font-size:13px}
+  :root .sfp-kolommen--reviews.sfp-reviews-rij--carrousel{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin-right:-16px;padding-right:16px;scrollbar-width:none}
+  :root .sfp-kolommen--reviews.sfp-reviews-rij--carrousel::-webkit-scrollbar{display:none}
+  :root .sfp-kolommen--reviews.sfp-reviews-rij--carrousel>*{flex:0 0 86%;scroll-snap-align:start}
+  :root .sfp-google-sam{width:100%;box-sizing:border-box}
+}

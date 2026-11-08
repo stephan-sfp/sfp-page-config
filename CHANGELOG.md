@@ -4,6 +4,30 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.34.0] - 2026-11-08
+
+Bouwstenen voor de home en de Over-pagina van de NL-labels (dummy nl-vormen, Home versie 86 en Over versie 90, akkoord Stephan 8-11). Bestaande pagina's veranderen niet, behalve de bewijsregel op een telefoon (H7). Terugdraaien: versie 3.33.0 terugzetten (zip uit de tag v3.33.0, map sfp-page-config); pagina's met de nieuwe blokken tonen die blokken dan niet.
+
+### Toegevoegd
+- Held, variant Tekst op de foto (H1): de foto over de hele held met een verloop in de primaire kleur, de tekst erop, een aparte foto voor de telefoon, focuspunt per scherm en de bewijsregel. De foto laadt met voorrang.
+- Kolommen, indeling Slot (H2): kennismakingsgesprek en kort formulier naast elkaar, op tablet en telefoon onder elkaar.
+- Kaart, optie Beeld boven (H3): de eerste afbeelding over de volle breedte (16:9), op een tablet links naast de tekst.
+- Blok Laatste artikelen (H4): de nieuwste artikelen als kaarten met beeld, auteur en datum; zonder uitgelichte afbeelding een vlak met het site-icoon. Op een telefoon als lijst.
+- Blokken Team en Teamlid (H5): foto, naam, rol, zin en een optionele link. Drie naast elkaar, op een telefoon als lijst met een kleine foto.
+- Blok Reviewkop met Google-cijfer en de optie Carrousel bij Kolommen, Reviews naast elkaar (H6). In Review kies je ook Vanzelf: een Google-review die nog niet op de pagina staat.
+- Paginasoort Home (H9): de knop onderaan op een telefoon ook op de home, met tekst en bestemming zoals bij een trainingspagina. Ook als keuze bij de USP-strook.
+- Tabs, vorm Als kaart met icoon (O1): links uitgelijnd, per tab een kop en tekst, rechts een icoon uit de media in de secundaire kleur.
+- Blok Netwerk en het onderdeel Netwerk in SFP Beheer (O2): de labels met naam, adres, zin en icoon; de eigen site valt vanzelf weg.
+- Afbeelding met de stijl Afgerond: verhouding (4:3, 16:9, 3:2, vierkant) en wat in beeld blijft, te kiezen in de zijbalk (O3).
+- Held wit: schakelaar Feitenkaart op de foto, ook uit met cursusdata (O4).
+
+### Gewijzigd
+- Held wit op een telefoon: de bewijsregel staat boven de knoppen, 14 px onder de kernzin, zodat knop en tekstlink onderaan bij de duim staan (H7, besluit Stephan 8-11). Computer en tablet blijven gelijk.
+- De opmaak van de NL-vorm (secties, labels, kernzin) geldt ook op een pagina met de held foto.
+
+### Gerepareerd
+- ItemList van het aanbod op de home: een label boven de kop van een kaart telt niet meer als omschrijving (H8).
+
 ## [3.33.0] - 2026-11-08
 
 Terugdraaien: versie 3.32.0 terugzetten (zip uit de tag v3.32.0, map sfp-page-config). Een pagina met de vorm Pijler is dan weer een gewone pagina; links naar de categorie gaan dan weer naar het archief (op DPS zet het snippet Spreekangst wel naar /spreekangst/).

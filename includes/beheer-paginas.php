@@ -51,6 +51,10 @@ function sfp_page_config_soorten() {
             'naam'   => 'Incompany',
             'uitleg' => 'Krijgt de opmaak van een dienstpagina en de knop onderaan.',
         ),
+        'home'      => array(
+            'naam'   => 'Home',
+            'uitleg' => 'Krijgt de knop onderaan op een telefoon, met de tekst en bestemming hieronder.',
+        ),
     );
 }
 

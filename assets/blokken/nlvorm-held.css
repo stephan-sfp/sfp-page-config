@@ -6,27 +6,27 @@
  *
  * Laadt alleen op een pagina met de held "wit", Groepskaarten of het
  * Founder-citaat (includes/nlvorm.php), of met een variant die erom vraagt.
- * Regels op bestaande klassen staan onder :root:has(.sfp-held--wit), zodat
+ * Regels op bestaande klassen staan onder :root:has(.sfp-held--wit,.sfp-held--foto), zodat
  * ze in de editor ook alleen gelden op zo'n pagina.
  */
 
 /* ---------- Pagina ---------- */
-html:has(.sfp-held--wit){scroll-behavior:auto!important}
-:root:has(.sfp-held--wit) .sfp-sectie{padding-block:96px}
-:root:has(.sfp-held--wit) .sfp-sectie--tint{background:var(--sfp-b-tint3)}
-:root:has(.sfp-held--wit) .sfp-sectie :is(h2,h3).has-text-align-center{margin-bottom:0}
-:root:has(.sfp-held--wit) :is(.is-style-sfp-label,.sfp-blok-label,.sfp-logostrook__label){color:var(--sfp-b-primair)}
-:root:has(.sfp-held--wit) .sfp-logostrook__label{font-size:clamp(18px,.6vw + 14px,22px)}
-:root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin{margin:16px 0 0;max-width:52ch}
-:root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+*{margin-top:48px}
-:root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+:is(.sfp-kolommen,.sfp-uitklap--programma,.sfp-groepen){margin-top:56px}
+html:has(.sfp-held--wit,.sfp-held--foto){scroll-behavior:auto!important}
+:root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie{padding-block:96px}
+:root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie--tint{background:var(--sfp-b-tint3)}
+:root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie :is(h2,h3).has-text-align-center{margin-bottom:0}
+:root:has(.sfp-held--wit,.sfp-held--foto) :is(.is-style-sfp-label,.sfp-blok-label,.sfp-logostrook__label){color:var(--sfp-b-primair)}
+:root:has(.sfp-held--wit,.sfp-held--foto) .sfp-logostrook__label{font-size:clamp(18px,.6vw + 14px,22px)}
+:root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin{margin:16px 0 0;max-width:52ch}
+:root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+*{margin-top:48px}
+:root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+:is(.sfp-kolommen,.sfp-uitklap--programma,.sfp-groepen){margin-top:56px}
 @media (min-width:701px) and (max-width:980px){
-  :root:has(.sfp-held--wit) .sfp-logostrook__logos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));justify-items:center;gap:28px 32px}
+  :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-logostrook__logos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));justify-items:center;gap:28px 32px}
 }
 @media (max-width:700px){
-  :root:has(.sfp-held--wit) .sfp-sectie{padding-block:64px}
-  :root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+*{margin-top:32px}
-  :root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+:is(.sfp-kolommen,.sfp-uitklap--programma,.sfp-groepen){margin-top:36px}
+  :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie{padding-block:64px}
+  :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+*{margin-top:32px}
+  :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+:is(.sfp-kolommen,.sfp-uitklap--programma,.sfp-groepen){margin-top:36px}
 }
 
 /* ---------- A2 Held wit ---------- */
@@ -99,5 +99,8 @@ html:has(.sfp-held--wit){scroll-behavior:auto!important}
   :root .sfp-held__feit .sfp-lang{display:none}
   :root .sfp-held__feit--afbreken strong{white-space:normal;line-height:1.25}
   :root .sfp-held__score{border-right:0;padding-right:0;margin-right:0}
+  /* H7 (3.34.0): bewijsregel boven de knoppen, 14 px onder de kernzin */
+  :root .sfp-held--wit .sfp-held__tekst>.sfp-held__bewijs{order:2;margin-top:-14px}
+  :root .sfp-held--wit .sfp-held__tekst>.wp-block-buttons{order:3}
 }
 
