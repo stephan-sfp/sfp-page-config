@@ -793,9 +793,11 @@ function sfp_page_config_nlvorm_schema_data( $post_id, array $groepen, array $in
 
 /**
  * Staat er op deze trainingspagina Groepskaarten zonder geplande groep? Dan
- * blijft het gewone inschrijfformulier staan, met in het keuzemenu alleen
- * de wachtlijst, en heten de verzendknop en de knop onderaan "Zet mij op de
- * wachtlijst".
+ * heet de knop onderaan "Zet mij op de wachtlijst". Sinds 3.32.0 wisselt het
+ * inschrijfformulier dan naar het wachtlijstformulier uit SFP Beheer
+ * (includes/wachtlijst.php); alleen zonder dat formulier blijft het gewone
+ * formulier staan, met in het keuzemenu alleen de wachtlijst en die tekst
+ * op de verzendknop.
  *
  * @param  int $post_id Pagina.
  * @return bool
@@ -828,8 +830,35 @@ function sfp_page_config_nlvorm_wachtlijstknop( $html, $block ) {
     if ( ! $post_id || ! sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
         return $html;
     }
+    // Sinds 3.32.0: het wachtlijstformulier heeft zijn eigen knop, en een
+    // ander formulier op de pagina (zoals een leadmagnet) houdt de zijne.
+    if ( function_exists( 'sfp_page_config_wachtlijst_wisselt' ) && sfp_page_config_wachtlijst_wisselt( $post_id ) ) {
+        return $html;
+    }
+    if ( ! sfp_page_config_nlvorm_is_inschrijfformulier( $block, $html ) ) {
+        return $html;
+    }
     $tekst = esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) );
     return (string) preg_replace( '/(<div class="srfm-submit-wrap">)\s*[^<]*?\s*(<div class="srfm-loader")/', '$1' . $tekst . '$2', $html, 1 );
+}
+
+/**
+ * Is dit blok het inschrijfformulier? Het formulier uit SFP Beheer
+ * (Cursusdata), of zonder die instelling een formulier met een keuzemenu
+ * voor het startmoment.
+ *
+ * @since  3.32.0
+ * @param  array  $block Blok.
+ * @param  string $html  Getekend blok.
+ * @return bool
+ */
+function sfp_page_config_nlvorm_is_inschrijfformulier( $block, $html ) {
+    $inschrijf = function_exists( 'sfp_page_config_wachtlijst_formulier_id' ) ? sfp_page_config_wachtlijst_formulier_id( 'inschrijf_formulier' ) : 0;
+    if ( $inschrijf ) {
+        return ! empty( $block['attrs']['id'] ) && (int) $block['attrs']['id'] === $inschrijf;
+    }
+    return false !== strpos( (string) $html, 'sfp-startmoment-select' )
+        || (bool) preg_match( '/srfm-slug-(datum|data|datas|startmoment|startmomenten|startdatum|startdata|startdate|startdates|date|dates|turma)(-\d+)?[\s"]/', (string) $html );
 }
 
 /* =========================================================================

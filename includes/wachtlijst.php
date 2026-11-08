@@ -176,18 +176,36 @@ function sfp_page_config_wachtlijst_formulier_wissel( $block ) {
     if ( ! $post_id || ! sfp_page_config_wachtlijst_stand( $post_id ) ) {
         return $block;
     }
-    // Sinds 3.31.0: met Groepskaarten op de pagina blijft het gewone
-    // formulier staan, met alleen de wachtlijst in het keuzemenu (NL-vorm).
-    if ( function_exists( 'sfp_page_config_nlvorm_alleen_wachtlijst' ) && sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
+    // Sinds 3.32.0 ook met Groepskaarten op de pagina: het wachtlijstformulier
+    // zet de lijst, de tag en de bedankpagina van de wachtlijst. Zonder
+    // wachtlijstformulier blijft de route van 3.31.0 (gewoon formulier, in
+    // het keuzemenu alleen de wachtlijst).
+    if ( ! sfp_page_config_wachtlijst_wisselt( $post_id ) ) {
         return $block;
     }
-    $inschrijf  = sfp_page_config_wachtlijst_formulier_id( 'inschrijf_formulier' );
-    $wachtlijst = sfp_page_config_wachtlijst_formulier_id( 'wachtlijst_formulier' );
-    if ( ! $inschrijf || ! $wachtlijst || empty( $block['attrs']['id'] ) || (int) $block['attrs']['id'] !== $inschrijf ) {
+    $inschrijf = sfp_page_config_wachtlijst_formulier_id( 'inschrijf_formulier' );
+    if ( empty( $block['attrs']['id'] ) || (int) $block['attrs']['id'] !== $inschrijf ) {
         return $block;
     }
-    $block['attrs']['id'] = $wachtlijst;
+    $block['attrs']['id'] = sfp_page_config_wachtlijst_formulier_id( 'wachtlijst_formulier' );
     return $block;
+}
+
+/**
+ * Wisselt het inschrijfformulier op deze pagina naar het wachtlijstformulier?
+ * Ja op een trainingspagina zonder toekomstige groep, als in SFP Beheer bij
+ * Cursusdata een inschrijf- en een wachtlijstformulier staan.
+ *
+ * @since  3.32.0
+ * @param  int $post_id Pagina.
+ * @return bool
+ */
+function sfp_page_config_wachtlijst_wisselt( $post_id ) {
+    $post_id = (int) $post_id;
+    if ( ! $post_id || ! sfp_page_config_wachtlijst_stand( $post_id ) ) {
+        return false;
+    }
+    return sfp_page_config_wachtlijst_formulier_id( 'inschrijf_formulier' ) && sfp_page_config_wachtlijst_formulier_id( 'wachtlijst_formulier' );
 }
 
 /* =========================================================================

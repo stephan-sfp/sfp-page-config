@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.32.0] - 2026-11-08
+
+Terugdraaien: versie 3.31.3 terugzetten (zip uit de tag v3.31.3, map sfp-page-config).
+
+### Gerepareerd
+- Trainingspagina met Groepskaarten zonder groep: het inschrijfformulier wisselt weer naar het wachtlijstformulier uit SFP Beheer. Sinds 3.31.0 bleef het trainingformulier staan, waardoor wachtlijstaanmeldingen de lijst, de tag en de bedankpagina van een training kregen (DPS, DGA, CVD).
+- De tekst Zet mij op de wachtlijst komt alleen nog op de knop van het inschrijfformulier, niet op een ander formulier op de pagina, zoals de leadmagnet op CVD.
+- Keuzemenu Datum zonder groep: toont niet meer de tekst voor geen startdata. WP Rocket hield de wachtlijstvlag tot de eerste beweging tegen, zodat het menu eerst zonder vlag draaide en het veld verborg.
+
 ## [3.31.3] - 2026-11-08
 
 Terugdraaien: versie 3.31.2 terugzetten (zip uit de tag v3.31.2, map sfp-page-config). Alleen de editor verandert; de site niet.

@@ -179,6 +179,9 @@ function sfp_page_config_rocket_delay_lijst() {
         'assets/zelftest/',
         'sfpStickyConfig',
         'sfpCourseData',
+        // Sinds 3.32.0: anders draait het keuzemenu eerst zonder deze vlag,
+        // verbergt het veld en toont het de tekst voor geen startdata.
+        'sfpAlleenWachtlijst',
         'sfpDropdownConfig',
         'sfpToolConfig',
         'sfpZelftest',
