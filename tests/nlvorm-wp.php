@@ -48,6 +48,34 @@ $is( '085 060 13 55', $u['telefoon'], 'telefoon alleen cijfers en spaties' );
 $is( array( 'training' ), $u['soorten'], 'alleen bekende soorten' );
 $is( array( 'training', 'coaching' ), sfp_page_config_uspstrook_schoon( array() )['soorten'], 'standaard trainingen en coaching' );
 
+/* ---------- USP-strook per pagina (3.32.0) ---------- */
+sfp_page_config_instellingen_bewaar( array( 'uspstrook' => array( 'usps' => array( 'Site een', 'Site twee', 'Site drie' ), 'telefoon' => '085 060 13 55', 'soorten' => array( 'training' ) ) ) );
+$up = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'USP test' ) );
+update_post_meta( $up, 'sfp_page_type', 'training' );
+$is( array( 'Site een', 'Site twee', 'Site drie' ), sfp_page_config_uspstrook_pagina( $up )['usps'], 'zonder eigen redenen: de set van de site' );
+update_post_meta( $up, 'sfp_usp_1', 'Eigen een' );
+update_post_meta( $up, 'sfp_usp_3', 'Eigen drie' );
+$is( array( 'Eigen een', 'Eigen drie' ), sfp_page_config_uspstrook_pagina( $up )['usps'], 'eigen redenen van de pagina, lege overgeslagen' );
+$is( '085 060 13 55', sfp_page_config_uspstrook_pagina( $up )['telefoon'], 'belknop blijft van de site' );
+update_post_meta( $up, 'sfp_usp_uit', '1' );
+$is( null, sfp_page_config_uspstrook_pagina( $up ), 'strook uit op deze pagina' );
+delete_post_meta( $up, 'sfp_usp_uit' );
+update_post_meta( $up, 'sfp_page_type', 'coaching' );
+$is( array( 'Eigen een', 'Eigen drie' ), sfp_page_config_uspstrook_pagina( $up )['usps'], 'eigen redenen ook als de soort in SFP Beheer niet aanstaat' );
+delete_post_meta( $up, 'sfp_usp_1' );
+delete_post_meta( $up, 'sfp_usp_3' );
+$is( null, sfp_page_config_uspstrook_pagina( $up ), 'soort niet aan en geen eigen redenen: geen strook' );
+update_post_meta( $up, 'sfp_usp_2', str_repeat( 'x', 80 ) );
+$is( 60, mb_strlen( get_post_meta( $up, 'sfp_usp_2', true ) ), 'eigen reden hoogstens 60 tekens' );
+wp_delete_post( $up, true );
+sfp_page_config_instellingen_bewaar( array( 'uspstrook' => array() ) );
+
+/* ---------- H1 in de held wit krijgt h1-xl (3.32.0) ---------- */
+$is( '<h1 class="wp-block-heading h1-xl">Kop</h1>', sfp_page_config_nlvorm_h1_xl( '<h1 class="wp-block-heading">Kop</h1>' ), 'klasse h1-xl erbij' );
+$is( '<h1 class="wp-block-heading h1-xl">Kop</h1>', sfp_page_config_nlvorm_h1_xl( '<h1 class="wp-block-heading h1-xl">Kop</h1>' ), 'h1-xl niet dubbel' );
+$is( '<h1 class="h1-xl" id="x">Kop</h1>', sfp_page_config_nlvorm_h1_xl( '<h1 id="x">Kop</h1>' ), 'H1 zonder klasse krijgt er een' );
+$is( '<p class="h1">x</p>', sfp_page_config_nlvorm_h1_xl( '<p class="h1">x</p>' ), 'geen H1: niets' );
+
 /* ---------- Delen van de opmaak ---------- */
 $is( array( 'nlvorm-held' ), sfp_page_config_nlvorm_delen( '<!-- wp:sfp/held {"variant":"wit"} -->' ), 'held wit laadt het deel held' );
 $is( array(), sfp_page_config_nlvorm_delen( '<!-- wp:sfp/held {"variant":"breed"} -->' ), 'held breed laadt niets' );

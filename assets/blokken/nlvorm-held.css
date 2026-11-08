@@ -100,7 +100,4 @@ html:has(.sfp-held--wit){scroll-behavior:auto!important}
   :root .sfp-held__feit--afbreken strong{white-space:normal;line-height:1.25}
   :root .sfp-held__score{border-right:0;padding-right:0;margin-right:0}
 }
-@media (max-width:430px){
-  :root .site-content .sfp-held--wit h1,:root .sfp-held--wit h1{font-size:26px!important}
-}
 

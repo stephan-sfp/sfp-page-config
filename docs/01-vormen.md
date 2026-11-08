@@ -35,7 +35,7 @@ Gemeten: SwS 759 (artikel), 863 (begrip), 1076 (tool). Op SwS bestaat op 3-11 no
 
 **Hoe.** Als een artikel, met in Deze pagina "Een pijler (de gids van een categorie)" en de categorie waarvan hij de gids is. Lead van 50 tot 80 woorden: wat het onderwerp is en het antwoord op de hoofdvraag. Geen Samenvatting; de kaart van de pijler neemt die plek in. Elk hoofdstuk eindigt met Lees ook naar zijn artikel (label Go deeper komt vanzelf als het artikel bij de pijler hoort). Lees ook kiest alleen uit gepubliceerde artikelen; een spoke die nog concept is, kun je niet kiezen. Publiceer de pijler dan zonder dat Lees ook en voeg het toe zodra de spoke live is; of plak het latere adres als "andere link" met eigen titel (dan zonder beeld en met een 404 tot de spoke live is: alleen doen als de spoke binnen dezelfde publicatieronde live gaat). Thermometer mag erbij: hij verschijnt als knop in de kopkaart.
 
-**Wat vanzelf komt.** Pijlerregel "Pillar in Blog", kaart van de pijler na de lead (artikelen en begrippen met beeld, titel en leestijd; op telefoon ingeklapt; vanaf vijf artikelen een slider), kopkaart met actie Zelftest als de site een zelftest heeft, promokaart met de zelftest, vervolg, Article-schema met de artikelen.
+**Wat vanzelf komt.** Pijlerregel "Guide in Blog" (NL "Gids in Blog", sinds 3.32.0), kaart van de pijler na de lead (artikelen en begrippen met beeld, titel en leestijd; op telefoon ingeklapt; vanaf vijf artikelen een slider), kopkaart met actie Zelftest als de site een zelftest heeft, promokaart met de zelftest, vervolg, Article-schema met de artikelen.
 
 **Wat je niet doet.** Geen eigen overzicht van artikelen, geen ingebedde zelftest in de tekst, geen tweede pijler voor dezelfde categorie.
 

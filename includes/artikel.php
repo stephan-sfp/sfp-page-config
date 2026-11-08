@@ -712,7 +712,7 @@ function sfp_page_config_artikel_promo_in_tekst( $html, $kaart ) {
  * @return string        HTML, of '' zonder bruikbare categorie.
  */
 function sfp_page_config_artikel_pijlerregel( $post ) {
-    // Een pijler (sinds 3.26.0): Pillar in <hoofdpijler>, anders Pillar in
+    // Een pijler (sinds 3.26.0; tekst Guide sinds 3.32.0): Guide in <hoofdpijler>, anders Guide in
     // <Blog> met een link naar de blogpagina, zonder blogpagina alleen Pillar.
     $gids_term = function_exists( 'sfp_page_config_is_gids' ) && 'pijler' === sfp_page_config_vorm( $post ) ? sfp_page_config_is_gids( $post ) : null;
     if ( $gids_term ) {

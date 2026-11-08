@@ -12,6 +12,17 @@ Terugdraaien: versie 3.31.3 terugzetten (zip uit de tag v3.31.3, map sfp-page-co
 - Trainingspagina met Groepskaarten zonder groep: het inschrijfformulier wisselt weer naar het wachtlijstformulier uit SFP Beheer. Sinds 3.31.0 bleef het trainingformulier staan, waardoor wachtlijstaanmeldingen de lijst, de tag en de bedankpagina van een training kregen (DPS, DGA, CVD).
 - De tekst Zet mij op de wachtlijst komt alleen nog op de knop van het inschrijfformulier, niet op een ander formulier op de pagina, zoals de leadmagnet op CVD.
 - Keuzemenu Datum zonder groep: toont niet meer de tekst voor geen startdata. WP Rocket hield de wachtlijstvlag tot de eerste beweging tegen, zodat het menu eerst zonder vlag draaide en het veld verborg.
+- Keuzemenu Datum: komen de keuzes later toch, dan haalt het script de melding weg en toont het het menu weer.
+- Held wit op een telefoon: de vaste H1-maat van 26 px is weg; de maat komt uit de h1-xl-regel van de site. De verkleining van een te brede H1 (3.31.0) krijgt voorrang, zodat het langste woord weer in de kolom past (DGA, DST).
+- Held wit: de H1 krijgt altijd de klasse h1-xl, ook als die in de editor ontbreekt (DPS 22577 had een kleinere kop dan de andere trainingspagina's).
+- Logostrook: logo's 48 px hoog (telefoon 36 px) in plaats van 40 en 30, en wit van een logo zonder doorzichtige achtergrond valt weg op een lichte strook (DPS).
+
+### Toegevoegd
+- USP-strook per pagina: in de editor, paneel Deze pagina, drie eigen redenen en een schakelaar om de strook op die pagina uit te zetten. Leeg is de set uit SFP Beheer; belknop en Google-cijfer blijven van de site. Eigen redenen tonen de strook ook als de soort pagina in SFP Beheer niet aanstaat.
+- Logostrook: vanaf zeven logo's een doorlopende carrousel, alleen CSS. Stil bij aanwijzen en bij minder beweging in het toestel; dan op een rij.
+
+### Gewijzigd
+- Pijlerregel boven de titel: "Gids in Blog" in plaats van "Pijler in Blog" (Engels Guide, Portugees Guia).
 
 ## [3.31.3] - 2026-11-08
 

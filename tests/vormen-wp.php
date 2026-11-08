@@ -159,9 +159,9 @@ $kaart = sfp_page_config_gids_kaart( get_post( $hoofdgids ) );
 $check( 'hoofdpijler gegroepeerd', false !== strpos( $kaart, 'sfp-gids--groepen' ) );
 $check( 'hoogstens vier per groep', 4 === substr_count( $kaart, '<li>' ) );
 $check( 'link alle in pijler', false !== strpos( $kaart, 'sfp-gids__alle' ) );
-// Sinds 3.26.0 heet de regel Pijler (Pillar, Pilar): de hoofdpijler staat in de blog of alleen.
-$check( 'pijlerregel hoofdpijler', 1 === preg_match( '#>(Pillar|Pijler|Pilar)(</p>| (in|em) <a)#', sfp_page_config_artikel_pijlerregel( get_post( $hoofdgids ) ) ) );
-$check( 'pijlerregel pijler in', 1 === preg_match( '#(Pillar in|Pijler in|Pilar em) <a#', sfp_page_config_artikel_pijlerregel( get_post( $gids ) ) ) );
+// Sinds 3.32.0 heet de regel Gids (Guide, Guia): de hoofdpijler staat in de blog of alleen.
+$check( 'pijlerregel hoofdpijler', 1 === preg_match( '#>(Guide|Gids|Guia)(</p>| (in|em) <a)#', sfp_page_config_artikel_pijlerregel( get_post( $hoofdgids ) ) ) );
+$check( 'pijlerregel pijler in', 1 === preg_match( '#(Guide in|Gids in|Guia em) <a#', sfp_page_config_artikel_pijlerregel( get_post( $gids ) ) ) );
 
 // Een concept-pijler toont zijn kaart (voorbeeldlink), maar houdt zijn eigen adres.
 $concept    = wp_insert_post(
