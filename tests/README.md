@@ -172,3 +172,11 @@ wp eval-file wp-content/plugins/sfp-page-config/tests/home-over-wp.php
 ```
 
 Runs inside a real WordPress (a local test install, never a live site). Checks the held foto (photo behind the text, phone photo, no lazy loading, default focus), the held wit without fact card, the card with image on top, the columns Slot and the review carousel, Latest articles (order, empty image, texts), Team, Tabs as card with icon, Network (own site left out, unsafe addresses refused), the page type Home, the ItemList without the label and the review chosen automatically. Creates its own posts and removes them at the end.
+
+# Archives and reading column (3.35.0)
+
+```sh
+wp eval-file wp-content/plugins/sfp-page-config/tests/archieven-wp.php
+```
+
+Runs inside a real WordPress (a local test install, never a live site). Checks the phone notation (085 060 1355, mobile, international, +31 and 0031), the Contact setting (sanitizing, network defaults, Maps link from the address, no OpenStreetMap), the article card (H4 unchanged, R3 with label, own excerpt, no arrow link), the archive header on a category, the blog (typed texts per type, accent kept, no script) and search, the grid (headings, count, tint or white after Guides), the author header (role, tick list from lines with √, no external photo), the alphabet letters and the texts in three languages. Creates its own posts, category and user and removes them at the end.

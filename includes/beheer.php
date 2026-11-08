@@ -469,6 +469,7 @@ function sfp_page_config_beheer_stand() {
         'banner'           => function_exists( 'sfp_page_config_banner_stand' ) ? sfp_page_config_banner_stand() : array(),
         'uspstrook'        => function_exists( 'sfp_page_config_uspstrook_instelling' ) ? sfp_page_config_uspstrook_instelling() : array(),
         'netwerk'          => function_exists( 'sfp_page_config_netwerk_beheer' ) ? sfp_page_config_netwerk_beheer() : array(),
+        'contact'          => function_exists( 'sfp_page_config_contact_beheer' ) ? sfp_page_config_contact_beheer() : array(),
         'coach'            => array(
             'url'  => (string) sfp_page_config_get_setting( 'coach_persoon', '' ),
             'norm' => function_exists( 'sfp_page_config_coach_norm' ) ? sfp_page_config_coach_norm() : '',

@@ -1177,6 +1177,30 @@
 		]);
 	}
 
+	/* Contact (3.35.0): telefoon, e-mail en adres voor het blok Contactgegevens. */
+	function detailContact() {
+		var C = S.contact || {};
+		var tel = tekstInvoer(C.telefoon || '', C.telefoon_toon || '085 060 1355', 'tel');
+		var mail = tekstInvoer(C.email || '', C.email_norm || 'info@', 'email');
+		var adres = tekstInvoer(C.adres || '', 'Keizersgracht 520h, 1017 EK Amsterdam');
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Contact', 'Voor het blok Contactgegevens: telefoon, WhatsApp, e-mail en adres in twee kolommen. WhatsApp is het nummer van de WhatsApp-knop. Een regel zonder gegeven valt weg.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				veld('Telefoon', tel, 'Leeg: het nummer van de USP-strook, anders het nummer van het netwerk. Het blok toont het nummer als 085 060 1355.', 'sfpb-ct-tel'),
+				veld('E-mail', mail, 'Leeg: ' + (C.email_norm || 'info@ op het domein van de site') + '.', 'sfpb-ct-mail'),
+				veld('Adres', adres, 'Eén regel, zoals op de factuur. Daaronder komt vanzelf de link Bekijk op Google Maps. Leeg: geen adres.', 'sfpb-ct-adres'),
+				el('p', { class: 'sfpb-hulp', text: 'De caches leegt de plugin niet: doe dat na opslaan.' }),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						bewaarInstellingen(this, 'contact', { contact: { telefoon: tel.value, email: mail.value, adres: adres.value } });
+					} }),
+					flitsPlek('contact')
+				])
+			])
+		]);
+	}
+
 	function detailBanner() {
 		var B = S.banner || { instelling: { kleur: '', tekst_kleur: '', cursus: { aan: '1', waar: 'overal', ook: [], niet: [] }, aanbod: [] }, rollen: [], cursussen: [], nu: '', cursusdata: false };
 		if (!ui.banner) ui.banner = JSON.parse(JSON.stringify(B.instelling));
@@ -1969,7 +1993,7 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk, contact: detailContact };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 

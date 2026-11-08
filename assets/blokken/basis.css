@@ -116,3 +116,15 @@
   :root .sfp-sectie .is-style-sfp-mailregel{margin-top:32px}
 }
 @media (prefers-reduced-motion:reduce){:is(.sfp-sectie,.sfp-held) *{transition:none!important}}
+
+/* L2 (3.35.0): de uitklap van WordPress (Details) in de leeskolom in de stijl Grote regels, bijvoorbeeld in de verklaring van Complianz. */
+:root .sfp-leeskolom .wp-block-details{border-bottom:1px solid var(--sfp-b-lijn-sterk);margin:0}
+:root .sfp-leeskolom :is(h2,p,ul,ol)+.wp-block-details{border-top:2px solid var(--sfp-b-secundair);margin-top:24px}
+:root .sfp-leeskolom .wp-block-details+.wp-block-details{border-top:0;margin-top:0}
+:root .sfp-leeskolom .wp-block-details>summary{cursor:pointer;list-style:none;font-family:var(--sfp-b-kop);color:var(--sfp-b-primair);font-weight:700;font-size:clamp(17px,.5vw + 14px,20px);line-height:1.35;padding:18px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
+:root .sfp-leeskolom .wp-block-details>summary::-webkit-details-marker{display:none}
+:root .sfp-leeskolom .wp-block-details>summary::after{content:"+";border:1px solid var(--sfp-b-lijn-sterk);border-radius:50%;flex:0 0 34px;place-items:center;height:34px;font-family:inherit;font-size:22px;font-weight:400;line-height:1;display:grid;color:var(--sfp-b-primair)}
+:root .sfp-leeskolom .wp-block-details[open]>summary::after{content:"\2212";background:var(--sfp-b-secundair);border-color:var(--sfp-b-secundair);color:var(--sfp-b-wit)}
+:root .sfp-leeskolom .wp-block-details>summary:focus-visible{outline:2px solid var(--sfp-b-secundair);outline-offset:2px}
+:root .sfp-leeskolom .wp-block-details>:not(summary){margin:0 0 14px}
+:root .sfp-leeskolom .wp-block-details h3{font-size:16px;margin-top:8px}

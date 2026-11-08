@@ -36,6 +36,7 @@ Elk onderdeel staat Aan of Uit; de meeste hebben Instellen. Stand SwS 3-11: 23 a
 | Berichttypes | Begrippen en tools als eigen berichttype met adres en naam | aan of uit |
 | Paginabeheer voor AI | Lezen en bijwerken via de MCP-koppeling, met revisiecontrole | aan of uit |
 | Banner | Eén regel boven de header | Kleur, aanbod met periode en plaatsing, cursusbanner |
+| Contact | Gegevens voor het blok Contactgegevens (3.35.0) | Telefoon (leeg: het nummer van de USP-strook, anders van het netwerk; altijd getoond als 085 060 1355), e-mail (leeg: info@ op het domein), adres (leeg: geen adres) |
 | Kopieerblok, Bronnenlijst, Praktijkblok, Auteursbio | Blokken en opmaak | aan of uit |
 | Merkwaarden | Merkwaarden live uit de merkbron | Zie 10 |
 | Formulierbewaking | Dagelijkse formuliercontrole | aan of uit |

@@ -1847,6 +1847,95 @@
 	} );
 
 	/*
+	 * Archieven en leeskolom (3.35.0): Archiefkop, Gidsen, Artikelraster,
+	 * Auteurskop en Contactgegevens. Ze staan in de Astra-layouts van de
+	 * archieven (de contactgegevens in de leeskolom). Teksten van blog,
+	 * begrippen en tools typ je per soort; de rest vult zichzelf.
+	 */
+	var ARCHIEF = window.sfpArchief || {};
+	function archiefSoorten() {
+		var o = [ { value: 'blog', label: 'Blog en categorieën' } ];
+		if ( ARCHIEF.begrippen ) { o.push( { value: 'begrippen', label: 'Begrippen' } ); }
+		if ( ARCHIEF.tool ) { o.push( { value: 'tool', label: 'Tools' } ); }
+		return o;
+	}
+	function archiefTekst( a, soort, sleutel ) {
+		var t = a.teksten && a.teksten[ soort ] ? a.teksten[ soort ] : {};
+		return t[ sleutel ] || '';
+	}
+	function archiefZet( props, soort, sleutel ) {
+		return function ( v ) {
+			var t = JSON.parse( JSON.stringify( props.attributes.teksten || {} ) );
+			if ( ! t[ soort ] || 'object' !== typeof t[ soort ] || Array.isArray( t[ soort ] ) ) { t[ soort ] = {}; }
+			t[ soort ][ sleutel ] = v;
+			props.setAttributes( { teksten: t } );
+		};
+	}
+	function archiefSoortKeuze( soort, zet ) {
+		var opties = archiefSoorten();
+		return opties.length > 1 ? keuze( 'Teksten voor', soort, opties, zet, 'Staat deze layout bij meer archieven, dan heeft elke soort zijn eigen teksten.' ) : null;
+	}
+	blok( 'sfp/archiefkop', function ( props ) {
+		var a = props.attributes;
+		var st = useState( 'blog' );
+		var soort = st[ 0 ];
+		var blockProps = useBlockProps( { className: 'sfp-sectie sfp-archiefkop' } );
+		var plaats = { blog: 'Zoek in de artikelen', begrippen: 'Zoek een begrip', tool: 'Zoek een tool' }[ soort ];
+		return el( Fragment, null,
+			paneel( 'Archiefkop', [
+				archiefSoortKeuze( soort, st[ 1 ] ),
+				uitleg( 'Label, titel en kernzin typ je in het blok. Leeg: de naam van het archief. Geef in de titel één zinsdeel het Accent (knop in de werkbalk).' ),
+				uitleg( 'Op een categorie staan vanzelf de naam en de omschrijving van de categorie, bij zoeken de zoekterm en het aantal resultaten. Daaronder het zoekveld, en de categorieën (blog) of het alfabet (begrippen).' ),
+			] ),
+			el( 'section', blockProps, el( 'div', { className: 'sfp-sectie__binnen' },
+				el( RichText, { tagName: 'p', className: 'is-style-sfp-label', value: archiefTekst( a, soort, 'label' ), placeholder: 'blog' === soort ? ( ARCHIEF.blog || 'Blog' ) : ( 'begrippen' === soort ? 'Begrippen' : 'Tools' ), allowedFormats: [], onChange: archiefZet( props, soort, 'label' ) } ),
+				el( RichText, { tagName: 'h1', className: 'wp-block-heading h1-xl', value: archiefTekst( a, soort, 'titel' ), placeholder: 'Titel, bijvoorbeeld: Je presenteert beter als je weet wat je doet', allowedFormats: [ 'sfp/accent', 'core/italic' ], onChange: archiefZet( props, soort, 'titel' ) } ),
+				el( RichText, { tagName: 'p', className: 'is-style-sfp-kernzin sfp-archiefkop__kernzin', value: archiefTekst( a, soort, 'kernzin' ), placeholder: 'Kernzin: één zin over wat de lezer hier vindt', allowedFormats: [], onChange: archiefZet( props, soort, 'kernzin' ) } ),
+				el( 'div', { className: 'sfp-zoek', 'aria-hidden': 'true' }, el( 'input', { type: 'search', placeholder: plaats, disabled: true } ), el( 'span', { className: 'wp-block-button__link wp-element-button' }, 'Zoeken' ) ),
+				el( 'p', { className: 'components-base-control__help' }, 'blog' === soort ? 'Hieronder vanzelf: Alle artikelen en de categorieën.' : ( 'begrippen' === soort ? 'Hieronder vanzelf: het alfabet.' : '' ) )
+			) )
+		);
+	} );
+	blok( 'sfp/gidsen', function ( props ) {
+		var a = props.attributes;
+		return el( Fragment, null,
+			paneel( 'Gidsen', [
+				tekstveld( 'Label', archiefTekst( a, 'blog', 'label' ), archiefZet( props, 'blog', 'label' ), 'Leeg: Gidsen.' ),
+				tekstveld( 'Kop op het blogoverzicht', archiefTekst( a, 'blog', 'kop' ), archiefZet( props, 'blog', 'kop' ), 'Leeg: Begin bij de basis. Op een categorie staat vanzelf Lees eerst de gids.' ),
+				uitleg( 'Vult zichzelf met de pagina\'s met de vorm Pijler. Op een categorie alleen de gids van die categorie. Zonder gids staat er niets, ook geen sectie.' ),
+			] ),
+			gegeven( 'sfp/gidsen', null, props, 'Nog geen pijlerpagina met een categorie. Bezoekers zien hier niets.' )
+		);
+	} );
+	blok( 'sfp/artikelraster', function ( props ) {
+		var a = props.attributes;
+		var st = useState( 'blog' );
+		var soort = st[ 0 ];
+		return el( Fragment, null,
+			paneel( 'Artikelraster', [
+				keuze( 'Achtergrond', a.achtergrond || 'auto', [ { value: 'auto', label: 'Vanzelf (wit na Gidsen, anders tint)' }, { value: 'wit', label: 'Wit' }, { value: 'tint', label: 'Tint' } ], function ( v ) { props.setAttributes( { achtergrond: v } ); } ),
+				archiefSoortKeuze( soort, st[ 1 ] ),
+				tekstveld( 'Label', archiefTekst( a, soort, 'label' ), archiefZet( props, soort, 'label' ), 'Leeg: Artikelen (begrippen: Van A tot Z).' ),
+				tekstveld( 'Kop', archiefTekst( a, soort, 'kop' ), archiefZet( props, soort, 'kop' ), 'Leeg: Nieuwste artikelen, Alle begrippen of Alle tools.' ),
+				uitleg( 'De artikelen van het archief zelf als kaarten, drie naast elkaar, met paginering. Op een categorie, bij zoeken en op een auteurspagina staan label en kop vanzelf. Zonder uitgelichte afbeelding: een vlak met het site-icoon. Hieronder een voorbeeld met de nieuwste artikelen.' ),
+			] ),
+			gegeven( 'sfp/artikelraster', null, props, 'Nog geen artikelen. Bezoekers zien hier de lijst van het archief.' )
+		);
+	} );
+	blok( 'sfp/auteurskop', function ( props ) {
+		return el( Fragment, null,
+			paneel( 'Auteurskop', [ uitleg( 'Op de auteurspagina: naam en biografie uit het profiel van de auteur, en in het profiel onder Auteurskop de foto, de rol, de profielpagina en LinkedIn. Regels in de biografie die met √ beginnen worden een lijst met vinkjes. Hieronder je eigen profiel als voorbeeld.' ) ] ),
+			gegeven( 'sfp/auteurskop', null, props, 'Geen profiel. Bezoekers zien hier de auteur.' )
+		);
+	} );
+	blok( 'sfp/contactgegevens', function ( props ) {
+		return el( Fragment, null,
+			paneel( 'Contactgegevens', [ uitleg( 'Telefoon, WhatsApp, e-mail en adres uit SFP Beheer, Onderdelen, Contact. Telefoonnummers in de vorm 085 060 1355. Onder het adres vanzelf de link naar Google Maps.' ) ] ),
+			gegeven( 'sfp/contactgegevens', null, props, 'Nog geen gegevens in SFP Beheer, Contact.' )
+		);
+	} );
+
+	/*
 	 * Afbeelding met de stijl Afgerond (3.34.0, O3): verhouding en wat in
 	 * beeld blijft, als klassen. Geen inline stijl, geen nieuw attribuut.
 	 */

@@ -162,6 +162,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'De labels van het netwerk voor het blok Netwerk (bijvoorbeeld op de Over-pagina): naam, adres, zin en icoon. De eigen site valt vanzelf weg.',
             'detail' => true,
         ),
+        'contact'      => array(
+            'naam'   => 'Contact',
+            'uitleg' => 'Telefoon, e-mail en adres voor het blok Contactgegevens (bijvoorbeeld op de contactpagina). Leeg: het nummer en het e-mailadres van het netwerk.',
+            'detail' => true,
+        ),
         'uspstrook'    => array(
             'naam'   => 'USP-strook',
             'uitleg' => 'Eén regel onder de header op trainings- en coachpagina\'s: drie redenen om te kiezen, het Google-cijfer en een belknop. Niet op een telefoon.',
@@ -812,6 +817,12 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
             case 'uspstrook':
                 $alle['uspstrook'] = function_exists( 'sfp_page_config_uspstrook_schoon' ) ? sfp_page_config_uspstrook_schoon( $ruw ) : array();
                 $bewaard[]         = $sleutel;
+                break;
+
+            case 'contact':
+                // Sinds 3.35.0: telefoon, e-mail en adres voor het blok Contactgegevens.
+                $alle['contact'] = function_exists( 'sfp_page_config_contact_schoon' ) ? sfp_page_config_contact_schoon( $ruw ) : array();
+                $bewaard[]       = $sleutel;
                 break;
 
             case 'netwerk':
