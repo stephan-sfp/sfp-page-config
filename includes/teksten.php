@@ -73,6 +73,15 @@ function sfp_page_config_teksten_register() {
             'pt'     => 'Reserve sua vaga',
             'opslag' => 'sticky_cta.training.text',
         ),
+        'knop_home'                   => array(
+            'groep'  => 'Knop onderaan',
+            'label'  => 'Home',
+            // Sinds 3.34.0. Per pagina te kiezen (bijvoorbeeld de zelftest).
+            'nl'     => 'Plan een kennismaking',
+            'en'     => 'Book an introduction',
+            'pt'     => 'Agende uma conversa',
+            'opslag' => 'sticky_cta.home.text',
+        ),
         'knop_incompany'              => array(
             'groep'  => 'Knop onderaan',
             'label'  => 'Incompany',
@@ -503,6 +512,13 @@ function sfp_page_config_teksten_register() {
             'nl'    => 'Geen van beide: wachtlijst',
             'en'    => 'Neither: waiting list',
             'pt'    => 'Nenhuma: lista de espera',
+        ),
+        'artikel_lees'       => array(
+            'groep' => 'Home',
+            'label' => 'Laatste artikelen: link op de kaart',
+            'nl'    => 'Lees het artikel',
+            'en'    => 'Read the article',
+            'pt'    => 'Leia o artigo',
         ),
         'review_google_bron' => array(
             'groep' => 'Trainingspagina',

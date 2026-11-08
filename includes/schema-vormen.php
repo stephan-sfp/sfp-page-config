@@ -215,7 +215,8 @@ function sfp_page_config_aanbod_gegevens( WP_Post $post ) {
             $soort = $binnen['blockName'] ?? '';
             if ( '' === $kop && 'core/heading' === $soort ) {
                 $kop = sfp_page_config_aanbod_tekst( $binnen );
-            } elseif ( '' === $zin && 'core/paragraph' === $soort && false === strpos( (string) ( $binnen['attrs']['className'] ?? '' ), 'is-style-sfp-pijl' ) ) {
+            } elseif ( '' === $zin && 'core/paragraph' === $soort && ! preg_match( '/is-style-sfp-(pijl|label|bovenschrift)/', (string) ( $binnen['attrs']['className'] ?? '' ) ) ) {
+                // Sinds 3.34.0 (H8) telt het label boven de kop niet als omschrijving.
                 $zin = sfp_page_config_aanbod_tekst( $binnen );
             }
         }

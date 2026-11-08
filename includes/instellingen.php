@@ -56,7 +56,7 @@ function sfp_page_config_instellingen() {
  * @return string[]
  */
 function sfp_page_config_paginasoorten() {
-    return array( 'coaching', 'training', 'incompany' );
+    return array( 'coaching', 'training', 'incompany', 'home' );
 }
 
 /* =========================================================================
@@ -155,6 +155,11 @@ function sfp_page_config_onderdelen() {
         'banner'       => array(
             'naam'   => 'Banner',
             'uitleg' => 'Eén regel boven de header: een boek of e-course in een periode die je kiest, anders vanzelf de eerstvolgende groep uit de cursusdata.',
+            'detail' => true,
+        ),
+        'netwerk'      => array(
+            'naam'   => 'Netwerk',
+            'uitleg' => 'De labels van het netwerk voor het blok Netwerk (bijvoorbeeld op de Over-pagina): naam, adres, zin en icoon. De eigen site valt vanzelf weg.',
             'detail' => true,
         ),
         'uspstrook'    => array(
@@ -807,6 +812,12 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
             case 'uspstrook':
                 $alle['uspstrook'] = function_exists( 'sfp_page_config_uspstrook_schoon' ) ? sfp_page_config_uspstrook_schoon( $ruw ) : array();
                 $bewaard[]         = $sleutel;
+                break;
+
+            case 'netwerk':
+                // Sinds 3.34.0: de labels voor het blok Netwerk.
+                $alle['netwerk'] = function_exists( 'sfp_page_config_netwerk_schoon' ) ? sfp_page_config_netwerk_schoon( $ruw ) : array();
+                $bewaard[]       = $sleutel;
                 break;
 
             case 'inschrijf_formulier':

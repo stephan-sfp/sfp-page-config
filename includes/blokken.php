@@ -97,9 +97,23 @@ function sfp_page_config_blokken() {
                 'variant'       => array(
                     'type'    => 'string',
                     'default' => 'recht',
-                    'enum'    => array( 'recht', 'breed', 'wit' )
+                    'enum'    => array( 'recht', 'breed', 'wit', 'foto' )
                 ),
                 'anker'         => $tekst,
+                // Held foto (3.34.0, home): aparte foto voor de telefoon.
+                'mobielId'      => array(
+                    'type'    => 'number',
+                    'default' => 0
+                ),
+                'focusMobiel'   => array(
+                    'type'    => 'string',
+                    'default' => '60% 20%'
+                ),
+                // Held wit (3.34.0, O4): feitenkaart tonen.
+                'feitenkaart'   => array(
+                    'type'    => 'boolean',
+                    'default' => true
+                ),
                 // Held wit (3.30.0): feitenkaart en bewijsregel.
                 'volgendeStart' => array(
                     'type'    => 'boolean',
@@ -132,7 +146,12 @@ function sfp_page_config_blokken() {
                 'indeling'   => array(
                     'type'    => 'string',
                     'default' => 'twee',
-                    'enum'    => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten' )
+                    'enum'    => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten', 'slot' )
+                ),
+                // Reviews als carrousel op een telefoon (3.34.0, H6).
+                'carrousel'  => array(
+                    'type'    => 'boolean',
+                    'default' => false
                 ),
                 // Verticale uitlijning (3.22.0). Leeg: zoals de indeling het doet.
                 'uitlijning' => array(
@@ -168,6 +187,11 @@ function sfp_page_config_blokken() {
                     'default' => false
                 ),
                 'smal'    => array(
+                    'type'    => 'boolean',
+                    'default' => false
+                ),
+                // Beeld boven over de volle breedte (3.34.0, H3).
+                'beeld'   => array(
                     'type'    => 'boolean',
                     'default' => false
                 ),
@@ -237,6 +261,12 @@ function sfp_page_config_blokken() {
             'css'         => 'tabs',
             'attributes'  => array(
                 'label' => $tekst,
+                // Als kaart (3.34.0, O1): links uitgelijnd, icoon rechts.
+                'vorm'  => array(
+                    'type'    => 'string',
+                    'default' => '',
+                    'enum'    => array( '', 'kaart' )
+                ),
             ),
             'render'      => 'sfp_page_config_render_tabs',
         ),
@@ -247,7 +277,12 @@ function sfp_page_config_blokken() {
             'css'         => 'tabs',
             'parent'      => array( 'sfp/tabs' ),
             'attributes'  => array(
-                'titel' => $tekst,
+                'titel'   => $tekst,
+                // Icoon rechts in Tabs als kaart (3.34.0): een SVG uit de media.
+                'icoonId' => array(
+                    'type'    => 'number',
+                    'default' => 0
+                ),
             ),
             'render'      => 'sfp_page_config_render_tab',
         ),
@@ -967,7 +1002,7 @@ function sfp_page_config_blokken_editor_css() {
  * @return string[]
  */
 function sfp_page_config_blokken_editor_bestanden() {
-    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'editor' );
+    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-over', 'editor' );
 }
 
 /**
@@ -1116,7 +1151,12 @@ function sfp_page_config_render_sectie( $attrs, $content ) {
  * @return string
  */
 function sfp_page_config_render_held( $attrs, $content, $blok = null ) {
-    $variant = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'variant', 'recht' ), array( 'recht', 'breed', 'wit' ) );
+    $variant = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'variant', 'recht' ), array( 'recht', 'breed', 'wit', 'foto' ) );
+    // Held foto (3.34.0, home): tekst op de foto, aparte foto voor de telefoon.
+    if ( 'foto' === $variant && function_exists( 'sfp_page_config_nlvorm_held_foto' ) ) {
+        return sfp_page_config_blokken_css_vangnet( 'sfp/held' ) . sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-held' ) . sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-home' )
+            . sfp_page_config_nlvorm_held_foto( $attrs, $blok, $content );
+    }
     // Held wit (3.30.0, NL-vorm): tekst links, foto rechts met feitenkaart.
     if ( 'wit' === $variant && function_exists( 'sfp_page_config_nlvorm_held' ) ) {
         return sfp_page_config_blokken_css_vangnet( 'sfp/held' ) . sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-held' )
@@ -1140,15 +1180,17 @@ function sfp_page_config_render_held( $attrs, $content, $blok = null ) {
  * @return string
  */
 function sfp_page_config_render_kolommen( $attrs, $content ) {
-    $indeling   = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'indeling', 'twee' ), array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten' ) );
+    $indeling   = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'indeling', 'twee' ), array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten', 'slot' ) );
+    $carrousel  = 'reviews' === $indeling && ! empty( $attrs['carrousel'] );
     // De indelingen van de NL-vorm (3.30.0) hebben nlvorm.css nodig.
     $nlvorm     = in_array( $indeling, array( 'situaties', 'reviews' ), true ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inhoud' ) : '';
     $nlvorm    .= in_array( $indeling, array( 'boek', 'inschrijven' ), true ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inschrijven' ) : '';
     $nlvorm    .= 'pakketten' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-coach' ) : '';
+    $nlvorm    .= 'slot' === $indeling || $carrousel ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-home' ) : '';
     $uitlijning = sfp_page_config_blok_attr( $attrs, 'uitlijning' );
     $uitlijning = in_array( $uitlijning, array( 'boven', 'midden', 'onder', 'rekken' ), true ) ? 'sfp-kolommen--' . $uitlijning : '';
     return sfp_page_config_blokken_css_vangnet( 'sfp/kolommen' ) . $nlvorm
-        . '<div ' . sfp_page_config_blok_omhulling( array_filter( array( 'sfp-kolommen', 'sfp-kolommen--' . $indeling, $uitlijning, 'boeking' === $indeling ? 'sfp-boekkaart' : '', 'reviews' === $indeling ? 'sfp-reviews-rij' : '' ) ) ) . '>' . $content . '</div>';
+        . '<div ' . sfp_page_config_blok_omhulling( array_filter( array( 'sfp-kolommen', 'sfp-kolommen--' . $indeling, $uitlijning, 'boeking' === $indeling ? 'sfp-boekkaart' : '', 'reviews' === $indeling ? 'sfp-reviews-rij' : '', $carrousel ? 'sfp-reviews-rij--carrousel' : '' ) ) ) . '>' . $content . '</div>';
 }
 
 /**
@@ -1173,18 +1215,39 @@ function sfp_page_config_render_kolom( $attrs, $content ) {
  * @param  string $content Binnenblokken.
  * @return string
  */
-function sfp_page_config_render_kaart( $attrs, $content ) {
+function sfp_page_config_render_kaart( $attrs, $content, $blok = null ) {
     $variant = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'variant', 'standaard' ), array( 'standaard', 'vlak', 'donker' ) );
     $link    = esc_url( sfp_page_config_blok_attr( $attrs, 'link' ) );
+    $beeld   = ! empty( $attrs['beeld'] );
     $klassen = array(
         'sfp-kaart',
         'standaard' !== $variant ? 'sfp-kaart--' . $variant : '',
         ! empty( $attrs['ruim'] ) ? 'sfp-kaart--ruim' : '',
         ! empty( $attrs['smal'] ) ? 'sfp-kaart--smal' : '',
         '' !== $link ? 'sfp-kaart--link' : '',
+        $beeld ? 'sfp-kaart--beeld' : '',
     );
     $laag    = '' !== $link ? '<a class="sfp-kaart__link" href="' . $link . '" tabindex="-1" aria-hidden="true"></a>' : '';
-    return sfp_page_config_blokken_css_vangnet( 'sfp/kaart' )
+    $extra   = '';
+    // Beeld boven (3.34.0, H3): de eerste afbeelding over de volle breedte,
+    // de rest in een eigen vak met ruimte eromheen.
+    if ( $beeld ) {
+        $extra = sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-home' );
+        if ( $blok instanceof WP_Block && $blok->inner_blocks ) {
+            $foto  = '';
+            $tekst = '';
+            foreach ( $blok->inner_blocks as $kind ) {
+                $html = $kind->render();
+                if ( '' === $foto && 'core/image' === $kind->name ) {
+                    $foto = $html;
+                } else {
+                    $tekst .= $html;
+                }
+            }
+            $content = $foto . '<div class="sfp-kaart__tekst">' . $tekst . '</div>';
+        }
+    }
+    return sfp_page_config_blokken_css_vangnet( 'sfp/kaart' ) . $extra
         . '<div ' . sfp_page_config_blok_omhulling( $klassen ) . '>' . $content . $laag . '</div>';
 }
 
@@ -1309,6 +1372,7 @@ function sfp_page_config_render_tabs( $attrs, $content, $block = null ) {
     }
     sfp_page_config_blokken_js_nodig( true );
     $label   = sfp_page_config_blok_attr( $attrs, 'label' );
+    $kaart   = 'kaart' === sfp_page_config_blok_attr( $attrs, 'vorm' );
     $knoppen = '';
     $panelen = '';
     $nr      = 0;
@@ -1320,12 +1384,36 @@ function sfp_page_config_render_tabs( $attrs, $content, $block = null ) {
         $titel    = wp_kses( sfp_page_config_blok_attr( $tab->attributes, 'titel' ), sfp_page_config_blok_titel_kses() );
         $eerste   = 0 === $nr;
         $knoppen .= '<button type="button" role="tab" id="' . esc_attr( $id ) . '-k" aria-controls="' . esc_attr( $id ) . '" aria-selected="' . ( $eerste ? 'true' : 'false' ) . '"' . ( $eerste ? '' : ' tabindex="-1"' ) . '>' . $titel . '</button>';
-        $panelen .= '<div class="sfp-tabpaneel" role="tabpanel" id="' . esc_attr( $id ) . '" aria-labelledby="' . esc_attr( $id ) . '-k"' . ( $eerste ? '' : ' hidden' ) . '>' . $tab->render() . '</div>';
+        $binnen   = $tab->render();
+        // Als kaart (3.34.0, O1): tekst links, icoon rechts in de secundaire kleur.
+        if ( $kaart ) {
+            $icoon  = sfp_page_config_tab_icoon( (int) ( $tab->attributes['icoonId'] ?? 0 ) );
+            $binnen = '<div class="sfp-tabpaneel__tekst">' . $binnen . '</div>' . $icoon;
+        }
+        $panelen .= '<div class="sfp-tabpaneel" role="tabpanel" id="' . esc_attr( $id ) . '" aria-labelledby="' . esc_attr( $id ) . '-k"' . ( $eerste ? '' : ' hidden' ) . '>' . $binnen . '</div>';
         ++$nr;
     }
     $lijst = '<div class="sfp-tablijst" role="tablist"' . ( '' !== $label ? ' aria-label="' . esc_attr( $label ) . '"' : '' ) . '>' . $knoppen . '</div>';
-    return sfp_page_config_blokken_css_vangnet( 'sfp/tabs' )
-        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-tabs' ) ) . '>' . $lijst . $panelen . '</div>';
+    return sfp_page_config_blokken_css_vangnet( 'sfp/tabs' ) . ( $kaart ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-over' ) : '' )
+        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-tabs', $kaart ? 'sfp-tabs--kaart' : '' ) ) . '>' . $lijst . $panelen . '</div>';
+}
+
+/**
+ * Het icoon van een tab (3.34.0): een afbeelding uit de media als masker,
+ * zodat het de secundaire kleur van de site krijgt. Geen icoon: leeg.
+ *
+ * @param  int $id Bijlage.
+ * @return string
+ */
+function sfp_page_config_tab_icoon( $id ) {
+    if ( $id <= 0 || ! wp_attachment_is_image( $id ) ) {
+        return '';
+    }
+    $url = wp_get_attachment_url( $id );
+    if ( ! $url ) {
+        return '';
+    }
+    return '<span class="sfp-tabpaneel__icoon" aria-hidden="true"><i style="--sfp-icoon:url(' . esc_url( $url ) . ')"></i></span>';
 }
 
 /**

@@ -164,3 +164,11 @@ php tests/pijler-pagina.php
 ```
 
 Checks with small WordPress stubs that the form Pijler belongs to a page and no longer to a post, that a pillar keeps the address of its page, that links to its category go to the pillar while the category archive stays reachable, and that the article layout, follow-up, editor panel and structured data follow the page. It does not replace a run in a real WordPress with a browser.
+
+# Home en Over (3.34.0)
+
+```sh
+wp eval-file wp-content/plugins/sfp-page-config/tests/home-over-wp.php
+```
+
+Runs inside a real WordPress (a local test install, never a live site). Checks the held foto (photo behind the text, phone photo, no lazy loading, default focus), the held wit without fact card, the card with image on top, the columns Slot and the review carousel, Latest articles (order, empty image, texts), Team, Tabs as card with icon, Network (own site left out, unsafe addresses refused), the page type Home, the ItemList without the label and the review chosen automatically. Creates its own posts and removes them at the end.

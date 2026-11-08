@@ -91,6 +91,14 @@
 
 /* afbeeldingsstijlen */
 .is-style-sfp-afgerond img{border-radius:var(--sfp-b-r-kaart);aspect-ratio:4/3;object-fit:cover;object-position:70% 30%;width:100%}
+/* Afgerond: verhouding en focuspunt kiesbaar in de zijbalk (3.34.0, O3) */
+.is-style-sfp-afgerond.sfp-verhouding-169 img{aspect-ratio:16/9}
+.is-style-sfp-afgerond.sfp-verhouding-32 img{aspect-ratio:3/2}
+.is-style-sfp-afgerond.sfp-verhouding-11 img{aspect-ratio:1/1}
+.is-style-sfp-afgerond.sfp-focus-links img{object-position:25% 30%}
+.is-style-sfp-afgerond.sfp-focus-midden img{object-position:50% 30%}
+.is-style-sfp-afgerond.sfp-focus-rechts img{object-position:75% 30%}
+.is-style-sfp-afgerond.sfp-focus-boven img{object-position:50% 15%}
 :root .is-style-sfp-omslag{margin:0;justify-self:start;width:min(70%,260px);text-align:center}
 .is-style-sfp-omslag img{width:100%;height:auto;border-radius:0;border:1px solid var(--sfp-b-lijn);box-shadow:0 2px 6px rgba(0,0,0,.08),0 18px 36px rgba(0,0,0,.14)}
 @media (min-width:981px){:root .is-style-sfp-omslag{justify-self:end;width:min(100%,300px)}}

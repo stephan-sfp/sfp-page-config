@@ -279,9 +279,15 @@
 			return ( select( 'core/block-editor' ).getBlocks( props.clientId ) || [] ).some( function ( x ) { return 'sfp/tool' === x.name; } );
 		}, [ props.clientId ] );
 		var wit = 'wit' === a.variant;
-		var blockProps = useBlockProps( { className: 'sfp-held' + ( wit ? ' sfp-held--wit held-feit held-accent held-bewijs' : ' sfp-held--recht' ) + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) + ( metTool ? ' sfp-held--tool' : '' ) } );
+		var foto = 'foto' === a.variant;
+		var blockProps = useBlockProps( { className: 'sfp-held' + ( wit ? ' sfp-held--wit held-feit held-accent held-bewijs' : foto ? ' sfp-held--foto sfp-held--editor-foto held-bewijs' : ' sfp-held--recht' ) + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) + ( metTool ? ' sfp-held--tool' : '' ) } );
 		var inner = useInnerBlocksProps( { className: 'sfp-held__binnen' }, {
-			template: wit ? [
+			template: foto ? [
+				[ 'core/heading', { level: 1, className: 'h1-xl' } ],
+				[ 'core/paragraph', { className: 'is-style-sfp-kernzin' } ],
+				[ 'core/buttons', {}, [ [ 'core/button' ], [ 'core/button', { className: 'is-style-sfp-tekst' } ] ] ],
+				[ 'core/image', {} ],
+			] : wit ? [
 				[ 'core/heading', { level: 1, className: 'h1-xl' } ],
 				[ 'core/paragraph', { className: 'is-style-sfp-kernzin' } ],
 				[ 'core/buttons', {}, [ [ 'core/button' ], [ 'core/button', { className: 'is-style-sfp-tekst' } ] ] ],
@@ -302,8 +308,9 @@
 		}
 		var witVelden = wit ? [
 			uitleg( 'Tekst links, foto rechts. Zet het zinsdeel dat moet opvallen in de titel op Accent (knoppenbalk, pijltje naast de opmaak). De tweede knop staat als Tekstlink.' ),
-			schakelaar( 'Volgende start uit de cursusdata', a.volgendeStart !== false, function ( v ) { props.setAttributes( { volgendeStart: v } ); }, 'Eerste feit op de foto. Geen groep gepland: dan valt dit feit weg.' ),
-		].concat( feiten.map( function ( f, i ) {
+			schakelaar( 'Feitenkaart op de foto', a.feitenkaart !== false, function ( v ) { props.setAttributes( { feitenkaart: v } ); }, 'Uit: geen kaart op de foto, ook niet met cursusdata (bijvoorbeeld op de Over-pagina).' ),
+			a.feitenkaart === false ? null : schakelaar( 'Volgende start uit de cursusdata', a.volgendeStart !== false, function ( v ) { props.setAttributes( { volgendeStart: v } ); }, 'Eerste feit op de foto. Geen groep gepland: dan valt dit feit weg.' ),
+		].concat( a.feitenkaart === false ? [] : feiten.map( function ( f, i ) {
 			return el( 'div', { key: 'feit-' + i, className: 'sfp-linkveld' },
 				tekstveld( 'Feit ' + ( i + 1 ) + ': label', f.label, function ( v ) { zetFeit( i, 'label', v ); }, i === 0 ? 'Bijvoorbeeld: Waar' : 'Bijvoorbeeld: Groep' ),
 				tekstveld( 'Feit ' + ( i + 1 ) + ': waarde', f.waarde, function ( v ) { zetFeit( i, 'waarde', v ); }, i === 0 ? 'Bijvoorbeeld: Utrecht, bij CS' : 'Bijvoorbeeld: 4 tot 8' )
@@ -315,11 +322,34 @@
 			keuze( 'Wat blijft in beeld op de foto', a.focus || '50% 30%', [ { label: 'Midden, iets boven', value: '50% 30%' }, { label: 'Boven', value: '50% 15%' }, { label: 'Midden', value: '50% 50%' }, { label: 'Links', value: '25% 30%' }, { label: 'Rechts', value: '75% 30%' } ], function ( v ) { props.setAttributes( { focus: v } ); } ),
 			schakelaar( 'Feiten mogen afbreken op een telefoon', !! a.afbreken, function ( v ) { props.setAttributes( { afbreken: v } ); }, 'Voor een feit dat langer is dan één regel.' ),
 		] ) : [];
+		/* Held foto (3.34.0): de eerste afbeelding is de foto over de hele held; een aparte foto voor de telefoon. */
+		var MediaUploadH = be.MediaUpload;
+		var mobiel = wp.data.useSelect( function ( select ) { return a.mobielId ? select( 'core' ).getMedia( a.mobielId ) : null; }, [ a.mobielId ] );
+		var focusOpties = [ { label: 'Midden, iets boven', value: '50% 30%' }, { label: 'Boven', value: '50% 15%' }, { label: 'Midden', value: '50% 50%' }, { label: 'Links', value: '25% 30%' }, { label: 'Rechts', value: '75% 30%' }, { label: 'Rechts, iets boven', value: '68% 40%' }, { label: 'Iets rechts, boven', value: '60% 20%' } ];
+		var fotoVelden = foto ? [
+			uitleg( 'Tekst op de foto. Zet het zinsdeel dat moet opvallen in de titel op Accent. De tweede knop staat als Tekstlink. De eerste afbeelding in het blok is de foto.' ),
+			keuze( 'Wat blijft in beeld op computer en tablet', a.focus && '50% 30%' !== a.focus ? a.focus : '68% 40%', focusOpties.slice( 1 ), function ( v ) { props.setAttributes( { focus: v } ); } ),
+			MediaUploadH ? el( 'div', { key: 'mobiel', className: 'sfp-linkveld' },
+				el( 'span', { className: 'sfp-vormkeuze__label' }, 'Foto op een telefoon' ),
+				mobiel && mobiel.source_url ? el( 'img', { src: ( mobiel.media_details && mobiel.media_details.sizes && mobiel.media_details.sizes.medium ? mobiel.media_details.sizes.medium.source_url : mobiel.source_url ), alt: '', style: { maxWidth: '100%', borderRadius: '4px' } } ) : null,
+				el( MediaUploadH, {
+					onSelect: function ( m ) { props.setAttributes( { mobielId: m.id || 0 } ); },
+					allowedTypes: [ 'image' ],
+					value: a.mobielId,
+					render: function ( o ) { return el( c.Button, { variant: 'secondary', onClick: o.open }, a.mobielId ? 'Andere foto' : 'Kies een foto' ); },
+				} ),
+				a.mobielId ? el( c.Button, { variant: 'link', isDestructive: true, onClick: function () { props.setAttributes( { mobielId: 0 } ); } }, 'Zelfde foto als op de computer' ) : null,
+				uitleg( 'Staand beeld. Leeg: dezelfde foto als op de computer.' )
+			) : null,
+			keuze( 'Wat blijft in beeld op een telefoon', a.focusMobiel || '60% 20%', focusOpties, function ( v ) { props.setAttributes( { focusMobiel: v } ); } ),
+			tekstveld( 'Deelnemers', a.deelnemers, function ( v ) { props.setAttributes( { deelnemers: v } ); }, 'In de bewijsregel naast het Google-cijfer. Bijvoorbeeld: 2.500+ cursisten in ons netwerk.' ),
+			tekstveld( 'Initialen', a.initialen, function ( v ) { props.setAttributes( { initialen: v } ); }, 'Drie keer twee letters met een spatie ertussen.' ),
+		] : [];
 		/* Voorbeeld van de feitenkaart en de bewijsregel (3.31.3): op de site maakt de plugin ze (includes/nlvorm.php). */
 		var H = window.sfpHeldWit || {};
 		var voorbeeld = [];
-		if ( wit ) {
-			var opKaart = ( a.volgendeStart !== false && H.volgende ? [ H.volgende ] : [] ).concat( ( a.feiten || [] ).filter( function ( f ) { return f && f.label && f.waarde; } ) ).slice( 0, 3 );
+		if ( wit || foto ) {
+			var opKaart = foto || a.feitenkaart === false ? [] : ( a.volgendeStart !== false && H.volgende ? [ H.volgende ] : [] ).concat( ( a.feiten || [] ).filter( function ( f ) { return f && f.label && f.waarde; } ) ).slice( 0, 3 );
 			if ( opKaart.length ) {
 				voorbeeld.push( el( 'div', { key: 'sfp-feit', className: 'sfp-held__feit sfp-held__feit--editor' + ( a.afbreken ? ' sfp-held__feit--afbreken' : '' ), 'aria-hidden': 'true' }, opKaart.map( function ( f, i ) {
 					return el( 'div', { key: i }, el( 'span', { className: 'is-style-sfp-label' }, f.label ), el( 'strong', null, f.waarde ) );
@@ -335,10 +365,10 @@
 		}
 		return el( Fragment, null,
 			paneel( 'Bovenkant van de pagina', [
-				vormkeuze( 'Beeld', a.variant, [ { label: 'Tekst naast beeld', value: 'recht', vorm: 'n:1.2,1' }, { label: 'Beeld over de volle breedte', value: 'breed', vorm: 'o:1' }, { label: 'Wit met feitenkaart', value: 'wit', vorm: 'n:1.2,1', rand: true } ], function ( v ) { props.setAttributes( { variant: v } ); } ),
-				wit ? null : uitleg( 'Titel, intro, beeld en knoppen typ je in het blok zelf. Op een telefoon valt de intro weg.' ),
+				vormkeuze( 'Beeld', a.variant, [ { label: 'Tekst naast beeld', value: 'recht', vorm: 'n:1.2,1' }, { label: 'Beeld over de volle breedte', value: 'breed', vorm: 'o:1' }, { label: 'Wit met feitenkaart', value: 'wit', vorm: 'n:1.2,1', rand: true }, { label: 'Tekst op de foto (home)', value: 'foto', vorm: 'o:1', donker: true } ], function ( v ) { props.setAttributes( { variant: v } ); } ),
+				wit || foto ? null : uitleg( 'Titel, intro, beeld en knoppen typ je in het blok zelf. Op een telefoon valt de intro weg.' ),
 				a.anker ? linkNaarBlok( props, function () { return a.anker; } ) : null,
-			].concat( witVelden ) ),
+			].concat( witVelden ).concat( fotoVelden ) ),
 			el( 'section', blockProps, el( 'div', inner, inner.children, voorbeeld ) )
 		);
 	} );
@@ -356,10 +386,11 @@
 		{ label: 'Boek en tekst', value: 'boek', vorm: 'n:0.9,1.4' },
 		{ label: 'Inschrijven', value: 'inschrijven', vorm: 'n:1,1.1' },
 		{ label: 'Pakketten', value: 'pakketten', vorm: 'n:1,1,1', rand: true },
+		{ label: 'Slot: gesprek en formulier', value: 'slot', vorm: 'n:1,1', rand: true },
 	];
 	blok( 'sfp/kolommen', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling + ( a.uitlijning ? ' sfp-kolommen--' + a.uitlijning : '' ) + ( 'boeking' === a.indeling ? ' sfp-boekkaart' : '' ) + ( 'reviews' === a.indeling ? ' sfp-reviews-rij' : '' ) } );
+		var blockProps = useBlockProps( { className: 'sfp-kolommen sfp-kolommen--' + a.indeling + ( a.uitlijning ? ' sfp-kolommen--' + a.uitlijning : '' ) + ( 'boeking' === a.indeling ? ' sfp-boekkaart' : '' ) + ( 'reviews' === a.indeling ? ' sfp-reviews-rij' : '' ) + ( 'reviews' === a.indeling && a.carrousel ? ' sfp-reviews-rij--carrousel' : '' ) } );
 		var inner = useInnerBlocksProps( blockProps, { orientation: 'horizontal', template: [ [ 'sfp/kolom' ], [ 'sfp/kolom' ] ] } );
 		return el( Fragment, null,
 			paneel( 'Kolommen', [
@@ -371,7 +402,8 @@
 					{ label: 'Onder', value: 'onder' },
 					{ label: 'Even hoog', value: 'rekken' },
 				], function ( v ) { props.setAttributes( { uitlijning: v } ); } ),
-				uitleg( 'Op een telefoon staan de kolommen onder elkaar.' ),
+				'reviews' === a.indeling ? schakelaar( 'Carrousel op een telefoon', a.carrousel, function ( v ) { props.setAttributes( { carrousel: v } ); }, 'Op een telefoon veeg je door de reviews; op een tablet staan er twee.' ) : null,
+				'slot' === a.indeling ? uitleg( 'Twee kaarten naast elkaar: links het kennismakingsgesprek (LatePoint en Naam met portret), rechts het korte formulier (SureForms). Op tablet en telefoon onder elkaar.' ) : uitleg( 'Op een telefoon staan de kolommen onder elkaar.' ),
 			] ),
 			el( 'div', inner )
 		);
@@ -387,7 +419,7 @@
 	/* sfp/kaart */
 	blok( 'sfp/kaart', function ( props ) {
 		var a = props.attributes;
-		var klassen = 'sfp-kaart' + ( 'standaard' !== a.variant ? ' sfp-kaart--' + a.variant : '' ) + ( a.ruim ? ' sfp-kaart--ruim' : '' ) + ( a.smal ? ' sfp-kaart--smal' : '' );
+		var klassen = 'sfp-kaart' + ( 'standaard' !== a.variant ? ' sfp-kaart--' + a.variant : '' ) + ( a.ruim ? ' sfp-kaart--ruim' : '' ) + ( a.smal ? ' sfp-kaart--smal' : '' ) + ( a.beeld ? ' sfp-kaart--beeld sfp-kaart--editor-beeld' : '' );
 		var blockProps = useBlockProps( { className: klassen } );
 		var inner = useInnerBlocksProps( blockProps, { template: [ [ 'core/heading', { level: 3 } ], [ 'core/paragraph' ] ] } );
 		return el( Fragment, null,
@@ -395,6 +427,7 @@
 				vormkeuze( 'Vorm', a.variant, [ { label: 'Met accentrand', value: 'standaard', vorm: 'n:1', rand: true }, { label: 'Vlak', value: 'vlak', vorm: 'n:1' }, { label: 'Donker', value: 'donker', vorm: 'n:1', donker: true } ], function ( v ) { props.setAttributes( { variant: v } ); } ),
 				schakelaar( 'Ruim', a.ruim, function ( v ) { props.setAttributes( { ruim: v } ); }, 'Meer ruimte rond de inhoud op een groot scherm.' ),
 				schakelaar( 'Smal en in het midden', a.smal, function ( v ) { props.setAttributes( { smal: v } ); }, 'Bijvoorbeeld voor een formulier.' ),
+				schakelaar( 'Beeld boven', a.beeld, function ( v ) { props.setAttributes( { beeld: v } ); }, 'De eerste afbeelding in de kaart staat bovenaan over de volle breedte (16:9). Op een tablet links naast de tekst.' ),
 				el( 'div', { key: 'link', className: 'sfp-linkveld' },
 					el( 'span', { className: 'sfp-vormkeuze__label' }, 'De hele kaart gaat naar' ),
 					el( be.URLInput, {
@@ -544,7 +577,7 @@
 			wp.data.dispatch( 'core/block-editor' ).insertBlock( nieuw, stand.tabs.length, props.clientId );
 			zet( nieuw.clientId );
 		};
-		var blockProps = useBlockProps( { className: 'sfp-tabs' } );
+		var blockProps = useBlockProps( { className: 'sfp-tabs' + ( 'kaart' === a.vorm ? ' sfp-tabs--kaart' : '' ) } );
 		var inner = useInnerBlocksProps( { className: 'sfp-editor-tabpanelen' }, { allowedBlocks: [ 'sfp/tab' ], template: [ [ 'sfp/tab' ], [ 'sfp/tab' ] ], renderAppender: false } );
 		var balk = el( 'div', { className: 'sfp-tablijst', role: 'tablist', 'aria-label': a.label || undefined },
 			stand.tabs.map( function ( tab ) {
@@ -571,6 +604,8 @@
 		);
 		return el( Fragment, null,
 			paneel( 'Tabs', [
+				vormkeuze( 'Vorm', a.vorm || '', [ { label: 'Gecentreerd', value: '', vorm: 'o:1' }, { label: 'Als kaart met icoon', value: 'kaart', vorm: 'n:1.6,.4', rand: true } ], function ( v ) { props.setAttributes( { vorm: v } ); } ),
+				'kaart' === a.vorm ? uitleg( 'Links uitgelijnd in een witte kaart. Per tab een kop (H3), tekst en rechts een icoon: kies het icoon in de zijbalk van de tab.' ) : null,
 				tekstveld( 'Naam voor schermlezers', a.label, function ( v ) { props.setAttributes( { label: v } ); }, 'Wordt voorgelezen, niet getoond. Bijvoorbeeld: Drie bronnen van overtuiging.' ),
 				uitleg( 'Klik op een tab om die inhoud te bewerken. De plus in de balk voegt een tab toe.' ),
 			] ),
@@ -591,9 +626,30 @@
 				wp.data.dispatch( TABS_STORE ).zet( zicht.tabsId, props.clientId );
 			}
 		}, [ zicht.gekozen, zicht.open, zicht.tabsId ] );
+		var kaartVorm = wp.data.useSelect( function ( select ) {
+			var be2 = select( 'core/block-editor' );
+			var ouder = be2.getBlockRootClientId( props.clientId );
+			return ouder ? 'kaart' === ( be2.getBlockAttributes( ouder ) || {} ).vorm : false;
+		}, [ props.clientId ] );
+		var icoon = wp.data.useSelect( function ( select ) { return props.attributes.icoonId ? select( 'core' ).getMedia( props.attributes.icoonId ) : null; }, [ props.attributes.icoonId ] );
 		var blockProps = useBlockProps( { className: 'sfp-tabpaneel', role: 'tabpanel', hidden: ! zicht.open } );
-		var inner = useInnerBlocksProps( blockProps, { template: [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ] } );
-		return el( 'div', inner );
+		var inner = useInnerBlocksProps( blockProps, { template: kaartVorm ? [ [ 'core/heading', { level: 3 } ], [ 'core/paragraph' ] ] : [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ] } );
+		var MediaUploadT = be.MediaUpload;
+		return el( Fragment, null,
+			kaartVorm && MediaUploadT ? paneel( 'Icoon', [
+				icoon && icoon.source_url ? el( 'span', { key: 'v', className: 'sfp-tabpaneel__icoon', style: { width: '72px', height: '72px' } }, el( 'i', { style: { '--sfp-icoon': 'url(' + icoon.source_url + ')', width: '36px', height: '36px' } } ) ) : null,
+				el( MediaUploadT, {
+					key: 'k',
+					onSelect: function ( m ) { props.setAttributes( { icoonId: m.id || 0 } ); },
+					allowedTypes: [ 'image' ],
+					value: props.attributes.icoonId,
+					render: function ( o ) { return el( c.Button, { variant: 'secondary', onClick: o.open }, props.attributes.icoonId ? 'Ander icoon' : 'Kies een icoon' ); },
+				} ),
+				props.attributes.icoonId ? el( c.Button, { key: 'w', variant: 'link', isDestructive: true, onClick: function () { props.setAttributes( { icoonId: 0 } ); } }, 'Geen icoon' ) : null,
+				uitleg( 'Een SVG met één kleur uit de media. Het krijgt de secundaire kleur van de site. Niet op een telefoon.' ),
+			] ) : null,
+			el( 'div', inner )
+		);
 	} );
 
 	/* sfp/lijst */
@@ -1394,10 +1450,11 @@
 				el( 'p', { className: 'sfp-review-kaart__bron' }, 'Je kiest een eigen review uit SFP Beheer' )
 			);
 		}
-		var opties = [ { value: '', label: 'Kies een review' } ].concat( ( bewijs.reviews || [] ).map( function ( r ) {
+		var metGoogle = ( bewijs.reviews || [] ).some( function ( r ) { return 0 === String( r.id ).indexOf( 'google-' ); } );
+		var opties = [ { value: '', label: 'Kies een review' } ].concat( metGoogle ? [ { value: 'google', label: 'Vanzelf: een Google-review die nog niet op de pagina staat' } ] : [] ).concat( ( bewijs.reviews || [] ).map( function ( r ) {
 			return { value: r.id, label: r.author + ( r.begin ? ': ' + r.begin : '' ) };
 		} ) );
-		var gekozen = ( bewijs.reviews || [] ).some( function ( r ) { return r.id === a.review; } );
+		var gekozen = ( 'google' === a.review && metGoogle ) || ( bewijs.reviews || [] ).some( function ( r ) { return r.id === a.review; } );
 		var zet = function ( v ) { props.setAttributes( { review: v } ); };
 		var beheer = bewijs.beheer ? el( c.ExternalLink, { key: 'beheer', href: bewijs.beheer }, 'Reviews beheren in SFP Beheer' ) : null;
 		var blockProps = useBlockProps();
@@ -1713,4 +1770,128 @@
 			}
 		} );
 	}() );
+	/*
+	 * Home en Over (3.34.0): Team, Teamlid, Laatste artikelen, Reviewkop met
+	 * Google-cijfer en Netwerk. De inhoud van Laatste artikelen en Netwerk
+	 * maakt de server (voorbeeld via ServerSideRender).
+	 */
+	var HOME = window.sfpHome || {};
+	blok( 'sfp/team', function ( props ) {
+		var blockProps = useBlockProps( { className: 'sfp-team' } );
+		var inner = useInnerBlocksProps( blockProps, { allowedBlocks: [ 'sfp/teamlid' ], template: [ [ 'sfp/teamlid' ], [ 'sfp/teamlid' ], [ 'sfp/teamlid' ] ], orientation: 'horizontal' } );
+		return el( Fragment, null,
+			paneel( 'Team', [ uitleg( 'Drie kaarten naast elkaar; op een telefoon als lijst met een kleine foto. Voeg teamleden toe met de plus.' ) ] ),
+			el( 'div', inner )
+		);
+	} );
+	blok( 'sfp/teamlid', function ( props ) {
+		var a = props.attributes;
+		var foto = wp.data.useSelect( function ( select ) { return a.fotoId ? select( 'core' ).getMedia( a.fotoId ) : null; }, [ a.fotoId ] );
+		var MediaUploadL = be.MediaUpload;
+		var blockProps = useBlockProps( { className: 'sfp-team__lid' } );
+		var zet = function ( k ) { return function ( v ) { var o = {}; o[ k ] = v; props.setAttributes( o ); }; };
+		var url = foto && foto.source_url ? ( foto.media_details && foto.media_details.sizes && foto.media_details.sizes.medium_large ? foto.media_details.sizes.medium_large.source_url : foto.source_url ) : '';
+		return el( Fragment, null,
+			paneel( 'Teamlid', [
+				MediaUploadL ? el( MediaUploadL, {
+					key: 'foto',
+					onSelect: function ( m ) { props.setAttributes( { fotoId: m.id || 0 } ); },
+					allowedTypes: [ 'image' ],
+					value: a.fotoId,
+					render: function ( o ) { return el( c.Button, { variant: 'secondary', onClick: o.open }, a.fotoId ? 'Andere foto' : 'Kies een foto' ); },
+				} ) : null,
+				el( 'div', { key: 'link', className: 'sfp-linkveld' },
+					el( 'span', { className: 'sfp-vormkeuze__label' }, 'De naam linkt naar' ),
+					el( be.URLInput, { value: a.link || '', onChange: zet( 'link' ), placeholder: 'Bijvoorbeeld de auteurspagina', __nextHasNoMarginBottom: true } ),
+					uitleg( 'Leeg: geen link.' )
+				),
+			] ),
+			el( 'div', blockProps,
+				url ? el( 'img', { src: url, alt: '', className: 'sfp-team__foto' } ) : el( 'div', { className: 'sfp-gegeven-leeg' }, 'Kies een foto in de zijbalk' ),
+				el( 'div', { className: 'sfp-team__tekst' },
+					el( RichText, { tagName: 'h3', value: a.naam, placeholder: 'Naam', allowedFormats: [], onChange: zet( 'naam' ) } ),
+					el( RichText, { tagName: 'p', className: 'is-style-sfp-label', value: a.rol, placeholder: 'Rol, bijvoorbeeld: Trainer en coach', allowedFormats: [], onChange: zet( 'rol' ) } ),
+					el( RichText, { tagName: 'p', className: 'sfp-team__zin', value: a.zin, placeholder: 'Eén zin over wat je bij deze trainer leert', allowedFormats: [], onChange: zet( 'zin' ) } )
+				)
+			)
+		);
+	}, { __experimentalLabel: function ( attrs, info ) { return info && 'list-view' === info.context && attrs.naam ? 'Teamlid: ' + String( attrs.naam ).replace( /<[^>]+>/g, '' ) : undefined; } } );
+	blok( 'sfp/artikelen', function ( props ) {
+		var a = props.attributes;
+		var cats = wp.data.useSelect( function ( select ) { return select( 'core' ).getEntityRecords( 'taxonomy', 'category', { per_page: 100, _fields: 'id,name' } ) || []; }, [] );
+		return el( Fragment, null,
+			paneel( 'Laatste artikelen', [
+				el( c.RangeControl, { key: 'aantal', label: 'Aantal', value: a.aantal || 3, min: 1, max: 12, onChange: function ( v ) { props.setAttributes( { aantal: v || 3 } ); }, __nextHasNoMarginBottom: true, __next40pxDefaultSize: true } ),
+				keuze( 'Categorie', String( a.categorie || 0 ), [ { value: '0', label: 'Alle artikelen' } ].concat( cats.map( function ( t ) { return { value: String( t.id ), label: t.name }; } ) ), function ( v ) { props.setAttributes( { categorie: parseInt( v, 10 ) || 0 } ); } ),
+				schakelaar( 'Met de eerste regels van het artikel', a.uittreksel, function ( v ) { props.setAttributes( { uittreksel: v } ); }, 'Drie regels onder de titel. Niet op een telefoon.' ),
+				uitleg( 'Vult zichzelf met de nieuwste artikelen. Zonder uitgelichte afbeelding: een vlak met het site-icoon.' ),
+			] ),
+			gegeven( 'sfp/artikelen', null, props, 'Nog geen artikelen. Bezoekers zien hier niets.' )
+		);
+	} );
+	blok( 'sfp/google-samenvatting', function ( props ) {
+		var blockProps = useBlockProps( { className: 'sfp-reviews-kop' } );
+		var inner = useInnerBlocksProps( { className: 'sfp-reviews-kop__tekst' }, { template: [ [ 'core/paragraph', { className: 'is-style-sfp-label', placeholder: 'Google-reviews' } ], [ 'core/heading', { level: 2, placeholder: 'Ervaringen van onze klanten' } ] ], templateLock: false } );
+		return el( Fragment, null,
+			paneel( 'Reviewkop', [ uitleg( HOME.google ? 'Rechts staat vanzelf het Google-cijfer met het aantal reviews, als link naar Google. Zet de reviews eronder in Kolommen, Reviews naast elkaar.' : 'De Google-reviews zijn op deze site niet gekoppeld: rechts staat niets. Koppelen kan in SFP Beheer, Reviews.' ) ] ),
+			el( 'div', blockProps, el( 'div', inner ),
+				HOME.google ? el( 'span', { className: 'sfp-google-sam', 'aria-hidden': 'true' }, el( 'span', { className: 'sfp-google-sam__cijfer' }, '★' ), el( 'span', { className: 'sfp-google-sam__rechts' }, el( 'span', null, 'Google-cijfer (vanzelf)' ) ) ) : null
+			)
+		);
+	} );
+	blok( 'sfp/netwerk', function ( props ) {
+		return el( Fragment, null,
+			paneel( 'Netwerk', [ uitleg( 'De labels staan in SFP Beheer, Onderdelen, Netwerk: naam, adres, zin en icoon. De eigen site valt vanzelf weg.' ) ] ),
+			gegeven( 'sfp/netwerk', null, props, 'Nog geen labels in SFP Beheer, Netwerk (of alleen deze site). Bezoekers zien hier niets.' )
+		);
+	} );
+
+	/*
+	 * Afbeelding met de stijl Afgerond (3.34.0, O3): verhouding en wat in
+	 * beeld blijft, als klassen. Geen inline stijl, geen nieuw attribuut.
+	 */
+	( function () {
+		if ( ! wp.hooks || ! wp.compose ) {
+			return;
+		}
+		var GROEPEN = {
+			verhouding: [ [ '', '4:3 (standaard)' ], [ 'sfp-verhouding-169', '16:9' ], [ 'sfp-verhouding-32', '3:2' ], [ 'sfp-verhouding-11', 'Vierkant' ] ],
+			focus: [ [ '', 'Rechts van het midden (standaard)' ], [ 'sfp-focus-links', 'Links' ], [ 'sfp-focus-midden', 'Midden' ], [ 'sfp-focus-rechts', 'Rechts' ], [ 'sfp-focus-boven', 'Boven' ] ],
+		};
+		function huidig( naam, groep ) {
+			var k = ( naam || '' ).split( /\s+/ );
+			var m = GROEPEN[ groep ].filter( function ( o ) { return o[ 0 ] && k.indexOf( o[ 0 ] ) > -1; } )[ 0 ];
+			return m ? m[ 0 ] : '';
+		}
+		function zetKlasse( naam, groep, nieuw ) {
+			var weg = GROEPEN[ groep ].map( function ( o ) { return o[ 0 ]; } );
+			var k = ( naam || '' ).split( /\s+/ ).filter( function ( x ) { return x && weg.indexOf( x ) < 0; } );
+			if ( nieuw ) { k.push( nieuw ); }
+			return k.join( ' ' ) || undefined;
+		}
+		wp.hooks.addFilter( 'editor.BlockEdit', 'sfp/afgerond-beeld', wp.compose.createHigherOrderComponent( function ( BlockEdit ) {
+			return function ( props ) {
+				var naam = props.attributes.className || '';
+				if ( 'core/image' !== props.name || ( ' ' + naam + ' ' ).indexOf( ' is-style-sfp-afgerond ' ) < 0 ) {
+					return el( BlockEdit, props );
+				}
+				var maak = function ( groep, label ) {
+					return el( c.SelectControl, {
+						key: groep,
+						label: label,
+						value: huidig( naam, groep ),
+						options: GROEPEN[ groep ].map( function ( o ) { return { value: o[ 0 ], label: o[ 1 ] }; } ),
+						onChange: function ( v ) { props.setAttributes( { className: zetKlasse( props.attributes.className, groep, v ) } ); },
+						__nextHasNoMarginBottom: true,
+						__next40pxDefaultSize: true,
+					} );
+				};
+				return el( Fragment, null,
+					el( BlockEdit, props ),
+					el( InspectorControls, null, el( c.PanelBody, { title: 'Afgerond', initialOpen: true }, maak( 'verhouding', 'Verhouding' ), maak( 'focus', 'Wat blijft in beeld' ) ) )
+				);
+			};
+		}, 'sfpAfgerondBeeld' ) );
+	}() );
+
 }( window.wp ) );

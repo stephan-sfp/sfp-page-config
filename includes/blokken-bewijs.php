@@ -204,7 +204,31 @@ function sfp_page_config_review_google_lijst() {
  */
 function sfp_page_config_review_kaart_vind( $id ) {
     $id = (string) $id;
+    // Sinds 3.34.0 (H6): "google" kiest vanzelf de volgende Google-review
+    // met tekst die op deze pagina nog niet staat, de hoogste score eerst.
+    if ( 'google' === $id ) {
+        $lijst = array_values(
+            array_filter(
+                sfp_page_config_review_google_lijst(),
+                function ( $r ) {
+                    return '' !== trim( (string) ( $r['text'] ?? '' ) ) && ! in_array( $r['id'], sfp_page_config_review_getoond(), true );
+                }
+            )
+        );
+        usort(
+            $lijst,
+            function ( $a, $b ) {
+                return (int) ( $b['rating'] ?? 0 ) <=> (int) ( $a['rating'] ?? 0 );
+            }
+        );
+        if ( ! $lijst ) {
+            return null;
+        }
+        sfp_page_config_review_getoond( $lijst[0]['id'] );
+        return $lijst[0];
+    }
     if ( 0 === strpos( $id, 'google-' ) ) {
+        sfp_page_config_review_getoond( $id );
         foreach ( sfp_page_config_review_google_lijst() as $review ) {
             if ( $review['id'] === $id ) {
                 return $review;
@@ -221,6 +245,21 @@ function sfp_page_config_review_kaart_vind( $id ) {
         }
     }
     return null;
+}
+
+/**
+ * De Google-reviews die op deze pagina al staan (3.34.0), zodat "vanzelf"
+ * geen review dubbel toont. Een id meegeven zet hem op de lijst.
+ *
+ * @param  string|null $id Review die getoond wordt.
+ * @return string[]
+ */
+function sfp_page_config_review_getoond( $id = null ) {
+    static $getoond = array();
+    if ( null !== $id ) {
+        $getoond[] = (string) $id;
+    }
+    return $getoond;
 }
 
 /**

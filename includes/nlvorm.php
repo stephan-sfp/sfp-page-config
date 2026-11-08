@@ -420,13 +420,65 @@ function sfp_page_config_nlvorm_held( $attrs, $blok, $content ) {
     }
     $tekst  = sfp_page_config_nlvorm_h1_xl( $tekst );
     $tekst .= sfp_page_config_nlvorm_bewijsregel( $attrs );
-    $feit   = sfp_page_config_nlvorm_feitenkaart( $attrs );
+    // Sinds 3.34.0 (O4) kan de feitenkaart uit, ook met cursusdata.
+    $feit   = isset( $attrs['feitenkaart'] ) && false === $attrs['feitenkaart'] ? '' : sfp_page_config_nlvorm_feitenkaart( $attrs );
     if ( '' !== $beeld && '' !== $feit ) {
         $pos   = strrpos( $beeld, '</figure>' );
         $beeld = false !== $pos ? substr( $beeld, 0, $pos ) . $feit . substr( $beeld, $pos ) : $beeld . $feit;
     }
     sfp_page_config_nlvorm_kap_nodig( true );
     return '<div class="sfp-held__binnen"><div class="sfp-held__tekst">' . $tekst . '</div>' . $beeld . '</div>';
+}
+
+/**
+ * De held "foto" (3.34.0, H1): de foto over de hele held met een verloop in
+ * de primaire kleur, de tekst erop. Op een telefoon een aparte foto als die
+ * gekozen is. De eerste afbeelding in de held is de foto; de bewijsregel
+ * komt onder de knoppen (op een telefoon erboven, H7).
+ *
+ * @param  array         $attrs   Attributen.
+ * @param  WP_Block|null $blok    Het blok.
+ * @param  string        $content Binnenblokken als geheel (terugval).
+ * @return string
+ */
+function sfp_page_config_nlvorm_held_foto( $attrs, $blok, $content ) {
+    $tekst = '';
+    $beeld = '';
+    if ( $blok instanceof WP_Block && $blok->inner_blocks ) {
+        foreach ( $blok->inner_blocks as $kind ) {
+            $html = $kind->render();
+            if ( 'core/image' === $kind->name && '' === $beeld ) {
+                $beeld = $html;
+            } else {
+                $tekst .= $html;
+            }
+        }
+    } else {
+        $tekst = $content;
+    }
+    $tekst = sfp_page_config_nlvorm_h1_xl( $tekst ) . sfp_page_config_nlvorm_bewijsregel( $attrs );
+    if ( '' !== $beeld ) {
+        // De foto is het grootste beeld boven de vouw: niet lui laden.
+        $beeld = preg_replace( '/\sloading="lazy"/', '', $beeld );
+        if ( false === strpos( $beeld, 'fetchpriority=' ) ) {
+            $beeld = preg_replace( '/<img\b/', '<img fetchpriority="high"', $beeld, 1 );
+        }
+        $mobiel = isset( $attrs['mobielId'] ) ? (int) $attrs['mobielId'] : 0;
+        $src    = $mobiel > 0 && wp_attachment_is_image( $mobiel ) ? wp_get_attachment_image_srcset( $mobiel, 'large' ) : '';
+        if ( ! $src && $mobiel > 0 && wp_attachment_is_image( $mobiel ) ) {
+            $src = (string) wp_get_attachment_image_url( $mobiel, 'large' );
+        }
+        if ( $src ) {
+            $beeld = preg_replace( '/(<img\b[^>]*>)/', '<picture><source media="(max-width: 700px)" srcset="' . esc_attr( $src ) . '" sizes="100vw">$1</picture>', $beeld, 1 );
+        }
+        $beeld = preg_replace( '/class="([^"]*wp-block-image[^"]*)"/', 'class="$1 sfp-held__achter"', $beeld, 1 );
+    }
+    // De standaard van de held (50% 30%) is hier rechts, iets boven: daar staat de spreker op de foto.
+    $focus = sfp_page_config_blok_attr( $attrs, 'focus', '68% 40%' );
+    $stijl = '--sfp-held-focus:' . sfp_page_config_nlvorm_focus( '50% 30%' === $focus ? '68% 40%' : $focus )
+        . ';--sfp-held-focus-m:' . sfp_page_config_nlvorm_focus( sfp_page_config_blok_attr( $attrs, 'focusMobiel', '60% 20%' ) );
+    return str_replace( '<section ', '<section style="' . esc_attr( $stijl ) . '" ', '<section ' . sfp_page_config_blok_omhulling( array( 'sfp-held', 'sfp-held--foto', 'held-bewijs' ), sfp_page_config_blok_attr( $attrs, 'anker' ) ) . '>' )
+        . $beeld . '<div class="sfp-held__binnen">' . $tekst . '</div></section>';
 }
 
 /**
@@ -565,8 +617,16 @@ function sfp_page_config_nlvorm_focus( $focus ) {
 function sfp_page_config_nlvorm_delen( $inhoud ) {
     $inhoud = (string) $inhoud;
     $delen  = array();
-    if ( preg_match( '/<!-- wp:sfp\/held \{[^}]*"variant":"wit"/', $inhoud ) ) {
+    if ( preg_match( '/<!-- wp:sfp\/held \{[^}]*"variant":"(wit|foto)"/', $inhoud ) ) {
         $delen[] = 'nlvorm-held';
+    }
+    // Sinds 3.34.0: home (held foto, slot, kaart met beeld, reviews als
+    // carrousel, laatste artikelen) en Over (team, tabs als kaart, netwerk).
+    if ( preg_match( '/<!-- wp:sfp\/held \{[^}]*"variant":"foto"|<!-- wp:sfp\/kolommen \{[^}]*"indeling":"slot"|<!-- wp:sfp\/kolommen \{[^}]*"carrousel":true|<!-- wp:sfp\/kaart \{[^}]*"beeld":true|<!-- wp:sfp\/(artikelen|google-samenvatting)/', $inhoud ) ) {
+        $delen[] = 'nlvorm-home';
+    }
+    if ( preg_match( '/<!-- wp:sfp\/tabs \{[^}]*"vorm":"kaart"|<!-- wp:sfp\/(team|netwerk)[ \/-]/', $inhoud ) ) {
+        $delen[] = 'nlvorm-over';
     }
     if ( preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"(situaties|reviews)"|<!-- wp:sfp\/stappen \{[^}]*"vorm":"uitkomsten"|<!-- wp:sfp\/uitklap \{[^}]*"variant":"programma"|<!-- wp:sfp\/lijst \{[^}]*"rij":true|<!-- wp:sfp\/zelftest-cta \{[^}]*"knop":"omlijnd"/', $inhoud ) ) {
         $delen[] = 'nlvorm-inhoud';
@@ -604,7 +664,7 @@ function sfp_page_config_uspstrook_schoon( $ruw ) {
     }
     $soorten = array();
     foreach ( isset( $ruw['soorten'] ) && is_array( $ruw['soorten'] ) ? $ruw['soorten'] : array( 'training', 'coaching' ) as $s ) {
-        if ( in_array( $s, array( 'training', 'coaching', 'incompany' ), true ) ) {
+        if ( in_array( $s, array( 'training', 'coaching', 'incompany', 'home' ), true ) ) {
             $soorten[] = (string) $s;
         }
     }
