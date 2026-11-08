@@ -1,0 +1,83 @@
+/*
+ * SFP Page Config - Incompanycalculator (sinds 3.36.0)
+ *
+ * Kleuren en fonts uit de variabelen van de bouwstenen (--sfp-b-*), die
+ * terugvallen op de kleurrollen en Astra. Geen merkkleur en geen fontnaam.
+ * Alles onder .sfp-calc; knoppen zetten hun eigenschappen zelf, zodat de
+ * knopstijl van het thema niets overneemt.
+ */
+.sfp-calc{--calc-lijn:color-mix(in srgb,var(--sfp-b-primair) 18%,transparent);--calc-veld:color-mix(in srgb,var(--sfp-b-primair) 35%,transparent);--calc-fout:var(--sfp-b-fout,#A4262C);color:var(--sfp-b-body);font-family:var(--sfp-b-tekst);font-size:16px;line-height:1.6}
+.sfp-calc *,.sfp-calc *::before,.sfp-calc *::after{box-sizing:border-box}
+.sfp-calc [hidden]{display:none!important}
+.sfp-calc p{margin:0}
+.sfp-calc a{color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px}
+.sfp-calc :focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
+.sfp-calc-laden{min-height:420px}
+.sfp-calc--ingebed .sfp-calc-laden{min-height:260px}
+.sfp-calc-proef{font-size:14px;padding:8px 12px;margin:0 0 16px!important;border:1px dashed var(--calc-fout);color:var(--calc-fout);border-radius:var(--sfp-b-r-knop)}
+.sfp-calc-raster{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:40px;align-items:start;max-width:1120px;margin:0 auto}
+.sfp-calc-raster.is-enkel{grid-template-columns:minmax(0,1fr);max-width:720px}
+.sfp-calc-zij:empty{display:none}
+.sfp-calc-zij{position:sticky;top:96px}
+@media (max-width:900px){.sfp-calc-raster{grid-template-columns:minmax(0,1fr);gap:24px}.sfp-calc-zij{position:static}}
+.sfp-calc-scherm{display:flex;flex-direction:column;gap:20px;min-width:0}
+.sfp-calc-kop{display:flex;flex-direction:column;gap:10px}
+.sfp-calc .sfp-calc-titel{font-family:var(--sfp-b-kop);font-weight:900;color:var(--sfp-b-primair);text-transform:uppercase;line-height:1.15;margin:0;font-size:clamp(24px,2.5vw + 14px,34px);word-spacing:normal;text-wrap:balance}
+.sfp-calc-intro{font-size:18px;color:var(--sfp-b-primair);max-width:62ch}
+.sfp-calc-lab{display:block;font:900 12px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.06em;color:var(--sfp-b-primair)}
+.sfp-calc-balk{height:6px;background:color-mix(in srgb,var(--sfp-b-primair) 12%,transparent);border-radius:3px;overflow:hidden}
+.sfp-calc-balk span{display:block;height:100%;background:var(--sfp-b-secundair)}
+.sfp-calc .sfp-calc-vraag{font-family:var(--sfp-b-kop);font-weight:900;color:var(--sfp-b-primair);font-size:clamp(20px,1.5vw + 14px,26px);line-height:1.25;margin:4px 0 0;text-transform:none}
+.sfp-calc h3{font:900 16px/1.3 var(--sfp-b-kop);color:var(--sfp-b-primair);margin:8px 0 0}
+.sfp-calc-hulp{font-size:14px;color:var(--sfp-b-body)}
+.sfp-calc-opties{display:flex;flex-direction:column;gap:10px}
+.sfp-calc-opties.is-rij{flex-direction:row;flex-wrap:wrap}
+.sfp-calc-opties.is-kaarten{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:700px){.sfp-calc-opties.is-kaarten{grid-template-columns:minmax(0,1fr)}}
+.sfp-calc-opties.is-klein{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.sfp-calc-optie{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border:1.5px solid var(--calc-lijn);border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-wit);cursor:pointer;min-width:0;margin:0}
+.sfp-calc-optie:hover{border-color:var(--sfp-b-primair)}
+.sfp-calc-optie:has(input:checked){border-color:var(--sfp-b-primair);background:color-mix(in srgb,var(--sfp-b-primair) 7%,var(--sfp-b-wit,#fff))}
+.sfp-calc-optie input{width:20px;height:20px;accent-color:var(--sfp-b-primair);margin:3px 0 0;flex:none}
+.sfp-calc-optie-tekst{display:flex;flex-direction:column;gap:2px;color:var(--sfp-b-primair)}
+.sfp-calc-optie-tekst b{font-weight:700}
+.sfp-calc-optie-tekst span{font-size:14px;color:var(--sfp-b-body)}
+.sfp-calc-veld{display:flex;flex-direction:column;gap:6px}
+.sfp-calc-veld label{font-weight:700;color:var(--sfp-b-primair);font-size:15px}
+.sfp-calc input[type=text],.sfp-calc input[type=number],.sfp-calc input[type=email],.sfp-calc textarea,.sfp-calc select{width:100%;font:400 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1.5px solid var(--calc-veld);border-radius:var(--sfp-b-r-knop);padding:12px 14px;min-height:50px;margin:0}
+.sfp-calc input[type=number]{max-width:200px}
+.sfp-calc-twee{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:560px){.sfp-calc-twee{grid-template-columns:1fr}}
+.sfp-calc-extra{display:flex;gap:10px;align-items:flex-start}
+.sfp-calc-extra>:first-child{flex:1;min-width:0}
+.sfp-calc-i-wrap{position:relative;flex:none}
+.sfp-calc .sfp-calc-i{width:26px;height:26px;min-height:0;border-radius:50%;border:1.5px solid var(--sfp-b-primair);background:var(--sfp-b-wit);color:var(--sfp-b-primair);font:700 14px/1 var(--sfp-b-tekst);padding:0;cursor:pointer;box-shadow:none;margin-top:14px}
+.sfp-calc-i-tekst{position:absolute;right:0;top:46px;z-index:5;width:280px;max-width:80vw;padding:12px 14px;background:var(--sfp-b-wit);border:1.5px solid var(--sfp-b-primair);border-radius:var(--sfp-b-r-knop);font-size:14px;color:var(--sfp-b-body);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.sfp-calc-melding{font-size:14px;padding:10px 12px;background:color-mix(in srgb,var(--sfp-b-secundair) 10%,var(--sfp-b-wit,#fff));border-left:4px solid var(--sfp-b-secundair);color:var(--sfp-b-primair)}
+.sfp-calc-fout{color:var(--calc-fout);font-weight:700}
+.sfp-calc-begroting{display:flex;flex-direction:column;gap:10px;padding:20px;border:1.5px solid var(--calc-lijn);border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-wit)}
+.sfp-calc-begroting.is-los{display:block}
+.sfp-calc-groepen{color:var(--sfp-b-primair)}
+.sfp-calc ul.sfp-calc-regels{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.sfp-calc-regels li>span:last-child{white-space:nowrap}
+.sfp-calc-regels li{display:flex;justify-content:space-between;gap:12px;margin:0;border-bottom:1px solid var(--calc-lijn);padding:3px 0}
+.sfp-calc-totaal{font-size:24px;color:var(--sfp-b-primair);font-family:var(--sfp-b-kop)}
+.sfp-calc-totaal span{font-size:14px;font-family:var(--sfp-b-tekst)}
+.sfp-calc-knoppen{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.sfp-calc .sfp-calc-knop{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:10px 26px;border:0;border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-links);color:var(--sfp-b-knoptekst);font:900 15px/1.2 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.03em;text-decoration:none;cursor:pointer;box-shadow:none;margin:0}
+.sfp-calc .sfp-calc-knop:hover{background:var(--sfp-b-hover);color:var(--sfp-b-knoptekst);text-decoration:none}
+.sfp-calc .sfp-calc-knop[disabled]{opacity:.45;cursor:not-allowed}
+.sfp-calc .sfp-calc-knop[aria-busy="true"]{opacity:.7;cursor:progress}
+.sfp-calc .sfp-calc-knop.is-stil{background:var(--sfp-b-wit);color:var(--sfp-b-primair);border:2px solid var(--sfp-b-primair)}
+.sfp-calc .sfp-calc-knop.is-stil:hover{background:color-mix(in srgb,var(--sfp-b-primair) 7%,var(--sfp-b-wit,#fff))}
+.sfp-calc-link{font-weight:700}
+.sfp-calc-formulier{margin:0}
+.sfp-calc-leeg{padding:12px;border:1px dashed currentColor}
+/* Calculatorpagina: eigen sjabloon zonder kop en voet van het thema. */
+body.sfp-calc-pagina{margin:0;min-height:100vh;background:var(--sfp-b-wit,#fff)}
+.sfp-calc-top{position:sticky;top:0;z-index:50;background:var(--sfp-b-wit,#fff)}
+.sfp-calc-top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1248px;margin:0 auto;padding:10px 24px;min-height:64px}
+.sfp-calc-top-logo{display:block;height:auto;max-height:44px;width:auto;max-width:60vw}
+.sfp-calc-top-naam{font:900 16px/1.2 var(--sfp-b-kop);color:var(--sfp-b-primair);text-transform:uppercase}
+.sfp-calc-sluit{display:inline-flex;width:44px;height:44px;align-items:center;justify-content:center;color:var(--sfp-b-primair)}
+.sfp-calc-pagina-inhoud{padding:32px 20px 72px}

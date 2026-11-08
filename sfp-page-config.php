@@ -2,7 +2,7 @@
 /**
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
- * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata, zelftest en de knop onderaan voor het School for Professionals netwerk.
+ * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata, zelftest, incompanycalculator en de knop onderaan voor het School for Professionals netwerk.
  * Version:     3.44.0
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
@@ -568,6 +568,14 @@ $sfp_includes = array(
     'includes/zelftest-pagina.php',
     'includes/zelftest-privacy.php',
     'includes/zelftest-cta.php',
+    'includes/calculator-norm.php',
+    'includes/calculator.php',
+    'includes/calculator-reken.php',
+    'includes/calculator-opslag.php',
+    'includes/calculator-rest.php',
+    'includes/calculator-sureforms.php',
+    'includes/calculator-pdf.php',
+    'includes/calculator-weergave.php',
     'includes/nlvorm.php',
     'includes/nlvorm-home.php',
     'includes/nlvorm-archief.php',
@@ -681,5 +689,7 @@ function sfp_page_config_deactivate() {
     }
     wp_clear_scheduled_hook( 'sfp_zelftest_wachtrij' );
     wp_clear_scheduled_hook( 'sfp_zelftest_dagelijks' );
+    wp_clear_scheduled_hook( 'sfp_calculator_wachtrij' );
+    wp_clear_scheduled_hook( 'sfp_calculator_dagelijks' );
 }
 register_deactivation_hook( __FILE__, 'sfp_page_config_deactivate' );

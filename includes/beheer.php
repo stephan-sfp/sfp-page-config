@@ -478,6 +478,8 @@ function sfp_page_config_beheer_stand() {
             'anker' => (string) sfp_page_config_get_setting( 'knop_wachtlijst_anker', '' ),
             'anker_norm' => function_exists( 'sfp_page_config_knop_wachtlijst_anker_norm' ) ? sfp_page_config_knop_wachtlijst_anker_norm() : '',
         ),
+        'bedrijf'          => function_exists( 'sfp_page_config_bedrijf_beheer' ) ? sfp_page_config_bedrijf_beheer() : array(),
+        'calculator'       => function_exists( 'sfp_calculator_stand' ) ? sfp_calculator_stand() : null,
         'coach'            => array(
             'url'  => (string) sfp_page_config_get_setting( 'coach_persoon', '' ),
             'norm' => function_exists( 'sfp_page_config_coach_norm' ) ? sfp_page_config_coach_norm() : '',
