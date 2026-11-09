@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.39.0] - 2026-11-09
+
+Zelftestbeeld in de zijkolom, actierij op een telefoon en zoeken per context (besluiten Stephan 8-11). Terugdraaien: versie 3.38.1 terugzetten (zip uit de tag v3.38.1, map sfp-page-config); het gekozen zelftestbeeld blijft bewaard maar wordt niet gebruikt.
+
+### Toegevoegd
+- Zelftest: per test een beeld (SFP Beheer, Zelftest, Beeld van de test). De zelftestkaart in de zijkolom van pijler en artikel toont dat beeld boven de tekst in plaats van het icoon; zonder beeld blijft het icoon.
+- Zoeken per context: het zoekveld op het blog, een categorie of tag zoekt alleen in berichten en pijlerpagina's, op Begrippen alleen in begrippen en op Tools alleen in tools. Op de zoekresultaten blijft die context staan; het algemene zoeken toont alles.
+
+### Gewijzigd
+- Actierij in de kop van artikel, pijler en begrip op een telefoon: alleen iconen in vierkante knoppen op één regel, de toegankelijkheidsknop rechts, geen zijwaarts vegen. De labels blijven voor schermlezers en als title.
+
 ## [3.38.1] - 2026-11-09
 
 Terugdraaien: versie 3.38.0 terugzetten (zip uit de tag v3.38.0, map sfp-page-config).

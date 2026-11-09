@@ -333,13 +333,106 @@ function sfp_page_config_archief_zoekveld( $soort ) {
         'begrippen' => 'archief_zoek_begrip',
         'tool'      => 'archief_zoek_tool',
     );
-    $plaats   = sfp_page_config_tekst( isset( $sleutels[ $soort ] ) ? $sleutels[ $soort ] : 'archief_zoek_artikelen' );
+    // Sinds 3.39.0 (besluit Stephan 8-11-2026): zoeken hoort bij de pagina
+    // waar je zoekt. Op de zoekresultaten blijft de gekozen context staan.
+    $context  = 'zoeken' === $soort ? sfp_page_config_zoek_context() : sfp_page_config_zoek_context_van( $soort );
+    $sleutel  = 'zoeken' === $soort && '' !== $context ? array( 'blog' => 'archief_zoek_artikelen', 'begrippen' => 'archief_zoek_begrip', 'tool' => 'archief_zoek_tool' )[ $context ] : ( isset( $sleutels[ $soort ] ) ? $sleutels[ $soort ] : 'archief_zoek_artikelen' );
+    $plaats   = sfp_page_config_tekst( $sleutel );
     $id       = 'sfp-zoek-' . $nummer;
     $waarde   = 'zoeken' === $soort ? get_search_query() : '';
     return '<form class="sfp-zoek" role="search" method="get" action="' . esc_url( home_url( '/' ) ) . '">'
+        . ( '' !== $context ? '<input type="hidden" name="sfp_in" value="' . esc_attr( $context ) . '">' : '' )
         . '<label class="screen-reader-text" for="' . esc_attr( $id ) . '">' . esc_html( $plaats ) . '</label>'
         . '<input type="search" id="' . esc_attr( $id ) . '" name="s" value="' . esc_attr( $waarde ) . '" placeholder="' . esc_attr( $plaats ) . '">'
         . '<button type="submit" class="wp-block-button__link wp-element-button">' . esc_html( sfp_page_config_tekst( 'archief_zoekknop' ) ) . '</button></form>';
+}
+
+/* =========================================================================
+ * Zoeken per context (3.39.0)
+ * ====================================================================== */
+
+/**
+ * De zoekcontext bij een soort archief: blog (ook categorie en tag),
+ * begrippen of tool; anders leeg (het algemene zoeken).
+ *
+ * @param  string $soort Soort archief.
+ * @return string
+ */
+function sfp_page_config_zoek_context_van( $soort ) {
+    if ( in_array( $soort, array( 'blog', 'categorie', 'tag' ), true ) ) {
+        return 'blog';
+    }
+    return in_array( $soort, array( 'begrippen', 'tool' ), true ) ? $soort : '';
+}
+
+/**
+ * De zoekcontext uit het adres (sfp_in), of leeg.
+ *
+ * @return string
+ */
+function sfp_page_config_zoek_context() {
+    $in = isset( $_GET['sfp_in'] ) ? sanitize_key( wp_unslash( $_GET['sfp_in'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- alleen lezen, zoeken.
+    return in_array( $in, array( 'blog', 'begrippen', 'tool' ), true ) ? $in : '';
+}
+
+add_action( 'pre_get_posts', 'sfp_page_config_zoek_per_context' );
+
+/**
+ * Zoeken vanaf het blog of een categorie toont alleen berichten en
+ * pijlerpagina's; vanaf begrippen alleen begrippen, vanaf tools alleen
+ * tools. Zonder context blijft het zoeken alles tonen.
+ *
+ * @param  WP_Query $query Lijst.
+ * @return void
+ */
+function sfp_page_config_zoek_per_context( $query ) {
+    if ( is_admin() || ! $query->is_main_query() || ! $query->is_search() ) {
+        return;
+    }
+    $context = sfp_page_config_zoek_context();
+    if ( '' === $context ) {
+        return;
+    }
+    if ( 'blog' !== $context ) {
+        if ( post_type_exists( $context ) ) {
+            $query->set( 'post_type', $context );
+        }
+        return;
+    }
+    $query->set( 'post_type', array( 'post', 'page' ) );
+    $query->set( 'sfp_zoek_blog', 1 );
+}
+
+add_filter( 'posts_where', 'sfp_page_config_zoek_blog_where', 10, 2 );
+
+/**
+ * Blogcontext: van de pagina's alleen de pijlerpagina's.
+ *
+ * @param  string   $where Voorwaarde.
+ * @param  WP_Query $query Lijst.
+ * @return string
+ */
+function sfp_page_config_zoek_blog_where( $where, $query ) {
+    if ( ! $query->get( 'sfp_zoek_blog' ) ) {
+        return $where;
+    }
+    global $wpdb;
+    $pijlers = function_exists( 'sfp_page_config_pijler_aan' ) && sfp_page_config_pijler_aan()
+        ? get_posts(
+            array(
+                'post_type'      => 'page',
+                'post_status'    => 'publish',
+                'fields'         => 'ids',
+                'posts_per_page' => 200,
+                'no_found_rows'  => true,
+                'meta_key'       => 'sfp_vorm', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_query_meta_key -- kleine lijst, alleen bij zoeken.
+                'meta_value'     => 'pijler', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_query_meta_value
+            )
+        )
+        : array();
+    $pijlers = array_map( 'intval', $pijlers );
+    $pagina  = $pijlers ? " OR ( {$wpdb->posts}.post_type = 'page' AND {$wpdb->posts}.ID IN (" . implode( ',', $pijlers ) . ') )' : '';
+    return $where . " AND ( {$wpdb->posts}.post_type = 'post'" . $pagina . ' )';
 }
 
 /**

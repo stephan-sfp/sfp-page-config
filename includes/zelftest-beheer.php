@@ -82,6 +82,8 @@ function sfp_zelftest_stand() {
                 'cta_kop'          => $inst['cta_kop'],
                 'cta_zin'          => $inst['cta_zin'],
                 'cta_knop'         => $inst['cta_knop'],
+                'cta_beeld'        => (int) $inst['cta_beeld'],
+                'cta_beeld_url'    => (int) $inst['cta_beeld'] ? (string) wp_get_attachment_image_url( (int) $inst['cta_beeld'], 'medium' ) : '',
                 'talen'            => (object) $inst['talen'],
             ),
             'cta'          => function_exists( 'sfp_zelftest_cta_gegevens' ) ? sfp_zelftest_cta_gegevens( $test ) : null,
