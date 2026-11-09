@@ -20,9 +20,6 @@ html:has(.sfp-held--wit,.sfp-held--foto){scroll-behavior:auto!important}
 :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin{margin:16px 0 0;max-width:52ch}
 :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+*{margin-top:48px}
 :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+:is(.sfp-kolommen,.sfp-uitklap--programma,.sfp-groepen){margin-top:56px}
-@media (min-width:701px) and (max-width:980px){
-  :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-logostrook__logos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));justify-items:center;gap:28px 32px}
-}
 @media (max-width:700px){
   :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie{padding-block:64px}
   :root:has(.sfp-held--wit,.sfp-held--foto) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+*{margin-top:32px}

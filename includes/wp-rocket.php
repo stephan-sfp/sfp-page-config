@@ -212,3 +212,20 @@ function sfp_page_config_css_inline_rucss( $uitsluitingen ) {
 function sfp_page_config_rocket_delay( $uitsluitingen ) {
     return array_values( array_unique( array_merge( (array) $uitsluitingen, sfp_page_config_rocket_delay_lijst() ) ) );
 }
+
+add_filter( 'rocket_lazyload_excluded_attributes', 'sfp_page_config_rocket_lazy_uit' );
+
+/**
+ * Logo's in de logostrook (3.37.1) laden niet via de lazyload van WP Rocket:
+ * de logo's buiten de vijf plekken staan verborgen en zou WP Rocket dan nooit
+ * laden. Ze houden loading="lazy" van de browser; het script laadt het
+ * volgende logo kort voor de wissel.
+ *
+ * @param  array $uit Uitgesloten attributen.
+ * @return array
+ */
+function sfp_page_config_rocket_lazy_uit( $uit ) {
+    $uit   = is_array( $uit ) ? $uit : array();
+    $uit[] = 'sfp-logostrook__logo';
+    return $uit;
+}

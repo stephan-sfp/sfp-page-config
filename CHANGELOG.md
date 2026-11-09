@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.37.1] - 2026-11-09
+
+Logostrook: rustig wisselen in plaats van uitklappen (besluit Stephan 9-11, punt 13 van home en Over, variant B uit de dummy). Geldt op alle labels. Terugdraaien: versie 3.37.0 terugzetten (zip uit de tag v3.37.0, map sfp-page-config); er is niets omgezet.
+
+### Gewijzigd
+- Logostrook: vijf vaste plekken, op een telefoon drie. Om de ruim twee seconden vervaagt op een willekeurige andere plek het logo naar het volgende uit de rest van de lijst; nooit twee keer hetzelfde logo in beeld. Pauze onder de muis, bij focus, buiten beeld en bij een verborgen tabblad. Bij prefers-reduced-motion en zonder script staan de eerste vijf (drie) vast. Alleen het volgende logo laadt vooruit, in de gewone maat; de lazyload van WP Rocket slaat de logo's over, anders zou hij de verborgen logo's nooit laden.
+
+### Verwijderd
+- De tabletregel met drie logo's per rij op pagina's met een held (3.30.0): ook op een tablet vijf plekken.
+- De knop Toon alle en Toon minder, de fade onderaan en de twee knopteksten van de uitklapbare logostrook (3.36.1).
+
 ## [3.37.0] - 2026-11-09
 
 Home en Over op alle labels, release B (punten 4, 5, 7, 13 en 14 uit de overdracht home-over-DPS; besluiten Stephan 8 en 9-11). Terugdraaien: versie 3.36.1 terugzetten (zip uit de tag v3.36.1, map sfp-page-config); de logostroken tonen dan weer de lijst per blok, de instelling Logostrook blijft bewaard maar wordt niet gebruikt.
