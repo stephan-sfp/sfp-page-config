@@ -335,6 +335,34 @@ function sfp_page_config_reviews_vangnet() {
 }
 
 /**
+ * De bewaarde gegevens van Google voor een Place ID: de transient, anders
+ * de vaste kopie (3.41.2). Een update van de plugin leegt de objectcache;
+ * zonder kopie toonde de eerste pagina daarna geen Google-cijfer, en die
+ * pagina bleef zo in de cache van WP Rocket staan. Met de kopie wordt de
+ * transient meteen hersteld.
+ *
+ * @param  string $place_id Place ID.
+ * @return array|false
+ */
+function sfp_page_config_reviews_gegevens( $place_id ) {
+    $place_id = (string) $place_id;
+    if ( '' === $place_id ) {
+        return false;
+    }
+    $sleutel = 'sfp_reviews_' . md5( $place_id );
+    $data    = get_transient( $sleutel );
+    if ( is_array( $data ) ) {
+        return $data;
+    }
+    $kopie = get_option( 'sfp_reviews_laatste', array() );
+    if ( is_array( $kopie ) && isset( $kopie['place'], $kopie['data'] ) && md5( $place_id ) === $kopie['place'] && is_array( $kopie['data'] ) ) {
+        set_transient( $sleutel, $kopie['data'], DAY_IN_SECONDS );
+        return $kopie['data'];
+    }
+    return false;
+}
+
+/**
  * De stand van de koppeling met Google, voor het beheer.
  *
  * @return array
@@ -342,7 +370,7 @@ function sfp_page_config_reviews_vangnet() {
 function sfp_page_config_reviews_stand() {
     $opts      = sfp_page_config_reviews_opties();
     $ingesteld = '' !== (string) $opts['place_id'] && '' !== (string) $opts['api_key'];
-    $data      = $ingesteld ? get_transient( 'sfp_reviews_' . md5( (string) $opts['place_id'] ) ) : false;
+    $data      = $ingesteld ? sfp_page_config_reviews_gegevens( (string) $opts['place_id'] ) : false;
     $meta      = is_array( $data ) && isset( $data['meta'] ) && is_array( $data['meta'] ) ? $data['meta'] : array();
     $teksten   = array(
         'oordeel' => '',

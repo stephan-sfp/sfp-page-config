@@ -40,6 +40,14 @@ class SFP_Reviews_Fetcher {
         if ( false !== $cached ) {
             return $cached;
         }
+        // Sinds 3.41.2: een update van de plugin leegt de objectcache en
+        // daarmee de transient. Dan eerst de bewaarde kopie, zonder te wachten op Google.
+        if ( ! $vers && function_exists( 'sfp_page_config_reviews_gegevens' ) ) {
+            $kopie = sfp_page_config_reviews_gegevens( $place_id );
+            if ( is_array( $kopie ) ) {
+                return $kopie;
+            }
+        }
 
         // Na een mislukte aanvraag tien minuten niet opnieuw proberen: anders
         // wacht elke pagina met reviews op een antwoord dat niet komt.
@@ -110,6 +118,9 @@ class SFP_Reviews_Fetcher {
         // bewaren dan het interval, zodat een pagina nooit zelf hoeft te wachten.
         set_transient( $cache_key, $data, $vers ? $this->ttl + DAY_IN_SECONDS : $this->ttl );
         delete_transient( $cache_key . '_fout' );
+        // Sinds 3.41.2: ook een vaste kopie in de database (niet automatisch
+        // geladen), die een geleegde objectcache overleeft.
+        update_option( 'sfp_reviews_laatste', array( 'place' => md5( $place_id ), 'data' => $data ), false );
 
         return $data;
     }
@@ -118,5 +129,6 @@ class SFP_Reviews_Fetcher {
     public function flush( string $place_id ): void {
         delete_transient( 'sfp_reviews_' . md5( $place_id ) );
         delete_transient( 'sfp_reviews_' . md5( $place_id ) . '_fout' );
+        delete_option( 'sfp_reviews_laatste' );
     }
 }
