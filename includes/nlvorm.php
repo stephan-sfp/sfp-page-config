@@ -1062,7 +1062,6 @@ add_filter( 'render_block_data', 'sfp_page_config_nlvorm_wachtlijststand', 10, 3
  * - een knop naar het inschrijfanker heet Zet mij op de wachtlijst;
  * - de laatste kop vóór de Groepskaarten wordt het wachtlijstlabel
  *   (Volgende groep), en de wachtlijstkaart laat dat label dan weg;
- * - de kernzin van de sectie met het inschrijfanker wordt de wachtlijstzin.
  *
  * @param  array         $blok   Blok.
  * @param  array         $bron   Bronblok.
@@ -1111,13 +1110,35 @@ function sfp_page_config_nlvorm_wachtlijststand( $blok, $bron = array(), $ouder 
         return $blok;
     }
 
-    // Kernzin van de sectie met het inschrijfanker.
-    $klasse = (string) ( $blok['attrs']['className'] ?? '' );
-    $anker  = (string) ( $ouder->parsed_block['attrs']['anchor'] ?? ( $ouder->parsed_block['attrs']['anker'] ?? '' ) );
-    if ( false !== strpos( $klasse, 'is-style-sfp-kernzin' ) && in_array( $anker, array( $in, 'inschrijven' ), true ) ) {
-        return sfp_page_config_nlvorm_bloktekst( $blok, 'p', sfp_page_config_tekst( 'groep_wachtlijst_kernzin' ) );
-    }
     return $blok;
+}
+
+add_filter( 'render_block', 'sfp_page_config_nlvorm_wachtlijst_kernzin', 10, 2 );
+
+/**
+ * De kernzin van de sectie met het inschrijfanker wordt in de
+ * wachtlijststand de wachtlijstzin (3.38.1: ook als de kernzin dieper in de
+ * sectie staat, zoals in kolommen).
+ *
+ * @param  string $html  Getekend blok.
+ * @param  array  $block Blok.
+ * @return string
+ */
+function sfp_page_config_nlvorm_wachtlijst_kernzin( $html, $block ) {
+    if ( 'sfp/sectie' !== ( $block['blockName'] ?? '' ) || is_admin() || wp_is_json_request() ) {
+        return $html;
+    }
+    $in    = function_exists( 'sfp_page_config_anker_schoon' ) ? sfp_page_config_anker_schoon( sfp_page_config_tekst( 'anker_inschrijven' ) ) : 'inschrijven';
+    $anker = (string) ( $block['attrs']['anker'] ?? '' );
+    if ( '' === $anker || ! in_array( $anker, array( $in, 'inschrijven' ), true ) ) {
+        return $html;
+    }
+    $post_id = (int) get_the_ID();
+    if ( ! $post_id || ! sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
+        return $html;
+    }
+    $zin = str_replace( array( '\\', '$' ), array( '\\\\', '\\$' ), esc_html( sfp_page_config_tekst( 'groep_wachtlijst_kernzin' ) ) );
+    return (string) preg_replace( '/(<p\b[^>]*class="[^"]*is-style-sfp-kernzin[^"]*"[^>]*>)(.*?)(<\/p>)/s', '${1}' . $zin . '${3}', (string) $html, 1 );
 }
 
 /* =========================================================================

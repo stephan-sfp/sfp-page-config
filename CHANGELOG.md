@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.38.1] - 2026-11-09
+
+Terugdraaien: versie 3.38.0 terugzetten (zip uit de tag v3.38.0, map sfp-page-config).
+
+### Gerepareerd
+- Knop onderaan in de wachtlijststand: gaat ook voor een eigen bestemming bij de pagina, zodat het LatePoint-snippet de tekst niet meer overschrijft (in 3.38.0 bleef op DPS Plan je diagnosegesprek staan).
+- Kernzin van de sectie Inschrijven wisselt in de wachtlijststand ook als hij dieper in de sectie staat.
+
+### Gewijzigd
+- Formulierregel: ook vanzelf onder het inschrijf- en het wachtlijstformulier uit SFP Beheer, Cursusdata.
+- SFP Beheer, Formulierregel: het voorbeeld toont het e-mailadres leesbaar.
+
 ## [3.38.0] - 2026-11-09
 
 Nazorg trainingspagina's, formulierregel (punt 16 van home en Over) en de publicatielijst zonder vaste terugval. Besluiten Stephan 9-11. Terugdraaien: versie 3.37.2 terugzetten (zip uit de tag v3.37.2, map sfp-page-config) en het snippet Formulieren: mail-link als fallback weer aanzetten; de instellingen Formulierregel en Knop onderaan blijven bewaard maar worden niet gebruikt.
