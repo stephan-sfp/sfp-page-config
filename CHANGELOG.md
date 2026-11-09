@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.39.1] - 2026-11-09
+
+Terugdraaien: versie 3.39.0 terugzetten (zip uit de tag v3.39.0, map sfp-page-config).
+
+### Gewijzigd
+- Zelftestkaart in de tekst (telefoon en tablet): het beeld van de test klein links met de tekst ernaast, zoals met het icoon. In 3.39.0 stond het beeld op volle breedte en werd de kaart ruim 500 px hoog.
+
 ## [3.39.0] - 2026-11-09
 
 Zelftestbeeld in de zijkolom, actierij op een telefoon en zoeken per context (besluiten Stephan 8-11). Terugdraaien: versie 3.38.1 terugzetten (zip uit de tag v3.38.1, map sfp-page-config); het gekozen zelftestbeeld blijft bewaard maar wordt niet gebruikt.

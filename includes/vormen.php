@@ -770,7 +770,7 @@ function sfp_page_config_promo_zelftest_beeld( array $g, $variant ) {
                 'class'   => 'sfp-art-promo__beeld',
                 'alt'     => '',
                 'loading' => 'lazy',
-                'sizes'   => 'inline' === $variant ? '(max-width:600px) 90vw, 240px' : '240px',
+                'sizes'   => 'inline' === $variant ? '96px' : '240px',
             )
         );
         if ( '' !== $img ) {
