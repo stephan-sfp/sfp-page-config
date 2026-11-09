@@ -4,6 +4,26 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.36.0] - 2026-11-09
+
+Home en Over op alle NL-labels, release A (opmaak, geen gegevens): punten 1, 2, 3, 9, 10, 11, 12 en 15 uit de overdracht home-over-DPS (besluiten Stephan 8 en 9-11), de hele groepskaart klikbaar, en twee kleine backlogpunten. Geldt op alle acht sites. Terugdraaien: versie 3.35.0 terugzetten (zip uit de tag v3.35.0, map sfp-page-config); er is niets omgezet.
+
+### Gewijzigd
+- Held met foto: de foto loopt weer over de volle breedte; een regel van Astra voor de contentbreedte maakte hem 1280 breed met een band rechts (punt 1).
+- Kolommen tekst-beeld met een afgerond beeld: op de computer loopt het beeld van het label tot de laatste regel, met de gekozen verhouding als ondergrens en het focuspunt (punt 2).
+- Kolommen met een zelftest-oproep staan op een tablet ook onder een held met foto naast elkaar, zoals op de coachpagina (punt 3).
+- Tekstlink met pijl in een kaart, zoals Lees het artikel: in de kleur van de tekstlink uit de merkbron (DPS, DST en FL primair, de andere merken Links en knoppen); onder de muis blijft de kleur en wordt de onderstreping 3 px in Links en knoppen (punt 9).
+- Netwerkkaart: één link om de hele kaart, titel en zin zonder onderstreping, onder in de kaart de tekstlink Naar de site met pijl (punt 10).
+- Klikbare kaart volgens de merkbron: onder de muis komt de kaart iets omhoog met een zachte schaduw in de primaire kleur, zonder beweging bij minder beweging; geldt voor kaarten met een link, de netwerkkaart, de Google-samenvatting en de groepskaart.
+- Reviewkaart: de naam staat in het bodyfont op 700, in gewone letters (punt 11).
+- Google-samenvatting bij de reviews: klikbaar als geheel, zonder onderstreping, ook niet onder de muis (punt 12).
+- Slot met twee routes (variant A): één witte kaart met twee kolommen en een dunne lijn ertussen; de kalender zonder eigen rand, schaduw en kop, de maand direct onder de zin; op een telefoon onder elkaar met een lijn ertussen (punt 15). De opmaak staat in een eigen bestand nlvorm-slot.css.
+- Groepskaart: de hele kaart is klikbaar, met ingeplande groep (inschrijven) en zonder groep (wachtlijst); één klikdoel en één tabstop. Een volle groep heeft geen link.
+- Reviews, weergave Alleen het cijfer, zonder koppeling met Google: het gemiddelde en het aantal van alle eigen reviews, zonder Google-vermelding, in plaats van kaarten (PC-31, besluit Stephan 9-11).
+
+### Gerepareerd
+- Changelog 3.1.2: DST ging van 21 naar 4 meldingen, niet 5 (PC-34).
+
 ## [3.35.0] - 2026-11-08
 
 Bouwstenen voor de archieven en de leeskolom van de NL-labels (dummy nl-vormen, Blogoverzicht, Categorie, Zoekresultaten, Auteur, Begrippen, Tools en Leeskolom versie 97, akkoord Stephan 8-11). Bestaande pagina's en layouts veranderen niet: de blokken verschijnen pas als ze in een layout of op een pagina staan. Terugdraaien: versie 3.34.0 terugzetten (zip uit de tag v3.34.0, map sfp-page-config); layouts met de nieuwe blokken tonen die blokken dan niet.
@@ -1315,7 +1335,7 @@ De controle "Sjabloontekst niet ingevuld" in SFP Beheer gaf vals alarm: op SFP 1
 - **De controle kijkt alleen nog naar tekst die een bezoeker leest.** Scripts, stijlen, HTML-opmerkingen, blokattributen (ook die van Spectra), HTML-attributen en blokken die met Blok verbergen voor iedereen verborgen zijn, tellen niet meer mee. Daar stonden JavaScript-indexen zoals `[i]`, CSS-selectors zoals `[name="robots"]` en ingevulde Spectra-velden die de controle voor sjabloontekst hield.
 - **Shortcodes die alleen voor bezoekers bestaan, gelden als bekend.** Snippets registreren sommige shortcodes, zoals `[dynamische_cta]`, alleen aan de voorkant; in het beheer bestonden ze daardoor niet. De plugin onthoudt bij een bezoek aan de site welke shortcodes daar bestaan. Een shortcode die ook daar niet bestaat, zoals een oude `[tooltip ...]`, blijft gemeld: bezoekers zien die als gewone tekst.
 - De waarschuwing in de editor na opslaan volgt dezelfde regels.
-- Gemeten op de echte inhoud: SFP van 12 naar 0 meldingen, DPS van 39 naar 5, DGA van 24 naar 1, CVD van 36 naar 0, DST van 21 naar 5, FL blijft 1. Wat overblijft is echte tekst voor de lezer: invulformules of resttekst die bezoekers zien.
+- Gemeten op de echte inhoud: SFP van 12 naar 0 meldingen, DPS van 39 naar 5, DGA van 24 naar 1, CVD van 36 naar 0, DST van 21 naar 4, FL blijft 1. Wat overblijft is echte tekst voor de lezer: invulformules of resttekst die bezoekers zien.
 
 ### Gewijzigd
 - Bewuste invulformules voor de lezer blijven gemeld en zijn per pagina weg te klikken, zoals voorheen.

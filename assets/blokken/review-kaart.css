@@ -1,6 +1,7 @@
 /*
  * Review als kaart (sinds 3.14.0): vijf sterren, de tekst zonder cursief
- * en zonder aanhalingstekens, de naam in de kopstijl en een vermelding.
+ * en zonder aanhalingstekens, de naam in het bodyfont op 700 in gewone
+ * letters (besluit Stephan 8-11-2026) en een vermelding.
  * Maten uit de reviewkaart op SwS (meting 28-10-2026). Rand zoals de andere
  * kaarten (primair 12%), gevulde ster Google-geel: de functionele kleur uit
  * de merkbron (besluit Stephan 28-10-2026). Een lege ster is de primaire
@@ -17,7 +18,7 @@
 :root .sfp-review-kaart__tekst{font-size:21px;line-height:1.5;font-weight:400;font-style:normal;color:var(--sfp-b-primair)}
 :root .sfp-review-kaart__tekst p{margin:0;font:inherit;color:inherit;quotes:none}
 :root .sfp-review-kaart__tekst p + p{margin-top:.75em}
-:root .sfp-review-kaart .sfp-review-kaart__naam{margin:24px 0 0;font-family:var(--sfp-b-kop);font-weight:900;font-size:17px;line-height:1.3;color:var(--sfp-b-primair)}
+:root .sfp-review-kaart .sfp-review-kaart__naam{margin:24px 0 0;font-family:var(--sfp-b-tekst);font-weight:700;font-size:17px;line-height:1.3;text-transform:none;letter-spacing:0;color:var(--sfp-b-primair)}
 :root .sfp-review-kaart .sfp-review-kaart__bron{margin:4px 0 0;font-size:14px;line-height:1.45;color:var(--sfp-b-body)}
 @media (max-width:600px){
 :root .sfp-review-kaart{padding:32px 22px 28px}
