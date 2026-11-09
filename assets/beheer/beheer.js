@@ -1506,20 +1506,22 @@
 	 * Logo kiezen uit de mediabibliotheek (sinds 3.19.0): een knop met een
 	 * voorbeeld, geen getypt nummer. Geeft { node, waarde() }.
 	 */
-	function logoKeuze(id, url, sleutel) {
+	function logoKeuze(id, url, sleutel, w) {
+		/* Sinds 3.39.0 ook voor het zelftestbeeld: w geeft de teksten. */
+		w = w || { label: 'Logo op de testpagina', hulp: 'Het logo voor een witte achtergrond. Geen eigen logo: het logo van de site.', kies: 'Kies een logo', ander: 'Kies een ander logo', geen: 'Geen eigen logo', titel: 'Kies het logo', gebruik: 'Gebruik dit logo' };
 		var beeld = { id: id || 0, url: url || '' };
 		var klein = el('img', { class: 'sfpb-logo-voorb', alt: '' });
 		var kies = el('button', { class: 'sfpb-knop', type: 'button' });
-		var weg = el('button', { class: 'sfpb-knop sfpb-zacht', type: 'button', text: 'Geen eigen logo' });
+		var weg = el('button', { class: 'sfpb-knop sfpb-zacht', type: 'button', text: w.geen });
 		function ververs() {
 			if (beeld.url) klein.src = beeld.url; else klein.removeAttribute('src');
 			klein.hidden = !beeld.url;
-			kies.textContent = beeld.id ? 'Kies een ander logo' : 'Kies een logo';
+			kies.textContent = beeld.id ? w.ander : w.kies;
 			weg.hidden = !beeld.id;
 		}
 		kies.addEventListener('click', function () {
 			if (!window.wp || !wp.media) return;
-			var kader = wp.media({ title: 'Kies het logo', library: { type: 'image' }, multiple: false, button: { text: 'Gebruik dit logo' } });
+			var kader = wp.media({ title: w.titel, library: { type: 'image' }, multiple: false, button: { text: w.gebruik } });
 			kader.on('select', function () {
 				var keuze = kader.state().get('selection').first().toJSON();
 				beeld.id = keuze.id;
@@ -1532,9 +1534,9 @@
 		ververs();
 		return {
 			node: el('div', { class: 'sfpb-veld' }, [
-				el('label', { text: 'Logo op de testpagina' }),
+				el('label', { text: w.label }),
 				el('div', { class: 'sfpb-rij' }, [klein, kies, weg]),
-				el('span', { class: 'sfpb-hulp', text: 'Het logo voor een witte achtergrond. Geen eigen logo: het logo van de site.' })
+				el('span', { class: 'sfpb-hulp', text: w.hulp })
 			]),
 			waarde: function () { return beeld.id; }
 		};
@@ -1555,6 +1557,7 @@
 				return { taal: taal, pagina: paginaKeuze(eigen.testpagina || 0, 'Dezelfde testpagina') };
 			});
 			var logo = logoKeuze(I.logo, I.logo_url, t.test);
+			var ctaBeeld = logoKeuze(I.cta_beeld, I.cta_beeld_url, t.test + '-beeld', { label: 'Beeld van de test', hulp: 'Voor de zelftestkaart in de zijkolom van pijler en artikel, bijvoorbeeld de uitslag op een tablet. Geen beeld: het icoon.', kies: 'Kies een beeld', ander: 'Kies een ander beeld', geen: 'Geen beeld', titel: 'Kies het beeld van de test', gebruik: 'Gebruik dit beeld' });
 			var proef = { aan: I.proefmodus };
 			var hussel = { aan: I.husselen !== false };
 			var ctaKop = tekstInvoer(I.cta_kop || '', t.naam || 'Naam van de test');
@@ -1586,10 +1589,11 @@
 				veld('Kop', ctaKop, 'Leeg: de naam van de test.', 'sfpb-zt-ctak-' + t.test),
 				veld('Zin', ctaZin, 'Hoogstens 220 tekens. Leeg: geen zin.', 'sfpb-zt-ctaz-' + t.test),
 				veld('Knoptekst', ctaKnop, 'Leeg: de vaste tekst in de taal van de site.', 'sfpb-zt-ctab-' + t.test),
+				ctaBeeld.node,
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
 						var talen = {}; extraTalen.forEach(function (x) { talen[x.taal] = { testpagina: x.pagina.value }; });
-						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.waarde(), proefmodus: proef.aan, husselen: hussel.aan, cta_kop: ctaKop.value, cta_zin: ctaZin.value, cta_knop: ctaKnop.value, talen: talen });
+						zt(this, 'zt-' + t.test, '/' + t.test + '/instellingen', { testpagina: pagina.value, logo: logo.waarde(), proefmodus: proef.aan, husselen: hussel.aan, cta_kop: ctaKop.value, cta_zin: ctaZin.value, cta_knop: ctaKnop.value, cta_beeld: ctaBeeld.waarde(), talen: talen });
 					} }),
 					flitsPlek('zt-' + t.test)
 				])

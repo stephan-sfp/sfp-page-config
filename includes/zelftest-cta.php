@@ -107,6 +107,7 @@ function sfp_zelftest_cta_gegevens( $test = '', $bron = '' ) {
         'knop'   => '' !== $inst['cta_knop'] ? $inst['cta_knop'] : ( $t ? $t( 'doe_zelftest' ) : '' ),
         'url'    => $url,
         'vragen' => $vragen,
+        'beeld'  => (int) $inst['cta_beeld'],
     );
 }
 

@@ -189,6 +189,9 @@ function sfp_zelftest_instellingen( $test ) {
         'cta_kop'          => '',
         'cta_zin'          => '',
         'cta_knop'         => '',
+        // Sinds 3.39.0: het beeld van de test (bijvoorbeeld de uitslag op een
+        // tablet) voor de zelftestkaart in de zijkolom. Leeg: het icoon.
+        'cta_beeld'        => 0,
         // Sinds 3.11.0: per extra taal van het pakket een eigen testpagina en
         // pdf-adres: array( 'en' => array( 'testpagina' => 0, 'pdf_pad' => '' ) ).
         // De eerste taal gebruikt testpagina en pdf_pad hierboven.
@@ -223,6 +226,10 @@ function sfp_zelftest_instellingen_bewaar( $test, array $wijzigingen ) {
         $logo = absint( $wijzigingen['logo'] );
         // Een afbeelding of een SVG (scherp op elke grootte, sinds 3.5.2).
         $nu['logo'] = ( $logo > 0 && ( wp_attachment_is_image( $logo ) || 'image/svg+xml' === get_post_mime_type( $logo ) ) ) ? $logo : 0;
+    }
+    if ( array_key_exists( 'cta_beeld', $wijzigingen ) ) {
+        $beeld          = absint( $wijzigingen['cta_beeld'] );
+        $nu['cta_beeld'] = $beeld > 0 && wp_attachment_is_image( $beeld ) ? $beeld : 0;
     }
     if ( array_key_exists( 'pdf_pad', $wijzigingen ) ) {
         $pad = sfp_zelftest_pad_schoon( $wijzigingen['pdf_pad'] );

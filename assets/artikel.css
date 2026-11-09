@@ -181,6 +181,10 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
 :root .sfp-art-promo--rond img{width:60px;height:60px;border:0;border-radius:50%;object-fit:cover;box-shadow:none}
 .sfp-art-promo__test{width:60px;height:60px;border-radius:var(--sfp-b-r-kaart,6px);background:var(--sfp-b-primair);color:var(--sfp-b-secundair);display:grid;place-items:center}
 .sfp-art-promo__test svg{width:30px;height:30px}
+/* zelftestbeeld (3.39.0): het beeld van de test boven de tekst, in plaats van het icoon */
+:root .sfp-art-promo:has(>.sfp-art-promo__testbeeld){grid-template-columns:minmax(0,1fr);gap:14px}
+.sfp-art-promo__testbeeld{display:block;line-height:0}
+:root .sfp-art-promo .sfp-art-promo__testbeeld img{display:block;width:100%;max-width:240px;height:auto;border:0;border-radius:0;box-shadow:none}
 
 /* vervolg, affiliate-uitleg */
 .sfp-art-vervolg{margin:28px 0 0}
@@ -379,3 +383,12 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
 }
 @media (prefers-reduced-motion:reduce){.sfp-artikel *,.sfp-art-balk *{scroll-behavior:auto!important;transition:none!important}}
 @media print{.sfp-art-balk,.sfp-art-acties,.sfp-art-paneel,.sfp-artikel__zij{display:none!important}}
+
+/* actierij op een telefoon (3.39.0, besluit Stephan 8-11-2026): alleen iconen in vierkante knoppen op één
+   regel, de toegankelijkheidsknop rechts; geen zijwaarts vegen. De labels blijven voor schermlezers. */
+@media (max-width:600px){
+  .sfp-art-acties{overflow:visible;margin:0;padding-left:0;padding-right:0;gap:8px}
+  :root .sfp-art-kop .sfp-art-actie,:root .sfp-art-kop .sfp-art-actie--icoon{position:relative;width:40px;height:40px;min-height:40px;padding:0;gap:0;justify-content:center;flex:0 0 40px}
+  .sfp-art-actie svg{width:18px;height:18px}
+  .sfp-art-actie>span:not(.sfp-lang){position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+}

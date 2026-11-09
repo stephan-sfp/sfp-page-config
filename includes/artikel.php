@@ -847,7 +847,8 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     $panelen = '';
     $knop    = function ( $id, $icoon, $lang, $kort = '' ) {
         $label = '' === $kort ? '<span>' . $lang . '</span>' : '<span class="sfp-lang">' . $lang . '</span><span class="sfp-kort">' . $kort . '</span>';
-        return '<button type="button" class="sfp-art-actie" aria-expanded="false" aria-controls="' . esc_attr( $id ) . '" data-sfp-paneel data-sfp-groep="kop">' . sfp_page_config_artikel_icoon( $icoon ) . $label . '</button>';
+        // Sinds 3.39.0 met title: op een telefoon staat alleen het icoon.
+        return '<button type="button" class="sfp-art-actie" title="' . esc_attr( wp_strip_all_tags( $lang ) ) . '" aria-expanded="false" aria-controls="' . esc_attr( $id ) . '" data-sfp-paneel data-sfp-groep="kop">' . sfp_page_config_artikel_icoon( $icoon ) . $label . '</button>';
     };
 
     // Delen.
@@ -863,7 +864,7 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     // Voorkeursbron bij Google.
     if ( '1' === (string) sfp_page_config_get_setting( 'artikel_voorkeursbron', '' ) ) {
         $host    = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
-        $acties .= '<a class="sfp-art-actie" href="' . esc_url( 'https://www.google.com/preferences/source?q=' . rawurlencode( $host ) ) . '" target="_blank" rel="noopener">' . sfp_page_config_artikel_icoon( 'google' ) . '<span class="sfp-lang">' . esc_html( $t( 'favoriet' ) ) . '</span><span class="sfp-kort">' . esc_html( $t( 'favoriet_kort' ) ) . '</span></a>';
+        $acties .= '<a class="sfp-art-actie" title="' . esc_attr( $t( 'favoriet' ) ) . '" href="' . esc_url( 'https://www.google.com/preferences/source?q=' . rawurlencode( $host ) ) . '" target="_blank" rel="noopener">' . sfp_page_config_artikel_icoon( 'google' ) . '<span class="sfp-lang">' . esc_html( $t( 'favoriet' ) ) . '</span><span class="sfp-kort">' . esc_html( $t( 'favoriet_kort' ) ) . '</span></a>';
     }
 
     // Toegankelijkheid (3.29.2, wens Stephan 7-11: de rij op één regel): een

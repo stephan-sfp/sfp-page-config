@@ -751,16 +751,46 @@ function sfp_page_config_promo_keuze( $vorm ) {
 }
 
 /**
- * De kaart Zelftest van een pijler, op de plek van het boek.
+ * Het beeld links in de zelftestkaart: het beeld van de test of het icoon.
  *
  * @param  array  $g       Gegevens van de oproep.
+ * @param  string $variant zij of inline.
+ * @return string
+ */
+function sfp_page_config_promo_zelftest_beeld( array $g, $variant ) {
+    // Sinds 3.39.0: het beeld van de test uit SFP Beheer, Zelftest; zonder
+    // beeld het icoon.
+    $id = isset( $g['beeld'] ) ? (int) $g['beeld'] : 0;
+    if ( $id && wp_attachment_is_image( $id ) ) {
+        $img = wp_get_attachment_image(
+            $id,
+            'medium',
+            false,
+            array(
+                'class'   => 'sfp-art-promo__beeld',
+                'alt'     => '',
+                'loading' => 'lazy',
+                'sizes'   => 'inline' === $variant ? '(max-width:600px) 90vw, 240px' : '240px',
+            )
+        );
+        if ( '' !== $img ) {
+            return '<span class="sfp-art-promo__testbeeld" aria-hidden="true">' . $img . '</span>';
+        }
+    }
+    return '<span class="sfp-art-promo__test" aria-hidden="true">' . sfp_page_config_artikel_icoon( 'test' ) . '</span>';
+}
+
+/**
+ * De kaart Zelftest van een pijler of artikel, op de plek van het boek.
+ *
+ * @param  array  $g       Gegevens uit sfp_zelftest_cta_gegevens().
  * @param  string $variant zij of inline.
  * @return string
  */
 function sfp_page_config_promo_zelftest( array $g, $variant ) {
     $t = 'sfp_page_config_artikel_tekst';
     return '<aside class="sfp-art-promo sfp-art-promo--' . ( 'inline' === $variant ? 'inline' : 'zij' ) . ' sfp-art-promo--test" aria-label="' . esc_attr( $t( 'zelftest' ) ) . '" data-sfp-zelftest="' . esc_attr( $g['test'] ) . '">'
-        . '<span class="sfp-art-promo__test" aria-hidden="true">' . sfp_page_config_artikel_icoon( 'test' ) . '</span><div>'
+        . sfp_page_config_promo_zelftest_beeld( $g, $variant ) . '<div>'
         . '<span class="sfp-blok-label">' . esc_html( $t( 'zelftest' ) ) . '</span>'
         . '<b>' . esc_html( $g['kop'] ) . '</b>'
         . ( '' !== $g['zin'] ? '<p>' . esc_html( $g['zin'] ) . '</p>' : '' )
