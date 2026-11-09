@@ -185,6 +185,9 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
 :root .sfp-art-promo:has(>.sfp-art-promo__testbeeld){grid-template-columns:minmax(0,1fr);gap:14px}
 .sfp-art-promo__testbeeld{display:block;line-height:0}
 :root .sfp-art-promo .sfp-art-promo__testbeeld img{display:block;width:100%;max-width:240px;height:auto;border:0;border-radius:0;box-shadow:none}
+/* in de tekst (telefoon en tablet, 3.39.1): het beeld klein links, de tekst ernaast, zoals met het icoon */
+:root .sfp-art-promo--inline:has(>.sfp-art-promo__testbeeld){grid-template-columns:96px minmax(0,1fr);gap:16px}
+:root .sfp-art-promo--inline .sfp-art-promo__testbeeld img{max-width:96px}
 
 /* vervolg, affiliate-uitleg */
 .sfp-art-vervolg{margin:28px 0 0}
