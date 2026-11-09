@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.41.3] - 2026-11-09
+
+Terugdraaien: versie 3.41.2 terugzetten (zip uit de tag v3.41.2, map sfp-page-config).
+
+### Gerepareerd
+- Held wit tussen 981 en 1200 px: de feitenkaart stak op de coachpagina's 6 tot 41 px buiten beeld (gemeten op 1100 en 1024 px op DPS, DGA, CVD en DST). Hij blijft nu binnen het beeld plus de uitsprong links; de tekst erin mag breken.
+- Bewijsregel: cijfer en aantal reviews blijven op één regel (4,9 op Google (62 reviews) brak na 3.38.0 over twee regels).
+
 ## [3.41.2] - 2026-11-09
 
 Terugdraaien: versie 3.41.1 terugzetten (zip uit de tag v3.41.1, map sfp-page-config); de vaste kopie blijft dan ongebruikt staan.
