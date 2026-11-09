@@ -1992,4 +1992,78 @@
 		}, 'sfpAfgerondBeeld' ) );
 	}() );
 
+	/* ---------- Keuzehulp (3.41.0) ---------- */
+	blok( 'sfp/keuzehulp', function ( props ) {
+		var a = props.attributes;
+		var vragen = Array.isArray( a.vragen ) ? a.vragen : [];
+		var hulp = a.hulp && 'object' === typeof a.hulp ? a.hulp : {};
+		var blockProps = useBlockProps( { className: 'sfp-keuzehulp' } );
+		if ( a.voorbeeld ) {
+			vragen = [ { id: 'v1', vraag: 'Voor wie bezoek je deze website?', antwoorden: [ { tekst: 'Voor mezelf', naar: 'v:v2' }, { tekst: 'Voor mijn team', naar: '/incompany/' } ] } ];
+		}
+		function zetVragen( n ) { props.setAttributes( { vragen: n } ); }
+		function kopie() { return JSON.parse( JSON.stringify( vragen ) ); }
+		function nieuwId() {
+			var max = 0;
+			vragen.forEach( function ( v ) { var m = /^v(\d+)$/.exec( v.id || '' ); if ( m ) { max = Math.max( max, parseInt( m[ 1 ], 10 ) ); } } );
+			return 'v' + ( max + 1 );
+		}
+		function soortVan( naar ) {
+			naar = naar || '';
+			if ( 0 === naar.indexOf( 'v:' ) ) { return naar; }
+			if ( 'hulp' === naar ) { return 'hulp'; }
+			return 'link';
+		}
+		var panelen = vragen.map( function ( v, i ) {
+			var opties = vragen.filter( function ( w ) { return w.id !== v.id; } ).map( function ( w ) {
+				return { value: 'v:' + w.id, label: 'Vraag: ' + ( w.vraag || w.id ) };
+			} ).concat( [ { value: 'hulp', label: 'Help mij kiezen' }, { value: 'link', label: 'Een pagina of link' } ] );
+			var antwoorden = ( v.antwoorden || [] ).map( function ( an, j ) {
+				var soort = soortVan( an.naar );
+				return el( 'div', { key: 'a' + j, className: 'sfp-keuzehulp-editor__antwoord', style: { borderTop: '1px solid rgba(0,0,0,.12)', paddingTop: '8px', marginTop: '8px' } },
+					tekstveld( 'Antwoord ' + ( j + 1 ), an.tekst, function ( t ) { var n = kopie(); n[ i ].antwoorden[ j ].tekst = t; zetVragen( n ); } ),
+					keuze( 'Gaat naar', soort, opties, function ( k ) { var n = kopie(); n[ i ].antwoorden[ j ].naar = 'link' === k ? '' : k; zetVragen( n ); } ),
+					'link' === soort ? tekstveld( 'Adres', an.naar, function ( t ) { var n = kopie(); n[ i ].antwoorden[ j ].naar = t; zetVragen( n ); }, 'Een pad op de site (zoals /incompany/), een volledig adres of een pagina-id.' ) : null,
+					el( c.Button, { variant: 'link', isDestructive: true, onClick: function () { var n = kopie(); n[ i ].antwoorden.splice( j, 1 ); zetVragen( n ); } }, 'Antwoord weghalen' )
+				);
+			} );
+			return el( c.PanelBody, { key: v.id || i, title: ( i + 1 ) + '. ' + ( v.vraag || 'Nieuwe vraag' ), initialOpen: 0 === i },
+				tekstveld( 'Vraag', v.vraag, function ( t ) { var n = kopie(); n[ i ].vraag = t; zetVragen( n ); } ),
+				antwoorden,
+				el( 'div', { style: { display: 'flex', gap: '12px', marginTop: '12px', flexWrap: 'wrap' } },
+					el( c.Button, { variant: 'secondary', onClick: function () { var n = kopie(); n[ i ].antwoorden = ( n[ i ].antwoorden || [] ).concat( [ { tekst: '', naar: '' } ] ); zetVragen( n ); } }, 'Antwoord toevoegen' ),
+					i > 0 ? el( c.Button, { variant: 'link', isDestructive: true, onClick: function () { var n = kopie(); n.splice( i, 1 ); zetVragen( n ); } }, 'Vraag weghalen' ) : null
+				)
+			);
+		} );
+		var zetHulp = function ( sleutel ) {
+			return function ( t ) { var h = Object.assign( {}, hulp ); h[ sleutel ] = t; props.setAttributes( { hulp: h } ); };
+		};
+		var inspector = el( InspectorControls, null,
+			el( c.PanelBody, { title: 'Keuzehulp', initialOpen: true },
+				uitleg( 'De eerste vraag ziet de bezoeker eerst. Een antwoord gaat naar een volgende vraag, naar Help mij kiezen of naar een pagina. Vanaf de tweede vraag staan Help mij kiezen en Terug eronder.' ),
+				el( c.Button, { variant: 'primary', onClick: function () { zetVragen( vragen.concat( [ { id: nieuwId(), vraag: '', antwoorden: [ { tekst: '', naar: '' }, { tekst: '', naar: '' } ] } ] ) ); } }, 'Vraag toevoegen' )
+			),
+			panelen,
+			el( c.PanelBody, { title: 'Help mij kiezen', initialOpen: false },
+				tekstveld( 'Kop', hulp.kop, zetHulp( 'kop' ), 'Leeg: de standaardkop.' ),
+				el( c.TextareaControl, { label: 'Zin', value: hulp.tekst || '', onChange: zetHulp( 'tekst' ), __nextHasNoMarginBottom: true } ),
+				tekstveld( 'Knoptekst', hulp.knoptekst, zetHulp( 'knoptekst' ), 'Leeg: Plan een gesprek.' ),
+				tekstveld( 'Knop gaat naar', hulp.knoplink, zetHulp( 'knoplink' ), 'Een pad op de site, een volledig adres of een pagina-id. Leeg: geen knop.' ),
+				tekstveld( 'Regel boven het formulier', hulp.label, zetHulp( 'label' ), 'Leeg: Of laat je nummer achter:' ),
+				tekstveld( 'Formulier (SureForms-id)', hulp.formulier ? String( hulp.formulier ) : '', function ( t ) { var h = Object.assign( {}, hulp ); h.formulier = parseInt( t, 10 ) || 0; props.setAttributes( { hulp: h } ); }, 'Leeg: geen formulier.' )
+			)
+		);
+		var stappen = vragen.length ? vragen.map( function ( v, i ) {
+			return el( 'div', { key: v.id || i, className: 'sfp-keuzehulp__stap', style: i ? { marginTop: '28px', paddingTop: '20px', borderTop: '1px dashed rgba(0,0,0,.2)' } : null },
+				el( 'p', { className: 'sfp-keuzehulp__teller' }, 'Vraag ' + ( i + 1 ) ),
+				el( 'h3', { className: 'sfp-keuzehulp__vraag' }, v.vraag || 'Typ de vraag in de zijbalk' ),
+				el( 'div', { className: 'sfp-keuzehulp__antwoorden' }, ( v.antwoorden || [] ).map( function ( an, j ) {
+					return el( 'span', { key: j, className: 'sfp-keuzehulp__antwoord' }, an.tekst || 'Antwoord' );
+				} ) )
+			);
+		} ) : el( c.Placeholder, { icon: 'randomize', label: 'Keuzehulp', instructions: 'Voeg in de zijbalk de eerste vraag toe. Zonder vragen toont de site niets.' } );
+		return el( Fragment, null, inspector, el( 'div', blockProps, stappen ) );
+	}, { attributes: { vragen: { type: 'array', default: [] }, hulp: { type: 'object', default: {} }, voorbeeld: { type: 'boolean', default: false } }, example: { attributes: { voorbeeld: true } } } );
+
 }( window.wp ) );

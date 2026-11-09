@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.41.0] - 2026-11-09
+
+Blok Keuzehulp (punt 17 van home en Over, besluit Stephan 9-11: eigen blok). Terugdraaien: versie 3.40.0 terugzetten (zip uit de tag v3.40.0, map sfp-page-config); een pagina met het blok toont dan niets op die plek, zet daarom eerst het HTML-blok terug.
+
+### Toegevoegd
+- Blok Keuzehulp: één witte kaart met per vraag Vraag n van N, de vraag links en de antwoorden als keuzekaarten met een pijl (twee naast elkaar, op een telefoon onder elkaar). Een antwoord gaat naar een volgende vraag, naar Help mij kiezen of naar een pagina (een gewone link). Vanaf de tweede vraag Help mij kiezen en Terug als tekstlinks; de nieuwe vraag krijgt de focus. Help mij kiezen heeft een kop, een zin, een knop naar een gesprek en eventueel een SureForms-formulier. Vragen, antwoorden en bestemmingen in de zijbalk; vaste teksten in drie talen (SFP Beheer, Teksten, Keuzehulp). Vervangt het losse HTML-blok met eigen opmaak en script op DGA, CVD en DST; dat omzetten doen de sitechats.
+
 ## [3.40.0] - 2026-11-09
 
 Schema van tools en begrippen, en het veld Inhoudelijk herzien op (besluiten Stephan 23-10, 25-10 en 9-11). Terugdraaien: versie 3.39.1 terugzetten (zip uit de tag v3.39.1, map sfp-page-config); de velden Inhoudelijk herzien op en Gebaseerd op blijven bewaard maar worden niet gebruikt.
