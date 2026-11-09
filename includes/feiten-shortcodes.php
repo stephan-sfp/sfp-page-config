@@ -182,22 +182,18 @@ add_shortcode( 'sfp_reviews', 'sfp_page_config_shortcode_reviews' );
 
 /**
  * De kennisbanken die meetellen: de instelling publicaties_sites in SFP
- * Beheer (Onderhoud), een adres per regel. Leeg: de vijf Nederlandse sites
- * van het netwerk (besluit Stephan 31-10-2026: alleen die tellen mee).
+ * Beheer (Onderhoud), een adres per regel; op elke site staan daar de vijf
+ * Nederlandse sites (besluit Stephan 31-10-2026). Leeg: alleen de eigen site.
  *
  * @return string[] Basisadressen met https.
  */
 function sfp_feiten_publicaties_sites() {
     $ruw   = function_exists( 'sfp_page_config_get_setting' ) ? (string) sfp_page_config_get_setting( 'publicaties_sites', '' ) : '';
     $sites = array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $ruw ) ), 'strlen' ) );
+    // Sinds 3.38.0 geen vaste lijst meer als terugval (codeconventie: geen
+    // vaste adressen); leeg telt alleen de eigen site.
     if ( ! $sites ) {
-        $sites = array(
-            'https://schoolforprofessionals.com',
-            'https://depresenteerschool.nl',
-            'https://degespreksacademie.nl',
-            'https://centrumvoordidactiek.nl',
-            'https://deschrijftrainers.nl',
-        );
+        $sites = array( untrailingslashit( home_url() ) );
     }
     return (array) apply_filters( 'sfp_feiten_publicaties_sites', $sites );
 }

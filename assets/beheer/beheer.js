@@ -524,6 +524,50 @@
 
 	/* ---------- Onderdeel: knop onderaan ---------- */
 
+	/** Training zonder geplande groep (3.38.0): tekst en anker van het gesprek. */
+	function wachtlijstVelden() {
+		var W = S.knop_wachtlijst || {};
+		var tekst = tekstInvoer(W.text || '', W.norm || '');
+		var anker = tekstInvoer(W.anker || '', W.anker_norm || '');
+		return el('div', { class: 'sfpb-stapel' }, [
+			el('span', { class: 'sfpb-label', text: 'Zonder geplande groep (wachtlijststand)' }),
+			veld('Tekst op de knop', tekst, 'Leeg: ' + (W.norm || 'de standaardtekst') + '.', 'sfpb-knop-wl-tekst'),
+			veld('Anker van het gesprek', anker, 'Zonder #. Leeg: ' + (W.anker_norm || '') + '. Staat dat anker niet op de pagina, dan gaat de knop naar de boekkaart.', 'sfpb-knop-wl-anker'),
+			el('div', { class: 'sfpb-rij' }, [
+				el('button', { class: 'sfpb-knop', type: 'button', text: 'Opslaan', klik: function () {
+					bewaarInstellingen(this, 'knop-wl', { teksten: { knop_wachtlijst: tekst.value }, knop_wachtlijst_anker: anker.value });
+				} }),
+				flitsPlek('knop-wl')
+			])
+		]);
+	}
+
+	/* ---------- Onderdeel: formulierregel (3.38.0) ---------- */
+
+	function detailFormulierregel() {
+		var F = S.formulierregel || {};
+		var gekozen = (F.gekozen || []).map(Number);
+		var vakjes = (F.formulieren || []).map(function (f) {
+			var v = el('input', { type: 'checkbox', value: String(f.id), checked: gekozen.indexOf(f.id) !== -1 });
+			return el('label', { class: 'sfpb-vink' }, [v, el('span', { text: f.titel + ' (' + f.id + ')' })]);
+		});
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Formulierregel', 'Onder de gekozen formulieren de regel: ' + (F.voorbeeld || 'Bel ... of mail naar ...') + '. Nummer en adres komen uit Contact.'),
+			F.snippet ? el('p', { class: 'sfpb-hulp', text: 'Het snippet Formulieren: mail-link als fallback staat nog aan; zolang doet dat het en slaapt dit onderdeel.' }) : null,
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, vakjes.concat([
+				el('p', { class: 'sfpb-hulp', text: 'De caches leegt de plugin niet: doe dat na opslaan.' }),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						var ids = vakjes.map(function (l) { return l.querySelector('input'); }).filter(function (v) { return v.checked; }).map(function (v) { return Number(v.value); });
+						bewaarInstellingen(this, 'formulierregel', { formulierregel: { formulieren: ids } });
+					} }),
+					flitsPlek('formulierregel')
+				])
+			]))
+		]);
+	}
+
 	function detailKnop() {
 		var soort = ui.knopSoort;
 		var k = S.knop[soort];
@@ -569,6 +613,7 @@
 					veld('Tekst op de knop', tekst, 'Leeg: de standaardtekst van het netwerk.', 'sfpb-knop-tekst'),
 					el('div', { class: 'sfpb-veld' }, [el('span', { class: 'sfpb-label', text: 'De knop gaat naar' }), keuzes]),
 					el('p', { class: 'sfpb-hulp', text: 'Wil je het voor één pagina anders, dan doe je dat bij die pagina zelf, op het scherm Pagina\'s.' }),
+					soort === 'training' ? wachtlijstVelden() : null,
 					el('div', { class: 'sfpb-rij' }, [
 						el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
 							var w = { sticky_cta: {} };
@@ -2052,7 +2097,7 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk, logostrook: detailLogostrook, contact: detailContact };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk, logostrook: detailLogostrook, contact: detailContact, formulierregel: detailFormulierregel };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 

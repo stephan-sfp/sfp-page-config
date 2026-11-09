@@ -97,6 +97,8 @@ class SFP_Reviews_Fetcher {
                 'rating' => (int) ( $r['rating'] ?? 0 ),
                 'text'   => $r['text'] ?? '',
                 'time'   => $r['relative_time_description'] ?? '',
+                // Sinds 3.38.0: het moment van de review, voor maand en jaar bij de bron.
+                'stamp'  => (int) ( $r['time'] ?? 0 ),
             );
         }
 

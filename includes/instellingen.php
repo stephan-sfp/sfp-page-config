@@ -177,6 +177,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Telefoon, e-mail en adres voor het blok Contactgegevens (bijvoorbeeld op de contactpagina). Leeg: het nummer en het e-mailadres van het netwerk.',
             'detail' => true,
         ),
+        'formulierregel' => array(
+            'naam'   => 'Formulierregel',
+            'uitleg' => 'Onder de gekozen formulieren de regel Bel ... of mail naar ..., met het nummer en het adres uit Contact. Zolang het snippet Formulieren: mail-link als fallback aan staat, doet dat het.',
+            'detail' => true,
+        ),
         'uspstrook'    => array(
             'naam'   => 'USP-strook',
             'uitleg' => 'Eén regel onder de header op trainings- en coachpagina\'s: drie redenen om te kiezen, het Google-cijfer en een belknop. Niet op een telefoon.',
@@ -833,6 +838,19 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 // Sinds 3.35.0: telefoon, e-mail en adres voor het blok Contactgegevens.
                 $alle['contact'] = function_exists( 'sfp_page_config_contact_schoon' ) ? sfp_page_config_contact_schoon( $ruw ) : array();
                 $bewaard[]       = $sleutel;
+                break;
+
+            case 'formulierregel':
+                // Sinds 3.38.0: de formulieren met de regel Bel of mail eronder.
+                $alle['formulierregel'] = function_exists( 'sfp_page_config_formulierregel_schoon' ) ? sfp_page_config_formulierregel_schoon( $ruw ) : array();
+                $bewaard[]              = $sleutel;
+                break;
+
+            case 'knop_wachtlijst_anker':
+                // Sinds 3.38.0: waar de knop onderaan in de wachtlijststand heen gaat.
+                $anker                 = function_exists( 'sfp_page_config_anker_schoon' ) ? sfp_page_config_anker_schoon( (string) $ruw ) : '';
+                $alle[ $sleutel ]      = function_exists( 'sfp_page_config_knop_wachtlijst_anker_norm' ) && sfp_page_config_knop_wachtlijst_anker_norm() === $anker ? '' : $anker;
+                $bewaard[]             = $sleutel;
                 break;
 
             case 'logostrook':

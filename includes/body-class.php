@@ -126,9 +126,14 @@ function sfp_page_config_knop_voor_pagina( $post_id, $type ) {
     if ( '' !== $eigen_tekst ) {
         $config['text'] = $eigen_tekst;
     }
-    // Sinds 3.31.0: Groepskaarten zonder geplande groep, dan naar de wachtlijst.
-    if ( 'training' === $type && function_exists( 'sfp_page_config_nlvorm_alleen_wachtlijst' ) && sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
-        $config['text'] = sfp_page_config_tekst( 'groep_wachtlijst_link' );
+    // Sinds 3.38.0 (besluit Stephan 9-11-2026): een training zonder geplande
+    // groep stuurt naar het oriëntatiegesprek op de pagina. Tekst en anker
+    // per site in SFP Beheer; de plugin is de enige bron, zodat het
+    // LatePoint-snippet de tekst niet meer overschrijft.
+    $wachtlijst = 'training' === $type && function_exists( 'sfp_page_config_nlvorm_alleen_wachtlijst' ) && sfp_page_config_nlvorm_alleen_wachtlijst( $post_id );
+    if ( $wachtlijst ) {
+        $config         = sfp_page_config_sticky_cta_vorm( sfp_page_config_tekst( 'knop_wachtlijst' ), 'form', '' );
+        $config['vast'] = true;
     }
 
     // Ankers waaraan het formulier te herkennen is. Het oude veld per soort
@@ -171,6 +176,11 @@ function sfp_page_config_knop_voor_pagina( $post_id, $type ) {
         }
     }
 
+    if ( $wachtlijst ) {
+        // Alleen het anker van het gesprek; zonder dat anker zoekt het
+        // script de boekkaart, en pas dan het eerste formulier.
+        $ankers = array( sfp_page_config_knop_wachtlijst_anker() );
+    }
     $config['hero']   = $hero;
     $config['ankers'] = array_values( array_unique( array_filter( $ankers ) ) );
     // Voor het geval de pagina geen herkenbare bovenkant heeft.
@@ -188,4 +198,25 @@ function sfp_page_config_knop_voor_pagina( $post_id, $type ) {
  */
 function sfp_page_config_anker_schoon( $anker ) {
     return (string) preg_replace( '/[^A-Za-z0-9_\-:.]/', '', ltrim( trim( (string) $anker ), '#' ) );
+}
+
+/**
+ * Het anker van het gesprek voor de knop onderaan in de wachtlijststand:
+ * de norm van het netwerk (besluit Stephan 9-11-2026).
+ *
+ * @return string
+ */
+function sfp_page_config_knop_wachtlijst_anker_norm() {
+    return 'orientatiegesprek';
+}
+
+/**
+ * Het anker voor de knop onderaan in de wachtlijststand: SFP Beheer, Knop
+ * onderaan, anders de norm.
+ *
+ * @return string
+ */
+function sfp_page_config_knop_wachtlijst_anker() {
+    $eigen = sfp_page_config_anker_schoon( (string) sfp_page_config_get_setting( 'knop_wachtlijst_anker', '' ) );
+    return '' !== $eigen ? $eigen : sfp_page_config_knop_wachtlijst_anker_norm();
 }

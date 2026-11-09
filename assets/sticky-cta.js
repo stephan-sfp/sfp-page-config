@@ -60,6 +60,17 @@
             if (el) return el;
         }
 
+        // Wachtlijststand (3.38.0): naar het gesprek op de pagina, ook als het
+        // anker nog anders heet; nooit naar het eerste formulier.
+        if (cfg.vast) {
+            var boek = document.querySelector('.sfp-boek-sectie, .sfp-boekkaart, .latepoint-book-form-wrapper');
+            if (boek) {
+                el = boek.closest('.sfp-boek-sectie, .sfp-sectie, section') || boek;
+                if (!el.id) el.id = 'plan-een-gesprek';
+                return el;
+            }
+        }
+
         el = document.querySelector('.sfp-boek-sectie');
         if (el) {
             if (!el.id) el.id = 'plan-een-gesprek';
@@ -173,6 +184,9 @@
             bar = document.createElement('div');
             bar.id = 'sticky-mobile-cta';
             bar.className = 'sticky-mobile-cta';
+            // Tekst en bestemming liggen vast (wachtlijststand, 3.38.0): het
+            // LatePoint-snippet slaat een balk met dit kenmerk over.
+            if (cfg.vast) bar.setAttribute('data-sfp-boek', '1');
 
             var link = document.createElement('a');
             // Astra bepaalt maat, ruimte, rand en ronding van .button.

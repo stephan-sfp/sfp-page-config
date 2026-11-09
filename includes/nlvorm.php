@@ -177,7 +177,7 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
         $link = '<a class="sfp-tekstlink" href="#' . esc_attr( $doel ) . '" data-sfp-groep="wachtlijst">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) ) . '</a>';
         return $css . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-groepen', 'sfp-groepen--leeg' ) ) . '>'
             . '<div class="sfp-kolommen sfp-kolommen--groepen sfp-kolommen--een"><div class="sfp-kaart sfp-kaart--accent sfp-klikkaart sfp-groep sfp-groep--klikbaar sfp-groep--wachtlijst">'
-            . '<div class="sfp-groep__kopregel"><p class="is-style-sfp-label">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_label' ) ) . '</p>'
+            . '<div class="sfp-groep__kopregel">' . ( sfp_page_config_nlvorm_wachtlijstkop() ? '' : '<p class="is-style-sfp-label">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_label' ) ) . '</p>' )
             . '<span class="sfp-groep__status sfp-groep__status--wachtlijst">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_status' ) ) . '</span></div>'
             . '<h3>' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_kop' ) ) . '</h3>'
             . '<p class="sfp-groep__zin">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_zin' ) ) . '</p>'
@@ -291,6 +291,10 @@ function sfp_page_config_nlvorm_feitenkaart( $attrs ) {
             $feiten[] = array( $label_html, esc_html( $deel['dag'] . ' ' . $deel['nr'] ) . ' ' . $maand_html );
             break;
         }
+        // Sinds 3.38.0 (nazorg 9): zonder groep staat er Wachtlijst, niet niets.
+        if ( ! $feiten && sfp_page_config_nlvorm_alleen_wachtlijst( (int) get_the_ID() ) ) {
+            $feiten[] = array( esc_html( sfp_page_config_tekst( 'held_volgende_start' ) ), esc_html( sfp_page_config_tekst( 'groep_wachtlijst_status' ) ) );
+        }
     }
     foreach ( isset( $attrs['feiten'] ) && is_array( $attrs['feiten'] ) ? $attrs['feiten'] : array() as $f ) {
         $label  = is_array( $f ) && isset( $f['label'] ) ? trim( (string) $f['label'] ) : '';
@@ -339,6 +343,20 @@ function sfp_page_config_nlvorm_google_cijfer() {
 }
 
 /**
+ * Het aantal Google-reviews van de site, of 0.
+ *
+ * @since  3.38.0
+ * @return int
+ */
+function sfp_page_config_nlvorm_google_aantal() {
+    if ( '' === sfp_page_config_nlvorm_google_cijfer() ) {
+        return 0;
+    }
+    $stand = sfp_page_config_reviews_stand();
+    return isset( $stand['aantal'] ) ? (int) $stand['aantal'] : 0;
+}
+
+/**
  * De bewijsregel onder de knoppen van de held "wit": sterren met het
  * Google-cijfer als link naar het profiel, en het aantal deelnemers.
  *
@@ -354,7 +372,10 @@ function sfp_page_config_nlvorm_bewijsregel( $attrs ) {
     $uit = '';
     if ( '' !== $cijfer ) {
         $link  = sfp_page_config_nlvorm_google_link();
-        $score = '<span class="sfp-held__sterren" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span><strong>' . esc_html( $cijfer ) . '</strong> ' . esc_html( sfp_page_config_tekst( 'held_op_google' ) ) . '</span>';
+        // Sinds 3.38.0 met het aantal reviews (de feitenbron eist het aantal bij een 5,0).
+        $aantal = sfp_page_config_nlvorm_google_aantal();
+        $achter = $aantal > 1 ? ' ' . sfp_page_config_tekst_f( 'held_reviews_aantal', $aantal ) : ( 1 === $aantal ? ' ' . sfp_page_config_tekst( 'held_reviews_een' ) : '' );
+        $score  = '<span class="sfp-held__sterren" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span><strong>' . esc_html( $cijfer ) . '</strong> ' . esc_html( sfp_page_config_tekst( 'held_op_google' ) . $achter ) . '</span>';
         $uit  .= '' !== $link
             ? '<a class="sfp-held__score" href="' . esc_url( $link ) . '" target="_blank" rel="noopener">' . $score . '</a>'
             : '<span class="sfp-held__score">' . $score . '</span>';
@@ -760,7 +781,7 @@ function sfp_page_config_uspstrook_html( array $inst ) {
         $rechts .= '<a class="sfp-uspbalk__score" href="' . esc_url( $link ) . '" target="_blank" rel="noopener"><span class="sfp-uspbalk__sterren" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span><strong>' . esc_html( $cijfer ) . '</strong> ' . esc_html( sfp_page_config_tekst( 'held_op_google' ) ) . '</span></a>';
     }
     if ( '' !== $inst['telefoon'] ) {
-        $rechts .= '<a class="sfp-uspbalk__bel" href="tel:' . esc_attr( str_replace( ' ', '', $inst['telefoon'] ) ) . '"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg>' . esc_html( sfp_page_config_tekst( 'usp_bel' ) ) . '</a>';
+        $rechts .= '<a class="sfp-uspbalk__bel" href="tel:' . esc_attr( function_exists( 'sfp_page_config_telefoon' ) ? sfp_page_config_telefoon( $inst['telefoon'] )['tel'] : str_replace( ' ', '', $inst['telefoon'] ) ) . '"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2z"/></svg>' . esc_html( sfp_page_config_tekst( 'usp_bel' ) ) . '</a>';
     }
     $naam = html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES, 'UTF-8' );
     return '<style id="sfp-uspstrook">' . sfp_page_config_uspstrook_css() . '</style>'
@@ -986,6 +1007,117 @@ function sfp_page_config_nlvorm_is_inschrijfformulier( $block, $html ) {
     }
     return false !== strpos( (string) $html, 'sfp-startmoment-select' )
         || (bool) preg_match( '/srfm-slug-(datum|data|datas|startmoment|startmomenten|startdatum|startdata|startdate|startdates|date|dates|turma)(-\d+)?[\s"]/', (string) $html );
+}
+
+/* =========================================================================
+ * Wachtlijststand op de pagina (3.38.0, nazorg 8)
+ * ====================================================================== */
+
+/**
+ * Is de kop boven de Groepskaarten in de wachtlijststand vervangen? Dan
+ * laat de wachtlijstkaart haar eigen label weg, zodat het er niet twee keer
+ * staat.
+ *
+ * @param  bool|null $zet True om te markeren.
+ * @return bool
+ */
+function sfp_page_config_nlvorm_wachtlijstkop( $zet = null ) {
+    static $vervangen = false;
+    if ( null !== $zet ) {
+        $vervangen = (bool) $zet;
+    }
+    return $vervangen;
+}
+
+/**
+ * Vervang de tekst binnen het eerste element van een getekend blok.
+ *
+ * @param  array  $blok  Blok uit parse_blocks.
+ * @param  string $tag   Element (a, h2, p).
+ * @param  string $tekst Nieuwe tekst.
+ * @return array
+ */
+function sfp_page_config_nlvorm_bloktekst( array $blok, $tag, $tekst ) {
+    $patroon = '/(<' . $tag . '\b[^>]*>)(.*?)(<\/' . $tag . '>)/s';
+    $nieuw   = '${1}' . str_replace( array( '\\', '$' ), array( '\\\\', '\\$' ), esc_html( $tekst ) ) . '${3}';
+    if ( isset( $blok['innerHTML'] ) ) {
+        $blok['innerHTML'] = (string) preg_replace( $patroon, $nieuw, (string) $blok['innerHTML'], 1 );
+    }
+    if ( isset( $blok['innerContent'] ) && is_array( $blok['innerContent'] ) ) {
+        foreach ( $blok['innerContent'] as $i => $deel ) {
+            if ( is_string( $deel ) && preg_match( $patroon, $deel ) ) {
+                $blok['innerContent'][ $i ] = (string) preg_replace( $patroon, $nieuw, $deel, 1 );
+                break;
+            }
+        }
+    }
+    return $blok;
+}
+
+add_filter( 'render_block_data', 'sfp_page_config_nlvorm_wachtlijststand', 10, 3 );
+
+/**
+ * Een training zonder geplande groep: wat op de pagina naar het inschrijven
+ * wijst, wisselt mee.
+ * - een knop naar het inschrijfanker heet Zet mij op de wachtlijst;
+ * - de laatste kop vóór de Groepskaarten wordt het wachtlijstlabel
+ *   (Volgende groep), en de wachtlijstkaart laat dat label dan weg;
+ * - de kernzin van de sectie met het inschrijfanker wordt de wachtlijstzin.
+ *
+ * @param  array         $blok   Blok.
+ * @param  array         $bron   Bronblok.
+ * @param  WP_Block|null $ouder  Ouderblok.
+ * @return array
+ */
+function sfp_page_config_nlvorm_wachtlijststand( $blok, $bron = array(), $ouder = null ) {
+    $naam = isset( $blok['blockName'] ) ? (string) $blok['blockName'] : '';
+    if ( ! in_array( $naam, array( 'core/button', 'core/heading', 'core/paragraph' ), true ) || is_admin() || wp_is_json_request() ) {
+        return $blok;
+    }
+    $post_id = (int) get_the_ID();
+    if ( ! $post_id || ! sfp_page_config_nlvorm_alleen_wachtlijst( $post_id ) ) {
+        return $blok;
+    }
+    $in = function_exists( 'sfp_page_config_anker_schoon' ) ? sfp_page_config_anker_schoon( sfp_page_config_tekst( 'anker_inschrijven' ) ) : 'inschrijven';
+    $in = '' !== $in ? $in : 'inschrijven';
+
+    if ( 'core/button' === $naam ) {
+        $html = isset( $blok['innerHTML'] ) ? (string) $blok['innerHTML'] : '';
+        if ( preg_match( '/href="#(' . preg_quote( $in, '/' ) . '|inschrijven)"/', $html ) ) {
+            return sfp_page_config_nlvorm_bloktekst( $blok, 'a', sfp_page_config_tekst( 'groep_wachtlijst_link' ) );
+        }
+        return $blok;
+    }
+    if ( ! $ouder instanceof WP_Block || empty( $ouder->parsed_block['innerBlocks'] ) ) {
+        return $blok;
+    }
+    $broers = $ouder->parsed_block['innerBlocks'];
+
+    if ( 'core/heading' === $naam ) {
+        // De laatste kop vóór de Groepskaarten in dezelfde ouder.
+        $laatste_kop = null;
+        foreach ( $broers as $i => $b ) {
+            if ( 'core/heading' === ( $b['blockName'] ?? '' ) ) {
+                $laatste_kop = $i;
+            }
+            if ( 'sfp/groepskaarten' === ( $b['blockName'] ?? '' ) ) {
+                if ( null !== $laatste_kop && ( $broers[ $laatste_kop ]['innerHTML'] ?? '' ) === ( $blok['innerHTML'] ?? null ) ) {
+                    sfp_page_config_nlvorm_wachtlijstkop( true );
+                    return sfp_page_config_nlvorm_bloktekst( $blok, 'h[1-6]', sfp_page_config_tekst( 'groep_wachtlijst_label' ) );
+                }
+                break;
+            }
+        }
+        return $blok;
+    }
+
+    // Kernzin van de sectie met het inschrijfanker.
+    $klasse = (string) ( $blok['attrs']['className'] ?? '' );
+    $anker  = (string) ( $ouder->parsed_block['attrs']['anchor'] ?? ( $ouder->parsed_block['attrs']['anker'] ?? '' ) );
+    if ( false !== strpos( $klasse, 'is-style-sfp-kernzin' ) && in_array( $anker, array( $in, 'inschrijven' ), true ) ) {
+        return sfp_page_config_nlvorm_bloktekst( $blok, 'p', sfp_page_config_tekst( 'groep_wachtlijst_kernzin' ) );
+    }
+    return $blok;
 }
 
 /* =========================================================================

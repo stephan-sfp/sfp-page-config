@@ -5,6 +5,8 @@
  * Draait één keer per versie (optie sfp_page_config_version) op init, niet
  * op plugins_loaded. Elke taak is veilig om twee keer te draaien.
  *
+ * 3.38.0: de formulieren van het snippet Formulieren: mail-link als fallback
+ *         gaan naar SFP Beheer, Formulierregel.
  * 3.37.0: de logolijst van de eerste logostrook op de home gaat naar SFP
  *   Beheer, Logostrook (één bron per site).
  *
@@ -47,6 +49,11 @@ function sfp_page_config_upgrade() {
     if ( '' === $was || version_compare( $was, '3.37.0', '<' ) ) {
         if ( function_exists( 'sfp_page_config_logostrook_overnemen' ) ) {
             sfp_page_config_logostrook_overnemen();
+        }
+    }
+    if ( '' === $was || version_compare( $was, '3.38.0', '<' ) ) {
+        if ( function_exists( 'sfp_page_config_formulierregel_overnemen' ) ) {
+            sfp_page_config_formulierregel_overnemen();
         }
     }
     update_option( 'sfp_page_config_version', SFP_PAGE_CONFIG_VERSION, true );
