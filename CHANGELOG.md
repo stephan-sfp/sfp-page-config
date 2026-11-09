@@ -4,6 +4,27 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.38.0] - 2026-11-09
+
+Nazorg trainingspagina's, formulierregel (punt 16 van home en Over) en de publicatielijst zonder vaste terugval. Besluiten Stephan 9-11. Terugdraaien: versie 3.37.2 terugzetten (zip uit de tag v3.37.2, map sfp-page-config) en het snippet Formulieren: mail-link als fallback weer aanzetten; de instellingen Formulierregel en Knop onderaan blijven bewaard maar worden niet gebruikt.
+
+### Toegevoegd
+- Onderdeel Formulierregel: onder de gekozen formulieren "Bel 085 060 1355 of mail naar info@<domein>", met nummer en adres uit SFP Beheer, Contact. De lijst formulieren per site staat in SFP Beheer en komt bij de update uit het snippet Formulieren: mail-link als fallback. Zolang dat snippet aan staat, slaapt het onderdeel.
+- Knop onderaan, training zonder geplande groep: "Plan je oriëntatiegesprek" naar het gesprek op de pagina (anker #orientatiegesprek, anders de boekkaart). Tekst en anker per site in SFP Beheer, Knop onderaan, Training. De plugin is de enige bron: het LatePoint-snippet overschrijft de tekst niet meer.
+- Wachtlijststand op de pagina: een knop naar #inschrijven heet Zet mij op de wachtlijst, de kop boven de Groepskaarten wordt Volgende groep (de wachtlijstkaart laat dat label dan weg) en de kernzin van de sectie Inschrijven wordt de wachtlijstzin.
+- Feitenkaart zonder groep: Volgende start Wachtlijst in plaats van niets.
+
+### Gewijzigd
+- Bewijsregel in de held: het aantal Google-reviews achter het cijfer, zoals 5,0 op Google (2 reviews).
+- Bron bij een Google-review met maand en jaar, zoals Google-review, oktober 2026 (na het volgende ophalen van de reviews).
+- Inbegrepen (lijst als vakjes): elk vakje zo breed als de tekst, op één regel; past het niet, dan een tweede rij.
+
+### Gerepareerd
+- Belknop in de USP-strook belt met landcode (+31), zoals de rest van de pagina.
+
+### Verwijderd
+- De vaste lijst van vijf sites als terugval voor het aantal publicaties. De lijst staat nu op alle acht sites in SFP Beheer, Onderhoud; leeg telt alleen de eigen site.
+
 ## [3.37.2] - 2026-11-09
 
 Terugdraaien: versie 3.37.1 terugzetten (zip uit de tag v3.37.1, map sfp-page-config).

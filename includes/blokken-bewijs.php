@@ -391,6 +391,10 @@ function sfp_page_config_review_google_lijst() {
         }
         $r['id']         = 'google-' . substr( md5( (string) $r['author'] . '|' . (string) ( $r['text'] ?? '' ) ), 0, 10 );
         $r['vermelding'] = isset( $r['vermelding'] ) && '' !== (string) $r['vermelding'] ? (string) $r['vermelding'] : ( function_exists( 'sfp_page_config_tekst' ) ? sfp_page_config_tekst( 'review_google_bron' ) : 'Google' );
+        // Sinds 3.38.0 (nazorg 10): de bron met maand en jaar.
+        if ( ! empty( $r['stamp'] ) && function_exists( 'sfp_page_config_tekst_f' ) ) {
+            $r['vermelding'] = sfp_page_config_tekst_f( 'review_bron_datum', $r['vermelding'], wp_date( 'F Y', (int) $r['stamp'] ) );
+        }
         $uit[]           = $r;
     }
     return $uit;

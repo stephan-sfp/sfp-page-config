@@ -98,12 +98,13 @@
 /* ---------- A10 Inbegrepen: vakjes op een rij ---------- */
 :root p.is-style-sfp-label:has(+.sfp-lijst--rij){margin:32px 0 0;padding-top:28px;border-top:1px solid var(--sfp-b-lijn)}
 :root p.is-style-sfp-label+.sfp-lijst--rij{margin-top:16px}
-:root .sfp-lijst--rij ul{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0;padding:0}
+/* 3.38.0 (nazorg 11): zo breed als de tekst nodig heeft, op één regel; past het niet, dan een tweede rij */
+:root .sfp-lijst--rij ul{display:flex;flex-wrap:wrap;gap:12px;margin:0;padding:0}
+:root .sfp-lijst--rij li{flex:1 1 auto;white-space:nowrap}
 :root .sfp-lijst--rij li{position:relative;background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:14px 14px 14px 42px;font-size:15px;line-height:1.35;min-height:48px;display:flex;align-items:center;margin:0;white-space:normal}
 :root .sfp-lijst--rij li::before{left:14px;top:50%;transform:translateY(-50%)}
 :root .sfp-lijst--rij li a{color:var(--sfp-b-primair);font-weight:700}
-@media (max-width:1100px){:root .sfp-lijst--rij ul{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:700px){:root p.is-style-sfp-label+.sfp-lijst--rij{margin-top:14px}:root .sfp-lijst--rij ul{grid-template-columns:minmax(0,1fr);gap:10px}}
+@media (max-width:700px){:root p.is-style-sfp-label+.sfp-lijst--rij{margin-top:14px}:root .sfp-lijst--rij ul{flex-direction:column;gap:10px}:root .sfp-lijst--rij li{white-space:normal}}
 
 
 /* zelftestbeeld (3.31.0, C8): op de rechterlijn op computer en tablet, op een telefoon over de volle contentbreedte */

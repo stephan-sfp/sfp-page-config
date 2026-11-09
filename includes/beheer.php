@@ -471,6 +471,13 @@ function sfp_page_config_beheer_stand() {
         'netwerk'          => function_exists( 'sfp_page_config_netwerk_beheer' ) ? sfp_page_config_netwerk_beheer() : array(),
         'logostrook'       => function_exists( 'sfp_page_config_logostrook_beheer' ) ? sfp_page_config_logostrook_beheer() : array(),
         'contact'          => function_exists( 'sfp_page_config_contact_beheer' ) ? sfp_page_config_contact_beheer() : array(),
+        'formulierregel'   => function_exists( 'sfp_page_config_formulierregel_beheer' ) ? sfp_page_config_formulierregel_beheer() : array(),
+        'knop_wachtlijst'  => array(
+            'text'  => function_exists( 'sfp_page_config_tekst_eigen' ) ? sfp_page_config_tekst_eigen( 'knop_wachtlijst' ) : '',
+            'norm'  => sfp_page_config_tekst_standaard( 'knop_wachtlijst' ),
+            'anker' => (string) sfp_page_config_get_setting( 'knop_wachtlijst_anker', '' ),
+            'anker_norm' => function_exists( 'sfp_page_config_knop_wachtlijst_anker_norm' ) ? sfp_page_config_knop_wachtlijst_anker_norm() : '',
+        ),
         'coach'            => array(
             'url'  => (string) sfp_page_config_get_setting( 'coach_persoon', '' ),
             'norm' => function_exists( 'sfp_page_config_coach_norm' ) ? sfp_page_config_coach_norm() : '',
