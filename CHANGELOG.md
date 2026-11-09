@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.41.1] - 2026-11-09
+
+Terugdraaien: versie 3.41.0 terugzetten (zip uit de tag v3.41.0, map sfp-page-config).
+
+### Gewijzigd
+- Logostrook direct onder de held: 48 px ruimte erboven in plaats van 96 px (telefoon 32 in plaats van 64), op alle labels (besluit Stephan 9-11).
+
 ## [3.41.0] - 2026-11-09
 
 Blok Keuzehulp (punt 17 van home en Over, besluit Stephan 9-11: eigen blok). Terugdraaien: versie 3.40.0 terugzetten (zip uit de tag v3.40.0, map sfp-page-config); een pagina met het blok toont dan niets op die plek, zet daarom eerst het HTML-blok terug.

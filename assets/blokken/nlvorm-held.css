@@ -100,4 +100,6 @@ html:has(.sfp-held--wit,.sfp-held--foto){scroll-behavior:auto!important}
   :root .sfp-held--wit .sfp-held__tekst>.sfp-held__bewijs{order:2;margin-top:-14px}
   :root .sfp-held--wit .sfp-held__tekst>.wp-block-buttons{order:3}
 }
-
+/* logostrook direct onder de held (3.41.1, besluit Stephan 9-11-2026): minder ruimte erboven, 48 px (telefoon 32 px) */
+:root .sfp-held+.sfp-sectie:has(>.sfp-sectie__binnen>.sfp-logostrook:first-child){padding-top:48px}
+@media (max-width:700px){:root .sfp-held+.sfp-sectie:has(>.sfp-sectie__binnen>.sfp-logostrook:first-child){padding-top:32px}}
