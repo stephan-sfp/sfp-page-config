@@ -34,7 +34,8 @@
   :root:has(.sfp-held--wit) .sfp-zt-cta__knop a{display:inline-flex;text-align:left}
 }
 @media (min-width:701px) and (max-width:980px){
-  :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta){grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center}
+  /* 3.36.0 (punt 3): ook naast elkaar onder een held met foto (home), zoals op de coachpagina */
+  :root:is(:has(.sfp-held--wit),:has(.sfp-held--foto)) .sfp-kolommen:has(.sfp-zt-cta){grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center}
   :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image{order:1;justify-self:end}
   :root:has(.sfp-held--wit) .sfp-kolommen:has(.sfp-zt-cta) .wp-block-image img{width:auto;max-height:380px;margin:0}
 }

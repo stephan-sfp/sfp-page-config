@@ -1002,7 +1002,7 @@ function sfp_page_config_blokken_editor_css() {
  * @return string[]
  */
 function sfp_page_config_blokken_editor_bestanden() {
-    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-over', 'nlvorm-archief', 'editor' );
+    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'editor' );
 }
 
 /**
@@ -1187,6 +1187,7 @@ function sfp_page_config_render_kolommen( $attrs, $content ) {
     $nlvorm    .= in_array( $indeling, array( 'boek', 'inschrijven' ), true ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inschrijven' ) : '';
     $nlvorm    .= 'pakketten' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-coach' ) : '';
     $nlvorm    .= 'slot' === $indeling || $carrousel ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-home' ) : '';
+    $nlvorm    .= 'slot' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-slot' ) : '';
     $uitlijning = sfp_page_config_blok_attr( $attrs, 'uitlijning' );
     $uitlijning = in_array( $uitlijning, array( 'boven', 'midden', 'onder', 'rekken' ), true ) ? 'sfp-kolommen--' . $uitlijning : '';
     return sfp_page_config_blokken_css_vangnet( 'sfp/kolommen' ) . $nlvorm

@@ -74,8 +74,10 @@
 .is-style-sfp-pijl a:hover{color:var(--sfp-b-hover)}
 /* Pijllink in een kaart (3.27.1, besluit 5-11-2026): de aanwijzing onder in een klikbare kaart volgt de tweede call-to-action uit branding.md: bodyfont, 700, altijd onderstreept, 3 px onder de muis. Specificiteit (0,3,1), zodat de onderstreping niet van de paginacontext afhangt (Astra's .ast-single-post .entry-content a is (0,2,1)). Buiten een kaart blijft de Pijllink zoals hij was. */
 :root .sfp-kaart .is-style-sfp-pijl{font-family:var(--sfp-b-tekst)}
-:root .sfp-kaart .is-style-sfp-pijl a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
-:root .sfp-kaart .is-style-sfp-pijl a:is(:hover,:focus){text-decoration-thickness:3px}
+:root .sfp-kaart .is-style-sfp-pijl a{color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+/* 3.36.0 (punt 9): kleur van de tekstlink op een lichte achtergrond (branding.md, Kleur per onderdeel); onder de muis blijft de kleur, de onderstreping wordt 3 px in Links en knoppen */
+:root .sfp-kaart .is-style-sfp-pijl a:is(:hover,:focus),:root .sfp-kaart.sfp-kaart--link:hover .is-style-sfp-pijl a{color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+:root .sfp-kaart--donker .is-style-sfp-pijl a,:root .sfp-kaart--donker .is-style-sfp-pijl a:is(:hover,:focus){color:var(--sfp-b-wit)}
 /* Label boven een kop (3.24.0), bijvoorbeeld op de boekkaart; doorgestreept (s) voor een oude prijs. */
 .is-style-sfp-label{font-family:var(--sfp-b-kop);font-weight:var(--sfp-kopfont-gewicht,900);font-size:12px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:var(--sfp-b-links)}
 .is-style-sfp-label s{opacity:.55;margin-right:2px}

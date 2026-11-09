@@ -160,7 +160,7 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
     );
     $doel    = sanitize_title( sfp_page_config_blok_attr( $attrs, 'doel', 'inschrijven' ) );
     $doel    = '' !== $doel ? $doel : 'inschrijven';
-    $css     = sfp_page_config_blokken_css_vangnet( 'sfp/groepskaarten' );
+    $css     = sfp_page_config_blokken_css_vangnet( 'sfp/groepskaarten' ) . sfp_page_config_blokken_css_vangnet( 'sfp/kaart' );
 
     $prijs = '';
     if ( $info['prijs'] > 0 ) {
@@ -176,7 +176,7 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
         // Geen groep gepland (3.31.0): één wachtlijstkaart, zonder datumrijen.
         $link = '<a class="sfp-tekstlink" href="#' . esc_attr( $doel ) . '" data-sfp-groep="wachtlijst">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) ) . '</a>';
         return $css . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-groepen', 'sfp-groepen--leeg' ) ) . '>'
-            . '<div class="sfp-kolommen sfp-kolommen--groepen sfp-kolommen--een"><div class="sfp-kaart sfp-kaart--accent sfp-groep sfp-groep--wachtlijst">'
+            . '<div class="sfp-kolommen sfp-kolommen--groepen sfp-kolommen--een"><div class="sfp-kaart sfp-kaart--accent sfp-klikkaart sfp-groep sfp-groep--klikbaar sfp-groep--wachtlijst">'
             . '<div class="sfp-groep__kopregel"><p class="is-style-sfp-label">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_label' ) ) . '</p>'
             . '<span class="sfp-groep__status sfp-groep__status--wachtlijst">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_status' ) ) . '</span></div>'
             . '<h3>' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_kop' ) ) . '</h3>'
@@ -196,7 +196,8 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
             $rijen .= '<li><span class="sfp-groep__dag">' . esc_html( sfp_page_config_tekst_f( 'groep_dag', $i + 1 ) ) . '</span><span>' . esc_html( trim( $deel['dag'] . ' ' . $deel['nr'] . ' ' . $deel['maand'] ) ) . '</span></li>';
         }
         $vol     = 'vol' === $g['status'];
-        $kaarten .= '<div class="sfp-kaart sfp-kaart--accent sfp-groep' . ( $vol ? ' sfp-groep--vol' : '' ) . '">'
+        // Hele kaart klikbaar (3.36.0, groepskaart-klikbaar): de enige link in de kaart rekt uit over de kaart; een volle groep heeft geen link.
+        $kaarten .= '<div class="sfp-kaart sfp-kaart--accent sfp-groep' . ( $vol ? ' sfp-groep--vol' : ' sfp-klikkaart sfp-groep--klikbaar' ) . '">'
             . '<div class="sfp-groep__kopregel"><p class="is-style-sfp-label">' . esc_html( sfp_page_config_tekst_f( 'groep', $g['nr'] ) ) . '</p>'
             . '<span class="sfp-groep__status' . ( '' !== $g['status'] ? ' sfp-groep__status--' . esc_attr( $g['status'] ) : '' ) . '">' . esc_html( $statussen[ $g['status'] ] ) . '</span></div>'
             . '<h3>' . esc_html( sfp_page_config_tekst_f( 'groep_start', trim( $eerste['nr'] . ' ' . $eerste['maand'] ) ) ) . '</h3>'
@@ -624,6 +625,9 @@ function sfp_page_config_nlvorm_delen( $inhoud ) {
     // carrousel, laatste artikelen) en Over (team, tabs als kaart, netwerk).
     if ( preg_match( '/<!-- wp:sfp\/held \{[^}]*"variant":"foto"|<!-- wp:sfp\/kolommen \{[^}]*"indeling":"slot"|<!-- wp:sfp\/kolommen \{[^}]*"carrousel":true|<!-- wp:sfp\/kaart \{[^}]*"beeld":true|<!-- wp:sfp\/(artikelen|google-samenvatting)/', $inhoud ) ) {
         $delen[] = 'nlvorm-home';
+    }
+    if ( preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"slot"/', $inhoud ) ) {
+        $delen[] = 'nlvorm-slot';
     }
     if ( preg_match( '/<!-- wp:sfp\/tabs \{[^}]*"vorm":"kaart"|<!-- wp:sfp\/(team|netwerk)[ \/-]/', $inhoud ) ) {
         $delen[] = 'nlvorm-over';

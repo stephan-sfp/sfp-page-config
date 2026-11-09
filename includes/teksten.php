@@ -849,6 +849,14 @@ function sfp_page_config_teksten_register() {
             'en'    => 'Next start',
             'pt'    => 'Próximo início',
         ),
+        // Netwerkkaart (3.36.0): aanwijzing onder in de klikbare kaart (branding.md, Klikbare kaart).
+        'netwerk_naar' => array(
+            'groep' => 'Over',
+            'label' => 'Netwerkkaart: tekstlink onder in de kaart',
+            'nl'    => 'Naar de site',
+            'en'    => 'Visit the site',
+            'pt'    => 'Visitar o site',
+        ),
         'held_op_google' => array(
             'groep' => 'Trainingspagina',
             'label' => 'Held en USP-strook: achter het Google-cijfer',

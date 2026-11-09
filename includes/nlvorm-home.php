@@ -297,7 +297,7 @@ function sfp_page_config_google_samenvatting_html() {
         . ( '' !== $regel ? '<span>' . esc_html( $regel ) . '</span>' : '' ) . '</span>';
     $link   = sfp_page_config_nlvorm_google_link();
     return '' !== $link
-        ? '<a class="sfp-google-sam" href="' . esc_url( $link ) . '" target="_blank" rel="noopener">' . $binnen . '</a>'
+        ? '<a class="sfp-google-sam sfp-klikkaart" href="' . esc_url( $link ) . '" target="_blank" rel="noopener">' . $binnen . '</a>'
         : '<span class="sfp-google-sam">' . $binnen . '</span>';
 }
 
@@ -309,7 +309,7 @@ function sfp_page_config_google_samenvatting_html() {
  * @return string
  */
 function sfp_page_config_render_google_samenvatting( $attrs, $content ) {
-    return sfp_page_config_blokken_css_vangnet( 'sfp/google-samenvatting' )
+    return sfp_page_config_blokken_css_vangnet( 'sfp/google-samenvatting' ) . sfp_page_config_blokken_css_vangnet( 'sfp/kaart' )
         . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-reviews-kop' ) ) . '><div class="sfp-reviews-kop__tekst">' . $content . '</div>' . sfp_page_config_google_samenvatting_html() . '</div>';
 }
 
@@ -429,8 +429,9 @@ function sfp_page_config_render_netwerk() {
                 )
             )
             : '';
-        $kaarten .= '<a class="sfp-kaart sfp-kaart--vlak sfp-netwerk__kaart" href="' . esc_url( $l['url'] ) . '">' . $icoon
-            . '<span><strong>' . esc_html( $l['naam'] ) . '</strong>' . esc_html( $l['zin'] ) . '</span></a>';
+        $kaarten .= '<a class="sfp-kaart sfp-kaart--vlak sfp-klikkaart sfp-netwerk__kaart" href="' . esc_url( $l['url'] ) . '">' . $icoon
+            . '<span class="sfp-netwerk__tekst"><strong>' . esc_html( $l['naam'] ) . '</strong>' . esc_html( $l['zin'] ) . '</span>'
+            . '<span class="sfp-netwerk__naar" aria-hidden="true">' . esc_html( sfp_page_config_tekst( 'netwerk_naar' ) ) . '</span></a>';
     }
     return sfp_page_config_blokken_css_vangnet( 'sfp/netwerk' ) . sfp_page_config_blokken_css_vangnet( 'sfp/kaart' ) . sfp_page_config_blokken_css_vangnet( 'sfp/kolommen' )
         . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-kolommen', 'sfp-kolommen--drie', 'sfp-netwerk' ) ) . '>' . $kaarten . '</div>';

@@ -9,7 +9,8 @@
 
 /* ---------- H1 Held foto ---------- */
 :root .sfp-held--foto{background:var(--sfp-b-primair);display:flex;align-items:center;min-height:clamp(560px,75vh,820px)}
-:root .sfp-held--foto>.sfp-held__achter{position:absolute;inset:0;margin:0;z-index:0;width:auto;max-width:none}
+/* 3.36.0 (punt 1): Astra zet elk kind van de inhoud op de contentbreedte (0,4,0); de foto blijft over de volle breedte van de held */
+:root .sfp-held.sfp-held--foto>.sfp-held__achter.sfp-held__achter{position:absolute;inset:0;margin:0;z-index:0;width:auto;max-width:none}
 :root .sfp-held--foto>.sfp-held__achter img{width:100%;height:100%;object-fit:cover;object-position:var(--sfp-held-focus,68% 40%);display:block;border-radius:0}
 :root .sfp-held--foto::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--sfp-b-primair) 94%,transparent) 0,color-mix(in srgb,var(--sfp-b-primair) 82%,transparent) 36%,color-mix(in srgb,var(--sfp-b-primair) 20%,transparent) 62%,transparent 78%)}
 :root .sfp-held--foto>.sfp-held__binnen{position:relative;z-index:2;grid-template-columns:minmax(0,580px);grid-template-areas:"kop""intro""knoppen""bewijs";padding:64px 24px}
@@ -22,7 +23,7 @@
 :root .sfp-held--foto .sfp-accent{color:var(--sfp-b-secundair);background:none}
 @media (min-width:701px) and (max-width:980px){
   :root .sfp-held--foto{min-height:560px}
-  :root .sfp-held--foto>.sfp-held__achter{left:36%}
+  :root .sfp-held.sfp-held--foto>.sfp-held__achter.sfp-held__achter{left:36%}
   :root .sfp-held--foto>.sfp-held__achter img{object-position:66% 40%}
   :root .sfp-held--foto::after{background:linear-gradient(90deg,var(--sfp-b-primair) 0,var(--sfp-b-primair) 40%,color-mix(in srgb,var(--sfp-b-primair) 70%,transparent) 52%,transparent 72%)}
   :root .sfp-held--foto>.sfp-held__binnen{grid-template-columns:minmax(0,480px);padding:56px 24px}
@@ -62,15 +63,7 @@
 :root .sfp-sectie__binnen>h2+.sfp-artikelen{margin-top:36px}
 :root .sfp-artikelen+:is(p,.wp-block-buttons){margin-top:32px}
 
-/* ---------- H2 Slot met twee routes ---------- */
-:root .sfp-kolommen.sfp-kolommen--slot{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch}
-:root .sfp-kolommen.sfp-kolommen--slot>.sfp-kolom>.sfp-kaart{height:100%}
-:root .sfp-kolommen.sfp-kolommen--slot .sfp-kaart :is(.latepoint-book-form-wrapper,.wp-block-latepoint-book-form,.srfm-form-container){width:100%;margin:0}
-:root .sfp-kolommen.sfp-kolommen--slot .sfp-kaart>.is-style-sfp-wie{margin-top:auto;display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:12px;align-items:center}
-:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie img{grid-row:1/span 2}
-:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie strong{align-self:end}
-:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie span{align-self:start;font-size:14px}
-:root .sfp-sectie__binnen>:is(h2,p)+.sfp-kolommen--slot{margin-top:36px}
+/* ---------- H2 Slot met twee routes: sinds 3.36.0 in nlvorm-slot.css ---------- */
 
 /* ---------- H6 Reviewkop en carrousel ---------- */
 :root .sfp-reviews-kop{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
@@ -79,13 +72,14 @@
 :root .sfp-reviews-kop+*{margin-top:36px}
 :root .sfp-google-sam{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--sfp-b-body);background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);padding:12px 18px}
 :root a.sfp-google-sam:hover{border-color:var(--sfp-b-lijn-sterk)}
+/* 3.36.0 (punt 12): klikbaar als geheel, zonder linkopmaak; Astra onderstreept tot (0,5,1), deze regel staat op (0,6,1) */
+:root .entry-content a.sfp-google-sam.sfp-google-sam.sfp-google-sam.sfp-google-sam,:root a.sfp-google-sam.sfp-google-sam.sfp-google-sam.sfp-google-sam.sfp-google-sam{text-decoration:none;color:var(--sfp-b-body)}
 :root .sfp-google-sam__cijfer{font-family:var(--sfp-b-kop);font-weight:900;font-size:34px;line-height:1;color:var(--sfp-b-primair)}
 :root .sfp-google-sam__rechts{display:grid;gap:2px;font-size:14px}
 :root .sfp-google-sam__sterren{color:var(--sfp-b-ster);letter-spacing:2px;font-size:16px}
 
 /* ---------- Tablet en telefoon ---------- */
 @media (max-width:980px){
-  :root .sfp-kolommen.sfp-kolommen--slot{grid-template-columns:minmax(0,1fr)}
 }
 @media (min-width:701px) and (max-width:980px){
   :root .sfp-kolommen--drie>.sfp-kaart.sfp-kaart--beeld{flex-direction:row}

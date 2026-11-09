@@ -30,10 +30,13 @@
 .sfp-kaart__link{position:absolute;inset:0;z-index:1;border-radius:inherit}
 .sfp-kaart--link>:not(.sfp-kaart__link){position:relative;z-index:2;pointer-events:none}
 .sfp-kaart--link a{pointer-events:auto}
-:root .sfp-kaart--link{transition:border-color .15s}
+:root .sfp-kaart--link{transition:border-color .15s,transform .15s,box-shadow .15s}
 :root .sfp-kaart--link:hover{border-color:var(--sfp-b-primair);border-top-color:var(--sfp-b-secundair)}
 :root .sfp-kaart--vlak.sfp-kaart--link:hover{border-top-color:var(--sfp-b-primair)}
-.sfp-kaart--link:hover .is-style-sfp-pijl a{color:var(--sfp-b-hover)}
+/* Klikbare kaart (branding.md, 3.36.0): onder de muis iets omhoog met een zachte schaduw in de primaire kleur, nooit grijs; zonder beweging als de bezoeker dat zo heeft ingesteld */
+:root :is(.sfp-kaart--link,.sfp-klikkaart):is(:hover,:focus-within){transform:translateY(-3px);box-shadow:0 12px 28px color-mix(in srgb,var(--sfp-b-primair) 14%,transparent)}
+:root .sfp-klikkaart{transition:transform .15s,box-shadow .15s,border-color .15s}
+@media (prefers-reduced-motion:reduce){:root :is(.sfp-kaart--link,.sfp-klikkaart){transition:none}:root :is(.sfp-kaart--link,.sfp-klikkaart):is(:hover,:focus-within){transform:none}}
 
 @media (max-width:600px){:root .sfp-kaart{padding:22px}}
 

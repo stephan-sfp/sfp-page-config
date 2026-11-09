@@ -189,6 +189,12 @@ function sfp_page_config_reviews_render( $atts ) {
 
     // Alleen eigen reviews, of geen koppeling met Google.
     if ( $manual_only || '' === (string) $atts['place_id'] || '' === (string) $opts['api_key'] ) {
+        // Alleen het cijfer zonder Google (3.36.0, PC-31, besluit Stephan 9-11): het gemiddelde en het aantal
+        // van alle eigen reviews, zonder Google-vermelding. Geen eigen reviews: niets.
+        if ( 'cijfer' === $atts['layout'] ) {
+            $meta = sfp_page_config_reviews_eigen_meta();
+            return $meta ? sfp_page_config_reviews_vangnet() . $renderer->samenvatting( $meta ) : '';
+        }
         if ( empty( $manual ) ) {
             return '';
         }
@@ -223,6 +229,32 @@ function sfp_page_config_reviews_render( $atts ) {
         return '';
     }
     return sfp_page_config_reviews_vangnet() . $renderer->render( $reviews, $atts, $meta, $show_summary );
+}
+
+/**
+ * Gemiddelde en aantal van alle eigen reviews (zonder sterfilter, anders
+ * is het gemiddelde te mooi), in de vorm van de Google-gegevens.
+ *
+ * @return array{rating: float, total: int}|array{}
+ */
+function sfp_page_config_reviews_eigen_meta() {
+    $alle = class_exists( 'SFP_Reviews_Manual' ) ? SFP_Reviews_Manual::get_all() : array();
+    $som  = 0;
+    $n    = 0;
+    foreach ( $alle as $r ) {
+        $cijfer = (int) ( $r['rating'] ?? 0 );
+        if ( $cijfer >= 1 && $cijfer <= 5 ) {
+            $som += $cijfer;
+            ++$n;
+        }
+    }
+    if ( 0 === $n ) {
+        return array();
+    }
+    return array(
+        'rating' => round( $som / $n, 1 ),
+        'total'  => $n,
+    );
 }
 
 /**

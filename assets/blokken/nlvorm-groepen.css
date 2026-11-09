@@ -44,3 +44,11 @@
 :root .sfp-groep__zin{margin:0;font-size:16px;color:var(--sfp-b-body);max-width:52ch}
 :root .sfp-groep--wachtlijst .sfp-groep__status{background:var(--sfp-b-tint2);border-color:transparent}
 @media (max-width:980px){:root .sfp-kolommen--groepen.sfp-kolommen--een{max-width:none}}
+
+/* Hele groepskaart klikbaar (3.36.0): de link (inschrijven of wachtlijst) rekt met ::before uit over de kaart; één klikdoel, één tabstop.
+   De pijl blijft ::after. Hover en focus volgen de klikbare kaart uit kaart.css (.sfp-klikkaart). */
+:root .sfp-groep--klikbaar{position:relative;cursor:pointer}
+:root .sfp-groep--klikbaar .sfp-tekstlink::before{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit}
+:root .sfp-groep--klikbaar .sfp-tekstlink:focus-visible{outline:none}
+:root .sfp-groep--klikbaar:has(.sfp-tekstlink:focus-visible){outline:2px solid var(--sfp-b-primair);outline-offset:3px}
+:root .sfp-groep--klikbaar:hover .sfp-tekstlink{text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}

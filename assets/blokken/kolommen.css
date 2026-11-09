@@ -56,6 +56,13 @@
   :root .sfp-kolommen--twee{grid-template-columns:repeat(2,minmax(0,1fr))}
   :root .sfp-kolommen--drie{grid-template-columns:repeat(3,minmax(0,1fr))}
   :root .sfp-kolommen--tekst-beeld{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+  /* 3.36.0 (punt 2): een afgerond beeld naast tekst loopt van het label tot de laatste regel; de verhouding is de ondergrens */
+  :root .sfp-kolommen--tekst-beeld:has(>.is-style-sfp-afgerond){align-items:stretch}
+  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond{position:relative;align-self:stretch;height:auto;margin:0;aspect-ratio:4/3}
+  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond.sfp-verhouding-169{aspect-ratio:16/9}
+  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond.sfp-verhouding-32{aspect-ratio:3/2}
+  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond.sfp-verhouding-11{aspect-ratio:1/1}
+  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;max-width:none}
   :root .sfp-kolommen--tekst-boek{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
   :root .sfp-kolommen--breed-smal{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:56px}
 }
