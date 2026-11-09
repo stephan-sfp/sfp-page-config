@@ -103,3 +103,12 @@ html:has(.sfp-held--wit,.sfp-held--foto){scroll-behavior:auto!important}
 /* logostrook direct onder de held (3.41.1, besluit Stephan 9-11-2026): minder ruimte erboven, 48 px (telefoon 32 px) */
 :root .sfp-held+.sfp-sectie:has(>.sfp-sectie__binnen>.sfp-logostrook:first-child){padding-top:48px}
 @media (max-width:700px){:root .sfp-held+.sfp-sectie:has(>.sfp-sectie__binnen>.sfp-logostrook:first-child){padding-top:32px}}
+/* held wit tussen 981 en 1200 px (3.41.3): de feitenkaart blijft binnen het beeld plus de uitsprong links (op coachpagina's stak hij 6 tot 41 px buiten beeld), de tekst mag breken */
+@media (min-width:981px) and (max-width:1200px){
+:root .sfp-held__feit{max-width:calc(100% + 28px)}
+:root .sfp-held__feit>div{padding:14px 16px;min-width:0}
+:root .sfp-held__feit>div:first-child{padding-left:16px}
+:root .sfp-held__feit strong{font-size:15px;white-space:normal}
+}
+/* bewijsregel (3.41.3): cijfer en aantal reviews op één regel */
+:root .sfp-held__score>span:last-child{white-space:nowrap}
