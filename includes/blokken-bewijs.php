@@ -109,6 +109,34 @@ function sfp_page_config_logostrook_ids( $logos ) {
 }
 
 /**
+ * Optische maat van een logo (3.36.1, besluit Stephan 9-11-2026): elk logo
+ * krijgt dezelfde oppervlakte, zodat brede logo's niet te laag en vierkante
+ * niet te groot ogen. Anker: een logo van 2,5 : 1 staat op 44 px hoog.
+ * Grenzen: hoogstens 56 px hoog en 220 px breed (computer); de telefoon
+ * neemt 75 procent (CSS). Zonder bekende afmetingen: null, dan geldt de
+ * vaste hoogte uit de CSS.
+ *
+ * @param  int $id Bijlage.
+ * @return int[]|null Breedte en hoogte in px.
+ */
+function sfp_page_config_logostrook_maat( $id ) {
+    $meta = wp_get_attachment_metadata( (int) $id );
+    $w    = is_array( $meta ) && ! empty( $meta['width'] ) ? (float) $meta['width'] : 0.0;
+    $h    = is_array( $meta ) && ! empty( $meta['height'] ) ? (float) $meta['height'] : 0.0;
+    if ( $w <= 0 || $h <= 0 ) {
+        return null;
+    }
+    $r      = $w / $h;
+    $hoogte = min( 56.0, 44.0 * sqrt( 2.5 / $r ) );
+    $breedte = $hoogte * $r;
+    if ( $breedte > 220.0 ) {
+        $breedte = 220.0;
+        $hoogte  = $breedte / $r;
+    }
+    return array( (int) round( $breedte ), (int) round( $hoogte ) );
+}
+
+/**
  * sfp/logostrook. Zonder logo's toont de site niets (ontwerpregel 14).
  *
  * @param  array $attrs Attributen.
@@ -138,30 +166,62 @@ function sfp_page_config_render_logostrook( $attrs ) {
             )
         );
         if ( '' !== $img ) {
-            $items .= '<li>' . $img . '</li>';
+            $maat   = sfp_page_config_logostrook_maat( $id );
+            $items .= '<li' . ( $maat ? ' style="--sfp-logo-b:' . $maat[0] . 'px;--sfp-logo-h:' . $maat[1] . 'px"' : '' ) . '>' . $img . '</li>';
         }
     }
     if ( '' === $items ) {
         return '';
     }
 
-    // Sinds 3.32.0: meer dan zes logo's lopen als carrousel (besluit Stephan
-    // 8-11). Alleen CSS; de tweede reeks is een kopie voor de naadloze lus
-    // en is verborgen voor schermlezers. Met "minder beweging" staan ze stil
-    // op een rij.
-    $loop = count( $ids ) > 6;
-    $lijst = '<ul class="sfp-logostrook__logos" role="list">' . $items . '</ul>';
-    if ( $loop ) {
-        $kopie = str_replace( array( 'loading="lazy"', '<li>' ), array( 'loading="lazy" alt=""', '<li aria-hidden="true">' ), preg_replace( '/\salt="[^"]*"/', '', $items ) );
-        $lijst = '<div class="sfp-logostrook__venster" style="--sfp-logo-duur:' . (int) ( count( $ids ) * 4 ) . 's">'
-            . '<ul class="sfp-logostrook__logos sfp-logostrook__logos--loop" role="list">' . $items . $kopie . '</ul></div>';
+    // Sinds 3.36.1 (besluit Stephan 9-11-2026): geen carrousel meer. Een
+    // lange lijst (meer dan twaalf logo's) toont twee rijen en een knop om
+    // alles te tonen; past alles in twee rijen, dan haalt het script de knop
+    // weg. Zonder script blijven twee rijen staan.
+    $aantal = count( $ids );
+    $klap   = $aantal > 12;
+    $lijst  = '<ul class="sfp-logostrook__logos" role="list">' . $items . '</ul>';
+    if ( $klap ) {
+        static $nr = 0;
+        ++$nr;
+        $vak   = 'sfp-logos-' . $nr;
+        $meer  = sfp_page_config_tekst_f( 'logostrook_toon_alle', $aantal );
+        $minder = sfp_page_config_tekst( 'logostrook_toon_minder' );
+        $lijst = '<div class="sfp-logostrook__vak" id="' . esc_attr( $vak ) . '">' . $lijst . '</div>'
+            . '<button type="button" class="sfp-logostrook__knop" aria-expanded="false" aria-controls="' . esc_attr( $vak ) . '" data-meer="' . esc_attr( $meer ) . '" data-minder="' . esc_attr( $minder ) . '"><span class="sfp-logostrook__knoptekst">' . esc_html( $meer ) . '</span></button>';
+        sfp_page_config_logostrook_js_nodig( true );
     }
 
     return sfp_page_config_blokken_css_vangnet( 'sfp/logostrook' )
-        . '<div ' . sfp_page_config_blok_omhulling( $loop ? array( 'sfp-logostrook', 'sfp-logostrook--loop' ) : array( 'sfp-logostrook' ) ) . '>'
+        . '<div ' . sfp_page_config_blok_omhulling( $klap ? array( 'sfp-logostrook', 'sfp-logostrook--klap' ) : array( 'sfp-logostrook' ) ) . '>'
         . ( '' !== $label ? '<p class="sfp-logostrook__label">' . esc_html( $label ) . '</p>' : '' )
         . $lijst
         . '</div>';
+}
+
+/**
+ * Staat er een uitklapbare logostrook op de pagina?
+ *
+ * @param  bool $zet True om te markeren.
+ * @return bool
+ */
+function sfp_page_config_logostrook_js_nodig( $zet = false ) {
+    static $nodig = false;
+    if ( $zet ) {
+        $nodig = true;
+    }
+    return $nodig;
+}
+
+add_action( 'wp_footer', 'sfp_page_config_logostrook_js', 30 );
+
+/**
+ * Het script van de uitklapbare logostrook, niet uitgesteld door WP Rocket.
+ */
+function sfp_page_config_logostrook_js() {
+    if ( sfp_page_config_logostrook_js_nodig() && function_exists( 'sfp_page_config_script_tag' ) ) {
+        sfp_page_config_script_tag( 'sfp-logostrook-js', 'blokken/logostrook.js' );
+    }
 }
 
 /* =========================================================================

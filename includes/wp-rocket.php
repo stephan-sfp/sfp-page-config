@@ -190,6 +190,7 @@ function sfp_page_config_rocket_delay_lijst() {
         'sfp-artikel-viewport',
         'sfp-blokken-js',
         'sfp-inhoud-js',
+        'sfp-logostrook-js',
         'sfp-footer-groepen-js',
         'sfp-fj__groep',
         'sfp-zelftest',
