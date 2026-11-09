@@ -49,6 +49,25 @@ function sfp_page_config_formulierregel_instelling() {
 }
 
 /**
+ * De formulieren met de regel: de lijst uit SFP Beheer, plus vanzelf het
+ * inschrijf- en het wachtlijstformulier uit Cursusdata (3.38.1).
+ *
+ * @return int[]
+ */
+function sfp_page_config_formulierregel_ids() {
+    $ids = sfp_page_config_formulierregel_instelling()['formulieren'];
+    if ( function_exists( 'sfp_page_config_wachtlijst_formulier_id' ) ) {
+        foreach ( array( 'inschrijf_formulier', 'wachtlijst_formulier' ) as $sleutel ) {
+            $id = sfp_page_config_wachtlijst_formulier_id( $sleutel );
+            if ( $id && ! in_array( $id, $ids, true ) ) {
+                $ids[] = $id;
+            }
+        }
+    }
+    return $ids;
+}
+
+/**
  * Staat het oude snippet nog aan? Dan slaapt het onderdeel, zodat er nooit
  * twee regels onder een formulier staan.
  *
@@ -99,7 +118,7 @@ function sfp_page_config_formulierregel_blok( $html, $block ) {
         return $html;
     }
     $id = isset( $block['attrs']['id'] ) ? absint( $block['attrs']['id'] ) : 0;
-    if ( ! $id || ! in_array( $id, sfp_page_config_formulierregel_instelling()['formulieren'], true ) ) {
+    if ( ! $id || ! in_array( $id, sfp_page_config_formulierregel_ids(), true ) ) {
         return $html;
     }
     static $css = false;
@@ -173,6 +192,6 @@ function sfp_page_config_formulierregel_beheer() {
         'gekozen'     => sfp_page_config_formulierregel_instelling()['formulieren'],
         'formulieren' => $formulieren,
         'snippet'     => sfp_page_config_formulierregel_snippet_actief(),
-        'voorbeeld'   => wp_strip_all_tags( sfp_page_config_formulierregel_html() ),
+        'voorbeeld'   => html_entity_decode( wp_strip_all_tags( sfp_page_config_formulierregel_html() ), ENT_QUOTES, 'UTF-8' ),
     );
 }

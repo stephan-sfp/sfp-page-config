@@ -178,8 +178,11 @@ function sfp_page_config_knop_voor_pagina( $post_id, $type ) {
 
     if ( $wachtlijst ) {
         // Alleen het anker van het gesprek; zonder dat anker zoekt het
-        // script de boekkaart, en pas dan het eerste formulier.
-        $ankers = array( sfp_page_config_knop_wachtlijst_anker() );
+        // script de boekkaart, en pas dan het eerste formulier. Gaat ook voor
+        // een eigen bestemming bij de pagina (3.38.1).
+        $config         = sfp_page_config_sticky_cta_vorm( sfp_page_config_tekst( 'knop_wachtlijst' ), 'form', '' );
+        $config['vast'] = true;
+        $ankers         = array( sfp_page_config_knop_wachtlijst_anker() );
     }
     $config['hero']   = $hero;
     $config['ankers'] = array_values( array_unique( array_filter( $ankers ) ) );
