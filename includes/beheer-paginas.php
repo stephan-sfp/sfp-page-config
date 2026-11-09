@@ -55,6 +55,11 @@ function sfp_page_config_soorten() {
             'naam'   => 'Home',
             'uitleg' => 'Krijgt de knop onderaan op een telefoon, met de tekst en bestemming hieronder.',
         ),
+        // Sinds 3.37.0 (punt 4 home/Over, besluit Stephan 9-11-2026).
+        'over'      => array(
+            'naam'   => 'Over',
+            'uitleg' => 'Krijgt de knop onderaan op tablet en telefoon, met de tekst en bestemming hieronder.',
+        ),
     );
 }
 

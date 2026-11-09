@@ -175,6 +175,7 @@ function sfp_page_config_render_metabox( $post ) {
         'training'  => 'Training',
         'incompany' => 'Incompany',
         'home'      => 'Home',
+        'over'      => 'Over',
     );
 
     ?>
@@ -561,7 +562,7 @@ function sfp_page_config_save_metabox( $post_id, $post ) {
     }
 
     // --- Page type ---
-    $allowed_types = array( 'coaching', 'training', 'incompany', 'home' );
+    $allowed_types = sfp_page_config_paginasoorten();
     if ( isset( $_POST['sfp_page_type'] ) ) {
         $type = sanitize_text_field( wp_unslash( $_POST['sfp_page_type'] ) );
         if ( in_array( $type, $allowed_types, true ) ) {

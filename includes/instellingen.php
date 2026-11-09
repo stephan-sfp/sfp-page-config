@@ -56,7 +56,7 @@ function sfp_page_config_instellingen() {
  * @return string[]
  */
 function sfp_page_config_paginasoorten() {
-    return array( 'coaching', 'training', 'incompany', 'home' );
+    return array( 'coaching', 'training', 'incompany', 'home', 'over' );
 }
 
 /* =========================================================================
@@ -161,6 +161,16 @@ function sfp_page_config_onderdelen() {
             'naam'   => 'Netwerk',
             'uitleg' => 'De labels van het netwerk voor het blok Netwerk (bijvoorbeeld op de Over-pagina): naam, adres, zin en icoon. De eigen site valt vanzelf weg.',
             'detail' => true,
+        ),
+        'logostrook'   => array(
+            'naam'   => 'Logostrook',
+            'uitleg' => 'De logo\'s van opdrachtgevers voor elke logostrook van de site: één lijst in een vaste volgorde, met een label en per logo eventueel een Engelse variant. Gaat voor de lijst in het blok.',
+            'detail' => true,
+        ),
+        'latepoint'    => array(
+            'naam'   => 'LatePoint-opmaak',
+            'uitleg' => 'Leesbare knoppen en het lettertype van de site op de pagina waar een klant zijn afspraak beheert of annuleert (link uit de bevestigingsmail).',
+            'detail' => false,
         ),
         'contact'      => array(
             'naam'   => 'Contact',
@@ -823,6 +833,12 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 // Sinds 3.35.0: telefoon, e-mail en adres voor het blok Contactgegevens.
                 $alle['contact'] = function_exists( 'sfp_page_config_contact_schoon' ) ? sfp_page_config_contact_schoon( $ruw ) : array();
                 $bewaard[]       = $sleutel;
+                break;
+
+            case 'logostrook':
+                // Sinds 3.37.0: label en logo's voor elke logostrook van de site.
+                $alle['logostrook'] = function_exists( 'sfp_page_config_logostrook_schoon' ) ? sfp_page_config_logostrook_schoon( $ruw ) : array();
+                $bewaard[]          = $sleutel;
                 break;
 
             case 'netwerk':

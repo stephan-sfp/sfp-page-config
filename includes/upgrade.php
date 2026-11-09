@@ -5,6 +5,9 @@
  * Draait één keer per versie (optie sfp_page_config_version) op init, niet
  * op plugins_loaded. Elke taak is veilig om twee keer te draaien.
  *
+ * 3.37.0: de logolijst van de eerste logostrook op de home gaat naar SFP
+ *   Beheer, Logostrook (één bron per site).
+ *
  * 3.22.0:
  *   - eigen reviews (sfp_reviews_manual) laden niet meer bij elke pagina;
  *   - de publicaties tellen vanaf nu in de dagelijkse taak: een keer direct;
@@ -40,6 +43,11 @@ function sfp_page_config_upgrade() {
         }
         delete_option( 'sfp_pc_komende_cursussen' );
         sfp_page_config_upgrade_oude_mappen();
+    }
+    if ( '' === $was || version_compare( $was, '3.37.0', '<' ) ) {
+        if ( function_exists( 'sfp_page_config_logostrook_overnemen' ) ) {
+            sfp_page_config_logostrook_overnemen();
+        }
     }
     update_option( 'sfp_page_config_version', SFP_PAGE_CONFIG_VERSION, true );
 }

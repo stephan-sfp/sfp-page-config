@@ -82,6 +82,15 @@ function sfp_page_config_teksten_register() {
             'pt'     => 'Agende uma conversa',
             'opslag' => 'sticky_cta.home.text',
         ),
+        'knop_over'                   => array(
+            'groep'  => 'Knop onderaan',
+            'label'  => 'Over',
+            // Sinds 3.37.0: de Over-pagina (naar het slot #kennismaken).
+            'nl'     => 'Plan een kennismaking',
+            'en'     => 'Book an introduction',
+            'pt'     => 'Agende uma conversa',
+            'opslag' => 'sticky_cta.over.text',
+        ),
         'knop_incompany'              => array(
             'groep'  => 'Knop onderaan',
             'label'  => 'Incompany',

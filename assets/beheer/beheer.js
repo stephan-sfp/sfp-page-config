@@ -1177,6 +1177,65 @@
 		]);
 	}
 
+	/* Logostrook (3.37.0): één lijst logo's voor elke logostrook van de site. */
+	function detailLogostrook() {
+		var G = S.logostrook || { label: '', norm: '', logos: [] };
+		if (!ui.logostrook) ui.logostrook = JSON.parse(JSON.stringify({ label: G.label || '', logos: G.logos || [] }));
+		var I = ui.logostrook;
+		var L = I.logos;
+		var label = tekstInvoer(I.label, G.norm || 'Vertrouwd door teams van');
+		label.addEventListener('input', function () { I.label = label.value; });
+		function kiesBeeld(titel, meer, klaar) {
+			if (!window.wp || !wp.media) return;
+			var kader = wp.media({ title: titel, library: { type: 'image' }, multiple: meer ? 'add' : false, button: { text: 'Gebruik' } });
+			kader.on('select', function () { klaar(kader.state().get('selection').toJSON()); teken(); });
+			kader.open();
+		}
+		var rijen = L.map(function (l, i) {
+			var enAlt = tekstInvoer(l.en_alt || '', 'Engelse alt-tekst (alleen als die anders is)');
+			enAlt.addEventListener('input', function () { l.en_alt = enAlt.value; });
+			return el('div', { class: 'sfpb-sm sfpb-rij', style: 'align-items:center;gap:12px;flex-wrap:wrap' }, [
+				el('span', { text: String(i + 1), style: 'min-width:2em;text-align:right' }),
+				el('img', { src: l.url || '', alt: '', width: '72', height: '40', style: 'object-fit:contain;width:72px;height:40px' }),
+				el('span', { text: l.alt || '(geen alt-tekst in de media)', style: 'flex:1 1 180px;min-width:0' }),
+				l.en_url ? el('img', { src: l.en_url, alt: '', width: '56', height: '32', title: 'Engelse variant', style: 'object-fit:contain;width:56px;height:32px' }) : null,
+				el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: l.en_id ? 'Andere Engelse variant' : 'Engelse variant', klik: function () {
+					kiesBeeld('Kies de Engelse variant', false, function (k) { if (k[0]) { l.en_id = k[0].id; l.en_url = k[0].sizes && k[0].sizes.thumbnail ? k[0].sizes.thumbnail.url : k[0].url; } });
+				} }),
+				l.en_id ? el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Geen variant', klik: function () { l.en_id = 0; l.en_url = ''; teken(); } }) : null,
+				el('div', { style: 'flex:1 1 260px;min-width:0' }, [enAlt]),
+				i > 0 ? el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Hoger', klik: function () { L.splice(i - 1, 0, L.splice(i, 1)[0]); teken(); } }) : null,
+				i < L.length - 1 ? el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Lager', klik: function () { L.splice(i + 1, 0, L.splice(i, 1)[0]); teken(); } }) : null,
+				el('button', { class: 'sfpb-knop sfpb-klein sfpb-weg', type: 'button', text: 'Weghalen', klik: function () { L.splice(i, 1); teken(); } })
+			]);
+		});
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Logostrook', 'Eén lijst logo\'s voor elke logostrook van deze site, in deze volgorde. De lijst gaat voor de logo\'s in een blok. Meer dan twaalf: twee rijen en een knop Toon alle. Per logo kan een Engelse variant en een Engelse alt-tekst, voor pagina\'s in het Engels.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				veld('Label boven de logo\'s', label, 'Leeg: ' + (G.norm || 'de standaardtekst') + '.', 'sfpb-ls-label'),
+				el('div', { class: 'sfpb-kaart sfpb-stapel' }, [el('h2', { text: L.length + ' logo\'s' })].concat(rijen).concat([
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Logo\'s toevoegen', klik: function () {
+						kiesBeeld('Kies logo\'s', true, function (k) {
+							k.forEach(function (m) {
+								if (L.some(function (x) { return x.id === m.id; })) return;
+								L.push({ id: m.id, url: m.sizes && m.sizes.thumbnail ? m.sizes.thumbnail.url : m.url, alt: m.alt || '', en_id: 0, en_url: '', en_alt: '' });
+							});
+						});
+					} })
+				])),
+				el('p', { class: 'sfpb-hulp', text: 'De caches leegt de plugin niet: doe dat na opslaan.' }),
+				el('div', { class: 'sfpb-rij' }, [
+					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+						bewaarInstellingen(this, 'logostrook', { logostrook: { label: I.label, logos: L.map(function (l) { return { id: l.id, en_id: l.en_id || 0, en_alt: l.en_alt || '' }; }) } }, null, function () { ui.logostrook = null; });
+					} }),
+					el('button', { class: 'sfpb-knop', type: 'button', text: 'Annuleren', klik: function () { ui.logostrook = null; teken(); } }),
+					flitsPlek('logostrook')
+				])
+			])
+		]);
+	}
+
 	/* Contact (3.35.0): telefoon, e-mail en adres voor het blok Contactgegevens. */
 	function detailContact() {
 		var C = S.contact || {};
@@ -1316,7 +1375,7 @@
 		var coach = tekstInvoer(C.url, C.norm, 'url');
 		coach.setAttribute('aria-label', 'Site van de coach');
 		tel.addEventListener('input', function () { I.telefoon = tel.value; });
-		var soorten = [['training', 'Trainingen'], ['coaching', 'Coaching'], ['incompany', 'Incompany'], ['home', 'Home']].map(function (s) {
+		var soorten = [['training', 'Trainingen'], ['coaching', 'Coaching'], ['incompany', 'Incompany'], ['home', 'Home'], ['over', 'Over']].map(function (s) {
 			return schakel(I.soorten.indexOf(s[0]) > -1, s[1], function (aan) {
 				var i = I.soorten.indexOf(s[0]);
 				if (aan && i < 0) I.soorten.push(s[0]);
@@ -1993,7 +2052,7 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk, contact: detailContact };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk, logostrook: detailLogostrook, contact: detailContact };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 
@@ -2001,6 +2060,7 @@
 		if (ui.detail !== 'banner') ui.banner = null;
 		if (ui.detail !== 'uspstrook') ui.uspstrook = null;
 		if (ui.detail !== 'netwerk') ui.netwerk = null;
+		if (ui.detail !== 'logostrook') ui.logostrook = null;
 		if (ui.detail !== 'merkwaarden') { ui.mwTaal = ''; ui.mwUitslag = null; }
 
 		var y = window.pageYOffset;

@@ -638,6 +638,13 @@
 		return el( Fragment, null,
 			kaartVorm && MediaUploadT ? paneel( 'Icoon', [
 				icoon && icoon.source_url ? el( 'span', { key: 'v', className: 'sfp-tabpaneel__icoon', style: { width: '72px', height: '72px' } }, el( 'i', { style: { '--sfp-icoon': 'url(' + icoon.source_url + ')', width: '36px', height: '36px' } } ) ) : null,
+				props.attributes.icoonId ? null : el( 'div', { key: 'set', className: 'sfp-iconenkeuze', role: 'radiogroup', 'aria-label': 'Icoon uit de vaste set', style: { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '6px', marginBottom: '12px' } },
+					[ { id: '', label: 'Geen', url: '' } ].concat( window.sfpIconen || [] ).map( function ( ic ) {
+						var gekozen = ( props.attributes.icoon || '' ) === ic.id;
+						return el( c.Button, { key: ic.id || 'geen', role: 'radio', 'aria-checked': gekozen, label: ic.label, showTooltip: true, variant: gekozen ? 'primary' : 'secondary', style: { height: '40px', justifyContent: 'center', padding: 0 }, onClick: function () { props.setAttributes( { icoon: ic.id } ); } },
+							ic.url ? el( 'i', { 'aria-hidden': true, style: { display: 'block', width: '22px', height: '22px', background: 'currentColor', WebkitMask: 'url("' + ic.url + '") center/contain no-repeat', mask: 'url("' + ic.url + '") center/contain no-repeat' } } ) : el( 'span', { style: { fontSize: '11px' } }, 'Geen' ) );
+					} )
+				),
 				el( MediaUploadT, {
 					key: 'k',
 					onSelect: function ( m ) { props.setAttributes( { icoonId: m.id || 0 } ); },
@@ -646,7 +653,7 @@
 					render: function ( o ) { return el( c.Button, { variant: 'secondary', onClick: o.open }, props.attributes.icoonId ? 'Ander icoon' : 'Kies een icoon' ); },
 				} ),
 				props.attributes.icoonId ? el( c.Button, { key: 'w', variant: 'link', isDestructive: true, onClick: function () { props.setAttributes( { icoonId: 0 } ); } }, 'Geen icoon' ) : null,
-				uitleg( 'Een SVG met één kleur uit de media. Het krijgt de secundaire kleur van de site. Niet op een telefoon.' ),
+				uitleg( 'Kies een icoon uit de set, of een SVG met één kleur uit de media (die gaat voor). Het krijgt de secundaire kleur van de site. Niet op een telefoon.' ),
 			] ) : null,
 			el( 'div', inner )
 		);
@@ -1790,7 +1797,7 @@
 		var MediaUploadL = be.MediaUpload;
 		var blockProps = useBlockProps( { className: 'sfp-team__lid' } );
 		var zet = function ( k ) { return function ( v ) { var o = {}; o[ k ] = v; props.setAttributes( o ); }; };
-		var url = foto && foto.source_url ? ( foto.media_details && foto.media_details.sizes && foto.media_details.sizes.medium_large ? foto.media_details.sizes.medium_large.source_url : foto.source_url ) : '';
+		var url = foto && foto.source_url ? ( foto.media_details && foto.media_details.sizes && foto.media_details.sizes.medium ? foto.media_details.sizes.medium.source_url : foto.source_url ) : '';
 		return el( Fragment, null,
 			paneel( 'Teamlid', [
 				MediaUploadL ? el( MediaUploadL, {
@@ -1800,6 +1807,8 @@
 					value: a.fotoId,
 					render: function ( o ) { return el( c.Button, { variant: 'secondary', onClick: o.open }, a.fotoId ? 'Andere foto' : 'Kies een foto' ); },
 				} ) : null,
+				url && c.FocalPointPicker ? el( c.FocalPointPicker, { key: 'focus', label: 'Midden van het portret', url: url, value: { x: ( a.focusX === undefined ? 50 : a.focusX ) / 100, y: ( a.focusY === undefined ? 30 : a.focusY ) / 100 }, onChange: function ( p ) { props.setAttributes( { focusX: Math.round( p.x * 1000 ) / 10, focusY: Math.round( p.y * 1000 ) / 10 } ); }, __nextHasNoMarginBottom: true } ) : null,
+				url ? el( c.RangeControl, { key: 'zoom', label: 'Inzoomen', help: 'Zet het gezicht in het midden en zoom tot de hoofden van alle teamleden even groot zijn.', value: a.zoom || 100, min: 100, max: 250, step: 5, onChange: function ( v ) { props.setAttributes( { zoom: v || 100 } ); }, __nextHasNoMarginBottom: true, __next40pxDefaultSize: true } ) : null,
 				el( 'div', { key: 'link', className: 'sfp-linkveld' },
 					el( 'span', { className: 'sfp-vormkeuze__label' }, 'De naam linkt naar' ),
 					el( be.URLInput, { value: a.link || '', onChange: zet( 'link' ), placeholder: 'Bijvoorbeeld de auteurspagina', __nextHasNoMarginBottom: true } ),
@@ -1807,7 +1816,7 @@
 				),
 			] ),
 			el( 'div', blockProps,
-				url ? el( 'img', { src: url, alt: '', className: 'sfp-team__foto' } ) : el( 'div', { className: 'sfp-gegeven-leeg' }, 'Kies een foto in de zijbalk' ),
+				url ? el( 'div', { className: 'sfp-team__portret', style: { '--sfp-team-focus': ( a.focusX === undefined ? 50 : a.focusX ) + '% ' + ( a.focusY === undefined ? 30 : a.focusY ) + '%', '--sfp-team-zoom': ( a.zoom || 100 ) / 100 } }, el( 'img', { src: url, alt: '', className: 'sfp-team__foto' } ) ) : el( 'div', { className: 'sfp-gegeven-leeg' }, 'Kies een foto in de zijbalk' ),
 				el( 'div', { className: 'sfp-team__tekst' },
 					el( RichText, { tagName: 'h3', value: a.naam, placeholder: 'Naam', allowedFormats: [], onChange: zet( 'naam' ) } ),
 					el( RichText, { tagName: 'p', className: 'is-style-sfp-label', value: a.rol, placeholder: 'Rol, bijvoorbeeld: Trainer en coach', allowedFormats: [], onChange: zet( 'rol' ) } ),

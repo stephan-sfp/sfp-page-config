@@ -4,6 +4,19 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.37.0] - 2026-11-09
+
+Home en Over op alle labels, release B (punten 4, 5, 7, 13 en 14 uit de overdracht home-over-DPS; besluiten Stephan 8 en 9-11). Terugdraaien: versie 3.36.1 terugzetten (zip uit de tag v3.36.1, map sfp-page-config); de logostroken tonen dan weer de lijst per blok, de instelling Logostrook blijft bewaard maar wordt niet gebruikt.
+
+### Toegevoegd
+- Paginasoort Over: de knop onderaan op tablet en telefoon, met eigen tekst (standaard Plan een kennismaking) en bestemming, zoals bij Home (punt 4).
+- Vaste iconenset voor Tabs als kaart: achttien lijniconen in de plugin, in de secundaire kleur. Een SVG uit de media blijft mogelijk en gaat voor, dus nieuwe iconen kunnen erbij zonder code (punt 5).
+- Onderdeel Logostrook in SFP Beheer: één lijst logo's per site in een vaste volgorde, met een label en per logo eventueel een Engelse variant en Engelse alt-tekst voor pagina's in het Engels. De lijst gaat altijd voor de lijst in een blok (punt 13). Bij de update neemt elke site de lijst en het label van de eerste logostrook op de home over, in dezelfde volgorde.
+- Onderdeel LatePoint-opmaak: op de pagina waar een klant zijn afspraak beheert of annuleert staat de annuleerknop wit op de functionele foutkleur (contrast boven 4,5 in plaats van ongeveer 2,6) en de pagina in het lettertype van de site (punt 14).
+
+### Gewijzigd
+- Teamlid: rond portret van 160 px op een lichte merktint, met per teamlid een focuspunt en zoom in de zijbalk, zodat de hoofden even groot worden; op een telefoon een rij met een rond portret van 84 px (punt 7).
+
 ## [3.36.1] - 2026-11-09
 
 Logostrook hersteld en opnieuw vormgegeven (besluiten Stephan 9-11; overdracht klantlogos-plaatsen, punt 13 van home en Over). Bevat ook alles uit 3.36.0, dat nog op geen enkele site stond. Terugdraaien: versie 3.35.0 terugzetten (zip uit de tag v3.35.0, map sfp-page-config); er is niets omgezet.
