@@ -28,14 +28,15 @@
 /* Rustig wisselen (3.37.1, besluit Stephan 9-11-2026, variant B): vijf vaste plekken, op een telefoon drie.
    De rest van de lijst staat verborgen; het script laat op een plek een logo invloeien. Elk beeld in een plek
    ligt in dezelfde rastercel, zodat oud en nieuw over elkaar vervagen zonder dat er iets verspringt. */
-:root .sfp-logostrook__logos{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:28px 40px;max-width:1100px;margin-inline:auto}
+/* Minder dan vijf logo's (3.37.2): evenveel kolommen als logo's, gecentreerd. */
+:root .sfp-logostrook__logos{display:grid;grid-template-columns:repeat(var(--sfp-logos-n,5),minmax(0,1fr));gap:28px 40px;max-width:min(1100px,calc(var(--sfp-logos-n,5) * 260px));margin-inline:auto}
 :root .sfp-logostrook__logos > li{display:grid;place-items:center;min-height:56px;min-width:0}
 :root .sfp-logostrook__logos > li > *{grid-area:1/1;max-width:100%;transition:opacity .9s ease}
 :root .sfp-logostrook__logos > li > .is-uit{opacity:0}
 :root .sfp-logostrook__logos > li:nth-child(n+6){display:none}
 :root :is(img.sfp-logostrook__logo,.sfp-logostrook__logos picture img){max-width:100%}
 @media (max-width:600px){
-:root .sfp-logostrook__logos{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 20px}
+:root .sfp-logostrook__logos{grid-template-columns:repeat(var(--sfp-logos-nt,3),minmax(0,1fr));gap:24px 20px}
 :root .sfp-logostrook__logos > li{min-height:42px}
 :root .sfp-logostrook__logos > li:nth-child(n+4){display:none}
 }

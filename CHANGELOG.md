@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.37.2] - 2026-11-09
+
+Terugdraaien: versie 3.37.1 terugzetten (zip uit de tag v3.37.1, map sfp-page-config).
+
+### Gerepareerd
+- Logostrook met minder dan vijf logo's (DST: drie) staat weer in het midden. Sinds 3.37.1 vulden ze links de eerste plekken van vijf.
+
 ## [3.37.1] - 2026-11-09
 
 Logostrook: rustig wisselen in plaats van uitklappen (besluit Stephan 9-11, punt 13 van home en Over, variant B uit de dummy). Geldt op alle labels. Terugdraaien: versie 3.37.0 terugzetten (zip uit de tag v3.37.0, map sfp-page-config); er is niets omgezet.

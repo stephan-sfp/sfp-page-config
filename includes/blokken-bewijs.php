@@ -336,7 +336,7 @@ function sfp_page_config_render_logostrook( $attrs ) {
     return sfp_page_config_blokken_css_vangnet( 'sfp/logostrook' )
         . '<div ' . sfp_page_config_blok_omhulling( $wissel ? array( 'sfp-logostrook', 'sfp-logostrook--wissel' ) : array( 'sfp-logostrook' ) ) . '>'
         . ( '' !== $label ? '<p class="sfp-logostrook__label">' . esc_html( $label ) . '</p>' : '' )
-        . '<ul class="sfp-logostrook__logos" role="list">' . $items . '</ul>'
+        . '<ul class="sfp-logostrook__logos" role="list"' . ( count( $ids ) < 5 ? ' style="--sfp-logos-n:' . count( $ids ) . ';--sfp-logos-nt:' . min( 3, count( $ids ) ) . '"' : '' ) . '>' . $items . '</ul>'
         . '</div>';
 }
 
