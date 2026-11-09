@@ -4,6 +4,19 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.40.0] - 2026-11-09
+
+Schema van tools en begrippen, en het veld Inhoudelijk herzien op (besluiten Stephan 23-10, 25-10 en 9-11). Terugdraaien: versie 3.39.1 terugzetten (zip uit de tag v3.39.1, map sfp-page-config); de velden Inhoudelijk herzien op en Gebaseerd op blijven bewaard maar worden niet gebruikt.
+
+### Toegevoegd
+- Artikel: veld Inhoudelijk herzien op (paneel Deze pagina, met knop Vandaag). De regel Bijgewerkt in de kopkaart en dateModified in het schema volgen dat veld; een kleine correctie verschuift de datum niet meer. Leeg: de laatste opslag. Bij de update krijgt elk gepubliceerd artikel eenmalig de datum van zijn laatste opslag.
+- Tool: veld Gebaseerd op (paneel Deze pagina): het model of de bron achter de tool, als link of naam, voor isBasedOn. Leeg: geen isBasedOn.
+
+### Gewijzigd
+- Schema van een tool: author en creator wijzen naar de Person op de persoonlijke site (SFP Beheer, coach_persoon; norm stephanborggreve.com/#person) in plaats van een niet-bestaande #person op de eigen site; operatingSystem Web in plaats van Any; isBasedOn uit het nieuwe veld in plaats van de eigen uitlegsectie.
+- Op een toolpagina gaat het SoftwareApplication-knooppunt van SureRank uit de grafiek, zodat er één WebApplication overblijft (die van de plugin). WebSite, WebPage, Organization en het kruimelpad van SureRank blijven.
+- Schema van een begrip: author wijst ook naar de Person op de persoonlijke site als het profiel naar de eigen site wijst.
+
 ## [3.39.1] - 2026-11-09
 
 Terugdraaien: versie 3.39.0 terugzetten (zip uit de tag v3.39.0, map sfp-page-config).

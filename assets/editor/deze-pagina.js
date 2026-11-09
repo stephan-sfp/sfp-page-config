@@ -216,6 +216,25 @@
 			delen.push( el( Vorm, { key: 'vorm', meta: meta, zetMeta: zetMeta, editor: editor, stand: stand } ) );
 		}
 
+		/* ---------- Artikel: inhoudelijk herzien (sinds 3.40.0) ---------- */
+		if ( 'post' === editor.type && S.artikel ) {
+			var vandaag = new Date();
+			var iso = vandaag.getFullYear() + '-' + String( vandaag.getMonth() + 1 ).padStart( 2, '0' ) + '-' + String( vandaag.getDate() ).padStart( 2, '0' );
+			delen.push( el( 'div', { key: 'herzien', className: 'sfp-dp-deel' },
+				kop( 'Inhoudelijk herzien' ),
+				el( c.TextControl, {
+					label: 'Inhoudelijk herzien op',
+					type: 'date',
+					value: meta.sfp_herzien || '',
+					onChange: function ( v ) { zetMeta( 'sfp_herzien', v ); },
+					help: 'Staat als Bijgewerkt in de kopkaart en als dateModified voor Google. Pas aan bij een inhoudelijke herziening, niet bij een kleine correctie. Leeg: de datum van de laatste opslag.',
+					__nextHasNoMarginBottom: true,
+					__next40pxDefaultSize: true,
+				} ),
+				el( c.Button, { variant: 'secondary', onClick: function () { zetMeta( 'sfp_herzien', iso ); } }, 'Vandaag' )
+			) );
+		}
+
 		/* ---------- Tool: de beschrijving (sinds 3.8.0) ---------- */
 		if ( 'tool' === editor.type ) {
 			delen.push( el( ToolBeschrijving, { key: 'tool', meta: meta, zetMeta: zetMeta, editor: editor, stand: stand } ) );
@@ -465,6 +484,16 @@
 			onChange: function ( v ) { props.zetMeta( 'sfp_tool_alleen_artikel', !! v ); },
 			help: 'Niet op de toolpagina, niet in Andere tools, niet in de sitemap. Plaats de tool met het blok Tool in het artikel; het eigen adres stuurt daarheen door.',
 			__nextHasNoMarginBottom: true,
+		} ) );
+		// Sinds 3.40.0: het model of de bron achter de tool (isBasedOn).
+		stukken.push( el( c.TextControl, {
+			key: 'basis',
+			label: 'Gebaseerd op',
+			value: meta.sfp_tool_basis || '',
+			onChange: function ( v ) { props.zetMeta( 'sfp_tool_basis', v ); },
+			help: 'Het model of de bron waarop de tool rust: een link of een naam. Voor Google (isBasedOn). Leeg: niets.',
+			__nextHasNoMarginBottom: true,
+			__next40pxDefaultSize: true,
 		} ) );
 		// Sinds 3.16.0: de teksten typ je in de tool in het canvas. Hier de
 		// keuzes over de vorm; de beschrijving zelf staat onder Geavanceerd.

@@ -819,7 +819,8 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
 
     // get_post_timestamp() werkt ook bij een concept, dat nog geen GMT-datum heeft.
     $gepubliceerd = (int) get_post_timestamp( $post, 'date' );
-    $bijgewerkt   = (int) get_post_timestamp( $post, 'modified' );
+    // Sinds 3.40.0: de laatste inhoudelijke herziening (veld), anders de laatste opslag.
+    $bijgewerkt   = function_exists( 'sfp_page_config_herzien' ) ? sfp_page_config_herzien( $post ) : (int) get_post_timestamp( $post, 'modified' );
     if ( ! $gepubliceerd ) {
         $gepubliceerd = time();
     }
