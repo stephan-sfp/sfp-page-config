@@ -290,6 +290,20 @@ function sfp_page_config_teksten_register() {
         ),
 
         // Logostrook (sinds 3.14.0).
+        'logostrook_toon_alle'        => array(
+            'groep' => 'Logostrook',
+            'label' => 'Knop onder een lange logostrook (%d is het aantal logo\'s)',
+            'nl'    => 'Toon alle %d',
+            'en'    => 'Show all %d',
+            'pt'    => 'Ver todos os %d',
+        ),
+        'logostrook_toon_minder'      => array(
+            'groep' => 'Logostrook',
+            'label' => 'Knop onder een uitgeklapte logostrook',
+            'nl'    => 'Toon minder',
+            'en'    => 'Show fewer',
+            'pt'    => 'Ver menos',
+        ),
         'logostrook_label'            => array(
             'groep' => 'Logostrook',
             'label' => 'Label boven de logo\'s, als het blok geen eigen label heeft',

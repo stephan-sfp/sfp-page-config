@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.36.1] - 2026-11-09
+
+Logostrook hersteld en opnieuw vormgegeven (besluiten Stephan 9-11; overdracht klantlogos-plaatsen, punt 13 van home en Over). Bevat ook alles uit 3.36.0, dat nog op geen enkele site stond. Terugdraaien: versie 3.35.0 terugzetten (zip uit de tag v3.35.0, map sfp-page-config); er is niets omgezet.
+
+### Gerepareerd
+- Logo's die Imagify in een picture-element zet, krijgen weer de juiste maat. De klasse kwam op picture te staan en niet op het beeld, waardoor logo's tot 180 px hoog werden (SwS: 51 van 87).
+
+### Gewijzigd
+- Optische maat per logo: elk logo krijgt dezelfde oppervlakte, zodat brede logo's niet meer te laag ogen (ArtEZ was 15 px) en vierkante niet te groot. Ankerpunt: een logo van 2,5 : 1 staat op 44 px hoog; hoogstens 56 px hoog en 220 px breed, op een telefoon 75 procent daarvan. De plugin rekent per logo uit de afmetingen van het bestand.
+- Lange logostrook (meer dan twaalf logo's): twee rijen zichtbaar, met een strook van de derde rij die naar onderen wegvaagt. Daaronder de tekstlink Toon alle 87 met een pijl die bij openen draait, en Toon minder om in te klappen; een echte knop met aria-expanded. Past alles in twee rijen, dan geen knop.
+
+### Verwijderd
+- De logostrook draait niet meer als carrousel (besluit Stephan 9-11).
+
 ## [3.36.0] - 2026-11-09
 
 Home en Over op alle NL-labels, release A (opmaak, geen gegevens): punten 1, 2, 3, 9, 10, 11, 12 en 15 uit de overdracht home-over-DPS (besluiten Stephan 8 en 9-11), de hele groepskaart klikbaar, en twee kleine backlogpunten. Geldt op alle acht sites. Terugdraaien: versie 3.35.0 terugzetten (zip uit de tag v3.35.0, map sfp-page-config); er is niets omgezet.
