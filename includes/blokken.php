@@ -283,6 +283,11 @@ function sfp_page_config_blokken() {
                     'type'    => 'number',
                     'default' => 0
                 ),
+                // Of een icoon uit de vaste set (3.37.0, assets/iconen/). Een SVG uit de media gaat voor.
+                'icoon'   => array(
+                    'type'    => 'string',
+                    'default' => '',
+                ),
             ),
             'render'      => 'sfp_page_config_render_tab',
         ),
@@ -437,6 +442,17 @@ function sfp_page_config_blokken_registreer() {
             'before'
         );
     }
+
+    // De vaste iconenset voor de keuze in een tab (3.37.0).
+    $iconen = array();
+    foreach ( sfp_page_config_iconen() as $naam => $omschrijving ) {
+        $iconen[] = array(
+            'id'    => $naam,
+            'label' => $omschrijving,
+            'url'   => sfp_page_config_icoon_data( $naam ),
+        );
+    }
+    wp_add_inline_script( 'sfp-blokken-editor', 'window.sfpIconen=' . wp_json_encode( $iconen ) . ';', 'before' );
 
     foreach ( sfp_page_config_blokken() as $naam => $def ) {
         $args = array(
@@ -1388,7 +1404,7 @@ function sfp_page_config_render_tabs( $attrs, $content, $block = null ) {
         $binnen   = $tab->render();
         // Als kaart (3.34.0, O1): tekst links, icoon rechts in de secundaire kleur.
         if ( $kaart ) {
-            $icoon  = sfp_page_config_tab_icoon( (int) ( $tab->attributes['icoonId'] ?? 0 ) );
+            $icoon  = sfp_page_config_tab_icoon( (int) ( $tab->attributes['icoonId'] ?? 0 ), (string) ( $tab->attributes['icoon'] ?? '' ) );
             $binnen = '<div class="sfp-tabpaneel__tekst">' . $binnen . '</div>' . $icoon;
         }
         $panelen .= '<div class="sfp-tabpaneel" role="tabpanel" id="' . esc_attr( $id ) . '" aria-labelledby="' . esc_attr( $id ) . '-k"' . ( $eerste ? '' : ' hidden' ) . '>' . $binnen . '</div>';
@@ -1401,20 +1417,72 @@ function sfp_page_config_render_tabs( $attrs, $content, $block = null ) {
 
 /**
  * Het icoon van een tab (3.34.0): een afbeelding uit de media als masker,
- * zodat het de secundaire kleur van de site krijgt. Geen icoon: leeg.
+ * zodat het de secundaire kleur van de site krijgt. Sinds 3.37.0 ook een
+ * icoon uit de vaste set; een afbeelding uit de media gaat voor. Geen
+ * icoon: leeg.
  *
- * @param  int $id Bijlage.
+ * @param  int    $id    Bijlage.
+ * @param  string $vast  Naam uit de vaste set.
  * @return string
  */
-function sfp_page_config_tab_icoon( $id ) {
-    if ( $id <= 0 || ! wp_attachment_is_image( $id ) ) {
+function sfp_page_config_tab_icoon( $id, $vast = '' ) {
+    $url = '';
+    if ( $id > 0 && wp_attachment_is_image( $id ) ) {
+        $url = esc_url( (string) wp_get_attachment_url( $id ) );
+    }
+    if ( '' === $url && '' !== $vast ) {
+        $url = sfp_page_config_icoon_data( $vast );
+    }
+    if ( '' === $url ) {
         return '';
     }
-    $url = wp_get_attachment_url( $id );
-    if ( ! $url ) {
+    return '<span class="sfp-tabpaneel__icoon" aria-hidden="true"><i style="--sfp-icoon:url(&quot;' . $url . '&quot;)"></i></span>';
+}
+
+/**
+ * De vaste iconenset (3.37.0, punt 5): lijniconen in assets/iconen/, één
+ * kleur via het masker. Aanvullen kan zonder code met een SVG uit de media;
+ * een icoon aan deze set toevoegen is een bestand plus een regel hier.
+ *
+ * @return array<string, string> Naam => omschrijving.
+ */
+function sfp_page_config_iconen() {
+    return array(
+        'verbinding'     => 'Verbinding',
+        'structuur'      => 'Structuur',
+        'authenticiteit' => 'Hart',
+        'gesprek'        => 'Gesprek',
+        'afstemming'     => 'Afstemming',
+        'focus'          => 'Focus',
+        'kennis'         => 'Kennis',
+        'proces'         => 'Proces',
+        'groei'          => 'Groei',
+        'beter'          => 'Beter worden',
+        'voorbeeld'      => 'Ster',
+        'eenvoud'        => 'Eenvoud',
+        'correct'        => 'Correct',
+        'helder'         => 'Helder',
+        'doeltreffend'   => 'Doeltreffend',
+        'spreker'        => 'Spreker',
+        'schrijven'      => 'Schrijven',
+        'groep'          => 'Groep',
+    );
+}
+
+/**
+ * Een icoon uit de vaste set als data-URI, voor een CSS-masker.
+ *
+ * @param  string $naam Naam uit sfp_page_config_iconen().
+ * @return string       Leeg bij een onbekende naam.
+ */
+function sfp_page_config_icoon_data( $naam ) {
+    $naam = sanitize_key( (string) $naam );
+    if ( ! isset( sfp_page_config_iconen()[ $naam ] ) ) {
         return '';
     }
-    return '<span class="sfp-tabpaneel__icoon" aria-hidden="true"><i style="--sfp-icoon:url(' . esc_url( $url ) . ')"></i></span>';
+    $pad = SFP_PAGE_CONFIG_DIR . 'assets/iconen/' . $naam . '.svg';
+    $svg = is_readable( $pad ) ? trim( (string) file_get_contents( $pad ) ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- eigen bestand.
+    return '' === $svg ? '' : 'data:image/svg+xml,' . rawurlencode( $svg );
 }
 
 /**

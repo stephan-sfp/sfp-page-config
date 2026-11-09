@@ -60,6 +60,19 @@ function sfp_page_config_home_blokken( $alle ) {
             'rol'    => $tekst,
             'zin'    => $tekst,
             'link'   => $tekst,
+            // Rond portret (3.37.0, punt 7): focuspunt en zoom per teamlid, zodat de hoofden even groot zijn.
+            'focusX' => array(
+                'type'    => 'number',
+                'default' => 50,
+            ),
+            'focusY' => array(
+                'type'    => 'number',
+                'default' => 30,
+            ),
+            'zoom'   => array(
+                'type'    => 'number',
+                'default' => 100,
+            ),
         ),
         'render'       => 'sfp_page_config_render_teamlid',
     );
@@ -140,18 +153,24 @@ function sfp_page_config_render_teamlid( $attrs ) {
     $foto = $id > 0 && wp_attachment_is_image( $id )
         ? wp_get_attachment_image(
             $id,
-            'medium_large',
+            'medium',
             false,
             array(
                 'class'    => 'sfp-team__foto',
                 'alt'      => $naam,
                 'loading'  => 'lazy',
                 'decoding' => 'async',
-                'sizes'    => '(max-width: 700px) 84px, (max-width: 980px) 33vw, 380px',
+                'sizes'    => '(max-width: 700px) 84px, 160px',
             )
         )
         : '';
     $kop  = '' !== $link ? '<a href="' . $link . '">' . esc_html( $naam ) . '</a>' : esc_html( $naam );
+    if ( '' !== $foto ) {
+        $fx   = isset( $attrs['focusX'] ) ? max( 0, min( 100, (float) $attrs['focusX'] ) ) : 50;
+        $fy   = isset( $attrs['focusY'] ) ? max( 0, min( 100, (float) $attrs['focusY'] ) ) : 30;
+        $zoom = isset( $attrs['zoom'] ) ? max( 100, min( 250, (float) $attrs['zoom'] ) ) : 100;
+        $foto = '<div class="sfp-team__portret" style="--sfp-team-focus:' . round( $fx, 1 ) . '% ' . round( $fy, 1 ) . '%;--sfp-team-zoom:' . round( $zoom / 100, 2 ) . '">' . $foto . '</div>';
+    }
     return '<div class="sfp-team__lid">' . $foto . '<div class="sfp-team__tekst"><h3 class="wp-block-heading">' . $kop . '</h3>'
         . ( '' !== $rol ? '<p class="is-style-sfp-label">' . esc_html( $rol ) . '</p>' : '' )
         . ( '' !== $zin ? '<p class="sfp-team__zin">' . esc_html( $zin ) . '</p>' : '' )

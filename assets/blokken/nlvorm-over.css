@@ -8,8 +8,12 @@
 :root .sfp-team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 :root .sfp-sectie__binnen>:is(h2,p)+.sfp-team{margin-top:36px}
 :root .sfp-team__lid{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);overflow:hidden;display:flex;flex-direction:column;min-width:0}
-:root .sfp-team__lid>img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;object-position:50% 18%;background:var(--sfp-b-wit);border-radius:0;margin:0}
-:root .sfp-team__tekst{display:grid;gap:6px;padding:18px 22px 22px;align-content:start}
+/* Rond portret (3.37.0, punt 7, besluit Stephan 8-11): 160 px op een lichte merktint (tint 2), focuspunt en zoom per teamlid */
+:root .sfp-team__lid{align-items:center;text-align:center;padding-top:28px}
+:root .sfp-team__portret{width:160px;height:160px;flex:none;border-radius:50%;overflow:hidden;background:var(--sfp-b-tint2);margin:0}
+:root .sfp-team__portret>img,:root .sfp-team__lid>img{display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:var(--sfp-team-focus,50% 30%);transform:scale(var(--sfp-team-zoom,1));transform-origin:var(--sfp-team-focus,50% 30%);border-radius:0;margin:0;box-shadow:none}
+:root .sfp-team__lid>img{width:160px;height:160px;border-radius:50%;background:var(--sfp-b-tint2);transform:none}
+:root .sfp-team__tekst{display:grid;gap:6px;padding:18px 22px 22px;align-content:start;justify-items:center}
 :root .sfp-team__tekst>*{margin:0}
 :root .sfp-team__tekst h3{font-size:20px;padding:0}
 :root .sfp-team__tekst h3 a{color:inherit;text-decoration:none}
@@ -60,9 +64,9 @@
 }
 @media (max-width:700px){
   :root .sfp-team{grid-template-columns:minmax(0,1fr);gap:10px}
-  :root .sfp-team__lid{flex-direction:row;align-items:center}
-  :root .sfp-team__lid>img{width:84px;height:84px;flex:0 0 84px;aspect-ratio:1/1}
-  :root .sfp-team__tekst{padding:10px 16px;gap:4px}
+  :root .sfp-team__lid{flex-direction:row;align-items:center;text-align:left;padding:12px 0 12px 12px}
+  :root .sfp-team__portret,:root .sfp-team__lid>img{width:84px;height:84px;flex:0 0 84px}
+  :root .sfp-team__tekst{padding:10px 16px;gap:4px;justify-items:start}
   :root .sfp-team__tekst h3{font-size:17px}
   :root .sfp-team__zin{display:none}
   :root .sfp-tabs--kaart .sfp-tablijst [role=tab]{padding:14px 6px;font-size:13px;letter-spacing:0}

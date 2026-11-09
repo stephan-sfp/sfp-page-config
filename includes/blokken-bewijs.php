@@ -109,6 +109,131 @@ function sfp_page_config_logostrook_ids( $logos ) {
 }
 
 /**
+ * Schoon de instelling Logostrook op (3.37.0): een label en de logo's in
+ * volgorde, per logo eventueel een Engelse variant en Engelse alt-tekst
+ * voor pagina's in het Engels.
+ *
+ * @param  mixed $ruw Ruwe instelling.
+ * @return array{label: string, logos: array<int, array{id: int, en_id: int, en_alt: string}>}
+ */
+function sfp_page_config_logostrook_schoon( $ruw ) {
+    $ruw   = is_array( $ruw ) ? $ruw : array();
+    $logos = array();
+    $gezien = array();
+    foreach ( isset( $ruw['logos'] ) && is_array( $ruw['logos'] ) ? $ruw['logos'] : array() as $l ) {
+        $l  = is_array( $l ) ? $l : array( 'id' => $l );
+        $id = absint( $l['id'] ?? 0 );
+        if ( ! $id || isset( $gezien[ $id ] ) ) {
+            continue;
+        }
+        $gezien[ $id ] = true;
+        $en_id         = absint( $l['en_id'] ?? 0 );
+        $logos[]       = array(
+            'id'     => $id,
+            'en_id'  => $en_id === $id ? 0 : $en_id,
+            'en_alt' => mb_substr( trim( sanitize_text_field( (string) ( $l['en_alt'] ?? '' ) ) ), 0, 150 ),
+        );
+        if ( count( $logos ) >= 200 ) {
+            break;
+        }
+    }
+    return array(
+        'label' => mb_substr( trim( sanitize_text_field( (string) ( $ruw['label'] ?? '' ) ) ), 0, 80 ),
+        'logos' => $logos,
+    );
+}
+
+/**
+ * De instelling Logostrook uit SFP Beheer.
+ *
+ * @return array
+ */
+function sfp_page_config_logostrook_instelling() {
+    $alle = function_exists( 'sfp_page_config_instellingen' ) ? sfp_page_config_instellingen() : array();
+    return sfp_page_config_logostrook_schoon( isset( $alle['logostrook'] ) ? $alle['logostrook'] : array() );
+}
+
+/**
+ * Staat de pagina in het Engels terwijl de site dat niet is? Dan gelden de
+ * Engelse varianten (zoals op SFP; vroeger het snippet 31312).
+ *
+ * @return bool
+ */
+function sfp_page_config_logostrook_engels() {
+    static $en = null;
+    if ( null === $en ) {
+        $en = (bool) preg_match( '/lang="en/i', (string) get_language_attributes( 'html' ) );
+    }
+    return $en;
+}
+
+/**
+ * De instelling voor het scherm in SFP Beheer, met beeld en alt-tekst.
+ *
+ * @return array
+ */
+function sfp_page_config_logostrook_beheer() {
+    $inst = sfp_page_config_logostrook_instelling();
+    $uit  = array();
+    foreach ( $inst['logos'] as $l ) {
+        $l['url']    = (string) wp_get_attachment_image_url( $l['id'], 'thumbnail' );
+        $l['alt']    = (string) get_post_meta( $l['id'], '_wp_attachment_image_alt', true );
+        $l['en_url'] = $l['en_id'] ? (string) wp_get_attachment_image_url( $l['en_id'], 'thumbnail' ) : '';
+        $uit[]       = $l;
+    }
+    return array(
+        'label' => $inst['label'],
+        'norm'  => function_exists( 'sfp_page_config_tekst' ) ? sfp_page_config_tekst( 'logostrook_label' ) : '',
+        'logos' => $uit,
+    );
+}
+
+/**
+ * Eenmalig (3.37.0): neem de lijst en het label van de eerste logostrook op
+ * de homepage over in SFP Beheer, in dezelfde volgorde. Een site zonder
+ * strook op de home houdt een lege lijst; dan geldt de lijst per blok.
+ *
+ * @return bool True als er iets is overgenomen.
+ */
+function sfp_page_config_logostrook_overnemen() {
+    $alle = sfp_page_config_instellingen();
+    if ( ! empty( $alle['logostrook']['logos'] ) ) {
+        return false;
+    }
+    $home = (int) get_option( 'page_on_front' );
+    $post = $home ? get_post( $home ) : null;
+    if ( ! $post instanceof WP_Post ) {
+        return false;
+    }
+    $zoek = function ( $blokken ) use ( &$zoek ) {
+        foreach ( $blokken as $b ) {
+            if ( 'sfp/logostrook' === $b['blockName'] && ! empty( $b['attrs']['logos'] ) ) {
+                return $b['attrs'];
+            }
+            if ( ! empty( $b['innerBlocks'] ) ) {
+                $gevonden = $zoek( $b['innerBlocks'] );
+                if ( $gevonden ) {
+                    return $gevonden;
+                }
+            }
+        }
+        return null;
+    };
+    $attrs = $zoek( parse_blocks( $post->post_content ) );
+    if ( ! $attrs ) {
+        return false;
+    }
+    $alle['logostrook'] = sfp_page_config_logostrook_schoon(
+        array(
+            'label' => isset( $attrs['label'] ) ? wp_strip_all_tags( (string) $attrs['label'] ) : '',
+            'logos' => array_map( 'absint', (array) $attrs['logos'] ),
+        )
+    );
+    update_option( 'sfp_settings', $alle );
+    return true;
+}
+
+/**
  * Optische maat van een logo (3.36.1, besluit Stephan 9-11-2026): elk logo
  * krijgt dezelfde oppervlakte, zodat brede logo's niet te laag en vierkante
  * niet te groot ogen. Anker: een logo van 2,5 : 1 staat op 44 px hoog.
@@ -143,28 +268,52 @@ function sfp_page_config_logostrook_maat( $id ) {
  * @return string
  */
 function sfp_page_config_render_logostrook( $attrs ) {
-    $ids = sfp_page_config_logostrook_ids( isset( $attrs['logos'] ) ? $attrs['logos'] : array() );
-    if ( ! $ids ) {
+    // Sinds 3.37.0 (punt 13, besluit Stephan 9-11-2026): de lijst en het label
+    // uit SFP Beheer, Logostrook, gaan altijd voor. Is die lijst leeg, dan
+    // geldt nog de lijst in het blok.
+    $inst  = function_exists( 'sfp_page_config_onderdeel_aan' ) && ! sfp_page_config_onderdeel_aan( 'logostrook' ) ? array( 'label' => '', 'logos' => array() ) : sfp_page_config_logostrook_instelling();
+    $en    = sfp_page_config_logostrook_engels();
+    $rijen = array();
+    if ( $inst['logos'] ) {
+        foreach ( $inst['logos'] as $l ) {
+            if ( ! wp_attachment_is_image( $l['id'] ) ) {
+                continue;
+            }
+            $rijen[] = array(
+                'id'  => $en && $l['en_id'] && wp_attachment_is_image( $l['en_id'] ) ? $l['en_id'] : $l['id'],
+                'alt' => $en && '' !== $l['en_alt'] ? $l['en_alt'] : '',
+            );
+        }
+    } else {
+        foreach ( sfp_page_config_logostrook_ids( isset( $attrs['logos'] ) ? $attrs['logos'] : array() ) as $id ) {
+            $rijen[] = array(
+                'id'  => $id,
+                'alt' => '',
+            );
+        }
+    }
+    if ( ! $rijen ) {
         return '';
     }
-    $label = isset( $attrs['label'] ) ? trim( wp_strip_all_tags( (string) $attrs['label'] ) ) : '';
+    $ids   = wp_list_pluck( $rijen, 'id' );
+    $label = '' !== $inst['label'] ? $inst['label'] : ( isset( $attrs['label'] ) ? trim( wp_strip_all_tags( (string) $attrs['label'] ) ) : '' );
     if ( '' === $label && function_exists( 'sfp_page_config_tekst' ) ) {
         $label = sfp_page_config_tekst( 'logostrook_label' );
     }
 
     $items = '';
-    foreach ( $ids as $id ) {
-        $img = wp_get_attachment_image(
-            $id,
-            'medium',
-            false,
-            array(
-                'class'    => 'sfp-logostrook__logo',
-                'loading'  => 'lazy',
-                'decoding' => 'async',
-                'sizes'    => '(max-width: 600px) 140px, 180px',
-            )
+    foreach ( $rijen as $rij ) {
+        $id   = $rij['id'];
+        $attr = array(
+            'class'    => 'sfp-logostrook__logo',
+            'loading'  => 'lazy',
+            'decoding' => 'async',
+            'sizes'    => '(max-width: 600px) 165px, 220px',
         );
+        if ( '' !== $rij['alt'] ) {
+            $attr['alt'] = $rij['alt'];
+        }
+        $img = wp_get_attachment_image( $id, 'medium', false, $attr );
         if ( '' !== $img ) {
             $maat   = sfp_page_config_logostrook_maat( $id );
             $items .= '<li' . ( $maat ? ' style="--sfp-logo-b:' . $maat[0] . 'px;--sfp-logo-h:' . $maat[1] . 'px"' : '' ) . '>' . $img . '</li>';

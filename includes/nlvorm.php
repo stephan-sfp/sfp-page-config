@@ -668,7 +668,7 @@ function sfp_page_config_uspstrook_schoon( $ruw ) {
     }
     $soorten = array();
     foreach ( isset( $ruw['soorten'] ) && is_array( $ruw['soorten'] ) ? $ruw['soorten'] : array( 'training', 'coaching' ) as $s ) {
-        if ( in_array( $s, array( 'training', 'coaching', 'incompany', 'home' ), true ) ) {
+        if ( in_array( $s, sfp_page_config_paginasoorten(), true ) ) {
             $soorten[] = (string) $s;
         }
     }
