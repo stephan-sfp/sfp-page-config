@@ -383,7 +383,7 @@ function sfp_page_config_review_google_lijst() {
     if ( empty( $opts['place_id'] ) ) {
         return array();
     }
-    $data = get_transient( 'sfp_reviews_' . md5( (string) $opts['place_id'] ) );
+    $data = ( function_exists( 'sfp_page_config_reviews_gegevens' ) ? sfp_page_config_reviews_gegevens( (string) $opts['place_id'] ) : get_transient( 'sfp_reviews_' . md5( (string) $opts['place_id'] ) ) );
     $uit  = array();
     foreach ( is_array( $data ) && ! empty( $data['reviews'] ) && is_array( $data['reviews'] ) ? $data['reviews'] : array() as $r ) {
         if ( ! is_array( $r ) || empty( $r['author'] ) ) {

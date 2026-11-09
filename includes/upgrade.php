@@ -62,6 +62,14 @@ function sfp_page_config_upgrade() {
             sfp_page_config_herzien_startvulling();
         }
     }
+    if ( '' !== $was && version_compare( $was, '3.41.2', '<' ) && function_exists( 'sfp_page_config_reviews_opties' ) ) {
+        // De vaste kopie van de reviews vanuit de transient, als die er nog is.
+        $opts = sfp_page_config_reviews_opties();
+        $data = '' !== (string) $opts['place_id'] ? get_transient( 'sfp_reviews_' . md5( (string) $opts['place_id'] ) ) : false;
+        if ( is_array( $data ) && ! get_option( 'sfp_reviews_laatste' ) ) {
+            update_option( 'sfp_reviews_laatste', array( 'place' => md5( (string) $opts['place_id'] ), 'data' => $data ), false );
+        }
+    }
     update_option( 'sfp_page_config_version', SFP_PAGE_CONFIG_VERSION, true );
 }
 

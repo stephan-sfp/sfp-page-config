@@ -560,7 +560,7 @@ function sfp_page_config_beheer_blok_css( array $namen ) {
 function sfp_page_config_beheer_reviews_voorbeeld() {
     $opts = sfp_page_config_reviews_opties();
     $uit  = array();
-    $data = '' !== (string) $opts['place_id'] ? get_transient( 'sfp_reviews_' . md5( (string) $opts['place_id'] ) ) : false;
+    $data = '' !== (string) $opts['place_id'] ? ( function_exists( 'sfp_page_config_reviews_gegevens' ) ? sfp_page_config_reviews_gegevens( (string) $opts['place_id'] ) : get_transient( 'sfp_reviews_' . md5( (string) $opts['place_id'] ) ) ) : false;
     if ( is_array( $data ) && ! empty( $data['reviews'] ) ) {
         foreach ( $data['reviews'] as $r ) {
             if ( (int) $r['rating'] >= (int) $opts['min_stars'] ) {

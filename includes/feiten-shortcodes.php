@@ -46,7 +46,7 @@ function sfp_feiten_reviews_uit_transient() {
         return array();
     }
 
-    $cache = get_transient( 'sfp_reviews_' . md5( $opties['place_id'] ) );
+    $cache = ( function_exists( 'sfp_page_config_reviews_gegevens' ) ? sfp_page_config_reviews_gegevens( (string) $opties['place_id'] ) : get_transient( 'sfp_reviews_' . md5( $opties['place_id'] ) ) );
 
     if ( ! is_array( $cache ) || empty( $cache['meta'] ) || ! is_array( $cache['meta'] ) ) {
         return array();

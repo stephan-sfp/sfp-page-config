@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.41.2] - 2026-11-09
+
+Terugdraaien: versie 3.41.1 terugzetten (zip uit de tag v3.41.1, map sfp-page-config); de vaste kopie blijft dan ongebruikt staan.
+
+### Gerepareerd
+- Google-cijfer ontbrak na een update van de plugin. Een update leegt de objectcache en daarmee de bewaarde reviews (gemeten 9-11 op DPS en CVD: direct na de update geen gegevens). De eerste pagina die WP Rocket daarna opbouwde had geen cijfer in de held en de USP-strook, en bleef zo in de cache staan. De plugin bewaart nu ook een vaste kopie in de database (niet automatisch geladen) en herstelt de cache daaruit, zonder op Google te wachten.
+
 ## [3.41.1] - 2026-11-09
 
 Terugdraaien: versie 3.41.0 terugzetten (zip uit de tag v3.41.0, map sfp-page-config).
