@@ -184,7 +184,8 @@ function sfp_page_config_tool_schema() {
         'name'                => sfp_page_config_tool_platte_titel( $post ),
         'url'                 => $url,
         'applicationCategory' => 'EducationalApplication',
-        'operatingSystem'     => 'Any',
+        // Sinds 3.40.0: een webtool draait in de browser.
+        'operatingSystem'     => 'Web',
         'browserRequirements' => 'Requires JavaScript',
         'isAccessibleForFree' => true,
         'offers'              => array(
@@ -200,10 +201,18 @@ function sfp_page_config_tool_schema() {
     if ( '' !== $zin ) {
         $gegevens['description'] = $zin;
     }
+    // Sinds 3.40.0: isBasedOn uit het veld Gebaseerd op van de tool (het
+    // model of de bron), niet meer de eigen uitlegsectie. Leeg: geen.
+    $basis = trim( (string) get_post_meta( $post->ID, 'sfp_tool_basis', true ) );
+    if ( '' !== $basis ) {
+        $gegevens['isBasedOn'] = 0 === strpos( $basis, 'http' )
+            ? esc_url_raw( $basis )
+            : array(
+                '@type' => 'CreativeWork',
+                'name'  => $basis,
+            );
+    }
     if ( $b ) {
-        if ( 'test' === $b['soort'] ) {
-            $gegevens['isBasedOn'] = $url . '#sfp-tool-' . (int) $post->ID . '-hoe';
-        }
         $bron = '' !== $b['bron']['link'] ? esc_url_raw( $b['bron']['link'] ) : '';
         if ( '' !== $bron ) {
             $gegevens['citation'] = $bron;
@@ -358,4 +367,58 @@ function sfp_page_config_tool_beheer_stand() {
         'beheer'  => (string) get_option( 'admin_email' ),
         'log'     => is_array( $log ) ? array_slice( array_reverse( $log ), 0, 20 ) : array(),
     );
+}
+
+/* =========================================================================
+ * SureRank op een toolpagina (3.40.0)
+ * ====================================================================== */
+
+add_action( 'surerank_print_meta', 'sfp_page_config_tool_surerank_begin', 9 );
+add_action( 'surerank_print_meta', 'sfp_page_config_tool_surerank_eind', 11 );
+
+/**
+ * Op een toolpagina geeft de plugin de WebApplication. Het eigen
+ * SoftwareApplication-knooppunt van SureRank gaat uit de grafiek, de rest
+ * (WebSite, WebPage, Organization, kruimelpad) blijft.
+ *
+ * @return void
+ */
+function sfp_page_config_tool_surerank_begin() {
+    if ( is_singular( 'tool' ) && sfp_page_config_tool_aan() ) {
+        ob_start();
+    }
+}
+
+/**
+ * Sluit de buffer en haal SoftwareApplication en WebApplication uit de
+ * grafiek van SureRank.
+ *
+ * @return void
+ */
+function sfp_page_config_tool_surerank_eind() {
+    if ( ! is_singular( 'tool' ) || ! sfp_page_config_tool_aan() ) {
+        return;
+    }
+    $html = (string) ob_get_clean();
+    $html = (string) preg_replace_callback(
+        '/(<script type="application\/ld\+json" id="surerank-schema">)(.*?)(<\/script>)/s',
+        function ( $m ) {
+            $data = json_decode( $m[2], true );
+            if ( ! is_array( $data ) || empty( $data['@graph'] ) || ! is_array( $data['@graph'] ) ) {
+                return $m[0];
+            }
+            $data['@graph'] = array_values(
+                array_filter(
+                    $data['@graph'],
+                    function ( $knoop ) {
+                        $types = isset( $knoop['@type'] ) ? (array) $knoop['@type'] : array();
+                        return ! array_intersect( $types, array( 'SoftwareApplication', 'WebApplication' ) );
+                    }
+                )
+            );
+            return $m[1] . wp_json_encode( $data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG ) . $m[3];
+        },
+        $html
+    );
+    echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- uitvoer van SureRank, alleen het schema is opnieuw gecodeerd.
 }

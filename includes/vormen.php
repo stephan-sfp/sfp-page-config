@@ -999,3 +999,106 @@ function sfp_page_config_pijler_controle( $post ) {
     }
     return $meldingen;
 }
+
+/* =========================================================================
+ * Inhoudelijk herzien (3.40.0)
+ * ====================================================================== */
+
+add_action( 'init', 'sfp_page_config_herzien_meta', 12 );
+
+/**
+ * Registreer het veld Inhoudelijk herzien op voor berichten.
+ */
+function sfp_page_config_herzien_meta() {
+    // Sinds 3.40.0: de datum van de laatste inhoudelijke herziening van een
+    // artikel (kopkaart Bijgewerkt en dateModified). Leeg: post_modified.
+    register_post_meta(
+        'post',
+        'sfp_herzien',
+        array(
+            'type'              => 'string',
+            'single'            => true,
+            'show_in_rest'      => true,
+            'default'           => '',
+            'sanitize_callback' => function ( $waarde ) {
+                $waarde = trim( (string) $waarde );
+                return preg_match( '/^\d{4}-\d{2}-\d{2}$/', $waarde ) ? $waarde : '';
+            },
+            'auth_callback'     => function ( $toegestaan, $sleutel, $post_id ) {
+                return current_user_can( 'edit_post', $post_id );
+            },
+            'revisions_enabled' => true,
+        )
+    );
+}
+
+/**
+ * Het moment van de laatste inhoudelijke herziening van een artikel: het
+ * veld Inhoudelijk herzien op (12.00 uur in de tijdzone van de site), anders
+ * de laatste opslag.
+ *
+ * @param  WP_Post|int $post Bericht.
+ * @return int Tijdstempel, of 0.
+ */
+function sfp_page_config_herzien( $post ) {
+    $post = get_post( $post );
+    if ( ! $post ) {
+        return 0;
+    }
+    $datum = 'post' === $post->post_type ? (string) get_post_meta( $post->ID, 'sfp_herzien', true ) : '';
+    if ( '' !== $datum ) {
+        $moment = date_create_immutable( $datum . ' 12:00:00', wp_timezone() );
+        if ( $moment ) {
+            return $moment->getTimestamp();
+        }
+    }
+    return (int) get_post_timestamp( $post, 'modified' );
+}
+
+add_filter( 'surerank_schema_data', 'sfp_page_config_herzien_schema' );
+
+/**
+ * dateModified in het schema van SureRank volgt het veld.
+ *
+ * @param  array $data Gegevens voor het schema.
+ * @return array
+ */
+function sfp_page_config_herzien_schema( $data ) {
+    if ( ! is_singular( 'post' ) || ! is_array( $data ) ) {
+        return $data;
+    }
+    $post = get_queried_object();
+    if ( ! $post instanceof WP_Post || '' === (string) get_post_meta( $post->ID, 'sfp_herzien', true ) ) {
+        return $data;
+    }
+    if ( isset( $data['post'] ) && is_array( $data['post'] ) ) {
+        $data['post']['modified_date'] = wp_date( 'c', sfp_page_config_herzien( $post ) );
+    }
+    return $data;
+}
+
+/**
+ * Eenmalig (3.40.0): elk gepubliceerd artikel zonder veld krijgt de datum
+ * van zijn laatste opslag, zodat een latere kleine correctie de datum niet
+ * meer verschuift.
+ *
+ * @return int Aantal gevulde artikelen.
+ */
+function sfp_page_config_herzien_startvulling() {
+    global $wpdb;
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- eenmalig bij de update.
+    $aantal = $wpdb->query(
+        $wpdb->prepare(
+            "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value)
+             SELECT p.ID, %s, DATE(p.post_modified) FROM {$wpdb->posts} p
+             WHERE p.post_type = 'post' AND p.post_status IN ('publish','future','private')
+             AND NOT EXISTS (SELECT 1 FROM {$wpdb->postmeta} m WHERE m.post_id = p.ID AND m.meta_key = %s)",
+            'sfp_herzien',
+            'sfp_herzien'
+        )
+    );
+    if ( function_exists( 'wp_cache_supports' ) && wp_cache_supports( 'flush_group' ) ) {
+        wp_cache_flush_group( 'post_meta' );
+    }
+    return (int) $aantal;
+}

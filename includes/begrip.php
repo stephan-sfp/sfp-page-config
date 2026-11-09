@@ -736,13 +736,15 @@ function sfp_page_config_begrip_schema() {
  * @return string '' zonder website in het profiel.
  */
 function sfp_page_config_maker_id( $auteur ) {
-    $url = (string) get_the_author_meta( 'user_url', $auteur );
-    if ( '' === $url ) {
-        return '';
-    }
-    $delen = wp_parse_url( $url );
-    if ( empty( $delen['host'] ) ) {
-        return '';
+    // Sinds 3.40.0 (schema-tool-definedterm, LLMO-norm 4.3): de Person staat
+    // alleen op de persoonlijke site (SFP Beheer, coach_persoon; norm
+    // stephanborggreve.com). Wijst het profiel naar de eigen site of nergens
+    // heen, dan die Person; een #person op de eigen site bestaat niet.
+    $url   = (string) get_the_author_meta( 'user_url', $auteur );
+    $delen = '' !== $url ? wp_parse_url( $url ) : array();
+    $eigen = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
+    if ( empty( $delen['host'] ) || preg_replace( '/^www\./', '', (string) $delen['host'] ) === $eigen ) {
+        return function_exists( 'sfp_page_config_coach_id' ) ? sfp_page_config_coach_id() : '';
     }
     return ( isset( $delen['scheme'] ) ? $delen['scheme'] : 'https' ) . '://' . $delen['host'] . '/#person';
 }

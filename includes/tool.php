@@ -87,6 +87,25 @@ function sfp_page_config_tool_meta() {
             },
         )
     );
+    // Gebaseerd op (3.40.0): het model of de bron achter de tool, voor
+    // isBasedOn in het schema. Een adres of een naam; leeg: geen.
+    register_post_meta(
+        'tool',
+        'sfp_tool_basis',
+        array(
+            'type'              => 'string',
+            'single'            => true,
+            'show_in_rest'      => true,
+            'default'           => '',
+            'sanitize_callback' => function ( $waarde ) {
+                $waarde = trim( sanitize_text_field( (string) $waarde ) );
+                return 0 === strpos( $waarde, 'http' ) ? esc_url_raw( $waarde ) : mb_substr( $waarde, 0, 200 );
+            },
+            'auth_callback'     => function ( $toegestaan, $sleutel, $post_id ) {
+                return current_user_can( 'edit_post', $post_id );
+            },
+        )
+    );
     // Alleen in artikel (3.28.0): de tool hoort bij een artikel en staat
     // niet op /tools/, niet in Andere tools, niet in de sitemap. Het blok
     // sfp/tool toont hem gewoon; zijn eigen adres stuurt door naar het artikel.
