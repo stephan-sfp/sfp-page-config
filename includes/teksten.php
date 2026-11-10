@@ -1518,7 +1518,7 @@ function sfp_calculator_teksten( $taal = '' ) {
         'start_knop'              => 'Start',
         'start_duur'              => 'Ongeveer 3 minuten',
         'anders_kop'              => 'Zoek je iets anders?',
-        'anders_zin'              => 'Bijvoorbeeld een inspiratiesessie, een dagdeel of een plenaire sessie voor een grote groep? Neem dan direct contact met ons op.',
+        'anders_zin'              => 'Bijvoorbeeld een inspiratiesessie, een korte workshop of een plenaire sessie voor een grote groep? Neem dan direct contact met ons op.',
         'bel'                     => 'Bel {n}',
         'mail'                    => 'Mail {n}',
         // Doel en uitvraag.
@@ -1806,7 +1806,7 @@ function sfp_calculator_teksten( $taal = '' ) {
         'start_knop'              => 'Start',
         'start_duur'              => 'About 3 minutes',
         'anders_kop'              => 'Looking for something else?',
-        'anders_zin'              => 'Such as an inspiration session, a half day or a plenary session for a large group? Please contact us directly.',
+        'anders_zin'              => 'Such as an inspiration session, a short workshop or a plenary session for a large group? Please contact us directly.',
         'bel'                     => 'Call {n}',
         'mail'                    => 'Email {n}',
         'doel_vraag'              => 'What do you need a budget for?',
