@@ -31,10 +31,9 @@
 
 /* Labels, titels, lijst */
 .sfp-calc-lab{display:block;font:900 12px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.06em;color:var(--sfp-b-primair)}
-.sfp-calc-lab.licht{color:var(--sfp-b-secundair)}
 .sfp-calc .sfp-calc-titel{font-family:var(--sfp-b-kop);font-weight:900;color:var(--sfp-b-primair);text-transform:uppercase;text-wrap:balance;margin:8px 0 0;line-height:1.15;letter-spacing:.01em;font-size:clamp(24px,2.5vw + 14px,34px);word-spacing:normal}
-.sfp-calc-intro{font-size:18px;line-height:1.6;color:var(--sfp-b-primair);max-width:62ch;margin-top:12px!important}
-.sfp-calc-lijstkop{font-weight:700;color:var(--sfp-b-primair)}
+.sfp-calc-intro{font:700 clamp(18px,1.5vw + 12px,24px)/1.45 var(--sfp-b-tekst);text-wrap:balance;color:var(--sfp-b-primair);max-width:62ch;margin-top:12px!important}
+.sfp-calc-lijstkop{font:900 12px/1.3 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.06em;color:var(--sfp-b-primair)}
 .sfp-calc .sfp-calc-lijst{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
 .sfp-calc-lijst li{position:relative;padding-left:22px;color:var(--sfp-b-primair);font-size:16px;line-height:1.5;margin:0}
 .sfp-calc-lijst li::before{content:"";position:absolute;left:0;top:9px;width:9px;height:9px;background:var(--sfp-b-secundair);border-radius:2px}
@@ -114,14 +113,14 @@
 .sfp-calc .sfp-calc-kaart{display:flex;flex-direction:column;align-items:stretch;gap:6px;text-align:left;margin:0;padding:22px 20px 20px;background:var(--sfp-b-wit);border:1.5px solid var(--calc-veld);border-radius:var(--sfp-b-r-knop);color:var(--sfp-b-primair);font:400 15px/1.45 var(--sfp-b-tekst);text-transform:none;letter-spacing:0;cursor:pointer;min-height:0;box-shadow:none}
 .sfp-calc .sfp-calc-kaart:hover{border-color:var(--sfp-b-primair);background:var(--sfp-b-tint3);color:var(--sfp-b-primair)}
 .sfp-calc .sfp-calc-kaart.aan{border-color:var(--sfp-b-secundair);background:var(--sfp-b-tint2);box-shadow:inset 0 0 0 1px var(--sfp-b-secundair)}
-.sfp-calc-kaartlab{font:900 14px/1.2 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.05em}
+.sfp-calc-kaartlab{font:900 clamp(18px,1.5vw + 10px,22px)/1.2 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.05em}
 .sfp-calc-kaartprijs{font:900 30px/1.1 var(--sfp-b-kop);font-variant-numeric:tabular-nums;margin-top:6px}
 .sfp-calc-kaartper{font-size:13.5px;color:var(--sfp-b-body)}
 .sfp-calc-kaartpunten{display:flex;flex-direction:column;gap:8px;margin:14px 0 4px;padding-top:14px;border-top:1px solid var(--calc-lijn)}
 .sfp-calc-kaartpunten span{position:relative;padding-left:24px;font-size:15px;line-height:1.4}
 .sfp-calc-kaartpunten span::before{content:"";position:absolute;left:2px;top:3px;width:6px;height:11px;border:solid var(--sfp-b-secundair);border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
 .sfp-calc-kaarttotaal{font-size:14px;color:var(--sfp-b-body);margin-top:6px}
-.sfp-calc-kaartknop{margin-top:auto;padding-top:14px;font:900 14px/1.2 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.03em;color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px}
+.sfp-calc-kaartknop{margin-top:auto;padding-top:14px;font:700 16px/1.3 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px}
 
 /* De begroting naast de vragen */
 .sfp-calc .sfp-calc-begroting{display:block;padding:20px 22px;background:var(--sfp-b-wit);border:1.5px solid var(--calc-lijn);border-radius:var(--sfp-b-r-knop)}
@@ -152,13 +151,13 @@
 .sfp-calc-stap{display:flex;gap:22px;align-items:flex-start;padding:26px 28px;background:var(--sfp-b-tint2);border-radius:var(--sfp-b-r-knop)}
 .sfp-calc-foto{flex:none;width:88px;height:88px;border-radius:50%;object-fit:cover}
 .sfp-calc-stapin{display:flex;flex-direction:column;gap:14px;align-items:flex-start;color:var(--sfp-b-primair)}
-.sfp-calc-stapkop{font:900 clamp(18px,1.5vw + 10px,22px)/1.25 var(--sfp-b-kop);color:var(--sfp-b-primair)}
+.sfp-calc-stapkop{font:900 clamp(18px,1.5vw + 10px,22px)/1.25 var(--sfp-b-kop);text-transform:uppercase;text-wrap:balance;color:var(--sfp-b-primair)}
 @media (max-width:560px){.sfp-calc-stap{flex-direction:column;padding:22px 18px}.sfp-calc-stapin .sfp-calc-knop{width:100%}.sfp-calc-bon{padding:22px 18px}}
 
 /* Ingebed op een incompany-pagina */
 .sfp-calc-ingebed{display:flex;flex-direction:column;gap:12px;max-width:720px;padding:28px;border:1.5px solid var(--calc-lijn);border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-wit)}
 .sfp-calc .sfp-calc-ikop{font:900 clamp(20px,2vw + 12px,28px)/1.2 var(--sfp-b-kop);color:var(--sfp-b-primair);margin:0;text-wrap:balance}
-.sfp-calc-ingebed .sfp-calc-intro{font-size:17px;margin-top:0!important}
+.sfp-calc-ingebed .sfp-calc-intro{font-size:18px;margin-top:0!important}
 .sfp-calc-irij{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-top:8px}
 @media (max-width:560px){.sfp-calc-irij .sfp-calc-knop{width:100%}}
 

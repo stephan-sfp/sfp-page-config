@@ -318,7 +318,7 @@
 			var mail = c.email ? '<a class="sfp-calc-cta2" href="mailto:' + esc(c.email) + '">' + esc(t('mail', { n: c.email })) + '</a>' : '';
 			return {
 				html: '<div class="sfp-calc-start">'
-					+ '<div class="sfp-calc-startkop"><span class="sfp-calc-lab licht">' + esc(t('lab')) + '</span><h1 class="sfp-calc-titel">' + esc(t('titel')) + '</h1>'
+					+ '<div class="sfp-calc-startkop"><span class="sfp-calc-lab">' + esc(t('lab')) + '</span><h1 class="sfp-calc-titel">' + esc(t('titel')) + '</h1>'
 					+ '<p class="sfp-calc-intro">' + esc(t('intro')) + '</p></div>'
 					+ '<div class="sfp-calc-aanbod"><p class="sfp-calc-lijstkop">' + esc(t('aanbod_kop')) + '</p><ul class="sfp-calc-lijst">'
 					+ punten.map(function (k) { return '<li>' + esc(t(k)) + '</li>'; }).join('') + '</ul></div>'
@@ -637,11 +637,12 @@
 			}
 			return {
 				html: '<div class="sfp-calc-klaar">'
-					+ '<div><span class="sfp-calc-lab licht">' + esc(t('klaar_lab')) + '</span><h2 class="sfp-calc-titel">' + esc(t('klaar_kop')) + '</h2>'
+					+ '<div><span class="sfp-calc-lab">' + esc(t('klaar_lab')) + '</span><h2 class="sfp-calc-titel">' + esc(t('klaar_kop')) + '</h2>'
 					+ '<p class="sfp-calc-intro">' + esc(t('klaar_zin', { kenmerk: a.kenmerk || '' })) + '</p></div>'
 					+ '<div class="sfp-calc-bon">' + totaal
 					+ (wat.length ? '<p class="sfp-calc-lijstkop">' + esc(t('klaar_wat')) + '</p><ul class="sfp-calc-lijst">' + wat.map(function (w) { return '<li>' + esc(w) + '</li>'; }).join('') + '</ul>' : '')
 					+ (geldig ? '<p class="sfp-calc-klein">' + esc(t('klaar_geldig', { datum: geldig })) + '</p>' : '')
+					+ (a.pdf_url ? '<p><a class="sfp-calc-cta2" href="' + esc(a.pdf_url) + '" target="_blank" rel="noopener">' + esc(t('knop_pdf')) + '</a></p>' : '')
 					+ '</div>'
 					+ '<div class="sfp-calc-stap">'
 					+ (c.foto ? '<img class="sfp-calc-foto" src="' + esc(c.foto) + '" alt="" width="88" height="88">' : '')
@@ -649,7 +650,6 @@
 					+ (boek ? '<a class="sfp-calc-knop" href="' + esc(boek) + '">' + esc(t('knop_gesprek')) + '</a>' : '')
 					+ (c.naam ? '<p class="sfp-calc-klein">' + esc(t('klaar_contact')) + ': <b>' + esc(c.naam) + '</b>' + (c.functie ? ', ' + esc(c.functie) : '') + (c.telefoon ? ' | ' + esc(c.telefoon) : '') + '</p>' : '')
 					+ '</div></div>'
-					+ (a.pdf_url ? '<p><a class="sfp-calc-cta2" href="' + esc(a.pdf_url) + '" target="_blank" rel="noopener">' + esc(t('knop_pdf')) + '</a></p>' : '')
 					+ '</div>',
 				na: function () {}
 			};
