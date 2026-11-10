@@ -4,6 +4,22 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.43.0] - 2026-11-10
+
+Terugdraaien: versie 3.42.0 terugzetten (zip uit de tag v3.42.0, map sfp-page-config). Zonder prijs per aantal dagen verandert er niets op de pagina's.
+
+### Toegevoegd
+- Cursusvarianten (besluiten Stephan 10-11, werk page-config-cursusvarianten): in Cursusdata per training een prijs per aantal dagen (1, 2 en 3 dagen). Het aantal dagen van een groep is het aantal data. Zolang die prijzen leeg zijn, blijft alles zoals het was.
+- Variantkeuze boven de groepskaarten (1 dag, 2 dagen, 3 dagen), alleen voor varianten met een geplande groep. Bij één variant geen keuze. Standaard staat de variant van de eerstvolgende groep open. De keuze wisselt de groepskaarten, de feitenkaart in de held en de programmatab.
+- Groepskaart: de prijsregel noemt de variant ("3 dagen • € 1.995 excl. btw"); de groepen tellen per variant (Groep 1, Groep 2).
+- Feitenkaart van de held: met cursusvarianten het feit Duur van de eerstvolgende groep, als tweede van vier; op een telefoon twee bij twee. Zonder groep geen Duur.
+- Tabs: schakelaar "Volgt de variantkeuze". Elke tab hoort bij het aantal dagen in zijn titel ("3 dagen"); de tab van de standaardvariant staat open.
+- Keuzemenu van het inschrijfformulier: met cursusvarianten de optietekst "3 dagen • 3, 10 en 17 maart", zodat het CRM de variant via de groep krijgt.
+- Course-schema: een aanbod per variant (naam en prijs), per groep een instantie met de prijs van de variant en de lesuren. Ook zonder groep een Course met het aanbod; de Course van SureRank gaat er dan af.
+- Blok Prijs van de training: "De training kost € 995 voor 1 dag, € 1.495 voor 2 dagen en € 1.995 voor 3 dagen, exclusief btw." uit Cursusdata, voor het FAQ-antwoord over de kosten (wijzigt mee met de prijs, ook in het FAQ-schema).
+- Teksten variant_dag, variant_dagen, variant_keuze, held_duur, lijst_en, prijs_zin en prijs_variant (nl, en, pt).
+- Test tests/cursusvarianten-wp.php.
+
 ## [3.42.0] - 2026-11-10
 
 Terugdraaien: versie 3.41.5 terugzetten (zip uit de tag v3.41.5, map sfp-page-config).

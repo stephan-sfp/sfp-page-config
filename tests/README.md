@@ -180,3 +180,11 @@ wp eval-file wp-content/plugins/sfp-page-config/tests/archieven-wp.php
 ```
 
 Runs inside a real WordPress (a local test install, never a live site). Checks the phone notation (085 060 1355, mobile, international, +31 and 0031), the Contact setting (sanitizing, network defaults, Maps link from the address, no OpenStreetMap), the article card (H4 unchanged, R3 with label, own excerpt, no arrow link), the archive header on a category, the blog (typed texts per type, accent kept, no script) and search, the grid (headings, count, tint or white after Guides), the author header (role, tick list from lines with √, no external photo), the alphabet letters and the texts in three languages. Creates its own posts, category and user and removes them at the end.
+
+# Cursusvarianten (3.43.0)
+
+```sh
+wp eval-file wp-content/plugins/sfp-page-config/tests/cursusvarianten-wp.php
+```
+
+Runs inside a real WordPress (a local test install, never a live site). Checks prices per number of days, the variant choice on the group cards, the fact card with Duur, Tabs that follow the choice, the dropdown label, the Course schema per variant and the price block, and that nothing changes without prices per number of days.

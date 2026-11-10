@@ -52,3 +52,13 @@
 :root .sfp-groep--klikbaar .sfp-tekstlink:focus-visible{outline:none}
 :root .sfp-groep--klikbaar:has(.sfp-tekstlink:focus-visible){outline:2px solid var(--sfp-b-primair);outline-offset:3px}
 :root .sfp-groep--klikbaar:hover .sfp-tekstlink{text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
+
+/* Variantkeuze (3.43.0): 1, 2 of 3 dagen boven de groepskaarten; de gekozen variant gevuld in primair */
+:root .sfp-variantkeuze{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;margin:8px 0 24px;border:1px solid var(--sfp-b-lijn-sterk);border-radius:999px;background:var(--sfp-b-wit);justify-self:start}
+:root .sfp-variantkeuze__knop{font-family:var(--sfp-b-tekst);font-weight:700;font-size:15px;line-height:1.2;letter-spacing:0;text-transform:none;color:var(--sfp-b-primair);background:transparent;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;box-shadow:none;min-height:44px}
+:root .sfp-variantkeuze__knop:hover{background:var(--sfp-b-tint3);color:var(--sfp-b-primair)}
+:root .sfp-variantkeuze__knop[aria-checked=true]{background:var(--sfp-b-primair);color:var(--sfp-b-wit)}
+:root .sfp-variantkeuze__knop:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}
+:root .sfp-kolommen--groepen>.sfp-kaart[hidden]{display:none}
+:root .sfp-groep__duur{font-family:var(--sfp-b-tekst);font-weight:700}
+@media (max-width:700px){:root .sfp-variantkeuze{display:flex;justify-self:stretch;margin-bottom:16px}:root .sfp-variantkeuze__knop{flex:1 1 0;padding:10px 8px}}

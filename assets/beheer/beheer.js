@@ -1827,8 +1827,16 @@
 			if (open && !ui.cdData) {
 				ui.cdData = JSON.parse(JSON.stringify(p.data.length ? p.data : [{ data: [''] }]));
 			}
+			// Sinds 3.43.0: met een prijs per aantal dagen staat de variant en de prijs erbij.
+			var prijzen = (p.info && p.info.prijzen && !Array.isArray(p.info.prijzen)) ? p.info.prijzen : {};
+			var metVariant = Object.keys(prijzen).length > 0;
+			function variantTekst(sm) {
+				if (!metVariant) return '';
+				var n = (sm.data || []).length, bedrag = prijzen[n] || (p.info && p.info.prijs) || 0;
+				return ' \u00b7 ' + n + (n === 1 ? ' dag' : ' dagen') + (bedrag ? ' \u00b7 \u20ac ' + Number(bedrag).toLocaleString('nl-NL') : '');
+			}
 			var samenvatting = p.data.length
-				? el('span', { class: 'sfpb-hulp' }, p.data.map(function (sm, i) { return el('span', { style: 'display:block', text: (i + 1) + '. ' + smTekst(sm) }); }))
+				? el('span', { class: 'sfpb-hulp' }, p.data.map(function (sm, i) { return el('span', { style: 'display:block', text: (i + 1) + '. ' + smTekst(sm) + variantTekst(sm) }); }))
 				: el('span', { class: 'sfpb-hulp', text: 'Geen startmomenten ingesteld.' });
 			var rij = el('div', { class: 'sfpb-regel' }, [
 				el('span', { class: 'sfpb-groei' }, [el('b', { text: p.titel }), el('br'), samenvatting]),
@@ -1876,10 +1884,18 @@
 				plaats.addEventListener('input', function () { info.plaats = plaats.value; });
 				var prijs = el('input', { type: 'number', min: '0', step: '1', value: info.prijs ? String(info.prijs) : '', 'aria-label': 'Prijs in euro exclusief btw' });
 				prijs.addEventListener('input', function () { info.prijs = prijs.value; });
+				// Sinds 3.43.0: prijs per aantal dagen (cursusvarianten).
+				info.prijzen = Object.assign({}, info.prijzen || {});
+				var perDagen = el('div', { class: 'sfpb-rij' }, [1, 2, 3].map(function (n) {
+					var inv = el('input', { type: 'number', min: '0', step: '1', value: info.prijzen[n] ? String(info.prijzen[n]) : '', 'aria-label': 'Prijs voor ' + n + (n === 1 ? ' dag' : ' dagen') + ' in euro exclusief btw', style: 'max-width:120px' });
+					inv.addEventListener('input', function () { if (inv.value) { info.prijzen[n] = inv.value; } else { delete info.prijzen[n]; } });
+					return el('span', { class: 'sfpb-rij' }, [el('span', { text: n + (n === 1 ? ' dag' : ' dagen') }), inv]);
+				}));
 				bewerk.appendChild(el('div', { class: 'sfpb-sm' }, [
 					el('h3', { text: 'Op de groepskaarten' }),
 					el('div', { class: 'sfpb-veld' }, [el('span', { class: 'sfpb-label', text: 'Plaats' }), plaats]),
-					el('div', { class: 'sfpb-veld' }, [el('span', { class: 'sfpb-label', text: 'Prijs in euro, exclusief btw' }), prijs, el('span', { class: 'sfpb-hulp', text: 'Leeg: de groepskaarten tonen geen prijs.' })])
+					el('div', { class: 'sfpb-veld' }, [el('span', { class: 'sfpb-label', text: 'Prijs in euro, exclusief btw' }), prijs, el('span', { class: 'sfpb-hulp', text: 'Leeg: de groepskaarten tonen geen prijs.' })]),
+					el('div', { class: 'sfpb-veld' }, [el('span', { class: 'sfpb-label', text: 'Prijs per aantal dagen, in euro, exclusief btw' }), perDagen, el('span', { class: 'sfpb-hulp', text: 'Een groep met drie data is de variant van 3 dagen en krijgt die prijs. Vul je hier een prijs in, dan krijgt de pagina de keuze 1, 2 of 3 dagen voor de varianten met een groep. Leeg: alles zoals nu, met de prijs hierboven.' })])
 				]));
 				bewerk.appendChild(el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop', type: 'button', text: 'Startmoment toevoegen', klik: function () { data.push({ data: [''] }); teken(); } }),

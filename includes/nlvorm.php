@@ -137,9 +137,175 @@ function sfp_page_config_nlvorm_groepen( $post_id ) {
             'status' => isset( $sm['status'] ) && in_array( $sm['status'], array( 'laatste', 'vol' ), true ) ? (string) $sm['status'] : '',
             'start'  => isset( $sm['start'] ) ? (string) $sm['start'] : '',
             'eind'   => isset( $sm['eind'] ) ? (string) $sm['eind'] : '',
+            // Sinds 3.43.0: het aantal dagen van een groep is het aantal data.
+            'dagen'  => count( $sm['data'] ),
         );
     }
     return $uit;
+}
+
+/* =========================================================================
+ * Cursusvarianten (3.43.0): 1, 2 of 3 dagen met een eigen prijs
+ *
+ * Aan zodra in Cursusdata een prijs per aantal dagen staat. Het aantal dagen
+ * van een groep volgt uit het aantal data. Zonder prijs per aantal dagen
+ * blijft alles zoals voor 3.43.0.
+ * ====================================================================== */
+
+/**
+ * Naam van een variant: "1 dag", "3 dagen", in de taal van de site.
+ *
+ * @param  int $dagen Aantal dagen.
+ * @return string
+ */
+function sfp_page_config_variant_naam( $dagen ) {
+    $dagen = (int) $dagen;
+    return 1 === $dagen ? sfp_page_config_tekst( 'variant_dag' ) : sfp_page_config_tekst_f( 'variant_dagen', $dagen );
+}
+
+/**
+ * De varianten van een training.
+ *
+ * @param  int $post_id Pagina.
+ * @return array{aan: bool, info: array, groepen: array, lijst: int[], standaard: int}
+ */
+function sfp_page_config_cursus_varianten( $post_id ) {
+    $post_id      = (int) $post_id;
+    static $cache = array();
+    if ( isset( $cache[ $post_id ] ) ) {
+        return $cache[ $post_id ];
+    }
+    $info    = function_exists( 'sfp_page_config_cursusinfo' ) ? sfp_page_config_cursusinfo( $post_id ) : array(
+        'plaats'  => '',
+        'prijs'   => 0,
+        'prijzen' => array(),
+    );
+    $groepen = sfp_page_config_nlvorm_groepen( $post_id );
+    $aan     = function_exists( 'sfp_page_config_cursus_varianten_aan' ) && sfp_page_config_cursus_varianten_aan( $info );
+    $lijst   = array();
+    foreach ( $groepen as $g ) {
+        $lijst[ (int) $g['dagen'] ] = (int) $g['dagen'];
+    }
+    ksort( $lijst, SORT_NUMERIC );
+    $standaard = 0;
+    foreach ( $groepen as $g ) {
+        if ( 'vol' !== $g['status'] ) {
+            $standaard = (int) $g['dagen'];
+            break;
+        }
+    }
+    if ( ! $standaard && $groepen ) {
+        $standaard = (int) $groepen[0]['dagen'];
+    }
+    if ( ! $standaard && $aan ) {
+        // Zonder groep: de langste variant met een prijs (bij DPS 3 dagen).
+        $sleutels  = array_map( 'intval', array_keys( $info['prijzen'] ) );
+        $standaard = $sleutels ? max( $sleutels ) : 0;
+    }
+    $cache[ $post_id ] = array(
+        'aan'       => $aan,
+        'info'      => $info,
+        'groepen'   => $groepen,
+        'lijst'     => array_values( $lijst ),
+        'standaard' => $standaard,
+    );
+    return $cache[ $post_id ];
+}
+
+/**
+ * De eerstvolgende start (niet vol) van een variant, als datumdelen.
+ *
+ * @param  array $groepen Groepen.
+ * @param  int   $dagen   Aantal dagen; 0 is alle groepen.
+ * @return array|null
+ */
+function sfp_page_config_variant_volgende( array $groepen, $dagen = 0 ) {
+    foreach ( $groepen as $g ) {
+        if ( 'vol' === $g['status'] || ( $dagen && (int) $g['dagen'] !== (int) $dagen ) ) {
+            continue;
+        }
+        return sfp_page_config_nlvorm_datum( $g['data'][0] );
+    }
+    return null;
+}
+
+/**
+ * De waarde "di 3 maart" met het lange deel van de maand alleen op brede
+ * schermen, zoals de feitenkaart hem toont.
+ *
+ * @param  array $deel Datumdelen.
+ * @return string HTML.
+ */
+function sfp_page_config_nlvorm_start_html( array $deel ) {
+    $maand = $deel['maand'];
+    $kort  = $deel['maand_kort'];
+    $html  = 0 === strpos( $maand, $kort ) && strlen( $maand ) > strlen( $kort )
+        ? esc_html( $kort ) . '<span class="sfp-lang">' . esc_html( substr( $maand, strlen( $kort ) ) ) . '</span>'
+        : esc_html( $maand );
+    return esc_html( $deel['dag'] . ' ' . $deel['nr'] ) . ' ' . $html;
+}
+
+/**
+ * De keuze 1 • 2 • 3 dagen boven de groepskaarten. Alleen bij meer dan één
+ * geplande variant.
+ *
+ * @param  array $v Varianten (sfp_page_config_cursus_varianten()).
+ * @return string
+ */
+function sfp_page_config_variantkeuze_html( array $v ) {
+    if ( count( $v['lijst'] ) < 2 ) {
+        return '';
+    }
+    $knoppen = '';
+    foreach ( $v['lijst'] as $dagen ) {
+        $aan       = (int) $dagen === (int) $v['standaard'];
+        $volgende  = sfp_page_config_variant_volgende( $v['groepen'], $dagen );
+        $knoppen  .= '<button type="button" role="radio" class="sfp-variantkeuze__knop" data-sfp-variant="' . esc_attr( (string) $dagen ) . '"'
+            . ' data-sfp-duur="' . esc_attr( sfp_page_config_variant_naam( $dagen ) ) . '"'
+            . ' data-sfp-start="' . esc_attr( $volgende ? sfp_page_config_nlvorm_start_html( $volgende ) : '' ) . '"'
+            . ' aria-checked="' . ( $aan ? 'true' : 'false' ) . '" tabindex="' . ( $aan ? '0' : '-1' ) . '">'
+            . esc_html( sfp_page_config_variant_naam( $dagen ) ) . '</button>';
+    }
+    sfp_page_config_variant_script_nodig( true );
+    return '<div class="sfp-variantkeuze" role="radiogroup" aria-label="' . esc_attr( sfp_page_config_tekst( 'variant_keuze' ) ) . '">' . $knoppen . '</div>';
+}
+
+/**
+ * Markeer dat het script van de variantkeuze nodig is.
+ *
+ * @param  bool $zet True om te markeren.
+ * @return bool
+ */
+function sfp_page_config_variant_script_nodig( $zet = false ) {
+    static $nodig = false;
+    if ( $zet ) {
+        $nodig = true;
+    }
+    return $nodig;
+}
+
+add_action( 'wp_footer', 'sfp_page_config_variant_script', 22 );
+
+/**
+ * De variantkeuze wisselt de groepskaarten, de feitenkaart in de held en de
+ * programmatab (Tabs met een tab per variant). Pijltjestoetsen zoals bij een
+ * radiogroep. Zonder script blijft de standaardvariant staan.
+ */
+function sfp_page_config_variant_script() {
+    if ( ! sfp_page_config_variant_script_nodig() ) {
+        return;
+    }
+    $js = '(function(){var k=[].slice.call(document.querySelectorAll(".sfp-variantkeuze__knop"));if(!k.length)return;'
+        . 'function z(n,f){k.forEach(function(b){var o=b.getAttribute("data-sfp-variant")===n;b.setAttribute("aria-checked",o?"true":"false");b.tabIndex=o?0:-1;if(o&&f)b.focus();});'
+        . 'document.querySelectorAll(".sfp-groepen .sfp-kaart[data-sfp-variant]").forEach(function(c){c.hidden=c.getAttribute("data-sfp-variant")!==n;});'
+        . 'var b=document.querySelector(".sfp-variantkeuze__knop[data-sfp-variant=\\""+n+"\\"]");'
+        . 'if(b){var d=document.querySelector(".sfp-held__feit [data-sfp-feit=duur]");if(d)d.textContent=b.getAttribute("data-sfp-duur");'
+        . 'var s=document.querySelector(".sfp-held__feit [data-sfp-feit=start]");if(s&&b.getAttribute("data-sfp-start"))s.innerHTML=b.getAttribute("data-sfp-start");}'
+        . 'document.querySelectorAll(".sfp-tabs--variant [role=tab][data-sfp-dagen=\\""+n+"\\"]").forEach(function(t){if(t.getAttribute("aria-selected")!=="true")t.click();});}'
+        . 'k.forEach(function(b,i){b.addEventListener("click",function(){z(b.getAttribute("data-sfp-variant"));});'
+        . 'b.addEventListener("keydown",function(e){var r=e.key==="ArrowRight"||e.key==="ArrowDown"?1:e.key==="ArrowLeft"||e.key==="ArrowUp"?-1:0;if(!r)return;e.preventDefault();var x=k[(i+r+k.length)%k.length];z(x.getAttribute("data-sfp-variant"),1);});});'
+        . '})();';
+    echo '<script id="sfp-variantkeuze" nowprocket>' . $js . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste JS uit dit bestand.
 }
 
 /**
@@ -173,6 +339,11 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
     );
 
     if ( ! $groepen ) {
+        // Sinds 3.43.0: met cursusvarianten ook zonder groep een Course-schema
+        // met het aanbod per variant.
+        if ( function_exists( 'sfp_page_config_cursus_varianten_aan' ) && sfp_page_config_cursus_varianten_aan( $info ) ) {
+            sfp_page_config_nlvorm_schema_groepen( $post_id, array(), $info );
+        }
         // Geen groep gepland (3.31.0): één wachtlijstkaart, zonder datumrijen.
         $link = '<a class="sfp-tekstlink" href="#' . esc_attr( $doel ) . '" data-sfp-groep="wachtlijst">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) ) . '</a>';
         return $css . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-groepen', 'sfp-groepen--leeg' ) ) . '>'
@@ -187,9 +358,24 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
             . '</div></div></div>';
     }
 
-    $kaarten = '';
+    // Sinds 3.43.0: cursusvarianten. Per kaart de prijs van het aantal dagen,
+    // de kaarten per variant met een eigen nummering, en de keuze erboven.
+    $v        = sfp_page_config_cursus_varianten( $post_id );
+    $per_var  = array();
+    $kaarten  = '';
     foreach ( $groepen as $g ) {
         $eerste = sfp_page_config_nlvorm_datum( $g['data'][0] );
+        $label  = sfp_page_config_tekst_f( 'groep', $g['nr'] );
+        $attr   = '';
+        if ( $v['aan'] ) {
+            $dagen             = (int) $g['dagen'];
+            $per_var[ $dagen ] = isset( $per_var[ $dagen ] ) ? $per_var[ $dagen ] + 1 : 1;
+            $label             = sfp_page_config_tekst_f( 'groep', $per_var[ $dagen ] );
+            $bedrag            = sfp_page_config_cursus_prijs( $v['info'], $dagen );
+            $prijs             = '<p class="is-style-sfp-prijs"><span class="sfp-groep__duur">' . esc_html( sfp_page_config_variant_naam( $dagen ) ) . '</span>'
+                . ( $bedrag > 0 ? ' &bull; &euro;&nbsp;' . esc_html( number_format_i18n( $bedrag ) ) . ' <span class="sfp-excl">' . esc_html( sfp_page_config_tekst( 'groep_excl_btw' ) ) . '</span>' : '' ) . '</p>';
+            $attr              = ' data-sfp-variant="' . esc_attr( (string) $dagen ) . '"' . ( count( $v['lijst'] ) > 1 && $dagen !== (int) $v['standaard'] ? ' hidden' : '' );
+        }
         $rijen  = '';
         foreach ( $g['data'] as $i => $d ) {
             $deel   = sfp_page_config_nlvorm_datum( $d );
@@ -197,16 +383,17 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
         }
         $vol     = 'vol' === $g['status'];
         // Hele kaart klikbaar (3.36.0, groepskaart-klikbaar): de enige link in de kaart rekt uit over de kaart; een volle groep heeft geen link.
-        $kaarten .= '<div class="sfp-kaart sfp-kaart--accent sfp-groep' . ( $vol ? ' sfp-groep--vol' : ' sfp-klikkaart sfp-groep--klikbaar' ) . '">'
-            . '<div class="sfp-groep__kopregel"><p class="is-style-sfp-label">' . esc_html( sfp_page_config_tekst_f( 'groep', $g['nr'] ) ) . '</p>'
+        $kaarten .= '<div class="sfp-kaart sfp-kaart--accent sfp-groep' . ( $vol ? ' sfp-groep--vol' : ' sfp-klikkaart sfp-groep--klikbaar' ) . '"' . $attr . '>'
+            . '<div class="sfp-groep__kopregel"><p class="is-style-sfp-label">' . esc_html( $label ) . '</p>'
             . '<span class="sfp-groep__status' . ( '' !== $g['status'] ? ' sfp-groep__status--' . esc_attr( $g['status'] ) : '' ) . '">' . esc_html( $statussen[ $g['status'] ] ) . '</span></div>'
             . '<h3>' . esc_html( sfp_page_config_tekst_f( 'groep_start', trim( $eerste['nr'] . ' ' . $eerste['maand'] ) ) ) . '</h3>'
             . '<ul class="sfp-groep__data">' . $rijen . '</ul>'
             . ( '' !== $info['plaats'] ? '<p class="sfp-groep__meta">' . esc_html( $info['plaats'] ) . '</p>' : '' )
             . $prijs
-            . ( $vol ? '' : '<a class="sfp-tekstlink" href="#' . esc_attr( $doel ) . '" data-sfp-groep="' . esc_attr( (string) $g['nr'] ) . '">' . esc_html( sfp_page_config_tekst_f( 'groep_inschrijven', $g['nr'] ) ) . '</a>' )
+            . ( $vol ? '' : '<a class="sfp-tekstlink" href="#' . esc_attr( $doel ) . '" data-sfp-groep="' . esc_attr( (string) $g['nr'] ) . '">' . esc_html( $v['aan'] ? sfp_page_config_tekst_f( 'groep_inschrijven', $per_var[ (int) $g['dagen'] ] ) : sfp_page_config_tekst_f( 'groep_inschrijven', $g['nr'] ) ) . '</a>' )
             . '</div>';
     }
+    $keuze = $v['aan'] ? sfp_page_config_variantkeuze_html( $v ) : '';
 
     $wachtlijst = '';
     if ( ! isset( $attrs['wachtlijst'] ) || ! empty( $attrs['wachtlijst'] ) ) {
@@ -215,7 +402,8 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
 
     sfp_page_config_nlvorm_schema_groepen( $post_id, $groepen, $info );
 
-    return $css . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-groepen' ) ) . '>'
+    return $css . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-groepen', '' !== $keuze ? 'sfp-groepen--varianten' : '' ) ) . '>'
+        . $keuze
         . '<div class="sfp-kolommen sfp-kolommen--groepen">' . $kaarten . '</div>'
         . $wachtlijst
         . '</div>';
@@ -273,6 +461,7 @@ function sfp_page_config_render_founder( $attrs ) {
  */
 function sfp_page_config_nlvorm_feitenkaart( $attrs ) {
     $feiten = array();
+    $max    = 3;
     if ( ! isset( $attrs['volgendeStart'] ) || ! empty( $attrs['volgendeStart'] ) ) {
         $groepen = sfp_page_config_nlvorm_groepen( (int) get_the_ID() );
         foreach ( $groepen as $g ) {
@@ -283,12 +472,13 @@ function sfp_page_config_nlvorm_feitenkaart( $attrs ) {
             $label = sfp_page_config_tekst( 'held_volgende_start' );
             $spatie = strrpos( $label, ' ' );
             $label_html = false === $spatie ? esc_html( $label ) : '<span class="sfp-lang">' . esc_html( substr( $label, 0, $spatie + 1 ) ) . '</span>' . esc_html( substr( $label, $spatie + 1 ) );
-            $maand      = $deel['maand'];
-            $kort       = $deel['maand_kort'];
-            $maand_html = 0 === strpos( $maand, $kort ) && strlen( $maand ) > strlen( $kort )
-                ? esc_html( $kort ) . '<span class="sfp-lang">' . esc_html( substr( $maand, strlen( $kort ) ) ) . '</span>'
-                : esc_html( $maand );
-            $feiten[] = array( $label_html, esc_html( $deel['dag'] . ' ' . $deel['nr'] ) . ' ' . $maand_html );
+            $feiten[] = array( $label_html, sfp_page_config_nlvorm_start_html( $deel ), 'start' );
+            // Sinds 3.43.0, met cursusvarianten: de duur van deze groep als
+            // tweede feit; de variantkeuze wisselt start en duur mee.
+            if ( sfp_page_config_cursus_varianten_aan( (int) get_the_ID() ) ) {
+                $feiten[] = array( esc_html( sfp_page_config_tekst( 'held_duur' ) ), esc_html( sfp_page_config_variant_naam( (int) $g['dagen'] ) ), 'duur' );
+                $max      = 4;
+            }
             break;
         }
         // Sinds 3.38.0 (nazorg 9): zonder groep staat er Wachtlijst, niet niets.
@@ -303,15 +493,16 @@ function sfp_page_config_nlvorm_feitenkaart( $attrs ) {
             $feiten[] = array( esc_html( $label ), esc_html( $waarde ) );
         }
     }
-    $feiten = array_slice( $feiten, 0, 3 );
+    $feiten = array_slice( $feiten, 0, $max );
     if ( ! $feiten ) {
         return '';
     }
     $uit = '';
     foreach ( $feiten as $f ) {
-        $uit .= '<div><span class="is-style-sfp-label">' . $f[0] . '</span><strong>' . $f[1] . '</strong></div>';
+        $uit .= '<div><span class="is-style-sfp-label">' . $f[0] . '</span><strong' . ( isset( $f[2] ) && 4 === $max ? ' data-sfp-feit="' . esc_attr( $f[2] ) . '"' : '' ) . '>' . $f[1] . '</strong></div>';
     }
     $afbreken = ! empty( $attrs['afbreken'] ) ? ' sfp-held__feit--afbreken' : '';
+    $afbreken .= count( $feiten ) > 3 ? ' sfp-held__feit--vier' : '';
     return '<div class="sfp-held__feit' . $afbreken . '" role="group" aria-label="' . esc_attr( sfp_page_config_tekst( 'held_kerngegevens' ) ) . '">' . $uit . '</div>';
 }
 
@@ -868,7 +1059,9 @@ function sfp_page_config_nlvorm_schema() {
  * @return array
  */
 function sfp_page_config_nlvorm_schema_data( $post_id, array $groepen, array $info ) {
-    if ( ! $groepen ) {
+    // Sinds 3.43.0: met cursusvarianten een aanbod per variant, ook zonder groep.
+    $varianten = function_exists( 'sfp_page_config_cursus_varianten_aan' ) && sfp_page_config_cursus_varianten_aan( $info );
+    if ( ! $groepen && ! $varianten ) {
         return array();
     }
     $site       = html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES, 'UTF-8' );
@@ -878,6 +1071,7 @@ function sfp_page_config_nlvorm_schema_data( $post_id, array $groepen, array $in
         'url'   => home_url( '/' ),
     );
     $instanties = array();
+    $per_var    = array();
     foreach ( $groepen as $g ) {
         $instantie = array(
             '@type'      => 'CourseInstance',
@@ -886,16 +1080,27 @@ function sfp_page_config_nlvorm_schema_data( $post_id, array $groepen, array $in
             'startDate'  => $g['data'][0],
             'endDate'    => $g['data'][ count( $g['data'] ) - 1 ],
         );
+        $bedrag = ! empty( $info['prijs'] ) ? (int) $info['prijs'] : 0;
+        if ( $varianten ) {
+            $dagen             = count( $g['data'] );
+            $per_var[ $dagen ] = isset( $per_var[ $dagen ] ) ? $per_var[ $dagen ] + 1 : 1;
+            $instantie['name'] = sfp_page_config_tekst_f( 'groep', $per_var[ $dagen ] ) . ' (' . sfp_page_config_variant_naam( $dagen ) . ')';
+            $bedrag            = sfp_page_config_cursus_prijs( $info, $dagen );
+            $uren              = sfp_page_config_schema_uren( $g );
+            if ( $uren > 0 ) {
+                $instantie['courseWorkload'] = 'PT' . ( $uren * $dagen ) . 'H';
+            }
+        }
         if ( ! empty( $info['plaats'] ) ) {
             $instantie['location'] = array(
                 '@type' => 'Place',
                 'name'  => (string) $info['plaats'],
             );
         }
-        if ( ! empty( $info['prijs'] ) ) {
+        if ( $bedrag > 0 ) {
             $instantie['offers'] = array(
                 '@type'         => 'Offer',
-                'price'         => (string) (int) $info['prijs'],
+                'price'         => (string) $bedrag,
                 'priceCurrency' => 'EUR',
                 'availability'  => 'vol' === $g['status'] ? 'https://schema.org/SoldOut' : ( 'laatste' === $g['status'] ? 'https://schema.org/LimitedAvailability' : 'https://schema.org/InStock' ),
                 'url'           => get_permalink( $post_id ),
@@ -921,10 +1126,26 @@ function sfp_page_config_nlvorm_schema_data( $post_id, array $groepen, array $in
         'provider'          => $aanbieder,
         'hasCourseInstance' => $instanties,
     );
+    if ( ! $instanties ) {
+        unset( $data['hasCourseInstance'] );
+    }
     if ( '' !== $beschrijving ) {
         $data['description'] = $beschrijving;
     }
-    if ( ! empty( $info['prijs'] ) ) {
+    if ( $varianten ) {
+        // Een aanbod per variant: naam (aantal dagen) en prijs.
+        $data['offers'] = array();
+        foreach ( $info['prijzen'] as $dagen => $bedrag ) {
+            $data['offers'][] = array(
+                '@type'         => 'Offer',
+                'name'          => sfp_page_config_variant_naam( (int) $dagen ),
+                'price'         => (string) (int) $bedrag,
+                'priceCurrency' => 'EUR',
+                'category'      => 'Paid',
+                'url'           => get_permalink( $post_id ),
+            );
+        }
+    } elseif ( ! empty( $info['prijs'] ) ) {
         $data['offers'] = array(
             '@type'         => 'Offer',
             'price'         => (string) (int) $info['prijs'],
@@ -933,6 +1154,23 @@ function sfp_page_config_nlvorm_schema_data( $post_id, array $groepen, array $in
         );
     }
     return $data;
+}
+
+/**
+ * Lesuren per dag van een groep (3.43.0): de lestijd van de groep, anders de
+ * standaardlestijd van de site. 0 als die onbekend is.
+ *
+ * @param  array $g Groep.
+ * @return int
+ */
+function sfp_page_config_schema_uren( array $g ) {
+    $start = '' !== ( $g['start'] ?? '' ) ? (string) $g['start'] : (string) sfp_page_config_get_setting( 'cursus_tijd_default_start', '' );
+    $eind  = '' !== ( $g['eind'] ?? '' ) ? (string) $g['eind'] : (string) sfp_page_config_get_setting( 'cursus_tijd_default_eind', '' );
+    if ( ! preg_match( '/^(\d{1,2}):(\d{2})$/', $start, $a ) || ! preg_match( '/^(\d{1,2}):(\d{2})$/', $eind, $b ) ) {
+        return 0;
+    }
+    $minuten = ( (int) $b[1] * 60 + (int) $b[2] ) - ( (int) $a[1] * 60 + (int) $a[2] );
+    return $minuten > 0 ? (int) round( $minuten / 60 ) : 0;
 }
 
 /* =========================================================================
@@ -1327,8 +1565,9 @@ function sfp_page_config_nlvorm_eigen_aanbod( $post_id = 0 ) {
     }
     $soort = get_post_meta( $post_id, 'sfp_page_type', true );
     if ( 'training' === $soort ) {
+        // Sinds 3.43.0 ook zonder groep als de cursusvarianten aan staan.
         return has_block( 'sfp/groepskaarten', $post_id )
-            && array() !== sfp_page_config_nlvorm_groepen( $post_id )
+            && ( array() !== sfp_page_config_nlvorm_groepen( $post_id ) || sfp_page_config_cursus_varianten_aan( $post_id ) )
             && (bool) apply_filters( 'sfp_page_config_course_schema', true, $post_id );
     }
     if ( 'coaching' === $soort ) {
