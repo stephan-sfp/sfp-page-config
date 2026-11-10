@@ -8,11 +8,12 @@
 :root .sfp-team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 :root .sfp-sectie__binnen>:is(h2,p)+.sfp-team{margin-top:36px}
 :root .sfp-team__lid{background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);overflow:hidden;display:flex;flex-direction:column;min-width:0}
-/* Rond portret (3.37.0, punt 7, besluit Stephan 8-11): 160 px op een lichte merktint (tint 2), focuspunt en zoom per teamlid */
+/* Rond portret (3.37.0, punt 7, besluit Stephan 8-11): 160 px, focuspunt en zoom per teamlid.
+   Sinds 3.41.5 (besluit Stephan 10-11, variant C): wit, met een dunne lijn in de lichte merktint (tint 2) in plaats van een tintvlak */
 :root .sfp-team__lid{align-items:center;text-align:center;padding-top:28px}
-:root .sfp-team__portret{width:160px;height:160px;flex:none;border-radius:50%;overflow:hidden;background:var(--sfp-b-tint2);margin:0}
+:root .sfp-team__portret{width:160px;height:160px;flex:none;border-radius:50%;overflow:hidden;background:var(--sfp-b-wit);border:1px solid var(--sfp-b-tint2);box-sizing:border-box;margin:0}
 :root .sfp-team__portret>img,:root .sfp-team__lid>img{display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:var(--sfp-team-focus,50% 30%);transform:scale(var(--sfp-team-zoom,1));transform-origin:var(--sfp-team-focus,50% 30%);border-radius:0;margin:0;box-shadow:none}
-:root .sfp-team__lid>img{width:160px;height:160px;border-radius:50%;background:var(--sfp-b-tint2);transform:none}
+:root .sfp-team__lid>img{width:160px;height:160px;border-radius:50%;background:var(--sfp-b-wit);border:1px solid var(--sfp-b-tint2);box-sizing:border-box;transform:none}
 :root .sfp-team__tekst{display:grid;gap:6px;padding:18px 22px 22px;align-content:start;justify-items:center}
 :root .sfp-team__tekst>*{margin:0}
 :root .sfp-team__tekst h3{font-size:20px;padding:0}
