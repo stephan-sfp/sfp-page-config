@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.45.0] - 2026-11-11
+
+Nazorg home en Over (werk page-config-home-over-nazorg, besluiten Stephan 11-11). Terugdraaien: versie 3.44.0 terugzetten (zip uit de tag v3.44.0, map sfp-page-config); er is niets in de database veranderd.
+
+### Gerepareerd
+- Accent in de H1 van de held Foto (home) staat weer in secundair. De regel bestond al, maar een algemene regel voor het accent in de held laadde later en zette de kleur terug op wit (gemeten op de home van SFP, DPS, DGA, CVD en DST).
+- Logostrook direct onder de held: 48 px ruimte erboven (telefoon 32 px) nu na elke held-variant, ook Recht en Breed (SwS, FL). De regel stond in de opmaak van de held Wit en Foto en laadde daar niet mee.
+
+### Gewijzigd
+- Logostrook als tweede blok van de pagina krijgt dezelfde ruimte, ook als het eerste blok geen blok Held is (SLB).
+- Netwerkblok met vier labels: 2 x 2 op computer en tablet in plaats van 3 + 1, op een telefoon onder elkaar (SFP Over).
+
+### Toegevoegd
+- Reviewkaart: tekst op drie regels, dan Lees verder (wens Stephan 9-11, alle reviewkaarten). De knop verschijnt alleen als de tekst echt langer is en klapt de hele tekst open en dicht; de hele tekst blijft in de HTML. Knoptekst uit SFP Beheer, Teksten, Reviews. Het script laadt alleen op pagina's met een reviewkaart en wordt niet uitgesteld door WP Rocket.
+
 ## [3.44.0] - 2026-11-10
 
 Terugdraaien: versie 3.43.0 terugzetten (zip uit de tag v3.43.0, map sfp-page-config). De vastgelegde controles blijven in de database staan; het label linkt dan weer zoals in 3.43.0.

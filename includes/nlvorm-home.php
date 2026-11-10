@@ -466,7 +466,7 @@ function sfp_page_config_render_netwerk() {
             . '<span class="sfp-netwerk__naar" aria-hidden="true">' . esc_html( sfp_page_config_tekst( 'netwerk_naar' ) ) . '</span></a>';
     }
     return sfp_page_config_blokken_css_vangnet( 'sfp/netwerk' ) . sfp_page_config_blokken_css_vangnet( 'sfp/kaart' ) . sfp_page_config_blokken_css_vangnet( 'sfp/kolommen' )
-        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-kolommen', 'sfp-kolommen--drie', 'sfp-netwerk' ) ) . '>' . $kaarten . '</div>';
+        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-kolommen', 'sfp-kolommen--drie', 'sfp-netwerk', 4 === count( $labels ) ? 'sfp-netwerk--vier' : '' ) ) . '>' . $kaarten . '</div>';
 }
 
 /* =========================================================================

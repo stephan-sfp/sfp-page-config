@@ -529,13 +529,53 @@ function sfp_page_config_render_review_kaart( $attrs ) {
     }
     $vermelding = isset( $review['vermelding'] ) ? trim( (string) $review['vermelding'] ) : '';
 
+    // Lees verder (3.45.0, wens Stephan 9-11-2026): de tekst staat op drie
+    // regels, de hele tekst blijft in de HTML. De knop staat verborgen in de
+    // pagina; review-kaart.js toont hem alleen als de tekst echt langer is.
+    $meer = '';
+    if ( '' !== $tekst ) {
+        static $volgnummer = 0;
+        ++$volgnummer;
+        $tekst_id = 'sfp-review-kaart-tekst-' . $volgnummer;
+        $meer     = '<button type="button" class="sfp-review-kaart__meer" aria-expanded="false" aria-controls="' . esc_attr( $tekst_id ) . '"'
+            . ' data-minder="' . esc_attr( sfp_page_config_tekst( 'reviews_minder' ) ) . '" hidden>'
+            . esc_html( sfp_page_config_tekst( 'reviews_lees_verder' ) ) . '</button>';
+        sfp_page_config_review_kaart_js_nodig( true );
+    }
+
     return sfp_page_config_blokken_css_vangnet( 'sfp/review' )
         . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-review-kaart' ) ) . '>'
         . sfp_page_config_review_kaart_sterren( isset( $review['rating'] ) ? $review['rating'] : 5 )
-        . ( '' !== $tekst ? '<div class="sfp-review-kaart__tekst">' . $tekst . '</div>' : '' )
+        . ( '' !== $tekst ? '<div class="sfp-review-kaart__tekst" id="' . esc_attr( $tekst_id ) . '">' . $tekst . '</div>' . $meer : '' )
         . ( '' !== $naam ? '<p class="sfp-review-kaart__naam">' . esc_html( $naam ) . '</p>' : '' )
         . ( '' !== $vermelding ? '<p class="sfp-review-kaart__bron">' . esc_html( $vermelding ) . '</p>' : '' )
         . '</div>';
+}
+
+/**
+ * Staat er een reviewkaart met tekst op de pagina?
+ *
+ * @param  bool $zet True om te markeren.
+ * @return bool
+ */
+function sfp_page_config_review_kaart_js_nodig( $zet = false ) {
+    static $nodig = false;
+    if ( $zet ) {
+        $nodig = true;
+    }
+    return $nodig;
+}
+
+add_action( 'wp_footer', 'sfp_page_config_review_kaart_js', 30 );
+
+/**
+ * Het script van Lees verder op de reviewkaart, niet uitgesteld door WP
+ * Rocket, zodat de knop er meteen staat.
+ */
+function sfp_page_config_review_kaart_js() {
+    if ( sfp_page_config_review_kaart_js_nodig() && function_exists( 'sfp_page_config_script_tag' ) ) {
+        sfp_page_config_script_tag( 'sfp-review-kaart-js', 'blokken/review-kaart.js' );
+    }
 }
 
 /* =========================================================================
