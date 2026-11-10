@@ -262,10 +262,16 @@ function sfp_page_config_blokken() {
             'attributes'  => array(
                 'label' => $tekst,
                 // Als kaart (3.34.0, O1): links uitgelijnd, icoon rechts.
-                'vorm'  => array(
+                'vorm'    => array(
                     'type'    => 'string',
                     'default' => '',
                     'enum'    => array( '', 'kaart' )
+                ),
+                // Sinds 3.43.0: volgt de variantkeuze van de groepskaarten
+                // (een tab per variant, het aantal dagen staat in de titel).
+                'variant' => array(
+                    'type'    => 'boolean',
+                    'default' => false,
                 ),
             ),
             'render'      => 'sfp_page_config_render_tabs',
@@ -686,6 +692,7 @@ function sfp_page_config_blok_voorbeeld( $naam ) {
             ),
         ),
         'sfp/cursusdatum'  => array(),
+        'sfp/cursusprijs'  => array(),
         'sfp/lestijd'      => array(),
         'sfp/leestijd'     => array(),
         'sfp/reviews'      => array( 'attributes' => array( 'weergave' => 'cijfer' ) ),
@@ -1483,14 +1490,36 @@ function sfp_page_config_render_tabs( $attrs, $content, $block = null ) {
     $knoppen = '';
     $panelen = '';
     $nr      = 0;
+    // Sinds 3.43.0: Tabs die de variantkeuze volgen. Elke tab krijgt het
+    // aantal dagen uit zijn titel; de tab van de standaardvariant staat open.
+    $dagen  = array();
+    $open   = 0;
+    $volgt  = ! empty( $attrs['variant'] ) && function_exists( 'sfp_page_config_cursus_varianten' );
+    if ( $volgt ) {
+        $v     = sfp_page_config_cursus_varianten( (int) get_the_ID() );
+        $volgt = $v['aan'];
+    }
+    if ( $volgt ) {
+        $i = 0;
+        foreach ( $block->inner_blocks as $tab ) {
+            if ( 'sfp/tab' !== $tab->name ) {
+                continue;
+            }
+            $dagen[ $i ] = sfp_page_config_tab_dagen( sfp_page_config_blok_attr( $tab->attributes, 'titel' ) );
+            if ( $dagen[ $i ] && $dagen[ $i ] === (int) $v['standaard'] ) {
+                $open = $i;
+            }
+            ++$i;
+        }
+    }
     foreach ( $block->inner_blocks as $tab ) {
         if ( 'sfp/tab' !== $tab->name ) {
             continue;
         }
         $id       = wp_unique_id( 'sfp-tab-' );
         $titel    = wp_kses( sfp_page_config_blok_attr( $tab->attributes, 'titel' ), sfp_page_config_blok_titel_kses() );
-        $eerste   = 0 === $nr;
-        $knoppen .= '<button type="button" role="tab" id="' . esc_attr( $id ) . '-k" aria-controls="' . esc_attr( $id ) . '" aria-selected="' . ( $eerste ? 'true' : 'false' ) . '"' . ( $eerste ? '' : ' tabindex="-1"' ) . '>' . $titel . '</button>';
+        $eerste   = $open === $nr;
+        $knoppen .= '<button type="button" role="tab" id="' . esc_attr( $id ) . '-k" aria-controls="' . esc_attr( $id ) . '" aria-selected="' . ( $eerste ? 'true' : 'false' ) . '"' . ( $eerste ? '' : ' tabindex="-1"' ) . ( ! empty( $dagen[ $nr ] ) ? ' data-sfp-dagen="' . esc_attr( (string) $dagen[ $nr ] ) . '"' : '' ) . '>' . $titel . '</button>';
         $binnen   = $tab->render();
         // Als kaart (3.34.0, O1): tekst links, icoon rechts in de secundaire kleur.
         if ( $kaart ) {
@@ -1502,7 +1531,22 @@ function sfp_page_config_render_tabs( $attrs, $content, $block = null ) {
     }
     $lijst = '<div class="sfp-tablijst" role="tablist"' . ( '' !== $label ? ' aria-label="' . esc_attr( $label ) . '"' : '' ) . '>' . $knoppen . '</div>';
     return sfp_page_config_blokken_css_vangnet( 'sfp/tabs' ) . ( $kaart ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-over' ) : '' )
-        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-tabs', $kaart ? 'sfp-tabs--kaart' : '' ) ) . '>' . $lijst . $panelen . '</div>';
+        . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-tabs', $kaart ? 'sfp-tabs--kaart' : '', $volgt ? 'sfp-tabs--variant' : '' ) ) . '>' . $lijst . $panelen . '</div>';
+}
+
+/**
+ * Het aantal dagen uit de titel van een tab (3.43.0): het eerste getal, als
+ * er een woord voor dag of dagen achter staat ("3 dagen", "1 day", "2 dias").
+ *
+ * @param  string $titel Titel van de tab.
+ * @return int 0 als er geen aantal dagen in staat.
+ */
+function sfp_page_config_tab_dagen( $titel ) {
+    $tekst = html_entity_decode( wp_strip_all_tags( (string) $titel ), ENT_QUOTES, 'UTF-8' );
+    if ( preg_match( '/(\d{1,2})\s*(dag|dagen|day|days|dia|dias)\b/iu', $tekst, $m ) ) {
+        return (int) $m[1];
+    }
+    return 0;
 }
 
 /**

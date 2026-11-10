@@ -58,6 +58,7 @@ function sfp_page_config_inject_course_data() {
     $data = sfp_page_config_cursusdata_toekomst( $post_id );
 
     $startmomenten = array();
+    $varianten     = function_exists( 'sfp_page_config_cursus_varianten_aan' ) && function_exists( 'sfp_page_config_variant_naam' ) && sfp_page_config_cursus_varianten_aan( $post_id );
 
     if ( ! empty( $data ) && is_array( $data ) ) {
         foreach ( $data as $index => $sm ) {
@@ -80,11 +81,17 @@ function sfp_page_config_inject_course_data() {
                     isset( $sm['start'] ) ? $sm['start'] : '',
                     isset( $sm['eind'] ) ? $sm['eind'] : ''
                 );
+                $label = sfp_page_config_tekst_f( 'groep', $index + 1 ) . ': ' . implode( ' • ', $dates_formatted );
+                // Sinds 3.43.0, met cursusvarianten: de variant voorop, zodat
+                // het CRM hem via de groep krijgt ("3 dagen • 3, 10 en 17 maart").
+                if ( $varianten ) {
+                    $label = sfp_page_config_variant_naam( count( $sm['data'] ) ) . ' • ' . sfp_page_config_variant_data_tekst( $sm['data'] );
+                }
                 $startmomenten[] = array(
                     // Sinds 3.30.0: een volle groep staat niet in het keuzemenu.
                     'vol'   => isset( $sm['status'] ) && 'vol' === $sm['status'],
                     'index' => $index + 1,
-                    'label' => sfp_page_config_tekst_f( 'groep', $index + 1 ) . ': ' . implode( ' • ', $dates_formatted ) . ( '' !== $tijd ? ' (' . $tijd . ')' : '' ),
+                    'label' => $label . ( '' !== $tijd ? ' (' . $tijd . ')' : '' ),
                     'value' => 'groep-' . ( $index + 1 ),
                     'dates' => $dates_formatted,
                 );
@@ -167,4 +174,38 @@ function sfp_page_config_enqueue_dropdown_script() {
             'wachtlijst' => sfp_page_config_tekst( 'groep_wachtlijst_optie' ),
         )
     );
+}
+
+/**
+ * De data van een groep als leesbare reeks (3.43.0): "3, 10 en 17 maart",
+ * over maanden heen "24 februari, 3 en 10 maart". Voor de optietekst van het
+ * keuzemenu met cursusvarianten.
+ *
+ * @param  string[] $data Data JJJJ-MM-DD.
+ * @return string
+ */
+function sfp_page_config_variant_data_tekst( array $data ) {
+    $en      = ' ' . sfp_page_config_tekst( 'lijst_en' ) . ' ';
+    $maanden = array();
+    foreach ( $data as $d ) {
+        $deel = function_exists( 'sfp_page_config_nlvorm_datum' ) ? sfp_page_config_nlvorm_datum( (string) $d ) : array( 'nr' => '', 'maand' => '' );
+        if ( '' === $deel['nr'] ) {
+            continue;
+        }
+        $sleutel = substr( (string) $d, 0, 7 );
+        if ( ! isset( $maanden[ $sleutel ] ) ) {
+            $maanden[ $sleutel ] = array(
+                'maand' => $deel['maand'],
+                'dagen' => array(),
+            );
+        }
+        $maanden[ $sleutel ]['dagen'][] = $deel['nr'];
+    }
+    $delen = array();
+    foreach ( $maanden as $m ) {
+        $dagen   = $m['dagen'];
+        $laatste = array_pop( $dagen );
+        $delen[] = ( $dagen ? implode( ', ', $dagen ) . $en : '' ) . $laatste . ' ' . $m['maand'];
+    }
+    return implode( ', ', $delen );
 }

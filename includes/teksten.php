@@ -508,6 +508,49 @@ function sfp_page_config_teksten_register() {
             'en'    => 'excl. VAT',
             'pt'    => 'sem impostos',
         ),
+        // Cursusvarianten (3.43.0).
+        'variant_dag' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Variant van één dag (keuze, groepskaart, feitenkaart, formulier)',
+            'nl'    => '1 dag',
+            'en'    => '1 day',
+            'pt'    => '1 dia',
+        ),
+        'variant_dagen' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Variant van meer dagen (%d is het aantal dagen)',
+            'nl'    => '%d dagen',
+            'en'    => '%d days',
+            'pt'    => '%d dias',
+        ),
+        'variant_keuze' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Variantkeuze: naam voor schermlezers',
+            'nl'    => 'Kies het aantal dagen',
+            'en'    => 'Choose the number of days',
+            'pt'    => 'Escolha o número de dias',
+        ),
+        'prijs_zin' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Blok Prijs van de training (%s is de prijs of de prijzen per variant)',
+            'nl'    => 'De training kost %s, exclusief btw.',
+            'en'    => 'The training costs %s, excluding VAT.',
+            'pt'    => 'O treinamento custa %s, sem impostos.',
+        ),
+        'prijs_variant' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Blok Prijs van de training: prijs van een variant (%1$s prijs, %2$s aantal dagen)',
+            'nl'    => '%1$s voor %2$s',
+            'en'    => '%1$s for %2$s',
+            'pt'    => '%1$s para %2$s',
+        ),
+        'lijst_en' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Laatste woord in een reeks data (3, 10 en 17 maart)',
+            'nl'    => 'en',
+            'en'    => 'and',
+            'pt'    => 'e',
+        ),
         'groep_wachtlijst_vraag' => array(
             'groep' => 'Trainingspagina',
             'label' => 'Groepskaart: regel onder de kaarten',
@@ -864,6 +907,13 @@ function sfp_page_config_teksten_register() {
             'nl'    => 'Volgende start',
             'en'    => 'Next start',
             'pt'    => 'Próximo início',
+        ),
+        'held_duur' => array(
+            'groep' => 'Trainingspagina',
+            'label' => 'Held: label van de duur (alleen met cursusvarianten)',
+            'nl'    => 'Duur',
+            'en'    => 'Duration',
+            'pt'    => 'Duração',
         ),
         // Netwerkkaart (3.36.0): aanwijzing onder in de klikbare kaart (branding.md, Klikbare kaart).
         'netwerk_naar' => array(

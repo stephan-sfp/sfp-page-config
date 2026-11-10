@@ -155,9 +155,11 @@ function sfp_page_config_cursus_statussen() {
  * Plaats en prijs van een training (3.30.0), meta `sfp_cursusinfo`.
  *
  * Prijs in hele euro's exclusief btw; leeg of 0 betekent: geen prijs tonen.
+ * Sinds 3.43.0 ook `prijzen`: prijs per aantal dagen, bijvoorbeeld
+ * {"1":995,"2":1495,"3":1995}.
  *
  * @param  int $post_id Pagina.
- * @return array{plaats: string, prijs: int}
+ * @return array{plaats: string, prijs: int, prijzen: array<string, int>}
  */
 function sfp_page_config_cursusinfo( $post_id ) {
     $ruw = get_post_meta( (int) $post_id, 'sfp_cursusinfo', true );
@@ -174,10 +176,54 @@ function sfp_page_config_cursusinfo( $post_id ) {
 function sfp_page_config_cursusinfo_schoon( $ruw ) {
     $ruw   = is_array( $ruw ) ? $ruw : array();
     $prijs = isset( $ruw['prijs'] ) ? preg_replace( '/[^0-9]/', '', (string) $ruw['prijs'] ) : '';
+    // Sinds 3.43.0: prijs per aantal dagen (cursusvarianten). Sleutel is het
+    // aantal dagen (1 tot 10), waarde hele euro's exclusief btw; leeg of 0 valt weg.
+    $prijzen = array();
+    if ( isset( $ruw['prijzen'] ) && is_array( $ruw['prijzen'] ) ) {
+        foreach ( $ruw['prijzen'] as $dagen => $p ) {
+            $dagen = (int) $dagen;
+            $p     = preg_replace( '/[^0-9]/', '', (string) $p );
+            if ( $dagen >= 1 && $dagen <= 10 && '' !== $p && (int) $p > 0 ) {
+                $prijzen[ (string) $dagen ] = min( 99999, (int) $p );
+            }
+        }
+        ksort( $prijzen, SORT_NUMERIC );
+    }
     return array(
-        'plaats' => isset( $ruw['plaats'] ) ? mb_substr( sanitize_text_field( (string) $ruw['plaats'] ), 0, 120 ) : '',
-        'prijs'  => '' === $prijs ? 0 : min( 99999, (int) $prijs ),
+        'plaats'  => isset( $ruw['plaats'] ) ? mb_substr( sanitize_text_field( (string) $ruw['plaats'] ), 0, 120 ) : '',
+        'prijs'   => '' === $prijs ? 0 : min( 99999, (int) $prijs ),
+        'prijzen' => $prijzen,
     );
+}
+
+/**
+ * Staan de cursusvarianten aan op deze training (3.43.0)? Dat is zo zodra er
+ * een prijs per aantal dagen is ingevuld. Zonder: alles zoals voor 3.43.0.
+ *
+ * @param  int|array $info Pagina of de cursusinfo zelf.
+ * @return bool
+ */
+function sfp_page_config_cursus_varianten_aan( $info ) {
+    if ( ! is_array( $info ) ) {
+        $info = sfp_page_config_cursusinfo( (int) $info );
+    }
+    return ! empty( $info['prijzen'] );
+}
+
+/**
+ * De prijs van een groep met dit aantal dagen: de prijs voor dat aantal dagen,
+ * anders de gewone prijs (3.43.0).
+ *
+ * @param  array $info  Cursusinfo.
+ * @param  int   $dagen Aantal dagen.
+ * @return int
+ */
+function sfp_page_config_cursus_prijs( array $info, $dagen ) {
+    $sleutel = (string) (int) $dagen;
+    if ( ! empty( $info['prijzen'][ $sleutel ] ) ) {
+        return (int) $info['prijzen'][ $sleutel ];
+    }
+    return isset( $info['prijs'] ) ? (int) $info['prijs'] : 0;
 }
 
 /**
@@ -189,7 +235,7 @@ function sfp_page_config_cursusinfo_schoon( $ruw ) {
  */
 function sfp_page_config_cursusinfo_bewaar( $post_id, $ruw ) {
     $info = sfp_page_config_cursusinfo_schoon( $ruw );
-    if ( '' === $info['plaats'] && 0 === $info['prijs'] ) {
+    if ( '' === $info['plaats'] && 0 === $info['prijs'] && ! $info['prijzen'] ) {
         delete_post_meta( (int) $post_id, 'sfp_cursusinfo' );
     } else {
         update_post_meta( (int) $post_id, 'sfp_cursusinfo', wp_slash( wp_json_encode( $info ) ) );

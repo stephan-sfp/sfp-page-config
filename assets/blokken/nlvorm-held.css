@@ -112,3 +112,11 @@ html:has(.sfp-held--wit,.sfp-held--foto){scroll-behavior:auto!important}
 }
 /* bewijsregel (3.41.3): cijfer en aantal reviews op één regel */
 :root .sfp-held__score>span:last-child{white-space:nowrap}
+/* feitenkaart met vier feiten (3.43.0, cursusvarianten: Duur erbij): op telefoon twee bij twee */
+@media (max-width:700px){
+:root .sfp-held__feit--vier{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+:root .sfp-held__feit--vier>div:nth-child(n+4){display:grid}
+:root .sfp-held__feit--vier>div:nth-child(n+3){border-top:1px solid color-mix(in srgb,var(--sfp-b-primair) 10%,transparent)}
+:root .sfp-held__feit--vier>div:nth-child(3){border-left:0;padding-left:16px}
+}
+@media (min-width:1201px){:root .sfp-held__feit--vier>div{padding:18px 20px}:root .sfp-held__feit--vier>div:first-child{padding-left:18px}:root .sfp-held__feit--vier .is-style-sfp-label{white-space:nowrap}}

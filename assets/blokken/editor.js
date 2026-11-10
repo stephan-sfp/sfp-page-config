@@ -607,6 +607,7 @@
 				vormkeuze( 'Vorm', a.vorm || '', [ { label: 'Gecentreerd', value: '', vorm: 'o:1' }, { label: 'Als kaart met icoon', value: 'kaart', vorm: 'n:1.6,.4', rand: true } ], function ( v ) { props.setAttributes( { vorm: v } ); } ),
 				'kaart' === a.vorm ? uitleg( 'Links uitgelijnd in een witte kaart. Per tab een kop (H3), tekst en rechts een icoon: kies het icoon in de zijbalk van de tab.' ) : null,
 				tekstveld( 'Naam voor schermlezers', a.label, function ( v ) { props.setAttributes( { label: v } ); }, 'Wordt voorgelezen, niet getoond. Bijvoorbeeld: Drie bronnen van overtuiging.' ),
+				schakelaar( 'Volgt de variantkeuze', !! a.variant, function ( v ) { props.setAttributes( { variant: v } ); }, 'Op een trainingspagina met een prijs per aantal dagen: de keuze 1, 2 of 3 dagen bij de groepskaarten opent de tab met dat aantal dagen in de titel, bijvoorbeeld 3 dagen.' ),
 				uitleg( 'Klik op een tab om die inhoud te bewerken. De plus in de balk voegt een tab toe.' ),
 			] ),
 			el( 'div', blockProps, balk, el( 'div', inner ) )
@@ -1288,6 +1289,16 @@
 				uitleg( 'De data vul je in bij SFP Beheer, Cursusdata.' ),
 			] ),
 			gegeven( 'sfp/cursusdatum', null, props, 'Deze pagina heeft nog geen startmomenten. Vul ze in bij SFP Beheer, Cursusdata.' )
+		);
+	} );
+
+	// Sinds 3.43.0: de prijs uit Cursusdata, bijvoorbeeld in het FAQ-antwoord "Wat kost de training?".
+	blok( 'sfp/cursusprijs', function ( props ) {
+		return el( Fragment, null,
+			paneel( 'Prijs van de training', [
+				uitleg( 'De prijs vul je in bij SFP Beheer, Cursusdata. Met een prijs per aantal dagen staan alle varianten in de zin.' ),
+			] ),
+			gegeven( 'sfp/cursusprijs', null, props, 'Deze pagina heeft nog geen prijs. Vul hem in bij SFP Beheer, Cursusdata.' )
 		);
 	} );
 

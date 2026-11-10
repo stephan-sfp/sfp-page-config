@@ -58,6 +58,19 @@ function sfp_page_config_blokken_gegevens() {
             ),
             'render'       => 'sfp_page_config_render_cursusdatum',
         ),
+        // Sinds 3.43.0: de prijs uit Cursusdata, voor het FAQ-antwoord
+        // "Wat kost de training?" (wijzigt mee met de prijs).
+        'sfp/cursusprijs' => array(
+            'title'        => 'Prijs van de training',
+            'description'  => 'De prijs van deze training, of per aantal dagen, zoals ingevuld bij Cursusdata.',
+            'icon'         => 'money-alt',
+            'css'          => '',
+            'zonder_basis' => true,
+            'inserter'     => $cursus,
+            'context'      => array( 'postId' ),
+            'attributes'   => array(),
+            'render'       => 'sfp_page_config_render_cursusprijs',
+        ),
         'sfp/lestijd'     => array(
             'title'        => 'Lestijd',
             'description'  => 'Hoe laat de lessen van deze training beginnen en eindigen.',
@@ -163,6 +176,51 @@ function sfp_page_config_render_cursusdatum( $attrs, $content = '', $blok = null
         )
     );
     return sfp_page_config_gegeven_omhulling( 'cursusdatum', $html );
+}
+
+/**
+ * sfp/cursusprijs (3.43.0): "De training kost € 995 voor 1 dag, € 1.495 voor
+ * 2 dagen en € 1.995 voor 3 dagen, exclusief btw." Zonder prijs per aantal
+ * dagen de gewone prijs; zonder prijs niets.
+ *
+ * @param  array         $attrs   Attributen.
+ * @param  string        $content Niet gebruikt.
+ * @param  WP_Block|null $blok    Blok.
+ * @return string
+ */
+function sfp_page_config_render_cursusprijs( $attrs, $content = '', $blok = null ) {
+    if ( ! function_exists( 'sfp_page_config_cursusinfo' ) ) {
+        return '';
+    }
+    $tekst = sfp_page_config_cursusprijs_tekst( (int) sfp_page_config_gegeven_post_id( $blok ) );
+    return '' === $tekst ? '' : sfp_page_config_gegeven_omhulling( 'cursusprijs', '<span>' . esc_html( $tekst ) . '</span>' );
+}
+
+/**
+ * De prijszin van een training (3.43.0).
+ *
+ * @param  int $post_id Pagina.
+ * @return string
+ */
+function sfp_page_config_cursusprijs_tekst( $post_id ) {
+    $info  = sfp_page_config_cursusinfo( (int) $post_id );
+    $euro  = function ( $bedrag ) {
+        return "\u{20AC}\u{00A0}" . number_format_i18n( (int) $bedrag );
+    };
+    $delen = array();
+    if ( ! empty( $info['prijzen'] ) && function_exists( 'sfp_page_config_variant_naam' ) ) {
+        foreach ( $info['prijzen'] as $dagen => $bedrag ) {
+            $delen[] = sfp_page_config_tekst_f( 'prijs_variant', $euro( $bedrag ), sfp_page_config_variant_naam( (int) $dagen ) );
+        }
+    } elseif ( ! empty( $info['prijs'] ) ) {
+        $delen[] = $euro( $info['prijs'] );
+    }
+    if ( ! $delen ) {
+        return '';
+    }
+    $laatste = array_pop( $delen );
+    $reeks   = ( $delen ? implode( ', ', $delen ) . ' ' . sfp_page_config_tekst( 'lijst_en' ) . ' ' : '' ) . $laatste;
+    return sfp_page_config_tekst_f( 'prijs_zin', $reeks );
 }
 
 /**
