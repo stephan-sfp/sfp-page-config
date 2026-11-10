@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SFP_CALCULATOR_DB_VERSIE', '1' );
+define( 'SFP_CALCULATOR_DB_VERSIE', '2' );
 
 /**
  * Naam van de tabel.
@@ -57,6 +57,7 @@ function sfp_calculator_tabel_klaar() {
   voornaam varchar(100) NOT NULL DEFAULT '',
   achternaam varchar(100) NOT NULL DEFAULT '',
   organisatie varchar(190) NOT NULL DEFAULT '',
+  afdeling varchar(190) NOT NULL DEFAULT '',
   functie varchar(190) NOT NULL DEFAULT '',
   nieuwsbrief tinyint(1) NOT NULL DEFAULT 0,
   lead_source_url varchar(500) NOT NULL DEFAULT '',
@@ -189,7 +190,6 @@ function sfp_calculator_tellingen() {
         'afgerond_30' => 0,
         'route_a'     => 0,
         'route_b'     => 0,
-        'route_c'     => 0,
         'pdf_klaar'   => 0,
         'pdf_wacht'   => 0,
         'pdf_mislukt' => 0,
@@ -206,7 +206,6 @@ function sfp_calculator_tellingen() {
                 SUM(afgerond_op >= %s) AS afgerond_30,
                 SUM(afgerond_op IS NOT NULL AND route = 'A') AS route_a,
                 SUM(afgerond_op IS NOT NULL AND route = 'B') AS route_b,
-                SUM(afgerond_op IS NOT NULL AND route = 'C') AS route_c,
                 SUM(pdf_status = 'klaar') AS pdf_klaar,
                 SUM(pdf_status = 'wacht') AS pdf_wacht,
                 SUM(pdf_status = 'mislukt') AS pdf_mislukt
@@ -327,6 +326,7 @@ function sfp_calculator_anonimiseer( $id ) {
             'voornaam'        => '',
             'achternaam'      => '',
             'organisatie'     => '',
+            'afdeling'        => '',
             'functie'         => '',
             'situatie'        => wp_json_encode( array() ),
             'keuzes'          => wp_json_encode( $keuzes ),
@@ -409,7 +409,7 @@ function sfp_calculator_exporteer_email( $email ) {
         $rijen = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$tabel} WHERE email = %s", strtolower( $email ) ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         foreach ( (array) $rijen as $rij ) {
             $data = array();
-            foreach ( array( 'kenmerk', 'voornaam', 'achternaam', 'organisatie', 'functie', 'afgerond_op', 'totaal_excl' ) as $kolom ) {
+            foreach ( array( 'kenmerk', 'voornaam', 'achternaam', 'organisatie', 'afdeling', 'functie', 'afgerond_op', 'totaal_excl' ) as $kolom ) {
                 $data[] = array(
                     'name'  => $kolom,
                     'value' => (string) $rij[ $kolom ],

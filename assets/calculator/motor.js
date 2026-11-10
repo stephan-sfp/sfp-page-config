@@ -55,6 +55,19 @@
 		};
 	}
 
+	/**
+	 * Uren per deelnemer voor een deel van de groep: { deelnemers, uren }.
+	 * Uren in blokken van norm.blok_uren (4); deelnemers hoogstens de groep.
+	 */
+	function persoonUren(w, pp, norm) {
+		if (!w || typeof w !== 'object') return null;
+		var uren = geheel(w.uren, 0, 200);
+		var blokken = Math.ceil(uren / norm.blok_uren);
+		var n = geheel(w.deelnemers, 0, pp);
+		if (!blokken || !n) return null;
+		return { deelnemers: n, uren: blokken * norm.blok_uren, blokken: blokken };
+	}
+
 	/** De berekening voor één aantal deelnemers. */
 	function rekenVoor(k, norm, deelnemers, onbekend) {
 		var verdeling = onbekend ? [norm.groep_norm] : verdeel(deelnemers, norm);
@@ -80,16 +93,20 @@
 			regels.push(regel('begeleiding', groepen, norm.begeleiding_prijs * 100, norm.btw_hoog, true));
 		}
 
-		var blokken = geheel(ex.coachuren, 0, 50);
-		if (aan.coachuren && blokken > 0) {
-			regels.push(regel('coachuren', blokken * pp, norm.blok_prijs * 100, norm.btw_hoog, false));
-			if (blokken * norm.blok_uren >= norm.abonnement_uren) meldingen.push('abonnement');
+		// Coachuren en learning on the job: een deel van de groep, in uren per deelnemer (blokken van 4).
+		var coach = persoonUren(ex.coachuren, pp, norm);
+		if (aan.coachuren && coach) {
+			regels.push(regel('coachuren', coach.deelnemers * coach.blokken, norm.blok_prijs * 100, norm.btw_hoog, false));
+			if (coach.uren >= norm.abonnement_uren) meldingen.push('abonnement');
 		}
-		if (aan.clinic && ex.clinic) {
-			regels.push(regel('clinic', pp, norm.clinic_prijs * 100, norm.btw_hoog, Number(vorm) >= norm.clinic_gratis_vanaf));
+		// Clinic en boek: een keuze, en vanzelf inbegrepen waar ze gratis zijn.
+		var clinicGratis = Number(vorm) >= norm.clinic_gratis_vanaf;
+		if (aan.clinic && (ex.clinic || clinicGratis)) {
+			regels.push(regel('clinic', pp, norm.clinic_prijs * 100, norm.btw_hoog, clinicGratis));
 		}
-		if (aan.boek && ex.boek) {
-			regels.push(regel('boek', pp, norm.boek_centen, norm.btw_laag, Number(vorm) >= norm.boek_gratis_vanaf));
+		var boekGratis = Number(vorm) >= norm.boek_gratis_vanaf;
+		if (aan.boek && (ex.boek || boekGratis)) {
+			regels.push(regel('boek', pp, norm.boek_centen, norm.btw_laag, boekGratis));
 		}
 		var acteur = geheel(ex.acteur, 0, Number(vorm) * groepen);
 		if (aan.acteur && acteur > 0) {
@@ -98,9 +115,9 @@
 		if (aan.terugkom && (ex.terugkom === 'dagdeel' || ex.terugkom === 'online')) {
 			regels.push(regel('terugkom_' + ex.terugkom, groepen, norm.terugkom[ex.terugkom] * 100, norm.btw_hoog, false));
 		}
-		var lotj = geheel(ex.lotj, 0, 50);
-		if (aan.lotj && lotj > 0) {
-			regels.push(regel('lotj', lotj * pp, norm.blok_prijs * 100, norm.btw_hoog, false));
+		var lotj = persoonUren(ex.lotj, pp, norm);
+		if (aan.lotj && lotj) {
+			regels.push(regel('lotj', lotj.deelnemers * lotj.blokken, norm.blok_prijs * 100, norm.btw_hoog, false));
 		}
 		if (aan.scan && ex.scan === 'individueel') {
 			regels.push(regel('scan_individueel', pp, norm.scan_individueel * 100, norm.btw_hoog, false));
@@ -154,19 +171,15 @@
 	/**
 	 * De begroting.
 	 *
-	 * @param {Object} k    Keuzes: route, mensen {soort, aantal, van, tot}, vorm, begeleiding, extras, groepsvoordeel, sprekers.
+	 * @param {Object} k    Keuzes: route (A training, B evenement), mensen {soort, aantal, van, tot}, vorm, begeleiding,
+	 *                      extras (coachuren en lotj als {deelnemers, uren}), groepsvoordeel, sprekers.
 	 * @param {Object} norm Norm van de site (includes/calculator-norm.php).
 	 * @return {Object}
 	 */
 	function reken(k, norm) {
 		k = k || {};
-		var route = k.route === 'B' || k.route === 'C' ? k.route : 'A';
+		var route = k.route === 'B' ? 'B' : 'A';
 		var uit = { route: route, maatwerk: false, richtprijs: false, bandbreedte: null };
-
-		if (route === 'C') {
-			uit.uitkomst = null;
-			return uit;
-		}
 		if (route === 'B') {
 			uit.sprekers = geheel(k.sprekers, 0, 500);
 			uit.evenement_prijs = norm.evenement_prijs;

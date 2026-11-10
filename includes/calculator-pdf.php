@@ -182,6 +182,7 @@ function sfp_calculator_blad_html( array $rij ) {
 
     $proef = ! empty( $rij['proef'] ) ? '<div class="proef">' . $e( $t( 'proef' ) ) . '</div>' : '';
     $naam  = trim( $rij['voornaam'] . ' ' . $rij['achternaam'] );
+    $wie   = implode( ', ', array_filter( array( (string) $rij['organisatie'], (string) ( $rij['afdeling'] ?? '' ) ), 'strlen' ) );
 
     // 1. Voor wie beslist.
     $samenvat = '';
@@ -193,7 +194,7 @@ function sfp_calculator_blad_html( array $rij ) {
             . '<p class="groot">' . $e( sfp_calculator_bedrag( (int) $o['totaal_excl'], $valuta ) ) . ' <span class="klein">' . $e( $t( 'excl' ) ) . '</span></p>'
             . ( ! empty( $u['richtprijs'] ) ? '<p><b>' . $e( $t( 'pdf_maatwerk' ) ) . '</b></p>' : '' );
     } elseif ( 'B' === $rij['route'] ) {
-        $samenvat = '<p>' . $e( $t( 'route_B' ) . ', ' . (int) $keuzes['sprekers'] . ' ' . strtolower( $t( 'sprekers_vraag' ) ) ) . '</p>'
+        $samenvat = '<p>' . $e( $t( 'doel_evenement' ) . ', ' . (int) $keuzes['sprekers'] . ' ' . strtolower( $t( 'sprekers_vraag' ) ) ) . '</p>'
             . '<p class="groot">' . $e( $t( 'evenement_prijs', array( 'prijs' => sfp_calculator_bedrag( (int) ( $u['evenement_prijs'] ?? 0 ), $valuta ) ) ) ) . '</p>'
             . '<p><b>' . $e( $t( 'pdf_maatwerk' ) ) . '</b></p>';
     }
@@ -211,13 +212,11 @@ function sfp_calculator_blad_html( array $rij ) {
     if ( ! empty( $keuzes['doelgroep'] ) ) {
         $situ .= '<p><b>' . $e( $t( 'doelgroep_vraag' ) ) . '</b> ' . $e( $t( 'doelgroep_' . $keuzes['doelgroep'] ) . ( 'anders' === $keuzes['doelgroep'] ? ' ' . $keuzes['doelgroep_anders'] : '' ) ) . '</p>';
     }
-    foreach ( array( 'eerder' => 'pdf_vorig', 'criteria' => 'criteria_vraag' ) as $veld => $label ) {
-        if ( '' !== ( $sit[ $veld ] ?? '' ) ) {
-            $situ .= '<p><b>' . $e( $t( $label ) ) . '</b> ' . nl2br( $e( $sit[ $veld ] ) ) . '</p>';
-        }
+    if ( ! empty( $keuzes['uitvraag'] ) ) {
+        $situ .= '<p><b>' . $e( $t( 'pdf_uitvraag' ) ) . ':</b> ' . ( '' !== ( $sit['criteria'] ?? '' ) ? nl2br( $e( $sit['criteria'] ) ) : $e( $t( 'ja' ) ) ) . '</p>';
     }
-    if ( '' !== ( $keuzes['intern']['vorig'] ?? '' ) ) {
-        $situ .= '<p><b>' . $e( $t( 'intern_vorig' ) ) . '</b> ' . nl2br( $e( $keuzes['intern']['vorig'] ) ) . '</p>';
+    foreach ( sfp_calculator_intern_regels( $keuzes, $taal, $valuta ) as $label => $waarde ) {
+        $situ .= '<p><b>' . $e( $label ) . ':</b> ' . nl2br( $e( $waarde ) ) . '</p>';
     }
     $html .= sfp_calculator_blad_blok( $t( 'pdf_situatie' ), $situ );
 
@@ -295,8 +294,8 @@ function sfp_calculator_blad_html( array $rij ) {
                 $ink .= '<tr><td>' . $e( $t( 'inkoop_' . $veld ) ) . '</td><td>' . nl2br( $e( $keuzes['inkoop'][ $veld ] ) ) . '</td></tr>';
             }
         }
-        if ( '' !== $naam || '' !== $rij['organisatie'] ) {
-            $ink = '<tr><td>' . $e( $t( 'pdf_beslisser' ) ) . '</td><td>' . $e( implode( ', ', array_filter( array( $naam, $rij['organisatie'] ), 'strlen' ) ) ) . '</td></tr>' . $ink;
+        if ( '' !== $naam || '' !== $wie ) {
+            $ink = '<tr><td>' . $e( $t( 'pdf_beslisser' ) ) . '</td><td>' . $e( implode( ', ', array_filter( array( $naam, $wie ), 'strlen' ) ) ) . '</td></tr>' . $ink;
         }
         $html .= sfp_calculator_blad_blok( $t( 'pdf_inkoop' ), '<div class="twee"><div><h3>' . $e( $t( 'pdf_leverancier' ) ) . '</h3>' . $lev . '</div><div>' . ( '' !== $ink ? '<table>' . $ink . '</table>' : '' ) . '</div></div>' );
     } else {
@@ -313,7 +312,7 @@ function sfp_calculator_blad_html( array $rij ) {
     $html     .= sfp_calculator_blad_blok( $t( 'pdf_volgende' ), $volgende );
 
     $kop = '<header class="kop"><div>' . $logo . '<h1>' . $e( $t( 'pdf_titel' ) ) . '</h1>'
-        . ( '' !== $naam || '' !== $rij['organisatie'] ? '<div>' . $e( implode( ', ', array_filter( array( $naam, $rij['organisatie'] ), 'strlen' ) ) ) . '</div>' : '' )
+        . ( '' !== $naam || '' !== $wie ? '<div>' . $e( implode( ', ', array_filter( array( $naam, $wie ), 'strlen' ) ) ) . '</div>' : '' )
         . '</div><div class="meta"><b>' . $e( $t( 'pdf_kenmerk' ) ) . '</b>' . $e( $rij['kenmerk'] ) . '<b>' . $e( $t( 'pdf_datum' ) ) . '</b>' . $e( $datum( $vandaag ) )
         . '<b>' . $e( $t( 'pdf_geldig' ) ) . '</b>' . $e( $datum( sfp_calculator_geldig_tot( $rij ) ) ) . '</div></header>';
 
@@ -499,7 +498,7 @@ function sfp_calculator_link_route() {
     if ( preg_match( '/^([A-Z]{2,4}-)?B-\d{2}-\d{4,6}$/', $kenmerk ) && ( ! function_exists( 'sfp_zelftest_limiet' ) || sfp_zelftest_limiet( 'calc-pdf-ip', sfp_zelftest_ip(), 120 ) ) ) {
         $rij = sfp_calculator_rij_op( 'kenmerk', $kenmerk );
     }
-    if ( ! $rij || ! sfp_calculator_sleutel_klopt( $rij, $sleutel ) || (int) $rij['geanonimiseerd'] || empty( $rij['afgerond_op'] ) || 'C' === $rij['route'] ) {
+    if ( ! $rij || ! sfp_calculator_sleutel_klopt( $rij, $sleutel ) || (int) $rij['geanonimiseerd'] || empty( $rij['afgerond_op'] ) ) {
         sfp_calculator_link_pagina( 'pdf_onbekend', 404 );
         exit;
     }

@@ -78,10 +78,11 @@ function sfp_calculator_norm() {
             'lotj'      => true,
             'scan'      => true,
         ),
+        // A: training voor het team; B: sprekers voor een eigen evenement (B4).
+        // Meerdere aanbieders is geen route maar een vraag (besluit 10-11).
         'routes_aan'           => array(
             'A' => true,
             'B' => false,
-            'C' => true,
         ),
         // Begroting (B14).
         'geldig_dagen'         => 60,
@@ -186,7 +187,7 @@ function sfp_calculator_site_norm( $inst = null ) {
             $norm['extras_aan'][ $extra ] = '1' === (string) $inst['extras'][ $extra ];
         }
     }
-    foreach ( array( 'A', 'B', 'C' ) as $route ) {
+    foreach ( array( 'A', 'B' ) as $route ) {
         if ( isset( $inst['routes'][ $route ] ) && '' !== (string) $inst['routes'][ $route ] ) {
             $norm['routes_aan'][ $route ] = '1' === (string) $inst['routes'][ $route ];
         }

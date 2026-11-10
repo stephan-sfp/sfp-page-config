@@ -155,6 +155,8 @@ $uitzondering = array(
     'artikel.css'           => 30000,
     'zelftest/zelftest.css' => 26000,
     'reviews/reviews.css'   => 15000,
+    // Alleen op de calculatorpagina; zelftest-opbouw (besluit 10-11-2026).
+    'calculator/calculator.css' => 16000,
 );
 $voorkant     = array_merge(
     array_values( $bestanden ),

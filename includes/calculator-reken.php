@@ -80,6 +80,31 @@ function sfp_calculator_regel( $code, $aantal, $prijs, $btw, $gratis ) {
 }
 
 /**
+ * Uren per deelnemer voor een deel van de groep (zie motor.js, persoonUren).
+ *
+ * @param  mixed $w    array( deelnemers, uren ).
+ * @param  int   $pp   Deelnemers in de berekening.
+ * @param  array $norm Norm.
+ * @return array|null  deelnemers, uren, blokken.
+ */
+function sfp_calculator_persoon_uren( $w, $pp, array $norm ) {
+    if ( ! is_array( $w ) ) {
+        return null;
+    }
+    $uren    = sfp_calculator_geheel( isset( $w['uren'] ) ? $w['uren'] : 0, 0, 200 );
+    $blokken = (int) ceil( $uren / (int) $norm['blok_uren'] );
+    $n       = sfp_calculator_geheel( isset( $w['deelnemers'] ) ? $w['deelnemers'] : 0, 0, (int) $pp );
+    if ( ! $blokken || ! $n ) {
+        return null;
+    }
+    return array(
+        'deelnemers' => $n,
+        'uren'       => $blokken * (int) $norm['blok_uren'],
+        'blokken'    => $blokken,
+    );
+}
+
+/**
  * De berekening voor één aantal deelnemers.
  *
  * @return array
@@ -114,18 +139,22 @@ function sfp_calculator_reken_voor( array $k, array $norm, $deelnemers, $onbeken
         $regels[] = sfp_calculator_regel( 'begeleiding', $groepen, (int) $norm['begeleiding_prijs'] * 100, $hoog, true );
     }
 
-    $blokken = sfp_calculator_geheel( isset( $ex['coachuren'] ) ? $ex['coachuren'] : 0, 0, 50 );
-    if ( ! empty( $aan['coachuren'] ) && $blokken > 0 ) {
-        $regels[] = sfp_calculator_regel( 'coachuren', $blokken * $pp, (int) $norm['blok_prijs'] * 100, $hoog, false );
-        if ( $blokken * (int) $norm['blok_uren'] >= (int) $norm['abonnement_uren'] ) {
+    // Coachuren en learning on the job: een deel van de groep, in uren per deelnemer (blokken van 4).
+    $coach = sfp_calculator_persoon_uren( isset( $ex['coachuren'] ) ? $ex['coachuren'] : null, $pp, $norm );
+    if ( ! empty( $aan['coachuren'] ) && $coach ) {
+        $regels[] = sfp_calculator_regel( 'coachuren', $coach['deelnemers'] * $coach['blokken'], (int) $norm['blok_prijs'] * 100, $hoog, false );
+        if ( $coach['uren'] >= (int) $norm['abonnement_uren'] ) {
             $meldingen[] = 'abonnement';
         }
     }
-    if ( ! empty( $aan['clinic'] ) && ! empty( $ex['clinic'] ) ) {
-        $regels[] = sfp_calculator_regel( 'clinic', $pp, (int) $norm['clinic_prijs'] * 100, $hoog, (int) $vorm >= (int) $norm['clinic_gratis_vanaf'] );
+    // Clinic en boek: een keuze, en vanzelf inbegrepen waar ze gratis zijn.
+    $clinic_gratis = (int) $vorm >= (int) $norm['clinic_gratis_vanaf'];
+    if ( ! empty( $aan['clinic'] ) && ( ! empty( $ex['clinic'] ) || $clinic_gratis ) ) {
+        $regels[] = sfp_calculator_regel( 'clinic', $pp, (int) $norm['clinic_prijs'] * 100, $hoog, $clinic_gratis );
     }
-    if ( ! empty( $aan['boek'] ) && ! empty( $ex['boek'] ) ) {
-        $regels[] = sfp_calculator_regel( 'boek', $pp, (int) $norm['boek_centen'], (int) $norm['btw_laag'], (int) $vorm >= (int) $norm['boek_gratis_vanaf'] );
+    $boek_gratis = (int) $vorm >= (int) $norm['boek_gratis_vanaf'];
+    if ( ! empty( $aan['boek'] ) && ( ! empty( $ex['boek'] ) || $boek_gratis ) ) {
+        $regels[] = sfp_calculator_regel( 'boek', $pp, (int) $norm['boek_centen'], (int) $norm['btw_laag'], $boek_gratis );
     }
     $acteur = sfp_calculator_geheel( isset( $ex['acteur'] ) ? $ex['acteur'] : 0, 0, (int) $vorm * $groepen );
     if ( ! empty( $aan['acteur'] ) && $acteur > 0 ) {
@@ -135,9 +164,9 @@ function sfp_calculator_reken_voor( array $k, array $norm, $deelnemers, $onbeken
     if ( ! empty( $aan['terugkom'] ) && ( 'dagdeel' === $terug || 'online' === $terug ) ) {
         $regels[] = sfp_calculator_regel( 'terugkom_' . $terug, $groepen, (int) $norm['terugkom'][ $terug ] * 100, $hoog, false );
     }
-    $lotj = sfp_calculator_geheel( isset( $ex['lotj'] ) ? $ex['lotj'] : 0, 0, 50 );
-    if ( ! empty( $aan['lotj'] ) && $lotj > 0 ) {
-        $regels[] = sfp_calculator_regel( 'lotj', $lotj * $pp, (int) $norm['blok_prijs'] * 100, $hoog, false );
+    $lotj = sfp_calculator_persoon_uren( isset( $ex['lotj'] ) ? $ex['lotj'] : null, $pp, $norm );
+    if ( ! empty( $aan['lotj'] ) && $lotj ) {
+        $regels[] = sfp_calculator_regel( 'lotj', $lotj['deelnemers'] * $lotj['blokken'], (int) $norm['blok_prijs'] * 100, $hoog, false );
     }
     $scan = isset( $ex['scan'] ) ? (string) $ex['scan'] : '';
     if ( ! empty( $aan['scan'] ) && 'individueel' === $scan ) {
@@ -202,17 +231,13 @@ function sfp_calculator_reken_voor( array $k, array $norm, $deelnemers, $onbeken
  * @return array
  */
 function sfp_calculator_reken( array $k, array $norm ) {
-    $route = isset( $k['route'] ) && in_array( $k['route'], array( 'B', 'C' ), true ) ? $k['route'] : 'A';
+    $route = isset( $k['route'] ) && 'B' === $k['route'] ? 'B' : 'A';
     $uit   = array(
         'route'       => $route,
         'maatwerk'    => false,
         'richtprijs'  => false,
         'bandbreedte' => null,
     );
-    if ( 'C' === $route ) {
-        $uit['uitkomst'] = null;
-        return $uit;
-    }
     if ( 'B' === $route ) {
         $uit['sprekers']        = sfp_calculator_geheel( isset( $k['sprekers'] ) ? $k['sprekers'] : 0, 0, 500 );
         $uit['evenement_prijs'] = (int) $norm['evenement_prijs'];

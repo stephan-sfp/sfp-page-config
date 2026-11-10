@@ -55,22 +55,21 @@ $scenarios['8, 3 dagen alle extras']            = $a(
     3,
     array(
         'extras' => array(
-            'coachuren' => 1,
-            'clinic'    => true,
-            'boek'      => true,
+            'coachuren' => array( 'deelnemers' => 8, 'uren' => 4 ),
             'acteur'    => 2,
             'terugkom'  => 'dagdeel',
-            'lotj'      => 1,
+            'lotj'      => array( 'deelnemers' => 8, 'uren' => 4 ),
             'scan'      => 'team',
         ),
     )
 );
 $scenarios['7, 1 dag clinic boek scan individueel'] = $a( 7, 1, array( 'extras' => array( 'clinic' => true, 'boek' => true, 'scan' => 'individueel', 'terugkom' => 'online' ) ) );
 $scenarios['32, 2 dagen voordeel korting']      = $a( 32, 2, array( 'groepsvoordeel' => 'korting' ) );
-$scenarios['32, 3 dagen voordeel coachuren']    = $a( 32, 3, array( 'groepsvoordeel' => 'coachuren', 'extras' => array( 'coachuren' => 3 ) ) );
+$scenarios['32, 3 dagen voordeel coachuren']    = $a( 32, 3, array( 'groepsvoordeel' => 'coachuren', 'extras' => array( 'coachuren' => array( 'deelnemers' => 5, 'uren' => 12 ) ) ) );
+$scenarios['17, 2 dagen 3 deelnemers 8 uur']    = $a( 17, 2, array( 'extras' => array( 'coachuren' => array( 'deelnemers' => 3, 'uren' => 8 ), 'lotj' => array( 'deelnemers' => 40, 'uren' => 5 ) ) ) );
 $scenarios['10, 2 dagen acteur te veel']        = $a( 10, 2, array( 'extras' => array( 'acteur' => 9 ) ) );
 $scenarios['route B']                           = array( 'route' => 'B', 'sprekers' => 6 );
-$scenarios['route C']                           = array( 'route' => 'C' );
+$scenarios['route C wordt A']                   = array( 'route' => 'C', 'mensen' => array( 'soort' => 'getal', 'aantal' => 8 ), 'vorm' => 1 );
 $scenarios['0 mensen']                          = $a( 0, 2 );
 $scenarios['geen vorm']                         = $a( 8, '' );
 $scenarios['24, 3 dagen boek clinic voordeel']  = $a( 24, 3, array( 'extras' => array( 'boek' => true, 'clinic' => true ) ) );
@@ -152,7 +151,12 @@ $zeven = $u( '7, 1 dag clinic boek scan individueel' );
 // 3000 + clinic 1750 + boek 7x19,95=139,65 -> 140 + scan 1750 + online 750.
 $t( 'btw', 7390 === $zeven['totaal_excl'] && 13 === $zeven['btw']['9'] && 1523 === $zeven['btw']['21'], 'btw per tarief' );
 $t( 'abonnement', in_array( 'abonnement', $u( '32, 3 dagen voordeel coachuren' )['meldingen'], true ), 'abonnement vanaf 12 uur' );
-$t( 'acteur', 2 === $u( '10, 2 dagen acteur te veel' )['regels'][1]['aantal'], 'acteur hoogstens dagen x groepen' );
+$t( 'acteur', 2 === $u( '10, 2 dagen acteur te veel' )['regels'][2]['aantal'], 'acteur hoogstens dagen x groepen' );
+$deel = $u( '17, 2 dagen 3 deelnemers 8 uur' );
+// 3 groepen x 6000 + coach 3 deelnemers x 2 blokken x 1000 + boek gratis + lotj 17 (max groep) x 2 blokken (5 uur wordt 8) x 1000 - groepsvoordeel 1000.
+$t( 'coachuren', 18000 + 6000 + 34000 - 1000 === $deel['totaal_excl'], 'deel van de groep, uren in blokken van 4' );
+$t( 'gratis', 'boek' === $deel['regels'][2]['code'] && $deel['regels'][2]['gratis'], 'boek vanzelf inbegrepen vanaf 2 dagen' );
+$t( 'route', 'A' === $php_uit['route C wordt A']['route'] && 3000 === $u( 'route C wordt A' )['totaal_excl'], 'route C bestaat niet meer' );
 $t( 'marge', 10 === $php_uit['marge 6 tot 14, 2 dagen']['mensen']['midden'] && 6000 === $php_uit['marge 6 tot 14, 2 dagen']['bandbreedte']['van'] && 12000 === $php_uit['marge 6 tot 14, 2 dagen']['bandbreedte']['tot'], 'marge rekent met het midden' );
 
 echo $fout ? "calculator-reken: $fout fout(en)\n" : 'calculator-reken: ' . count( $scenarios ) . " scenario's, PHP en JS gelijk, besluiten kloppen\n";

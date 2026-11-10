@@ -33,6 +33,9 @@ function sfp_calculator_codes() {
         'waarom'    => array( 'nieuwe_rol', 'groei', 'moment', 'feedback', 'beleid', 'anders' ),
         'locatie'   => array( 'extern', 'lunch', 'borrel', 'teamdag' ),
         'soort'     => array( 'keynote', 'meerdere', 'pitch', 'anders' ),
+        'beslist'   => array( 'zelf', 'leidinggevende', 'hr', 'inkoop', 'directie', 'anders' ),
+        'budget'    => array( 'tot5', '5_10', '10_25', 'meer', 'onbekend', 'geen' ),
+        'beviel'    => array( 'goed', 'wisselend', 'slecht' ),
     );
 }
 
@@ -59,7 +62,7 @@ function sfp_calculator_tekst_schoon( $w, $max, $lang = false ) {
 function sfp_calculator_keuzes_schoon( array $in ) {
     $codes = sfp_calculator_codes();
     $k     = isset( $in['keuzes'] ) && is_array( $in['keuzes'] ) ? $in['keuzes'] : array();
-    $route = isset( $k['route'] ) && in_array( $k['route'], array( 'A', 'B', 'C' ), true ) ? $k['route'] : 'A';
+    $route = isset( $k['route'] ) && 'B' === $k['route'] ? 'B' : 'A';
     $m     = isset( $k['mensen'] ) && is_array( $k['mensen'] ) ? $k['mensen'] : array();
     $soort = isset( $m['soort'] ) && in_array( $m['soort'], array( 'getal', 'marge', 'onbekend' ), true ) ? $m['soort'] : 'getal';
     $ex    = isset( $k['extras'] ) && is_array( $k['extras'] ) ? $k['extras'] : array();
@@ -80,32 +83,35 @@ function sfp_calculator_keuzes_schoon( array $in ) {
         'vorm'             => isset( $k['vorm'] ) && in_array( (string) $k['vorm'], array( '1', '2', '3' ), true ) ? (int) $k['vorm'] : 0,
         'begeleiding'      => $waar( isset( $k['begeleiding'] ) ? $k['begeleiding'] : false ),
         'extras'           => array(
-            'coachuren' => sfp_calculator_geheel( isset( $ex['coachuren'] ) ? $ex['coachuren'] : 0, 0, 50 ),
+            'coachuren' => sfp_calculator_uren_schoon( isset( $ex['coachuren'] ) ? $ex['coachuren'] : null ),
             'clinic'    => $waar( isset( $ex['clinic'] ) ? $ex['clinic'] : false ),
             'boek'      => $waar( isset( $ex['boek'] ) ? $ex['boek'] : false ),
             'acteur'    => sfp_calculator_geheel( isset( $ex['acteur'] ) ? $ex['acteur'] : 0, 0, 200 ),
             'terugkom'  => isset( $ex['terugkom'] ) && in_array( $ex['terugkom'], array( 'dagdeel', 'online' ), true ) ? $ex['terugkom'] : '',
-            'lotj'      => sfp_calculator_geheel( isset( $ex['lotj'] ) ? $ex['lotj'] : 0, 0, 50 ),
+            'lotj'      => sfp_calculator_uren_schoon( isset( $ex['lotj'] ) ? $ex['lotj'] : null ),
             'scan'      => isset( $ex['scan'] ) && in_array( $ex['scan'], array( 'individueel', 'team' ), true ) ? $ex['scan'] : '',
         ),
         'groepsvoordeel'   => isset( $k['groepsvoordeel'] ) && 'coachuren' === $k['groepsvoordeel'] ? 'coachuren' : 'korting',
         'locatie'          => array_values( array_intersect( $codes['locatie'], isset( $k['locatie'] ) && is_array( $k['locatie'] ) ? array_map( 'strval', $k['locatie'] ) : array() ) ),
         'sprekers'         => sfp_calculator_geheel( isset( $k['sprekers'] ) ? $k['sprekers'] : 0, 0, 500 ),
         'soort'            => isset( $k['soort'] ) && in_array( $k['soort'], $codes['soort'], true ) ? $k['soort'] : '',
+        'uitvraag'         => $waar( isset( $k['uitvraag'] ) ? $k['uitvraag'] : false ),
     );
 
     $s        = isset( $in['situatie'] ) && is_array( $in['situatie'] ) ? $in['situatie'] : array();
     $situatie = array(
         'doel'     => sfp_calculator_tekst_schoon( isset( $s['doel'] ) ? $s['doel'] : '', 1500, true ),
         'waarom'   => array_values( array_intersect( $codes['waarom'], isset( $s['waarom'] ) && is_array( $s['waarom'] ) ? array_map( 'strval', $s['waarom'] ) : array() ) ),
-        'eerder'   => sfp_calculator_tekst_schoon( isset( $s['eerder'] ) ? $s['eerder'] : '', 1000, true ),
         'criteria' => sfp_calculator_tekst_schoon( isset( $s['criteria'] ) ? $s['criteria'] : '', 2000, true ),
     );
     $i                = isset( $in['intern'] ) && is_array( $in['intern'] ) ? $in['intern'] : array();
+    $eerder           = isset( $i['eerder'] ) && in_array( $i['eerder'], array( 'ja', 'nee' ), true ) ? $i['eerder'] : '';
     $keuzes['intern'] = array(
-        'beslist' => sfp_calculator_tekst_schoon( isset( $i['beslist'] ) ? $i['beslist'] : '', 300 ),
-        'budget'  => sfp_calculator_tekst_schoon( isset( $i['budget'] ) ? $i['budget'] : '', 300 ),
-        'vorig'   => sfp_calculator_tekst_schoon( isset( $i['vorig'] ) ? $i['vorig'] : '', 1000, true ),
+        'beslist' => array_values( array_intersect( $codes['beslist'], isset( $i['beslist'] ) && is_array( $i['beslist'] ) ? array_map( 'strval', $i['beslist'] ) : array() ) ),
+        'budget'  => isset( $i['budget'] ) && in_array( $i['budget'], $codes['budget'], true ) ? $i['budget'] : '',
+        'eerder'  => $eerder,
+        'beviel'  => 'ja' === $eerder && isset( $i['beviel'] ) && in_array( $i['beviel'], $codes['beviel'], true ) ? $i['beviel'] : '',
+        'vorig'   => 'ja' === $eerder ? sfp_calculator_tekst_schoon( isset( $i['vorig'] ) ? $i['vorig'] : '', 1000, true ) : '',
     );
     $p                = isset( $in['inkoop'] ) && is_array( $in['inkoop'] ) ? $in['inkoop'] : array();
     $keuzes['inkoop'] = array(
@@ -115,6 +121,10 @@ function sfp_calculator_keuzes_schoon( array $in ) {
         'referentie'   => sfp_calculator_tekst_schoon( isset( $p['referentie'] ) ? $p['referentie'] : '', 150 ),
         'factuuradres' => sfp_calculator_tekst_schoon( isset( $p['factuuradres'] ) ? $p['factuuradres'] : '', 500, true ),
     );
+    // Inkoop aangevinkt maar niets ingevuld: geen inkoopblok (de browser houdt dat al tegen).
+    if ( $keuzes['inkoop']['aan'] && '' === trim( implode( '', array_slice( $keuzes['inkoop'], 1 ) ) ) ) {
+        $keuzes['inkoop']['aan'] = false;
+    }
     if ( ! $keuzes['inkoop']['aan'] ) {
         $keuzes['inkoop'] = array( 'aan' => false );
     }
@@ -122,6 +132,24 @@ function sfp_calculator_keuzes_schoon( array $in ) {
         'keuzes'   => $keuzes,
         'situatie' => $situatie,
     );
+}
+
+/**
+ * Uren per deelnemer voor een deel van de groep, schoon.
+ *
+ * @param  mixed $w array( deelnemers, uren ).
+ * @return array|null
+ */
+function sfp_calculator_uren_schoon( $w ) {
+    if ( ! is_array( $w ) ) {
+        return null;
+    }
+    $n    = sfp_calculator_geheel( isset( $w['deelnemers'] ) ? $w['deelnemers'] : 0, 0, 500 );
+    $uren = sfp_calculator_geheel( isset( $w['uren'] ) ? $w['uren'] : 0, 0, 200 );
+    return $n && $uren ? array(
+        'deelnemers' => $n,
+        'uren'       => $uren,
+    ) : null;
 }
 
 /* =========================================================================
@@ -262,7 +290,7 @@ function sfp_calculator_notitie( array $rij ) {
     };
     $regels   = array();
     $regels[] = $t( 'begroting' ) . ' ' . $rij['kenmerk'] . ( ! empty( $rij['proef'] ) ? ' (' . $t( 'proef' ) . ')' : '' );
-    $regels[] = $t( 'route_' . $rij['route'] );
+    $regels[] = $t( 'B' === $rij['route'] ? 'doel_evenement' : 'doel_training' );
     if ( 'A' === $rij['route'] && ! empty( $u['uitkomst'] ) ) {
         $o        = $u['uitkomst'];
         $m        = isset( $u['mensen'] ) ? $u['mensen'] : array();
@@ -286,8 +314,9 @@ function sfp_calculator_notitie( array $rij ) {
     } elseif ( 'B' === $rij['route'] ) {
         $regels[] = $t( 'sprekers_vraag' ) . ' ' . (int) $keuzes['sprekers'] . ( $keuzes['soort'] ? ', ' . $t( 'soort_' . $keuzes['soort'] ) : '' );
         $regels[] = $t( 'richtprijs' ) . ': ' . $t( 'evenement_prijs', array( 'prijs' => sfp_calculator_bedrag( (int) ( $u['evenement_prijs'] ?? 0 ), $valuta ) ) );
-    } elseif ( 'C' === $rij['route'] && '' !== ( $sit['criteria'] ?? '' ) ) {
-        $regels[] = $t( 'criteria_vraag' ) . ' ' . $sit['criteria'];
+    }
+    if ( ! empty( $keuzes['uitvraag'] ) ) {
+        $regels[] = $t( 'pdf_uitvraag' ) . ( '' !== ( $sit['criteria'] ?? '' ) ? ': ' . $sit['criteria'] : '' );
     }
     if ( ! empty( $keuzes['doelgroep'] ) ) {
         $regels[] = $t( 'doelgroep_vraag' ) . ' ' . $t( 'doelgroep_' . $keuzes['doelgroep'] ) . ( 'anders' === $keuzes['doelgroep'] && '' !== $keuzes['doelgroep_anders'] ? ' ' . $keuzes['doelgroep_anders'] : '' );
@@ -298,10 +327,8 @@ function sfp_calculator_notitie( array $rij ) {
     if ( '' !== ( $sit['doel'] ?? '' ) ) {
         $regels[] = $t( 'pdf_doel' ) . ': ' . $sit['doel'];
     }
-    foreach ( array( 'beslist', 'budget', 'vorig' ) as $veld ) {
-        if ( '' !== ( $keuzes['intern'][ $veld ] ?? '' ) ) {
-            $regels[] = $t( 'intern_' . $veld ) . ' ' . $keuzes['intern'][ $veld ];
-        }
+    foreach ( sfp_calculator_intern_regels( $keuzes, $taal, $valuta ) as $label => $waarde ) {
+        $regels[] = $label . ': ' . $waarde;
     }
     if ( ! empty( $keuzes['inkoop']['aan'] ) ) {
         $inkoop = array();
@@ -312,10 +339,42 @@ function sfp_calculator_notitie( array $rij ) {
         }
         $regels[] = $t( 'pdf_inkoop' ) . ( $inkoop ? ': ' . implode( '; ', $inkoop ) : '' );
     }
-    if ( 'C' !== $rij['route'] ) {
-        $regels[] = sfp_calculator_pdf_url( $rij );
-    }
+    $regels[] = sfp_calculator_pdf_url( $rij );
     return implode( "\n", $regels );
+}
+
+/**
+ * Het interne proces in leesbare regels: wie beslist mee, budget, eerder traject.
+ *
+ * @param  array  $keuzes Keuzes.
+ * @param  string $taal   Taal.
+ * @param  string $valuta Valuta.
+ * @return array<string, string> label => waarde.
+ */
+function sfp_calculator_intern_regels( array $keuzes, $taal, $valuta = 'EUR' ) {
+    $t   = function ( $s, $v = array() ) use ( $taal ) {
+        return sfp_calculator_t( $s, $v, $taal );
+    };
+    $i   = isset( $keuzes['intern'] ) && is_array( $keuzes['intern'] ) ? $keuzes['intern'] : array();
+    $uit = array();
+    if ( ! empty( $i['beslist'] ) && is_array( $i['beslist'] ) ) {
+        $uit[ $t( 'pdf_beslist' ) ] = implode( ', ', array_map( function ( $w ) use ( $t ) { return $t( 'beslist_' . $w ); }, $i['beslist'] ) );
+    }
+    if ( ! empty( $i['budget'] ) && is_string( $i['budget'] ) ) {
+        $b   = array(
+            'tot5'  => array( 'prijs' => sfp_calculator_bedrag( 5000, $valuta ) ),
+            '5_10'  => array( 'van' => sfp_calculator_bedrag( 5000, $valuta ), 'tot' => sfp_calculator_bedrag( 10000, $valuta ) ),
+            '10_25' => array( 'van' => sfp_calculator_bedrag( 10000, $valuta ), 'tot' => sfp_calculator_bedrag( 25000, $valuta ) ),
+            'meer'  => array( 'prijs' => sfp_calculator_bedrag( 25000, $valuta ) ),
+        );
+        $uit[ $t( 'pdf_budget' ) ] = $t( 'budget_' . $i['budget'], isset( $b[ $i['budget'] ] ) ? $b[ $i['budget'] ] : array() );
+    }
+    if ( 'ja' === ( $i['eerder'] ?? '' ) ) {
+        $uit[ $t( 'pdf_vorig' ) ] = trim( ( ! empty( $i['beviel'] ) ? $t( 'beviel_' . $i['beviel'] ) : $t( 'ja' ) ) . ( '' !== ( $i['vorig'] ?? '' ) ? '. ' . $i['vorig'] : '' ) );
+    } elseif ( 'nee' === ( $i['eerder'] ?? '' ) ) {
+        $uit[ $t( 'pdf_vorig' ) ] = $t( 'nee' );
+    }
+    return $uit;
 }
 
 /**
@@ -340,7 +399,7 @@ function sfp_calculator_velden( array $rij ) {
         'deelnemers'   => isset( $o['deelnemers'] ) && $o['deelnemers'] ? (string) (int) $o['deelnemers'] : '',
         'doelgroep'    => isset( $keuzes['doelgroep'] ) ? (string) $keuzes['doelgroep'] : '',
         'totaal_excl'  => 'A' === $rij['route'] ? (string) (int) $rij['totaal_excl'] : '',
-        'pdf_link'     => 'C' === $rij['route'] ? '' : sfp_calculator_pdf_url( $rij ),
+        'pdf_link'     => sfp_calculator_pdf_url( $rij ),
         'trigger_type' => implode( ',', isset( $sit['waarom'] ) ? (array) $sit['waarom'] : array() ),
         'trigger_note' => mb_substr( (string) ( $sit['doel'] ?? '' ), 0, 500 ),
         'pagina_url'   => (string) $rij['lead_source_url'],
@@ -376,6 +435,7 @@ function sfp_calculator_export( array $rij ) {
             'achternaam'  => (string) $rij['achternaam'],
             'email'       => (string) $rij['email'],
             'organisatie' => (string) $rij['organisatie'],
+            'afdeling'    => (string) ( $rij['afdeling'] ?? '' ),
             'functie'     => (string) $rij['functie'],
             'nieuwsbrief' => (bool) $rij['nieuwsbrief'],
         ),
@@ -384,7 +444,7 @@ function sfp_calculator_export( array $rij ) {
         'norm'        => isset( $ber['norm'] ) ? $ber['norm'] : array(),
         'berekening'  => isset( $ber['uitkomst'] ) ? $ber['uitkomst'] : array(),
         'notitie'     => sfp_calculator_notitie( $rij ),
-        'pdf_url'     => 'C' === $rij['route'] ? '' : sfp_calculator_pdf_url( $rij ),
+        'pdf_url'     => sfp_calculator_pdf_url( $rij ),
         'pdf_status'  => (string) $rij['pdf_status'],
         'bron'        => array(
             'pagina_url' => (string) $rij['lead_source_url'],
@@ -531,7 +591,8 @@ function sfp_calculator_rest_begroting( WP_REST_Request $verzoek ) {
     return rest_ensure_response(
         array(
             'kenmerk'    => $rij['kenmerk'],
-            'pdf_url'    => 'C' === $rij['route'] ? '' : sfp_calculator_pdf_url( $rij ),
+            'pdf_url'    => sfp_calculator_pdf_url( $rij ),
+            'geldig_tot' => sfp_calculator_geldig_tot( $rij ),
             'velden'     => sfp_calculator_velden( $rij ),
             'berekening' => $ber['uitkomst'],
         )
@@ -557,15 +618,25 @@ function sfp_calculator_rest_proef( WP_REST_Request $verzoek ) {
             'vorm'           => 2,
             'begeleiding'    => true,
             'extras'         => array(
-                'clinic' => true,
-                'boek'   => true,
+                'clinic'    => true,
+                'boek'      => true,
+                'coachuren' => array( 'deelnemers' => 4, 'uren' => 4 ),
             ),
+            'uitvraag'       => true,
             'groepsvoordeel' => 'korting',
             'locatie'        => array( 'lunch' ),
         ),
         'situatie' => array(
             'doel'   => 'Proefbegroting uit SFP Beheer.',
-            'waarom' => array( 'groei' ),
+            'waarom'   => array( 'groei' ),
+            'criteria' => 'Proef: prijs en ervaring.',
+        ),
+        'intern'   => array(
+            'beslist' => array( 'hr', 'inkoop' ),
+            'budget'  => '5_10',
+            'eerder'  => 'ja',
+            'beviel'  => 'wisselend',
+            'vorig'   => 'Proef.',
         ),
         'inkoop'   => array(
             'aan' => true,
@@ -585,6 +656,7 @@ function sfp_calculator_rest_proef( WP_REST_Request $verzoek ) {
             'achternaam'  => (string) $user->last_name,
             'email'       => strtolower( (string) $user->user_email ),
             'organisatie' => 'Proef',
+            'afdeling'    => 'Proefafdeling',
             'afgerond_op' => gmdate( 'Y-m-d H:i:s' ),
             'pdf_status'  => 'wacht',
         )

@@ -160,11 +160,12 @@ function sfp_calculator_srfm_na( $entry_id, $form_id, $data ) {
             'achternaam'  => $contact['achternaam'],
             'email'       => $contact['email'],
             'organisatie' => $contact['organisatie'],
+            'afdeling'    => $contact['afdeling'],
             'functie'     => $contact['functie'],
             'nieuwsbrief' => $contact['nieuwsbrief'] ? 1 : 0,
             'entry_id'    => (int) $entry_id,
             'afgerond_op' => gmdate( 'Y-m-d H:i:s' ),
-            'pdf_status'  => 'C' === ( sfp_calculator_rij_op( 'id', $id )['route'] ?? '' ) ? 'geen' : 'wacht',
+            'pdf_status'  => 'wacht',
         )
     );
     sfp_calculator_na_antwoord( $id );
@@ -182,6 +183,7 @@ function sfp_calculator_srfm_contact( array $data ) {
         'achternaam'  => '',
         'email'       => '',
         'organisatie' => '',
+        'afdeling'    => '',
         'functie'     => '',
         'nieuwsbrief' => false,
     );
@@ -189,7 +191,8 @@ function sfp_calculator_srfm_contact( array $data ) {
         'voornaam'    => array( 'voornaam', 'first name', 'firstname', 'naam', 'name' ),
         'achternaam'  => array( 'achternaam', 'last name', 'lastname', 'surname' ),
         'email'       => array( 'e-mail', 'email', 'e-mailadres', 'emailadres', 'email address', 'zakelijk e-mailadres' ),
-        'organisatie' => array( 'organisatie', 'bedrijf', 'organisation', 'organization', 'company' ),
+        'organisatie' => array( 'organisatie', 'bedrijf', 'bedrijfsnaam', 'organisation', 'organization', 'company' ),
+        'afdeling'    => array( 'afdeling', 'department', 'team' ),
         'functie'     => array( 'functie', 'job title', 'role', 'position', 'functietitel' ),
         'nieuwsbrief' => array( 'nieuwsbrief', 'newsletter' ),
     );
@@ -208,7 +211,7 @@ function sfp_calculator_srfm_contact( array $data ) {
                 $w                  = is_array( $waarde ) ? implode( ',', $waarde ) : (string) $waarde;
                 $uit['nieuwsbrief'] = '' !== $w && ! in_array( strtolower( $w ), array( '0', 'false', 'nee', 'no' ), true );
             } else {
-                $uit[ $veld ] = mb_substr( sanitize_text_field( (string) $waarde ), 0, 'organisatie' === $veld || 'functie' === $veld ? 190 : 100 );
+                $uit[ $veld ] = mb_substr( sanitize_text_field( (string) $waarde ), 0, in_array( $veld, array( 'organisatie', 'afdeling', 'functie' ), true ) ? 190 : 100 );
             }
         }
         // Een e-mailveld zonder herkenbaar label.

@@ -1,18 +1,17 @@
 /**
- * SFP Page Config - Incompanycalculator op de pagina (sinds 3.36.0).
+ * SFP Page Config - Incompanycalculator op de pagina.
  *
- * Eén vraag per scherm. Route A: route, situatie, aantal mensen (met
- * doelgroep), vorm, extra's, locatie, intern proces (met inkoopvakje),
- * gegevens (SureForms), eindscherm. Route B: evenement. Route C: uitvraag.
- * De begroting rekent vanaf het aantal mensen live mee (motor.js); bij
- * stap 8 slaat de server hem op met een eigen berekening en geeft het
- * kenmerk en de waarden van de verborgen velden.
+ * Opbouw als de zelftest (besluit 10-11-2026): één actie per scherm; een
+ * enkele keuze gaat zonder knop door; een keuze met meerdere antwoorden of
+ * een invulveld heeft een knop Volgende. De begroting staat pas naast de
+ * vragen als de duur gekozen is. Rekenen doet motor.js; bij de stap met de
+ * gegevens slaat de server de begroting op met een eigen berekening.
  *
- * Ingebed (op een incompany-pagina): alleen route en aantal met een eerste
- * begroting; Verder opent de calculatorpagina met die keuzes.
+ * Ingebed (op een incompany-pagina): kop, aantal mensen en een knop naar de
+ * calculatorpagina met dat aantal.
  *
  * Geen naam of e-mail in de dataLayer: alleen calculator_start en
- * calculator_afgerond met route en totaalklasse.
+ * calculator_afgerond met de soort en de totaalklasse.
  */
 (function () {
 	'use strict';
@@ -24,73 +23,156 @@
 		if (!wortel || !C || !M) return;
 		var app = wortel.querySelector('.sfp-calc-app');
 		var formVak = wortel.querySelector('.sfp-calc-formulier');
-		var T = C.t || {};
 		var N = C.norm;
+		var TX = C.t || {};
+
+		/* ---------- Hulpjes ---------- */
 
 		function t(s, v) {
-			var tekst = Object.prototype.hasOwnProperty.call(T, s) ? T[s] : s;
-			if (v) Object.keys(v).forEach(function (k) { tekst = tekst.split('{' + k + '}').join(String(v[k])); });
+			var tekst = Object.prototype.hasOwnProperty.call(TX, s) ? TX[s] : s;
+			Object.keys(v || {}).forEach(function (k) { tekst = tekst.split('{' + k + '}').join(String(v[k])); });
 			return tekst;
 		}
-		function el(tag, attrs, kids) {
-			var n = document.createElement(tag);
-			Object.keys(attrs || {}).forEach(function (k) {
-				var w = attrs[k];
-				if (w === null || w === undefined || w === false) return;
-				if (k === 'text') n.textContent = w;
-				else if (k === 'klik') n.addEventListener('click', w);
-				else if (k === 'bij') n.addEventListener('input', w);
-				else if (k === 'wissel') n.addEventListener('change', w);
-				else if (k === 'class') n.className = w;
-				else if (k === 'checked' || k === 'value') n[k] = w;
-				else n.setAttribute(k, w === true ? '' : w);
-			});
-			[].concat(kids || []).forEach(function (c) {
-				if (c === null || c === undefined || c === false) return;
-				n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
-			});
-			return n;
+		function esc(s) {
+			return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
 		}
-		var valuta = { EUR: '€', GBP: '£', USD: '$' };
-		function centen(c) {
-			var heel = Math.floor(Math.abs(c) / 100);
-			var rest = String(Math.abs(c) % 100);
-			return bedrag(heel) + (C.taal === 'en' ? '.' : ',') + (rest.length < 2 ? '0' + rest : rest);
-		}
+		var teken = { EUR: '€', GBP: '£', USD: '$' };
 		function bedrag(b) {
 			var n = Math.abs(Math.round(b));
 			var s = C.taal === 'en' ? n.toLocaleString('en-GB') : String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-			return (b < 0 ? '- ' : '') + (valuta[N.valuta] || N.valuta) + ' ' + s;
+			return (b < 0 ? '- ' : '') + (teken[N.valuta] || N.valuta) + ' ' + s;
 		}
+		function geheel(w, min, max) {
+			var n = parseInt(w, 10);
+			if (isNaN(n)) return 0;
+			return Math.max(min, Math.min(max, n));
+		}
+		function $(sel) { return app.querySelector(sel); }
+		function alle(sel) { return Array.prototype.slice.call(app.querySelectorAll(sel)); }
 
 		/* ---------- Stand ---------- */
 
-		var params = new URLSearchParams(window.location.search);
+		var params = (function () { try { return new URL(window.location.href).searchParams; } catch (e) { return new URLSearchParams(''); } })();
 		var S = {
-			stap: 0,
-			route: '',
-			keuzes: {
-				mensen: { soort: 'getal', aantal: '', van: '', tot: '' },
-				doelgroep: '', doelgroep_anders: '',
-				vorm: 0, begeleiding: false,
-				extras: { coachuren: 0, clinic: false, boek: false, acteur: 0, terugkom: '', lotj: 0, scan: '' },
-				groepsvoordeel: 'korting',
-				locatieAanvraag: false, locatie: [],
-				sprekers: '', soort: ''
-			},
-			situatie: { doel: '', waarom: [], eerder: '', criteria: '' },
-			intern: { beslist: '', budget: '', vorig: '' },
-			inkoop: { aan: false, po: '', kostenplaats: '', referentie: '', factuuradres: '' },
-			antwoord: null,
-			bezig: false,
-			fout: ''
+			i: 0,
+			doel: '',
+			uitvraag: '',
+			mensen: { soort: 'getal', aantal: '', van: '', tot: '' },
+			doelgroep: '', doelgroepAnders: '',
+			vorm: 0, begeleiding: '',
+			extras: [],
+			coach: { deelnemers: '', uren: 0 },
+			lotj: { deelnemers: '', uren: 0 },
+			acteur: 0, terugkom: '', scan: '',
+			groepsvoordeel: '',
+			locatie: '', locatieExtra: [],
+			situatie: { doel: '', waarom: [], criteria: '' },
+			eerder: '', beviel: '', vorig: '',
+			beslist: [], budget: '',
+			inkoop: { aan: '', po: '', kostenplaats: '', referentie: '', factuuradres: '' },
+			sprekers: '', soort: '',
+			antwoord: null, bezig: false, fout: ''
 		};
-		/* Keuzes uit de ingebedde versie. */
-		var pr = params.get('route');
-		if (pr === 'A' || pr === 'B' || pr === 'C') S.route = pr;
-		if (params.get('n')) { S.keuzes.mensen.aantal = String(parseInt(params.get('n'), 10) || ''); }
-		if (params.get('van') && params.get('tot')) { S.keuzes.mensen = { soort: 'marge', aantal: '', van: params.get('van'), tot: params.get('tot') }; }
-		if (params.get('onbekend') === '1') S.keuzes.mensen.soort = 'onbekend';
+		var vanBuiten = false;
+		if (!C.ingebed && params.get('n')) {
+			var n0 = geheel(params.get('n'), 1, N.max_deelnemers);
+			if (n0) { S.doel = 'training'; S.mensen.aantal = String(n0); vanBuiten = true; }
+		}
+
+		/* ---------- Berekening ---------- */
+
+		function keuzes() {
+			var ex = {};
+			if (S.extras.indexOf('coachuren') > -1) ex.coachuren = { deelnemers: S.coach.deelnemers, uren: S.coach.uren };
+			if (S.extras.indexOf('lotj') > -1) ex.lotj = { deelnemers: S.lotj.deelnemers, uren: S.lotj.uren };
+			if (S.extras.indexOf('clinic') > -1) ex.clinic = true;
+			if (S.extras.indexOf('boek') > -1) ex.boek = true;
+			if (S.extras.indexOf('acteur') > -1) ex.acteur = S.acteur;
+			if (S.extras.indexOf('terugkom') > -1) ex.terugkom = S.terugkom;
+			if (S.extras.indexOf('scan') > -1) ex.scan = S.scan;
+			return {
+				route: S.doel === 'evenement' ? 'B' : 'A',
+				mensen: { soort: S.mensen.soort, aantal: S.mensen.aantal, van: S.mensen.van, tot: S.mensen.tot },
+				vorm: S.vorm,
+				begeleiding: S.begeleiding === 'ja',
+				extras: ex,
+				groepsvoordeel: S.groepsvoordeel || 'korting',
+				sprekers: S.sprekers,
+				doelgroep: S.doelgroep,
+				doelgroep_anders: S.doelgroepAnders,
+				soort: S.soort,
+				uitvraag: S.uitvraag === 'ja',
+				locatie: S.locatie === 'anders' ? S.locatieExtra.slice() : []
+			};
+		}
+		function reken(vorm) {
+			var k = keuzes();
+			if (vorm) k.vorm = vorm;
+			return M.reken(k, N);
+		}
+		function deelnemers() {
+			var u = reken(S.vorm || 1).uitkomst;
+			if (!u) return N.groep_norm;
+			return S.mensen.soort === 'onbekend' ? N.groep_norm : (u.deelnemers || N.groep_norm);
+		}
+		function groepen() {
+			var u = reken(S.vorm || 1).uitkomst;
+			return u && u.groepen ? u.groepen : 1;
+		}
+		function mensenKlaar() {
+			var m = S.mensen;
+			if (m.soort === 'onbekend') return true;
+			if (m.soort === 'marge') return geheel(m.van, 1, N.max_deelnemers) > 0 && geheel(m.tot, 1, N.max_deelnemers) > 0;
+			return geheel(m.aantal, 1, N.max_deelnemers) > 0;
+		}
+
+		/* ---------- Het pad: welke schermen, in welke volgorde ---------- */
+
+		var extraVolgorde = ['coachuren', 'clinic', 'boek', 'acteur', 'terugkom', 'lotj', 'scan'];
+		function extraGratis(e) {
+			if (e === 'clinic') return Number(S.vorm) >= N.clinic_gratis_vanaf;
+			if (e === 'boek') return Number(S.vorm) >= N.boek_gratis_vanaf;
+			return false;
+		}
+		function extrasTeKiezen() {
+			return extraVolgorde.filter(function (e) { return N.extras_aan && N.extras_aan[e] && !extraGratis(e); });
+		}
+		function pad() {
+			var p = ['start'];
+			if (!vanBuiten || S.doel !== 'training') {
+				if (N.routes_aan && N.routes_aan.B) p.push('doel');
+			}
+			p.push('uitvraag');
+			if (S.uitvraag === 'ja') p.push('criteria');
+			if (S.doel === 'evenement') {
+				p.push('sprekers', 'soort', 'situatie');
+			} else {
+				p.push('mensen', 'doelgroep');
+				if (S.doelgroep === 'anders') p.push('doelgroep_anders');
+				p.push('vorm');
+				if (S.vorm && N.vormen[String(S.vorm)] && N.vormen[String(S.vorm)].begeleiding === 'keuze') p.push('begeleiding');
+				if (extrasTeKiezen().length) p.push('extras');
+				S.extras.forEach(function (e) {
+					if (e === 'coachuren') p.push('coach_n', 'coach_u');
+					if (e === 'lotj') p.push('lotj_n', 'lotj_u');
+					if (e === 'acteur') p.push('acteur');
+					if (e === 'terugkom') p.push('terugkom');
+					if (e === 'scan') p.push('scan');
+				});
+				if (Number(S.vorm) >= 2 && groepen() >= N.voordeel_vanaf_groep) p.push('voordeel');
+				p.push('locatie');
+				if (S.locatie === 'anders') p.push('locatie_extra');
+				p.push('situatie', 'waarom', 'eerder');
+				if (S.eerder === 'ja') p.push('beviel', 'vorig');
+			}
+			p.push('beslist', 'budget', 'inkoop');
+			if (S.inkoop.aan === 'ja') p.push('inkoop_gegevens');
+			p.push('gegevens', 'klaar');
+			return p;
+		}
+		function huidig() { var p = pad(); return p[Math.min(S.i, p.length - 1)]; }
+
+		/* ---------- Meten ---------- */
 
 		var gemeld = {};
 		function meld(naam, extra) {
@@ -98,372 +180,518 @@
 			gemeld[naam] = true;
 			try {
 				window.dataLayer = window.dataLayer || [];
-				var e = { event: naam, calculator_route: S.route || '' };
+				var e = { event: naam, calculator_soort: S.doel || '' };
 				Object.keys(extra || {}).forEach(function (k) { e[k] = extra[k]; });
 				window.dataLayer.push(e);
 			} catch (x) { /* meten mag de calculator nooit breken */ }
 		}
 
-		function routes() {
-			return ['A', 'B', 'C'].filter(function (r) { return N.routes_aan && N.routes_aan[r]; });
-		}
-		function stappen() {
-			if (C.ingebed) return ['ingebed'];
-			if (S.route === 'B') return ['route', 'evenement', 'gegevens', 'klaar'];
-			if (S.route === 'C') return ['route', 'uitvraag', 'gegevens', 'klaar'];
-			return ['route', 'situatie', 'mensen', 'vorm', 'extras', 'locatie', 'intern', 'gegevens', 'klaar'];
-		}
-		function huidig() { return stappen()[S.stap] || 'route'; }
+		/* ---------- Bouwstenen van een scherm ---------- */
 
-		function reken() {
-			var k = JSON.parse(JSON.stringify(S.keuzes));
-			k.route = S.route || 'A';
-			if (!k.vorm) k.vorm = C.ingebed || huidig() === 'mensen' ? 2 : 0;
-			return M.reken(k, N);
+		function kop(vraag, onder) {
+			var p = pad();
+			var tel = p.length - 2;
+			var n = Math.max(1, S.i);
+			return '<div class="sfp-calc-vraagkop"><span class="sfp-calc-lab">' + esc(t('lab')) + '</span><span class="sfp-calc-tel">' + esc(t('voortgang', { n: n, t: tel })) + '</span></div>'
+				+ '<div class="sfp-calc-voortgang" role="progressbar" aria-valuemin="0" aria-valuemax="' + tel + '" aria-valuenow="' + n + '"><b style="width:' + Math.round(n / tel * 100) + '%"></b></div>'
+				+ '<p class="sfp-calc-vraag" id="sfp-calc-vraagtekst" tabindex="-1">' + esc(vraag) + (onder ? '<small>' + esc(onder) + '</small>' : '') + '</p>';
 		}
-		function mensenKlaar() {
-			var m = S.keuzes.mensen;
-			if (m.soort === 'onbekend') return true;
-			if (m.soort === 'marge') return parseInt(m.van, 10) > 0 && parseInt(m.tot, 10) > 0;
-			return parseInt(m.aantal, 10) > 0;
+		function optie(w, label, zin, aan, meer) {
+			return '<button type="button" class="sfp-calc-optie' + (meer ? ' vink' : '') + (aan ? ' aan' : '') + '" data-w="' + esc(w) + '" aria-pressed="' + (aan ? 'true' : 'false') + '">'
+				+ '<span class="sfp-calc-bol" aria-hidden="true"></span><span class="sfp-calc-otekst"><b>' + esc(label) + '</b>' + (zin ? '<span>' + esc(zin) + '</span>' : '') + '</span></button>';
 		}
-		function magVerder() {
-			var s = huidig();
-			if (s === 'route') return !!S.route;
-			if (s === 'mensen') return mensenKlaar();
-			if (s === 'vorm') return !!S.keuzes.vorm;
-			if (s === 'evenement') return parseInt(S.keuzes.sprekers, 10) > 0;
-			return true;
+		function voet(metVolgende, overslaan) {
+			return '<p class="sfp-calc-foutmelding" id="sfp-calc-fout" hidden role="alert"></p>'
+				+ '<div class="sfp-calc-vraagvoet"><button type="button" class="sfp-calc-terug" id="sfp-calc-vorige">' + esc(t('terug')) + '</button>'
+				+ '<span class="sfp-calc-voetrechts">' + (overslaan ? '<button type="button" class="sfp-calc-cta2" id="sfp-calc-over">' + esc(overslaan) + '</button>' : '')
+				+ (metVolgende ? '<button type="button" class="sfp-calc-knop" id="sfp-calc-volgende">' + esc(t('verder')) + '</button>' : '') + '</span></div>';
 		}
-
-		/* ---------- Onderdelen ---------- */
-
-		function info(sleutel) {
-			var tekst = (C.uitleg || {})[sleutel];
-			if (!tekst) return null;
-			var knop = el('button', { type: 'button', class: 'sfp-calc-i', 'aria-label': t('uitleg'), 'aria-expanded': 'false', text: 'i' });
-			var vak = el('span', { class: 'sfp-calc-i-tekst', hidden: true, role: 'note', text: tekst });
-			knop.addEventListener('click', function () {
-				var open = knop.getAttribute('aria-expanded') !== 'true';
-				knop.setAttribute('aria-expanded', open ? 'true' : 'false');
-				vak.hidden = !open;
-			});
-			return el('span', { class: 'sfp-calc-i-wrap' }, [knop, vak]);
+		function fout(tekst) {
+			var f = $('#sfp-calc-fout');
+			if (!f) return;
+			f.textContent = tekst;
+			f.hidden = !tekst;
 		}
-		function keuze(naam, waarde, gekozen, label, zin, bij, type) {
-			var id = 'sfp-calc-' + naam + '-' + waarde;
-			var invoer = el('input', { type: type || 'radio', name: 'sfp-calc-' + naam, id: id, value: waarde, checked: !!gekozen });
-			invoer.addEventListener('change', function () { bij(invoer.checked, waarde); });
-			return el('label', { class: 'sfp-calc-optie' + (gekozen ? ' is-gekozen' : ''), for: id }, [
-				invoer,
-				el('span', { class: 'sfp-calc-optie-tekst' }, [el('b', { text: label }), zin ? el('span', { text: zin }) : null])
-			]);
-		}
-		function veld(label, invoer, hulp) {
-			return el('div', { class: 'sfp-calc-veld' }, [el('label', { text: label }, []), invoer, hulp ? el('span', { class: 'sfp-calc-hulp', text: hulp }) : null]);
-		}
-		function tekstvak(waarde, bij, lang, type) {
-			var n = lang ? el('textarea', { rows: '4' }) : el('input', { type: type || 'text' });
-			n.value = waarde || '';
-			n.addEventListener('input', function () { bij(n.value); knopStand(); });
-			return n;
-		}
-		function getal(waarde, bij, min, max) {
-			var n = el('input', { type: 'number', inputmode: 'numeric', min: String(min), max: String(max), step: '1' });
-			n.value = waarde === 0 || waarde ? String(waarde) : '';
-			n.addEventListener('input', function () { bij(n.value); knopStand(); });
-			return n;
-		}
-		function melding(tekst, links) {
-			return el('p', { class: 'sfp-calc-melding' }, [tekst].concat(links || []));
+		function verder() { S.i = Math.min(S.i + 1, pad().length - 1); tekenAlles(); }
+		function vorige() {
+			if (S.i <= 0) return;
+			S.i--;
+			if (vanBuiten && pad()[S.i] === 'start') S.i = 0;
+			tekenAlles();
 		}
 
-		/* De begroting naast of onder de vragen. */
-		function begroting(compact) {
-			if (S.route !== 'A' && !C.ingebed) return null;
-			if (C.ingebed && S.route && S.route !== 'A') return null;
-			if (!mensenKlaar()) return null;
+		/** Een enkele keuze: klikken = kiezen en door. */
+		function enkel(vraag, onder, opties, huidigW, zet) {
+			var html = kop(vraag, onder) + '<div class="sfp-calc-opties">'
+				+ opties.map(function (o) { return optie(o.w, o.label, o.zin, String(huidigW) === String(o.w), false); }).join('')
+				+ '</div>' + voet(false, '');
+			return {
+				html: html,
+				na: function () {
+					alle('.sfp-calc-optie').forEach(function (b) {
+						b.addEventListener('click', function () {
+							if (S.bezig) return;
+							S.bezig = true;
+							alle('.sfp-calc-optie').forEach(function (o) { o.classList.toggle('aan', o === b); o.setAttribute('aria-pressed', String(o === b)); });
+							zet(b.getAttribute('data-w'));
+							setTimeout(function () { S.bezig = false; verder(); }, 220);
+						});
+					});
+				}
+			};
+		}
+		/** Meerdere antwoorden: vinkjes en Volgende. */
+		function meer(vraag, onder, opties, lijst, verplicht, overslaan) {
+			var html = kop(vraag, onder || t('meerdere')) + '<div class="sfp-calc-opties' + (opties.length > 4 ? ' twee' : '') + '">'
+				+ opties.map(function (o) { return optie(o.w, o.label, o.zin, lijst.indexOf(o.w) > -1, true); }).join('')
+				+ '</div>' + voet(true, overslaan || '');
+			return {
+				html: html,
+				na: function () {
+					alle('.sfp-calc-optie').forEach(function (b) {
+						b.addEventListener('click', function () {
+							var w = b.getAttribute('data-w');
+							var k = lijst.indexOf(w);
+							if (k > -1) lijst.splice(k, 1); else lijst.push(w);
+							b.classList.toggle('aan', k < 0);
+							b.setAttribute('aria-pressed', String(k < 0));
+							fout('');
+						});
+					});
+					$('#sfp-calc-volgende').addEventListener('click', function () {
+						if (verplicht && !lijst.length) { fout(t('kies_een')); return; }
+						verder();
+					});
+					if ($('#sfp-calc-over')) $('#sfp-calc-over').addEventListener('click', function () { lijst.length = 0; verder(); });
+				}
+			};
+		}
+		/** Een tekstvak met Volgende; optioneel met Sla over. */
+		function tekst(vraag, onder, waarde, zet, optioneel) {
+			var html = kop(vraag, onder) + '<label class="sfp-calc-sr" for="sfp-calc-tekst">' + esc(vraag) + '</label>'
+				+ '<textarea id="sfp-calc-tekst" rows="5">' + esc(waarde) + '</textarea>' + voet(true, optioneel ? t('overslaan') : '');
+			return {
+				html: html,
+				na: function () {
+					var v = $('#sfp-calc-tekst');
+					v.addEventListener('input', function () { zet(v.value); fout(''); });
+					$('#sfp-calc-volgende').addEventListener('click', function () {
+						if (!optioneel && !v.value.trim()) { fout(t('vul_in')); return; }
+						verder();
+					});
+					if ($('#sfp-calc-over')) $('#sfp-calc-over').addEventListener('click', function () { zet(''); verder(); });
+				}
+			};
+		}
+		/** Een getal met Volgende. */
+		function getal(vraag, onder, label, waarde, max, zet, extraHtml) {
+			var html = kop(vraag, onder) + '<div class="sfp-calc-veld"><label for="sfp-calc-getal">' + esc(label) + '</label>'
+				+ '<input id="sfp-calc-getal" type="number" inputmode="numeric" min="1" max="' + max + '" step="1" value="' + esc(waarde) + '"></div>'
+				+ (extraHtml || '') + voet(true, '');
+			return {
+				html: html,
+				na: function () {
+					var v = $('#sfp-calc-getal');
+					v.addEventListener('input', function () { zet(v.value); fout(''); });
+					v.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('#sfp-calc-volgende').click(); } });
+					$('#sfp-calc-volgende').addEventListener('click', function () {
+						if (!geheel(v.value, 1, max)) { fout(t('vul_in')); return; }
+						zet(String(geheel(v.value, 1, max)));
+						verder();
+					});
+				}
+			};
+		}
+		function janee(vraag, onder, waarde, zet, jaLabel, neeLabel) {
+			return enkel(vraag, onder, [{ w: 'ja', label: jaLabel || t('ja') }, { w: 'nee', label: neeLabel || t('nee') }], waarde, zet);
+		}
+
+		/* ---------- De schermen ---------- */
+
+		var schermen = {};
+
+		schermen.start = function () {
+			var punten = ['aanbod_1', 'aanbod_2', 'aanbod_3'].concat(N.routes_aan && N.routes_aan.B ? ['aanbod_4'] : []);
+			var c = C.contact || {};
+			var bel = c.telefoon ? '<a class="sfp-calc-cta2" href="tel:' + esc(c.telefoon.replace(/[^+0-9]/g, '')) + '">' + esc(t('bel', { n: c.telefoon })) + '</a>' : '';
+			var mail = c.email ? '<a class="sfp-calc-cta2" href="mailto:' + esc(c.email) + '">' + esc(t('mail', { n: c.email })) + '</a>' : '';
+			return {
+				html: '<div class="sfp-calc-start">'
+					+ '<div class="sfp-calc-startkop"><span class="sfp-calc-lab licht">' + esc(t('lab')) + '</span><h1 class="sfp-calc-titel">' + esc(t('titel')) + '</h1>'
+					+ '<p class="sfp-calc-intro">' + esc(t('intro')) + '</p></div>'
+					+ '<div class="sfp-calc-aanbod"><p class="sfp-calc-lijstkop">' + esc(t('aanbod_kop')) + '</p><ul class="sfp-calc-lijst">'
+					+ punten.map(function (k) { return '<li>' + esc(t(k)) + '</li>'; }).join('') + '</ul></div>'
+					+ '<div class="sfp-calc-startknop"><button type="button" class="sfp-calc-knop" id="sfp-calc-start">' + esc(t('start_knop')) + '</button><p class="sfp-calc-duur">' + esc(t('start_duur')) + '</p></div>'
+					+ ((bel || mail) ? '<div class="sfp-calc-anders"><p><b>' + esc(t('anders_kop')) + '</b> ' + esc(t('anders_zin')) + '</p><p class="sfp-calc-contactregel">' + bel + mail + '</p></div>' : '')
+					+ '</div>',
+				na: function () {
+					$('#sfp-calc-start').addEventListener('click', function () { meld('calculator_start'); verder(); });
+				}
+			};
+		};
+		schermen.doel = function () {
+			return enkel(t('doel_vraag'), '', [
+				{ w: 'training', label: t('doel_training'), zin: t('doel_training_zin') },
+				{ w: 'evenement', label: t('doel_evenement'), zin: t('doel_evenement_zin') }
+			], S.doel, function (w) { S.doel = w; });
+		};
+		schermen.uitvraag = function () {
+			if (!S.doel) S.doel = 'training';
+			return janee(t('uitvraag_vraag'), '', S.uitvraag, function (w) { S.uitvraag = w; }, t('uitvraag_ja'), t('uitvraag_nee'));
+		};
+		schermen.criteria = function () {
+			return tekst(t('criteria_vraag'), t('criteria_hulp'), S.situatie.criteria, function (w) { S.situatie.criteria = w; }, true);
+		};
+
+		schermen.mensen = function () {
+			var m = S.mensen;
+			var veld;
+			if (m.soort === 'marge') {
+				veld = '<div class="sfp-calc-twee"><div class="sfp-calc-veld"><label for="sfp-calc-van">' + esc(t('mensen_van')) + '</label><input id="sfp-calc-van" type="number" inputmode="numeric" min="1" max="' + N.max_deelnemers + '" value="' + esc(m.van) + '"></div>'
+					+ '<div class="sfp-calc-veld"><label for="sfp-calc-tot">' + esc(t('mensen_tot')) + '</label><input id="sfp-calc-tot" type="number" inputmode="numeric" min="1" max="' + N.max_deelnemers + '" value="' + esc(m.tot) + '"></div></div>';
+			} else {
+				veld = '<div class="sfp-calc-veld"><label for="sfp-calc-aantal">' + esc(t('mensen_aantal')) + '</label><input id="sfp-calc-aantal" type="number" inputmode="numeric" min="1" max="' + N.max_deelnemers + '" value="' + esc(m.aantal) + '"></div>';
+			}
+			var links = '<p class="sfp-calc-links"><button type="button" class="sfp-calc-cta2 klein" id="sfp-calc-wissel">' + esc(m.soort === 'marge' ? t('mensen_precies') : t('mensen_marge')) + '</button>'
+				+ '<button type="button" class="sfp-calc-cta2 klein" id="sfp-calc-onbekend">' + esc(t('mensen_onbekend')) + '</button></p>';
+			return {
+				html: kop(t('mensen_vraag')) + veld + links + '<div class="sfp-calc-meldingen" id="sfp-calc-meld" aria-live="polite"></div>' + voet(true, ''),
+				na: function () {
+					function toon() {
+						var plek = $('#sfp-calc-meld');
+						plek.innerHTML = '';
+						if (!mensenKlaar() || m.soort === 'onbekend') return;
+						var u = reken(1).uitkomst;
+						if (!u || !u.groepen) return;
+						var html = '';
+						if (u.groepen > 1) html += '<p class="sfp-calc-regel">' + esc(t('mensen_groepen', { n: t('groepen', { n: u.groepen }), t: u.verdeling.join(', ') })) + '</p>';
+						u.meldingen.forEach(function (k) {
+							if (k === 'klein') {
+								html += '<p class="sfp-calc-regel">' + esc(t('melding_klein'))
+									+ (C.coaching ? ' <a href="' + esc(C.coaching) + '">' + esc(t('link_coaching')) + '</a>' : '')
+									+ (C.open ? ' <a href="' + esc(C.open) + '">' + esc(t('link_open')) + '</a>' : '') + '</p>';
+							} else if (k === 'maatwerk') {
+								html += '<p class="sfp-calc-regel">' + esc(t('melding_maatwerk')) + ' ' + esc(t('melding_groot')) + '</p>';
+							} else if (k === 'negen_tien') {
+								html += '<p class="sfp-calc-regel">' + esc(t('melding_negen_tien')) + '</p>';
+							}
+						});
+						plek.innerHTML = html;
+					}
+					['#sfp-calc-aantal', '#sfp-calc-van', '#sfp-calc-tot'].forEach(function (id) {
+						var v = $(id);
+						if (!v) return;
+						v.addEventListener('input', function () {
+							if (id === '#sfp-calc-aantal') m.aantal = v.value;
+							if (id === '#sfp-calc-van') m.van = v.value;
+							if (id === '#sfp-calc-tot') m.tot = v.value;
+							fout('');
+							toon();
+						});
+						v.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); $('#sfp-calc-volgende').click(); } });
+					});
+					$('#sfp-calc-wissel').addEventListener('click', function () { m.soort = m.soort === 'marge' ? 'getal' : 'marge'; tekenAlles(); });
+					$('#sfp-calc-onbekend').addEventListener('click', function () { m.soort = 'onbekend'; verder(); });
+					$('#sfp-calc-volgende').addEventListener('click', function () {
+						if (m.soort === 'onbekend') m.soort = 'getal';
+						if (!mensenKlaar()) { fout(t('vul_in')); return; }
+						verder();
+					});
+					if (m.soort === 'onbekend') m.soort = 'getal';
+					toon();
+				}
+			};
+		};
+		schermen.doelgroep = function () {
+			var o = ['starters', 'ervaren', 'senioren', 'leidinggevend', 'gemengd', 'anders'].map(function (d) { return { w: d, label: t('doelgroep_' + d) }; });
+			var s = enkel(t('doelgroep_vraag'), '', o, S.doelgroep, function (w) { S.doelgroep = w; });
+			s.html = s.html.replace('<span class="sfp-calc-voetrechts">', '<span class="sfp-calc-voetrechts"><button type="button" class="sfp-calc-cta2" id="sfp-calc-over">' + esc(t('overslaan')) + '</button>');
+			var na = s.na;
+			s.na = function () { na(); $('#sfp-calc-over').addEventListener('click', function () { S.doelgroep = ''; verder(); }); };
+			return s;
+		};
+		schermen.doelgroep_anders = function () {
+			return tekst(t('doelgroep_anders_vraag'), '', S.doelgroepAnders, function (w) { S.doelgroepAnders = w; }, true);
+		};
+
+		schermen.vorm = function () {
+			var g = groepen();
+			var kaarten = ['1', '2', '3'].filter(function (v) { return N.vormen[v]; }).map(function (v) {
+				var vn = N.vormen[v];
+				var punten = [];
+				if (v === '1') punten.push(t('punt_dag'));
+				if (v !== '1') punten.push(t('punt_oefenen'));
+				if (vn.begeleiding === 'keuze') punten.push(t('punt_begeleiding_keuze'));
+				if (vn.begeleiding === 'inbegrepen') punten.push(t('punt_begeleiding_in'));
+				if (N.extras_aan.clinic && Number(v) >= N.clinic_gratis_vanaf) punten.push(t('punt_clinic_gratis'));
+				if (N.extras_aan.boek && Number(v) >= N.boek_gratis_vanaf) punten.push(t('punt_boek_gratis'));
+				if (vn.begeleiding === 'inbegrepen' && N.vormen['1']) {
+					var los = N.vormen['1'].prijs * Number(v) + N.begeleiding_prijs - vn.prijs;
+					if (los > 0) punten.push(t('punt_voordelig', { prijs: bedrag(los) }));
+				}
+				punten.push(t('punt_calls'));
+				var u = reken(Number(v)).uitkomst;
+				var basis = u ? u.groepen * vn.prijs : vn.prijs;
+				return '<button type="button" class="sfp-calc-kaart' + (String(S.vorm) === v ? ' aan' : '') + '" data-w="' + v + '" aria-pressed="' + (String(S.vorm) === v) + '">'
+					+ '<span class="sfp-calc-kaartlab">' + esc(t('vorm_' + v)) + '</span>'
+					+ '<span class="sfp-calc-kaartprijs">' + esc(bedrag(vn.prijs)) + '</span><span class="sfp-calc-kaartper">' + esc(t('per_groep') + ', ' + t('excl')) + '</span>'
+					+ '<span class="sfp-calc-kaartpunten">' + punten.map(function (p) { return '<span>' + esc(p) + '</span>'; }).join('') + '</span>'
+					+ (g > 1 ? '<span class="sfp-calc-kaarttotaal">' + esc(t('vorm_totaal', { n: t('groepen', { n: g }), prijs: bedrag(basis) })) + '</span>' : '')
+					+ '<span class="sfp-calc-kaartknop">' + esc(t('vorm_kies', { n: t('vorm_' + v) })) + '</span></button>';
+			}).join('');
+			return {
+				html: kop(t('vorm_vraag')) + '<div class="sfp-calc-kaarten">' + kaarten + '</div>' + voet(false, ''),
+				na: function () {
+					alle('.sfp-calc-kaart').forEach(function (b) {
+						b.addEventListener('click', function () {
+							if (S.bezig) return;
+							S.bezig = true;
+							alle('.sfp-calc-kaart').forEach(function (o) { o.classList.toggle('aan', o === b); });
+							S.vorm = Number(b.getAttribute('data-w'));
+							if (N.vormen[String(S.vorm)].begeleiding !== 'keuze') S.begeleiding = '';
+							S.extras = S.extras.filter(function (e) { return !extraGratis(e); });
+							setTimeout(function () { S.bezig = false; verder(); }, 220);
+						});
+					});
+				}
+			};
+		};
+		schermen.begeleiding = function () {
+			return enkel(t('begeleiding_vraag'), t('begeleiding_zin'), [
+				{ w: 'ja', label: t('begeleiding_ja'), zin: t('begeleiding_ja_zin', { prijs: bedrag(N.begeleiding_prijs) }) },
+				{ w: 'nee', label: t('begeleiding_nee') }
+			], S.begeleiding, function (w) { S.begeleiding = w; });
+		};
+		schermen.extras = function () {
+			var keuze = extrasTeKiezen();
+			var al = ['clinic', 'boek'].filter(function (e) { return N.extras_aan[e] && extraGratis(e); }).map(function (e) { return t('extra_' + e); });
+			var o = keuze.map(function (e) { return { w: e, label: t('extra_' + e), zin: (C.uitleg && C.uitleg[e]) || t('extra_' + e + '_kort') }; });
+			var s = meer(t('extras_vraag'), al.length ? t('extras_al', { n: al.join(', ') }) + ' ' + t('meerdere') : t('meerdere'), o, S.extras, false, t('extras_geen'));
+			return s;
+		};
+		function urenScherm(sleutel, vraagN) {
+			var pp = deelnemers();
+			return {
+				n: function () {
+					return getal(t(vraagN), t('van_de', { n: pp }), t('mensen_aantal'), S[sleutel].deelnemers, pp, function (w) { S[sleutel].deelnemers = w; });
+				},
+				u: function () {
+					var n = geheel(S[sleutel].deelnemers, 1, pp) || 1;
+					var o = [4, 8, 12].map(function (uren) {
+						var per = uren / N.blok_uren * N.blok_prijs;
+						return { w: uren, label: uren === 12 ? t('uren_optie_meer') : t('uren_optie', { n: uren }), zin: t('uren_zin', { prijs: bedrag(per), totaal: bedrag(per * n), n: t('deelnemers_n', { n: n }) }) + (uren >= N.abonnement_uren ? '. ' + t('melding_abonnement') : '') };
+					});
+					return enkel(t('uren_vraag'), '', o, S[sleutel].uren, function (w) { S[sleutel].uren = Number(w); });
+				}
+			};
+		}
+		schermen.coach_n = function () { return urenScherm('coach', 'coach_n_vraag').n(); };
+		schermen.coach_u = function () { return urenScherm('coach', 'coach_n_vraag').u(); };
+		schermen.lotj_n = function () { return urenScherm('lotj', 'lotj_n_vraag').n(); };
+		schermen.lotj_u = function () { return urenScherm('lotj', 'lotj_n_vraag').u(); };
+		schermen.acteur = function () {
+			var max = Number(S.vorm) * groepen();
+			var o = [];
+			for (var d = 1; d <= Math.min(max, 4); d++) o.push({ w: d, label: d === 1 ? t('acteur_dag') : t('acteur_dagen', { n: d }), zin: bedrag(d * N.acteur_prijs) });
+			if (max > 4) o.push({ w: max, label: t('acteur_alle', { n: max }), zin: bedrag(max * N.acteur_prijs) });
+			return enkel(t('acteur_vraag'), '', o, S.acteur, function (w) { S.acteur = Number(w); });
+		};
+		schermen.terugkom = function () {
+			var g = groepen();
+			return enkel(t('terugkom_vraag'), '', ['dagdeel', 'online'].map(function (w) {
+				return { w: w, label: t('terugkom_' + w), zin: t('prijs_per_groep_totaal', { prijs: bedrag(N.terugkom[w]), totaal: bedrag(N.terugkom[w] * g) }) };
+			}), S.terugkom, function (w) { S.terugkom = w; });
+		};
+		schermen.scan = function () {
+			var g = groepen();
+			var pp = deelnemers();
+			return enkel(t('scan_vraag'), '', [
+				{ w: 'individueel', label: t('scan_individueel'), zin: t('prijs_pp_totaal', { prijs: bedrag(N.scan_individueel), totaal: bedrag(N.scan_individueel * pp) }) },
+				{ w: 'team', label: t('scan_team'), zin: t('prijs_per_groep_totaal', { prijs: bedrag(N.scan_team), totaal: bedrag(N.scan_team * g) }) }
+			], S.scan, function (w) { S.scan = w; });
+		};
+		schermen.voordeel = function () {
+			return enkel(t('voordeel_vraag'), '', [
+				{ w: 'korting', label: t('voordeel_korting', { prijs: bedrag(N.voordeel_bedrag) }) },
+				{ w: 'coachuren', label: t('voordeel_coachuren') }
+			], S.groepsvoordeel, function (w) { S.groepsvoordeel = w; });
+		};
+		schermen.locatie = function () {
+			return enkel(t('locatie_vraag'), '', [
+				{ w: 'klant', label: t('locatie_klant'), zin: t('locatie_klant_zin') },
+				{ w: 'anders', label: t('locatie_anders'), zin: t('locatie_anders_zin') }
+			], S.locatie, function (w) { S.locatie = w; if (w !== 'anders') S.locatieExtra = []; });
+		};
+		schermen.locatie_extra = function () {
+			return meer(t('locatie_extra_vraag'), t('locatie_extra_hulp'), ['extern', 'lunch', 'borrel', 'teamdag'].map(function (w) { return { w: w, label: t('locatie_' + w) }; }), S.locatieExtra, true);
+		};
+		schermen.situatie = function () {
+			return tekst(t('situatie_vraag'), t('situatie_hulp'), S.situatie.doel, function (w) { S.situatie.doel = w; }, true);
+		};
+		schermen.waarom = function () {
+			return meer(t('waarom_vraag'), '', ['nieuwe_rol', 'groei', 'moment', 'feedback', 'beleid', 'anders'].map(function (w) { return { w: w, label: t('waarom_' + w) }; }), S.situatie.waarom, false, t('overslaan'));
+		};
+		schermen.eerder = function () {
+			return janee(t('eerder_vraag'), '', S.eerder, function (w) { S.eerder = w; if (w !== 'ja') { S.beviel = ''; S.vorig = ''; } });
+		};
+		schermen.beviel = function () {
+			return enkel(t('beviel_vraag'), '', ['goed', 'wisselend', 'slecht'].map(function (w) { return { w: w, label: t('beviel_' + w) }; }), S.beviel, function (w) { S.beviel = w; });
+		};
+		schermen.vorig = function () {
+			return tekst(t('vorig_vraag'), '', S.vorig, function (w) { S.vorig = w; }, true);
+		};
+		schermen.beslist = function () {
+			return meer(t('beslist_vraag'), '', ['zelf', 'leidinggevende', 'hr', 'inkoop', 'directie', 'anders'].map(function (w) { return { w: w, label: t('beslist_' + w) }; }), S.beslist, false, t('overslaan'));
+		};
+		schermen.budget = function () {
+			var o = [
+				{ w: 'tot5', label: t('budget_tot5', { prijs: bedrag(5000) }) },
+				{ w: '5_10', label: t('budget_5_10', { van: bedrag(5000), tot: bedrag(10000) }) },
+				{ w: '10_25', label: t('budget_10_25', { van: bedrag(10000), tot: bedrag(25000) }) },
+				{ w: 'meer', label: t('budget_meer', { prijs: bedrag(25000) }) },
+				{ w: 'onbekend', label: t('budget_onbekend') },
+				{ w: 'geen', label: t('budget_geen') }
+			];
+			return enkel(t('budget_vraag'), t('budget_hulp'), o, S.budget, function (w) { S.budget = w; });
+		};
+		schermen.inkoop = function () {
+			return janee(t('inkoop_vraag'), t('inkoop_zin'), S.inkoop.aan, function (w) { S.inkoop.aan = w; });
+		};
+		schermen.inkoop_gegevens = function () {
+			var p = S.inkoop;
+			var velden = ['po', 'kostenplaats', 'referentie'].map(function (k) {
+				return '<div class="sfp-calc-veld"><label for="sfp-calc-ink-' + k + '">' + esc(t('inkoop_' + k)) + '</label><input id="sfp-calc-ink-' + k + '" type="text" value="' + esc(p[k]) + '"></div>';
+			}).join('') + '<div class="sfp-calc-veld"><label for="sfp-calc-ink-factuuradres">' + esc(t('inkoop_factuuradres')) + '</label><textarea id="sfp-calc-ink-factuuradres" rows="3">' + esc(p.factuuradres) + '</textarea></div>';
+			return {
+				html: kop(t('inkoop_gegevens_vraag'), t('inkoop_gegevens_hulp')) + '<div class="sfp-calc-velden zichtbaar">' + velden + '</div>' + voet(true, ''),
+				na: function () {
+					['po', 'kostenplaats', 'referentie', 'factuuradres'].forEach(function (k) {
+						var v = $('#sfp-calc-ink-' + k);
+						v.addEventListener('input', function () { p[k] = v.value; fout(''); });
+					});
+					$('#sfp-calc-volgende').addEventListener('click', function () {
+						var iets = ['po', 'kostenplaats', 'referentie', 'factuuradres'].some(function (k) { return String(p[k]).trim(); });
+						if (!iets) { fout(t('inkoop_mis')); return; }
+						verder();
+					});
+				}
+			};
+		};
+		schermen.sprekers = function () {
+			return getal(t('sprekers_vraag'), '', t('sprekers_aantal'), S.sprekers, 500, function (w) { S.sprekers = w; },
+				'<p class="sfp-calc-regel">' + esc(t('evenement_prijs', { prijs: bedrag(N.evenement_prijs) })) + '</p>');
+		};
+		schermen.soort = function () {
+			return enkel(t('soort_vraag'), '', ['keynote', 'meerdere', 'pitch', 'anders'].map(function (w) { return { w: w, label: t('soort_' + w) }; }), S.soort, function (w) { S.soort = w; });
+		};
+
+		schermen.gegevens = function () {
+			var leeg = !formVak || !C.formulier;
+			return {
+				html: kop(t('gegevens_vraag'), t('gegevens_hulp'))
+					+ (S.fout ? '<p class="sfp-calc-foutmelding" role="alert">' + esc(S.fout) + '</p>' : '')
+					+ (leeg && C.beheerder ? '<p class="sfp-calc-foutmelding">' + esc(t('geen_formulier')) + '</p>' : '')
+					+ '<div class="sfp-calc-formplek"></div>'
+					+ '<div class="sfp-calc-vraagvoet"><button type="button" class="sfp-calc-terug" id="sfp-calc-vorige">' + esc(t('terug')) + '</button></div>',
+				na: function () {
+					if (formVak && C.formulier) {
+						$('.sfp-calc-formplek').appendChild(formVak);
+						formVak.hidden = !S.antwoord;
+						if (!S.antwoord) {
+							$('.sfp-calc-formplek').insertAdjacentHTML('beforeend', '<p class="sfp-calc-bezig">' + esc(t('bezig')) + '</p>');
+							bewaarBegroting();
+						}
+					}
+				}
+			};
+		};
+
+		schermen.klaar = function () {
+			var a = S.antwoord || {};
+			var b = a.berekening || {};
+			var o = b.uitkomst;
+			var c = C.contact || {};
+			var boek = C.boek ? C.boek + (C.boek.indexOf('?') > -1 ? '&' : '?') + 'kenmerk=' + encodeURIComponent(a.kenmerk || '') : '';
+			var wat = [];
+			var totaal = '';
+			if (S.doel === 'evenement') {
+				totaal = '<p class="sfp-calc-groot">' + esc(bedrag(N.evenement_prijs)) + '</p><p class="sfp-calc-klein">' + esc(t('evenement_prijs', { prijs: bedrag(N.evenement_prijs) })) + '</p>';
+			} else if (o) {
+				wat.push(t('vorm_' + S.vorm) + ', ' + (o.groepen === 1 ? t('groep') : t('groepen', { n: o.groepen })));
+				o.regels.forEach(function (r) {
+					if (r.code.indexOf('vorm_') === 0) return;
+					wat.push(t('regel_' + r.code) + (r.gratis ? ' (' + t('inbegrepen') + ')' : ''));
+				});
+				wat.push(t('punt_calls'));
+				totaal = '<p class="sfp-calc-lab">' + esc(b.richtprijs ? t('richtprijs') : t('totaal')) + '</p><p class="sfp-calc-groot">' + esc(bedrag(o.totaal_excl)) + ' <span>' + esc(t('excl')) + '</span></p>'
+					+ (b.bandbreedte ? '<p class="sfp-calc-klein">' + esc(t('bandbreedte', { van: b.mensen.van, tot: b.mensen.tot, prijs: bedrag(b.bandbreedte.van) + ' - ' + bedrag(b.bandbreedte.tot) })) + '</p>' : '');
+			}
+			var geldig = '';
+			if (a.geldig_tot) {
+				try { geldig = new Date(a.geldig_tot + 'T12:00:00').toLocaleDateString(C.taal === 'en' ? 'en-GB' : 'nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { geldig = a.geldig_tot; }
+			}
+			return {
+				html: '<div class="sfp-calc-klaar">'
+					+ '<div><span class="sfp-calc-lab licht">' + esc(t('klaar_lab')) + '</span><h2 class="sfp-calc-titel">' + esc(t('klaar_kop')) + '</h2>'
+					+ '<p class="sfp-calc-intro">' + esc(t('klaar_zin', { kenmerk: a.kenmerk || '' })) + '</p></div>'
+					+ '<div class="sfp-calc-bon">' + totaal
+					+ (wat.length ? '<p class="sfp-calc-lijstkop">' + esc(t('klaar_wat')) + '</p><ul class="sfp-calc-lijst">' + wat.map(function (w) { return '<li>' + esc(w) + '</li>'; }).join('') + '</ul>' : '')
+					+ (geldig ? '<p class="sfp-calc-klein">' + esc(t('klaar_geldig', { datum: geldig })) + '</p>' : '')
+					+ '</div>'
+					+ '<div class="sfp-calc-stap">'
+					+ (c.foto ? '<img class="sfp-calc-foto" src="' + esc(c.foto) + '" alt="" width="88" height="88">' : '')
+					+ '<div class="sfp-calc-stapin"><p class="sfp-calc-stapkop">' + esc(t('klaar_stap_kop')) + '</p><p>' + esc(t('klaar_stap_zin')) + '</p>'
+					+ (boek ? '<a class="sfp-calc-knop" href="' + esc(boek) + '">' + esc(t('knop_gesprek')) + '</a>' : '')
+					+ (c.naam ? '<p class="sfp-calc-klein">' + esc(t('klaar_contact')) + ': <b>' + esc(c.naam) + '</b>' + (c.functie ? ', ' + esc(c.functie) : '') + (c.telefoon ? ' | ' + esc(c.telefoon) : '') + '</p>' : '')
+					+ '</div></div>'
+					+ (a.pdf_url ? '<p><a class="sfp-calc-cta2" href="' + esc(a.pdf_url) + '" target="_blank" rel="noopener">' + esc(t('knop_pdf')) + '</a></p>' : '')
+					+ '</div>',
+				na: function () {}
+			};
+		};
+
+		/* ---------- De begroting naast de vragen ---------- */
+
+		function begrotingHtml() {
+			if (S.doel === 'evenement' || !S.vorm) return '';
+			var p = pad();
+			if (p.indexOf(huidig()) <= p.indexOf('vorm') || huidig() === 'klaar') return '';
 			var u = reken();
 			var o = u.uitkomst;
-			if (!o || !o.groepen) return null;
-			var regels = [];
-			if (!compact) {
-				o.regels.forEach(function (r) {
-					regels.push(el('li', null, [
-						el('span', { text: t('regel_' + r.code) + ' x' + r.aantal }),
-						el('span', { text: r.gratis ? t('inbegrepen') : bedrag(r.bedrag) })
-					]));
-				});
-			}
-			var mel = [];
-			o.meldingen.forEach(function (m) {
-				if (m === 'klein') {
-					var links = [];
-					if (C.coaching) links.push(' ', el('a', { href: C.coaching, text: t('link_coaching') }));
-					if (C.open) links.push(' ', el('a', { href: C.open, text: t('link_open') }));
-					mel.push(melding(t('melding_klein'), links));
-				} else if (m === 'maatwerk') {
-					mel.push(melding(t('melding_maatwerk')));
-					mel.push(melding(t('melding_groot')));
-				} else {
-					mel.push(melding(t('melding_' + m)));
-				}
-			});
-			if (S.keuzes.mensen.soort === 'onbekend') mel.push(melding(t('melding_onbekend')));
-			var groepen = o.groepen === 1 ? t('groep') : t('groepen', { n: o.groepen });
-			return el('aside', { class: 'sfp-calc-begroting', 'aria-label': t('begroting') }, [
-				el('span', { class: 'sfp-calc-lab', text: C.ingebed ? t('ingebed_vanaf') : (u.richtprijs ? t('richtprijs') : t('begroting')) }),
-				el('p', { class: 'sfp-calc-groepen', text: groepen + (o.verdeling.length > 1 ? ' (' + o.verdeling.join(', ') + ')' : '') + (S.keuzes.vorm ? ', ' + t('vorm_' + S.keuzes.vorm) : ', ' + t('vorm_2')) }),
-				regels.length ? el('ul', { class: 'sfp-calc-regels' }, regels) : null,
-				el('p', { class: 'sfp-calc-totaal' }, [el('b', { text: bedrag(o.totaal_excl) }), ' ', el('span', { text: t('excl') })]),
-				u.bandbreedte ? el('p', { class: 'sfp-calc-hulp', text: t('bandbreedte', { van: u.mensen.van, tot: u.mensen.tot, prijs: bedrag(u.bandbreedte.van) + ' - ' + bedrag(u.bandbreedte.tot) }) }) : null,
-				compact ? null : el('p', { class: 'sfp-calc-hulp', text: t('altijd_inbegrepen') })
-			].concat(mel));
+			if (!o || !o.groepen) return '';
+			var regels = o.regels.map(function (r) {
+				return '<li><span>' + esc(t('regel_' + r.code)) + (r.aantal > 1 ? ' <i>x' + r.aantal + '</i>' : '') + '</span><span>' + esc(r.gratis ? t('inbegrepen') : bedrag(r.bedrag)) + '</span></li>';
+			}).join('');
+			var groepen = (o.groepen === 1 ? t('groep') : t('groepen', { n: o.groepen })) + (o.verdeling.length > 1 ? ' (' + o.verdeling.join(', ') + ')' : '') + ', ' + t('vorm_' + S.vorm);
+			var tot = '<p class="sfp-calc-btotaal"><b>' + esc(bedrag(o.totaal_excl)) + '</b> <span>' + esc(t('excl')) + '</span></p>';
+			var breed = !window.matchMedia || window.matchMedia('(min-width: 1001px)').matches;
+			return '<details class="sfp-calc-begroting"' + (breed ? ' open' : '') + '><summary><span class="sfp-calc-lab">' + esc(u.richtprijs ? t('richtprijs') : t('begroting')) + '</span>' + tot + '</summary>'
+				+ '<p class="sfp-calc-bgroepen">' + esc(groepen) + '</p><ul class="sfp-calc-regels">' + regels + '</ul>'
+				+ (u.bandbreedte ? '<p class="sfp-calc-klein">' + esc(t('bandbreedte', { van: u.mensen.van, tot: u.mensen.tot, prijs: bedrag(u.bandbreedte.van) + ' - ' + bedrag(u.bandbreedte.tot) })) + '</p>' : '')
+				+ (o.meldingen.indexOf('abonnement') > -1 ? '<p class="sfp-calc-klein">' + esc(t('melding_abonnement')) + '</p>' : '')
+				+ '</details>';
 		}
 
-		/* ---------- Schermen ---------- */
+		/* ---------- Opslaan en formulier ---------- */
 
-		function schermRoute() {
-			var lijst = routes().map(function (r) {
-				return keuze('route', r, S.route === r, t('route_' + r), t('route_' + r + '_zin'), function () { S.route = r; S.stap = 0; teken(); });
-			});
-			return [
-				el('h2', { class: 'sfp-calc-vraag', text: t('route_vraag') }),
-				el('div', { class: 'sfp-calc-opties' }, lijst),
-				el('p', { class: 'sfp-calc-hulp', text: t('afwijkend') })
-			];
-		}
-		function schermSituatie() {
-			var waarom = ['nieuwe_rol', 'groei', 'moment', 'feedback', 'beleid', 'anders'].map(function (w) {
-				return keuze('waarom', w, S.situatie.waarom.indexOf(w) > -1, t('waarom_' + w), '', function (aan) {
-					S.situatie.waarom = S.situatie.waarom.filter(function (x) { return x !== w; });
-					if (aan) S.situatie.waarom.push(w);
-				}, 'checkbox');
-			});
-			return [
-				el('h2', { class: 'sfp-calc-vraag', text: t('situatie_vraag') }),
-				veld(t('situatie_vraag'), tekstvak(S.situatie.doel, function (w) { S.situatie.doel = w; }, true), t('situatie_hulp')),
-				el('h3', { text: t('waarom_vraag') }),
-				el('div', { class: 'sfp-calc-opties is-klein' }, waarom),
-				veld(t('eerder_vraag') + ' (' + t('optioneel') + ')', tekstvak(S.situatie.eerder, function (w) { S.situatie.eerder = w; }, true), t('eerder_hulp'))
-			];
-		}
-		function schermMensen() {
-			var m = S.keuzes.mensen;
-			var soorten = ['getal', 'marge', 'onbekend'].map(function (s) {
-				return keuze('mensen', s, m.soort === s, t('mensen_' + s), '', function () { m.soort = s; teken(); });
-			});
-			var invoer = null;
-			if (m.soort === 'getal') invoer = veld(t('mensen_aantal'), getal(m.aantal, function (w) { m.aantal = w; tekenBegroting(); }, 1, N.max_deelnemers));
-			if (m.soort === 'marge') invoer = el('div', { class: 'sfp-calc-twee' }, [
-				veld(t('mensen_van'), getal(m.van, function (w) { m.van = w; tekenBegroting(); }, 1, N.max_deelnemers)),
-				veld(t('mensen_tot'), getal(m.tot, function (w) { m.tot = w; tekenBegroting(); }, 1, N.max_deelnemers))
-			]);
-			var delen = [
-				el('h2', { class: 'sfp-calc-vraag', text: t('mensen_vraag') }),
-				el('div', { class: 'sfp-calc-opties is-rij' }, soorten),
-				invoer
-			];
-			if (!C.ingebed) {
-				var dg = el('select');
-				dg.appendChild(el('option', { value: '', text: '' }));
-				['starters', 'ervaren', 'senioren', 'leidinggevend', 'gemengd', 'anders'].forEach(function (d) {
-					dg.appendChild(el('option', { value: d, text: t('doelgroep_' + d) }));
-				});
-				dg.value = S.keuzes.doelgroep;
-				dg.addEventListener('change', function () { S.keuzes.doelgroep = dg.value; teken(); });
-				delen.push(veld(t('doelgroep_vraag') + ' (' + t('optioneel') + ')', dg));
-				if (S.keuzes.doelgroep === 'anders') {
-					delen.push(veld(t('doelgroep_anders'), tekstvak(S.keuzes.doelgroep_anders, function (w) { S.keuzes.doelgroep_anders = w; })));
-				}
-			}
-			return delen;
-		}
-		function schermVorm() {
-			var kaarten = ['1', '2', '3'].filter(function (v) { return N.vormen[v]; }).map(function (v) {
-				var k = JSON.parse(JSON.stringify(S.keuzes));
-				k.route = 'A'; k.vorm = Number(v); k.extras = {}; k.begeleiding = false;
-				var u = M.reken(k, N).uitkomst;
-				var perGroep = N.vormen[v].prijs;
-				return keuze('vorm', v, String(S.keuzes.vorm) === v, t('vorm_' + v) + ': ' + bedrag(perGroep) + ' ' + t('per_groep'),
-					t('vorm_' + v + '_zin') + ' ' + t('vorm_inleveren', { n: v }) + (u && u.groepen > 1 ? ' ' + t('totaal') + ': ' + bedrag(u.totaal_excl) + ' ' + t('excl') + '.' : ''),
-					function () { S.keuzes.vorm = Number(v); teken(); });
-			});
-			var delen = [
-				el('h2', { class: 'sfp-calc-vraag', text: t('vorm_vraag') }),
-				el('div', { class: 'sfp-calc-opties is-kaarten' }, kaarten),
-				el('p', { class: 'sfp-calc-hulp', text: t('altijd_inbegrepen') })
-			];
-			if (S.keuzes.vorm && N.vormen[String(S.keuzes.vorm)].begeleiding === 'keuze') {
-				delen.push(el('div', { class: 'sfp-calc-extra' }, [
-					keuze('begeleiding', '1', S.keuzes.begeleiding, t('begeleiding') + ' (+ ' + bedrag(N.begeleiding_prijs) + ' ' + t('per_groep') + ')', t('begeleiding_zin'), function (aan) { S.keuzes.begeleiding = aan; tekenBegroting(); }, 'checkbox'),
-					info('begeleiding')
-				]));
-			}
-			return delen;
-		}
-		function schermExtras() {
-			var ex = S.keuzes.extras;
-			var aan = N.extras_aan || {};
-			var vorm = Number(S.keuzes.vorm);
-			var rijen = [];
-			function rij(sleutel, inhoud) {
-				rijen.push(el('div', { class: 'sfp-calc-extra' }, [inhoud, info(sleutel)]));
-			}
-			if (aan.coachuren) rij('coachuren', veld(t('extra_coachuren') + ': ' + bedrag(N.blok_prijs) + ' / ' + t('extra_coachuren_eenheid'), getal(ex.coachuren, function (w) { ex.coachuren = w; tekenBegroting(); }, 0, 50)));
-			if (aan.clinic) rij('clinic', keuze('clinic', '1', ex.clinic, t('extra_clinic') + ': ' + (vorm >= N.clinic_gratis_vanaf ? t('gratis') : bedrag(N.clinic_prijs) + ' ' + t('extra_clinic_eenheid')), '', function (a) { ex.clinic = a; tekenBegroting(); }, 'checkbox'));
-			if (aan.boek) rij('boek', keuze('boek', '1', ex.boek, t('extra_boek') + ': ' + (vorm >= N.boek_gratis_vanaf ? t('gratis') : centen(N.boek_centen) + ' ' + t('extra_boek_eenheid')), '', function (a) { ex.boek = a; tekenBegroting(); }, 'checkbox'));
-			if (aan.acteur) rij('acteur', veld(t('extra_acteur') + ': ' + bedrag(N.acteur_prijs) + ' / ' + t('extra_acteur_eenheid'), getal(ex.acteur, function (w) { ex.acteur = w; tekenBegroting(); }, 0, 200)));
-			if (aan.terugkom) {
-				var tk = el('select');
-				[['', t('extra_terugkom_geen')], ['dagdeel', t('extra_terugkom_dagdeel') + ', ' + bedrag(N.terugkom.dagdeel)], ['online', t('extra_terugkom_online') + ', ' + bedrag(N.terugkom.online)]].forEach(function (o) { tk.appendChild(el('option', { value: o[0], text: o[1] })); });
-				tk.value = ex.terugkom;
-				tk.addEventListener('change', function () { ex.terugkom = tk.value; tekenBegroting(); });
-				rij('terugkom', veld(t('extra_terugkom'), tk));
-			}
-			if (aan.lotj) rij('lotj', veld(t('extra_lotj') + ': ' + bedrag(N.blok_prijs) + ' / ' + t('extra_lotj_eenheid'), getal(ex.lotj, function (w) { ex.lotj = w; tekenBegroting(); }, 0, 50)));
-			if (aan.scan) {
-				var sc = el('select');
-				[['', t('extra_scan_geen')], ['individueel', t('extra_scan_individueel') + ', ' + bedrag(N.scan_individueel)], ['team', t('extra_scan_team') + ', ' + bedrag(N.scan_team)]].forEach(function (o) { sc.appendChild(el('option', { value: o[0], text: o[1] })); });
-				sc.value = ex.scan;
-				sc.addEventListener('change', function () { ex.scan = sc.value; tekenBegroting(); });
-				rij('scan', veld(t('extra_scan'), sc));
-			}
-			var delen = [
-				el('h2', { class: 'sfp-calc-vraag', text: t('extras_vraag') }),
-				el('p', { class: 'sfp-calc-hulp', text: t('extras_hulp') })
-			].concat(rijen);
-			var u = reken().uitkomst;
-			if (u && vorm >= 2 && u.groepen >= N.voordeel_vanaf_groep) {
-				delen.push(el('h3', { text: t('voordeel_vraag') }));
-				delen.push(el('div', { class: 'sfp-calc-opties is-klein' }, ['korting', 'coachuren'].map(function (v) {
-					return keuze('voordeel', v, S.keuzes.groepsvoordeel === v, v === 'korting' ? t('voordeel_korting').replace(/€ ?1\.000/, bedrag(N.voordeel_bedrag)) : t('voordeel_coachuren'), '', function () { S.keuzes.groepsvoordeel = v; tekenBegroting(); });
-				})));
-			}
-			return delen;
-		}
-		function schermLocatie() {
-			var k = S.keuzes;
-			var delen = [
-				el('h2', { class: 'sfp-calc-vraag', text: t('locatie_vraag') }),
-				el('div', { class: 'sfp-calc-opties is-klein' }, [
-					keuze('locatie', 'klant', !k.locatieAanvraag, t('locatie_klant'), '', function () { k.locatieAanvraag = false; k.locatie = []; teken(); }),
-					keuze('locatie', 'aanvraag', k.locatieAanvraag, t('locatie_aanvraag'), '', function () { k.locatieAanvraag = true; teken(); })
-				])
-			];
-			if (k.locatieAanvraag) {
-				delen.push(el('div', { class: 'sfp-calc-opties is-klein' }, ['extern', 'lunch', 'borrel', 'teamdag'].map(function (l) {
-					return keuze('loc', l, k.locatie.indexOf(l) > -1, t('locatie_' + l), '', function (aan) {
-						k.locatie = k.locatie.filter(function (x) { return x !== l; });
-						if (aan) k.locatie.push(l);
-					}, 'checkbox');
-				})));
-			}
-			return delen;
-		}
-		function schermIntern() {
-			var p = S.inkoop;
-			var delen = [
-				el('h2', { class: 'sfp-calc-vraag', text: t('intern_vraag') }),
-				el('p', { class: 'sfp-calc-hulp', text: t('intern_hulp') }),
-				veld(t('intern_beslist'), tekstvak(S.intern.beslist, function (w) { S.intern.beslist = w; })),
-				veld(t('intern_budget'), tekstvak(S.intern.budget, function (w) { S.intern.budget = w; })),
-				veld(t('intern_vorig'), tekstvak(S.intern.vorig, function (w) { S.intern.vorig = w; }, true)),
-				keuze('inkoop', '1', p.aan, t('inkoop_vakje'), '', function (aan) { p.aan = aan; teken(); }, 'checkbox')
-			];
-			if (p.aan) {
-				delen.push(el('div', { class: 'sfp-calc-twee' }, [
-					veld(t('inkoop_po') + ' (' + t('optioneel') + ')', tekstvak(p.po, function (w) { p.po = w; })),
-					veld(t('inkoop_kostenplaats') + ' (' + t('optioneel') + ')', tekstvak(p.kostenplaats, function (w) { p.kostenplaats = w; }))
-				]));
-				delen.push(veld(t('inkoop_referentie') + ' (' + t('optioneel') + ')', tekstvak(p.referentie, function (w) { p.referentie = w; })));
-				delen.push(veld(t('inkoop_factuuradres') + ' (' + t('optioneel') + ')', tekstvak(p.factuuradres, function (w) { p.factuuradres = w; }, true)));
-			}
-			return delen;
-		}
-		function schermEvenement() {
-			var k = S.keuzes;
-			return [
-				el('h2', { class: 'sfp-calc-vraag', text: t('sprekers_vraag') }),
-				veld(t('sprekers_vraag'), getal(k.sprekers, function (w) { k.sprekers = w; }, 1, 500)),
-				el('h3', { text: t('soort_vraag') }),
-				el('div', { class: 'sfp-calc-opties is-klein' }, ['keynote', 'meerdere', 'pitch', 'anders'].map(function (s) {
-					return keuze('soort', s, k.soort === s, t('soort_' + s), '', function () { k.soort = s; });
-				})),
-				veld(t('situatie_vraag'), tekstvak(S.situatie.doel, function (w) { S.situatie.doel = w; }, true), t('situatie_hulp')),
-				el('p', { class: 'sfp-calc-begroting is-los' }, [el('span', { class: 'sfp-calc-lab', text: t('richtprijs') }), ' ', t('evenement_prijs', { prijs: bedrag(N.evenement_prijs) })])
-			];
-		}
-		function schermUitvraag() {
-			return [
-				el('h2', { class: 'sfp-calc-vraag', text: t('criteria_vraag') }),
-				veld(t('criteria_vraag'), tekstvak(S.situatie.criteria, function (w) { S.situatie.criteria = w; }, true), t('criteria_hulp')),
-				veld(t('situatie_vraag') + ' (' + t('optioneel') + ')', tekstvak(S.situatie.doel, function (w) { S.situatie.doel = w; }, true))
-			];
-		}
-		function schermGegevens() {
-			var delen = [
-				el('h2', { class: 'sfp-calc-vraag', text: t('gegevens_vraag') }),
-				el('p', { class: 'sfp-calc-hulp', text: t('gegevens_hulp') })
-			];
-			if (S.fout) delen.push(el('p', { class: 'sfp-calc-fout', role: 'alert', text: S.fout }));
-			if (!formVak || !C.formulier) {
-				if (C.beheerder) delen.push(el('p', { class: 'sfp-calc-fout', text: t('geen_formulier') }));
-			}
-			return delen;
-		}
-		function schermKlaar() {
-			var a = S.antwoord || {};
-			var knoppen = [];
-			if (C.boek) knoppen.push(el('a', { class: 'sfp-calc-knop', href: C.boek + (C.boek.indexOf('?') > -1 ? '&' : '?') + 'kenmerk=' + encodeURIComponent(a.kenmerk || ''), text: t('knop_gesprek') }));
-			if (S.route !== 'C' && C.offerte) knoppen.push(el('a', { class: 'sfp-calc-knop is-stil', href: C.offerte + (C.offerte.indexOf('?') > -1 ? '&' : '?') + 'kenmerk=' + encodeURIComponent(a.kenmerk || ''), text: t('knop_offerte') }));
-			if (a.pdf_url) knoppen.push(el('a', { class: 'sfp-calc-link', href: a.pdf_url, target: '_blank', rel: 'noopener', text: t('knop_pdf') }));
-			var b = S.route === 'A' ? begroting(false) : null;
-			return [
-				el('h2', { class: 'sfp-calc-vraag', text: S.route === 'C' ? t('klaar_c_kop') : t('klaar_kop') }),
-				el('p', { text: S.route === 'C' ? t('klaar_c_zin') : t('klaar_zin', { kenmerk: a.kenmerk || '' }) }),
-				b,
-				el('div', { class: 'sfp-calc-knoppen' }, knoppen)
-			];
-		}
-		function schermIngebed() {
-			var delen = [
-				el('h2', { class: 'sfp-calc-vraag', text: t('ingebed_kop') }),
-				el('p', { class: 'sfp-calc-hulp', text: t('ingebed_zin') }),
-				el('div', { class: 'sfp-calc-opties is-klein' }, routes().map(function (r) {
-					return keuze('route', r, S.route === r, t('route_' + r), '', function () { S.route = r; teken(); });
-				}))
-			];
-			if (S.route === 'A' || !S.route) delen = delen.concat(schermMensen());
-			return delen;
-		}
-
-		/* ---------- Server en formulier ---------- */
-
-		function post(pad, gegevens) {
-			var kop = { 'Content-Type': 'application/json' };
-			if (C.nonce) kop['X-WP-Nonce'] = C.nonce;
-			return fetch(C.rest + pad, {
-				method: 'POST',
-				credentials: C.nonce ? 'same-origin' : 'omit',
-				headers: kop,
-				body: JSON.stringify(gegevens)
-			}).then(function (r) {
-				return r.json().then(function (j) { if (!r.ok) throw new Error((j && j.message) || t('fout')); return j; });
-			});
+		function post(padNaam, gegevens) {
+			var kopjes = { 'Content-Type': 'application/json' };
+			if (C.nonce) kopjes['X-WP-Nonce'] = C.nonce;
+			return fetch(C.rest + padNaam, { method: 'POST', credentials: C.nonce ? 'same-origin' : 'omit', headers: kopjes, body: JSON.stringify(gegevens) })
+				.then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (!r.ok) throw new Error((j && j.message) || t('fout')); return j; }); });
 		}
 		function bron() {
 			var utm = {};
 			['source', 'medium', 'campaign'].forEach(function (k) {
-				var w = params.get('utm_' + k);
-				try { if (w) sessionStorage.setItem('sfp_calc_utm_' + k, w); else w = sessionStorage.getItem('sfp_calc_utm_' + k) || ''; } catch (e) { w = w || ''; }
+				var w = params.get('utm_' + k) || '';
+				try { if (w) sessionStorage.setItem('sfp_calc_utm_' + k, w); else w = sessionStorage.getItem('sfp_calc_utm_' + k) || ''; } catch (e) { /* geen opslag */ }
 				utm[k] = w;
 			});
-			var ref = '';
+			var ref = window.location.origin + window.location.pathname;
 			try {
 				var r = document.referrer ? new URL(document.referrer) : null;
-				ref = r && r.host === window.location.host && r.pathname !== window.location.pathname ? r.origin + r.pathname : window.location.origin + window.location.pathname;
-			} catch (e) { ref = window.location.origin + window.location.pathname; }
+				if (r && r.host === window.location.host && r.pathname !== window.location.pathname) ref = r.origin + r.pathname;
+			} catch (e) { /* eigen pagina */ }
 			return { pagina_url: ref, utm: utm, gclid: params.get('gclid') || '' };
 		}
 		function labelVan(naam) {
@@ -475,7 +703,7 @@
 		}
 		function vulFormulier(velden) {
 			if (!formVak) return;
-			[].forEach.call(formVak.querySelectorAll('input[name*="-lbl-"],textarea[name*="-lbl-"]'), function (inp) {
+			Array.prototype.forEach.call(formVak.querySelectorAll('input[name*="-lbl-"],textarea[name*="-lbl-"]'), function (inp) {
 				var label = labelVan(inp.getAttribute('name'));
 				if (Object.prototype.hasOwnProperty.call(velden, label)) {
 					inp.value = velden[label];
@@ -484,121 +712,77 @@
 				}
 			});
 		}
-		function naarGegevens() {
-			S.bezig = true; S.fout = '';
-			var k = JSON.parse(JSON.stringify(S.keuzes));
-			k.route = S.route;
-			if (!k.locatieAanvraag) k.locatie = [];
-			var bronnen = bron();
-			return post('begroting', {
-				keuzes: k, situatie: S.situatie, intern: S.intern, inkoop: S.inkoop,
-				pagina_url: bronnen.pagina_url, utm: bronnen.utm, gclid: bronnen.gclid, website: ''
+		function bewaarBegroting() {
+			if (S.bezig) return;
+			S.bezig = true;
+			S.fout = '';
+			var k = keuzes();
+			var b = bron();
+			post('begroting', {
+				keuzes: k,
+				situatie: S.situatie,
+				intern: { beslist: S.beslist, budget: S.budget, eerder: S.eerder, beviel: S.beviel, vorig: S.vorig },
+				inkoop: S.inkoop.aan === 'ja' ? { aan: true, po: S.inkoop.po, kostenplaats: S.inkoop.kostenplaats, referentie: S.inkoop.referentie, factuuradres: S.inkoop.factuuradres } : { aan: false },
+				pagina_url: b.pagina_url, utm: b.utm, gclid: b.gclid, website: ''
 			}).then(function (a) {
 				S.antwoord = a;
-				vulFormulier(a.velden || {});
 				S.bezig = false;
-				return true;
+				vulFormulier(a.velden || {});
+				tekenAlles();
 			}).catch(function (e) {
 				S.bezig = false;
 				S.fout = e && e.message ? e.message : t('fout');
-				return false;
+				tekenAlles();
 			});
 		}
 		document.addEventListener('srfm_form_submission_success', function (e) {
 			var id = e && e.detail ? String(e.detail.formId || '') : '';
 			if (!C.formulier || (id !== 'srfm-form-' + C.formulier && id !== String(C.formulier))) return;
 			if (huidig() !== 'gegevens') return;
-			var tot = S.antwoord && S.antwoord.berekening && S.antwoord.berekening.uitkomst ? S.antwoord.berekening.uitkomst.totaal_excl : 0;
+			var b = S.antwoord && S.antwoord.berekening;
+			var tot = b && b.uitkomst ? b.uitkomst.totaal_excl : 0;
 			meld('calculator_afgerond', { calculator_totaalklasse: tot >= 20000 ? '20000+' : tot >= 10000 ? '10000-20000' : tot >= 5000 ? '5000-10000' : tot > 0 ? '0-5000' : '' });
-			S.stap = stappen().indexOf('klaar');
-			teken();
+			if (formVak) { formVak.hidden = true; wortel.appendChild(formVak); }
+			S.i = pad().indexOf('klaar');
+			tekenAlles();
 		});
 
 		/* ---------- Tekenen ---------- */
 
-		var begrotingPlek = null;
-		function tekenBegroting() {
-			if (!begrotingPlek) return;
-			var b = begroting(C.ingebed);
-			begrotingPlek.innerHTML = '';
-			if (b) begrotingPlek.appendChild(b);
-			if (verderKnop) verderKnop.disabled = !magVerder();
+		function naarBoven() {
+			var top = wortel.getBoundingClientRect().top + window.pageYOffset - 90;
+			if (window.pageYOffset > top) window.scrollTo(0, Math.max(0, top));
 		}
-		var verderKnop = null;
-		function knopStand() { if (verderKnop) verderKnop.disabled = !magVerder(); }
-
-		function teken() {
-			var s = huidig();
-			var maker = {
-				route: schermRoute, situatie: schermSituatie, mensen: schermMensen, vorm: schermVorm, extras: schermExtras,
-				locatie: schermLocatie, intern: schermIntern, evenement: schermEvenement, uitvraag: schermUitvraag,
-				gegevens: schermGegevens, klaar: schermKlaar, ingebed: schermIngebed
-			}[s];
-			var lijst = stappen();
-			var nr = S.stap + 1;
-			var totaalStappen = lijst.length - 1;
-			var kop = !C.ingebed && s !== 'klaar' ? el('div', { class: 'sfp-calc-kop' }, [
-				S.stap === 0 ? el('h1', { class: 'sfp-calc-titel', text: t('titel') }) : null,
-				S.stap === 0 ? el('p', { class: 'sfp-calc-intro', text: t('intro') }) : null,
-				el('span', { class: 'sfp-calc-lab', text: t('stap', { n: nr }) + ' / ' + totaalStappen }),
-				el('div', { class: 'sfp-calc-balk', role: 'progressbar', 'aria-valuemin': '1', 'aria-valuemax': String(totaalStappen), 'aria-valuenow': String(nr) }, [el('span', { style: 'width:' + Math.round((nr / totaalStappen) * 100) + '%' })])
-			]) : null;
-
-			verderKnop = null;
-			var knoppen = [];
-			if (C.ingebed) {
-				if (C.pagina) {
-					/* Het adres pas bij de klik: het aantal verandert zonder nieuw scherm. */
-					var naar = function () {
-						var q = new URLSearchParams();
-						if (S.route) q.set('route', S.route);
-						var m = S.keuzes.mensen;
-						var a = S.route === 'A' || !S.route;
-						if (a && m.soort === 'getal' && parseInt(m.aantal, 10) > 0) q.set('n', String(parseInt(m.aantal, 10)));
-						if (a && m.soort === 'marge' && parseInt(m.van, 10) > 0 && parseInt(m.tot, 10) > 0) { q.set('van', String(parseInt(m.van, 10))); q.set('tot', String(parseInt(m.tot, 10))); }
-						if (a && m.soort === 'onbekend') q.set('onbekend', '1');
-						return C.pagina + (C.pagina.indexOf('?') > -1 ? '&' : '?') + q.toString();
-					};
-					knoppen.push(el('a', { class: 'sfp-calc-knop', href: C.pagina, text: t('verder'), klik: function (e) { e.preventDefault(); meld('calculator_start'); window.location.href = naar(); } }));
-				}
-			} else if (s !== 'klaar' && s !== 'gegevens') {
-				if (S.stap > 0) knoppen.push(el('button', { type: 'button', class: 'sfp-calc-knop is-stil', text: t('terug'), klik: function () { S.stap--; teken(); } }));
-				verderKnop = el('button', { type: 'button', class: 'sfp-calc-knop', text: t('verder'), disabled: !magVerder(), 'aria-busy': S.bezig ? 'true' : null, klik: function () {
-					if (!magVerder() || S.bezig) return;
-					if (S.stap === 0) meld('calculator_start');
-					var volgende = stappen()[S.stap + 1];
-					if (volgende === 'gegevens') {
-						verderKnop.setAttribute('aria-busy', 'true');
-						naarGegevens().then(function (ok) { if (ok) S.stap++; teken(); });
-						return;
-					}
-					S.stap++;
-					teken();
-				} });
-				knoppen.push(verderKnop);
-			} else if (s === 'gegevens') {
-				knoppen.push(el('button', { type: 'button', class: 'sfp-calc-knop is-stil', text: t('terug'), klik: function () { S.stap--; teken(); } }));
-			}
-
-			var vragen = el('div', { class: 'sfp-calc-scherm sfp-calc-' + s }, [kop].concat(maker()).concat([el('div', { class: 'sfp-calc-knoppen' }, knoppen)]));
-			begrotingPlek = el('div', { class: 'sfp-calc-zij' });
-			app.innerHTML = '';
-			var raster = el('div', { class: 'sfp-calc-raster' + (s === 'klaar' || s === 'gegevens' && !mensenKlaar() ? ' is-enkel' : '') }, [vragen, begrotingPlek]);
-			app.appendChild(raster);
-			var toonBegroting = C.ingebed || ['mensen', 'vorm', 'extras', 'locatie', 'intern', 'gegevens'].indexOf(s) > -1;
-			if (toonBegroting) tekenBegroting();
-			if (formVak) {
-				formVak.hidden = s !== 'gegevens';
-				if (s === 'gegevens') vragen.insertBefore(formVak, vragen.lastChild);
-			}
-			if (!C.ingebed && S.stap > 0) {
-				var top = wortel.getBoundingClientRect().top + window.pageYOffset - 80;
-				if (window.pageYOffset > top) window.scrollTo(0, Math.max(0, top));
-			}
+		function tekenAlles() {
+			if (formVak && formVak.parentNode !== wortel && huidig() !== 'gegevens') { formVak.hidden = true; wortel.appendChild(formVak); }
+			var id = huidig();
+			var s = (schermen[id] || schermen.start)();
+			var zij = begrotingHtml();
+			app.innerHTML = '<div class="sfp-calc-raster' + (zij ? ' met-zij' : '') + '"><div class="sfp-calc-scherm sfp-calc-s-' + esc(id) + '">' + s.html + '</div>'
+				+ (zij ? '<aside class="sfp-calc-zij" aria-label="' + esc(t('begroting')) + '">' + zij + '</aside>' : '') + '</div>';
+			s.na();
+			if ($('#sfp-calc-vorige')) $('#sfp-calc-vorige').addEventListener('click', vorige);
+			if (id !== 'start' || S.i > 0) naarBoven();
+			var v = $('#sfp-calc-vraagtekst');
+			if (v) v.focus({ preventScroll: true });
 		}
 
-		/* Van de ingebedde versie: de route is al gekozen, verder met de volgende vraag. */
-		if (!C.ingebed && S.route) S.stap = 1;
+		/* ---------- Ingebed ---------- */
+
+		if (C.ingebed) {
+			app.innerHTML = '<div class="sfp-calc-ingebed"><h2 class="sfp-calc-ikop">' + esc(t('ingebed_kop')) + '</h2><p class="sfp-calc-intro">' + esc(t('ingebed_zin')) + '</p>'
+				+ '<div class="sfp-calc-irij"><div class="sfp-calc-veld"><label for="sfp-calc-iaantal">' + esc(t('mensen_aantal')) + '</label><input id="sfp-calc-iaantal" type="number" inputmode="numeric" min="1" max="' + N.max_deelnemers + '"></div>'
+				+ '<a class="sfp-calc-knop" id="sfp-calc-naar" href="' + esc(C.pagina || '#') + '">' + esc(t('ingebed_knop')) + '</a></div></div>';
+			$('#sfp-calc-naar').addEventListener('click', function (e) {
+				if (!C.pagina) { e.preventDefault(); return; }
+				var n = geheel($('#sfp-calc-iaantal').value, 1, N.max_deelnemers);
+				meld('calculator_start');
+				if (n) { e.preventDefault(); window.location.href = C.pagina + (C.pagina.indexOf('?') > -1 ? '&' : '?') + 'n=' + n; }
+			});
+			return;
+		}
+
+		if (vanBuiten) S.i = pad().indexOf('uitvraag');
 		var sluit = document.querySelector('.sfp-calc-sluit');
 		if (sluit) {
 			sluit.addEventListener('click', function (e) {
@@ -608,7 +792,7 @@
 				} catch (x) { /* gewone link */ }
 			});
 		}
-		teken();
+		tekenAlles();
 	}
 
 	if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);

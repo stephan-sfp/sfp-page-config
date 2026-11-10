@@ -4,6 +4,25 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.45.0-beta.1] - 2026-11-11
+
+Proefversie, alleen voor DPS (updatekanaal "Ook proefversies"). Terugdraaien: versie 3.44.0 terugzetten (zip uit de tag v3.44.0, map sfp-page-config). De tabel wp_sfp_calculator blijft dan staan maar wordt niet gebruikt.
+
+### Toegevoegd
+- Incompanycalculator (werk incompanycalculator-plugin, besluitenlog 4-11 tot 10-11): nieuw onderdeel Calculator, standaard uit. Shortcode [sfp_calculator] (volledig) en [sfp_calculator ingebed="1"] (kort, met knop naar de calculatorpagina), plus een blok.
+- Opbouw als de zelftest: één vraag per scherm, een enkele keuze gaat vanzelf door, Volgende alleen bij meerdere antwoorden of invoer, Vorige als tekstlink, voortgangsbalk.
+- Startscherm met wat je kunt berekenen en, voor ander werk, een directe link om te bellen of te mailen (uit Calculator, anders uit het onderdeel Contact).
+- Route training of evenement; bij training de vraag of er een uitvraag loopt, met de criteria.
+- Vormkaarten 1, 2 en 3 dagen met prijs per groep, wat erin zit en het totaal voor jullie groepen. Clinic en boek gaan vanzelf mee vanaf de dagen die de norm noemt.
+- Extra coachuren en learning on the job: eerst voor hoeveel deelnemers, dan hoeveel uur (blokken van 4 uur); vanaf 12 uur de melding over een abonnement.
+- De begroting staat vanaf de duur naast de vragen; op een telefoon ingeklapt boven de vraag.
+- Vragen over situatie, waarom nu, eerder traject (eerst ja of nee, dan hoe het beviel en wat werkte), wie mee beslissen, het budget (in schijven) en de gegevens voor inkoop (minstens één veld bij ja).
+- Gegevens via het gekozen SureForms-formulier, met organisatie en afdeling. De server rekent zelf opnieuw, bewaart de begroting (kenmerk CODE-B-JJ-NNNN) en vult de verborgen velden.
+- Eindscherm met het totaal, wat erin zit, geldig tot, en alleen de knop Plan een adviesgesprek; de pdf als tekstlink.
+- Pdf via Cloudflare Browser Run, met programma, begroting, voorwaarden, leveranciersgegevens en het blok voor inkoop.
+- SFP Beheer, onderdeel Calculator (prijzen, extra's, routes, pagina's, formulier, contactpersoon, uitleg, proefbegroting, stand) en onderdeel Bedrijfsgegevens. Afwijkingen van de netwerknorm in het Overzicht.
+- Teksten in nl en en (includes/teksten.php). Tests tests/calculator-reken.php (41 scenario's, PHP en JS gelijk).
+
 ## [3.44.0] - 2026-11-10
 
 Terugdraaien: versie 3.43.0 terugzetten (zip uit de tag v3.43.0, map sfp-page-config). De vastgelegde controles blijven in de database staan; het label linkt dan weer zoals in 3.43.0.

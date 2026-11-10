@@ -28,7 +28,6 @@ function sfp_calculator_leeg() {
         'proefmodus'        => '1',
         'calculatorpagina'  => 0,
         'boekpagina'        => 0,
-        'offertepagina'     => 0,
         'formulier'         => 0,
         'voorwaarden'       => 0,
         'coaching_pagina'   => 0,
@@ -153,7 +152,7 @@ function sfp_calculator_instellingen_schoon( array $ruw ) {
     if ( array_key_exists( 'proefmodus', $ruw ) ) {
         $inst['proefmodus'] = ! empty( $ruw['proefmodus'] ) && 'false' !== $ruw['proefmodus'] ? '1' : '0';
     }
-    foreach ( array( 'calculatorpagina', 'boekpagina', 'offertepagina', 'voorwaarden', 'coaching_pagina', 'open_pagina' ) as $sleutel ) {
+    foreach ( array( 'calculatorpagina', 'boekpagina', 'voorwaarden', 'coaching_pagina', 'open_pagina' ) as $sleutel ) {
         if ( array_key_exists( $sleutel, $ruw ) ) {
             $inst[ $sleutel ] = sfp_calculator_pagina_id( $ruw[ $sleutel ] );
         }
@@ -228,7 +227,7 @@ function sfp_calculator_instellingen_schoon( array $ruw ) {
         if ( ! isset( $ruw[ $groep ] ) || ! is_array( $ruw[ $groep ] ) ) {
             continue;
         }
-        $toegestaan = 'extras' === $groep ? array_keys( sfp_calculator_norm()['extras_aan'] ) : array( 'A', 'B', 'C' );
+        $toegestaan = 'extras' === $groep ? array_keys( sfp_calculator_norm()['extras_aan'] ) : array( 'A', 'B' );
         foreach ( $toegestaan as $sleutel ) {
             if ( array_key_exists( $sleutel, $ruw[ $groep ] ) ) {
                 $w = (string) $ruw[ $groep ][ $sleutel ];
@@ -272,7 +271,7 @@ function sfp_calculator_instellingen_bewaar( array $ruw ) {
 /**
  * Adres van een pagina-instelling, of ''.
  *
- * @param  string $sleutel calculatorpagina, boekpagina, offertepagina, voorwaarden, coaching_pagina, open_pagina.
+ * @param  string $sleutel calculatorpagina, boekpagina, voorwaarden, coaching_pagina, open_pagina.
  * @return string
  */
 function sfp_calculator_url( $sleutel ) {

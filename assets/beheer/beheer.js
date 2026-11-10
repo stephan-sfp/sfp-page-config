@@ -1652,7 +1652,7 @@
 		var code = tekstInvoer(I.code, 'DPS');
 		var proef = { aan: I.proefmodus === '1' };
 		var paginas = {};
-		[['calculatorpagina', 'Calculatorpagina', 'De pagina met het volledige blok. De pdf-link wordt: /' + K.pdf_pad + '/'], ['boekpagina', 'Boekpagina adviesgesprek', 'Alleen bereikbaar via de calculator, met de eigen dienst in LatePoint.'], ['offertepagina', 'Pagina voor "Vraag de offerte aan"', 'Leeg: geen knop.'], ['voorwaarden', 'Algemene voorwaarden', 'De link in de pdf.'], ['coaching_pagina', 'Individuele coaching', 'Voor de melding bij 1 tot 3 deelnemers.'], ['open_pagina', 'Open inschrijving', 'Voor de melding bij 1 tot 3 deelnemers.']].forEach(function (p) {
+		[['calculatorpagina', 'Calculatorpagina', 'De pagina met het volledige blok. De pdf-link wordt: /' + K.pdf_pad + '/'], ['boekpagina', 'Boekpagina adviesgesprek', 'Alleen bereikbaar via de calculator, met de eigen dienst in LatePoint.'], ['voorwaarden', 'Algemene voorwaarden', 'De link in de pdf.'], ['coaching_pagina', 'Individuele coaching', 'Voor de melding bij 1 tot 3 deelnemers.'], ['open_pagina', 'Open inschrijving', 'Voor de melding bij 1 tot 3 deelnemers.']].forEach(function (p) {
 			paginas[p[0]] = { invoer: paginaKeuze(I[p[0]], 'Geen'), label: p[1], hulp: p[2] };
 		});
 		var form = el('select');
@@ -1691,7 +1691,7 @@
 		var ex = {};
 		Object.keys(K.norm.extras_aan).forEach(function (k) { ex[k] = aanUit(I.extras[k], K.norm.extras_aan[k]); });
 		var rt = {};
-		['A', 'B', 'C'].forEach(function (r) { rt[r] = aanUit(I.routes[r], r === 'B' ? ['DPS', 'SFP', 'SWS'].indexOf(I.code) > -1 : K.norm.routes_aan[r]); });
+		['A', 'B'].forEach(function (r) { rt[r] = aanUit(I.routes[r], r === 'B' ? ['DPS', 'SFP', 'SWS'].indexOf(I.code) > -1 : K.norm.routes_aan[r]); });
 
 		function verzamel() {
 			var w = { code: code.value, proefmodus: proef.aan, formulier: form.value, logo: logo.waarde(), methode: methode.value, valuta: valuta.value,
@@ -1725,7 +1725,7 @@
 			terugKnop(),
 			kop('Incompanycalculator', 'Een begroting voor een incompanytraining. De prijzen en regels zijn de netwerknorm; hier staan de gegevens van deze site en elke afwijking van de norm.'),
 			aandacht.length ? el('div', { class: 'sfpb-let' }, aandacht.map(function (w) { return el('span', { text: w }); })) : null,
-			el('p', { class: 'sfpb-hulp', text: 'Gestart: ' + c.gestart + '. Afgerond: ' + c.afgerond + ' (laatste 30 dagen ' + c.afgerond_30 + '; route A ' + c.route_a + ', B ' + c.route_b + ', C ' + c.route_c + '). Pdf klaar ' + c.pdf_klaar + ', wacht ' + c.pdf_wacht + ', mislukt ' + c.pdf_mislukt + '. Proefbegrotingen tellen niet mee.' }),
+			el('p', { class: 'sfpb-hulp', text: 'Gestart: ' + c.gestart + '. Afgerond: ' + c.afgerond + ' (laatste 30 dagen ' + c.afgerond_30 + '; training ' + c.route_a + ', evenement ' + c.route_b + '). Pdf klaar ' + c.pdf_klaar + ', wacht ' + c.pdf_wacht + ', mislukt ' + c.pdf_mislukt + '. Proefbegrotingen tellen niet mee.' }),
 			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
 				el('h2', { text: 'Basis' }),
 				veld('Sitecode', code, 'Twee tot vier letters, vooraan in het kenmerk (DPS-B-26-0042). Route B (eigen evenement) staat als norm aan bij DPS, SFP en SWS.', 'sfpb-calc-code'),
@@ -1760,7 +1760,7 @@
 				el('p', { class: 'sfpb-hulp', text: 'Leeg is de netwerknorm. Op de Nederlandse sites hoort overal de norm te staan; elke afwijking staat bij Overzicht.' })
 			]).concat(pRijen).concat([
 				veld('Valuta', valuta, 'Leeg: EUR.', 'sfpb-calc-valuta')
-			]).concat(Object.keys(ex).map(function (k) { return veld('Extra: ' + k, ex[k], null, 'sfpb-calc-ex-' + k); })).concat(['A', 'B', 'C'].map(function (r) { return veld('Route ' + r, rt[r], null, 'sfpb-calc-rt-' + r); })).concat([
+			]).concat(Object.keys(ex).map(function (k) { return veld('Extra: ' + k, ex[k], null, 'sfpb-calc-ex-' + k); })).concat(['A', 'B'].map(function (r) { return veld(r === 'A' ? 'Route training' : 'Route evenement', rt[r], null, 'sfpb-calc-rt-' + r); })).concat([
 				opslaan(),
 				el('h2', { text: 'Proef' }),
 				el('p', { class: 'sfpb-hulp', text: 'Maakt een proefbegroting met vaste keuzes (20 deelnemers, 2 dagen) en meteen de pdf via Cloudflare. Telt niet mee en gaat niet naar het CRM.' }),

@@ -113,13 +113,13 @@ function sfp_calculator_shortcode( $atts ) {
         'uitleg'     => $inst['uitleg'],
         'pagina'     => sfp_calculator_url( 'calculatorpagina' ),
         'boek'       => sfp_calculator_url( 'boekpagina' ),
-        'offerte'    => sfp_calculator_url( 'offertepagina' ),
         'coaching'   => sfp_calculator_url( 'coaching_pagina' ),
         'open'       => sfp_calculator_url( 'open_pagina' ),
         'formulier'  => '' !== $html ? $form : 0,
         'proef'      => sfp_calculator_proef(),
         'beheerder'  => current_user_can( 'manage_options' ),
         'privacy'    => (string) get_privacy_policy_url(),
+        'contact'    => sfp_calculator_contact_config( $inst ),
     );
 
     sfp_page_config_css_inline( 'sfp-calculator', 'calculator/calculator.css' );
@@ -236,4 +236,32 @@ function sfp_calculator_pagina_logo() {
         }
     }
     return '<span class="sfp-calc-top-naam">' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
+}
+
+/**
+ * De contactpersoon voor het start- en eindscherm: uit Calculator, anders
+ * telefoon en e-mail uit het onderdeel Contact van de site.
+ *
+ * @param  array $inst Instellingen van de calculator.
+ * @return array{naam: string, functie: string, telefoon: string, email: string, foto: string}
+ */
+function sfp_calculator_contact_config( array $inst ) {
+    $c    = isset( $inst['contact'] ) && is_array( $inst['contact'] ) ? $inst['contact'] : array();
+    $site = function_exists( 'sfp_page_config_contact' ) ? sfp_page_config_contact() : array();
+    $tel  = trim( (string) ( $c['telefoon'] ?? '' ) );
+    if ( '' === $tel && ! empty( $site['telefoon']['tekst'] ) ) {
+        $tel = (string) $site['telefoon']['tekst'];
+    }
+    $mail = trim( (string) ( $c['email'] ?? '' ) );
+    if ( '' === $mail && ! empty( $site['email'] ) ) {
+        $mail = (string) $site['email'];
+    }
+    $foto = (int) ( $c['foto'] ?? 0 );
+    return array(
+        'naam'     => (string) ( $c['naam'] ?? '' ),
+        'functie'  => (string) ( $c['functie'] ?? '' ),
+        'telefoon' => $tel,
+        'email'    => $mail,
+        'foto'     => $foto ? (string) wp_get_attachment_image_url( $foto, 'thumbnail' ) : '',
+    );
 }
