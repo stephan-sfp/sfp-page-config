@@ -1018,7 +1018,7 @@ function sfp_page_config_blokken_editor_css() {
  * @return string[]
  */
 function sfp_page_config_blokken_editor_bestanden() {
-    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'editor' );
+    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'verhaal', 'editor' );
 }
 
 /**
@@ -1195,7 +1195,7 @@ function sfp_page_config_render_held( $attrs, $content, $blok = null ) {
  * @param  string $content Binnenblokken.
  * @return string
  */
-function sfp_page_config_render_kolommen( $attrs, $content ) {
+function sfp_page_config_render_kolommen( $attrs, $content, $blok = null ) {
     $indeling   = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'indeling', 'twee' ), array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten', 'slot' ) );
     $carrousel  = 'reviews' === $indeling && ! empty( $attrs['carrousel'] );
     // De indelingen van de NL-vorm (3.30.0) hebben nlvorm.css nodig.
@@ -1206,8 +1206,98 @@ function sfp_page_config_render_kolommen( $attrs, $content ) {
     $nlvorm    .= 'slot' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-slot' ) : '';
     $uitlijning = sfp_page_config_blok_attr( $attrs, 'uitlijning' );
     $uitlijning = in_array( $uitlijning, array( 'boven', 'midden', 'onder', 'rekken' ), true ) ? 'sfp-kolommen--' . $uitlijning : '';
+    // Verhaalvorm (3.42.0, besluit Stephan 10-11): tekst en afgerond beeld met lange tekst.
+    if ( 'tekst-beeld' === $indeling && $blok instanceof WP_Block ) {
+        $verhaal = sfp_page_config_kolommen_verhaal( $blok );
+        if ( '' !== $verhaal ) {
+            return sfp_page_config_blokken_css_vangnet( 'sfp/kolommen' ) . $nlvorm . sfp_page_config_blokken_css_vangnet_bestand( 'verhaal' )
+                . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-kolommen', 'sfp-kolommen--tekst-beeld', 'sfp-verhaal' ) ) . '>' . $verhaal . '</div>';
+        }
+    }
     return sfp_page_config_blokken_css_vangnet( 'sfp/kolommen' ) . $nlvorm
         . '<div ' . sfp_page_config_blok_omhulling( array_filter( array( 'sfp-kolommen', 'sfp-kolommen--' . $indeling, $uitlijning, 'boeking' === $indeling ? 'sfp-boekkaart' : '', 'reviews' === $indeling ? 'sfp-reviews-rij' : '', $carrousel ? 'sfp-reviews-rij--carrousel' : '' ) ) ) . '>' . $content . '</div>';
+}
+
+/**
+ * Verhaalvorm voor Kolommen, tekst en beeld (3.42.0, besluit Stephan 10-11):
+ * staat naast een afgerond beeld een tekst met meer dan twee alinea's, dan
+ * blijven label, kop en eerste alinea naast het beeld staan, even hoog. De
+ * rest staat onder een uitklaplink, uitgeklapt in drie kolommen. De tekst
+ * blijft in de pagina (hidden="until-found"): zoeken in de pagina en
+ * zoekmachines vinden hem. Geldt vanzelf voor elk blok dat hieraan voldoet.
+ *
+ * @param  WP_Block $blok Het blok Kolommen.
+ * @return string Binnenkant, of leeg als de vorm niet past.
+ */
+function sfp_page_config_kolommen_verhaal( $blok ) {
+    $tekst = null;
+    $beeld = null;
+    foreach ( $blok->inner_blocks as $kind ) {
+        $klasse = isset( $kind->attributes['className'] ) ? ' ' . $kind->attributes['className'] . ' ' : ' ';
+        if ( 'core/image' === $kind->name && false !== strpos( $klasse, ' is-style-sfp-afgerond ' ) ) {
+            $beeld = $beeld ? $beeld : $kind;
+            continue;
+        }
+        if ( 'sfp/kolom' !== $kind->name ) {
+            return '';
+        }
+        $binnen = $kind->inner_blocks;
+        if ( 1 === count( $binnen ) && 'core/image' === $binnen[0]->name ) {
+            $bk = isset( $binnen[0]->attributes['className'] ) ? ' ' . $binnen[0]->attributes['className'] . ' ' : ' ';
+            if ( false !== strpos( $bk, ' is-style-sfp-afgerond ' ) && ! $beeld ) {
+                $beeld = $binnen[0];
+                continue;
+            }
+        }
+        if ( $tekst ) {
+            return '';
+        }
+        $tekst = $kind;
+    }
+    if ( ! $tekst || ! $beeld ) {
+        return '';
+    }
+    // Alinea's van de lopende tekst (geen label).
+    $alineas = 0;
+    foreach ( $tekst->inner_blocks as $kind ) {
+        $klasse = isset( $kind->attributes['className'] ) ? (string) $kind->attributes['className'] : '';
+        if ( 'core/paragraph' === $kind->name && false === strpos( $klasse, 'is-style-sfp-label' ) ) {
+            ++$alineas;
+        }
+    }
+    if ( $alineas < 3 ) {
+        return '';
+    }
+    $boven = '';
+    $meer  = '';
+    $lead  = false;
+    foreach ( $tekst->inner_blocks as $kind ) {
+        $html = $kind->render();
+        if ( $lead ) {
+            $meer .= $html;
+            continue;
+        }
+        $klasse = isset( $kind->attributes['className'] ) ? (string) $kind->attributes['className'] : '';
+        if ( 'core/paragraph' === $kind->name && false === strpos( $klasse, 'is-style-sfp-label' ) ) {
+            $lead  = true;
+            $html  = preg_replace( '/^(\s*<p\b[^>]*?)(\sclass="([^"]*)")/', '$1 class="$3 sfp-verhaal__lead"', $html, 1, $gedaan );
+            if ( ! $gedaan ) {
+                $html = preg_replace( '/^(\s*<p)\b/', '$1 class="sfp-verhaal__lead"', $html, 1 );
+            }
+        }
+        $boven .= $html;
+    }
+    static $n = 0;
+    ++$n;
+    $id     = 'sfp-verhaal-' . $n;
+    $open   = sfp_page_config_tekst( 'verhaal_meer' );
+    $dicht  = sfp_page_config_tekst( 'verhaal_minder' );
+    $klik   = "var m=document.getElementById(this.getAttribute('aria-controls')),o=this.getAttribute('aria-expanded')!=='true';m.hidden=o?false:'until-found';this.setAttribute('aria-expanded',o?'true':'false');this.firstChild.textContent=o?this.dataset.dicht:this.dataset.open;";
+    $knop   = '<button type="button" class="sfp-verhaal__knop" aria-expanded="false" aria-controls="' . esc_attr( $id ) . '" data-open="' . esc_attr( $open ) . '" data-dicht="' . esc_attr( $dicht ) . '" onclick="' . esc_attr( $klik ) . '">' . esc_html( $open ) . '<span aria-hidden="true"></span></button>';
+    $script = '<script nowprocket>document.getElementById(' . wp_json_encode( $id ) . ').addEventListener("beforematch",function(){var b=document.querySelector("[aria-controls=' . esc_js( $id ) . ']");if(b&&b.getAttribute("aria-expanded")!=="true"){b.click();}});</script>';
+    return '<div class="sfp-kolom sfp-verhaal__tekst">' . $boven . $knop . '</div>'
+        . '<div class="sfp-verhaal__beeld">' . $beeld->render() . '</div>'
+        . '<div class="sfp-verhaal__meer" id="' . esc_attr( $id ) . '" hidden="until-found">' . $meer . '</div>' . $script;
 }
 
 /**

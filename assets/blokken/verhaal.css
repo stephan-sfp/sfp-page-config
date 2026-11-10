@@ -1,0 +1,29 @@
+/*
+ * Bouwsteen: verhaalvorm van Kolommen, tekst en beeld (3.42.0). Alleen geladen waar de vorm staat.
+ */
+:root .sfp-verhaal{align-items:stretch;row-gap:0}
+:root .sfp-verhaal>.sfp-verhaal__tekst{align-content:start}
+:root .sfp-verhaal__lead{font-size:19px;line-height:1.6}
+:root .sfp-verhaal .sfp-verhaal__knop{all:unset;box-sizing:border-box;cursor:pointer;justify-self:start;padding:4px 0;font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;line-height:1.4;color:var(--sfp-b-tekstlink,var(--sfp-b-primair));text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root .sfp-verhaal .sfp-verhaal__knop:is(:hover,:focus-visible){text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links,currentColor)}
+:root .sfp-verhaal .sfp-verhaal__knop:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:3px;border-radius:2px}
+:root .sfp-verhaal__knop span::after{content:"\00a0\2193"}
+:root .sfp-verhaal__knop[aria-expanded=true] span::after{content:"\00a0\2191"}
+:root .sfp-verhaal__beeld{position:relative;min-height:240px}
+:root .sfp-verhaal__beeld>figure{position:absolute;inset:0;margin:0;width:100%;height:100%}
+:root .sfp-verhaal__beeld img{position:absolute;inset:0;width:100%;height:100%;max-width:none;aspect-ratio:auto;object-fit:cover}
+:root .sfp-verhaal__meer{grid-column:1/-1;columns:3;column-gap:48px}
+:root .sfp-verhaal__meer:not([hidden]){margin-top:40px}
+:root .sfp-verhaal__meer>*{break-inside:avoid;margin:0 0 20px}
+:root .sfp-verhaal__meer>*:last-child{margin-bottom:0}
+@media (min-width:981px){
+  :root .sfp-verhaal{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
+}
+@media (max-width:980px){
+  :root .sfp-verhaal__beeld{order:-1;min-height:0;aspect-ratio:4/3;margin-bottom:24px}
+  :root .sfp-verhaal__meer{columns:2;column-gap:32px}
+}
+@media (max-width:700px){
+  :root .sfp-verhaal__meer{columns:1}
+  :root .sfp-verhaal__meer:not([hidden]){margin-top:20px}
+}
