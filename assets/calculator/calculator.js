@@ -56,7 +56,7 @@
 		var S = {
 			i: 0,
 			doel: '',
-			uitvraag: '',
+			fase: '',
 			mensen: { soort: 'getal', aantal: '', van: '', tot: '' },
 			doelgroep: '', doelgroepAnders: '',
 			vorm: 0, begeleiding: '',
@@ -101,7 +101,8 @@
 				doelgroep: S.doelgroep,
 				doelgroep_anders: S.doelgroepAnders,
 				soort: S.soort,
-				uitvraag: S.uitvraag === 'ja',
+				fase: S.fase,
+				uitvraag: S.fase === 'procedure',
 				locatie: S.locatie === 'anders' ? S.locatieExtra.slice() : []
 			};
 		}
@@ -143,7 +144,7 @@
 				if (N.routes_aan && N.routes_aan.B) p.push('doel');
 			}
 			p.push('uitvraag');
-			if (S.uitvraag === 'ja') p.push('criteria');
+			if (S.fase === 'procedure') p.push('criteria');
 			if (S.doel === 'evenement') {
 				p.push('sprekers', 'soort', 'situatie');
 			} else {
@@ -337,7 +338,9 @@
 		};
 		schermen.uitvraag = function () {
 			if (!S.doel) S.doel = 'training';
-			return janee(t('uitvraag_vraag'), '', S.uitvraag, function (w) { S.uitvraag = w; }, t('uitvraag_ja'), t('uitvraag_nee'));
+			return enkel(t('fase_vraag'), '', ['verkennen', 'intern', 'plannen', 'procedure'].map(function (w) {
+				return { w: w, label: t('fase_' + w), zin: t('fase_' + w + '_zin') };
+			}), S.fase, function (w) { S.fase = w; });
 		};
 		schermen.criteria = function () {
 			return tekst(t('criteria_vraag'), t('criteria_hulp'), S.situatie.criteria, function (w) { S.situatie.criteria = w; }, true);
@@ -367,9 +370,11 @@
 						if (u.groepen > 1) html += '<p class="sfp-calc-regel">' + esc(t('mensen_groepen', { n: t('groepen', { n: u.groepen }), t: u.verdeling.join(', ') })) + '</p>';
 						u.meldingen.forEach(function (k) {
 							if (k === 'klein') {
+								var ml = [];
+								if (C.coaching) ml.push('<a href="' + esc(C.coaching) + '">' + esc(t('link_coaching')) + '</a>');
+								if (C.open) ml.push('<a href="' + esc(C.open) + '">' + esc(t('link_open')) + '</a>');
 								html += '<p class="sfp-calc-regel">' + esc(t('melding_klein'))
-									+ (C.coaching ? ' <a href="' + esc(C.coaching) + '">' + esc(t('link_coaching')) + '</a>' : '')
-									+ (C.open ? ' <a href="' + esc(C.open) + '">' + esc(t('link_open')) + '</a>' : '') + '</p>';
+									+ (ml.length ? '<span class="sfp-calc-meldlinks">' + ml.join('<span aria-hidden="true"> \u2022 </span>') + '</span>' : '') + '</p>';
 							} else if (k === 'maatwerk') {
 								html += '<p class="sfp-calc-regel">' + esc(t('melding_maatwerk')) + ' ' + esc(t('melding_groot')) + '</p>';
 							} else if (k === 'negen_tien') {

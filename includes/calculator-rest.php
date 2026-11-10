@@ -33,6 +33,7 @@ function sfp_calculator_codes() {
         'waarom'    => array( 'nieuwe_rol', 'groei', 'moment', 'feedback', 'beleid', 'anders' ),
         'locatie'   => array( 'extern', 'lunch', 'borrel', 'teamdag' ),
         'soort'     => array( 'keynote', 'meerdere', 'pitch', 'anders' ),
+        'fase'      => array( 'verkennen', 'intern', 'plannen', 'procedure' ),
         'beslist'   => array( 'zelf', 'leidinggevende', 'hr', 'inkoop', 'directie', 'anders' ),
         'budget'    => array( 'tot5', '5_10', '10_25', 'meer', 'onbekend', 'geen' ),
         'beviel'    => array( 'goed', 'wisselend', 'slecht' ),
@@ -95,7 +96,8 @@ function sfp_calculator_keuzes_schoon( array $in ) {
         'locatie'          => array_values( array_intersect( $codes['locatie'], isset( $k['locatie'] ) && is_array( $k['locatie'] ) ? array_map( 'strval', $k['locatie'] ) : array() ) ),
         'sprekers'         => sfp_calculator_geheel( isset( $k['sprekers'] ) ? $k['sprekers'] : 0, 0, 500 ),
         'soort'            => isset( $k['soort'] ) && in_array( $k['soort'], $codes['soort'], true ) ? $k['soort'] : '',
-        'uitvraag'         => $waar( isset( $k['uitvraag'] ) ? $k['uitvraag'] : false ),
+        'fase'             => isset( $k['fase'] ) && in_array( $k['fase'], $codes['fase'], true ) ? $k['fase'] : '',
+        'uitvraag'         => isset( $k['fase'] ) && 'procedure' === $k['fase'],
     );
 
     $s        = isset( $in['situatie'] ) && is_array( $in['situatie'] ) ? $in['situatie'] : array();
@@ -314,6 +316,9 @@ function sfp_calculator_notitie( array $rij ) {
     } elseif ( 'B' === $rij['route'] ) {
         $regels[] = $t( 'sprekers_vraag' ) . ' ' . (int) $keuzes['sprekers'] . ( $keuzes['soort'] ? ', ' . $t( 'soort_' . $keuzes['soort'] ) : '' );
         $regels[] = $t( 'richtprijs' ) . ': ' . $t( 'evenement_prijs', array( 'prijs' => sfp_calculator_bedrag( (int) ( $u['evenement_prijs'] ?? 0 ), $valuta ) ) );
+    }
+    if ( ! empty( $keuzes['fase'] ) ) {
+        $regels[] = $t( 'pdf_fase' ) . ': ' . $t( 'fase_' . $keuzes['fase'] );
     }
     if ( ! empty( $keuzes['uitvraag'] ) ) {
         $regels[] = $t( 'pdf_uitvraag' ) . ( '' !== ( $sit['criteria'] ?? '' ) ? ': ' . $sit['criteria'] : '' );
@@ -622,7 +627,7 @@ function sfp_calculator_rest_proef( WP_REST_Request $verzoek ) {
                 'boek'      => true,
                 'coachuren' => array( 'deelnemers' => 4, 'uren' => 4 ),
             ),
-            'uitvraag'       => true,
+            'fase'           => 'procedure',
             'groepsvoordeel' => 'korting',
             'locatie'        => array( 'lunch' ),
         ),

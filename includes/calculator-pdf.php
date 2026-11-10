@@ -212,6 +212,9 @@ function sfp_calculator_blad_html( array $rij ) {
     if ( ! empty( $keuzes['doelgroep'] ) ) {
         $situ .= '<p><b>' . $e( $t( 'doelgroep_vraag' ) ) . '</b> ' . $e( $t( 'doelgroep_' . $keuzes['doelgroep'] ) . ( 'anders' === $keuzes['doelgroep'] ? ' ' . $keuzes['doelgroep_anders'] : '' ) ) . '</p>';
     }
+    if ( ! empty( $keuzes['fase'] ) ) {
+        $situ .= '<p><b>' . $e( $t( 'pdf_fase' ) ) . ':</b> ' . $e( $t( 'fase_' . $keuzes['fase'] ) ) . '</p>';
+    }
     if ( ! empty( $keuzes['uitvraag'] ) ) {
         $situ .= '<p><b>' . $e( $t( 'pdf_uitvraag' ) ) . ':</b> ' . ( '' !== ( $sit['criteria'] ?? '' ) ? nl2br( $e( $sit['criteria'] ) ) : $e( $t( 'ja' ) ) ) . '</p>';
     }
