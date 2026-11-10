@@ -936,6 +936,20 @@ function sfp_page_config_teksten_register() {
             'en'    => 'No new group has been scheduled yet. Join the waiting list and you will be the first to hear when the next group starts.',
             'pt'    => 'Ainda não há uma nova turma agendada. Entre na lista de espera e seja o primeiro a saber quando a próxima turma começar.',
         ),
+        'verhaal_meer' => array(
+            'groep' => 'Verhaal',
+            'label' => 'Uitklaplink onder de eerste alinea (tekst en beeld met lange tekst)',
+            'nl'    => 'Lees ons hele verhaal',
+            'en'    => 'Read our full story',
+            'pt'    => 'Leia a nossa história completa',
+        ),
+        'verhaal_minder' => array(
+            'groep' => 'Verhaal',
+            'label' => 'Uitklaplink als het verhaal open staat',
+            'nl'    => 'Minder lezen',
+            'en'    => 'Read less',
+            'pt'    => 'Ler menos',
+        ),
         'keuzehulp_vraag_van' => array(
             'groep' => 'Keuzehulp',
             'label' => 'Boven de vraag (%1$d is het nummer, %2$d het aantal)',

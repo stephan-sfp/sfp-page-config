@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.42.0] - 2026-11-10
+
+Terugdraaien: versie 3.41.5 terugzetten (zip uit de tag v3.41.5, map sfp-page-config).
+
+### Toegevoegd
+- Verhaalvorm (besluit Stephan 10-11): Kolommen, tekst en beeld, met een afgerond beeld en meer dan twee alinea's krijgt vanzelf deze vorm. Label, kop en eerste alinea staan even hoog naast het beeld; direct onder de eerste alinea de link Lees ons hele verhaal; uitgeklapt de rest in drie kolommen (tablet twee, telefoon een, beeld dan bovenaan). De tekst blijft in de pagina en vindbaar. Teksten verhaal_meer en verhaal_minder (nl, en, pt).
+
+### Gerepareerd
+- Kolommen, tekst en beeld met afgerond beeld (punt 18): het beeld blijft binnen zijn kolom, boven gelijk met het label en onder gelijk met de laatste regel, cover met focuspunt, ook als het beeld in een eigen kolom staat (gemeten 10-11: DPS Over liep 308 px buiten de kolom, Ons netwerk stond 80 px lager; DST Over gecentreerd). Hoogte tussen 240 en 640 px.
+- Lijst als rij (punt 19): gelijke kolommen, nooit een los uitgerekt item; past alles, dan op een regel (DPS presentatietraining: vijf vakken op een regel vanaf 1100 px).
+
 ## [3.41.5] - 2026-11-10
 
 Terugdraaien: versie 3.41.4 terugzetten (zip uit de tag v3.41.4, map sfp-page-config).

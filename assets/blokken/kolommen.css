@@ -56,13 +56,15 @@
   :root .sfp-kolommen--twee{grid-template-columns:repeat(2,minmax(0,1fr))}
   :root .sfp-kolommen--drie{grid-template-columns:repeat(3,minmax(0,1fr))}
   :root .sfp-kolommen--tekst-beeld{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
-  /* 3.36.0 (punt 2): een afgerond beeld naast tekst loopt van het label tot de laatste regel; de verhouding is de ondergrens */
-  :root .sfp-kolommen--tekst-beeld:has(>.is-style-sfp-afgerond){align-items:stretch}
-  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond{position:relative;align-self:stretch;height:auto;margin:0;aspect-ratio:4/3}
-  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond.sfp-verhouding-169{aspect-ratio:16/9}
-  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond.sfp-verhouding-32{aspect-ratio:3/2}
-  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond.sfp-verhouding-11{aspect-ratio:1/1}
-  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;max-width:none}
+  /* Afgerond beeld naast tekst (3.36.0 punt 2; 3.42.0 punt 18, besluit O3 9-11): de tekst bepaalt de hoogte.
+     Het beeld blijft in zijn kolom, boven gelijk met het label, onder gelijk met de laatste regel, cover met focuspunt.
+     Ook als het beeld in een eigen kolom staat. Geen vaste verhouding meer: die liet het beeld buiten de kolom lopen. */
+  :root .sfp-kolommen.sfp-kolommen--tekst-beeld:is(:has(>.is-style-sfp-afgerond),:has(>.sfp-kolom>.is-style-sfp-afgerond:only-child)){align-items:stretch}
+  :root .sfp-kolommen.sfp-kolommen--tekst-beeld:is(:has(>.is-style-sfp-afgerond),:has(>.sfp-kolom>.is-style-sfp-afgerond:only-child))>.sfp-kolom{align-content:start;height:auto}
+  :root .sfp-kolommen--tekst-beeld>.sfp-kolom:has(>.is-style-sfp-afgerond:only-child){display:block;position:relative;min-height:240px;max-height:640px}
+  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond{position:relative;align-self:stretch;width:100%;height:auto;min-height:240px;max-height:640px;margin:0;aspect-ratio:auto}
+  :root .sfp-kolommen--tekst-beeld>.sfp-kolom>.is-style-sfp-afgerond:only-child{position:absolute;inset:0;width:100%;height:100%;margin:0;aspect-ratio:auto}
+  :root .sfp-kolommen--tekst-beeld>.is-style-sfp-afgerond img,:root .sfp-kolommen--tekst-beeld>.sfp-kolom>.is-style-sfp-afgerond:only-child img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;max-width:none;object-fit:cover}
   :root .sfp-kolommen--tekst-boek{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
   :root .sfp-kolommen--breed-smal{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:56px}
 }
@@ -110,3 +112,4 @@
 
 /* knop in SureForms in de stijl van de site */
 .sfp-sectie .srfm-form-container button.wp-block-button__link,.sfp-sectie .srfm-form-container #srfm-submit-btn{font-family:var(--sfp-b-kop)!important;font-weight:900!important;text-transform:uppercase;letter-spacing:.04em;border-radius:var(--sfp-b-r-knop)!important}
+
