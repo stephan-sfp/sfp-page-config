@@ -834,18 +834,15 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
     $meta .= '<i class="sfp-art-kop__breek" aria-hidden="true"></i>';
     $meta .= '<span>' . esc_html( sprintf( $t( 'leestijd' ), sfp_page_config_artikel_leestijd( $post->post_content ) ) ) . '</span>';
 
-    $check_url = sfp_page_config_link_instelling( 'artikel_factcheck' );
-    if ( '' === $check_url ) {
-        $check_url = sfp_page_config_link_instelling( 'artikel_redactie' );
-    }
-    $check = sfp_page_config_artikel_icoon( 'vink' ) . esc_html( $t( 'gecheckt' ) );
-    $meta .= '' !== $check_url ? '<a class="sfp-art-kop__check" href="' . esc_url( $check_url ) . '">' . $check . '</a>' : '<span class="sfp-art-kop__check">' . $check . '</span>';
+    // Sinds 3.44.0: met een vastgelegde controle opent het label het
+    // factcheckpaneel, anders linkt het naar de redactionele verantwoording.
+    $meta .= sfp_page_config_factcheck_label( $post );
 
     $affiliate = function_exists( 'sfp_page_config_affiliate_regel' ) ? sfp_page_config_affiliate_regel( $post ) : '';
 
-    // Acties en panelen.
+    // Acties en panelen. Het factcheckpaneel staat vooraan (3.44.0).
     $acties  = '';
-    $panelen = '';
+    $panelen = sfp_page_config_factcheck_paneel( $post );
     $knop    = function ( $id, $icoon, $lang, $kort = '' ) {
         $label = '' === $kort ? '<span>' . $lang . '</span>' : '<span class="sfp-lang">' . $lang . '</span><span class="sfp-kort">' . $kort . '</span>';
         // Sinds 3.39.0 met title: op een telefoon staat alleen het icoon.

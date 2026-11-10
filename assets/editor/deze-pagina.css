@@ -19,3 +19,7 @@
 .sfp-deze-pagina .sfp-dp-melding--fout{background:#fcf0f1;border-left-color:#cc1818;color:#8a1111}
 .sfp-deze-pagina .sfp-dp-melding--ok{background:#edfaef;border-left-color:#1e8b45}
 .sfp-deze-pagina .sfp-dp-json textarea{font-family:Menlo,Consolas,monospace;font-size:11.5px;line-height:1.45;white-space:pre}
+
+/* Factcheck (3.44.0): de vastgelegde controles. */
+.sfp-deze-pagina .sfp-dp-fc{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:13px}
+.sfp-deze-pagina .sfp-dp-fc li{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0}

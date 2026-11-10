@@ -105,10 +105,8 @@ function sfp_page_config_tool_makerskaart( $post ) {
     $bijgewerkt = $bijgewerkt ? $bijgewerkt : time();
     $feiten     = array();
     $feiten[]   = '<span><time datetime="' . esc_attr( wp_date( 'c', $bijgewerkt ) ) . '">' . esc_html( sprintf( $t( 'tool_updated' ), wp_date( 'j M Y', $bijgewerkt ) ) ) . '</time></span>';
-    $check_url  = sfp_page_config_link_instelling( 'artikel_factcheck' );
-    if ( '' === $check_url ) {
-        $check_url = sfp_page_config_link_instelling( 'artikel_redactie' );
-    }
+    // Sinds 3.44.0 dezelfde bestemming als het label bij artikelen: de redactionele verantwoording.
+    $check_url  = function_exists( 'sfp_page_config_factcheck_link' ) ? sfp_page_config_factcheck_link() : sfp_page_config_link_instelling( 'artikel_redactie' );
     $check    = sfp_page_config_artikel_icoon( 'vink' ) . esc_html( $t( 'gecheckt' ) );
     $feiten[] = '<span>' . ( '' !== $check_url ? '<a class="sfp-art-kop__check" href="' . esc_url( $check_url ) . '">' . $check . '</a>' : '<span class="sfp-art-kop__check">' . $check . '</span>' ) . '</span>';
     if ( $b ) {

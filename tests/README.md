@@ -188,3 +188,11 @@ wp eval-file wp-content/plugins/sfp-page-config/tests/cursusvarianten-wp.php
 ```
 
 Runs inside a real WordPress (a local test install, never a live site). Checks prices per number of days, the variant choice on the group cards, the fact card with Duur, Tabs that follow the choice, the dropdown label, the Course schema per variant and the price block, and that nothing changes without prices per number of days.
+
+# Fact-checked-paneel (3.44.0)
+
+```sh
+php tests/factcheck.php
+```
+
+Checks with small WordPress stubs: cleaning the logged checks (date, future, user, duplicates, order), the label with and without a check (button or link to the editorial statement), the panel (checker, role, date, history newest first, link), the history of content revisions, articles and terms, and the input check for SFP Beheer.
