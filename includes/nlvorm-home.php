@@ -172,9 +172,22 @@ function sfp_page_config_render_teamlid( $attrs ) {
         $foto = '<div class="sfp-team__portret" style="--sfp-team-focus:' . round( $fx, 1 ) . '% ' . round( $fy, 1 ) . '%;--sfp-team-zoom:' . round( $zoom / 100, 2 ) . '">' . $foto . '</div>';
     }
     return '<div class="sfp-team__lid">' . $foto . '<div class="sfp-team__tekst"><h3 class="wp-block-heading">' . $kop . '</h3>'
-        . ( '' !== $rol ? '<p class="is-style-sfp-label">' . esc_html( $rol ) . '</p>' : '' )
+        . ( '' !== $rol ? '<p class="is-style-sfp-label">' . sfp_page_config_team_rol_html( $rol ) . '</p>' : '' )
         . ( '' !== $zin ? '<p class="sfp-team__zin">' . esc_html( $zin ) . '</p>' : '' )
         . '</div></div>';
+}
+
+/**
+ * De rol op de teamkaart (3.41.5, besluit Stephan 10-11): de regel breekt
+ * nooit direct na een bullet af. De bullet hangt met een vaste spatie aan het
+ * woord erna, zodat hij bij afbreken mee naar de volgende regel gaat.
+ *
+ * @param  string $rol Rol, bijvoorbeeld "Oprichter • Trainer • Coach".
+ * @return string HTML.
+ */
+function sfp_page_config_team_rol_html( $rol ) {
+    $html = esc_html( $rol );
+    return (string) preg_replace( '/\s*([\x{2022}\x{00B7}|])\s*/u', ' $1&nbsp;', $html );
 }
 
 /* =========================================================================

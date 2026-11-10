@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.41.5] - 2026-11-10
+
+Terugdraaien: versie 3.41.4 terugzetten (zip uit de tag v3.41.4, map sfp-page-config).
+
+### Gewijzigd
+- Teamkaart: het portret staat op wit met een dunne lijn (1 px) in de lichte merktint van de site, in plaats van op een tintvlak (besluit Stephan 10-11, variant C). Geldt voor alle sites.
+- Teamkaart: de rol breekt nooit direct na een bullet af. De bullet gaat bij afbreken mee naar de volgende regel (gemeten 10-11 op DPS: op 390 en 820 px eindigde de regel op een bullet).
+
 ## [3.41.4] - 2026-11-10
 
 Terugdraaien: versie 3.41.3 terugzetten (zip uit de tag v3.41.3, map sfp-page-config).
