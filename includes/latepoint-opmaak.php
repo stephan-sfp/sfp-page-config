@@ -22,6 +22,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 add_action( 'wp_enqueue_scripts', 'sfp_page_config_latepoint_opmaak', 1000 );
+add_filter( 'latepoint_clean_layout_css_files', 'sfp_page_config_latepoint_kale_css' );
+
+/**
+ * Het kale sjabloon van LatePoint print geen wp_head, alleen de stijlbestanden
+ * uit deze lijst (standaard alleen latepoint-main-front). Zonder dit filter
+ * werd het lettertype wel klaargezet maar nooit geladen (3.41.4).
+ *
+ * @param  mixed $handles Lijst met stijlbestanden.
+ * @return mixed
+ */
+function sfp_page_config_latepoint_kale_css( $handles ) {
+    if ( is_array( $handles ) && wp_style_is( 'sfp-latepoint-fonts', 'registered' ) && ! in_array( 'sfp-latepoint-fonts', $handles, true ) ) {
+        array_unshift( $handles, 'sfp-latepoint-fonts' );
+    }
+    return $handles;
+}
 
 /**
  * Is dit de kale pagina van LatePoint (een route via admin-post.php)?

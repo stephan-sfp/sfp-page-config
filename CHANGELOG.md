@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.41.4] - 2026-11-10
+
+Terugdraaien: versie 3.41.3 terugzetten (zip uit de tag v3.41.3, map sfp-page-config).
+
+### Gerepareerd
+- LatePoint, kale pagina's (afspraak beheren, annuleren, directe boekpagina): het lettertype van de site laadde niet. Het kale sjabloon van LatePoint print alleen de stijlbestanden uit het filter latepoint_clean_layout_css_files; het lettertype van 3.37.0 stond daar niet in, zodat de browser terugviel op een standaardletter (gemeten 10-11 op DPS en SwS).
+
 ## [3.41.3] - 2026-11-09
 
 Terugdraaien: versie 3.41.2 terugzetten (zip uit de tag v3.41.2, map sfp-page-config).
