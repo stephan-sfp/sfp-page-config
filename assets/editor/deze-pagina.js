@@ -235,6 +235,11 @@
 			) );
 		}
 
+		/* ---------- Factcheck: artikel en begrip (sinds 3.44.0) ---------- */
+		if ( S.factcheck && ( 'post' === editor.type || 'begrippen' === editor.type ) ) {
+			delen.push( el( Factcheck, { key: 'factcheck', meta: meta, zetMeta: zetMeta } ) );
+		}
+
 		/* ---------- Tool: de beschrijving (sinds 3.8.0) ---------- */
 		if ( 'tool' === editor.type ) {
 			delen.push( el( ToolBeschrijving, { key: 'tool', meta: meta, zetMeta: zetMeta, editor: editor, stand: stand } ) );
@@ -744,6 +749,78 @@
 			} ) : null,
 			linkFout ? melding( 'Een link begint met https://. Voor een pagina van de site kies je Een pagina van de site.', 'let' ) : null,
 			naarFormulier && ! heeftFormulier( editor.inhoud ) ? melding( 'Op deze pagina staat geen formulier. Zonder formulier verschijnt de knop niet.', 'let' ) : null
+		);
+	}
+
+	/* ---------- Factcheck (sinds 3.44.0) ---------- */
+
+	/**
+	 * De controles van dit artikel of begrip. De controleur legt zelf de
+	 * datum vast; zonder controle linkt het label naar de redactionele
+	 * verantwoording (besluit Stephan 10-11-2026).
+	 */
+	function Factcheck( props ) {
+		var F = S.factcheck || {};
+		var controleurs = F.controleurs || [];
+		var lijst = Array.isArray( props.meta.sfp_factcheck ) ? props.meta.sfp_factcheck : [];
+		var nu = new Date();
+		var vandaag = nu.getFullYear() + '-' + String( nu.getMonth() + 1 ).padStart( 2, '0' ) + '-' + String( nu.getDate() ).padStart( 2, '0' );
+		var bekend = function ( id ) { return controleurs.some( function ( u ) { return u.id === id; } ); };
+		var start = bekend( F.standaard ) ? F.standaard : ( bekend( F.ik ) ? F.ik : ( controleurs[ 0 ] ? controleurs[ 0 ].id : 0 ) );
+		var doorState = useState( start );
+		var datumState = useState( vandaag );
+		var door = doorState[ 0 ];
+		var datum = datumState[ 0 ];
+		var naam = function ( id ) {
+			var u = controleurs.filter( function ( x ) { return x.id === id; } )[ 0 ];
+			return u ? u.naam : 'onbekend';
+		};
+		var toon = function ( iso ) {
+			var d = new Date( iso + 'T12:00:00' );
+			return isNaN( d.getTime() ) ? iso : d.toLocaleDateString( 'nl-NL', { day: 'numeric', month: 'short', year: 'numeric' } );
+		};
+		var gesorteerd = lijst.slice().sort( function ( a, b ) { return a.datum < b.datum ? 1 : ( a.datum > b.datum ? -1 : 0 ); } );
+		var mag = !! door && /^\d{4}-\d{2}-\d{2}$/.test( datum ) && datum <= vandaag;
+		var voegToe = function () {
+			if ( ! mag ) { return; }
+			var nieuw = lijst.filter( function ( r ) { return ! ( r.datum === datum && r.door === door ); } );
+			nieuw.push( { datum: datum, door: door } );
+			nieuw.sort( function ( a, b ) { return a.datum < b.datum ? -1 : ( a.datum > b.datum ? 1 : 0 ); } );
+			props.zetMeta( 'sfp_factcheck', nieuw );
+		};
+		var haalWeg = function ( r ) {
+			props.zetMeta( 'sfp_factcheck', lijst.filter( function ( x ) { return ! ( x.datum === r.datum && x.door === r.door ); } ) );
+		};
+
+		return el( 'div', { className: 'sfp-dp-deel' },
+			kop( 'Factcheck' ),
+			gesorteerd.length
+				? el( 'ul', { className: 'sfp-dp-fc' }, gesorteerd.map( function ( r ) {
+					return el( 'li', { key: r.datum + '-' + r.door },
+						el( 'span', null, toon( r.datum ) + ', ' + naam( r.door ) ),
+						el( c.Button, { variant: 'link', isDestructive: true, onClick: function () { haalWeg( r ); } }, 'Weghalen' )
+					);
+				} ) )
+				: hulp( 'Nog geen controle vastgelegd; het label Gefactcheckt linkt nu naar de redactionele verantwoording.' ),
+			el( c.SelectControl, {
+				label: 'Gecontroleerd door',
+				value: String( door ),
+				options: controleurs.map( function ( u ) { return { value: String( u.id ), label: u.naam }; } ),
+				onChange: function ( v ) { doorState[ 1 ]( parseInt( v, 10 ) || 0 ); },
+				__nextHasNoMarginBottom: true,
+				__next40pxDefaultSize: true,
+			} ),
+			el( c.TextControl, {
+				label: 'Datum van de controle',
+				type: 'date',
+				value: datum,
+				max: vandaag,
+				onChange: function ( v ) { datumState[ 1 ]( v ); },
+				help: 'Het label Gefactcheckt toont deze naam en datum zodra je het artikel bijwerkt.',
+				__nextHasNoMarginBottom: true,
+				__next40pxDefaultSize: true,
+			} ),
+			el( c.Button, { variant: 'secondary', disabled: ! mag, onClick: voegToe }, 'Controle vastleggen' )
 		);
 	}
 

@@ -741,7 +741,7 @@
 
 	function detailArtikel() {
 		var a = S.artikel;
-		var tabs = pillen([['kop', 'Kopkaart'], ['promo', 'Promokaart'], ['vervolg', 'Vervolg per pijler'], ['aff', 'Affiliatelinks']], ui.artTab, function (t) { ui.artTab = t; teken(); }, 'Onderwerp');
+		var tabs = pillen([['kop', 'Kopkaart'], ['factcheck', 'Factcheck'], ['promo', 'Promokaart'], ['vervolg', 'Vervolg per pijler'], ['aff', 'Affiliatelinks']], ui.artTab, function (t) { ui.artTab = t; teken(); }, 'Onderwerp');
 		var paneel;
 
 		if (ui.artTab === 'kop') {
@@ -754,8 +754,8 @@
 				return veld(label, s, hulp, 'sfpb-art-' + sleutel);
 			};
 			var velden = [
-				linkVeld('factcheck', 'Pagina over factchecken', 'Leeg: de redactionele verantwoording.'),
-				linkVeld('redactie', 'Redactionele verantwoording', 'Leeg: geen link onder het artikel.'),
+				linkVeld('factcheck', 'Pagina over factchecken', 'Reserve voor het label Gefactcheckt als er geen redactionele verantwoording is gekozen.'),
+				linkVeld('redactie', 'Redactionele verantwoording', 'Onder het artikel en achter het label Gefactcheckt; leeg: geen link.'),
 				linkVeld('bibliografie', 'Bibliografie', 'Leeg: geen link onder het artikel.')
 			];
 			var v = a.voorbeeld;
@@ -795,6 +795,8 @@
 			]);
 		} else if (ui.artTab === 'vervolg') {
 			paneel = paneelVervolg();
+		} else if (ui.artTab === 'factcheck') {
+			paneel = paneelFactcheck();
 		} else {
 			var patronen = a.patronen.slice();
 			var chips = el('div', { class: 'sfpb-rij' });
@@ -835,6 +837,77 @@
 			kop('Artikelen', 'Wat er vanzelf om elk artikel heen staat.'),
 			tabs,
 			paneel
+		]);
+	}
+
+	/* ---------- Artikelen: Factcheck (sinds 3.44.0) ---------- */
+
+	/**
+	 * Welke artikelen en begrippen een vastgelegde controle hebben, een
+	 * controle per artikel, en de startvulling: één datum voor alles wat nog
+	 * geen controle heeft (besluit Stephan 10-11-2026).
+	 */
+	function paneelFactcheck() {
+		if (!ui.fc || ui.fc.oud) {
+			if (!ui.fcBezig) {
+				ui.fcBezig = true;
+				api('/factcheck').then(function (d) { ui.fc = d; ui.fcBezig = false; teken(); }, function () { ui.fcBezig = false; ui.fc = { fout: true }; teken(); });
+			}
+			if (!ui.fc) return el('p', { class: 'sfpb-hulp', text: 'Artikelen laden…' });
+		}
+		if (ui.fc.fout) return el('p', { class: 'sfpb-mis', text: 'De lijst kon niet worden geladen. Ververs de pagina.' });
+		var F = ui.fc;
+		var bekend = function (id) { return F.controleurs.some(function (u) { return u.id === id; }); };
+		if (!bekend(ui.fcDoor)) ui.fcDoor = bekend(F.standaard) ? F.standaard : 0;
+
+		var door = el('select', { id: 'sfpb-fc-door' });
+		door.appendChild(el('option', { value: '0', text: 'Kies wie controleerde' }));
+		F.controleurs.forEach(function (u) { door.appendChild(el('option', { value: String(u.id), text: u.naam, selected: u.id === ui.fcDoor })); });
+		door.addEventListener('change', function () { ui.fcDoor = parseInt(door.value, 10) || 0; teken(); });
+		var naam = (F.controleurs.filter(function (u) { return u.id === ui.fcDoor; })[0] || {}).naam || '';
+		var verwerk = function (antw) { if (antw && antw.lijst) { ui.fc = antw.lijst; } };
+
+		var start = null;
+		if (F.zonder) {
+			var datum = tekstInvoer(ui.fcDatum || '', '', 'date');
+			datum.max = F.vandaag;
+			datum.id = 'sfpb-fc-datum';
+			datum.addEventListener('input', function () { ui.fcDatum = datum.value; knop.disabled = !(ui.fcDoor && datum.value && datum.value <= F.vandaag); });
+			var knop = el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Vastleggen voor ' + meervoud(F.zonder, 'artikel', 'artikelen'), disabled: !(ui.fcDoor && ui.fcDatum && ui.fcDatum <= F.vandaag), klik: function () {
+				if (!window.confirm('Een controle door ' + naam + ' op ' + datumTekst(datum.value) + ' vastleggen voor ' + meervoud(F.zonder, 'artikel', 'artikelen') + ' zonder controle?')) return;
+				doe(this, 'fc-start', api('/factcheck/start', 'POST', { door: ui.fcDoor, datum: datum.value }), 'Vastgelegd', verwerk);
+			} });
+			start = el('div', { class: 'sfpb-kaart sfpb-stapel' }, [
+				el('h2', { text: 'Bestaande artikelen in één keer' }),
+				el('p', { class: 'sfpb-hulp', text: 'Elk artikel en begrip zonder vastgelegde controle krijgt deze datum en deze controleur; artikelen met een controle blijven zoals ze zijn.' }),
+				veld('Datum van de controle', datum, null),
+				el('div', { class: 'sfpb-rij' }, [knop, flitsPlek('fc-start')])
+			]);
+		}
+
+		var lijst = el('div', { class: 'sfpb-lijst' });
+		F.items.forEach(function (it) {
+			var tekst = it.laatste ? 'Gecontroleerd op ' + datumTekst(it.laatste.datum) + ' door ' + it.laatste.naam + (it.later ? '; daarna inhoudelijk herzien' : '') : 'Nog geen controle vastgelegd';
+			lijst.appendChild(el('div', { class: 'sfpb-regel' }, [
+				el('span', { class: 'sfpb-stip ' + (it.laatste ? 'sfpb-goed' : '') }),
+				el('span', { class: 'sfpb-groei' }, [el('a', { href: it.link, target: '_blank', rel: 'noopener', text: it.titel }), it.soort === 'Begrip' ? el('span', { class: 'sfpb-tag', text: 'begrip' }) : null, el('br'), el('span', { class: 'sfpb-hulp', text: tekst })]),
+				flitsPlek('fc-' + it.id),
+				el('button', { class: 'sfpb-knop sfpb-klein', type: 'button', text: 'Vandaag gecontroleerd', disabled: !ui.fcDoor || (it.laatste && it.laatste.datum === F.vandaag), klik: function () {
+					doe(this, 'fc-' + it.id, api('/factcheck/' + it.id, 'POST', { door: ui.fcDoor, datum: F.vandaag }), 'Vastgelegd', verwerk);
+				} }),
+				it.bewerk ? el('a', { class: 'sfpb-knop sfpb-klein', href: it.bewerk, text: 'Bewerken' }) : null
+			]));
+		});
+		if (!F.items.length) lijst.appendChild(el('div', { class: 'sfpb-regel' }, [el('span', { class: 'sfpb-hulp', text: 'Deze site heeft nog geen gepubliceerde artikelen.' })]));
+
+		return el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+			el('div', { class: 'sfpb-kaart sfpb-stapel' }, [
+				el('h2', { text: F.met + ' van ' + meervoud(F.items.length, 'artikel', 'artikelen') + ' met een vastgelegde controle' }),
+				el('p', { class: 'sfpb-hulp', text: 'Met een controle opent het label Gefactcheckt een paneel met de controleur en de geschiedenis; zonder controle linkt het naar de redactionele verantwoording.' }),
+				veld('Gecontroleerd door', door, 'Geldt voor de knoppen hieronder.')
+			]),
+			start,
+			lijst
 		]);
 	}
 

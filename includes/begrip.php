@@ -462,18 +462,14 @@ function sfp_page_config_begrip_makersregel( $post ) {
     $delen[]    = '<span><time datetime="' . esc_attr( wp_date( 'c', $bijgewerkt ) ) . '">' . esc_html( sprintf( $t( 'bijgewerkt' ), wp_date( 'j M Y', $bijgewerkt ) ) ) . '</time></span>';
     $delen[]    = '<span>' . esc_html( sprintf( $t( 'leestijd' ), sfp_page_config_artikel_leestijd( $post->post_content ) ) ) . '</span>';
 
-    $check_url = sfp_page_config_link_instelling( 'artikel_factcheck' );
-    if ( '' === $check_url ) {
-        $check_url = sfp_page_config_link_instelling( 'artikel_redactie' );
-    }
-    $check   = sfp_page_config_artikel_icoon( 'vink' ) . esc_html( $t( 'gecheckt' ) );
-    $delen[] = '' !== $check_url ? '<a class="sfp-art-kop__check" href="' . esc_url( $check_url ) . '">' . $check . '</a>' : '<span class="sfp-art-kop__check">' . $check . '</span>';
+    // Sinds 3.44.0: het label opent het factcheckpaneel als er een controle is vastgelegd.
+    $delen[] = sfp_page_config_factcheck_label( $post, 'sfp-art-maker-check', 'maker' );
 
-    $paneel  = '';
+    $paneel  = sfp_page_config_factcheck_paneel( $post, 'sfp-art-maker-check' );
     $bronnen = sfp_page_config_artikel_bronnen( $post->post_content );
     if ( $bronnen ) {
-        $delen[] = '<button type="button" class="sfp-art-maker__bron" aria-expanded="false" aria-controls="sfp-art-maker-bronnen" data-sfp-paneel>' . sfp_page_config_artikel_icoon( 'bron' ) . '<span>' . esc_html( sprintf( $t( 'bronnen' ), count( $bronnen ) ) ) . '</span></button>';
-        $paneel  = '<ol class="sfp-art-bronnen sfp-art-maker__lijst" id="sfp-art-maker-bronnen" hidden><li>' . implode( '</li><li>', $bronnen ) . '</li></ol>';
+        $delen[] = '<button type="button" class="sfp-art-maker__bron" aria-expanded="false" aria-controls="sfp-art-maker-bronnen" data-sfp-paneel data-sfp-groep="maker">' . sfp_page_config_artikel_icoon( 'bron' ) . '<span>' . esc_html( sprintf( $t( 'bronnen' ), count( $bronnen ) ) ) . '</span></button>';
+        $paneel .= '<ol class="sfp-art-bronnen sfp-art-maker__lijst" id="sfp-art-maker-bronnen" hidden><li>' . implode( '</li><li>', $bronnen ) . '</li></ol>';
     }
     return '<p class="sfp-art-maker">' . implode( '', $delen ) . '</p>' . $paneel;
 }

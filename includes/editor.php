@@ -280,6 +280,12 @@ function sfp_page_config_editor_gegevens( $post_type ) {
         'alineastijlen' => sfp_page_config_editor_is_vorm( $post_type ) ? sfp_page_config_vorm_alineastijlen() : null,
         'beheer'        => admin_url( 'admin.php?page=sfp-page-config' ),
         'home'          => home_url( '/' ),
+        // Sinds 3.44.0: wie een controle kan vastleggen, bij artikelen en begrippen.
+        'factcheck'     => function_exists( 'sfp_page_config_factcheck_types' ) && in_array( $post_type, sfp_page_config_factcheck_types(), true ) && ( 'begrippen' === $post_type || $artikel ) ? array(
+            'controleurs' => sfp_page_config_factcheck_controleurs(),
+            'standaard'   => sfp_page_config_factcheck_standaard(),
+            'ik'          => get_current_user_id(),
+        ) : null,
     );
 }
 

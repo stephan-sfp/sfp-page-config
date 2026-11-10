@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.44.0] - 2026-11-10
+
+Terugdraaien: versie 3.43.0 terugzetten (zip uit de tag v3.43.0, map sfp-page-config). De vastgelegde controles blijven in de database staan; het label linkt dan weer zoals in 3.43.0.
+
+### Toegevoegd
+- Fact-checked-paneel (besluiten Stephan 10-11, werk factcheck-nina-kopkaart): met een vastgelegde controle opent het label Gefactcheckt in de kopkaart een paneel op de plek van Delen en Bronnen: foto (Gravatar), naam en rol van de controleur (Redactie en factcheck, in de taal van de site), de datum van de laatste controle, de geschiedenis (controles, inhoudelijke herzieningen, publicatie; nieuwste eerst) en de link naar de redactionele verantwoording. Ook in de makersregel van begrippen.
+- Editor, paneel Deze pagina, deel Factcheck (artikel en begrip): wie controleerde en de datum, knop Controle vastleggen, vastgelegde controles weghalen. De datum vult de controleur zelf in, nooit automatisch; iedere gebruiker die berichten mag bewerken kan controleur zijn.
+- SFP Beheer, Onderdelen, Artikelen, tabblad Factcheck: welke artikelen en begrippen een vastgelegde controle hebben, per artikel Vandaag gecontroleerd, en een startvulling met één datum voor alles zonder controle.
+- De vorige waarde van Inhoudelijk herzien op wordt bewaard (sfp_herzien_log), zodat de geschiedenis eerdere herzieningen toont.
+- Teksten fc_kop, fc_rol, fc_op, fc_log, fc_controle, fc_herzien, fc_gepub en fc_link (nl, en, pt). Test tests/factcheck.php.
+
+### Gewijzigd
+- Zonder vastgelegde controle linkt het label Gefactcheckt naar de redactionele verantwoording (was de pagina over factchecken); die pagina is nu de reserve. Ook bij begrippen en tools. Na een inhoudelijke herziening blijft het label staan.
+
 ## [3.43.0] - 2026-11-10
 
 Terugdraaien: versie 3.42.0 terugzetten (zip uit de tag v3.42.0, map sfp-page-config). Zonder prijs per aantal dagen verandert er niets op de pagina's.

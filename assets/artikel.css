@@ -395,3 +395,37 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
   .sfp-art-actie svg{width:18px;height:18px}
   .sfp-art-actie>span:not(.sfp-lang){position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 }
+
+/* Fact-checked-paneel (3.44.0): het label opent het paneel met de controleur en de geschiedenis. */
+:root :is(.sfp-art-kop,.sfp-art-maker) button.sfp-art-kop__check--knop{display:inline-flex;align-items:center;gap:0;font:inherit;font-weight:700;color:var(--sfp-b-primair);background:none;border:0;margin:0;padding:0;min-height:24px;cursor:pointer;text-decoration:none}
+.sfp-art-kop__check--knop>span{text-decoration:underline;text-decoration-color:var(--sfp-b-lijn-sterk);text-decoration-thickness:1px;text-underline-offset:4px}
+:root :is(.sfp-art-kop,.sfp-art-maker) button.sfp-art-kop__check--knop:is(:hover,:focus,:active){color:var(--sfp-b-primair);background:none;text-decoration:none}
+.sfp-art-kop__check--knop:is(:hover,:focus-visible)>span{text-decoration-color:var(--sfp-b-links);text-decoration-thickness:3px}
+:root :is(.sfp-art-kop,.sfp-art-maker) .sfp-art-kop__check--knop .sfp-art-kop__pijl{width:14px;height:14px;margin:0 0 0 4px;color:var(--sfp-b-primair);flex:0 0 auto;transition:transform .2s}
+.sfp-art-kop__check--knop[aria-expanded="true"] .sfp-art-kop__pijl{transform:rotate(180deg)}
+.sfp-art-fc{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}
+.sfp-art-fc__wie{display:grid;grid-template-columns:64px minmax(0,1fr);gap:4px 16px;align-items:center}
+.sfp-art-fc__wie--zonder-foto{grid-template-columns:minmax(0,1fr)}
+:root .sfp-art-fc__wie .sfp-blok-label{grid-column:1/-1;margin:0 0 10px}
+:root .sfp-art-fc__foto{width:64px;height:64px;border-radius:50%;display:block;grid-row:span 3;margin:0}
+.sfp-art-fc__naam{font-size:17px;line-height:1.3;font-weight:700;color:var(--sfp-b-primair)}
+.sfp-art-fc__rol{font-size:14px;line-height:1.4;color:var(--sfp-b-body)}
+.sfp-art-fc__datum{white-space:nowrap}
+.sfp-art-fc__op{display:inline-flex;align-items:center;gap:6px;font-size:14px;line-height:1.4;font-weight:700;color:var(--sfp-b-primair)}
+.sfp-art-fc svg{width:14px;height:14px;color:var(--sfp-b-secundair);flex:0 0 auto}
+:root .sfp-art-fc__wie .sfp-pijl{grid-column:1/-1;justify-self:start;margin-top:14px;font-size:14px}
+.sfp-art-fc__log{display:grid;gap:10px;min-width:0;padding-left:28px;border-left:1px solid var(--sfp-b-lijn)}
+:root .sfp-art-fc__log ol{list-style:none;margin:0;padding:0;display:grid}
+:root .sfp-art-fc__log li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;margin:0;padding:9px 0;border-top:1px solid var(--sfp-b-lijn);font-size:14px;line-height:1.4;color:var(--sfp-b-body)}
+:root .sfp-art-fc__log li:first-child{border-top:0;padding-top:2px}
+.sfp-art-fc__log time{font-variant-numeric:tabular-nums}
+.sfp-art-fc__log li b{font-weight:700;color:var(--sfp-b-primair)}
+.sfp-art-fc__log li.is-controle b{display:inline-flex;align-items:center;gap:6px}
+@media (prefers-reduced-motion:reduce){.sfp-art-kop__check--knop .sfp-art-kop__pijl{transition:none}}
+@media (max-width:600px){
+  .sfp-art-fc{grid-template-columns:minmax(0,1fr);gap:20px}
+  .sfp-art-fc__wie{grid-template-columns:56px minmax(0,1fr);column-gap:14px}
+  :root .sfp-art-fc__foto{width:56px;height:56px}
+  .sfp-art-fc__log{padding:18px 0 0;border-left:0;border-top:1px solid var(--sfp-b-lijn)}
+  :root .sfp-art-fc__log li{grid-template-columns:88px minmax(0,1fr)}
+}
