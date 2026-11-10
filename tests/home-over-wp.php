@@ -97,6 +97,21 @@ $bevat( 'Ander', $n, 'ander label staat er' );
 $bevat( 'Zelf', $n, 'eigen site valt weg', false );
 $is( 2, count( sfp_page_config_netwerk_instelling() ), 'label zonder naam valt weg' );
 $is( 1, count( sfp_page_config_netwerk_schoon( array( array( 'naam' => '<b>X</b>', 'url' => 'javascript:alert(1)' ), array( 'naam' => 'Y', 'url' => 'https://y.example', 'icoon' => '7a' ) ) ) ), 'onveilig adres valt weg' );
+// Vier labels (3.45.0): 2 x 2 in plaats van 3 + 1.
+$bevat( 'sfp-netwerk--vier', $n, 'twee labels: geen klasse vier', false );
+$s['netwerk'] = array(
+    array( 'naam' => 'Een', 'url' => 'https://een.example', 'zin' => 'Zin', 'icoon' => 0 ),
+    array( 'naam' => 'Twee', 'url' => 'https://twee.example', 'zin' => 'Zin', 'icoon' => 0 ),
+    array( 'naam' => 'Drie', 'url' => 'https://drie.example', 'zin' => 'Zin', 'icoon' => 0 ),
+    array( 'naam' => 'Vier', 'url' => 'https://vier.example', 'zin' => 'Zin', 'icoon' => 0 ),
+    array( 'naam' => 'Zelf', 'url' => home_url( '/' ), 'zin' => 'Weg', 'icoon' => 0 ),
+);
+update_option( 'sfp_settings', $s );
+$bevat( 'sfp-netwerk--vier', do_blocks( '<!-- wp:sfp/netwerk /-->' ), 'vier labels (eigen site eraf): klasse vier' );
+array_pop( $s['netwerk'] );
+array_pop( $s['netwerk'] );
+update_option( 'sfp_settings', $s );
+$bevat( 'sfp-netwerk--vier', do_blocks( '<!-- wp:sfp/netwerk /-->' ), 'drie labels: geen klasse vier', false );
 update_option( 'sfp_settings', $oud );
 if ( empty( $oud['netwerk'] ) ) {
     $is( '', do_blocks( '<!-- wp:sfp/netwerk /-->' ), 'zonder labels niets' );

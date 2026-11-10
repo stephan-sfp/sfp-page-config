@@ -221,6 +221,15 @@ if ( sfp_page_config_reviews_actief() ) {
     $mist( $html, '<blockquote', 'Review: geen citaatblok' );
     $mist( $html, '<em', 'Review: geen cursief' );
     $mist( $html, '“', 'Review: geen aanhalingsteken' );
+    // Lees verder (3.45.0): knop verborgen in de HTML, gekoppeld aan de tekst, script in de footer.
+    $bevat( $html, 'class="sfp-review-kaart__meer" aria-expanded="false" aria-controls="sfp-review-kaart-tekst-', 'Review: knop Lees verder gekoppeld aan de tekst' );
+    $bevat( $html, '>' . esc_html( sfp_page_config_tekst( 'reviews_lees_verder' ) ) . '</button>', 'Review: knoptekst uit de teksten' );
+    $bevat( $html, ' hidden>', 'Review: knop verborgen tot het script meet' );
+    $same( true, sfp_page_config_review_kaart_js_nodig(), 'Review: script nodig' );
+    $tweede = sfp_page_config_render_review_kaart( array( 'review' => $petra['id'] ) );
+    preg_match( '/id="(sfp-review-kaart-tekst-\d+)"/', $html, $id1 );
+    preg_match( '/id="(sfp-review-kaart-tekst-\d+)"/', $tweede, $id2 );
+    $waar( ! empty( $id1[1] ) && ! empty( $id2[1] ) && $id1[1] !== $id2[1], 'Review: elk tekstvak een eigen id' );
     $same( '', sfp_page_config_render_review_kaart( array( 'review' => '' ) ), 'Review: niets gekozen, niets op de site' );
     $same( '', sfp_page_config_render_review_kaart( array( 'review' => 'mr_bestaat_niet' ) ), 'Review: weg, niets op de site' );
     $zonder = SFP_Reviews_Manual::add(

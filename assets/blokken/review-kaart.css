@@ -24,3 +24,15 @@
 :root .sfp-review-kaart{padding:32px 22px 28px}
 :root .sfp-review-kaart__tekst{font-size:18px}
 }
+/* Lees verder (3.45.0, wens Stephan 9-11-2026): drie regels, dan een tekstlink in de rol tekstlink.
+   De knop staat verborgen tot review-kaart.js meet dat de tekst langer is. Zonder script de hele tekst. */
+:root .sfp-review-kaart:not(.is-open) .sfp-review-kaart__tekst{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden}
+:root .sfp-review-kaart .sfp-review-kaart__meer{all:unset;display:inline-block;margin-top:10px;cursor:pointer;font-family:var(--sfp-b-tekst);font-weight:700;font-size:15px;line-height:1.4;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root .sfp-review-kaart .sfp-review-kaart__meer:is(:hover,:focus-visible){text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+:root .sfp-review-kaart .sfp-review-kaart__meer:focus-visible{outline:2px solid var(--sfp-b-links);outline-offset:3px}
+:root .sfp-review-kaart .sfp-review-kaart__meer[hidden]{display:none}
+:root .sfp-kolommen--reviews .sfp-review-kaart .sfp-review-kaart__meer{align-self:flex-start}
+@media (scripting:none){:root .sfp-review-kaart:not(.is-open) .sfp-review-kaart__tekst{display:block;-webkit-line-clamp:unset;line-clamp:none;overflow:visible}}
+/* In de reviewrij rekt de tekst niet meer op (dan zou line-clamp een vierde regel laten zien); de naam staat onderaan zoals voorheen. */
+:root .sfp-kolommen--reviews .sfp-review-kaart>.sfp-review-kaart__tekst{flex:0 0 auto}
+:root .sfp-kolommen--reviews .sfp-review-kaart>.sfp-review-kaart__naam{margin-top:auto}
