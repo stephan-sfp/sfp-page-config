@@ -972,13 +972,6 @@ function sfp_page_config_teksten_register() {
             'en'    => '(1 review)',
             'pt'    => '(1 avaliação)',
         ),
-        'review_bron_datum' => array(
-            'groep' => 'Trainingspagina',
-            'label' => 'Review: bron met maand en jaar (%1$s is de bron, %2$s maand en jaar)',
-            'nl'    => '%1$s, %2$s',
-            'en'    => '%1$s, %2$s',
-            'pt'    => '%1$s, %2$s',
-        ),
         'groep_wachtlijst_kernzin' => array(
             'groep' => 'Trainingspagina',
             'label' => 'Wachtlijststand: kernzin van de sectie Inschrijven',

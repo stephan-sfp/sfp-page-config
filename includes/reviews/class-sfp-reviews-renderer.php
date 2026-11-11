@@ -300,7 +300,6 @@ class SFP_Reviews_Renderer {
 					%s
 					<div class="sfp-review__meta">
 						<span class="sfp-review__author">%s</span>
-						<span class="sfp-review__time">%s</span>
 					</div>
 				</div>
 				<div class="sfp-review__stars" aria-label="%s">%s</div>
@@ -311,7 +310,6 @@ class SFP_Reviews_Renderer {
 			</div>',
 			$photo,
 			esc_html( $r['author'] ),
-			esc_html( $r['time'] ),
 			esc_attr( $this->t( 'reviews_sterren', (int) $r['rating'] ) ),
 			$stars,
 			esc_html( $r['text'] ),
