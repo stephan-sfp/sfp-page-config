@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.48.1] - 2026-11-11
+
+Netwerknorm wachtlijst-CTA (besluit Stephan 11-11-2026). Alleen tekst, niets in de database. Terugdraaien: versie 3.48.0 terugzetten (zip uit de tag v3.48.0, map sfp-page-config).
+
+### Gewijzigd
+- Wachtlijstkaart van het blok Groepskaarten en de kernzin van Inschrijven zonder geplande groep: "Zet jezelf op de wachtlijst" in plaats van "Zet je op de wachtlijst".
+
 ## [3.48.0] - 2026-11-11
 
 Geen vette links meer (besluit Stephan 11-11-2026). Alleen opmaak. Terugdraaien: versie 3.47.0 terugzetten (zip uit de tag v3.47.0, map sfp-page-config).
