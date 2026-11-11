@@ -28,7 +28,7 @@
 :root .sfp-mw a.sfp-mw__kaart:hover{transform:translateY(-3px);box-shadow:0 10px 24px var(--sfp-b-lijn-sterk)}
 :root .sfp-mw .sfp-mw__kaarttitel{font-family:var(--sfp-b-kop);font-weight:900;font-size:clamp(18px,1.5vw + 10px,22px);line-height:1.15;text-transform:uppercase;color:var(--sfp-b-primair);overflow-wrap:break-word;text-wrap:balance}
 :root .sfp-mw .sfp-mw__vraag{flex-grow:1;font-weight:700;font-size:18px;line-height:1.4;color:var(--sfp-b-primair);text-wrap:balance}
-:root .sfp-mw .sfp-mw__link{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;font-family:var(--sfp-b-tekst);font-weight:400;font-size:16px;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-color:currentColor;text-decoration-thickness:2px;text-underline-offset:4px}
+:root .sfp-mw .sfp-mw__link{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-color:currentColor;text-decoration-thickness:2px;text-underline-offset:4px}
 :root .sfp-mw a.sfp-mw__kaart:hover .sfp-mw__link{text-decoration-color:var(--sfp-b-links);text-decoration-thickness:3px}
 :root .sfp-mw .sfp-mw__link svg{flex:none}
 
