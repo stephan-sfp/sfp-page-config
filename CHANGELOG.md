@@ -7,7 +7,7 @@ Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies 
 ## [3.46.1] - 2026-11-11
 
 ### Gerepareerd
-- Rand van formuliervelden (SureForms) in elke SFP-sectie primair met 30 procent dekking, zoals branding.md voorschrijft. Was alleen zo in het inschrijfblok; elders zwart, grijs of volle primair (punt S8 uit de brandingcheck).
+- Rand van formuliervelden (SureForms) in elke SFP-sectie primair met 30 procent dekking, zoals branding.md voorschrijft. Was alleen zo in het inschrijfblok; elders zwart, grijs of volle primair (punt S8 uit de brandingcheck). De regel staat in een eigen klein bestand (blokken/formulier.css) bij de sectie, zodat basis.css onder de grens voor inline CSS blijft.
 
 ## [3.46.0] - 2026-11-11
 
