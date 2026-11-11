@@ -125,7 +125,7 @@ function sfp_calculator_blad_stijl( $vars, $kop_font, $tekst_font ) {
         . 'h2{font-size:15pt;line-height:1.2;letter-spacing:.01em}'
         . 'h2 .nr{color:var(--secundair);margin-right:8pt}'
         . 'h3{font-size:8.5pt;letter-spacing:.07em;line-height:1.3}'
-        . '.lab{display:block;font-size:7pt;letter-spacing:.09em;line-height:1.35;color:var(--primair)}'
+        . '.lab{display:block;font-size:8pt;letter-spacing:.09em;line-height:1.35;color:var(--primair)}'
         . '.kernzin{border-left:2.5pt solid var(--secundair);padding:2pt 0 2pt 14pt;font:400 15pt/1.45 ' . $b . ';color:var(--primair)}'
         . '.klein{font-size:8.5pt;line-height:1.55}'
         // Pagina's.
@@ -158,7 +158,14 @@ function sfp_calculator_blad_stijl( $vars, $kop_font, $tekst_font ) {
         . '.top img{height:46pt;width:auto;max-width:170pt}'
         . '.meta{display:flex;flex-direction:column;gap:2pt}'
         . '.meta .lab{font-size:6.5pt}.meta .lab b{color:var(--secundair);font-weight:900}'
-        . '.titel{display:flex;flex-direction:column;gap:16pt}'
+        . '.titel{display:flex;flex-direction:column;gap:18pt}'
+        . '.meta .licht{color:var(--body);font-weight:400;letter-spacing:.06em}'
+        . '.blok{display:flex;flex-direction:column;gap:8pt}'
+        . '.voorblad{gap:40pt}.voorblad .top{margin-bottom:10pt}'
+        . '.groot{font:900 46pt/1 ' . $k . ';color:var(--primair);letter-spacing:0}'
+        . '.onder{font-size:11pt;color:var(--primair)}'
+        . '.zin{font-size:13pt;line-height:1.5;color:var(--primair);max-width:150mm}'
+        . '.bewijs{font-size:11pt;line-height:1.55;color:var(--primair);border-top:.8pt solid var(--rand);padding-top:14pt}'
         . '.kort .in{display:grid;grid-template-columns:auto 1fr;gap:0 28pt}'
         . '.kort .bedrag{padding-right:28pt;border-right:.8pt solid var(--rand)}'
         . '.getal{font-size:30pt;line-height:1;color:var(--primair);letter-spacing:0;white-space:nowrap;margin:6pt 0 6pt}'
@@ -190,6 +197,8 @@ function sfp_calculator_blad_stijl( $vars, $kop_font, $tekst_font ) {
         . '.stap{display:flex;gap:12pt;align-items:flex-start}'
         . '.stap .num{flex:none;width:22pt;height:22pt;border-radius:var(--r);background:var(--primair);color:#fff;display:flex;align-items:center;justify-content:center;font:900 10pt/1 ' . $k . '}'
         . '.stap p{color:var(--primair);padding-top:2pt}'
+        . '.kolom{display:flex;flex-direction:column;gap:10pt;border-top:2.5pt solid var(--secundair);padding-top:12pt}'
+        . '.kolom p{color:var(--primair)}'
         . '.gaven{display:grid;grid-template-columns:repeat(3,1fr);gap:14pt}'
         . '.gaven p{color:var(--primair)}.gaven .lab{margin-bottom:4pt}'
         // Volgende stap.
@@ -335,36 +344,25 @@ function sfp_calculator_blad_html( array $rij ) {
             $kernzin = (int) $o['groepen'] > 1 ? $t( 'pdf_kernzin', array( 'vorm' => $vorm, 'wie' => $wie, 'groepen' => $groepen ) ) : $t( 'pdf_kernzin_een', array( 'vorm' => $vorm, 'wie' => $wie ) );
         }
     }
-    $meta = '<div class="meta"><span class="lab">' . $e( $t( 'begroting' ) ) . '</span>'
-        . '<span class="lab">' . $e( $t( 'pdf_datum' ) ) . ' <b>' . $e( $datum( $vandaag ) ) . '</b></span>'
-        . '<span class="lab">' . $e( $t( 'pdf_kenmerk' ) ) . ' <b>' . $e( $rij['kenmerk'] ) . '</b></span>'
-        . ( '' !== $naam ? '<span class="lab">' . $e( $t( 'pdf_voor' ) ) . ' <b>' . $e( implode( ', ', array_filter( array( $naam, $afd ), 'strlen' ) ) ) . '</b></span>' : '' )
-        . '</div>';
+    $meta = '<div class="meta"><span class="lab">' . $e( $t( 'begroting' ) . ' ' . $rij['kenmerk'] ) . '</span><span class="lab licht">' . $e( $datum( $vandaag ) ) . '</span></div>';
     if ( $route_b ) {
-        $bedrag_html = '<span class="lab">' . $e( $t( 'richtprijs' ) ) . '</span><p class="getal">' . $e( $bedrag( $u['evenement_prijs'] ?? 0 ) ) . '</p>'
-            . '<p class="sub">' . $e( $t( 'evenement_prijs', array( 'prijs' => $bedrag( $u['evenement_prijs'] ?? 0 ) ) ) ) . '</p>';
+        $som = '<span class="lab">' . $e( $t( 'richtprijs' ) ) . '</span><p class="groot">' . $e( $bedrag( $u['evenement_prijs'] ?? 0 ) ) . '</p>'
+            . '<p class="onder">' . $e( $t( 'evenement_prijs', array( 'prijs' => $bedrag( $u['evenement_prijs'] ?? 0 ) ) ) ) . '</p>';
     } elseif ( $o ) {
-        $bedrag_html = '<span class="lab">' . $e( ! empty( $u['richtprijs'] ) ? $t( 'richtprijs' ) : $t( 'totaal' ) ) . '</span>'
-            . '<p class="getal">' . $e( $bedrag( $o['totaal_excl'] ) ) . '</p>'
-            . '<p class="sub">' . $e( $t( 'excl' ) ) . '<br>' . $e( $t( 'pdf_incl_kort', array( 'prijs' => $bedrag( $o['totaal_incl'] ) ) ) ) . '</p>'
-            . ( ! empty( $u['richtprijs'] ) ? '<p class="sub">' . $e( $t( 'pdf_maatwerk' ) ) . '</p>' : '' );
+        $som = '<span class="lab">' . $e( ! empty( $u['richtprijs'] ) ? $t( 'richtprijs' ) : $t( 'totaal' ) ) . '</span>'
+            . '<p class="groot">' . $e( $bedrag( $o['totaal_excl'] ) ) . '</p>'
+            . '<p class="onder">' . $e( $t( 'pdf_totaal_zin', array( 'datum' => $datum( sfp_calculator_geldig_tot( $rij ) ) ) ) ) . '</p>';
     } else {
-        $bedrag_html = '';
+        $som = '';
     }
-    $bedrag_html .= '<div class="geldig"><span class="lab">' . $e( $t( 'pdf_geldig' ) ) . '</span><p>' . $e( $datum( sfp_calculator_geldig_tot( $rij ) ) ) . '</p></div>';
-    $kort = sfp_calculator_blad_kaart(
-        $t( 'pdf_kort' ),
-        '<div class="bedrag">' . $bedrag_html . '</div>'
-        . ( $erin ? '<div><span class="lab" style="margin-bottom:10pt">' . $e( $t( 'pdf_erin' ) ) . '</span>' . $vinken( $erin, 'kort' . ( count( $erin ) > 5 ? ' twee' : '' ) ) . '</div>' : '<div></div>' ),
-        'kort'
-    );
     $doel = '' !== ( $sit['doel'] ?? '' ) && ! $route_b
-        ? '<div class="aandacht"><span class="lab">' . $e( $t( 'pdf_h_doel' ) ) . '</span><p>' . nl2br( $e( $sit['doel'] ) ) . '</p></div>'
+        ? '<div class="blok"><span class="lab">' . $e( $t( 'pdf_h_doel' ) ) . '</span><p class="zin">' . nl2br( $e( $sit['doel'] ) ) . '</p></div>'
         : '';
     $paginas[] = '<section class="pagina voorblad">'
         . '<div class="top">' . $meta . $logo . '</div>'
         . '<div class="titel">' . $titel . ( '' !== $kernzin ? '<p class="kernzin">' . $e( $kernzin ) . '</p>' : '' ) . '</div>'
-        . $kort . $doel
+        . ( '' !== $som ? '<div class="blok som">' . $som . '</div>' : '' )
+        . $doel
         . '<div class="duw">' . sfp_calculator_blad_cijfers( $inst, $label, $t, $e ) . '</div>'
         . '</section>';
 
@@ -385,10 +383,11 @@ function sfp_calculator_blad_html( array $rij ) {
             . $kop( $t( 'pdf_h_begroting' ), $t( 'pdf_begroting_zin' ) )
             . sfp_calculator_blad_tabel( $rij, true )
             . '<div class="rij r3">'
-            . sfp_calculator_blad_kaart( $t( 'pdf_groepen_kop' ), $vinken( $groep ) . '<p class="klein" style="margin-top:10pt">' . $e( $t( 'pdf_groepsgrootte_zin' ) ) . '</p>' )
-            . sfp_calculator_blad_kaart( $t( 'pdf_inbegrepen' ), $vinken( $regels( $t( 'pdf_inbegrepen_lijst' ) ) ) )
-            . sfp_calculator_blad_kaart( $t( 'pdf_niet' ), $vinken( $niet, 'streep' ), 'open' )
+            . '<div class="kolom"><h3>' . $e( $t( 'pdf_groepen_kop' ) ) . '</h3>' . $vinken( $groep ) . '</div>'
+            . '<div class="kolom"><h3>' . $e( $t( 'pdf_inbegrepen' ) ) . '</h3>' . $vinken( $regels( $t( 'pdf_inbegrepen_lijst' ) ) ) . '</div>'
+            . '<div class="kolom"><h3>' . $e( $t( 'pdf_niet' ) ) . '</h3>' . $vinken( $niet, 'streep' ) . '</div>'
             . '</div>'
+            . sfp_calculator_blad_quote( $inst, $e )
             . '<div class="voorwaarden duw"><span class="lab">' . $e( $t( 'pdf_voorwaarden' ) ) . '</span>' . $vw . '%LEV%</div>'
             . '</section>';
     }
@@ -418,8 +417,9 @@ function sfp_calculator_blad_html( array $rij ) {
     foreach ( sfp_calculator_intern_regels( array( 'intern' => array( 'beslist' => $keuzes['intern']['beslist'] ?? array(), 'budget' => $keuzes['intern']['budget'] ?? '' ) ), $taal, $valuta ) as $l => $w ) {
         $gaven[] = array( $l, $w );
     }
-    $gaven_html = $gaven ? '<div class="aandacht"><span class="lab">' . $e( $t( 'pdf_aangegeven' ) ) . '</span><div class="gaven">'
-        . implode( '', array_map( function ( $a ) use ( $e ) { return '<div><span class="lab" style="opacity:.7">' . $e( $a[0] ) . '</span><p>' . $e( $a[1] ) . '</p></div>'; }, $gaven ) ) . '</div><p class="klein" style="margin-top:10pt">' . $e( $t( 'pdf_aankondiging' ) ) . '</p></div>' : '<p class="klein">' . $e( $t( 'pdf_aankondiging' ) ) . '</p>';
+    $gaven_html = ( $gaven ? '<div class="gaven">'
+        . implode( '', array_map( function ( $a ) use ( $e ) { return '<div class="kolom"><h3>' . $e( $a[0] ) . '</h3><p>' . $e( $a[1] ) . '</p></div>'; }, $gaven ) ) . '</div>' : '' )
+        . '<p>' . $e( $t( 'pdf_aankondiging' ) ) . '</p>';
     $paginas[] = '<section class="pagina">'
         . $prog
         . $kop( $t( 'pdf_h_intern' ), $t( 'pdf_intern_zin' ) )
@@ -490,9 +490,8 @@ function sfp_calculator_blad_volgende( array $inst, $boek, $t, $e ) {
 }
 
 /**
- * Sociaal bewijs: de quote, de partnerzin, de cijfers (SFP Beheer, anders de
- * netwerknorm) en "Referenties op aanvraag". Begint een feit met een getal,
- * dan staat dat getal groot.
+ * Sociaal bewijs in één zin: de partnerzin met de cijfers (SFP Beheer, anders
+ * de netwerknorm) en "Referenties op aanvraag".
  *
  * @param  array    $inst  Instellingen.
  * @param  string   $label Labelnaam.
@@ -501,20 +500,28 @@ function sfp_calculator_blad_volgende( array $inst, $boek, $t, $e ) {
  * @return string
  */
 function sfp_calculator_blad_cijfers( array $inst, $label, $t, $e ) {
-    $bron    = '' !== trim( (string) ( $inst['feiten'] ?? '' ) ) ? (string) $inst['feiten'] : $t( 'pdf_feiten_norm' );
-    $feiten  = array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $bron ) ), 'strlen' ) );
-    $partner = 'SFP' !== sfp_calculator_site_afk() ? '<p class="partner">' . $e( $t( 'pdf_partner', array( 'label' => $label ) ) ) . ' ' . $e( $t( 'pdf_referenties' ) ) . '</p>' : '<p class="partner">' . $e( $t( 'pdf_referenties' ) ) . '</p>';
-    $r       = $inst['referentie'];
-    $quote   = '' !== trim( (string) $r['citaat'] )
-        ? '<blockquote class="kernzin"><p>' . nl2br( $e( $r['citaat'] ) ) . '</p><span class="lab">' . $e( implode( ', ', array_filter( array( $r['naam'], $r['functie'] ), 'strlen' ) ) ) . '</span></blockquote>'
-        : '';
-    $tegels = '';
-    foreach ( $feiten as $f ) {
-        if ( preg_match( '/^(.*?)(\d[\d.,]*\+?)(.*)$/u', $f, $m ) ) {
-            $tegels .= '<div class="feit"><p class="getal">' . $e( $m[2] ) . '</p><p>' . $e( trim( trim( $m[1] ) . ' ' . trim( $m[3] ) ) ) . '</p></div>';
-        } else {
-            $tegels .= '<div class="feit"><p>' . $e( $f ) . '</p></div>';
-        }
+    $bron   = '' !== trim( (string) ( $inst['feiten'] ?? '' ) ) ? (string) $inst['feiten'] : $t( 'pdf_feiten_norm' );
+    $feiten = array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $bron ) ), 'strlen' ) );
+    $feiten = array_map( function ( $f ) { return mb_strtolower( mb_substr( $f, 0, 1 ) ) . mb_substr( $f, 1 ); }, $feiten );
+    $laatst = count( $feiten ) > 1 ? array_pop( $feiten ) : '';
+    $lijst  = implode( ', ', $feiten ) . ( '' !== $laatst ? $t( 'pdf_en' ) . $laatst : '' );
+    $zin    = 'SFP' !== sfp_calculator_site_afk()
+        ? $t( '' !== $lijst ? 'pdf_bewijs' : 'pdf_partner', array( 'label' => $label, 'feiten' => $lijst ) )
+        : ( '' !== $lijst ? $t( 'pdf_bewijs_sfp', array( 'feiten' => $lijst ) ) : '' );
+    return '<p class="bewijs">' . $e( trim( $zin . ' ' . $t( 'pdf_referenties' ) ) ) . '</p>';
+}
+
+/**
+ * De quote uit SFP Beheer, groot.
+ *
+ * @param  array    $inst Instellingen.
+ * @param  callable $e    Escapen.
+ * @return string
+ */
+function sfp_calculator_blad_quote( array $inst, $e ) {
+    $r = $inst['referentie'];
+    if ( '' === trim( (string) $r['citaat'] ) ) {
+        return '';
     }
-    return '<div class="bewijs">' . ( '' !== $tegels ? '<div class="feiten">' . $tegels . '</div>' : '' ) . $partner . $quote . '</div>';
+    return '<blockquote class="kernzin"><p>' . nl2br( $e( $r['citaat'] ) ) . '</p><span class="lab">' . $e( implode( ', ', array_filter( array( $r['naam'], $r['functie'] ), 'strlen' ) ) ) . '</span></blockquote>';
 }
