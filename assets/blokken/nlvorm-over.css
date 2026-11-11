@@ -48,7 +48,7 @@
    Astra onderstreept links in de inhoud tot (0,5,1) onder de muis; deze regel staat op (0,6,1). */
 :root .entry-content a.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart,:root a.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart{text-decoration:none;color:var(--sfp-b-body)}
 :root .sfp-netwerk__kaart .sfp-netwerk__tekst{display:block}
-:root .sfp-netwerk__kaart .sfp-netwerk__naar{margin-top:auto;padding-top:4px;font-family:var(--sfp-b-tekst);font-weight:700;font-size:15px;line-height:1.3;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root .sfp-netwerk__kaart .sfp-netwerk__naar{margin-top:auto;padding-top:4px;font-family:var(--sfp-b-tekst);font-weight:400;font-size:15px;line-height:1.3;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 :root .sfp-netwerk__kaart .sfp-netwerk__naar::after{content:"\00a0\2192"}
 :root .sfp-netwerk__kaart:is(:hover,:focus-visible) .sfp-netwerk__naar{text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 :root .sfp-netwerk__kaart img{width:72px;height:72px;flex:none;margin:-8px 0 -4px -8px;border-radius:6px;object-fit:contain}

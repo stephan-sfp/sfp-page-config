@@ -9,7 +9,7 @@
 :root .sfp-bronnen__zoek input{width:100%;max-width:520px;min-height:48px;box-sizing:border-box;padding:10px 14px;font-size:16px;border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-wit);color:var(--sfp-b-body)}
 :root .sfp-bronnen__zoek input:focus-visible{outline:3px solid var(--sfp-b-links);outline-offset:1px}
 :root .sfp-bronnen .sfp-bib-nav{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 32px}
-:root .sfp-bronnen .sfp-bib-nav a{display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;padding:0 8px;box-sizing:border-box;font-weight:700;text-decoration:none;color:var(--sfp-b-primair);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-wit)}
+:root .sfp-bronnen .sfp-bib-nav a{display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;padding:0 8px;box-sizing:border-box;font-weight:400;text-decoration:none;color:var(--sfp-b-primair);border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-wit)}
 :root .sfp-bronnen .sfp-bib-nav a:hover{border-color:var(--sfp-b-primair)}
 :root .sfp-bronnen .sfp-bib-nav a.is-leeg{opacity:.35;pointer-events:none}
 :root .sfp-bronnen__geen{margin:0 0 24px;font-weight:700;color:var(--sfp-b-primair)}

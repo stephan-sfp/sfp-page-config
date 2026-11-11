@@ -22,7 +22,7 @@
 .sfp-art-maker>.sfp-art-maker__wie{display:block;flex:1 1 100%;margin-left:22px;margin-bottom:4px}
 .sfp-art-maker>.sfp-art-maker__wie::before{content:none}
 :root .sfp-art-maker__foto{width:28px;height:28px;border-radius:50%;margin-right:10px;display:inline-block;vertical-align:middle}
-:root .sfp-art-maker a{color:var(--sfp-b-primair);font-weight:700;text-decoration:none}
+:root .sfp-art-maker a{color:var(--sfp-b-primair);font-weight:400;text-decoration:none}
 :root .sfp-art-maker a:is(:hover,:focus){text-decoration:underline}
 :root .sfp-art-maker .sfp-art-kop__check svg{width:14px;height:14px;color:var(--sfp-b-secundair);margin-right:6px}
 :root .sfp-art-maker button.sfp-art-maker__bron{appearance:none;background:none;border:0;padding:0;margin:0;min-height:32px;gap:6px;font:inherit;font-weight:700;color:var(--sfp-b-primair);cursor:pointer}
@@ -71,7 +71,7 @@
 :root .sfp-check .sfp-check__volgende:is(:hover,:focus){color:var(--sfp-b-primair);background:var(--sfp-b-wit);border-color:var(--sfp-b-primair)}
 
 /* Fact-checked-paneel (3.44.0): het label opent het paneel met de controleur en de geschiedenis. */
-:root :is(.sfp-art-kop,.sfp-art-maker) button.sfp-art-kop__check--knop{display:inline-flex;align-items:center;gap:0;font:inherit;font-weight:700;color:var(--sfp-b-primair);background:none;border:0;margin:0;padding:0;min-height:24px;cursor:pointer;text-decoration:none}
+:root :is(.sfp-art-kop,.sfp-art-maker) button.sfp-art-kop__check--knop{display:inline-flex;align-items:center;gap:0;font:inherit;font-weight:400;color:var(--sfp-b-primair);background:none;border:0;margin:0;padding:0;min-height:24px;cursor:pointer;text-decoration:none}
 .sfp-art-kop__check--knop>span{text-decoration:underline;text-decoration-color:var(--sfp-b-lijn-sterk);text-decoration-thickness:1px;text-underline-offset:4px}
 :root :is(.sfp-art-kop,.sfp-art-maker) button.sfp-art-kop__check--knop:is(:hover,:focus,:active){color:var(--sfp-b-primair);background:none;text-decoration:none}
 .sfp-art-kop__check--knop:is(:hover,:focus-visible)>span{text-decoration-color:var(--sfp-b-links);text-decoration-thickness:3px}

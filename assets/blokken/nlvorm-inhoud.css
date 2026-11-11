@@ -104,7 +104,7 @@
 :root .sfp-lijst--rij li{min-width:0}
 :root .sfp-lijst--rij li{position:relative;background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:14px 14px 14px 42px;font-size:15px;line-height:1.35;min-height:48px;display:flex;align-items:center;margin:0;white-space:normal}
 :root .sfp-lijst--rij li::before{left:14px;top:50%;transform:translateY(-50%)}
-:root .sfp-lijst--rij li a{color:var(--sfp-b-primair);font-weight:700}
+:root .sfp-lijst--rij li a{color:var(--sfp-b-primair);font-weight:400}
 @media (max-width:700px){:root p.is-style-sfp-label+.sfp-lijst--rij{margin-top:14px}:root .sfp-lijst--rij ul{grid-template-columns:minmax(0,1fr);gap:10px}:root .sfp-lijst--rij li{white-space:normal}}
 
 

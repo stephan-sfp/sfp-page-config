@@ -8,7 +8,7 @@
  */
 
 /* Tekstlink in het bodyfont (branding.md), ook als nlvorm-groepen niet op de pagina staat. */
-:root :is(.sfp-archiefgids,.sfp-paginering,.sfp-auteur,.sfp-gegevens) .sfp-tekstlink{font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-transform:none;letter-spacing:0}
+:root :is(.sfp-archiefgids,.sfp-paginering,.sfp-auteur,.sfp-gegevens) .sfp-tekstlink{font-family:var(--sfp-b-tekst);font-weight:400;font-size:16px;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-transform:none;letter-spacing:0}
 :root :is(.sfp-archiefgids,.sfp-paginering,.sfp-auteur,.sfp-gegevens) .sfp-tekstlink:is(:hover,:focus-visible){text-decoration-thickness:3px}
 :root :is(.sfp-archiefgids,.sfp-paginering,.sfp-auteur,.sfp-gegevens) .sfp-tekstlink::after{content:"\00a0\2192"}
 :root .sfp-paginering .sfp-paginering__vorige::after{content:none}
