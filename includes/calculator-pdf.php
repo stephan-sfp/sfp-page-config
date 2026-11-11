@@ -111,8 +111,12 @@ function sfp_calculator_blad_voet( array $rij ) {
     $taal    = (string) $rij['taal'];
     $bedrijf = function_exists( 'sfp_page_config_bedrijf' ) ? sfp_page_config_bedrijf() : array();
     $label   = '' !== ( $bedrijf['label'] ?? '' ) ? $bedrijf['label'] : get_bloginfo( 'name' );
-    return '<style>html,body{margin:0;padding:0}.v{font-family:system-ui,sans-serif;font-size:8px;color:#666;width:100%;padding:0 16mm;display:flex;justify-content:space-between}</style>'
-        . '<div class="v"><span>' . esc_html( $label ) . '</span><span>' . esc_html( sfp_calculator_t( 'begroting', array(), $taal ) . ' ' . $rij['kenmerk'] ) . '</span>'
+    $hex     = sfp_calculator_blad_kleuren()['hex'];
+    $primair = $hex['primair'] ?? '#222';
+    $lijn    = $hex['tint-1'] ?? '#ddd';
+    $domein  = preg_replace( '#^www\.#', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
+    return '<style>html,body{margin:0;padding:0}.v{-webkit-print-color-adjust:exact;font:700 7px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:' . esc_attr( $primair ) . ';margin:0 17mm;padding-top:7px;border-top:.6px solid ' . esc_attr( $lijn ) . ';width:100%;display:flex;justify-content:space-between}</style>'
+        . '<div class="v"><span>' . esc_html( '' !== $domein ? $domein : $label ) . '</span><span>' . esc_html( sfp_calculator_t( 'begroting', array(), $taal ) . ' ' . $rij['kenmerk'] ) . '</span>'
         . '<span>' . esc_html( sfp_calculator_t( 'pdf_pagina', array(), $taal ) ) . ' <span class="pageNumber"></span> ' . esc_html( sfp_calculator_t( 'pdf_van', array(), $taal ) ) . ' <span class="totalPages"></span></span></div>';
 }
 
