@@ -20,8 +20,8 @@
 :root .sfp-held--foto .sfp-held__bewijs strong,:root .sfp-held--foto .sfp-held__bewijs a,:root .sfp-held--foto .sfp-held__score{color:var(--sfp-b-wit)}
 :root .sfp-held--foto .sfp-held__bewijs>*{flex:none;white-space:nowrap}
 :root .sfp-held--foto .sfp-held__score{border-right:0;padding-right:0;margin-right:0}
-/* accent in secundair (3.45.0): (0,4,0), want de algemene regel in nlvorm-held.css (0,3,0, color:inherit) laadt later */
-:root .sfp-held.sfp-held--foto .sfp-accent{color:var(--sfp-b-secundair);background:none}
+/* accent in de held Foto wit, net als de rest van de H1 (3.45.1, besluit Stephan 11-11-2026); (0,4,0) zodat de volgorde van laden niet uitmaakt */
+:root .sfp-held.sfp-held--foto .sfp-accent{color:inherit;background:none}
 @media (min-width:701px) and (max-width:980px){
   :root .sfp-held--foto{min-height:560px}
   :root .sfp-held.sfp-held--foto>.sfp-held__achter.sfp-held__achter{left:36%}
