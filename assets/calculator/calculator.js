@@ -150,7 +150,7 @@
 			} else {
 				p.push('mensen', 'doelgroep');
 				if (S.doelgroep === 'anders') p.push('doelgroep_anders');
-				p.push('vorm');
+				p.push('situatie', 'waarom', 'vorm');
 				if (S.vorm && N.vormen[String(S.vorm)] && N.vormen[String(S.vorm)].begeleiding === 'keuze') p.push('begeleiding');
 				if (extrasTeKiezen().length) p.push('extras');
 				S.extras.forEach(function (e) {
@@ -163,7 +163,7 @@
 				if (Number(S.vorm) >= 2 && groepen() >= N.voordeel_vanaf_groep) p.push('voordeel');
 				p.push('locatie');
 				if (S.locatie === 'anders') p.push('locatie_extra');
-				p.push('situatie', 'waarom', 'eerder');
+				p.push('eerder');
 				if (S.eerder === 'ja') p.push('beviel', 'vorig');
 			}
 			p.push('beslist', 'budget', 'inkoop');
@@ -420,7 +420,6 @@
 		};
 
 		schermen.vorm = function () {
-			var g = groepen();
 			var kaarten = ['1', '2', '3'].filter(function (v) { return N.vormen[v]; }).map(function (v) {
 				var vn = N.vormen[v];
 				var punten = [];
@@ -435,13 +434,9 @@
 					if (los > 0) punten.push(t('punt_voordelig', { prijs: bedrag(los) }));
 				}
 				punten.push(t('punt_calls'));
-				var u = reken(Number(v)).uitkomst;
-				var basis = u ? u.groepen * vn.prijs : vn.prijs;
 				return '<button type="button" class="sfp-calc-kaart' + (String(S.vorm) === v ? ' aan' : '') + '" data-w="' + v + '" aria-pressed="' + (String(S.vorm) === v) + '">'
 					+ '<span class="sfp-calc-kaartlab">' + esc(t('vorm_' + v)) + '</span>'
-					+ '<span class="sfp-calc-kaartprijs">' + esc(bedrag(vn.prijs)) + '</span><span class="sfp-calc-kaartper">' + esc(t('per_groep') + ', ' + t('excl')) + '</span>'
 					+ '<span class="sfp-calc-kaartpunten">' + punten.map(function (p) { return '<span>' + esc(p) + '</span>'; }).join('') + '</span>'
-					+ (g > 1 ? '<span class="sfp-calc-kaarttotaal">' + esc(t('vorm_totaal', { n: t('groepen', { n: g }), prijs: bedrag(basis) })) + '</span>' : '')
 					+ '<span class="sfp-calc-kaartknop">' + esc(t('vorm_kies', { n: t('vorm_' + v) })) + '</span></button>';
 			}).join('');
 			return {
@@ -758,6 +753,27 @@
 			var top = wortel.getBoundingClientRect().top + window.pageYOffset - 90;
 			if (window.pageYOffset > top) window.scrollTo(0, Math.max(0, top));
 		}
+		/** De eerste keer dat de begroting verschijnt: inschuiven, open, en het totaal telt op. */
+		function toonBegroting() {
+			S.begrotingGezien = true;
+			var d = $('.sfp-calc-begroting');
+			var b = $('.sfp-calc-btotaal b');
+			if (!d) return;
+			d.open = true;
+			d.classList.add('is-nieuw');
+			var stil = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			var o = reken().uitkomst;
+			if (stil || !b || !o || !window.requestAnimationFrame) return;
+			var doel = o.totaal_excl, start = null, duur = 900;
+			b.textContent = bedrag(0);
+			window.requestAnimationFrame(function stap(nu) {
+				if (start === null) start = nu;
+				var f = Math.min(1, (nu - start) / duur);
+				f = 1 - Math.pow(1 - f, 3);
+				b.textContent = bedrag(Math.round(doel * f / 50) * 50);
+				if (f < 1) window.requestAnimationFrame(stap); else b.textContent = bedrag(doel);
+			});
+		}
 		function tekenAlles() {
 			if (formVak && formVak.parentNode !== wortel && huidig() !== 'gegevens') { formVak.hidden = true; wortel.appendChild(formVak); }
 			var id = huidig();
@@ -766,6 +782,7 @@
 			app.innerHTML = '<div class="sfp-calc-raster' + (zij ? ' met-zij' : '') + '"><div class="sfp-calc-scherm sfp-calc-s-' + esc(id) + '">' + s.html + '</div>'
 				+ (zij ? '<aside class="sfp-calc-zij" aria-label="' + esc(t('begroting')) + '">' + zij + '</aside>' : '') + '</div>';
 			s.na();
+			if (zij && !S.begrotingGezien) toonBegroting();
 			if ($('#sfp-calc-vorige')) $('#sfp-calc-vorige').addEventListener('click', vorige);
 			if (id !== 'start' || S.i > 0) naarBoven();
 			var v = $('#sfp-calc-vraagtekst');
