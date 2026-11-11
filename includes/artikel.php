@@ -832,7 +832,7 @@ function sfp_page_config_artikel_kopkaart( $post, array $hoofdstukken ) {
         $meta .= '<span><time datetime="' . esc_attr( wp_date( 'c', $bijgewerkt ) ) . '">' . esc_html( sprintf( $t( 'bijgewerkt' ), wp_date( 'j M Y', $bijgewerkt ) ) ) . '</time></span>';
     }
     $meta .= '<i class="sfp-art-kop__breek" aria-hidden="true"></i>';
-    $meta .= '<span>' . esc_html( sprintf( $t( 'leestijd' ), sfp_page_config_artikel_leestijd( $post->post_content ) ) ) . '</span>';
+    $meta .= '<span class="sfp-art-kop__leestijd">' . esc_html( sprintf( $t( 'leestijd' ), sfp_page_config_artikel_leestijd( $post->post_content ) ) ) . '</span>';
 
     // Sinds 3.44.0: met een vastgelegde controle opent het label het
     // factcheckpaneel, anders linkt het naar de redactionele verantwoording.

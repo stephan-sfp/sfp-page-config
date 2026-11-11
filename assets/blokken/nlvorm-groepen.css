@@ -19,7 +19,7 @@
 :root .sfp-kolommen--groepen>.sfp-kaart>h3{padding:0;font-size:clamp(18px,1vw + 12px,22px)}
 :root .sfp-groep__kopregel{display:flex;align-items:center;justify-content:space-between;gap:12px}
 :root .sfp-groep__kopregel .is-style-sfp-label{margin:0}
-:root .sfp-groep__status{font-size:12px;font-weight:700;color:var(--sfp-b-primair);background:var(--sfp-b-tint3);border:1px solid var(--sfp-b-lijn-sterk);border-radius:999px;padding:3px 10px;white-space:nowrap}
+:root .sfp-groep__status{font-family:var(--sfp-b-kop);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-primair);background:var(--sfp-b-tint3);border:1px solid var(--sfp-b-lijn-sterk);border-radius:999px;padding:3px 10px;white-space:nowrap}
 :root .sfp-groep__data{list-style:none;margin:0;padding:0;display:grid;gap:0;border-top:1px solid var(--sfp-b-lijn-sterk)}
 :root .sfp-groep__data li{margin:0;padding:9px 0;border-bottom:1px solid var(--sfp-b-lijn-sterk);font-weight:700;font-size:15px;color:var(--sfp-b-primair);display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:baseline}
 :root .sfp-groep__data li::before{content:none}

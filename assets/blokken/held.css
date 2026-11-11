@@ -64,3 +64,6 @@
 @media (max-width:600px){
   :root .sfp-held--tool .sfp-held__binnen{padding-top:44px}
 }
+
+/* 3.46.0: focusrand op de donkere held wit (branding.md, Focusrand). */
+:root .sfp-held:not(.sfp-held--wit) :focus-visible{outline-color:var(--sfp-b-wit)}

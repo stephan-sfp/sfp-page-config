@@ -43,3 +43,6 @@
 /* uitklapregel onder een formulier in een kaart: los van de verzendknop */
 :root .sfp-kaart>.sfp-uitklap{margin-top:12px}
 :root .sfp-kaart .sfp-uitklap--compact summary{line-height:1.3}
+
+/* 3.46.0: focusrand op een donkere kaart wit (branding.md, Focusrand). */
+:root .sfp-kaart--donker :focus-visible{outline-color:var(--sfp-b-wit)}

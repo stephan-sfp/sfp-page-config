@@ -58,7 +58,7 @@ boek_is( false === strpos( $boek, 'border-radius:16px' ), 'geen 16 px radius' );
 boek_is( (bool) preg_match( "/'boeking' === \\\$indeling \? 'sfp-boekkaart' : ''/", $php ), 'render: vaste klasse sfp-boekkaart bij boeking' );
 boek_is( false !== strpos( $js, "( 'boeking' === a.indeling ? ' sfp-boekkaart' : '' )" ), 'editor: dezelfde klasse' );
 boek_is( false !== strpos( $php, "'sfp-label'        => 'Label (boven een kop)'" ), 'blokstijl Label op de alinea' );
-boek_is( (bool) preg_match( '/\.is-style-sfp-label\{[^}]*font-size:12px[^}]*letter-spacing:\.12em[^}]*text-transform:uppercase[^}]*color:var\(--sfp-b-links\)/', $bcss ), 'label 12 px, .12em, hoofdletters, links-rol' );
+boek_is( (bool) preg_match( '/\.is-style-sfp-label\{[^}]*font-size:12px[^}]*letter-spacing:\.12em[^}]*text-transform:uppercase[^}]*color:var\(--sfp-b-label\)/', $bcss ), 'label 12 px, .12em, hoofdletters, rol label (3.46.0)' );
 
 if ( $fouten ) {
     echo "$fouten van $checks controles mislukt\n";

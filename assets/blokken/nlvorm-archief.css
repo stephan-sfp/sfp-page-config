@@ -22,7 +22,7 @@
 :root .sfp-archiefkop .sfp-sectie__binnen>h1+p.sfp-archiefkop__kernzin{margin-top:14px}
 :root .sfp-zoek{display:flex;gap:12px;margin:36px 0 0;max-width:640px}
 :root .sfp-zoek input[type=search]{flex:1;min-width:0;height:48px;box-sizing:border-box;padding:0 16px;margin:0;border:1px solid var(--sfp-b-lijn-sterk);border-radius:var(--sfp-b-r-kaart);background:var(--sfp-b-wit);color:var(--sfp-b-body);font:inherit;font-size:16px}
-:root .sfp-zoek input[type=search]:focus-visible{outline:2px solid var(--sfp-b-secundair);outline-offset:1px}
+:root .sfp-zoek input[type=search]:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:1px}
 :root :is(.sfp-sectie,.sfp-held) .sfp-zoek .wp-block-button__link{height:48px;min-height:48px;width:auto;flex:none;padding:0 22px;cursor:pointer;margin:0}
 :root .sfp-filter{display:flex;flex-wrap:wrap;gap:10px;margin:28px 0 0}
 :root .sfp-filter a{padding:8px 14px;border:1px solid var(--sfp-b-lijn-sterk);border-radius:999px;font-size:14px;line-height:1.3;text-decoration:none;color:var(--sfp-b-primair);background:var(--sfp-b-wit);white-space:nowrap}

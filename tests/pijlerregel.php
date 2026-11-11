@@ -25,11 +25,12 @@ function pr_is( $v, $wat ) {
 }
 preg_match( '/:root \.sfp-art-pijler a\{([^}]*)\}/', $css, $m );
 $a = $m[1] ?? '';
-pr_is( false !== strpos( $a, 'padding:6px 0 5px' ), 'link 13 px plus 11 px opvulling: 24 px tikdoel' );
+pr_is( false !== strpos( $a, 'padding:5px 0' ), 'link 14 px (regel 1,4) plus 10 px opvulling: minstens 24 px tikdoel' );
 pr_is( false === strpos( $a, 'display:inline-block' ), 'link blijft inline: de regel verschuift niet' );
 pr_is( false === strpos( $a, 'border-bottom' ), 'geen rand meer die met de opvulling meezakt' );
-pr_is( false !== strpos( $a, 'linear-gradient(var(--sfp-b-secundair),var(--sfp-b-secundair)) left 0 bottom 3px/100% 2px no-repeat' ), 'streep 2 px in secundair op de plek van de oude rand' );
-pr_is( false !== strpos( $css, ':root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-primair);background-image:linear-gradient(var(--sfp-b-primair),var(--sfp-b-primair))}' ), 'aanwijzen: streep in primair, zoals de rand' );
+pr_is( false !== strpos( $a, 'color:var(--sfp-b-tekstlink)' ) && false !== strpos( $a, 'text-decoration:underline' ), 'gewone tekstlink: kleur tekstlink, onderstreept (3.46.0)' );
+pr_is( false !== strpos( $css, ':root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}' ), 'aanwijzen: onderstreping 3 px in de actiekleur' );
+pr_is( (bool) preg_match( '/:root \\.sfp-art-pijler\{[^}]*text-transform:none/', $css ), 'regel in gewone letters (branding.md, Hoofdlettergebruik)' );
 pr_is( ! preg_match( '/#[0-9a-fA-F]{3,8}\b/', $a ), 'geen hexkleur' );
 foreach ( array( "'pijler_regel'           => 'Guide'", "'pijler_regel_in'        => 'Guide in %s'", "'pijler_regel'           => 'Gids'", "'pijler_regel_in'        => 'Gids in %s'", "'pijler_regel'           => 'Guia'", "'pijler_regel_in'        => 'Guia em %s'" ) as $t ) {
     pr_is( false !== strpos( $tekst, $t ), "tekst $t" );

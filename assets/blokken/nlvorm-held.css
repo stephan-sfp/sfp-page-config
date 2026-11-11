@@ -50,14 +50,14 @@ html:has(.sfp-held--wit,.sfp-held--foto){scroll-behavior:auto!important}
 :root .sfp-held__feit{display:flex;position:absolute;left:-28px;bottom:-36px;background:var(--sfp-b-wit);border-radius:var(--sfp-b-r-kaart);box-shadow:0 12px 32px color-mix(in srgb,var(--sfp-b-primair) 14%,transparent);padding:0;z-index:2;overflow:hidden}
 :root .sfp-held__feit>div{display:grid;gap:6px;padding:18px 24px;border-left:1px solid color-mix(in srgb,var(--sfp-b-primair) 10%,transparent)}
 :root .sfp-held__feit>div:first-child{border-left:4px solid var(--sfp-b-secundair);padding-left:22px}
-:root .sfp-held__feit .is-style-sfp-label{font-size:11px;letter-spacing:.14em;margin:0;color:var(--sfp-b-body)}
+:root .sfp-held__feit .is-style-sfp-label{font-size:11px;letter-spacing:.14em;margin:0;color:var(--sfp-b-label)}
 :root .sfp-held__feit strong{font-family:var(--sfp-b-tekst);font-weight:700;color:var(--sfp-b-primair);font-size:17px;line-height:1.2;white-space:nowrap}
 /* bewijsregel onder de knoppen */
 :root .sfp-held__bewijs{display:flex;align-items:center;gap:0;margin:4px 0 0;font-size:15px;color:var(--sfp-b-body)}
 :root .sfp-held__bewijs strong{color:var(--sfp-b-primair)}
-:root .sfp-held .sfp-held__score{display:inline-flex;align-items:center;gap:8px;color:var(--sfp-b-primair);text-decoration:none!important;padding-right:16px;border-right:1px solid var(--sfp-b-lijn-sterk);margin-right:16px}
+:root .sfp-held .sfp-held__score{display:inline-flex;align-items:center;gap:8px;color:var(--sfp-b-tekstlink);text-decoration:none!important;padding-right:16px;border-right:1px solid var(--sfp-b-lijn-sterk);margin-right:16px}
 :root .sfp-held__score:last-child{border-right:0;padding-right:0;margin-right:0}
-:root a.sfp-held__score:hover span:last-child{text-decoration:underline;text-underline-offset:3px}
+:root a.sfp-held__score span:last-child{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}:root a.sfp-held__score:is(:hover,:focus) span:last-child{text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 :root .sfp-held__sterren{color:var(--sfp-b-ster);letter-spacing:1px;font-size:16px}
 :root .sfp-held__deelnemers{display:inline-flex;align-items:center;gap:10px}
 :root .sfp-held__koppen{display:inline-flex}

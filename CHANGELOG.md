@@ -4,6 +4,24 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.46.0] - 2026-11-11
+
+Brandingpunten uit de brandingcheck van 11-11 (werk page-config-branding-batch, besluiten Stephan 11-11). Alleen opmaak, niets in de database. Terugdraaien: versie 3.45.1 terugzetten (zip uit de tag v3.45.1, map sfp-page-config).
+
+### Gerepareerd
+- Koppen bij Wat je leert en Herkenbaar? staan weer in hoofdletters, zoals alle koppen (branding.md, Hoofdlettergebruik).
+- Programma-dagtitels, FAQ-vragen, juridische uitklappers en de lijst Regels in de bodyletter op 700, in gewone letters. De kopletter kwam daar op 700 voor, een gewicht dat branding.md voor kopletters uitsluit.
+- Pijlerregel boven artikelen in gewone letters in de bodyletter, met de links als gewone tekstlink (kleur van de tekstlink, onderstreept).
+- Leestijd in de kopkaart en de status van een groep (Wachtlijst) als badge in hoofdletters.
+- Tekstlink met pijl in de bodyletter in plaats van de kopletter, in de kleur van de tekstlink en onderstreept. Bij DPS, DST en FL is dat primair in plaats van de actiekleur.
+- Knopstijl Tekst onder de muis: onderstreping 3 px in de actiekleur, ook op de held met foto (was 2 px, op de foto secundair).
+- Focusrand in secties en held in primair (op donker wit), ook bij tabs, zoekveld en juridische uitklappers (was secundair).
+- Knoptekst volgt de rol knoptekst uit Astra in plaats van vast wit. Op DST wordt dat primair: wit op oranje haalde contrast 2,1.
+- Label boven een blok in de rol label (primair), ook in de feitenkaart van de held (was bodytekst) en buiten de NL-vorm (was de actiekleur).
+- Links naar de score in de held, de auteur en de voetlinks van artikelen onderstreept in de kleur van de tekstlink.
+- Titel van een netwerkkaart op 900.
+- Sluitknop van de bovenbalk met radius 6 px.
+
 ## [3.45.1] - 2026-11-11
 
 Terugdraaien: versie 3.45.0 terugzetten (zip uit de tag v3.45.0, map sfp-page-config).

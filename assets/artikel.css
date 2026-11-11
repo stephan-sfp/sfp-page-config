@@ -36,15 +36,15 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-blok-label{display:block;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 
 /* pijllink: de tweede call-to-action (merkbron: bodyfont 900, gewone letters, onderstreept) */
-:root .sfp-pijl{font-weight:700;font-size:15px;line-height:1.4;color:var(--sfp-b-links);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root .sfp-pijl{font-weight:700;font-size:15px;line-height:1.4;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 .sfp-pijl::after{content:"\00a0\2192";display:inline-block;text-decoration:none}
-:root .sfp-pijl:is(:hover,:focus){color:var(--sfp-b-links);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+:root .sfp-pijl:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 
 /* pijlerregel en titel */
-:root .sfp-art-pijler{font-family:var(--sfp-b-kop);font-weight:900;font-size:11px;line-height:1.4;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-primair);margin:0 0 12px}
+:root .sfp-art-pijler{font-family:var(--sfp-b-tekst);font-weight:400;font-size:14px;line-height:1.4;text-transform:none;letter-spacing:0;color:var(--sfp-b-body);margin:0 0 12px}
 /* Tikdoel 24 px (3.26.0): verticale opvulling op de inline link verandert de regel niet; de streep staat waar de rand stond. */
-:root .sfp-art-pijler a{color:var(--sfp-b-primair);text-decoration:none;padding:6px 0 5px;background:linear-gradient(var(--sfp-b-secundair),var(--sfp-b-secundair)) left 0 bottom 3px/100% 2px no-repeat}
-:root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-primair);background-image:linear-gradient(var(--sfp-b-primair),var(--sfp-b-primair))}
+:root .sfp-art-pijler a{color:var(--sfp-b-tekstlink);font-weight:700;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;padding:5px 0}
+:root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 /* H1-gewicht uit Astra (3.26.1): Astra zet op .entry-title een eigen blogtitelgewicht, de H1 van de vormen volgt het H1-gewicht. */
 :root .sfp-artikel .sfp-art-titel{margin:0 0 24px;padding:0;text-wrap:pretty;font-weight:var(--sfp-h1-gewicht,inherit)}
 
@@ -55,14 +55,14 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 .sfp-art-kop__wie--zonder-foto{grid-template-columns:minmax(0,1fr)}
 :root .sfp-art-kop__wie--zonder-foto .sfp-art-kop__affiliate{grid-column:1}
 .sfp-art-kop__naam{font-size:15px;line-height:1.3;color:var(--sfp-b-body)}
-:root .sfp-art-kop__naam a{color:var(--sfp-b-primair);font-weight:700;text-decoration:none}
-:root .sfp-art-kop__naam a:is(:hover,:focus){text-decoration:underline}
+:root .sfp-art-kop__naam a{color:var(--sfp-b-tekstlink);font-weight:700;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+:root .sfp-art-kop__naam a:is(:hover,:focus){text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 .sfp-art-kop__rol::before{content:",\20"}
 /* Scheidingsbolletjes (K32): elk onderdeel heeft een bolletje ervoor, en de strook van 22px links is weggeknipt. Zo valt het bolletje aan het begin van elke regel weg, hoe de regel ook breekt, zonder vast breekpunt. */
 .sfp-art-kop__meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;font-size:13px;line-height:1.3;color:var(--sfp-b-body);margin-left:-22px;clip-path:polygon(22px -12px,calc(100% + 12px) -12px,calc(100% + 12px) calc(100% + 12px),22px calc(100% + 12px))}
 .sfp-art-kop__meta>*{display:inline-flex;align-items:center;white-space:nowrap}
 .sfp-art-kop__meta>*::before{content:"\2022";flex:0 0 22px;width:22px;text-align:center;font-weight:400;color:var(--sfp-b-body)}
-.sfp-art-kop__meta>.sfp-art-kop__breek{display:none}
+.sfp-art-kop__meta>.sfp-art-kop__breek{display:none}.sfp-art-kop__meta>.sfp-art-kop__leestijd{font-family:var(--sfp-b-kop);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sfp-b-primair)}
 .sfp-art-kop__meta>.sfp-art-kop__breek::before{content:none}
 :root .sfp-art-kop__check{font-weight:700;color:var(--sfp-b-primair);text-decoration:none}
 .sfp-art-kop__check svg{width:14px;height:14px;color:var(--sfp-b-secundair);flex:0 0 auto;margin-right:6px}
@@ -217,8 +217,8 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
 :root .sfp-art-voet .sfp-blok-label{display:flex;align-items:center;gap:8px}
 .sfp-art-voet svg{width:16px;height:16px;color:var(--sfp-b-secundair);flex:0 0 auto}
 .sfp-art-voet__links{display:flex;flex-wrap:wrap;gap:6px 16px}
-:root .sfp-art-voet a{font-weight:700;color:var(--sfp-b-primair);text-decoration:none;border-bottom:2px solid var(--sfp-b-secundair)}
-:root .sfp-art-voet a:is(:hover,:focus){color:var(--sfp-b-primair);border-bottom-color:var(--sfp-b-primair)}
+:root .sfp-art-voet a{font-weight:700;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+:root .sfp-art-voet a:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 
 /* rechterkolom */
 .sfp-art-zijbron{border-top:1px solid var(--sfp-b-lijn);border-bottom:1px solid var(--sfp-b-lijn)}
