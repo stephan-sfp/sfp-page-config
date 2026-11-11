@@ -477,11 +477,14 @@
 		kaart: 'Regels als kaarten, met een regel onder de titel.',
 		verhaal: 'Een verhaal in een artikel, met een label boven de titel.',
 		vergelijk: 'Eén kaart met een tabel die de pakketten vergelijkt. Op een telefoon schuift de tabel in zijn eigen vak.',
-		programma: 'Het programma per dag: label Dag n, titel, alinea en vinklijst. Twee dagen staan naast elkaar en gaan samen open; meer dagen staan onder elkaar.',
+		programma: 'Het programma per dag: label Dag n, titel, alinea en vinklijst. Twee of drie dagen staan naast elkaar en gaan samen open; meer dagen staan onder elkaar.',
 	};
 	blok( 'sfp/uitklap', function ( props ) {
 		var a = props.attributes;
-		var blockProps = useBlockProps( { className: 'sfp-uitklap sfp-uitklap--' + a.variant + ( 'programma' === a.variant || 'vergelijk' === a.variant ? ' sfp-uitklap--kaart' : '' ) } );
+		// Programma: twee of drie dagen naast elkaar, anders onder elkaar (gelijk aan de site, sinds 3.50.0).
+		var regels = wp.data.useSelect( function ( select ) { return select( 'core/block-editor' ).getBlockCount( props.clientId ); }, [ props.clientId ] );
+		var programmaKlas = 'programma' !== a.variant ? '' : ( 2 === regels ? '' : ( 3 === regels ? ' sfp-uitklap--drie' : ' sfp-uitklap--gestapeld' ) );
+		var blockProps = useBlockProps( { className: 'sfp-uitklap sfp-uitklap--' + a.variant + ( 'programma' === a.variant || 'vergelijk' === a.variant ? ' sfp-uitklap--kaart' : '' ) + programmaKlas } );
 		var inner = useInnerBlocksProps( blockProps, { allowedBlocks: [ 'sfp/uitklap-regel' ], template: [ [ 'sfp/uitklap-regel' ] ] } );
 		return el( Fragment, null,
 			paneel( 'Uitklap', [
@@ -577,7 +580,7 @@
 			wp.data.dispatch( 'core/block-editor' ).insertBlock( nieuw, stand.tabs.length, props.clientId );
 			zet( nieuw.clientId );
 		};
-		var blockProps = useBlockProps( { className: 'sfp-tabs' + ( 'kaart' === a.vorm ? ' sfp-tabs--kaart' : '' ) } );
+		var blockProps = useBlockProps( { className: 'sfp-tabs' + ( 'kaart' === a.vorm ? ' sfp-tabs--kaart' : '' ) + ( a.variant ? ' sfp-tabs--variant' : '' ) } );
 		var inner = useInnerBlocksProps( { className: 'sfp-editor-tabpanelen' }, { allowedBlocks: [ 'sfp/tab' ], template: [ [ 'sfp/tab' ], [ 'sfp/tab' ] ], renderAppender: false } );
 		var balk = el( 'div', { className: 'sfp-tablijst', role: 'tablist', 'aria-label': a.label || undefined },
 			stand.tabs.map( function ( tab ) {

@@ -1427,11 +1427,13 @@ function sfp_page_config_render_uitklap( $attrs, $content, $block = null ) {
             . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-uitklap', 'sfp-uitklap--kaart', 'sfp-uitklap--vergelijk' ) ) . '>' . $content . '</div>';
     }
     // Programma (3.30.0, NL-vorm): kaarten; twee dagen naast elkaar en samen
-    // open, meer dan twee gestapeld.
+    // open. Sinds 3.50.0 ook drie dagen naast elkaar en samen open; meer
+    // dan drie gestapeld.
     if ( 'programma' === $variant ) {
         $aantal = substr_count( (string) $content, '<details class="sfp-uitklap__regel' );
-        $klas   = array( 'sfp-uitklap', 'sfp-uitklap--kaart', 'sfp-uitklap--programma', 2 === $aantal ? '' : 'sfp-uitklap--gestapeld' );
-        if ( 2 === $aantal && function_exists( 'sfp_page_config_nlvorm_programma_nodig' ) ) {
+        $naast  = 2 === $aantal || 3 === $aantal;
+        $klas   = array( 'sfp-uitklap', 'sfp-uitklap--kaart', 'sfp-uitklap--programma', 3 === $aantal ? 'sfp-uitklap--drie' : ( $naast ? '' : 'sfp-uitklap--gestapeld' ) );
+        if ( $naast && function_exists( 'sfp_page_config_nlvorm_programma_nodig' ) ) {
             sfp_page_config_nlvorm_programma_nodig( true );
         }
         return sfp_page_config_blokken_css_vangnet( 'sfp/uitklap' ) . sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inhoud' )

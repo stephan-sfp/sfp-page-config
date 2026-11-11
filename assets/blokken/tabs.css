@@ -12,4 +12,9 @@
 :root .sfp-tabpaneel .is-style-sfp-groot{font-size:clamp(19px,.5vw + 15px,22px)}
 :root .sfp-tabpaneel .is-style-sfp-pijl{font-size:18px}
 .sfp-tabpaneel[hidden]{display:none}
+/* Tabs die de variantkeuze volgen (3.50.0): op de volle sectiebreedte, tabs en inhoud links, zoals het programmablok. */
+:root .sfp-tabs--variant{max-width:none;margin:0}
+:root .sfp-tabs--variant .sfp-tablijst{justify-content:flex-start}
+:root .sfp-tabs--variant .sfp-tabpaneel{max-width:none;margin:0;text-align:left;justify-items:stretch}
+:root .sfp-tabs--variant .sfp-uitklap--programma{margin-top:24px}
 @media (max-width:600px){.sfp-tablijst{gap:0}:root .sfp-tablijst [role=tab]{padding-left:8px;padding-right:8px}}

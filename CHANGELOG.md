@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.50.0] - 2026-11-11
+
+Programma in tabs per variant op de volle breedte, drie dagen en drie situaties naast elkaar (besluit Stephan 11-11-2026, DPS /presentatietraining/). Alleen opmaak, niets in de database. Terugdraaien: versie 3.49.0 terugzetten (zip uit de tag v3.49.0, map sfp-page-config).
+
+### Gewijzigd
+- Tabs die de variantkeuze volgen: tabs en inhoud links en op de volle sectiebreedte, zodat het programma eruitziet als het programmablok (dagkaarten op volle breedte, Inbegrepen als rij). Gewone tabs en tabs als kaart blijven zoals ze waren.
+- Programma met drie dagen: drie kaarten naast elkaar die samen open en dicht gaan, zoals bij twee dagen. Op de telefoon onder elkaar; vier of meer dagen blijven onder elkaar.
+- Kolommen met indeling situaties: bij precies drie situaties drie naast elkaar (was twee plus een). Vier blijven twee bij twee; op de telefoon een kolom.
+- Editor: tabs in variantstand en een programma met drie dagen zien er uit zoals op de site.
+
 ## [3.49.0] - 2026-11-11
 
 Actielinks weer op 700 (besluit Stephan 11-11-2026: 400 was te dun). Terugdraaien: versie 3.48.1 terugzetten.
