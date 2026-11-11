@@ -20,6 +20,8 @@
 :root:has(.sfp-held--wit) .sfp-sectie__binnen>.is-style-sfp-label+h2{margin-top:18px}
 :root:has(.sfp-held--wit) .sfp-sectie__binnen>h2+p:not([class*="is-style-"]){margin-top:18px;max-width:62ch;font-size:17px}
 @media (max-width:700px){:root .sfp-kolommen--situaties{grid-template-columns:minmax(0,1fr)}}
+/* 3.50.0: drie situaties en drie dagen naast elkaar, vanaf 701 px */
+@media (min-width:701px){:root .sfp-kolommen--situaties:has(>:nth-child(3):last-child),:root .sfp-uitklap--programma.sfp-uitklap--drie{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 /* ---------- A5 Zelftest-oproep ---------- */
 :root:has(.sfp-held--wit) .sfp-zt-cta{background:none;padding:0;box-shadow:none;border:0}

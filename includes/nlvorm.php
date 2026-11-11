@@ -762,8 +762,8 @@ function sfp_page_config_nlvorm_programma_nodig( $zet = false ) {
 add_action( 'wp_footer', 'sfp_page_config_nlvorm_programma_script', 21 );
 
 /**
- * Twee dagen naast elkaar gaan samen open en dicht, zodat ze even hoog
- * blijven. Bij meer dagen staan ze gestapeld en gaat elke dag los.
+ * Twee of drie dagen naast elkaar gaan samen open en dicht, zodat ze even
+ * hoog blijven. Bij meer dagen staan ze gestapeld en gaat elke dag los.
  */
 function sfp_page_config_nlvorm_programma_script() {
     if ( ! sfp_page_config_nlvorm_programma_nodig() ) {
