@@ -4,6 +4,20 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.47.0] - 2026-11-11
+
+Reviews zonder datum (wens Stephan 11-11-2026). Alleen weergave, niets in de database. Terugdraaien: versie 3.46.1 terugzetten (zip uit de tag v3.46.1, map sfp-page-config).
+
+### Gewijzigd
+- Blok Review (sfp/review) met een Google-review: de bronregel toont alleen de bron ("Google-review"), zonder maand en jaar.
+- Blok Reviews (sfp/reviews, raster en slider): de relatieve tijd onder de naam ("8 maanden geleden") staat er niet meer.
+
+### Verwijderd
+- Tekst "Review: bron met maand en jaar" uit de vaste teksten en de CSS-regel voor de reviewtijd; beide werden niet meer gebruikt.
+
+### Toegevoegd
+- Test tests/review-zonder-datum.php.
+
 ## [3.46.1] - 2026-11-11
 
 ### Gerepareerd
