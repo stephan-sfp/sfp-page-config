@@ -398,7 +398,7 @@ function sfp_calculator_blad_html( array $rij ) {
     if ( '' !== $r['citaat'] ) {
         $intern .= '<blockquote>' . nl2br( $e( $r['citaat'] ) ) . '<cite>' . $e( implode( ', ', array_filter( array( $r['naam'], $r['functie'] ), 'strlen' ) ) ) . '</cite></blockquote>';
     }
-    $intern .= '<p class="klein">' . $e( $t( 'pdf_aankondiging' ) ) . '</p>' . sfp_calculator_blad_volgende( $inst, $boek, $t, $e, true );
+    $intern .= '<p class="klein">' . $e( $t( 'pdf_aankondiging' ) ) . '</p>';
     $html   .= '<section class="hoofdstuk zelfde">' . $kop( $t( 'pdf_h_intern' ) ) . $intern . '</section>';
 
     /* ---------- 5. De volgende stap ---------- */
@@ -428,6 +428,9 @@ function sfp_calculator_blad_html( array $rij ) {
     } elseif ( '' !== $lev ) {
         $html .= '<section class="hoofdstuk zelfde"><div class="vak klein"><h3>' . $e( $t( 'pdf_leverancier' ) ) . '</h3><table class="lev">' . $lev . '</table></div></section>';
     }
+
+    // De volgende stap sluit het blad af.
+    $html .= '<section class="hoofdstuk zelfde">' . sfp_calculator_blad_volgende( $inst, $boek, $t, $e, true ) . '</section>';
 
     $proef = ! empty( $rij['proef'] ) ? '<div class="proef">' . $e( $t( 'proef' ) ) . '</div>' : '';
     return '<!doctype html><html lang="' . esc_attr( $taal ) . '"><head><meta charset="utf-8"><title>' . $e( $t( 'pdf_titel' ) . ' ' . $rij['kenmerk'] ) . '</title>'
