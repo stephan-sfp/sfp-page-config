@@ -9,7 +9,7 @@
 :root .sfp-lijst li{margin:0}
 
 :root .sfp-lijst--regels :is(ul,ol){display:grid;border-top:2px solid var(--sfp-b-secundair)}
-:root .sfp-lijst--regels li{padding:22px 0;border-bottom:1px solid var(--sfp-b-lijn-sterk);font-family:var(--sfp-b-kop);font-weight:700;font-size:clamp(19px,.8vw + 15px,24px);line-height:1.35;color:var(--sfp-b-primair)}
+:root .sfp-lijst--regels li{padding:22px 0;border-bottom:1px solid var(--sfp-b-lijn-sterk);font-family:var(--sfp-b-tekst);font-weight:700;font-size:clamp(19px,.8vw + 15px,24px);line-height:1.35;color:var(--sfp-b-primair)}
 
 :root .sfp-lijst--letters :is(ul,ol){display:grid;gap:14px}
 :root .sfp-lijst--letters li{display:flex;align-items:center;gap:14px;font-weight:700;font-size:18px;line-height:1.3;color:var(--sfp-b-primair)}

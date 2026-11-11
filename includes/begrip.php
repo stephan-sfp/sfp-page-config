@@ -460,7 +460,7 @@ function sfp_page_config_begrip_makersregel( $post ) {
     $bijgewerkt = (int) get_post_timestamp( $post, 'modified' );
     $bijgewerkt = $bijgewerkt ? $bijgewerkt : time();
     $delen[]    = '<span><time datetime="' . esc_attr( wp_date( 'c', $bijgewerkt ) ) . '">' . esc_html( sprintf( $t( 'bijgewerkt' ), wp_date( 'j M Y', $bijgewerkt ) ) ) . '</time></span>';
-    $delen[]    = '<span>' . esc_html( sprintf( $t( 'leestijd' ), sfp_page_config_artikel_leestijd( $post->post_content ) ) ) . '</span>';
+    $delen[]    = '<span class="sfp-art-kop__leestijd">' . esc_html( sprintf( $t( 'leestijd' ), sfp_page_config_artikel_leestijd( $post->post_content ) ) ) . '</span>';
 
     // Sinds 3.44.0: het label opent het factcheckpaneel als er een controle is vastgelegd.
     $delen[] = sfp_page_config_factcheck_label( $post, 'sfp-art-maker-check', 'maker' );

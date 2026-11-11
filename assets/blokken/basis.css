@@ -14,7 +14,7 @@
 :root :is(.sfp-sectie,.sfp-held) p{margin:0}
 :root :is(.sfp-sectie,.sfp-held) p+p{margin-top:12px}
 .sfp-sectie a{text-underline-offset:3px}
-:is(.sfp-sectie,.sfp-held) :focus-visible{outline:2px solid var(--sfp-b-secundair);outline-offset:2px}
+:is(.sfp-sectie,.sfp-held) :focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}
 :is(.sfp-sectie,.sfp-held) :focus:not(:focus-visible){outline:none}
 .sfp-sectie img{max-width:100%;height:auto;display:block}
 .sfp-sectie figure{margin:0}
@@ -46,8 +46,8 @@
 /* knoppen: Astra levert de knop (rol links en knoppen); radius 6 px is het SwS-besluit van 30-09-2026 */
 :root :is(.sfp-sectie,.sfp-held) .wp-block-buttons{display:flex;flex-wrap:wrap;gap:12px;margin:0}
 :is(.sfp-sectie,.sfp-held) .wp-block-button{margin:0}
-:root :is(.sfp-sectie,.sfp-held) .wp-block-button__link{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:var(--sfp-b-r-knop)!important;font-family:var(--sfp-b-kop);font-weight:900!important;font-size:15px;line-height:1;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;border:2px solid var(--sfp-b-links);background:var(--sfp-b-links);color:var(--sfp-b-wit)}
-:root :is(.sfp-sectie,.sfp-held) .wp-block-button__link:hover{background:var(--sfp-b-hover);border-color:var(--sfp-b-hover);color:var(--sfp-b-wit)}
+:root :is(.sfp-sectie,.sfp-held) .wp-block-button__link{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:var(--sfp-b-r-knop)!important;font-family:var(--sfp-b-kop);font-weight:900!important;font-size:15px;line-height:1;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;border:2px solid var(--sfp-b-links);background:var(--sfp-b-links);color:var(--sfp-b-knoptekst)}
+:root :is(.sfp-sectie,.sfp-held) .wp-block-button__link:hover{background:var(--sfp-b-hover);border-color:var(--sfp-b-hover);color:var(--sfp-b-knoptekst)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link{background:transparent;border-color:rgba(255,255,255,.55);color:var(--sfp-b-wit)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-wit);color:var(--sfp-b-wit)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link{background:transparent;border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
@@ -56,9 +56,9 @@
 /* tekstlink: tweede keus naast een volle knop (branding.md, 3.30.0): het bodyfont op 700, gewone letters, onderstreept, met pijl */
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link{background:transparent;border-color:transparent;color:var(--sfp-b-tekstlink);padding-left:0;padding-right:0;font-family:var(--sfp-b-tekst);font-weight:700!important;font-size:16px;text-transform:none;letter-spacing:0;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link::after{content:"\00a0\2192"}
-:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link:hover{background:transparent;border-color:transparent;color:var(--sfp-b-tekstlink);text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link:hover{background:transparent;border-color:transparent;color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
 :root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link,:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link:hover{color:var(--sfp-b-wit)}
-:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link:hover{text-decoration-color:var(--sfp-b-secundair)}
+:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link:hover{text-decoration-color:var(--sfp-b-links)}
 
 /* alinea-stijlen */
 /* kernzin (branding.md, 3.30.0): bodyfont 700, primair, meeschalend onder een kop */
@@ -68,10 +68,10 @@
 @media (min-width:701px){:root .is-style-sfp-alleen-telefoon{display:none!important}}
 @media (max-width:700px){:root .is-style-sfp-niet-telefoon{display:none!important}}
 :root .sfp-sectie .is-style-sfp-intro{font-size:19px;line-height:1.6;max-width:34em}
-.is-style-sfp-pijl{font-family:var(--sfp-b-kop);font-weight:700;font-size:15px;line-height:1.3;letter-spacing:0}
-.is-style-sfp-pijl a{color:var(--sfp-b-links);text-decoration:none}
+.is-style-sfp-pijl{font-family:var(--sfp-b-tekst);font-weight:700;font-size:15px;line-height:1.3;letter-spacing:0}
+.is-style-sfp-pijl a{color:var(--sfp-b-tekstlink);text-decoration:underline;text-underline-offset:4px}
 .is-style-sfp-pijl a::after{content:" \2192"}
-.is-style-sfp-pijl a:hover{color:var(--sfp-b-hover)}
+.is-style-sfp-pijl a:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 /* Pijllink in een kaart (3.27.1, besluit 5-11-2026): de aanwijzing onder in een klikbare kaart volgt de tweede call-to-action uit branding.md: bodyfont, 700, altijd onderstreept, 3 px onder de muis. Specificiteit (0,3,1), zodat de onderstreping niet van de paginacontext afhangt (Astra's .ast-single-post .entry-content a is (0,2,1)). Buiten een kaart blijft de Pijllink zoals hij was. */
 :root .sfp-kaart .is-style-sfp-pijl{font-family:var(--sfp-b-tekst)}
 :root .sfp-kaart .is-style-sfp-pijl a{color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
@@ -79,7 +79,7 @@
 :root .sfp-kaart .is-style-sfp-pijl a:is(:hover,:focus),:root .sfp-kaart.sfp-kaart--link:hover .is-style-sfp-pijl a{color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 :root .sfp-kaart--donker .is-style-sfp-pijl a,:root .sfp-kaart--donker .is-style-sfp-pijl a:is(:hover,:focus){color:var(--sfp-b-wit)}
 /* Label boven een kop (3.24.0), bijvoorbeeld op de boekkaart; doorgestreept (s) voor een oude prijs. */
-.is-style-sfp-label{font-family:var(--sfp-b-kop);font-weight:var(--sfp-kopfont-gewicht,900);font-size:12px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:var(--sfp-b-links)}
+.is-style-sfp-label{font-family:var(--sfp-b-kop);font-weight:var(--sfp-kopfont-gewicht,900);font-size:12px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:var(--sfp-b-label)}
 .is-style-sfp-label s{opacity:.55;margin-right:2px}
 .is-style-sfp-bovenschrift{font-family:var(--sfp-b-kop);font-weight:900;font-size:13px;line-height:1;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label)}
 .is-style-sfp-groot{font-family:var(--sfp-b-kop);font-weight:700;font-size:clamp(19px,.5vw + 15px,22px);line-height:1.3;color:var(--sfp-b-primair)}
@@ -123,10 +123,10 @@
 :root .sfp-leeskolom .wp-block-details{border-bottom:1px solid var(--sfp-b-lijn-sterk);margin:0}
 :root .sfp-leeskolom :is(h2,p,ul,ol)+.wp-block-details{border-top:2px solid var(--sfp-b-secundair);margin-top:24px}
 :root .sfp-leeskolom .wp-block-details+.wp-block-details{border-top:0;margin-top:0}
-:root .sfp-leeskolom .wp-block-details>summary{cursor:pointer;list-style:none;font-family:var(--sfp-b-kop);color:var(--sfp-b-primair);font-weight:700;font-size:clamp(17px,.5vw + 14px,20px);line-height:1.35;padding:18px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
+:root .sfp-leeskolom .wp-block-details>summary{cursor:pointer;list-style:none;font-family:var(--sfp-b-tekst);color:var(--sfp-b-primair);font-weight:700;font-size:clamp(17px,.5vw + 14px,20px);line-height:1.35;padding:18px 0;display:flex;justify-content:space-between;align-items:center;gap:16px}
 :root .sfp-leeskolom .wp-block-details>summary::-webkit-details-marker{display:none}
 :root .sfp-leeskolom .wp-block-details>summary::after{content:"+";border:1px solid var(--sfp-b-lijn-sterk);border-radius:50%;flex:0 0 34px;place-items:center;height:34px;font-family:inherit;font-size:22px;font-weight:400;line-height:1;display:grid;color:var(--sfp-b-primair)}
 :root .sfp-leeskolom .wp-block-details[open]>summary::after{content:"\2212";background:var(--sfp-b-secundair);border-color:var(--sfp-b-secundair);color:var(--sfp-b-wit)}
-:root .sfp-leeskolom .wp-block-details>summary:focus-visible{outline:2px solid var(--sfp-b-secundair);outline-offset:2px}
+:root .sfp-leeskolom .wp-block-details>summary:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}
 :root .sfp-leeskolom .wp-block-details>:not(summary){margin:0 0 14px}
 :root .sfp-leeskolom .wp-block-details h3{font-size:16px;margin-top:8px}

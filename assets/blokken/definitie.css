@@ -105,3 +105,6 @@
 }
 /* In de makersregel van een begrip staat het paneel onder de regel, gescheiden door een lijn. */
 .sfp-definitie__maker .sfp-art-paneel--check{margin:12px 0 0;padding:16px 0 4px;border-top:1px solid var(--sfp-b-lijn)}
+
+/* 3.46.0: leestijd als badge (branding.md, Hoofdlettergebruik). */
+:root .sfp-art-maker>.sfp-art-kop__leestijd{font-family:var(--sfp-b-kop);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sfp-b-primair)}

@@ -52,7 +52,7 @@
 :root .sfp-netwerk__kaart .sfp-netwerk__naar::after{content:"\00a0\2192"}
 :root .sfp-netwerk__kaart:is(:hover,:focus-visible) .sfp-netwerk__naar{text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 :root .sfp-netwerk__kaart img{width:72px;height:72px;flex:none;margin:-8px 0 -4px -8px;border-radius:6px;object-fit:contain}
-:root .sfp-netwerk__kaart strong{display:block;font-family:var(--sfp-b-kop);text-transform:uppercase;color:var(--sfp-b-primair);font-size:18px;margin-bottom:8px}
+:root .sfp-netwerk__kaart strong{display:block;font-family:var(--sfp-b-kop);font-weight:900;text-transform:uppercase;color:var(--sfp-b-primair);font-size:18px;margin-bottom:8px}
 :root .sfp-netwerk__kaart span{font-size:15px;line-height:1.5}
 
 /* ---------- Tablet en telefoon ---------- */
