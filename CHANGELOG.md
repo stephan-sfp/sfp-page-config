@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.45.1] - 2026-11-11
+
+Terugdraaien: versie 3.45.0 terugzetten (zip uit de tag v3.45.0, map sfp-page-config).
+
+### Gewijzigd
+- Accent in de H1 van de held Foto (home van SFP, DPS, DGA, CVD en DST) weer wit, net als de rest van de kop (besluit Stephan 11-11: helemaal wit is mooier). De held Wit houdt zijn accent.
+
 ## [3.45.0] - 2026-11-11
 
 Nazorg home en Over (werk page-config-home-over-nazorg, besluiten Stephan 11-11). Terugdraaien: versie 3.44.0 terugzetten (zip uit de tag v3.44.0, map sfp-page-config); er is niets in de database veranderd.
