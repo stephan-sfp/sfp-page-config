@@ -114,77 +114,77 @@ function sfp_calculator_blad_stijl( $vars, $kop_font, $tekst_font ) {
         . ':root{--primair:#222;--secundair:#222;--links:#222;--tint-1:#eee;--tint-2:#eee;--tint-3:#f7f7f7;--body:#575757;' . $vars . '--lijn:color-mix(in srgb,var(--primair) 18%,transparent);--r:6px}'
         . 'html,body{margin:0;padding:0}'
         . 'body{font:400 10pt/1.55 ' . $b . ';color:var(--body)}'
-        . 'p{margin:0 0 6pt}'
+        . 'p{margin:0 0 8pt}'
         . 'h1,h2,h3,.lab,.knop,th{font-family:' . $k . ';font-weight:900;text-transform:uppercase;color:var(--primair)}'
         . 'h1{font-size:22pt;line-height:1.12;margin:0;letter-spacing:.01em;text-wrap:balance}'
-        . 'h2{break-after:avoid;font-size:13pt;line-height:1.2;margin:0 0 4pt;letter-spacing:.02em;display:flex;gap:8pt;align-items:baseline}'
+        . 'h2{break-after:avoid;font-size:13pt;line-height:1.2;margin:0 0 6pt;letter-spacing:.02em;display:flex;gap:8pt;align-items:baseline}'
         . 'h2 .nr{color:var(--secundair)}'
-        . 'h3{font-size:9pt;letter-spacing:.06em;margin:0 0 6pt}'
-        . '.lab{display:block;font-size:7pt;letter-spacing:.08em;margin:0 0 3pt}'
-        . '.inleiding{margin:0 0 12pt;break-after:avoid}'
-        . '.kernzin{font:700 13pt/1.4 ' . $b . ';color:var(--primair);border-left:3pt solid var(--secundair);padding:1pt 0 1pt 10pt;margin:12pt 0 0;max-width:150mm}'
+        . 'h3{font-size:9pt;letter-spacing:.06em;margin:0 0 9pt}'
+        . '.lab{display:block;font-size:7pt;letter-spacing:.08em;margin:0 0 5pt}'
+        . '.inleiding{margin:0 0 18pt;break-after:avoid}'
+        . '.kernzin{font:700 13pt/1.4 ' . $b . ';color:var(--primair);border-left:3pt solid var(--secundair);padding:2pt 0 2pt 12pt;margin:16pt 0 0;max-width:150mm}'
         . '.hoofdstuk{break-before:page}'
-        . '.hoofdstuk.zelfde{break-before:auto;margin-top:22pt}'
-        . '.vak{background:var(--tint-3);border-radius:var(--r);padding:12pt 14pt;break-inside:avoid;margin:0 0 10pt}'
+        . '.hoofdstuk.zelfde{break-before:auto;margin-top:34pt}'
+        . '.vak{background:var(--tint-3);border-radius:var(--r);padding:16pt 18pt;break-inside:avoid;margin:0 0 14pt}'
         . '.vak.lijn{border-top:2pt solid var(--secundair);border-radius:0 0 var(--r) var(--r)}'
         . '.klein{font-size:8.5pt}'
         // Voorblad.
         . '.voorblad{display:block}'
-        . '.top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:26pt}'
+        . '.top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:34pt}'
         . '.top img{max-height:52pt;max-width:170pt}'
         . '.top .meta{font-size:7.5pt;line-height:1.5}.top .meta b{font-family:' . $k . ';font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:var(--primair)}'
         . '.top .meta .w{color:var(--primair)}'
-        . '.bon{margin-top:22pt;border:1.2pt solid var(--lijn);border-top:3pt solid var(--primair);border-radius:0 0 var(--r) var(--r);padding:16pt 18pt;display:grid;grid-template-columns:1fr 1fr;gap:16pt;break-inside:avoid}'
+        . '.bon{margin-top:30pt;border:1.2pt solid var(--lijn);border-top:3pt solid var(--primair);border-radius:0 0 var(--r) var(--r);padding:20pt 22pt;display:grid;grid-template-columns:1fr 1fr;gap:22pt;break-inside:avoid}'
         . '.groot{font:900 30pt/1 ' . $k . ';color:var(--primair);margin:2pt 0 4pt;white-space:nowrap}'
         . '.groot small{font:400 9pt ' . $b . ';color:var(--body);margin-left:4pt}'
         . '.vink{list-style:none;margin:0;padding:0}'
-        . '.vink li{position:relative;padding-left:15pt;margin:0 0 4pt;color:var(--primair)}'
+        . '.vink li{position:relative;padding-left:15pt;margin:0 0 6pt;color:var(--primair)}'
         . '.vink li:before{content:"";position:absolute;left:2pt;top:2.5pt;width:4pt;height:7.5pt;border:solid var(--secundair);border-width:0 1.6pt 1.6pt 0;transform:rotate(45deg)}'
-        . '.feiten{display:flex;gap:18pt;margin-top:10pt;font-size:8.5pt}.feiten b{display:block}'
+        . '.feiten{display:flex;gap:22pt;margin-top:16pt;font-size:8.5pt}.feiten b{display:block}'
         . '.maatwerk{margin-top:8pt;font-weight:700;color:var(--primair)}'
         . ''
         // Doel.
-        . '.antwoorden{display:grid;grid-template-columns:1fr 1fr;gap:10pt}'
+        . '.antwoorden{display:grid;grid-template-columns:1fr 1fr;gap:14pt}'
         . '.antwoorden .vak{margin:0}.antwoorden .breed{grid-column:1/-1}'
         . '.antwoorden p{color:var(--primair);margin:0}'
         // Programma.
-        . '.dagen{display:grid;grid-template-columns:repeat(3,1fr);gap:10pt;margin-bottom:12pt}'
-        . '.dagen .vak{margin:0}.dagen .nr{display:inline-block;background:var(--primair);color:#fff;font:900 8pt/1 ' . $k . ';text-transform:uppercase;letter-spacing:.06em;padding:4pt 6pt;border-radius:3pt;margin-bottom:8pt}'
-        . '.dagen ul{margin:0;padding-left:11pt}.dagen li{margin:0 0 3pt;color:var(--primair)}'
-        . '.groepen{display:flex;flex-wrap:wrap;gap:6pt;margin:4pt 0 6pt}'
+        . '.dagen{display:grid;grid-template-columns:repeat(3,1fr);gap:14pt;margin-bottom:14pt}'
+        . '.dagen .vak{margin:0}.dagen .nr{display:inline-block;background:var(--primair);color:#fff;font:900 8pt/1 ' . $k . ';text-transform:uppercase;letter-spacing:.06em;padding:4pt 6pt;border-radius:3pt;margin-bottom:10pt}'
+        . '.dagen ul{margin:0;padding-left:11pt}.dagen li{margin:0 0 5pt;color:var(--primair)}'
+        . '.groepen{display:flex;flex-wrap:wrap;gap:8pt;margin:4pt 0 10pt}'
         . '.groepen span{border:1pt solid var(--lijn);border-radius:var(--r);padding:4pt 8pt;font-size:8.5pt;color:var(--primair)}'
         . '.groepen b{font-family:' . $k . ';font-weight:900;text-transform:uppercase;font-size:7.5pt;letter-spacing:.05em;margin-right:4pt}'
         // Begroting.
-        . 'table{width:100%;border-collapse:collapse;font-size:9pt;margin:0 0 12pt;break-inside:avoid}'
+        . 'table{width:100%;border-collapse:collapse;font-size:9pt;margin:0 0 18pt;break-inside:avoid}'
         . 'th{font-size:7pt;letter-spacing:.07em;text-align:left;padding:6pt 6pt;background:var(--primair);color:#fff}'
         . 'th:first-child{border-radius:var(--r) 0 0 0}th:last-child{border-radius:0 var(--r) 0 0}'
-        . 'td{padding:6pt;border-bottom:.8pt solid var(--tint-2);vertical-align:top;color:var(--primair)}'
+        . 'td{padding:7pt 6pt;border-bottom:.8pt solid var(--tint-2);vertical-align:top;color:var(--primair)}'
         . 'td.n,th.n{text-align:right;white-space:nowrap}td.z{color:var(--body)}'
         . 'tr.totaal td{font-weight:700;border-top:1.5pt solid var(--primair);border-bottom:0}'
         . 'tr.btw td{color:var(--body);border-bottom:0;padding-top:2pt;padding-bottom:2pt}'
         . 'tr.incl td{font-weight:700;border-top:.8pt solid var(--lijn)}'
-        . '.twee{display:grid;grid-template-columns:1fr 1fr;gap:10pt;break-inside:avoid}.twee .vak{margin:0}'
+        . '.twee{display:grid;grid-template-columns:1fr 1fr;gap:14pt;break-inside:avoid}.twee .vak{margin:0}'
         . '.twee ul{margin:0;padding-left:11pt}'
         // Intern.
-        . '.stappen{list-style:none;margin:0 0 12pt;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10pt}'
-        . '.stappen{break-inside:avoid}.stappen li{background:var(--tint-3);border-radius:var(--r);padding:12pt;color:var(--primair);break-inside:avoid}'
+        . '.stappen{list-style:none;margin:0 0 18pt;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:14pt}'
+        . '.stappen{break-inside:avoid}.stappen li{background:var(--tint-3);border-radius:var(--r);padding:16pt;color:var(--primair);break-inside:avoid}'
         . '.stappen .nr{display:inline-flex;align-items:center;justify-content:center;width:16pt;height:16pt;background:var(--primair);color:#fff;border-radius:3pt;font:900 9pt/1 ' . $k . ';margin-bottom:8pt}'
-        . '.volgende{margin-top:14pt}blockquote{margin:0 0 12pt;padding:4pt 0 4pt 14pt;border-left:3pt solid var(--secundair);font:400 10.5pt/1.55 ' . $b . ';color:var(--primair);break-inside:avoid}'
+        . '.volgende{margin-top:14pt}blockquote{margin:22pt 0 18pt;padding:6pt 0 6pt 16pt;border-left:3pt solid var(--secundair);font:400 10.5pt/1.55 ' . $b . ';color:var(--primair);break-inside:avoid}'
         . 'blockquote cite{display:block;font:900 7.5pt ' . $k . ';text-transform:uppercase;letter-spacing:.06em;color:var(--primair);margin-top:8pt;font-style:normal}'
         // Volgende stap.
-        . '.volgende{background:var(--primair);color:#fff;border-radius:var(--r);padding:16pt 18pt;display:grid;grid-template-columns:auto 1fr auto;gap:16pt;align-items:center;break-inside:avoid}'
+        . '.volgende{background:var(--primair);color:#fff;border-radius:var(--r);padding:22pt 24pt;display:grid;grid-template-columns:auto 1fr auto;gap:22pt;align-items:center;break-inside:avoid}'
         . '.volgende h2,.volgende h3,.volgende .lab{color:#fff}'
-        . '.volgende p{color:#fff;margin:0 0 8pt}'
+        . '.volgende p{color:#fff;margin:0 0 12pt}'
         . '.volgende .foto{width:66pt;height:66pt;border-radius:var(--r);object-fit:cover;background:#fff}'
         . '.volgende .naam{font:900 10pt/1.2 ' . $k . ';text-transform:uppercase;letter-spacing:.03em}'
-        . '.volgende .functie{font-size:7.5pt;text-transform:uppercase;letter-spacing:.05em;opacity:.85;margin-bottom:8pt}'
+        . '.volgende .functie{font-size:7.5pt;text-transform:uppercase;letter-spacing:.05em;opacity:.85;margin-bottom:14pt}'
         . '.volgende .qr{display:flex;gap:10pt;align-items:center}.volgende .qr svg{width:64pt;height:64pt;display:block;border-radius:3pt}'
         . '.volgende .qr span{font:900 7pt/1.35 ' . $k . ';text-transform:uppercase;letter-spacing:.05em;max-width:70pt}'
         . '.volgende .qr a{color:#fff;font:400 7.5pt ' . $b . ';text-transform:none;letter-spacing:0;text-decoration:underline}'
         . '.knop{display:inline-block;background:var(--links);color:#fff;text-decoration:none;font-size:9pt;letter-spacing:.04em;padding:9pt 16pt;border-radius:var(--r)}'
         . '.contactregel{font-size:8pt;opacity:.9;margin-top:8pt!important}.contactregel a{color:#fff}'
         . 'a{color:var(--primair)}'
-        . '.voorwaarden{margin-top:14pt;font-size:8pt}.voorwaarden h3{margin-bottom:4pt}'
+        . '.voorwaarden{margin-top:22pt;font-size:8pt}.voorwaarden h3{margin-bottom:4pt}'
         . '.lev td{font-size:8.5pt}.lev td:first-child{color:var(--body);width:38%}'
         . '.proef{position:fixed;top:40%;left:0;right:0;text-align:center;font:900 90pt ' . $k . ';color:rgba(164,38,44,.12);transform:rotate(-24deg);z-index:9}'
         . '*{font-variant-ligatures:none!important;font-feature-settings:"locl" 0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
@@ -323,11 +323,11 @@ function sfp_calculator_blad_html( array $rij ) {
     if ( 'ja' === ( $keuzes['intern']['eerder'] ?? '' ) ) {
         $regels = sfp_calculator_intern_regels( array( 'intern' => array( 'eerder' => 'ja', 'beviel' => $keuzes['intern']['beviel'] ?? '', 'vorig' => $keuzes['intern']['vorig'] ?? '' ) ), $taal, $valuta );
         foreach ( $regels as $l => $w ) {
-            $antw[] = array( $l, nl2br( $e( $w ) ), true );
+            $antw[] = array( $l, nl2br( $e( $w ) ), false );
         }
     }
     if ( $antw ) {
-        $html .= '<section class="hoofdstuk zelfde">' . $kop( $t( 'pdf_h_doel' ) ) . '<p class="inleiding">' . $e( $t( 'pdf_doel_zin' ) ) . '</p><div class="antwoorden">'
+        $html .= '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_doel' ) ) . '<p class="inleiding">' . $e( $t( 'pdf_doel_zin' ) ) . '</p><div class="antwoorden">'
             . implode( '', array_map( function ( $a ) use ( $e ) { return '<div class="vak lijn' . ( $a[2] ? ' breed' : '' ) . '"><span class="lab">' . $e( $a[0] ) . '</span><p>' . $a[1] . '</p></div>'; }, $antw ) )
             . '</div></section>';
     }
@@ -347,14 +347,7 @@ function sfp_calculator_blad_html( array $rij ) {
         if ( ! empty( $keuzes['doelgroep'] ) && '' !== ( $inst['doelgroepzin'][ $keuzes['doelgroep'] ] ?? '' ) ) {
             $prog .= '<div class="vak lijn"><span class="lab">' . $e( $t( 'pdf_doelgroep' ) ) . '</span><p>' . $e( $inst['doelgroepzin'][ $keuzes['doelgroep'] ] ) . '</p></div>';
         }
-        if ( $o ) {
-            $prog .= '<div class="vak"><h3>' . $e( $t( 'pdf_groepen_kop' ) ) . '</h3><div class="groepen">';
-            foreach ( array_values( (array) $o['verdeling'] ) as $i => $n ) {
-                $prog .= '<span><b>' . $e( $t( 'pdf_groep_n', array( 'n' => $i + 1 ) ) ) . '</b>' . $e( $t( 'deelnemers_n', array( 'n' => (int) $n ) ) ) . '</span>';
-            }
-            $prog .= '</div><p class="klein">' . $e( $t( 'pdf_groepsgrootte_zin' ) ) . '</p></div>';
-        }
-        $html .= '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_programma' ) ) . $prog . '</section>';
+        $html .= '<section class="hoofdstuk zelfde">' . $kop( $t( 'pdf_h_programma' ) ) . $prog . '</section>';
     }
 
     /* ---------- 3. De begroting ---------- */
@@ -362,7 +355,15 @@ function sfp_calculator_blad_html( array $rij ) {
         $loc = ! empty( $keuzes['locatie'] )
             ? $t( 'locatie_anders' ) . ' (' . $t( 'op_aanvraag' ) . '): ' . implode( ', ', array_map( function ( $l ) use ( $t ) { return $t( 'locatie_' . $l ); }, (array) $keuzes['locatie'] ) )
             : $t( 'locatie_klant' );
-        $beg  = '<p class="inleiding">' . $e( $t( 'pdf_begroting_zin' ) ) . '</p>' . sfp_calculator_blad_tabel( $rij, true );
+        $groep = '';
+        if ( $o ) {
+            $groep .= '<div class="vak"><h3>' . $e( $t( 'pdf_groepen_kop' ) ) . '</h3><div class="groepen">';
+            foreach ( array_values( (array) $o['verdeling'] ) as $i => $n ) {
+                $groep .= '<span><b>' . $e( $t( 'pdf_groep_n', array( 'n' => $i + 1 ) ) ) . '</b>' . $e( $t( 'deelnemers_n', array( 'n' => (int) $n ) ) ) . '</span>';
+            }
+            $groep .= '</div><p class="klein">' . $e( $t( 'pdf_groepsgrootte_zin' ) ) . '</p></div>';
+        }
+        $beg  = '<p class="inleiding">' . $e( $t( 'pdf_begroting_zin' ) ) . '</p>' . sfp_calculator_blad_tabel( $rij, true ) . $groep;
         $beg .= '<div class="twee"><div class="vak"><h3>' . $e( $t( 'pdf_inbegrepen' ) ) . '</h3>' . sfp_calculator_blad_lijst( $t( 'pdf_inbegrepen_lijst' ) ) . '</div>'
             . '<div class="vak"><h3>' . $e( $t( 'pdf_niet' ) ) . '</h3>' . sfp_calculator_blad_lijst( $t( 'pdf_niet_lijst' ) ) . '<p class="klein"><b>' . $e( $t( 'pdf_locatie' ) ) . ':</b> ' . $e( $loc ) . '</p></div></div>';
         $vw     = '<p>' . $e( $t( 'pdf_voorwaarden_zin' ) ) . '</p>';
@@ -371,7 +372,7 @@ function sfp_calculator_blad_html( array $rij ) {
             $vw .= '<p>' . $e( $t( 'pdf_voorwaarden_link' ) ) . ': <a href="' . esc_url( $vw_url ) . '">' . $e( preg_replace( '#^https?://#', '', untrailingslashit( $vw_url ) ) ) . '</a></p>';
         }
         $beg  .= '<div class="voorwaarden"><h3>' . $e( $t( 'pdf_voorwaarden' ) ) . '</h3>' . $vw . '</div>';
-        $html .= '<section class="hoofdstuk zelfde">' . $kop( $t( 'pdf_h_begroting' ) ) . $beg . '</section>';
+        $html .= '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_begroting' ) ) . $beg . '</section>';
     }
 
     /* ---------- 4. Zo leg je het intern voor ---------- */
@@ -399,7 +400,7 @@ function sfp_calculator_blad_html( array $rij ) {
         $intern .= '<blockquote>' . nl2br( $e( $r['citaat'] ) ) . '<cite>' . $e( implode( ', ', array_filter( array( $r['naam'], $r['functie'] ), 'strlen' ) ) ) . '</cite></blockquote>';
     }
     $intern .= '<p class="klein">' . $e( $t( 'pdf_aankondiging' ) ) . '</p>';
-    $html   .= '<section class="hoofdstuk zelfde">' . $kop( $t( 'pdf_h_intern' ) ) . $intern . '</section>';
+    $html   .= '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_intern' ) ) . $intern . '</section>';
 
     /* ---------- 5. De volgende stap ---------- */
 
@@ -422,7 +423,7 @@ function sfp_calculator_blad_html( array $rij ) {
                 $hun .= '<tr><td>' . $e( $t( 'inkoop_' . $veld ) ) . '</td><td>' . nl2br( $e( $keuzes['inkoop'][ $veld ] ) ) . '</td></tr>';
             }
         }
-        $html .= '<section class="hoofdstuk zelfde">' . '<h2><span>' . $e( $t( 'pdf_h_inkoop' ) ) . '</span></h2><p class="inleiding">' . $e( $t( 'pdf_inkoop_zin' ) ) . '</p>'
+        $html .= '<section class="hoofdstuk">' . '<h2><span>' . $e( $t( 'pdf_h_inkoop' ) ) . '</span></h2><p class="inleiding">' . $e( $t( 'pdf_inkoop_zin' ) ) . '</p>'
             . '<div class="twee"><div class="vak"><h3>' . $e( $t( 'pdf_leverancier' ) ) . '</h3><table class="lev">' . $lev . '</table></div>'
             . '<div class="vak"><h3>' . $e( $t( 'pdf_jullie' ) ) . '</h3><table class="lev">' . $hun . '</table></div></div></section>';
     } elseif ( '' !== $lev ) {
