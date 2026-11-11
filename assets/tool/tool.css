@@ -40,7 +40,7 @@
 /* Tekstlinks (Vorige, Opnieuw beginnen, Word, mail, deellink): merkbron, tweede call-to-action:
    bodyfont 900, gewone letters, onderstreept, in de linkkleur van Astra (bij DPS, DST en FL de primaire kleur);
    onder de muis een dikke onderstreping in de rol links en knoppen, de kleur blijft. */
-:root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__opnieuw,.sfp-tool__tekstlink){appearance:none;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:14px 0 0;min-height:0;font-family:var(--sfp-b-tekst,inherit);font-weight:400;font-size:15px;line-height:1.4;letter-spacing:normal;text-transform:none;color:var(--sfp-b-tekstlink,var(--sfp-b-links));cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__opnieuw,.sfp-tool__tekstlink){appearance:none;background:none;border:0;border-radius:0;box-shadow:none;padding:0;margin:14px 0 0;min-height:0;font-family:var(--sfp-b-tekst,inherit);font-weight:700;font-size:15px;line-height:1.4;letter-spacing:normal;text-transform:none;color:var(--sfp-b-tekstlink,var(--sfp-b-links));cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 :root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__opnieuw,.sfp-tool__tekstlink):is(:hover,:focus-visible){background:none;color:var(--sfp-b-tekstlink,var(--sfp-b-links));text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 :root .sfp-tool :is(.sfp-tool__vorige,.sfp-tool__opnieuw,.sfp-tool__tekstlink):focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
 :root .sfp-tool .sfp-tool__vorige{margin:22px 0 0;font-size:14px;font-weight:400}

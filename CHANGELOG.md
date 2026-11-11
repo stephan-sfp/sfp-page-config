@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.49.0] - 2026-11-11
+
+Actielinks weer op 700 (besluit Stephan 11-11-2026: 400 was te dun). Terugdraaien: versie 3.48.1 terugzetten.
+
+### Gewijzigd
+- Actielinks op gewicht 700: de pijllink (ook in kaarten, Vervolg en de netwerkkaart), de knopstijl Tekst, Lees meer bij de merkwaarden, Alle ... in de gidsen, de knoppen Help en Terug in de keuzehulp en de tekstknoppen in tools (was 900). Zelfde dikte als Lees verder in de reviewkaart.
+- Alle andere links blijven op 400.
+
 ## [3.48.1] - 2026-11-11
 
 Netwerknorm wachtlijst-CTA (besluit Stephan 11-11-2026). Alleen tekst, niets in de database. Terugdraaien: versie 3.48.0 terugzetten (zip uit de tag v3.48.0, map sfp-page-config).
