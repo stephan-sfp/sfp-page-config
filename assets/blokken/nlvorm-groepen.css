@@ -35,7 +35,7 @@
 @media (max-width:700px){:root .sfp-kolommen--groepen{grid-template-columns:minmax(0,1fr);gap:16px}:root .sfp-kolommen--groepen>.sfp-kaart h3{font-size:18px;letter-spacing:0}}
 
 /* tekstlink buiten een knop (Groepskaarten): het bodyfont op 700, met pijl */
-:root .sfp-tekstlink{font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-transform:none;letter-spacing:0}
+:root .sfp-tekstlink{font-family:var(--sfp-b-tekst);font-weight:400;font-size:16px;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-transform:none;letter-spacing:0}
 :root .sfp-tekstlink::after{content:"\00a0\2192"}
 :root .sfp-tekstlink:hover{text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
 

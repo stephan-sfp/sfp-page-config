@@ -17,7 +17,7 @@
 :root .sfp-keuzehulp a.sfp-keuzehulp__antwoord.sfp-keuzehulp__antwoord.sfp-keuzehulp__antwoord:is(:hover,:focus-visible){text-decoration:none}
 :root .sfp-keuzehulp .sfp-keuzehulp__antwoord:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}
 :root .sfp-keuzehulp__links{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:16px}
-:root .sfp-keuzehulp .sfp-keuzehulp__link.sfp-keuzehulp__link{margin:0;padding:0;min-height:24px;background:none;border:0;border-radius:0;box-shadow:none;font-family:var(--sfp-b-tekst);font-size:16px;font-weight:700;font-style:normal;line-height:1.4;letter-spacing:0;text-transform:none;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;cursor:pointer}
+:root .sfp-keuzehulp .sfp-keuzehulp__link.sfp-keuzehulp__link{margin:0;padding:0;min-height:24px;background:none;border:0;border-radius:0;box-shadow:none;font-family:var(--sfp-b-tekst);font-size:16px;font-weight:400;font-style:normal;line-height:1.4;letter-spacing:0;text-transform:none;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;cursor:pointer}
 :root .sfp-keuzehulp .sfp-keuzehulp__link.sfp-keuzehulp__link:is(:hover,:focus-visible){background:none;color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 :root .sfp-keuzehulp .sfp-keuzehulp__terug::before{content:"\2190\00a0"}
 :root .sfp-keuzehulp .sfp-keuzehulp__zin{margin:0 0 20px;line-height:1.6;color:var(--sfp-b-body)}

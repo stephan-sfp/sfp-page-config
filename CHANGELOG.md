@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.48.0] - 2026-11-11
+
+Geen vette links meer (besluit Stephan 11-11-2026). Alleen opmaak. Terugdraaien: versie 3.47.0 terugzetten (zip uit de tag v3.47.0, map sfp-page-config).
+
+### Gewijzigd
+- Elke link uit de plugin staat op gewicht 400: de pijllink (tweede call-to-action, ook in kaarten en Vervolg), de knopstijl Tekst, de link in de bovenbalk, de pijlerregel, auteursnaam en Gefactcheckt in de kop, de voet van het artikel, de inhoudsopgave en de hoofdstukbalk (actief item blijft herkenbaar aan kleur en lijn of vlak), de gidsen, de termnavigatie, de bronnenlijst, de keuzehulp, de merkwaarden, de tekstlinks in archieven en groepen, de rij in een lijst, de netwerkkaart en de tekstlinks in tools.
+- Knoppen, deelknoppen en de knoppen in de actierij blijven zoals ze waren.
+
 ## [3.47.0] - 2026-11-11
 
 Reviews zonder datum (wens Stephan 11-11-2026). Alleen weergave, niets in de database. Terugdraaien: versie 3.46.1 terugzetten (zip uit de tag v3.46.1, map sfp-page-config).

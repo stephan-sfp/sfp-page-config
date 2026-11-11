@@ -420,7 +420,7 @@ function sfp_page_config_banner_toon() {
         . '.sfp-banner__inner{max-width:1280px;margin:0 auto;padding:10px 56px 10px 24px;text-align:center}'
         . '.sfp-banner .sfp-banner__tekst{margin:0;color:inherit}'
         . '.sfp-banner .sfp-banner__tekst strong{color:inherit}'
-        . '.sfp-banner .sfp-banner__link,.sfp-banner .sfp-banner__link:hover,.sfp-banner .sfp-banner__link:focus{color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}'
+        . '.sfp-banner .sfp-banner__link,.sfp-banner .sfp-banner__link:hover,.sfp-banner .sfp-banner__link:focus{color:inherit;font-weight:400;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}'
         . '.sfp-banner .sfp-banner__link:hover{text-decoration:none}'
         . '.sfp-banner .sfp-banner__link:focus-visible,.sfp-banner .sfp-banner__sluit:focus-visible{outline:2px solid currentColor;outline-offset:2px}'
         . '.sfp-banner .sfp-banner__sluit,.sfp-banner .sfp-banner__sluit:hover,.sfp-banner .sfp-banner__sluit:focus{position:absolute;top:50%;right:12px;transform:translateY(-50%);width:36px;height:36px;min-height:0;padding:0;margin:0;border:0;border-radius:var(--sfp-b-r-knop,6px);background:transparent;box-shadow:none;color:inherit;font-size:24px;line-height:36px;text-align:center;cursor:pointer;text-transform:none}'
