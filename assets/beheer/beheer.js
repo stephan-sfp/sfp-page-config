@@ -1665,6 +1665,7 @@
 		['naam', 'functie', 'telefoon', 'email'].forEach(function (k) { ct[k] = tekstInvoer(I.contact[k] || '', ''); });
 		ct.profiel = el('textarea', { value: I.contact.profiel || '', rows: '4' });
 		var methode = tekstInvoer(I.methode, 'Impact-driehoek');
+		var feiten = el('textarea', { value: I.feiten || '', rows: '3', placeholder: K.feiten_norm || '' });
 		var programma = {};
 		['1', '2', '3'].forEach(function (v) { programma[v] = el('textarea', { value: I.programma[v] || '', rows: '5' }); });
 		var dgNamen = { starters: 'Starters', ervaren: 'Ervaren medewerkers', senioren: 'Senioren of specialisten', leidinggevend: 'Leidinggevenden', gemengd: 'Gemengd', anders: 'Anders' };
@@ -1694,7 +1695,7 @@
 		['A', 'B'].forEach(function (r) { rt[r] = aanUit(I.routes[r], r === 'B' ? ['DPS', 'SFP', 'SWS'].indexOf(I.code) > -1 : K.norm.routes_aan[r]); });
 
 		function verzamel() {
-			var w = { code: code.value, proefmodus: proef.aan, formulier: form.value, logo: logo.waarde(), methode: methode.value, valuta: valuta.value,
+			var w = { code: code.value, proefmodus: proef.aan, formulier: form.value, logo: logo.waarde(), methode: methode.value, feiten: feiten.value, valuta: valuta.value,
 				contact: { foto: foto.waarde(), profiel: ct.profiel.value }, programma: {}, doelgroepzin: {}, uitleg: {}, referentie: {}, prijzen: {}, extras: {}, routes: {} };
 			Object.keys(paginas).forEach(function (k) { w[k] = paginas[k].invoer.value; });
 			['naam', 'functie', 'telefoon', 'email'].forEach(function (k) { w.contact[k] = ct[k].value; });
@@ -1744,9 +1745,10 @@
 				opslaan(),
 				el('h2', { text: 'Teksten van het label' }),
 				veld('Methode', methode, 'In de pdf: "Daarbinnen werken we met ...". De opbouw volgt altijd de activatiecurve.', 'sfpb-calc-methode'),
-				veld('Programma 1 dag', programma['1'], 'Per regel een dagdeel.', 'sfpb-calc-prog1'),
-				veld('Programma 2 dagen', programma['2'], 'Per regel een dagdeel.', 'sfpb-calc-prog2'),
-				veld('Programma 3 dagen', programma['3'], 'Per regel een dagdeel.', 'sfpb-calc-prog3'),
+				veld('Cijfers in de pdf', feiten, 'Per regel een feit, zoals "4,9 op Google". Leeg: de netwerknorm (staat grijs in het veld). Referenties staan er altijd onder als "op aanvraag".', 'sfpb-calc-feiten'),
+				veld('Programma 1 dag', programma['1'], 'Per regel een onderdeel. Begin een regel met "Dag 1:" om per dag te groeperen.', 'sfpb-calc-prog1'),
+				veld('Programma 2 dagen', programma['2'], 'Per regel een onderdeel. Begin een regel met "Dag 1:" om per dag te groeperen.', 'sfpb-calc-prog2'),
+				veld('Programma 3 dagen', programma['3'], 'Per regel een onderdeel. Begin een regel met "Dag 1:" om per dag te groeperen.', 'sfpb-calc-prog3'),
 				el('h3', { text: 'Een zin per doelgroep (programma in de pdf)' })
 			]).concat(Object.keys(dg).map(function (k) { return veld(dgNamen[k], dg[k], null, 'sfpb-calc-dg-' + k); })).concat([
 				el('h3', { text: 'Uitleg bij het i-teken' })

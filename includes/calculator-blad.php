@@ -169,7 +169,8 @@ function sfp_calculator_blad_stijl( $vars, $kop_font, $tekst_font ) {
         . '.stappen{list-style:none;margin:0 0 18pt;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:14pt}'
         . '.stappen{break-inside:avoid}.stappen li{background:var(--tint-3);border-radius:var(--r);padding:16pt;color:var(--primair);break-inside:avoid}'
         . '.stappen .nr{display:inline-flex;align-items:center;justify-content:center;width:16pt;height:16pt;background:var(--primair);color:#fff;border-radius:3pt;font:900 9pt/1 ' . $k . ';margin-bottom:8pt}'
-        . '.volgende{margin-top:14pt}blockquote{margin:22pt 0 18pt;padding:6pt 0 6pt 16pt;border-left:3pt solid var(--secundair);font:400 10.5pt/1.55 ' . $b . ';color:var(--primair);break-inside:avoid}'
+        . '.volgende{margin-top:14pt}blockquote{position:relative;margin:26pt 0 22pt;padding:4pt 0 0 34pt;font:700 17pt/1.35 ' . $b . ';color:var(--primair);text-wrap:balance;break-inside:avoid}'
+        . 'blockquote .aanhaal{position:absolute;left:0;top:-6pt;font:900 46pt/1 ' . $k . ';color:var(--secundair)}'
         . 'blockquote cite{display:block;font:900 7.5pt ' . $k . ';text-transform:uppercase;letter-spacing:.06em;color:var(--primair);margin-top:8pt;font-style:normal}'
         // Volgende stap.
         . '.volgende{background:var(--primair);color:#fff;border-radius:var(--r);padding:22pt 24pt;display:grid;grid-template-columns:auto 1fr auto;gap:22pt;align-items:center;break-inside:avoid}'
@@ -186,6 +187,10 @@ function sfp_calculator_blad_stijl( $vars, $kop_font, $tekst_font ) {
         . 'a{color:var(--primair)}'
         . '.voorwaarden{margin-top:22pt;font-size:8pt}.voorwaarden h3{margin-bottom:4pt}'
         . '.lev td{font-size:8.5pt}.lev td:first-child{color:var(--body);width:38%}'
+        . '.cijfers{margin-top:24pt;padding:16pt 20pt;background:var(--tint-3);border-radius:var(--r);break-inside:avoid}'
+        . '.cijfers p{margin:0 0 6pt;color:var(--primair)}.cijfers .klein{margin:0;color:var(--body)}'
+        . '.cijfers .rij{font:900 12pt/1.4 ' . $k . ';text-transform:uppercase;letter-spacing:.02em}'
+        . '.cijfers .punt{color:var(--secundair);margin:0 8pt}'
         . '.proef{position:fixed;top:40%;left:0;right:0;text-align:center;font:900 90pt ' . $k . ';color:rgba(164,38,44,.12);transform:rotate(-24deg);z-index:9}'
         . '*{font-variant-ligatures:none!important;font-feature-settings:"locl" 0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}';
 }
@@ -298,13 +303,15 @@ function sfp_calculator_blad_html( array $rij ) {
         . '<span class="lab">' . $e( $t( 'lab' ) ) . '</span><h1>' . $e( $kop ) . '</h1>'
         . ( '' !== $kernzin ? '<p class="kernzin">' . $e( $kernzin ) . '</p>' : '' )
         . $bon
+        . sfp_calculator_blad_cijfers( $inst, $label, $t, $e )
         . '</section>';
 
-    $nr  = 0;
-    $kop = function ( $tekst ) use ( &$nr, $e ) {
-        $nr++;
-        return '<h2><span class="nr">' . $nr . '</span><span>' . $e( $tekst ) . '</span></h2>';
+    $kop = function ( $tekst ) use ( $e ) {
+        return '<h2><span class="nr">%NR%</span><span>' . $e( $tekst ) . '</span></h2>';
     };
+    $h_doel   = '';
+    $h_prog   = '';
+    $h_beg    = '';
 
     /* ---------- 1. Wat jullie willen bereiken ---------- */
     $antw = array();
@@ -327,7 +334,7 @@ function sfp_calculator_blad_html( array $rij ) {
         }
     }
     if ( $antw ) {
-        $html .= '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_doel' ) ) . '<p class="inleiding">' . $e( $t( 'pdf_doel_zin' ) ) . '</p><div class="antwoorden">'
+        $h_doel = '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_doel' ) ) . '<p class="inleiding">' . $e( $t( 'pdf_doel_zin' ) ) . '</p><div class="antwoorden">'
             . implode( '', array_map( function ( $a ) use ( $e ) { return '<div class="vak lijn' . ( $a[2] ? ' breed' : '' ) . '"><span class="lab">' . $e( $a[0] ) . '</span><p>' . $a[1] . '</p></div>'; }, $antw ) )
             . '</div></section>';
     }
@@ -347,7 +354,7 @@ function sfp_calculator_blad_html( array $rij ) {
         if ( ! empty( $keuzes['doelgroep'] ) && '' !== ( $inst['doelgroepzin'][ $keuzes['doelgroep'] ] ?? '' ) ) {
             $prog .= '<div class="vak lijn"><span class="lab">' . $e( $t( 'pdf_doelgroep' ) ) . '</span><p>' . $e( $inst['doelgroepzin'][ $keuzes['doelgroep'] ] ) . '</p></div>';
         }
-        $html .= '<section class="hoofdstuk zelfde">' . $kop( $t( 'pdf_h_programma' ) ) . $prog . '</section>';
+        $h_prog = '<section class="hoofdstuk zelfde">' . $kop( $t( 'pdf_h_programma' ) ) . $prog . '</section>';
     }
 
     /* ---------- 3. De begroting ---------- */
@@ -372,7 +379,7 @@ function sfp_calculator_blad_html( array $rij ) {
             $vw .= '<p>' . $e( $t( 'pdf_voorwaarden_link' ) ) . ': <a href="' . esc_url( $vw_url ) . '">' . $e( preg_replace( '#^https?://#', '', untrailingslashit( $vw_url ) ) ) . '</a></p>';
         }
         $beg  .= '<div class="voorwaarden"><h3>' . $e( $t( 'pdf_voorwaarden' ) ) . '</h3>' . $vw . '</div>';
-        $html .= '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_begroting' ) ) . $beg . '</section>';
+        $h_beg = '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_begroting' ) ) . $beg . '</section>';
     }
 
     /* ---------- 4. Zo leg je het intern voor ---------- */
@@ -397,10 +404,18 @@ function sfp_calculator_blad_html( array $rij ) {
     }
     $r = $inst['referentie'];
     if ( '' !== $r['citaat'] ) {
-        $intern .= '<blockquote>' . nl2br( $e( $r['citaat'] ) ) . '<cite>' . $e( implode( ', ', array_filter( array( $r['naam'], $r['functie'] ), 'strlen' ) ) ) . '</cite></blockquote>';
+        $intern .= '<blockquote><span class="aanhaal" aria-hidden="true">&ldquo;</span>' . nl2br( $e( $r['citaat'] ) ) . '<cite>' . $e( implode( ', ', array_filter( array( $r['naam'], $r['functie'] ), 'strlen' ) ) ) . '</cite></blockquote>';
     }
     $intern .= '<p class="klein">' . $e( $t( 'pdf_aankondiging' ) ) . '</p>';
-    $html   .= '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_intern' ) ) . $intern . '</section>';
+    $html .= $h_beg . $h_doel . $h_prog . '<section class="hoofdstuk">' . $kop( $t( 'pdf_h_intern' ) ) . $intern . '</section>';
+    $nr    = 0;
+    $html  = preg_replace_callback(
+        '/%NR%/',
+        function () use ( &$nr ) {
+            return (string) ++$nr;
+        },
+        $html
+    );
 
     /* ---------- 5. De volgende stap ---------- */
 
@@ -463,4 +478,26 @@ function sfp_calculator_blad_volgende( array $inst, $boek, $t, $e, $vol = false 
         . $mid
         . ( '' !== $qr ? '<div class="qr">' . $qr . '<span>' . $e( $t( 'pdf_scan' ) ) . '<br><a href="' . esc_url( $boek ) . '">' . $e( $t( 'pdf_of_klik' ) ) . '</a></span></div>' : '<span></span>' )
         . '</div>';
+}
+
+/**
+ * Sociaal bewijs in cijfers: de partnerzin, de feiten (SFP Beheer, anders de
+ * netwerknorm) en "Referenties op aanvraag".
+ *
+ * @param  array    $inst  Instellingen.
+ * @param  string   $label Labelnaam.
+ * @param  callable $t     Teksten.
+ * @param  callable $e     Escapen.
+ * @return string
+ */
+function sfp_calculator_blad_cijfers( array $inst, $label, $t, $e ) {
+    $bron   = '' !== trim( (string) ( $inst['feiten'] ?? '' ) ) ? (string) $inst['feiten'] : $t( 'pdf_feiten_norm' );
+    $feiten = array_values( array_filter( array_map( 'trim', preg_split( '/\r\n|\r|\n/', $bron ) ), 'strlen' ) );
+    $partner = 'SFP' !== sfp_calculator_site_afk() ? '<p>' . $e( $t( 'pdf_partner', array( 'label' => $label ) ) ) . '</p>' : '';
+    if ( ! $feiten && '' === $partner ) {
+        return '';
+    }
+    return '<div class="cijfers">' . $partner
+        . ( $feiten ? '<p class="rij">' . implode( '<span class="punt" aria-hidden="true">&bull;</span>', array_map( $e, $feiten ) ) . '</p>' : '' )
+        . '<p class="klein">' . $e( $t( 'pdf_referenties' ) ) . '</p></div>';
 }

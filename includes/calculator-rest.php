@@ -707,6 +707,7 @@ function sfp_calculator_stand() {
         'tellingen'     => sfp_calculator_tellingen(),
         'log'           => array_slice( (array) get_option( 'sfp_calculator_log', array() ), 0, 20 ),
         'velden'        => array_keys( sfp_calculator_velden_leeg() ),
+        'feiten_norm'   => sfp_calculator_t( 'pdf_feiten_norm' ),
     );
 }
 

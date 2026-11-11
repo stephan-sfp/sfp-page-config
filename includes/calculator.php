@@ -34,6 +34,7 @@ function sfp_calculator_leeg() {
         'open_pagina'       => 0,
         'logo'              => 0,
         'methode'           => '',
+        'feiten'            => '',
         'programma'         => array(
             '1' => '',
             '2' => '',
@@ -164,6 +165,9 @@ function sfp_calculator_instellingen_schoon( array $ruw ) {
     if ( array_key_exists( 'logo', $ruw ) ) {
         $id           = absint( $ruw['logo'] );
         $inst['logo'] = $id && wp_attachment_is_image( $id ) ? $id : 0;
+    }
+    if ( array_key_exists( 'feiten', $ruw ) ) {
+        $inst['feiten'] = sanitize_textarea_field( (string) $ruw['feiten'] );
     }
     if ( array_key_exists( 'methode', $ruw ) ) {
         $inst['methode'] = sanitize_text_field( (string) $ruw['methode'] );
