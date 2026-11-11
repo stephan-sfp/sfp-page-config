@@ -130,3 +130,5 @@
 :root .sfp-leeskolom .wp-block-details>summary:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:2px}
 :root .sfp-leeskolom .wp-block-details>:not(summary){margin:0 0 14px}
 :root .sfp-leeskolom .wp-block-details h3{font-size:16px;margin-top:8px}
+/* S8 (3.46.1): rand van een SureForms-veld in een SFP-sectie primair met transparantie (branding.md, Kleur per onderdeel) */
+:root .sfp-sectie .srfm-form-container{--srfm-color-input-border:color-mix(in srgb,var(--sfp-b-primair) 30%,transparent)}
