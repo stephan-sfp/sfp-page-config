@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.50.1] - 2026-11-12
+
+Icoon in tabs als kaart zonder cirkel (besluit Stephan 11-11-2026, DPS /over/). Alleen opmaak, niets in de database. Terugdraaien: versie 3.50.0 terugzetten (zip uit de tag v3.50.0, map sfp-page-config).
+
+### Gewijzigd
+- Tabs als kaart: geen lichte cirkel meer achter het icoon; het icoon blijft een silhouet in de secundaire kleur, rechts in de kaart, en is 96 px in plaats van 64 px. Op de telefoon blijft het verborgen.
+
 ## [3.50.0] - 2026-11-11
 
 Programma in tabs per variant op de volle breedte, drie dagen en drie situaties naast elkaar (besluit Stephan 11-11-2026, DPS /presentatietraining/). Alleen opmaak, niets in de database. Terugdraaien: versie 3.49.0 terugzetten (zip uit de tag v3.49.0, map sfp-page-config).
