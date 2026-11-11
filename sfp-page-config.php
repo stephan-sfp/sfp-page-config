@@ -574,6 +574,8 @@ $sfp_includes = array(
     'includes/calculator-opslag.php',
     'includes/calculator-rest.php',
     'includes/calculator-sureforms.php',
+    'includes/qr.php',
+    'includes/calculator-blad.php',
     'includes/calculator-pdf.php',
     'includes/calculator-weergave.php',
     'includes/nlvorm.php',
