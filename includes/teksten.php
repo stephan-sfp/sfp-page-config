@@ -890,7 +890,7 @@ function sfp_page_config_teksten_register() {
         'groep_wachtlijst_zin' => array(
             'groep' => 'Trainingspagina',
             'label' => 'Wachtlijstkaart: zin',
-            'nl'    => 'Zet je op de wachtlijst en je hoort als eerste wanneer de volgende groep start.',
+            'nl'    => 'Zet jezelf op de wachtlijst en je hoort als eerste wanneer de volgende groep start.',
             'en'    => 'Join the waiting list and be the first to hear when the next group starts.',
             'pt'    => 'Entre na lista de espera e seja o primeiro a saber quando a próxima turma começar.',
         ),
@@ -975,7 +975,7 @@ function sfp_page_config_teksten_register() {
         'groep_wachtlijst_kernzin' => array(
             'groep' => 'Trainingspagina',
             'label' => 'Wachtlijststand: kernzin van de sectie Inschrijven',
-            'nl'    => 'Er staat nog geen nieuwe groep gepland. Zet je op de wachtlijst en je hoort als eerste wanneer de volgende groep start.',
+            'nl'    => 'Er staat nog geen nieuwe groep gepland. Zet jezelf op de wachtlijst en je hoort als eerste wanneer de volgende groep start.',
             'en'    => 'No new group has been scheduled yet. Join the waiting list and you will be the first to hear when the next group starts.',
             'pt'    => 'Ainda não há uma nova turma agendada. Entre na lista de espera e seja o primeiro a saber quando a próxima turma começar.',
         ),
