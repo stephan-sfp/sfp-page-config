@@ -856,6 +856,12 @@ function sfp_page_config_nlvorm_delen( $inhoud ) {
     if ( preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"pakketten"|<!-- wp:sfp\/uitklap \{[^}]*"variant":"vergelijk"/', $inhoud ) ) {
         $delen[] = 'nlvorm-coach';
     }
+    // Sinds 3.53.0: Portfolio (Tabs) en Slot kort (Kolommen), zie includes/incompany.php.
+    if ( preg_match( '/<!-- wp:sfp\/tabs \{[^}]*"vorm":"portfolio"|<!-- wp:sfp\/kolommen \{[^}]*"indeling":"kort"/', $inhoud ) ) {
+        $delen[] = 'lijst';
+        $delen[] = 'review-kaart';
+        $delen[] = 'incompany';
+    }
     return $delen;
 }
 
@@ -1569,6 +1575,10 @@ function sfp_page_config_nlvorm_eigen_aanbod( $post_id = 0 ) {
         return has_block( 'sfp/groepskaarten', $post_id )
             && ( array() !== sfp_page_config_nlvorm_groepen( $post_id ) || sfp_page_config_cursus_varianten_aan( $post_id ) )
             && (bool) apply_filters( 'sfp_page_config_course_schema', true, $post_id );
+    }
+    // Incompany met een van de nieuwe bouwstenen (3.53.0): de plugin levert de Service.
+    if ( 'incompany' === $soort ) {
+        return function_exists( 'sfp_page_config_incompany_schema_aan' ) && sfp_page_config_incompany_schema_aan( $post_id );
     }
     if ( 'coaching' === $soort ) {
         return (bool) apply_filters( 'sfp_page_config_service_schema', true, $post_id )

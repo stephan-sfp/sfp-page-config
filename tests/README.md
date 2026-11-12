@@ -196,3 +196,11 @@ php tests/factcheck.php
 ```
 
 Checks with small WordPress stubs: cleaning the logged checks (date, future, user, duplicates, order), the label with and without a check (button or link to the editorial statement), the panel (checker, role, date, history newest first, link), the history of content revisions, articles and terms, and the input check for SFP Beheer.
+
+# Incompany (3.53.0)
+
+```sh
+wp eval-file wp-content/plugins/sfp-page-config/tests/incompany-wp.php
+```
+
+Runs inside a real WordPress (a local test install, never a live site). Checks the topic name ("Cursus Pitchen" becomes "Pitchen"), link targets, the topic row (only published children with page type Incompany, in menu order), Tabs as portfolio (logo alt, label, photo and review on the right, one link per panel), the layout Slot kort, Keuzehulp vorm (questions, defaults, own texts, at most four facts, actions only with a target, second action) and Service plus ItemList only on pages with one of these blocks.

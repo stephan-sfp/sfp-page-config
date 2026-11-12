@@ -96,3 +96,8 @@
   :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>.sfp-held__feit--editor{order:-1;margin-top:-16px}
   :root .sfp-held--wit>.sfp-held__binnen.block-editor-block-list__layout>.wp-block-image:not(.wp-block-image~.wp-block-image){grid-column:auto;grid-row:auto;order:-1}
 }
+/* Portfolio (3.53.0): in de editor staat het paneel onder elkaar en de namen in de balk zonder grijsfilter. */
+:root .sfp-editor-portfolio .sfp-tabpaneel{display:block;padding:24px}
+:root .sfp-editor-portfolio .sfp-tabpaneel>*+*{margin-top:18px}
+:root .sfp-editor-portfolio .sfp-tablijst [role=tab]{filter:none;min-height:56px}
+:root .sfp-editor-kv [contenteditable]{cursor:text}
