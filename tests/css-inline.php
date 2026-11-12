@@ -83,6 +83,7 @@ $bestanden = array(
     'sfp-tool-kaart'        => 'tool/tool-kaart.css',
     'sfp-longread-nav'      => 'longread-nav.css',
     'sfp-zelftest'          => 'zelftest/zelftest.css',
+    'sfp-calculator'        => 'calculator/calculator.css',
 );
 
 // Every handle that goes inline is known to the exclusion list, and the other way round.
@@ -154,6 +155,8 @@ $uitzondering = array(
     'artikel.css'           => 30000,
     'zelftest/zelftest.css' => 26000,
     'reviews/reviews.css'   => 15000,
+    // Alleen op de calculatorpagina; zelftest-opbouw (besluit 10-11-2026).
+    'calculator/calculator.css' => 16000,
 );
 $voorkant     = array_merge(
     array_values( $bestanden ),

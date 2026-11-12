@@ -172,6 +172,16 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Leesbare knoppen en het lettertype van de site op de pagina waar een klant zijn afspraak beheert of annuleert (link uit de bevestigingsmail).',
             'detail' => false,
         ),
+        'bedrijf'      => array(
+            'naam'   => 'Bedrijfsgegevens',
+            'uitleg' => 'Juridische naam, rechtsvorm, KvK, btw-nummer, IBAN en adres van deze site, met de labelnaam erbij. De begroting van de incompanycalculator leest ze hier; later ook de footer en de feitelijke verantwoording.',
+            'detail' => true,
+        ),
+        'calculator'   => array(
+            'naam'   => 'Incompanycalculator',
+            'uitleg' => 'Een begroting voor een incompanytraining: de bezoeker kiest vorm, groepen en extra\'s en ontvangt de begroting als pdf. De gegevens gaan via een SureForms-formulier.',
+            'detail' => true,
+        ),
         'contact'      => array(
             'naam'   => 'Contact',
             'uitleg' => 'Telefoon, e-mail en adres voor het blok Contactgegevens (bijvoorbeeld op de contactpagina). Leeg: het nummer en het e-mailadres van het netwerk.',
@@ -314,6 +324,7 @@ function sfp_page_config_onderdeel_standaard( $id ) {
             // Zonder ingevulde USP's toont de strook niets (3.30.0).
             return true;
         case 'zelftest':
+        case 'calculator':
             // Verzamelt gegevens van bezoekers: alleen aan als iemand dat kiest.
             return false;
         case 'kleurrollen':
@@ -621,6 +632,10 @@ function sfp_page_config_afwijkingen() {
             }
         }
     }
+    // De incompanycalculator.
+    if ( function_exists( 'sfp_calculator_afwijkingen' ) ) {
+        $uit = array_merge( $uit, sfp_calculator_afwijkingen() );
+    }
     return $uit;
 }
 
@@ -859,6 +874,12 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 $bewaard[]          = $sleutel;
                 break;
 
+            case 'bedrijf':
+                // Sinds de incompanycalculator: de bedrijfsgegevens van deze site.
+                $alle['bedrijf'] = function_exists( 'sfp_page_config_bedrijf_schoon' ) ? sfp_page_config_bedrijf_schoon( $ruw ) : array();
+                $bewaard[]       = $sleutel;
+                break;
+
             case 'netwerk':
                 // Sinds 3.34.0: de labels voor het blok Netwerk.
                 $alle['netwerk'] = function_exists( 'sfp_page_config_netwerk_schoon' ) ? sfp_page_config_netwerk_schoon( $ruw ) : array();
@@ -965,6 +986,13 @@ function sfp_page_config_instelling_naar_norm( $pad ) {
     }
     if ( preg_match( '/^zelftest\.([a-z0-9][a-z0-9-]{0,39})\.husselen$/', (string) $pad, $m ) ) {
         return function_exists( 'sfp_zelftest_instellingen_bewaar' ) && true === sfp_zelftest_instellingen_bewaar( $m[1], array( 'husselen' => '1' ) );
+    }
+    // Een afwijking van de calculatornorm.
+    if ( preg_match( '/^calculator\.(prijzen\.[a-z0-9_.]+|valuta|extras\.[a-z]+|routes\.[AB])$/', (string) $pad, $m ) && function_exists( 'sfp_calculator_instellingen_bewaar' ) ) {
+        $delen = explode( '.', $m[1], 2 );
+        $ruw   = 'valuta' === $delen[0] ? array( 'valuta' => '' ) : array( $delen[0] => array( $delen[1] => '' ) );
+        sfp_calculator_instellingen_bewaar( $ruw );
+        return true;
     }
     if ( ! array_key_exists( $pad, sfp_page_config_norm() ) ) {
         return false;

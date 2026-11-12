@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.52.0] - 2026-11-12
+
+Nieuw onderdeel Incompanycalculator. Het staat op elke site standaard uit en verandert niets aan de voorkant zolang het uit staat. Terugdraaien: versie 3.51.0 terugzetten; de tabel wp_sfp_calculator blijft dan staan maar wordt niet gebruikt.
+
+### Toegevoegd
+- Onderdeel Calculator (besluitenlog incompanycalculator, 22-10 tot en met 11-11): shortcode [sfp_calculator] en [sfp_calculator ingebed="1"] (kort, met knop naar de calculatorpagina), plus een blok.
+- Opbouw als de zelftest: één vraag per scherm, een enkele keuze gaat vanzelf door, Volgende alleen bij meer antwoorden of invoer, Vorige als tekstlink, voortgangsbalk. Startscherm met het aanbod en direct contact voor ander werk.
+- Vragen: training of evenement, de fase ("Waar staan jullie nu?", bij een inkoopprocedure de criteria), aantal en doelgroep, wat er anders moet en waarom nu, duur (kaarten met voordelen, de begroting verschijnt bij de keuze), extra's (coachuren en learning on the job per deelnemer in blokken van 4 uur), locatie, eerder traject, wie meebeslist, budget, inkoopgegevens, gegevens met organisatie en afdeling via SureForms.
+- De server rekent zelf opnieuw (rekenregel in PHP en JS, 41 scenario's gelijk), bewaart de begroting met kenmerk CODE-B-JJ-NNNN en vult de verborgen velden van het formulier.
+- Eindscherm met totaal, geldig tot en alleen de knop Plan een adviesgesprek; de pdf als tekstlink.
+- Begroting als pdf via Cloudflare Browser Run, in de vormtaal van de zelftest-pdf: voorblad met titel, totaal, doel en sociaal bewijs; de begroting; het programma per dag; zo leg je het intern voor met het adviesgesprek en een QR-code; bijlage voor inkoop alleen als die gegevens er zijn.
+- QR-code als SVG uit de plugin zelf (includes/qr.php), zonder externe dienst.
+- SFP Beheer: onderdeel Calculator (prijzen, extra's, routes, pagina's, formulier, contactpersoon, uitleg, programma, cijfers in de pdf, quote, proefbegroting, stand) en onderdeel Bedrijfsgegevens. Afwijkingen van de netwerknorm in het Overzicht.
+- Teksten in nl en en (includes/teksten.php).
+
 ## [3.51.0] - 2026-11-12
 
 Icoon in tabs als kaart in de eigen kleuren van het bestand, en zichtbaar in de editor (besluit Stephan 12-11-2026, DPS en DGA /over/). Niets in de database. Terugdraaien: versie 3.50.1 terugzetten (zip uit de tag v3.50.1, map sfp-page-config).
