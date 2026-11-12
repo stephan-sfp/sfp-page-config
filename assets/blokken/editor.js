@@ -637,11 +637,17 @@
 		}, [ props.clientId ] );
 		var icoon = wp.data.useSelect( function ( select ) { return props.attributes.icoonId ? select( 'core' ).getMedia( props.attributes.icoonId ) : null; }, [ props.attributes.icoonId ] );
 		var blockProps = useBlockProps( { className: 'sfp-tabpaneel', role: 'tabpanel', hidden: ! zicht.open } );
-		var inner = useInnerBlocksProps( blockProps, { template: kaartVorm ? [ [ 'core/heading', { level: 3 } ], [ 'core/paragraph' ] ] : [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ] } );
+		var sjabloon = kaartVorm ? [ [ 'core/heading', { level: 3 } ], [ 'core/paragraph' ] ] : [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ];
+		// Als kaart (3.51.0): tekst links en het icoon rechts in het canvas, zoals op de site.
+		var inner = useInnerBlocksProps( kaartVorm ? { className: 'sfp-tabpaneel__tekst' } : blockProps, { template: sjabloon } );
+		var vastIcoon = ! props.attributes.icoonId && props.attributes.icoon ? ( window.sfpIconen || [] ).filter( function ( ic ) { return ic.id === props.attributes.icoon; } )[ 0 ] : null;
+		var canvasIcoon = ! kaartVorm ? null : ( icoon && icoon.source_url
+			? el( 'span', { className: 'sfp-tabpaneel__icoon', 'aria-hidden': true }, el( 'img', { src: icoon.source_url, alt: '', width: 96, height: 96 } ) )
+			: ( vastIcoon && vastIcoon.url ? el( 'span', { className: 'sfp-tabpaneel__icoon', 'aria-hidden': true }, el( 'i', { style: { '--sfp-icoon': 'url("' + vastIcoon.url + '")' } } ) ) : null ) );
 		var MediaUploadT = be.MediaUpload;
 		return el( Fragment, null,
 			kaartVorm && MediaUploadT ? paneel( 'Icoon', [
-				icoon && icoon.source_url ? el( 'span', { key: 'v', className: 'sfp-tabpaneel__icoon', style: { width: '72px', height: '72px' } }, el( 'i', { style: { '--sfp-icoon': 'url(' + icoon.source_url + ')', width: '36px', height: '36px' } } ) ) : null,
+				icoon && icoon.source_url ? el( 'img', { key: 'v', src: icoon.source_url, alt: '', style: { display: 'block', width: '72px', height: '72px', objectFit: 'contain', marginBottom: '12px' } } ) : null,
 				props.attributes.icoonId ? null : el( 'div', { key: 'set', className: 'sfp-iconenkeuze', role: 'radiogroup', 'aria-label': 'Icoon uit de vaste set', style: { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '6px', marginBottom: '12px' } },
 					[ { id: '', label: 'Geen', url: '' } ].concat( window.sfpIconen || [] ).map( function ( ic ) {
 						var gekozen = ( props.attributes.icoon || '' ) === ic.id;
@@ -657,9 +663,9 @@
 					render: function ( o ) { return el( c.Button, { variant: 'secondary', onClick: o.open }, props.attributes.icoonId ? 'Ander icoon' : 'Kies een icoon' ); },
 				} ),
 				props.attributes.icoonId ? el( c.Button, { key: 'w', variant: 'link', isDestructive: true, onClick: function () { props.setAttributes( { icoonId: 0 } ); } }, 'Geen icoon' ) : null,
-				uitleg( 'Kies een icoon uit de set, of een SVG met één kleur uit de media (die gaat voor). Het krijgt de secundaire kleur van de site. Niet op een telefoon.' ),
+				uitleg( 'Kies een icoon uit de set, of een afbeelding uit de media (die gaat voor). Een afbeelding uit de media staat er in zijn eigen kleuren; een icoon uit de set krijgt de secundaire kleur van de site. Niet op een telefoon.' ),
 			] ) : null,
-			el( 'div', inner )
+			kaartVorm ? el( 'div', blockProps, el( 'div', inner ), canvasIcoon ) : el( 'div', inner )
 		);
 	} );
 

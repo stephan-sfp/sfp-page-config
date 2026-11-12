@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.51.0] - 2026-11-12
+
+Icoon in tabs als kaart in de eigen kleuren van het bestand, en zichtbaar in de editor (besluit Stephan 12-11-2026, DPS en DGA /over/). Niets in de database. Terugdraaien: versie 3.50.1 terugzetten (zip uit de tag v3.50.1, map sfp-page-config).
+
+### Gewijzigd
+- Tabs als kaart: een icoon uit de media staat er als afbeelding in zijn eigen kleuren, met verlopen en filters; geen silhouet meer in de secundaire kleur. Decoratief (lege alt), 96 px, rechts in de kaart, op de telefoon verborgen. Een icoon uit de vaste set blijft een silhouet in de secundaire kleur.
+- Editor: het icoon staat nu ook in het canvas, rechts naast de tekst, zoals op de site. De uitleg in het paneel Icoon zegt hoe de kleuren werken.
+
+### Gerepareerd
+- Op DPS /over/ toonden de tabs Structuur en Authenticiteit geen icoon; als afbeelding wel.
+
 ## [3.50.1] - 2026-11-12
 
 Icoon in tabs als kaart zonder cirkel (besluit Stephan 11-11-2026, DPS /over/). Alleen opmaak, niets in de database. Terugdraaien: versie 3.50.0 terugzetten (zip uit de tag v3.50.0, map sfp-page-config).

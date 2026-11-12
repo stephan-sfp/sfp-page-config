@@ -1553,10 +1553,11 @@ function sfp_page_config_tab_dagen( $titel ) {
 }
 
 /**
- * Het icoon van een tab (3.34.0): een afbeelding uit de media als masker,
- * zodat het de secundaire kleur van de site krijgt. Sinds 3.37.0 ook een
- * icoon uit de vaste set; een afbeelding uit de media gaat voor. Geen
- * icoon: leeg.
+ * Het icoon van een tab (3.34.0). Sinds 3.51.0 staat een afbeelding uit de
+ * media als afbeelding in eigen kleuren (verlopen en filters blijven); een
+ * icoon uit de vaste set (3.37.0) blijft een silhouet in de secundaire
+ * kleur van de site. De afbeelding uit de media gaat voor. Decoratief: lege
+ * alt en aria-hidden. Geen icoon: leeg.
  *
  * @param  int    $id    Bijlage.
  * @param  string $vast  Naam uit de vaste set.
@@ -1565,9 +1566,12 @@ function sfp_page_config_tab_dagen( $titel ) {
 function sfp_page_config_tab_icoon( $id, $vast = '' ) {
     $url = '';
     if ( $id > 0 && wp_attachment_is_image( $id ) ) {
-        $url = esc_url( (string) wp_get_attachment_url( $id ) );
+        $beeld = (string) wp_get_attachment_url( $id );
+        if ( '' !== $beeld ) {
+            return '<span class="sfp-tabpaneel__icoon" aria-hidden="true"><img src="' . esc_url( $beeld ) . '" alt="" width="96" height="96" loading="lazy" decoding="async"></span>';
+        }
     }
-    if ( '' === $url && '' !== $vast ) {
+    if ( '' !== $vast ) {
         $url = sfp_page_config_icoon_data( $vast );
     }
     if ( '' === $url ) {

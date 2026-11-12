@@ -38,6 +38,7 @@
 :root .sfp-tabs--kaart .sfp-tabpaneel p{font-size:17px;max-width:44em}
 :root .sfp-tabpaneel__icoon{width:140px;height:140px;display:grid;place-items:center}
 :root .sfp-tabpaneel__icoon i{display:block;width:96px;height:96px;background:var(--sfp-b-secundair);-webkit-mask:var(--sfp-icoon) center/contain no-repeat;mask:var(--sfp-icoon) center/contain no-repeat}
+:root .sfp-tabpaneel__icoon img{display:block;width:96px;height:96px;object-fit:contain;margin:0}
 
 /* ---------- O2 Netwerk ---------- */
 :root .sfp-netwerk{gap:24px}
