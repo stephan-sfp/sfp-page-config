@@ -387,6 +387,7 @@
 		{ label: 'Inschrijven', value: 'inschrijven', vorm: 'n:1,1.1' },
 		{ label: 'Pakketten', value: 'pakketten', vorm: 'n:1,1,1', rand: true },
 		{ label: 'Slot: gesprek en formulier', value: 'slot', vorm: 'n:1,1', rand: true },
+		{ label: 'Slot kort', value: 'kort', vorm: 'n:1,1' },
 	];
 	blok( 'sfp/kolommen', function ( props ) {
 		var a = props.attributes;
@@ -403,7 +404,8 @@
 					{ label: 'Even hoog', value: 'rekken' },
 				], function ( v ) { props.setAttributes( { uitlijning: v } ); } ),
 				'reviews' === a.indeling ? schakelaar( 'Carrousel op een telefoon', a.carrousel, function ( v ) { props.setAttributes( { carrousel: v } ); }, 'Op een telefoon veeg je door de reviews; op een tablet staan er twee.' ) : null,
-				'slot' === a.indeling ? uitleg( 'Twee kaarten naast elkaar: links het kennismakingsgesprek (LatePoint en Naam met portret), rechts het korte formulier (SureForms). Op tablet en telefoon onder elkaar.' ) : uitleg( 'Op een telefoon staan de kolommen onder elkaar.' ),
+				'kort' === a.indeling ? uitleg( 'Slot kort: links Label, H2, Kernzin, Knoppen (knop en tekstlink met het telefoonnummer) en Wie; rechts één Review, of het LatePoint-boekformulier met de Review links onder de tekst. Op tablet en telefoon onder elkaar.' ) : null,
+				'kort' === a.indeling ? null : 'slot' === a.indeling ? uitleg( 'Twee kaarten naast elkaar: links het kennismakingsgesprek (LatePoint en Naam met portret), rechts het korte formulier (SureForms). Op tablet en telefoon onder elkaar.' ) : uitleg( 'Op een telefoon staan de kolommen onder elkaar.' ),
 			] ),
 			el( 'div', inner )
 		);
@@ -576,11 +578,12 @@
 		}, [ props.clientId ] );
 		var zet = function ( id ) { wp.data.dispatch( TABS_STORE ).zet( props.clientId, id ); };
 		var voegToe = function () {
-			var nieuw = wp.blocks.createBlock( 'sfp/tab', {}, [ wp.blocks.createBlock( 'core/paragraph', { className: 'is-style-sfp-groot' } ), wp.blocks.createBlock( 'core/paragraph' ) ] );
+			// Portfolio (3.53.0): een lege tab krijgt het sjabloon van een opdrachtgever.
+			var nieuw = 'portfolio' === a.vorm ? wp.blocks.createBlock( 'sfp/tab' ) : wp.blocks.createBlock( 'sfp/tab', {}, [ wp.blocks.createBlock( 'core/paragraph', { className: 'is-style-sfp-groot' } ), wp.blocks.createBlock( 'core/paragraph' ) ] );
 			wp.data.dispatch( 'core/block-editor' ).insertBlock( nieuw, stand.tabs.length, props.clientId );
 			zet( nieuw.clientId );
 		};
-		var blockProps = useBlockProps( { className: 'sfp-tabs' + ( 'kaart' === a.vorm ? ' sfp-tabs--kaart' : '' ) + ( a.variant ? ' sfp-tabs--variant' : '' ) } );
+		var blockProps = useBlockProps( { className: 'sfp-tabs' + ( 'kaart' === a.vorm ? ' sfp-tabs--kaart' : '' ) + ( 'portfolio' === a.vorm ? ' sfp-tabs--portfolio sfp-editor-portfolio' : '' ) + ( a.variant ? ' sfp-tabs--variant' : '' ) } );
 		var inner = useInnerBlocksProps( { className: 'sfp-editor-tabpanelen' }, { allowedBlocks: [ 'sfp/tab' ], template: [ [ 'sfp/tab' ], [ 'sfp/tab' ] ], renderAppender: false } );
 		var balk = el( 'div', { className: 'sfp-tablijst', role: 'tablist', 'aria-label': a.label || undefined },
 			stand.tabs.map( function ( tab ) {
@@ -597,7 +600,7 @@
 					actief ? el( RichText, {
 						tagName: 'span',
 						value: tab.titel,
-						placeholder: 'Naam van het tabblad',
+						placeholder: 'portfolio' === a.vorm ? 'Naam van de opdrachtgever' : 'Naam van het tabblad',
 						allowedFormats: [],
 						onChange: function ( v ) { wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( tab.id, { titel: v } ); },
 					} ) : el( 'span', { dangerouslySetInnerHTML: { __html: tab.titel || 'Naam van het tabblad' } } )
@@ -607,10 +610,13 @@
 		);
 		return el( Fragment, null,
 			paneel( 'Tabs', [
-				vormkeuze( 'Vorm', a.vorm || '', [ { label: 'Gecentreerd', value: '', vorm: 'o:1' }, { label: 'Als kaart met icoon', value: 'kaart', vorm: 'n:1.6,.4', rand: true } ], function ( v ) { props.setAttributes( { vorm: v } ); } ),
+				vormkeuze( 'Vorm', a.vorm || '', [ { label: 'Gecentreerd', value: '', vorm: 'o:1' }, { label: 'Als kaart met icoon', value: 'kaart', vorm: 'n:1.6,.4', rand: true }, { label: 'Portfolio met logo\'s', value: 'portfolio', vorm: 'n:1.15,1', rand: true } ], function ( v ) { props.setAttributes( { vorm: v } ); } ),
 				'kaart' === a.vorm ? uitleg( 'Links uitgelijnd in een witte kaart. Per tab een kop (H3), tekst en rechts een icoon: kies het icoon in de zijbalk van de tab.' ) : null,
+				'portfolio' === a.vorm ? uitleg( 'Per opdrachtgever een tab: de naam typ je in de tabbalk, het logo kies je in de zijbalk van de tab. De naam staat op de site als label boven de kop. Foto en Review staan rechts, de rest links. Op een telefoon veeg je door de logo\'s.' ) : null,
+				'portfolio' === a.vorm ? tekstveld( 'Tekstlink onder elk paneel', a.actieTekst, function ( v ) { props.setAttributes( { actieTekst: v } ); }, 'Bijvoorbeeld: Plan een adviesgesprek. Leeg: geen tekstlink.' ) : null,
+				'portfolio' === a.vorm ? tekstveld( 'Doel van de tekstlink', a.actieDoel, function ( v ) { props.setAttributes( { actieDoel: v } ); }, 'Een anker (#adviesgesprek), een pad op de site (/incompany/calculator/) of een paginanummer.' ) : null,
 				tekstveld( 'Naam voor schermlezers', a.label, function ( v ) { props.setAttributes( { label: v } ); }, 'Wordt voorgelezen, niet getoond. Bijvoorbeeld: Drie bronnen van overtuiging.' ),
-				schakelaar( 'Volgt de variantkeuze', !! a.variant, function ( v ) { props.setAttributes( { variant: v } ); }, 'Op een trainingspagina met een prijs per aantal dagen: de keuze 1, 2 of 3 dagen bij de groepskaarten opent de tab met dat aantal dagen in de titel, bijvoorbeeld 3 dagen.' ),
+				'portfolio' === a.vorm ? null : schakelaar( 'Volgt de variantkeuze', !! a.variant, function ( v ) { props.setAttributes( { variant: v } ); }, 'Op een trainingspagina met een prijs per aantal dagen: de keuze 1, 2 of 3 dagen bij de groepskaarten opent de tab met dat aantal dagen in de titel, bijvoorbeeld 3 dagen.' ),
 				uitleg( 'Klik op een tab om die inhoud te bewerken. De plus in de balk voegt een tab toe.' ),
 			] ),
 			el( 'div', blockProps, balk, el( 'div', inner ) )
@@ -630,14 +636,26 @@
 				wp.data.dispatch( TABS_STORE ).zet( zicht.tabsId, props.clientId );
 			}
 		}, [ zicht.gekozen, zicht.open, zicht.tabsId ] );
-		var kaartVorm = wp.data.useSelect( function ( select ) {
+		var ouderVorm = wp.data.useSelect( function ( select ) {
 			var be2 = select( 'core/block-editor' );
 			var ouder = be2.getBlockRootClientId( props.clientId );
-			return ouder ? 'kaart' === ( be2.getBlockAttributes( ouder ) || {} ).vorm : false;
+			return ouder ? ( be2.getBlockAttributes( ouder ) || {} ).vorm || '' : '';
 		}, [ props.clientId ] );
+		var kaartVorm = 'kaart' === ouderVorm;
+		var portfolioVorm = 'portfolio' === ouderVorm;
+		var logo = wp.data.useSelect( function ( select ) { return props.attributes.logoId ? select( 'core' ).getMedia( props.attributes.logoId ) : null; }, [ props.attributes.logoId ] );
 		var icoon = wp.data.useSelect( function ( select ) { return props.attributes.icoonId ? select( 'core' ).getMedia( props.attributes.icoonId ) : null; }, [ props.attributes.icoonId ] );
 		var blockProps = useBlockProps( { className: 'sfp-tabpaneel', role: 'tabpanel', hidden: ! zicht.open } );
-		var sjabloon = kaartVorm ? [ [ 'core/heading', { level: 3 } ], [ 'core/paragraph' ] ] : [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ];
+		var lijstKolom = function ( label ) {
+			return [ 'sfp/kolom', {}, [ [ 'core/paragraph', { className: 'is-style-sfp-label', content: label } ], [ 'sfp/lijst', { stijl: 'vink' }, [ [ 'core/list', {}, [ [ 'core/list-item', { placeholder: 'Typ een punt' } ] ] ] ] ] ] ];
+		};
+		// Portfolio (3.53.0, I1): kop, twee lijsten, foto en review.
+		var sjabloon = portfolioVorm ? [
+			[ 'core/heading', { level: 3, placeholder: 'Wat we voor deze opdrachtgever doen' } ],
+			[ 'sfp/kolommen', { indeling: 'twee' }, [ lijstKolom( 'De opdracht' ), lijstKolom( 'De opbrengst' ) ] ],
+			[ 'core/image', { sizeSlug: 'large' } ],
+			[ 'sfp/review' ],
+		] : kaartVorm ? [ [ 'core/heading', { level: 3 } ], [ 'core/paragraph' ] ] : [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ];
 		// Als kaart (3.51.0): tekst links en het icoon rechts in het canvas, zoals op de site.
 		var inner = useInnerBlocksProps( kaartVorm ? { className: 'sfp-tabpaneel__tekst' } : blockProps, { template: sjabloon } );
 		var vastIcoon = ! props.attributes.icoonId && props.attributes.icoon ? ( window.sfpIconen || [] ).filter( function ( ic ) { return ic.id === props.attributes.icoon; } )[ 0 ] : null;
@@ -645,7 +663,20 @@
 			? el( 'span', { className: 'sfp-tabpaneel__icoon', 'aria-hidden': true }, el( 'img', { src: icoon.source_url, alt: '', width: 96, height: 96 } ) )
 			: ( vastIcoon && vastIcoon.url ? el( 'span', { className: 'sfp-tabpaneel__icoon', 'aria-hidden': true }, el( 'i', { style: { '--sfp-icoon': 'url("' + vastIcoon.url + '")' } } ) ) : null ) );
 		var MediaUploadT = be.MediaUpload;
+		var logoPaneel = portfolioVorm && MediaUploadT ? paneel( 'Logo', [
+			logo && logo.source_url ? el( 'img', { key: 'v', src: logo.source_url, alt: '', style: { display: 'block', maxWidth: '160px', height: '48px', objectFit: 'contain', marginBottom: '12px' } } ) : null,
+			el( MediaUploadT, {
+				key: 'k',
+				onSelect: function ( m ) { props.setAttributes( { logoId: m.id || 0 } ); },
+				allowedTypes: [ 'image' ],
+				value: props.attributes.logoId,
+				render: function ( o ) { return el( c.Button, { variant: 'secondary', onClick: o.open }, props.attributes.logoId ? 'Ander logo' : 'Kies een logo' ); },
+			} ),
+			props.attributes.logoId ? el( c.Button, { key: 'w', variant: 'link', isDestructive: true, onClick: function () { props.setAttributes( { logoId: 0 } ); } }, 'Geen logo' ) : null,
+			uitleg( 'Het logo staat in de tabbalk: grijs, en in kleur als de tab open staat. De alt-tekst maakt de plugin: de naam met (logo). Zonder logo staat de naam in de balk.' ),
+		] ) : null;
 		return el( Fragment, null,
+			logoPaneel,
 			kaartVorm && MediaUploadT ? paneel( 'Icoon', [
 				icoon && icoon.source_url ? el( 'img', { key: 'v', src: icoon.source_url, alt: '', style: { display: 'block', width: '72px', height: '72px', objectFit: 'contain', marginBottom: '12px' } } ) : null,
 				props.attributes.icoonId ? null : el( 'div', { key: 'set', className: 'sfp-iconenkeuze', role: 'radiogroup', 'aria-label': 'Icoon uit de vaste set', style: { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '6px', marginBottom: '12px' } },

@@ -1,0 +1,77 @@
+/*
+ * Bouwstenen incompany (3.53.0): I1 Portfolio (Tabs, vorm portfolio), I2 Onderwerpenregel
+ * en I3 Slot kort (Kolommen, indeling kort). Ontwerp nl-vormen v100 (8-11-2026).
+ * Breekpunten 980 (tablet) en 700 (telefoon). Kleuren en fonts alleen uit de rolvariabelen.
+ */
+/* I1 Portfolio: één witte kaart, logo's over de volle breedte, paneel tekst links en foto met review rechts. */
+:root .sfp-tabs.sfp-tabs--portfolio{max-width:none;margin:36px 0 0;border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);background:var(--sfp-b-wit);overflow:hidden}
+:root .sfp-tabs--portfolio .sfp-tablijst{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:0;justify-content:stretch;border-bottom:1px solid var(--sfp-b-lijn)}
+:root .sfp-tabs--portfolio .sfp-tablijst [role=tab]{display:grid;place-items:center;min-height:92px;padding:22px 16px 19px;border-bottom:3px solid transparent;opacity:.45;filter:grayscale(1);transition:opacity .15s;text-transform:none;letter-spacing:0;background:none;box-shadow:none;border-radius:0}
+:root .sfp-tabs--portfolio .sfp-tablijst [role=tab][aria-selected=true]{opacity:1;filter:none;border-bottom-color:var(--sfp-b-secundair)}
+:root .sfp-tabs--portfolio .sfp-tablijst [role=tab]:hover{opacity:.8}
+:root .sfp-tabs--portfolio .sfp-tablijst [role=tab][aria-selected=true]:hover{opacity:1}
+:root .sfp-tabs--portfolio .sfp-tablijst [role=tab]:focus-visible{outline:2px solid var(--sfp-b-secundair);outline-offset:-4px}
+:root .sfp-tabs--portfolio .sfp-portfolio__logo{display:block;height:44px;width:auto;max-width:100%;object-fit:contain;border-radius:0}
+:root .sfp-tabs--portfolio .sfp-portfolio__naam{font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;line-height:1.2;color:var(--sfp-b-primair)}
+:root .sfp-tabs--portfolio .sfp-tabpaneel{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;max-width:none;margin:0;padding:40px;text-align:left;justify-items:stretch;align-items:start}
+:root .sfp-tabs--portfolio .sfp-tabpaneel[hidden]{display:none}
+:root .sfp-portfolio__tekst{display:grid;gap:22px;align-content:start;min-width:0}
+:root .sfp-portfolio__tekst>*{margin:0}
+:root .sfp-portfolio__tekst>.is-style-sfp-label+h3{margin-top:-14px}
+:root .sfp-portfolio__tekst h3{padding:0;font-size:clamp(20px,1.2vw + 12px,26px)}
+:root .sfp-portfolio__tekst .sfp-kolommen{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+:root .sfp-portfolio__tekst .sfp-kolom{row-gap:12px}
+:root .sfp-portfolio__tekst .sfp-lijst--vink :is(ul,ol){gap:10px}
+:root .sfp-portfolio__tekst .sfp-lijst--vink li{font-size:16px;line-height:1.45;padding-left:28px;color:var(--sfp-b-body)}
+.sfp-portfolio__tekst .sfp-lijst--vink li::before{width:18px;height:18px;background-size:12px}
+:root .sfp-tabs--portfolio .sfp-portfolio__tekst p{font-size:17px}
+:root .sfp-tabs--portfolio .sfp-portfolio__tekst .is-style-sfp-label{font-size:12px}
+:root .sfp-tabs--portfolio .sfp-portfolio__tekst .is-style-sfp-pijl{font-size:15px}
+:root .sfp-portfolio__beeld{display:grid;gap:16px;min-width:0}
+:root .sfp-portfolio__beeld .wp-block-image{margin:0}
+:root .sfp-portfolio__beeld .wp-block-image img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:var(--sfp-b-r-kaart)}
+:root .sfp-portfolio__beeld .sfp-review-kaart{max-width:none;margin:0;padding:18px 22px;text-align:left;background:var(--sfp-b-tint3);border:0;border-left:3px solid var(--sfp-b-secundair);border-radius:0 var(--sfp-b-r-kaart) var(--sfp-b-r-kaart) 0}
+:root .sfp-portfolio__beeld .sfp-review-kaart__sterren{justify-content:flex-start;gap:3px;margin:0 0 8px}
+:root .sfp-portfolio__beeld .sfp-review-kaart__ster{width:16px;height:16px}
+:root .sfp-portfolio__beeld .sfp-review-kaart:not(.is-open) .sfp-review-kaart__tekst{display:block;-webkit-line-clamp:unset;line-clamp:none;overflow:visible;font-size:16px;line-height:1.55}
+:root .sfp-portfolio__beeld .sfp-review-kaart .sfp-review-kaart__meer{display:none}
+:root .sfp-portfolio__beeld .sfp-review-kaart .sfp-review-kaart__naam{margin:10px 0 0;font-size:14px}
+:root .sfp-portfolio__beeld .sfp-review-kaart .sfp-review-kaart__bron{margin:2px 0 0;font-size:14px}
+@media (min-width:701px) and (max-width:980px){
+  :root .sfp-tabs--portfolio .sfp-tabpaneel{grid-template-columns:minmax(0,1fr);gap:28px;padding:32px}
+  :root .sfp-portfolio__beeld{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch}
+  :root .sfp-portfolio__beeld .wp-block-image{height:100%}
+  :root .sfp-portfolio__beeld .wp-block-image img{height:100%;min-height:220px;aspect-ratio:auto}
+  :root .sfp-tabs--portfolio .sfp-portfolio__logo{height:34px}
+}
+@media (max-width:700px){
+  :root .sfp-tabs--portfolio .sfp-tablijst{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 48px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 48px),transparent 100%)}
+  :root .sfp-tabs--portfolio .sfp-tablijst::-webkit-scrollbar{display:none}
+  :root .sfp-tabs--portfolio .sfp-tablijst [role=tab]{flex:0 0 116px;min-height:68px;padding:16px 12px 13px}
+  :root .sfp-tabs--portfolio .sfp-portfolio__logo{height:30px}
+  :root .sfp-tabs--portfolio .sfp-tabpaneel{grid-template-columns:minmax(0,1fr);gap:22px;padding:24px 20px 26px}
+  :root .sfp-portfolio__beeld{order:-1}
+  :root .sfp-portfolio__tekst .sfp-kolommen{grid-template-columns:minmax(0,1fr);gap:22px}
+}
+/* I2 Onderwerpenregel: de bestaande tekstlink met pijl, in een rij die omwikkelt (besluit Stephan 12-11, vorm C). */
+:root ul.sfp-onderwerpen{display:flex;flex-wrap:wrap;gap:14px 32px;max-width:1000px;margin:32px 0 0;padding:0;list-style:none}
+:root ul.sfp-onderwerpen>li{margin:0;padding:0;font-size:17px;line-height:1.4}
+:root ul.sfp-onderwerpen>li::before{content:none}
+@media (max-width:700px){:root ul.sfp-onderwerpen{gap:12px 24px}:root ul.sfp-onderwerpen>li{font-size:16px}}
+/* I3 Slot kort: tekst links, één review of het boekformulier rechts; tablet en telefoon onder elkaar. */
+:root .sfp-kolommen.sfp-kolommen--kort{gap:32px;align-items:center}
+:root .sfp-kolommen--kort>.sfp-kolom{row-gap:18px;justify-items:start}
+:root .sfp-kolommen--kort>.sfp-kolom>*{margin:0}
+:root .sfp-kolommen--kort>.sfp-kolom>h2{padding:0}
+:root .sfp-kolommen--kort .wp-block-buttons{align-items:center;column-gap:28px;row-gap:14px;margin-top:6px}
+:root .sfp-kolommen--kort .sfp-review-kaart{max-width:none;margin:0;width:100%;text-align:left;background:var(--sfp-b-wit);padding:32px 36px}
+:root .sfp-kolommen--kort .sfp-review-kaart__sterren{justify-content:flex-start}
+:root .sfp-kolommen--kort .sfp-review-kaart__tekst{font-size:18px}
+:root .sfp-kolommen--kort .sfp-review-kaart:not(.is-open) .sfp-review-kaart__tekst{display:block;-webkit-line-clamp:unset;line-clamp:none;overflow:visible}
+:root .sfp-kolommen--kort .sfp-review-kaart .sfp-review-kaart__meer{display:none}
+:root .sfp-kolommen--kort>.sfp-kolom>:is(.latepoint-book-form-wrapper,.wp-block-latepoint-book-form,.sfp-kaart){width:100%}
+@media (min-width:981px){:root .sfp-kolommen.sfp-kolommen--kort{grid-template-columns:repeat(2,minmax(0,1fr));gap:56px}}
+@media (max-width:700px){
+  :root .sfp-kolommen--kort .sfp-review-kaart{padding:24px 22px}
+  :root .sfp-kolommen--kort .sfp-review-kaart__tekst{font-size:16px}
+}

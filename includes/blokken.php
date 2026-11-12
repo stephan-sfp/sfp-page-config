@@ -147,7 +147,7 @@ function sfp_page_config_blokken() {
                 'indeling'   => array(
                     'type'    => 'string',
                     'default' => 'twee',
-                    'enum'    => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten', 'slot' )
+                    'enum'    => array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten', 'slot', 'kort' )
                 ),
                 // Reviews als carrousel op een telefoon (3.34.0, H6).
                 'carrousel'  => array(
@@ -266,8 +266,11 @@ function sfp_page_config_blokken() {
                 'vorm'    => array(
                     'type'    => 'string',
                     'default' => '',
-                    'enum'    => array( '', 'kaart' )
+                    'enum'    => array( '', 'kaart', 'portfolio' )
                 ),
+                // Portfolio (3.53.0, I1): één tekstlink onder elk paneel.
+                'actieTekst' => $tekst,
+                'actieDoel'  => $tekst,
                 // Sinds 3.43.0: volgt de variantkeuze van de groepskaarten
                 // (een tab per variant, het aantal dagen staat in de titel).
                 'variant' => array(
@@ -294,6 +297,11 @@ function sfp_page_config_blokken() {
                 'icoon'   => array(
                     'type'    => 'string',
                     'default' => '',
+                ),
+                // Logo van de opdrachtgever in Tabs als portfolio (3.53.0, I1).
+                'logoId'  => array(
+                    'type'    => 'number',
+                    'default' => 0
                 ),
             ),
             'render'      => 'sfp_page_config_render_tab',
@@ -1026,7 +1034,7 @@ function sfp_page_config_blokken_editor_css() {
  * @return string[]
  */
 function sfp_page_config_blokken_editor_bestanden() {
-    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'verhaal', 'formulier', 'editor' );
+    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'verhaal', 'formulier', 'incompany', 'keuzehulp-vorm', 'editor' );
 }
 
 /**
@@ -1204,7 +1212,7 @@ function sfp_page_config_render_held( $attrs, $content, $blok = null ) {
  * @return string
  */
 function sfp_page_config_render_kolommen( $attrs, $content, $blok = null ) {
-    $indeling   = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'indeling', 'twee' ), array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten', 'slot' ) );
+    $indeling   = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'indeling', 'twee' ), array( 'twee', 'drie', 'tekst-beeld', 'tekst-boek', 'boeking', 'breed-smal', 'situaties', 'reviews', 'boek', 'inschrijven', 'pakketten', 'slot', 'kort' ) );
     $carrousel  = 'reviews' === $indeling && ! empty( $attrs['carrousel'] );
     // De indelingen van de NL-vorm (3.30.0) hebben nlvorm.css nodig.
     $nlvorm     = in_array( $indeling, array( 'situaties', 'reviews' ), true ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inhoud' ) : '';
@@ -1212,6 +1220,8 @@ function sfp_page_config_render_kolommen( $attrs, $content, $blok = null ) {
     $nlvorm    .= 'pakketten' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-coach' ) : '';
     $nlvorm    .= 'slot' === $indeling || $carrousel ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-home' ) : '';
     $nlvorm    .= 'slot' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-slot' ) : '';
+    // Slot kort (3.53.0, I3): tekst links, review of boekformulier rechts.
+    $nlvorm    .= 'kort' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'review-kaart' ) . sfp_page_config_blokken_css_vangnet_bestand( 'incompany' ) : '';
     $uitlijning = sfp_page_config_blok_attr( $attrs, 'uitlijning' );
     $uitlijning = in_array( $uitlijning, array( 'boven', 'midden', 'onder', 'rekken' ), true ) ? 'sfp-kolommen--' . $uitlijning : '';
     // Verhaalvorm (3.42.0, besluit Stephan 10-11): tekst en afgerond beeld met lange tekst.
@@ -1486,6 +1496,10 @@ function sfp_page_config_render_uitklap_regel( $attrs, $content ) {
 function sfp_page_config_render_tabs( $attrs, $content, $block = null ) {
     if ( ! $block instanceof WP_Block ) {
         return $content;
+    }
+    // Portfolio (3.53.0, I1): logo's als tabs, zie includes/incompany.php.
+    if ( 'portfolio' === sfp_page_config_blok_attr( $attrs, 'vorm' ) && function_exists( 'sfp_page_config_incompany_portfolio' ) ) {
+        return sfp_page_config_incompany_portfolio( $attrs, $block );
     }
     sfp_page_config_blokken_js_nodig( true );
     $label   = sfp_page_config_blok_attr( $attrs, 'label' );

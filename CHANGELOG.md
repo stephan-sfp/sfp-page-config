@@ -4,6 +4,19 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.53.0] - 2026-11-12
+
+Vier nieuwe bouwstenen voor /incompany/ en de incompany-cursuspagina's (ontwerp nl-vormen v100 en v105, besluiten Stephan 12-11-2026). Ze staan nog op geen enkele pagina; bestaande pagina's veranderen niet. Terugdraaien: versie 3.52.0 terugzetten (zip uit de tag v3.52.0, map sfp-page-config). Pagina's met de nieuwe blokken tonen die blokken dan niet meer.
+
+### Toegevoegd
+- I1 Portfolio: Tabs krijgt de vorm Portfolio met logo's. Per opdrachtgever een tab met logo (grijs, actief in kleur met onderlijn in secundair); het paneel heeft links de naam als label, H3, twee lijsten en een tekstlink (tekst en doel instelbaar), rechts de foto 16:9 met een review uit SFP Beheer, Reviews. Tablet: foto en review naast elkaar. Telefoon: logo's om te vegen, foto boven de tekst.
+- I2 Onderwerpenregel (blok): de onderwerppagina's onder de pagina met soort pagina Incompany, als tekstlinks met pijl in een rij die omwikkelt. Op de link alleen het onderwerp ("Pitchen", niet "Cursus Pitchen"); volgorde is het veld Volgorde van de pagina. Een nieuwe onderwerppagina staat er vanzelf bij.
+- I3 Slot kort: Kolommen krijgt de indeling Slot kort. Links label, H2, kernzin, knoppen en wie-regel; rechts één review of het LatePoint-boekformulier. Tablet en telefoon onder elkaar.
+- I4 Keuzehulp vorm (blok): drie vragen als echte radioknoppen en vier vormkaarten (incompany, open training, coaching, e-learning). De passende kaart komt bovenaan met bovenrand; de incompanykaart blijft rustiger onderaan zichtbaar; hooguit drie kaarten. Teksten typ je in het blok, knop en doel per kaart in de zijbalk. De incompanykaart heeft een tweede actie (standaard "Bereken je begroting"). Zonder script staan alle kaarten onder elkaar, incompany eerst.
+- Gegevens voor Google op een pagina met soort Incompany en een van deze bouwstenen: Service met provider en areaServed, en een ItemList van de onderwerpen. Het aanbod van SureRank gaat op die pagina weg, zoals bij training en coaching.
+- Teksten in nl, en en pt (groepen Incompany en Keuzehulp vorm op het scherm Teksten).
+- Test tests/incompany-wp.php (58 controles).
+
 ## [3.52.0] - 2026-11-12
 
 Nieuw onderdeel Incompanycalculator. Het staat op elke site standaard uit en verandert niets aan de voorkant zolang het uit staat. Terugdraaien: versie 3.51.0 terugzetten; de tabel wp_sfp_calculator blijft dan staan maar wordt niet gebruikt.
