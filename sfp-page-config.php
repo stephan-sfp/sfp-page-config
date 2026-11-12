@@ -2,8 +2,8 @@
 /**
  * Plugin Name: SFP Page Config
  * Plugin URI:  https://schoolforprofessionals.com
- * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata, zelftest en de knop onderaan voor het School for Professionals netwerk.
- * Version:     3.51.0
+ * Description: SFP Beheer: paginaconfiguratie, artikelopmaak, bouwstenen, tooltips, reviews, cursusdata, zelftest, incompanycalculator en de knop onderaan voor het School for Professionals netwerk.
+ * Version:     3.52.0
  * Author:      School for Professionals
  * Author URI:  https://schoolforprofessionals.com
  * License:     GPL-2.0-or-later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Constants
  * ====================================================================== */
 
-define( 'SFP_PAGE_CONFIG_VERSION', '3.51.0' );
+define( 'SFP_PAGE_CONFIG_VERSION', '3.52.0' );
 define( 'SFP_PAGE_CONFIG_FILE', __FILE__ );
 define( 'SFP_PAGE_CONFIG_DIR', plugin_dir_path( __FILE__ ) );
 define( 'SFP_PAGE_CONFIG_URL', plugin_dir_url( __FILE__ ) );
@@ -568,6 +568,16 @@ $sfp_includes = array(
     'includes/zelftest-pagina.php',
     'includes/zelftest-privacy.php',
     'includes/zelftest-cta.php',
+    'includes/calculator-norm.php',
+    'includes/calculator.php',
+    'includes/calculator-reken.php',
+    'includes/calculator-opslag.php',
+    'includes/calculator-rest.php',
+    'includes/calculator-sureforms.php',
+    'includes/qr.php',
+    'includes/calculator-blad.php',
+    'includes/calculator-pdf.php',
+    'includes/calculator-weergave.php',
     'includes/nlvorm.php',
     'includes/nlvorm-home.php',
     'includes/nlvorm-archief.php',
@@ -681,5 +691,7 @@ function sfp_page_config_deactivate() {
     }
     wp_clear_scheduled_hook( 'sfp_zelftest_wachtrij' );
     wp_clear_scheduled_hook( 'sfp_zelftest_dagelijks' );
+    wp_clear_scheduled_hook( 'sfp_calculator_wachtrij' );
+    wp_clear_scheduled_hook( 'sfp_calculator_dagelijks' );
 }
 register_deactivation_hook( __FILE__, 'sfp_page_config_deactivate' );
