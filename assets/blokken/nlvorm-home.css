@@ -14,6 +14,8 @@
 :root .sfp-held--foto>.sfp-held__achter img{width:100%;height:100%;object-fit:cover;object-position:var(--sfp-held-focus,68% 40%);display:block;border-radius:0}
 :root .sfp-held--foto::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb,var(--sfp-b-primair) 94%,transparent) 0,color-mix(in srgb,var(--sfp-b-primair) 82%,transparent) 36%,color-mix(in srgb,var(--sfp-b-primair) 20%,transparent) 62%,transparent 78%)}
 :root .sfp-held--foto>.sfp-held__binnen{position:relative;z-index:2;grid-template-columns:minmax(0,580px);grid-template-areas:"kop""intro""knoppen""bewijs";padding:64px 24px}
+/* Sinds 3.54.0: de H1 vult de tekstkolom (580 px); de 46vw-grens uit held.css (held met foto in de kolom) geldt hier niet. Regels in evenwicht. */
+:root .sfp-held.sfp-held--foto .sfp-held__binnen>h1{max-width:none;text-wrap:balance}
 :root .sfp-held--foto .sfp-held__binnen>p:not(.sfp-held__bewijs){display:block;grid-area:intro;max-width:30em;margin:14px 0 0;opacity:1;color:var(--sfp-b-wit)}
 :root .sfp-held--foto .sfp-held__binnen>.wp-block-buttons{padding:28px 0 0;align-items:center;justify-content:flex-start;column-gap:32px}
 :root .sfp-held--foto .sfp-held__binnen>p.sfp-held__bewijs{display:flex;align-items:center;grid-area:bewijs;margin:30px 0 0;opacity:1;color:var(--sfp-b-wit);font-size:15px;text-shadow:none;gap:14px 28px;flex-wrap:wrap;max-width:none}

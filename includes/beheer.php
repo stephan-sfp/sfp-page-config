@@ -361,6 +361,7 @@ function sfp_page_config_beheer_stand() {
             'layout'    => (string) $opts['layout'],
             'min_stars' => (int) $opts['min_stars'],
             'summary'   => (bool) filter_var( $opts['summary'], FILTER_VALIDATE_BOOLEAN ),
+            'aantal_vanaf' => (int) $opts['aantal_vanaf'],
             'place_id'  => (string) $opts['place_id'],
             'sleutel'   => '' !== (string) $opts['api_key'],
         ),

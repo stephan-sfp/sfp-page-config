@@ -974,7 +974,7 @@
 			if (r.stand.verbonden && (keuze.summary || keuze.layout === 'cijfer')) {
 				vKop.appendChild(el('span', { class: 'sfpb-h3', text: r.stand.oordeel }));
 				vKop.appendChild(el('span', null, [el('b', { style: 'color:var(--sfp-b-primair)', text: r.stand.cijfer_tekst }), ' ', el('span', { class: 'sfpb-ster', 'aria-hidden': 'true', text: sterren(Math.round(r.stand.cijfer)) })]));
-				vKop.appendChild(el('span', { style: 'font-size:14px', text: r.stand.basis }));
+				if (r.stand.basis) vKop.appendChild(el('span', { style: 'font-size:14px', text: r.stand.basis }));
 			}
 			if (keuze.layout === 'cijfer') return;
 			var n = keuze.layout === 'grid' ? 3 : 1;
@@ -1005,14 +1005,17 @@
 			});
 			var min = el('select', null, [5, 4, 3, 2, 1].map(function (n) { return el('option', { value: String(n), text: n === 1 ? '1 ster' : n + ' sterren' }); }));
 			min.value = String(r.opties.min_stars);
+			var vanaf = el('input', { type: 'number', min: '0', max: '1000', step: '1', inputmode: 'numeric' });
+			vanaf.value = String(r.opties.aantal_vanaf === undefined ? 25 : r.opties.aantal_vanaf);
 			links = el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
 				vormen,
 				veld('Toon reviews vanaf', min, null, 'sfpb-rv-min'),
 				schakel(r.opties.summary, 'Toon het cijfer boven de reviews', function (nu) { keuze.summary = nu; tekenVoorbeeld(); }),
+				veld('Toon het aantal reviews vanaf', vanaf, 'Daaronder staan alleen het cijfer en de sterren, in de held, bij de reviewkop en boven de reviews. De Feitelijke verantwoording toont het aantal altijd. 0 of 1: altijd tonen.', 'sfpb-rv-vanaf'),
 				el('p', { class: 'sfpb-hulp', text: 'Je plaatst reviews met het blok Reviews.' }),
 				el('div', { class: 'sfpb-rij' }, [
 					el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
-						doe(this, 'rv-weergave', api('/reviews', 'POST', { layout: keuze.layout, min_stars: min.value, summary: keuze.summary }));
+						doe(this, 'rv-weergave', api('/reviews', 'POST', { layout: keuze.layout, min_stars: min.value, summary: keuze.summary, aantal_vanaf: vanaf.value }));
 					} }),
 					flitsPlek('rv-weergave')
 				])
