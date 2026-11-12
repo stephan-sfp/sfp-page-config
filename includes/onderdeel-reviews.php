@@ -103,9 +103,28 @@ function sfp_page_config_reviews_opties() {
             'cols_desktop' => 1,
             'summary'      => 'true',
             'cache_ttl'    => DAY_IN_SECONDS,
+            // Sinds 3.54.0: het aantal reviews pas tonen vanaf dit aantal (besluit 12-11-2026).
+            'aantal_vanaf' => 25,
         ),
         $opts
     );
+}
+
+/**
+ * Of het aantal reviews zichtbaar mag zijn (sinds 3.54.0). Onder de drempel
+ * uit SFP Beheer, Reviews, Weergave blijven alleen het cijfer en de sterren
+ * staan. Een drempel van 0 of 1 toont het aantal altijd. Geldt voor de
+ * bewijsregel in de held, het Google-cijfer bij de reviewkop en de
+ * samenvatting boven [google_reviews]; niet voor [sfp_reviews] op de
+ * Feitelijke verantwoording.
+ *
+ * @param  int $aantal Aantal reviews op Google.
+ * @return bool
+ */
+function sfp_page_config_reviews_aantal_tonen( $aantal ) {
+    $opts   = sfp_page_config_reviews_opties();
+    $drempel = isset( $opts['aantal_vanaf'] ) ? max( 0, (int) $opts['aantal_vanaf'] ) : 25;
+    return (int) $aantal > 0 && (int) $aantal >= $drempel;
 }
 
 /**
@@ -142,6 +161,9 @@ function sfp_page_config_reviews_opties_schoon( array $invoer ) {
     }
     if ( array_key_exists( 'interval', $invoer ) ) {
         $opts['interval'] = max( 2000, (int) $invoer['interval'] );
+    }
+    if ( array_key_exists( 'aantal_vanaf', $invoer ) ) {
+        $opts['aantal_vanaf'] = min( 1000, max( 0, (int) $invoer['aantal_vanaf'] ) );
     }
     if ( array_key_exists( 'cache_ttl', $invoer ) ) {
         $opts['cache_ttl'] = max( HOUR_IN_SECONDS, (int) $invoer['cache_ttl'] );

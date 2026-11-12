@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.54.0] - 2026-11-12
+
+Reviewaantal pas vanaf een drempel en de H1 in de held Foto zonder lelijke afbreking (besluiten Stephan 12-11-2026). Terugdraaien: versie 3.53.0 terugzetten (zip uit de tag v3.53.0, map sfp-page-config).
+
+### Gewijzigd
+- Het aantal Google-reviews staat er pas vanaf 25 (instelbaar in SFP Beheer, Reviews, Weergave: "Toon het aantal reviews vanaf"). Daaronder blijven het cijfer en de sterren staan. Geldt voor de bewijsregel in de held, het Google-cijfer bij de reviewkop en de samenvatting boven [google_reviews]. De Feitelijke verantwoording ([sfp_reviews]) toont het aantal altijd, als onderbouwing.
+- Held Foto: de H1 vult de tekstkolom (580 px) in plaats van vanaf 1251 px op ongeveer 508 px te blijven; de regels staan in evenwicht (text-wrap balance). Op 1440 px nu twee of drie regels in plaats van tot vier. De grens uit de held met foto in de kolom geldt voor die held ongewijzigd.
+
+### Toegevoegd
+- Test tests/reviewdrempel.php.
+
 ## [3.53.0] - 2026-11-12
 
 Vier nieuwe bouwstenen voor /incompany/ en de incompany-cursuspagina's (ontwerp nl-vormen v100 en v105, besluiten Stephan 12-11-2026). Ze staan nog op geen enkele pagina; bestaande pagina's veranderen niet. Terugdraaien: versie 3.52.0 terugzetten (zip uit de tag v3.52.0, map sfp-page-config). Pagina's met de nieuwe blokken tonen die blokken dan niet meer.

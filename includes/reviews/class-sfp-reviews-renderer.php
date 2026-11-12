@@ -21,6 +21,13 @@ class SFP_Reviews_Renderer {
 	 * @param string $sleutel Sleutel in includes/teksten.php.
 	 * @param mixed  ...$args Waarden voor de invultekens.
 	 */
+	/**
+	 * Of het aantal reviews getoond wordt (drempel uit SFP Beheer, sinds 3.54.0).
+	 */
+	private function aantal_tonen( int $total ): bool {
+		return function_exists( 'sfp_page_config_reviews_aantal_tonen' ) ? sfp_page_config_reviews_aantal_tonen( $total ) : $total > 0;
+	}
+
 	private function t( string $sleutel, ...$args ): string {
 		return $args ? sfp_page_config_tekst_f( $sleutel, ...$args ) : sfp_page_config_tekst( $sleutel );
 	}
@@ -71,7 +78,7 @@ class SFP_Reviews_Renderer {
 		$total = (int) ( $meta['total'] ?? 0 );
 		return array(
 			'oordeel' => $this->oordeel( (float) ( $meta['rating'] ?? 0 ) ),
-			'basis'   => $this->t( 1 === $total ? 'reviews_basis_een' : 'reviews_basis', number_format_i18n( $total ) ),
+			'basis'   => $this->aantal_tonen( $total ) ? $this->t( 1 === $total ? 'reviews_basis_een' : 'reviews_basis', number_format_i18n( $total ) ) : '',
 		);
 	}
 
@@ -104,15 +111,20 @@ class SFP_Reviews_Renderer {
 
 		$stars = $this->stars( (int) round( $rating ) );
 
+		// Onder de drempel (sinds 3.54.0) geen regel met het aantal.
+		$regel = $this->aantal_tonen( (int) $total )
+			? sprintf( '<span class="sfp-reviews-summary__total">%s</span>', esc_html( $this->t( 1 === (int) $total ? 'reviews_basis_een' : 'reviews_basis', number_format_i18n( $total ) ) ) )
+			: '';
+
 		return sprintf(
 			'<div class="sfp-reviews-summary">
 				<span class="sfp-reviews-summary__label">%s</span>
 				<div class="sfp-reviews-summary__stars">%s</div>
-				<span class="sfp-reviews-summary__total">%s</span>
+				%s
 			</div>',
 			esc_html( $label ),
 			$stars,
-			esc_html( $this->t( 1 === (int) $total ? 'reviews_basis_een' : 'reviews_basis', number_format_i18n( $total ) ) )
+			$regel
 		);
 	}
 

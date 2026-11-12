@@ -564,7 +564,11 @@ function sfp_page_config_nlvorm_bewijsregel( $attrs ) {
     if ( '' !== $cijfer ) {
         $link  = sfp_page_config_nlvorm_google_link();
         // Sinds 3.38.0 met het aantal reviews (de feitenbron eist het aantal bij een 5,0).
+        // Sinds 3.54.0 pas vanaf de drempel uit SFP Beheer (standaard 25).
         $aantal = sfp_page_config_nlvorm_google_aantal();
+        if ( function_exists( 'sfp_page_config_reviews_aantal_tonen' ) && ! sfp_page_config_reviews_aantal_tonen( $aantal ) ) {
+            $aantal = 0;
+        }
         $achter = $aantal > 1 ? ' ' . sfp_page_config_tekst_f( 'held_reviews_aantal', $aantal ) : ( 1 === $aantal ? ' ' . sfp_page_config_tekst( 'held_reviews_een' ) : '' );
         $score  = '<span class="sfp-held__sterren" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span><strong>' . esc_html( $cijfer ) . '</strong> ' . esc_html( sfp_page_config_tekst( 'held_op_google' ) . $achter ) . '</span>';
         $uit  .= '' !== $link
