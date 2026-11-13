@@ -4,6 +4,28 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.55.0] - 2026-11-13
+
+Kopkaart, pijlerregel en boekkaart in artikelen, de archiefblokken en de FAST-kit (besluiten Stephan 13-11-2026). Netwerkbreed. Terugdraaien: versie 3.54.0 terugzetten (zip uit de tag v3.54.0, map sfp-page-config).
+
+### Gewijzigd
+- Kopkaart van artikelen, begrippen en tools in vaste regels op elke breedte: "Door <naam>", de rol op een eigen regel (zonder komma), Gepubliceerd en Bijgewerkt, dan leestijd en Gefactcheckt. Tussen ongeveer 600 en 800 px brak de rol midden in de zin en viel Gefactcheckt los op een derde regel.
+- Actieknoppen alleen als icoon zolang de labels niet op één regel in de kaart passen, ook breder dan een telefoon (artikel.js meet de rij). Het label blijft voor schermlezers en als title.
+- Pijlerregel boven de H1 opgemaakt als de bloklabels: kopfont in kapitalen, 12 px, 900, letterafstand .08em, labelkleur. De link blijft onderstreept in de tekstlinkkleur, nu op 900; tikdoel 24 px blijft.
+- Boekkaart (inline promokaart, telefoon en tablet) staat vóór de tweede H2, met minstens drie alinea's tekst tot een ander UX-element; past dat niet, dan het eerstvolgende punt dat wel past, en nooit na de conclusie of de veelgestelde vragen. Voldoet geen punt, dan direct vóór de tweede H2. Op DPS stond de kaart in 36 artikelen na de FAQ.
+- Auteurskop: dezelfde kaart als de auteurskaart onder artikelen, over de breedte van de inhoud. Foto uit het veld Foto, anders de profielfoto; label Auteur, naam als H1, rol, bio met regels die met √ beginnen als lijst; geen link naar de pagina zelf.
+- Archiefkop: de extra 40 px onder het blok is weg; verder blijft de ruimte 72 px per sectie (telefoon 52).
+- Archiefkop, Gidsen, Artikelraster en Auteurskop lopen zelf van rand tot rand, ook in een Astra-container met marge (begrippen en tools waren 1280 px breed op 1440).
+- Gidsen: het label zegt "Gids in <categorie>" in plaats van "Gids in Blog"; lange woorden breken binnen de kaart af, zodat de telefoon niet opzij scrolt.
+- FAST-kit (generator in kaartweergave met letters): opent na de eerste keuze over het hele scherm, met de toolnaam en Sluiten; Sluiten of Escape zet de kaart terug met de antwoorden, de focus gaat terug naar de kit. Uit te zetten met weergave.volledig false.
+- Resultaatkop: eigen tekst krijgt een kleine eerste letter en geen leesteken aan het eind ("so that they approve the pilot." in plaats van "so that They approve the pilot.."), behalve een afkorting of het Engelse I.
+- Kaartweergave: na een stapwissel landt de focus weer in het veld van de nieuwe stap.
+
+### Toegevoegd
+- Tooldata (kaartweergave): suggesties op een tekstveld (keuzetegels die het veld vullen, plus een tegel voor eigen invoer), zin boven de vraag (de resultaatkop tot nu toe, het open deel gemarkeerd), aanbevolen_als per optie en aanbevolen_label op het veld (structuuradvies: de tegel vooraan met een label). Filter deelzin. Uitleg in docs/08-tools.md.
+- Teksten tool_eigen, tool_aanbevolen, tool_sluiten, tool_sluiten_label (nl, en, pt).
+- Test tests/promo-plek.php en tests/fast-kit.php; tests/pijlerregel.php en tests/archieven-wp.php bijgewerkt.
+
 ## [3.54.0] - 2026-11-12
 
 Reviewaantal pas vanaf een drempel en de H1 in de held Foto zonder lelijke afbreking (besluiten Stephan 12-11-2026). Terugdraaien: versie 3.53.0 terugzetten (zip uit de tag v3.53.0, map sfp-page-config).

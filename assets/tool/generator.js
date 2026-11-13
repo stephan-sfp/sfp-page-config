@@ -88,8 +88,12 @@
 						/* Een klik (of spatie) kiest en gaat door, ook op een keuze die al gekozen was; pijltjes kiezen alleen. */
 						onclick: function () { zet( v.id, String( o.waarde ) ); if ( alleenKeuzes( stapIndex ) ) { setTimeout( function () { if ( huidig === stapIndex ) { volgende(); } }, 180 ); } }
 					} );
-					return el( 'label', { class: 'sfp-tool__tegel' + ( o.icoon && ICONEN[ o.icoon ] ? ' met-icoon' : '' ) }, [ inp, o.icoon && ICONEN[ o.icoon ] ? icoon( o.icoon ) : null, el( 'b', { text: o.tekst || '' } ), o.uitleg && ! hulp ? el( 'small', { text: o.uitleg } ) : null ] );
+					var lab = el( 'label', { class: 'sfp-tool__tegel' + ( o.icoon && ICONEN[ o.icoon ] ? ' met-icoon' : '' ) }, [ inp, o.icoon && ICONEN[ o.icoon ] ? icoon( o.icoon ) : null, el( 'b', { text: o.tekst || '' } ), o.uitleg && ! hulp ? el( 'small', { text: o.uitleg } ) : null ] );
+					/* Structuuradvies (3.55.0): een label dat verschijnt zolang de voorwaarde van de optie klopt. */
+					if ( o.aanbevolen_als ) { var badge = el( 'span', { class: 'sfp-tool__aanbevolen', hidden: true } ); var bTekst = lab.querySelector( 'b' ); var kol2 = el( 'span', { class: 'sfp-tool__tegeltekst' } ); bTekst.parentNode.insertBefore( kol2, bTekst ); kol2.appendChild( bTekst ); kol2.appendChild( badge ); advies.push( { o: o, label: lab, badge: badge } ); }
+					return lab;
 				};
+				var advies = [];
 				var hulpPaneel = null;
 				if ( hulp ) {
 					var hulpId = id + '-hulp';
@@ -119,6 +123,7 @@
 					opties.forEach( function ( o ) { veld.appendChild( tegel( o ) ); } );
 					if ( hulp ) { veld.appendChild( hulpKnop ); }
 				}
+				if ( advies.length && ! kw ) { adviezen.push( { v: v, raster: veld, tegels: advies, voor: hulp ? hulpKnop : null } ); }
 				if ( hulpPaneel ) { veld = el( 'div', { class: 'sfp-tool__tegelgroep' }, [ veld, hulpPaneel ] ); }
 			} else if ( 'keuze' === v.type ) {
 				veld = el( 'div', { class: 'sfp-tool__keuzes', role: 'radiogroup', 'aria-labelledby': id + '-l' } );
@@ -147,13 +152,23 @@
 				veld = el( 'input', { type: soort, class: 'sfp-tool__veld', id: id, maxlength: 'kort' === v.type ? String( v.maxlengte || 160 ) : null, min: 'getal' === v.type && undefined !== v.min ? String( v.min ) : null, max: 'getal' === v.type && undefined !== v.max ? String( v.max ) : null, step: 'getal' === v.type ? String( v.stap || 'any' ) : null, inputmode: 'getal' === v.type ? 'decimal' : null, placeholder: v.voorbeeld || '', 'aria-labelledby': id + '-l', oninput: function () { zet( v.id, this.value ); }, onkeydown: kaart ? function ( e ) { if ( 'Enter' === e.key && ! e.isComposing ) { e.preventDefault(); volgende(); } } : null } );
 				if ( 'getal' === v.type && v.eenheid ) { veld = el( 'div', { class: 'sfp-tool__getalveld' }, [ veld, el( 'span', { class: 'sfp-tool__eenheid', text: v.eenheid } ) ] ); }
 			}
-			var wrap = el( 'div', { class: 'sfp-tool__veldgroep', 'data-veld': v.id }, [ labelEl, hint, veld ] );
-			invoer[ v.id ] = { wrap: wrap, veld: veld, label: labelEl, hint: hint, v: v };
+			/* Keuzetegels met eigen invoer (3.55.0, besluit Stephan 13-11-2026): een tegel vult het veld, dat daarna aan te passen is. */
+			var invoerVeld = veld;
+			var sugRaster = null;
+			if ( kaart && v.suggesties && v.suggesties.length && ( 'kort' === v.type || 'tekstvak' === v.type ) ) {
+				sugRaster = el( 'div', { class: 'sfp-tool__tegels sfp-tool__tegels--2 sfp-tool__suggesties', role: 'group', 'aria-labelledby': id + '-l' } );
+				veld = el( 'div', { class: 'sfp-tool__suggestiegroep' }, [ sugRaster, invoerVeld ] );
+			}
+			/* De zin tot nu toe boven de vraag (3.55.0). */
+			var zinEl = kaart && v.zin ? el( 'p', { class: 'sfp-tool__zin' } ) : null;
+			var wrap = el( 'div', { class: 'sfp-tool__veldgroep', 'data-veld': v.id }, [ zinEl, labelEl, hint, veld ] );
+			invoer[ v.id ] = { wrap: wrap, veld: invoerVeld, label: labelEl, hint: hint, v: v, sug: sugRaster, zin: zinEl, sugSleutel: null };
 			return wrap;
 		}
 
 		var intros = [];
 		var tips = [];
+		var adviezen = [];
 		var uitvoerEl = null;
 		var navs = [];
 		var schermen = stappen.map( function ( s, i ) {
@@ -217,6 +232,63 @@
 				x.el.innerHTML = '';
 				( b.meldingen || [] ).forEach( function ( m ) { if ( m.stap === x.stap && rWaar( reken( b, antwoorden, m.formule, null ) ) ) { x.el.appendChild( el( 'p', { class: 'sfp-tool__tip', text: vul( m.melding, b, antwoorden ) } ) ); } } );
 			} );
+			Object.keys( invoer ).forEach( function ( id ) {
+				var x = invoer[ id ];
+				if ( x.zin ) { werkZin( x ); }
+				if ( x.sug ) { werkSuggesties( x ); }
+			} );
+			adviezen.forEach( werkAdvies );
+		}
+		/* De zin met het open deel gemarkeerd: wat tussen [ ] staat is nog niet ingevuld. */
+		function werkZin( x ) {
+			var tekst = vul( true === x.v.zin ? ( b.resultaat_kop || '' ) : String( x.v.zin ), b, kopAntwoorden() );
+			x.zin.innerHTML = '';
+			tekst.split( /(\[[^\]]*\])/ ).forEach( function ( deel ) {
+				if ( '' === deel ) { return; }
+				x.zin.appendChild( /^\[[^\]]*\]$/.test( deel ) ? el( 'span', { class: 'sfp-tool__zin-open', text: deel.slice( 1, -1 ) } ) : document.createTextNode( deel ) );
+			} );
+			x.zin.hidden = '' === tekst.trim();
+		}
+		/* De tegels die nu gelden (voorwaarde per tegel), en welke overeenkomt met het veld. */
+		function werkSuggesties( x ) {
+			var lijst = ( x.v.suggesties || [] ).filter( function ( s ) { return ! s.als || klopt( b, antwoorden, s.als, null ); } ).map( function ( s ) { return vul( s.tekst, b, antwoorden ); } ).filter( function ( s ) { return '' !== s.trim(); } );
+			var sleutel = lijst.join( '\n' );
+			if ( sleutel !== x.sugSleutel ) {
+				x.sugSleutel = sleutel;
+				x.sug.innerHTML = '';
+				lijst.forEach( function ( tekst ) {
+					x.sug.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tegel sfp-tool__suggestie', 'aria-pressed': 'false', 'data-tekst': tekst, onclick: function () { x.veld.value = tekst; zet( x.v.id, tekst ); } }, [ el( 'b', { text: tekst } ) ] ) );
+				} );
+				x.sug.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tegel sfp-tool__tegel--eigen', onclick: function () { try { x.veld.focus(); x.veld.select(); } catch ( e ) {} } }, [ el( 'b', { text: tx( 'tool_eigen' ) } ) ] ) );
+				x.sug.hidden = ! lijst.length;
+			}
+			var nu = String( antwoorden[ x.v.id ] || '' ).trim();
+			Array.prototype.forEach.call( x.sug.querySelectorAll( '.sfp-tool__suggestie' ), function ( k ) { var aan = '' !== nu && k.getAttribute( 'data-tekst' ) === nu; k.setAttribute( 'aria-pressed', aan ? 'true' : 'false' ); k.classList.toggle( 'is-gekozen', aan ); } );
+		}
+		/* Structuuradvies: aanbevolen tegels krijgen een label en staan vooraan; de rest houdt de volgorde uit de data. */
+		function werkAdvies( r ) {
+			var labelTekst = r.v.aanbevolen_label ? vul( r.v.aanbevolen_label, b, antwoorden ) : '';
+			var aan = [], uit = [];
+			r.tegels.forEach( function ( t ) {
+				var ja = klopt( b, antwoorden, t.o.aanbevolen_als, null );
+				t.label.classList.toggle( 'is-aanbevolen', ja );
+				t.badge.hidden = ! ja;
+				t.badge.textContent = '' !== labelTekst.trim() ? labelTekst : tx( 'tool_aanbevolen' );
+				( ja ? aan : uit ).push( t.label );
+			} );
+			var alle = Array.prototype.filter.call( r.raster.children, function ( k ) { return 'LABEL' === k.tagName; } );
+			var orde = aan.concat( uit ).concat( alle.filter( function ( k ) { return aan.indexOf( k ) < 0 && uit.indexOf( k ) < 0; } ) );
+			/* Alleen verplaatsen als de volgorde verandert: een verplaatste tegel verliest zijn focus. */
+			if ( orde.some( function ( k, i ) { return alle[ i ] !== k; } ) ) { orde.forEach( function ( k ) { r.raster.insertBefore( k, r.voor ); } ); }
+		}
+		/* Eigen tekst in de resultaatkop als deel van de zin (3.55.0): kleine eerste letter, geen punt aan het eind. */
+		function kopAntwoorden() {
+			var uit = {};
+			Object.keys( antwoorden ).forEach( function ( k ) {
+				var x = invoer[ k ];
+				uit[ k ] = x && ( 'kort' === x.v.type || 'tekstvak' === x.v.type ) && 'string' === typeof antwoorden[ k ] ? D.deelzin( antwoorden[ k ] ) : antwoorden[ k ];
+			} );
+			return uit;
 		}
 
 		function naar( i ) {
@@ -248,7 +320,11 @@
 			bewaar();
 			var focus = i === stappen.length ? resultaat.querySelector( '.sfp-tool__kop' ) : schermen[ i ].querySelector( 'input, select, textarea' );
 			if ( kaart && focus && i < stappen.length && 'INPUT' === focus.tagName && 'radio' === focus.type ) { focus = null; }
-			if ( focus && tool.gestart ) { try { focus.focus( { preventScroll: true } ); } catch ( e ) {} }
+			if ( focus && tool.gestart ) {
+				try { focus.focus( { preventScroll: true } ); } catch ( e ) {}
+				/* Het vorige scherm wordt inert terwijl het nog de focus heeft; de browser haalt die pas daarna weg (3.55.0): nog een keer, na dat moment. */
+				if ( document.activeElement !== focus ) { setTimeout( function () { if ( huidig === i && ! app.contains( document.activeElement ) || document.activeElement === document.body ) { try { focus.focus( { preventScroll: true } ); } catch ( e ) {} } }, 30 ); }
+			}
 			if ( kaart && tool.gestart && i === stappen.length ) {
 				/* De uitslag groeit: de pagina gaat naar de kop van de uitslag. */
 				var kopUit = resultaat.querySelector( '.sfp-tool__kop' );
@@ -275,7 +351,7 @@
 		/* Voor pdf en Word: de antwoordvelden ingevuld, of lege regels om te schrijven. */
 		function voorBestand() {
 			var uit = [];
-			uit.push( { type: 'kop', tekst: b.resultaat_kop ? vul( b.resultaat_kop, b, antwoorden ) : tool.titel } );
+			uit.push( { type: 'kop', tekst: b.resultaat_kop ? vul( b.resultaat_kop, b, kopAntwoorden() ) : tool.titel } );
 			if ( b.resultaat_intro ) { uit.push( { type: 'tekst', tekst: vul( b.resultaat_intro, b, antwoorden ) } ); }
 			huidigeBlokken().forEach( function ( bl ) {
 				if ( 'getal' === bl.type ) { uit.push( { type: 'tabel', rijen: [ [ bl.label || '', bl.tekst ] ] } ); if ( bl.onder ) { uit.push( { type: 'tekst', tekst: bl.onder } ); } return; }
@@ -290,7 +366,7 @@
 		function toonResultaat() {
 			resultaat.innerHTML = '';
 			var blokken = huidigeBlokken();
-			resultaat.appendChild( el( 'h3', { class: 'sfp-tool__kop sfp-tool__kop--resultaat', tabindex: '-1', text: b.resultaat_kop ? vul( b.resultaat_kop, b, antwoorden ) : tool.titel } ) );
+			resultaat.appendChild( el( 'h3', { class: 'sfp-tool__kop sfp-tool__kop--resultaat', tabindex: '-1', text: b.resultaat_kop ? vul( b.resultaat_kop, b, kopAntwoorden() ) : tool.titel } ) );
 			if ( b.resultaat_intro ) { alineas( vul( b.resultaat_intro, b, antwoorden ) ).forEach( function ( x ) { resultaat.appendChild( el( 'p', { class: 'sfp-tool__tekst', text: x } ) ); } ); }
 			var inhoud = el( 'div', { class: 'sfp-tool__uitvoer' } );
 			if ( b.bewerkbaar ) { resultaat.appendChild( el( 'p', { class: 'sfp-tool__hint sfp-tool__hint--bewerk', text: tx( 'tool_bewerk_hint' ) } ) ); }
@@ -393,7 +469,7 @@
 			function kort( m ) { deelMelding.textContent = m; deelMelding.hidden = false; setTimeout( function () { deelMelding.hidden = true; }, 6000 ); }
 			if ( aan( 'pdf' ) ) { rij.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__knop sfp-tool__knop--primair', text: tx( 'tool_pdf' ), onclick: function () { bestand( this, tool.pdf( voorBestand(), naam() ) ); } } ) ); }
 			if ( aan( 'kopieer' ) ) { rijLinks.appendChild( el( 'button', { type: 'button', class: 'sfp-tool__tekstlink', text: tx( 'tool_kopieer' ), onclick: function () {
-				var kopTekst = b.resultaat_kop ? vul( b.resultaat_kop, b, antwoorden ) : tool.titel;
+				var kopTekst = b.resultaat_kop ? vul( b.resultaat_kop, b, kopAntwoorden() ) : tool.titel;
 				var tekst = platteTekst( kopTekst, ( ! acties.kopieer_kaal && b.resultaat_intro ? [ { type: 'tekst', tekst: vul( b.resultaat_intro, b, antwoorden ) } ] : [] ).concat( huidigeBlokken() ), invul, !! acties.kopieer_kaal );
 				if ( navigator.clipboard && navigator.clipboard.writeText ) { navigator.clipboard.writeText( tekst ).then( function () { kort( tx( 'tool_gekopieerd' ) ); tool.zeg( tx( 'tool_gekopieerd' ) ); tool.meet( 'kopieren' ); }, function () { kort( tx( 'tool_bestand_fout' ) ); } ); } else { kort( tx( 'tool_bestand_fout' ) ); }
 			} } ) ); }
@@ -476,6 +552,65 @@
 			naar( 0 );
 		}
 
+		/* Volledig scherm (3.55.0, besluit Stephan 13-11-2026): een kaart met letters opent na de eerste keuze over het hele scherm.
+		   De tool verhuist naar het einde van body (een ouder met transform zou position:fixed anders vangen); een lege plek
+		   van dezelfde hoogte houdt de pagina op zijn plaats. Sluiten of Escape zet alles terug, met de antwoorden en de focus. */
+		var volAan = kaart && !! ( b.weergave && b.weergave.groepen && b.weergave.groepen.length ) && ! ( b.weergave && false === b.weergave.volledig );
+		var wortel = tool.wortel;
+		var isVol = false, plek = null, stil = [];
+		var volSluit = el( 'button', { type: 'button', class: 'sfp-tool__sluit', 'aria-label': tx( 'tool_sluiten_label' ), onclick: function () { sluitVol(); } }, [ el( 'span', { text: tx( 'tool_sluiten' ) } ), el( 'span', { class: 'sfp-tool__sluit-x', 'aria-hidden': 'true', text: '×' } ) ] );
+		var volBalk = el( 'div', { class: 'sfp-tool__volbalk', hidden: true }, [ el( 'span', { class: 'sfp-tool__volnaam', text: tool.titel } ), volSluit ] );
+		function openVol() {
+			if ( ! volAan || isVol || ! wortel || ! wortel.parentNode ) { return; }
+			var actief = document.activeElement;
+			isVol = true;
+			plek = el( 'div', { class: 'sfp-tool__plek', 'aria-hidden': 'true' } );
+			plek.style.height = wortel.getBoundingClientRect().height + 'px';
+			wortel.parentNode.insertBefore( plek, wortel );
+			document.body.appendChild( wortel );
+			stil = Array.prototype.filter.call( document.body.children, function ( k ) { return k !== wortel && ! k.inert && 'SCRIPT' !== k.tagName; } );
+			stil.forEach( function ( k ) { k.inert = true; } );
+			wortel.classList.add( 'is-vol' );
+			wortel.setAttribute( 'role', 'dialog' );
+			wortel.setAttribute( 'aria-modal', 'true' );
+			wortel.setAttribute( 'aria-label', tool.titel );
+			document.documentElement.classList.add( 'sfp-tool-vol' );
+			volBalk.hidden = false;
+			wortel.scrollTop = 0;
+			if ( actief && wortel.contains( actief ) ) { try { actief.focus( { preventScroll: true } ); } catch ( e ) {} }
+			/* De verhuizing haalt de focus weg: dan de kaart zelf, zodat Tab binnen de kit verder gaat. */
+			if ( ! wortel.contains( document.activeElement ) ) { app.setAttribute( 'tabindex', '-1' ); try { app.focus( { preventScroll: true } ); } catch ( e ) {} }
+		}
+		function sluitVol() {
+			if ( ! isVol ) { return; }
+			isVol = false;
+			stil.forEach( function ( k ) { k.inert = false; } );
+			stil = [];
+			if ( plek && plek.parentNode ) { plek.parentNode.replaceChild( wortel, plek ); }
+			plek = null;
+			wortel.classList.remove( 'is-vol' );
+			wortel.removeAttribute( 'role' );
+			wortel.removeAttribute( 'aria-modal' );
+			wortel.removeAttribute( 'aria-label' );
+			document.documentElement.classList.remove( 'sfp-tool-vol' );
+			volBalk.hidden = true;
+			/* Focus terug naar de kit: het eerste veld van het actieve scherm, anders de kop van de uitslag of de kaart. */
+			var doel = huidig >= stappen.length ? resultaat.querySelector( '.sfp-tool__kop' ) : ( schermen[ huidig ] && schermen[ huidig ].querySelector( 'input:checked, input, textarea, select, button' ) );
+			if ( ! doel ) { doel = app; app.setAttribute( 'tabindex', '-1' ); }
+			try { doel.focus( { preventScroll: true } ); } catch ( e ) {}
+			app.scrollIntoView( { block: 'nearest' } );
+		}
+		if ( volAan ) {
+			/* Pas bij een echte keuze of invoer van de bezoeker, niet bij het terugzetten van bewaarde antwoorden. */
+			app.addEventListener( 'click', function ( e ) {
+				if ( ! e.isTrusted || isVol ) { return; }
+				var doel = e.target && e.target.closest ? e.target.closest( '.sfp-tool__tegel, .sfp-tool__nav .sfp-tool__knop' ) : null;
+				if ( doel && ! doel.classList.contains( 'sfp-tool__tegel--hulp' ) && ! resultaat.contains( doel ) ) { openVol(); }
+			} );
+			app.addEventListener( 'input', function ( e ) { if ( e.isTrusted && ! resultaat.contains( e.target ) ) { openVol(); } } );
+			document.addEventListener( 'keydown', function ( e ) { if ( isVol && 'Escape' === e.key && ! e.defaultPrevented ) { e.preventDefault(); sluitVol(); } } );
+		}
+
 		return {
 			start: function () {
 				if ( b.live ) {
@@ -493,6 +628,7 @@
 				}
 				if ( kaart ) {
 					app.classList.add( 'sfp-tool__app--kaart' );
+					if ( volAan ) { app.appendChild( volBalk ); }
 					app.appendChild( kaartKop );
 					app.appendChild( groepNaam );
 					app.appendChild( groepBalk );

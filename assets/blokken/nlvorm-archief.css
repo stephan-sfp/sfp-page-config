@@ -15,7 +15,10 @@
 :root .sfp-paginering .sfp-paginering__vorige::before{content:"\2190\00a0"}
 
 /* ---------- R1 Archiefkop ---------- */
-:root .sfp-archiefkop .sfp-sectie__binnen{padding-bottom:40px}
+/* Banden van rand tot rand (3.55.0, besluit Stephan 13-11-2026): de archiefblokken lopen zelf over de volle
+   breedte, ook in een Astra-container met marge (begrippen, tools), zonder instelling per site. */
+:root :is(.sfp-archiefkop,.sfp-sectie--gidsen,.sfp-archiefraster,.sfp-auteurkop).sfp-sectie{width:auto;max-width:none;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);box-sizing:border-box}
+:root:has(:is(.sfp-archiefkop,.sfp-sectie--gidsen,.sfp-archiefraster,.sfp-auteurkop).sfp-sectie) body{overflow-x:clip}
 :root .sfp-archiefkop .sfp-sectie__binnen>h1{margin:6px 0 0;padding:0}
 :root .sfp-archiefkop .sfp-sectie__binnen>.is-style-sfp-label+h1{margin-top:6px}
 :root .sfp-archiefkop .sfp-accent{background:linear-gradient(transparent 58%,var(--sfp-b-tint2) 58%);color:inherit;padding:0 .08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
@@ -40,7 +43,9 @@
 :root .sfp-archiefgids__beeld img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:0}
 :root .sfp-archiefgids__beeld.sfp-geenbeeld{aspect-ratio:16/9;background:var(--sfp-b-tint2);display:grid;place-items:center}
 :root .sfp-archiefgids__beeld.sfp-geenbeeld img{width:30%;height:auto;aspect-ratio:1/1;object-fit:contain}
-:root .sfp-archiefgids__tekst{display:flex;flex-direction:column;gap:8px;padding:24px 28px 28px}
+:root .sfp-archiefgids__tekst{display:flex;flex-direction:column;gap:8px;padding:24px 28px 28px;min-width:0}
+/* Lange woorden (categorienamen in kapitalen) breken binnen de kaart af (3.55.0). */
+:root .sfp-archiefgids__tekst>:is(.is-style-sfp-label,.sfp-archiefgids__titel){overflow-wrap:break-word;hyphens:auto}
 :root .sfp-archiefgids__tekst>*{margin:0}
 :root .sfp-archiefgids__titel{font-family:var(--sfp-b-kop);text-transform:uppercase;color:var(--sfp-b-primair);font-size:22px;line-height:1.15;padding:0}
 :root .sfp-archiefgids__zin{font-size:15px}
@@ -63,14 +68,21 @@
 :root .sfp-aantal{margin:32px 0 0;font-size:15px;color:color-mix(in srgb,var(--sfp-b-body) 75%,transparent)}
 
 /* ---------- R4 Auteurskop ---------- */
-:root .sfp-auteur{display:grid;grid-template-columns:280px minmax(0,1fr);gap:56px;align-items:start}
+/* Sinds 3.55.0 (besluit Stephan 13-11-2026) de auteurskaart van de artikelen, over de breedte van de inhoud. */
+:root .sfp-auteur{display:grid;grid-template-columns:72px minmax(0,1fr);column-gap:18px;row-gap:18px;align-items:center;background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:28px}
 :root .sfp-auteur--zonder-foto{grid-template-columns:minmax(0,1fr)}
-:root .sfp-auteur__foto{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;object-position:50% 15%;border-radius:var(--sfp-b-r-kaart);background:color-mix(in srgb,var(--sfp-b-secundair) 10%,var(--sfp-b-wit))}
-:root .sfp-auteur__tekst{display:grid;gap:14px;max-width:44em}
-:root .sfp-auteur__tekst>*{margin:0}
-:root .sfp-auteur__tekst>h1{padding:0}
+:root .sfp-auteur .sfp-auteur__foto{display:block;width:72px;height:72px;margin:0;object-fit:cover;object-position:50% 15%;border-radius:50%}
+:root .sfp-auteur__kop{display:grid;gap:8px;min-width:0}
+:root .sfp-auteur__kop>*{margin:0}
+:root .sfp-sectie .sfp-auteur__kop>h1{padding:0}
 :root .sfp-auteur__rol{font-weight:700;color:var(--sfp-b-primair)}
-:root .sfp-auteur__links{display:flex;gap:28px;flex-wrap:wrap}
+:root .sfp-auteur__tekst{grid-column:1/-1}
+:root .sfp-sectie .sfp-auteur__tekst p{margin:0 0 16px;font-size:16px;line-height:1.6}
+:root .sfp-auteur__feiten{margin:0;padding:16px 0 0;list-style:none;border-top:1px solid var(--sfp-b-lijn);font-size:15px;line-height:1.5;display:grid;gap:8px;color:var(--sfp-b-primair)}
+:root .sfp-auteur__feiten li{margin:0;padding-left:20px;position:relative}
+:root .sfp-auteur__feiten li::before{content:"";position:absolute;left:0;top:.5em;width:8px;height:8px;border-radius:2px;background:var(--sfp-b-secundair)}
+:root .sfp-sectie .sfp-auteur__tekst p.sfp-auteur__links{display:flex;gap:28px;flex-wrap:wrap;margin:18px 0 0}
+:root .sfp-auteur__feiten+p.sfp-auteur__links{margin-top:18px}
 
 /* ---------- L1 Contactgegevens ---------- */
 :root .sfp-gegevens{display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;margin:36px 0 48px;padding:28px 0;border-top:1px solid var(--sfp-b-lijn);border-bottom:1px solid var(--sfp-b-lijn)}
@@ -81,10 +93,6 @@
 :root .sfp-gegevens .sfp-tekstlink{display:inline-block;margin-top:6px;font-size:15px}
 
 /* ---------- Tablet ---------- */
-@media (max-width:980px){
-  :root .sfp-auteur{grid-template-columns:200px minmax(0,1fr);gap:32px}
-  :root .sfp-auteur--zonder-foto{grid-template-columns:minmax(0,1fr)}
-}
 
 /* ---------- Telefoon ---------- */
 @media (max-width:700px){
@@ -105,8 +113,9 @@
   :root .sfp-kolommen.sfp-raster{row-gap:12px}
   :root .sfp-raster .sfp-artikel h3{font-size:15px;line-height:1.3}
   :root .sfp-raster .sfp-artikel .is-style-sfp-label{font-size:11px}
-  :root .sfp-auteur{grid-template-columns:minmax(0,1fr);gap:20px}
-  :root .sfp-auteur__foto{width:120px;border-radius:50%}
+  :root .sfp-auteur{grid-template-columns:56px minmax(0,1fr);column-gap:14px;padding:20px}
+  :root .sfp-auteur--zonder-foto{grid-template-columns:minmax(0,1fr)}
+  :root .sfp-auteur .sfp-auteur__foto{width:56px;height:56px}
   :root .sfp-gegevens{grid-template-columns:1fr;gap:20px;margin:28px 0 36px;padding:24px 0}
 }
 @media (min-width:701px){

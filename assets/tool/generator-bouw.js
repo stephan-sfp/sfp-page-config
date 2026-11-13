@@ -21,6 +21,14 @@
 	function heeft( o, k ) { return o !== null && 'object' === typeof o && Object.prototype.hasOwnProperty.call( o, k ); }
 	function alsTekst( w ) { return ( 'string' === typeof w ) ? w : ( ( 'number' === typeof w && isFinite( w ) ) ? String( w ) : '' ); }
 	function isLeeg( w ) { return w === null || w === undefined || ( Array.isArray( w ) ? ! w.length : '' === alsTekst( w ).trim() ); }
+	/* Eigen tekst als deel van een zin (3.55.0): geen leesteken aan het eind, kleine eerste letter behalve bij een afkorting. Gelijk aan sfp_page_config_generator_deelzin(). */
+	function deelzin( w ) {
+		w = String( w ).trim().replace( /[\s.!?…;:,]+$/u, '' ).trim();
+		if ( '' === w ) { return ''; }
+		var m = /^\p{L}+/u.exec( w );
+		if ( m && ( 'I' === m[ 0 ] || ( Array.from( m[ 0 ] ).length > 1 && m[ 0 ].toUpperCase() === m[ 0 ] ) ) ) { return w; }
+		return eersteLetter( w, true );
+	}
 	function eersteLetter( s, klein ) { var c = Array.from( s ); for ( var i = 0; i < c.length; i++ ) { if ( c[ i ].toUpperCase() !== c[ i ].toLowerCase() ) { c[ i ] = klein ? c[ i ].toLowerCase() : c[ i ].toUpperCase(); break; } } return c.join( '' ); }
 
 
@@ -448,6 +456,7 @@
 			case 'hoofdletter': return eersteLetter( w );
 			case 'klein': return w.toLowerCase();
 			case 'kleinbegin': return eersteLetter( w, true );
+			case 'deelzin': return deelzin( w );
 			case 'slug': return w.normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' ).toLowerCase().replace( /[^a-z0-9]+/g, '-' ).replace( /^-+|-+$/g, '' );
 			case 'zin': w = w.trim(); return ( '' === w || /[.!?…:]$/.test( w ) ) ? w : w + '.';
 			case 'eerstezin': var mz = /^[\s\S]*?[.!?](?=\s|$)/.exec( w.trim() ); return mz ? mz[ 0 ] : w.trim();
@@ -722,5 +731,5 @@
 
 
 	/* Voor het scherm van de generator (generator.js). */
-	window.sfpToolMotor.generatorDelen = { ICONEN: ICONEN, antwoordVan: antwoordVan, bouw: bouw, filter: filter, heeft: heeft, icoon: icoon, isLeeg: isLeeg, items: items, klopt: klopt, metLinks: metLinks, ontbreekt: ontbreekt, platteTekst: platteTekst, rWaar: rWaar, reken: reken, velden: velden, verplicht: verplicht, vinkjes: vinkjes, vul: vul, waarde: waarde, zichtbaar: zichtbaar };
+	window.sfpToolMotor.generatorDelen = { ICONEN: ICONEN, antwoordVan: antwoordVan, bouw: bouw, deelzin: deelzin, filter: filter, heeft: heeft, icoon: icoon, isLeeg: isLeeg, items: items, klopt: klopt, metLinks: metLinks, ontbreekt: ontbreekt, platteTekst: platteTekst, rWaar: rWaar, reken: reken, velden: velden, verplicht: verplicht, vinkjes: vinkjes, vul: vul, waarde: waarde, zichtbaar: zichtbaar };
 } )();
