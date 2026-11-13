@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.55.2] - 2026-11-13
+
+Leestijd in de kopkaart (besluiten Stephan 13-11-2026). Netwerkbreed. Terugdraaien: versie 3.55.1 terugzetten (zip uit de tag v3.55.1, map sfp-page-config).
+
+### Gewijzigd
+- Leestijd en Gefactcheckt staan achter de datums zolang alles op een regel past (artikel.js meet); anders samen op een eigen regel, zonder extra regel na het laden. Op de telefoon (tot 600 px) blijft de eigen regel vast.
+- Met de inhoudsopgave in de zijkolom (vanaf 1025 px) staat de leestijd niet meer in de kopkaart: de inhoudsopgave toont hem al (Inhoud, 5 min).
+- Scheidingsstip voor de leestijd in het gewone tekstlettertype (was dikker).
+
 ## [3.55.1] - 2026-11-13
 
 Profielfoto in de kopkaart (besluit Stephan 13-11-2026). Netwerkbreed. Terugdraaien: versie 3.55.0 terugzetten (zip uit de tag v3.55.0, map sfp-page-config).
