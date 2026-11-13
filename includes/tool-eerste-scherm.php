@@ -494,7 +494,36 @@ function sfp_page_config_tool_es_veld( array $b, $v, array $a, $kaart ) {
             $veld = '<div class="sfp-tool__getalveld">' . $veld . '<span class="sfp-tool__eenheid">' . esc_html( $v['eenheid'] ) . '</span></div>';
         }
     }
-    return '<div class="sfp-tool__veldgroep"' . ( $zicht ? '' : ' hidden' ) . '>' . $label . $hint . $veld . '</div>';
+    // Keuzetegels met eigen invoer en de zin tot nu toe (3.55.0), zoals generator.js ze bouwt: de kaart houdt zo zijn hoogte.
+    if ( $kaart && in_array( $type, array( 'kort', 'tekstvak' ), true ) && ! empty( $v['suggesties'] ) && is_array( $v['suggesties'] ) ) {
+        $tegels = '';
+        foreach ( $v['suggesties'] as $x ) {
+            $x = is_array( $x ) ? $x : array( 'tekst' => (string) $x );
+            if ( ! isset( $x['tekst'] ) || ! sfp_page_config_generator_klopt( $b, $a, isset( $x['als'] ) ? $x['als'] : null ) ) {
+                continue;
+            }
+            $tekst = sfp_page_config_generator_vul( (string) $x['tekst'], $b, $a );
+            if ( '' !== trim( $tekst ) ) {
+                $tegels .= '<button type="button" class="sfp-tool__tegel sfp-tool__suggestie" aria-pressed="false" disabled><b>' . esc_html( $tekst ) . '</b></button>';
+            }
+        }
+        $tegels .= '<button type="button" class="sfp-tool__tegel sfp-tool__tegel--eigen" disabled><b>' . esc_html( sfp_page_config_tool_es_tekst( $b, 'tool_eigen' ) ) . '</b></button>';
+        $veld    = '<div class="sfp-tool__suggestiegroep"><div class="sfp-tool__tegels sfp-tool__tegels--2 sfp-tool__suggesties" role="group">' . $tegels . '</div>' . $veld . '</div>';
+    }
+    $zin = '';
+    if ( $kaart && ! empty( $v['zin'] ) ) {
+        $sjabloon = true === $v['zin'] ? ( isset( $b['resultaat_kop'] ) ? (string) $b['resultaat_kop'] : '' ) : (string) $v['zin'];
+        $tekst    = sfp_page_config_generator_vul( $sjabloon, $b, $a );
+        if ( '' !== trim( $tekst ) ) {
+            $delen = preg_split( '/(\[[^\]]*\])/u', $tekst, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
+            $zin   = '<p class="sfp-tool__zin">';
+            foreach ( (array) $delen as $deel ) {
+                $zin .= preg_match( '/^\[[^\]]*\]$/u', $deel ) ? '<span class="sfp-tool__zin-open">' . esc_html( mb_substr( $deel, 1, -1 ) ) . '</span>' : esc_html( $deel );
+            }
+            $zin .= '</p>';
+        }
+    }
+    return '<div class="sfp-tool__veldgroep"' . ( $zicht ? '' : ' hidden' ) . '>' . $zin . $label . $hint . $veld . '</div>';
 }
 
 /**

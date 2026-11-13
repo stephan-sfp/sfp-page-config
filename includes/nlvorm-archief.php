@@ -657,7 +657,7 @@ function sfp_page_config_archief_gidsen_lijst( $soort ) {
 }
 
 /**
- * Eén gids als brede kaart: beeld, regel Gids in Blog, titel, zin, aantal
+ * Eén gids als brede kaart: beeld, regel Gids in <categorie>, titel, zin, aantal
  * artikelen en de link.
  *
  * @param  WP_Post $gids Pijlerpagina.
@@ -681,7 +681,9 @@ function sfp_page_config_archief_gids_kaart( WP_Post $gids ) {
         ? '<figure class="sfp-archiefgids__beeld">' . $beeld . '</figure>'
         : '<figure class="sfp-archiefgids__beeld sfp-geenbeeld" aria-hidden="true">' . sfp_page_config_archief_icoon() . '</figure>';
     $zin   = has_excerpt( $gids ) ? trim( wp_strip_all_tags( $gids->post_excerpt ) ) : '';
-    $regel = function_exists( 'sfp_page_config_artikel_tekst' ) ? sprintf( sfp_page_config_artikel_tekst( 'gids_in' ), sfp_page_config_archief_blog_naam() ) : '';
+    // Gids in <categorie> (3.55.0, besluit Stephan 13-11-2026); zonder categorie de blog.
+    $waarin = $term instanceof WP_Term ? $term->name : sfp_page_config_archief_blog_naam();
+    $regel  = function_exists( 'sfp_page_config_artikel_tekst' ) ? sprintf( sfp_page_config_artikel_tekst( 'gids_in' ), $waarin ) : '';
     $meta  = $term && function_exists( 'sfp_page_config_gids_tel' ) ? sfp_page_config_gids_tel( (int) $term->count, 'n_artikelen' ) : '';
     $link  = get_permalink( $gids );
     return '<article class="sfp-kaart sfp-kaart--vlak sfp-kaart--link sfp-archiefgids">' . $beeld
@@ -999,7 +1001,8 @@ function sfp_page_config_auteurskop_gebruiker() {
 }
 
 /**
- * De biografie: alinea's, regels met √ als lijst met vinkjes.
+ * De biografie zoals in de auteurskaart van een artikel (3.55.0): alinea's,
+ * en regels die met √ beginnen als lijst met vinkjes.
  *
  * @param  WP_User $user Gebruiker.
  * @return string
@@ -1009,31 +1012,32 @@ function sfp_page_config_auteurskop_bio( WP_User $user ) {
     if ( '' === $bio ) {
         return '';
     }
-    $html = wpautop( wp_kses_post( $bio ) );
-    // Een alinea waarvan elke regel met √ begint, wordt een lijst met vinkjes
-    // (dezelfde afspraak als het onderdeel Auteursbio, zonder diens opmaak).
-    return (string) preg_replace_callback(
-        '#<p>(.*?)</p>#su',
-        static function ( $m ) {
-            $regels = array_values( array_filter( array_map( 'trim', preg_split( '#<br\s*/?>#i', $m[1] ) ), 'strlen' ) );
-            if ( ! $regels ) {
-                return $m[0];
-            }
-            $items = '';
-            foreach ( $regels as $regel ) {
-                if ( 0 !== strpos( $regel, '√' ) ) {
-                    return $m[0];
-                }
-                $items .= '<li>' . trim( (string) preg_replace( '/^\s*√\s*/u', '', $regel ) ) . '</li>';
-            }
-            return '<div class="sfp-lijst sfp-lijst--vink"><ul>' . $items . '</ul></div>';
-        },
-        $html
+    $toegestaan = array(
+        'a'      => array( 'href' => true ),
+        'em'     => array(),
+        'strong' => array(),
     );
+    $alineas = '';
+    $feiten  = '';
+    foreach ( preg_split( '/\r\n|\r|\n|<br\s*\/?>/i', $bio ) as $regel ) {
+        $regel = trim( $regel );
+        if ( '' === $regel ) {
+            continue;
+        }
+        if ( 0 === strpos( $regel, '√' ) ) {
+            $feiten .= '<li>' . wp_kses( trim( (string) preg_replace( '/^√\s*/u', '', $regel ) ), $toegestaan ) . '</li>';
+        } else {
+            $alineas .= '<p>' . wp_kses( $regel, $toegestaan ) . '</p>';
+        }
+    }
+    return $alineas . ( '' !== $feiten ? '<ul class="sfp-auteur__feiten">' . $feiten . '</ul>' : '' );
 }
 
 /**
  * sfp/auteurskop. Alleen op een auteurspagina (en als voorbeeld in de editor).
+ * Sinds 3.55.0 (besluit Stephan 13-11-2026) de auteurskaart van de artikelen,
+ * over de breedte van de inhoud: foto (veld Foto, anders de profielfoto),
+ * label, naam als H1, rol, bio met vinkjes en LinkedIn.
  *
  * @return string
  */
@@ -1048,29 +1052,36 @@ function sfp_page_config_render_auteurskop() {
     $foto    = $foto_id > 0 && wp_attachment_is_image( $foto_id )
         ? wp_get_attachment_image(
             $foto_id,
-            'medium_large',
+            'thumbnail',
             false,
             array(
                 'class'         => 'sfp-auteur__foto',
                 'alt'           => $naam,
                 'fetchpriority' => 'high',
                 'decoding'      => 'async',
-                'sizes'         => '(max-width: 700px) 120px, (max-width: 980px) 200px, 280px',
+                'sizes'         => '72px',
             )
         )
-        : '';
-    $rol     = trim( (string) get_user_meta( $user->ID, 'sfp_auteur_rol', true ) );
-    $profiel = esc_url( (string) get_user_meta( $user->ID, 'sfp_auteur_profiel', true ) );
+        : (string) get_avatar( $user->ID, 144, '', $naam, array( 'class' => 'sfp-auteur__foto' ) );
+    $rol      = trim( (string) get_user_meta( $user->ID, 'sfp_auteur_rol', true ) );
+    $profiel  = esc_url( (string) get_user_meta( $user->ID, 'sfp_auteur_profiel', true ) );
+    $eigen    = esc_url( (string) get_author_posts_url( $user->ID ) );
     $linkedin = esc_url( (string) get_user_meta( $user->ID, 'sfp_auteur_linkedin', true ) );
+    // Geen link naar de pagina waar de bezoeker al is.
+    if ( '' !== $profiel && untrailingslashit( $profiel ) === untrailingslashit( $eigen ) ) {
+        $profiel = '';
+    }
+    $label   = function_exists( 'sfp_page_config_artikel_tekst' ) ? sfp_page_config_artikel_tekst( 'auteur' ) : sfp_page_config_tekst( 'archief_profiel' );
     $links   = ( '' !== $profiel ? '<a class="sfp-tekstlink" href="' . $profiel . '">' . esc_html( sfp_page_config_tekst_f( 'archief_meer_over', $voor ) ) . '</a>' : '' )
         . ( '' !== $linkedin ? '<a class="sfp-tekstlink" href="' . $linkedin . '" rel="me noopener" target="_blank">LinkedIn</a>' : '' );
-    $tekst   = '<p class="is-style-sfp-label">' . esc_html( sfp_page_config_tekst( 'archief_profiel' ) ) . '</p>'
+    $kop     = '<div class="sfp-auteur__kop"><p class="is-style-sfp-label">' . esc_html( $label ) . '</p>'
         . '<h1 class="wp-block-heading">' . esc_html( $naam ) . '</h1>'
-        . ( '' !== $rol ? '<p class="sfp-auteur__rol">' . esc_html( $rol ) . '</p>' : '' )
-        . sfp_page_config_auteurskop_bio( $user )
+        . ( '' !== $rol ? '<p class="sfp-auteur__rol">' . esc_html( $rol ) . '</p>' : '' ) . '</div>';
+    $tekst   = sfp_page_config_auteurskop_bio( $user )
         . ( '' !== $links ? '<p class="sfp-auteur__links">' . $links . '</p>' : '' );
-    $html    = '<div class="sfp-auteur' . ( '' === $foto ? ' sfp-auteur--zonder-foto' : '' ) . '">' . $foto . '<div class="sfp-auteur__tekst">' . $tekst . '</div></div>';
-    return sfp_page_config_archief_css( 'sfp/auteurskop' ) . sfp_page_config_blokken_css_vangnet( 'sfp/lijst' )
+    $html    = '<div class="sfp-auteur' . ( '' === $foto ? ' sfp-auteur--zonder-foto' : '' ) . '">' . $foto . $kop
+        . ( '' !== $tekst ? '<div class="sfp-auteur__tekst">' . $tekst . '</div>' : '' ) . '</div>';
+    return sfp_page_config_archief_css( 'sfp/auteurskop' )
         . sfp_page_config_archief_sectie( array( 'sfp-auteurkop' ), $html );
 }
 

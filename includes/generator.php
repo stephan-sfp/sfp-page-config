@@ -247,6 +247,10 @@ function sfp_page_config_generator_veld_schoon( array $v, $reserve ) {
                     $optie['getallen'] = $getallen;
                 }
             }
+            // Structuuradvies (3.55.0): de optie is aanbevolen zolang deze voorwaarde klopt.
+            if ( isset( $o['aanbevolen_als'] ) && is_array( $o['aanbevolen_als'] ) ) {
+                $optie['aanbevolen_als'] = $o['aanbevolen_als'];
+            }
             $opties[] = $optie;
         }
     }
@@ -309,6 +313,36 @@ function sfp_page_config_generator_veld_schoon( array $v, $reserve ) {
         }
         $uit['assen'] = $assen;
     }
+    // Keuzetegels met eigen invoer (3.55.0): voorbeelden boven een tekstveld, elk met een eventuele voorwaarde.
+    if ( isset( $v['suggesties'] ) && is_array( $v['suggesties'] ) ) {
+        $sug = array();
+        foreach ( $v['suggesties'] as $x ) {
+            if ( is_scalar( $x ) && '' !== trim( (string) $x ) ) {
+                $sug[] = array( 'tekst' => (string) $x );
+            } elseif ( is_array( $x ) && isset( $x['tekst'] ) && is_scalar( $x['tekst'] ) && '' !== trim( (string) $x['tekst'] ) ) {
+                $item = array( 'tekst' => (string) $x['tekst'] );
+                if ( isset( $x['als'] ) && is_array( $x['als'] ) ) {
+                    $item['als'] = $x['als'];
+                }
+                $sug[] = $item;
+            }
+        }
+        if ( $sug ) {
+            $uit['suggesties'] = array_slice( $sug, 0, 40 );
+        }
+    }
+    // De zin tot nu toe boven de vraag (3.55.0): een sjabloon, of true voor de resultaatkop.
+    if ( isset( $v['zin'] ) ) {
+        if ( true === $v['zin'] ) {
+            $uit['zin'] = true;
+        } elseif ( is_string( $v['zin'] ) && '' !== trim( $v['zin'] ) ) {
+            $uit['zin'] = $v['zin'];
+        }
+    }
+    // Label op de aanbevolen optie (3.55.0), met plaatshouders; zonder label de vaste tekst.
+    if ( isset( $v['aanbevolen_label'] ) && is_scalar( $v['aanbevolen_label'] ) ) {
+        $uit['aanbevolen_label'] = (string) $v['aanbevolen_label'];
+    }
     if ( isset( $v['standaard'] ) ) {
         if ( is_array( $v['standaard'] ) ) {
             $uit['standaard'] = array_values( array_map( 'strval', array_filter( $v['standaard'], 'is_scalar' ) ) );
@@ -345,6 +379,8 @@ function sfp_page_config_generator_weergave_schoon( $w, array $stappen, array &$
     $uit = array(
         'modus'   => isset( $w['modus'] ) && 'kaart' === $w['modus'] ? 'kaart' : '',
         'groepen' => array(),
+        // Volledig scherm na de eerste keuze (3.55.0, besluit Stephan 13-11-2026): standaard aan bij een kaart met letters.
+        'volledig' => ! ( isset( $w['volledig'] ) && false === $w['volledig'] ),
     );
     if ( isset( $w['groepen'] ) && is_array( $w['groepen'] ) ) {
         $totaal = 0;
@@ -1287,6 +1323,34 @@ function sfp_page_config_generator_lange_datum( $w ) {
 }
 
 /**
+ * Eigen tekst als deel van een zin (3.55.0, besluit Stephan 13-11-2026):
+ * zonder leesteken aan het eind en met een kleine eerste letter, behalve
+ * als het eerste woord helemaal in hoofdletters staat (een afkorting) of
+ * het Engelse I is.
+ * "They approve the pilot." wordt "they approve the pilot".
+ *
+ * @param  string $w Tekst.
+ * @return string
+ */
+function sfp_page_config_generator_deelzin( $w ) {
+    $w = trim( (string) preg_replace( '/[\s.!?…;:,]+$/u', '', trim( (string) $w ) ) );
+    if ( '' === $w ) {
+        return '';
+    }
+    if ( preg_match( '/^\p{L}+/u', $w, $m ) && ( 'I' === $m[0] || ( mb_strlen( $m[0], 'UTF-8' ) > 1 && mb_strtoupper( $m[0], 'UTF-8' ) === $m[0] ) ) ) {
+        return $w;
+    }
+    $t = sfp_page_config_generator_tekens( $w );
+    foreach ( $t as $i => $c ) {
+        if ( mb_strtoupper( $c, 'UTF-8' ) !== mb_strtolower( $c, 'UTF-8' ) ) {
+            $t[ $i ] = mb_strtolower( $c, 'UTF-8' );
+            break;
+        }
+    }
+    return implode( '', $t );
+}
+
+/**
  * Pas één filter toe.
  *
  * @param  array           $b    Beschrijving.
@@ -1346,6 +1410,8 @@ function sfp_page_config_generator_filter( array $b, array $a, $w, $naam, $f, $c
             return trim( (string) $s, '-' );
         case 'klein':
             return mb_strtolower( $w, 'UTF-8' );
+        case 'deelzin':
+            return sfp_page_config_generator_deelzin( $w );
         case 'zin':
             $w = sfp_page_config_generator_trim( $w );
             return ( '' === $w || preg_match( '/[.!?…:]$/u', $w ) ) ? $w : $w . '.';
