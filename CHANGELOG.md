@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.55.1] - 2026-11-13
+
+Profielfoto in de kopkaart (besluit Stephan 13-11-2026). Netwerkbreed. Terugdraaien: versie 3.55.0 terugzetten (zip uit de tag v3.55.0, map sfp-page-config).
+
+### Gewijzigd
+- Kopkaart van artikelen, begrippen en tools: de profielfoto staat bovenaan, op de hoogte van de regel Door. Hij stond verticaal gecentreerd over naam en datums en zakte daardoor onder de naam; op de telefoon gecentreerd naast naam en rol.
+
 ## [3.55.0] - 2026-11-13
 
 Kopkaart, pijlerregel en boekkaart in artikelen, de archiefblokken en de FAST-kit (besluiten Stephan 13-11-2026). Netwerkbreed. Terugdraaien: versie 3.54.0 terugzetten (zip uit de tag v3.54.0, map sfp-page-config).

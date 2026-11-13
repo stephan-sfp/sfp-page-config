@@ -52,7 +52,8 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 /* kopkaart */
 .sfp-art-kop{background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:18px 20px 6px;margin:0 0 24px}
 .sfp-art-kop__wie{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:14px;row-gap:6px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--sfp-b-lijn)}
-:root .sfp-art-kop__foto{width:44px;height:44px;border-radius:50%;grid-row:span 2;display:block}
+/* Foto bovenaan, op de hoogte van de regel Door (3.55.1, besluit Stephan 13-11-2026); gecentreerd zakte hij onder de naam. */
+:root .sfp-art-kop__foto{width:44px;height:44px;border-radius:50%;grid-row:span 2;display:block;align-self:start}
 .sfp-art-kop__wie--zonder-foto{grid-template-columns:minmax(0,1fr)}
 :root .sfp-art-kop__wie--zonder-foto .sfp-art-kop__affiliate{grid-column:1}
 .sfp-art-kop__naam{font-size:15px;line-height:1.3;color:var(--sfp-b-body)}
