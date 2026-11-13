@@ -41,9 +41,10 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-pijl:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 
 /* pijlerregel en titel */
-:root .sfp-art-pijler{font-family:var(--sfp-b-tekst);font-weight:400;font-size:14px;line-height:1.4;text-transform:none;letter-spacing:0;color:var(--sfp-b-body);margin:0 0 12px}
-/* Tikdoel 24 px (3.26.0): verticale opvulling op de inline link verandert de regel niet; de streep staat waar de rand stond. */
-:root .sfp-art-pijler a{color:var(--sfp-b-tekstlink);font-weight:400;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;padding:5px 0}
+/* Pijlerregel (3.55.0, besluit Stephan 13-11-2026): opgemaakt als de bloklabels, kopfont in kapitalen. */
+:root .sfp-art-pijler{font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;line-height:1.4;text-transform:uppercase;letter-spacing:.08em;color:var(--sfp-b-label);margin:0 0 12px}
+/* Tikdoel 24 px (3.26.0): verticale opvulling op de inline link verandert de regel niet; de streep staat waar de rand stond. Sinds 3.55.0 6 px bij de kleinere letter. */
+:root .sfp-art-pijler a{color:var(--sfp-b-tekstlink);font-weight:900;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;padding:6px 0}
 :root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 /* H1-gewicht uit Astra (3.26.1): Astra zet op .entry-title een eigen blogtitelgewicht, de H1 van de vormen volgt het H1-gewicht. */
 :root .sfp-artikel .sfp-art-titel{margin:0 0 24px;padding:0;text-wrap:pretty;font-weight:var(--sfp-h1-gewicht,inherit)}
@@ -57,12 +58,14 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 .sfp-art-kop__naam{font-size:15px;line-height:1.3;color:var(--sfp-b-body)}
 :root .sfp-art-kop__naam a{color:var(--sfp-b-tekstlink);font-weight:400;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 :root .sfp-art-kop__naam a:is(:hover,:focus){text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
-.sfp-art-kop__rol::before{content:",\20"}
+/* Kopkaart in vaste regels (3.55.0, besluit Stephan 13-11-2026): naam, rol, datums, leestijd en factcheck, op elke breedte. */
+.sfp-art-kop__rol{display:block}
 /* Scheidingsbolletjes (K32): elk onderdeel heeft een bolletje ervoor, en de strook van 22px links is weggeknipt. Zo valt het bolletje aan het begin van elke regel weg, hoe de regel ook breekt, zonder vast breekpunt. */
 .sfp-art-kop__meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;font-size:13px;line-height:1.3;color:var(--sfp-b-body);margin-left:-22px;clip-path:polygon(22px -12px,calc(100% + 12px) -12px,calc(100% + 12px) calc(100% + 12px),22px calc(100% + 12px))}
 .sfp-art-kop__meta>*{display:inline-flex;align-items:center;white-space:nowrap}
 .sfp-art-kop__meta>*::before{content:"\2022";flex:0 0 22px;width:22px;text-align:center;font-weight:400;color:var(--sfp-b-body)}
-.sfp-art-kop__meta>.sfp-art-kop__breek{display:none}.sfp-art-kop__meta>.sfp-art-kop__leestijd{font-family:var(--sfp-b-kop);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sfp-b-primair)}
+.sfp-art-kop__meta>.sfp-art-kop__breek{display:block;flex:0 0 100%;height:0}
+.sfp-art-kop__meta>.sfp-art-kop__leestijd{font-family:var(--sfp-b-kop);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sfp-b-primair)}
 .sfp-art-kop__meta>.sfp-art-kop__breek::before{content:none}
 :root .sfp-art-kop__check{font-weight:400;color:var(--sfp-b-primair);text-decoration:none}
 .sfp-art-kop__check svg{width:14px;height:14px;color:var(--sfp-b-secundair);flex:0 0 auto;margin-right:6px}
@@ -361,10 +364,7 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
   .sfp-art-kop{padding:16px 16px 4px}
   .sfp-art-kop__wie{grid-template-columns:40px minmax(0,1fr);column-gap:12px;row-gap:12px}
   :root .sfp-art-kop__foto{width:40px;height:40px;grid-row:auto}
-  .sfp-art-kop__rol{display:block}
-  .sfp-art-kop__rol::before{content:none}
   .sfp-art-kop__meta{grid-column:1/-1;gap:3px 0}
-  .sfp-art-kop__meta>.sfp-art-kop__breek{display:block;flex:0 0 100%;height:0}
   :root .sfp-art-kop__affiliate{grid-column:1/-1}
   .sfp-art-acties{gap:6px;margin:0 -16px;padding-left:16px;padding-right:16px}
   :root .sfp-art-kop .sfp-art-actie{font-size:12px;min-height:34px;padding:0 10px}
@@ -395,6 +395,12 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
   .sfp-art-actie svg{width:18px;height:18px}
   .sfp-art-actie>span:not(.sfp-lang){position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 }
+/* Sinds 3.55.0 (besluit Stephan 13-11-2026) ook breder dan een telefoon zolang de labels niet op één regel passen:
+   artikel.js meet de rij en zet dan de klasse sfp-art-acties--iconen. */
+:root .sfp-art-acties.sfp-art-acties--iconen{overflow:visible;gap:8px}
+:root .sfp-art-kop .sfp-art-acties--iconen .sfp-art-actie,:root .sfp-art-kop .sfp-art-acties--iconen .sfp-art-actie--icoon{position:relative;width:40px;height:40px;min-height:40px;padding:0;gap:0;justify-content:center;flex:0 0 40px}
+.sfp-art-acties--iconen .sfp-art-actie svg{width:18px;height:18px}
+.sfp-art-acties--iconen .sfp-art-actie>span{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* Fact-checked-paneel (3.44.0): het label opent het paneel met de controleur en de geschiedenis. */
 :root :is(.sfp-art-kop,.sfp-art-maker) button.sfp-art-kop__check--knop{display:inline-flex;align-items:center;gap:0;font:inherit;font-weight:400;color:var(--sfp-b-primair);background:none;border:0;margin:0;padding:0;min-height:24px;cursor:pointer;text-decoration:none}

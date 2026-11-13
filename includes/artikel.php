@@ -650,16 +650,54 @@ function sfp_page_config_artikel_bovenlaag_deel( array $deel, $eind ) {
     return array(
         'soort'  => $soort,
         'niveau' => $niveau,
+        'begin'  => isset( $deel['begin'] ) ? (int) $deel['begin'] : 0,
         'eind'   => (int) $eind,
+        'grens'  => sfp_page_config_artikel_is_slot( $deel, $soort, $niveau ),
     );
 }
 
 /**
- * Zet de promokaart in de tekst, zo vroeg mogelijk na de eerste H2 en met
- * rustig ritme: minstens drie alinea's sinds het vorige UX-element en
- * minstens drie tot het volgende. Is er geen zulke plek, dan komt de kaart
- * onder de tekst. Alleen zichtbaar op telefoon en tablet, waar de
- * rechterkolom ontbreekt.
+ * Is dit onderdeel het begin van de conclusie of de veelgestelde vragen?
+ * Een H2 met een slotwoord of het FAQ-blok. Daarna komt geen promokaart
+ * (3.55.0, besluit Stephan 13-11-2026).
+ *
+ * @since 3.55.0
+ *
+ * @param  array  $deel   Tag, attributen en HTML.
+ * @param  string $soort  Soort van het onderdeel.
+ * @param  int    $niveau Kopniveau.
+ * @return bool
+ */
+function sfp_page_config_artikel_is_slot( array $deel, $soort, $niveau ) {
+    if ( 'ux' === $soort && preg_match( '/\\b(?:sfp-faq|wp-block-sfp-faq|schema-faq|wp-block-yoast-faq-block|uagb-faq|wp-block-uagb-faq)\\b/', $deel['attr'] ) ) {
+        return true;
+    }
+    if ( 'kop' !== $soort || 2 !== $niveau ) {
+        return false;
+    }
+    $tekst = strtolower( trim( wp_strip_all_tags( isset( $deel['html'] ) ? $deel['html'] : '' ) ) );
+    /**
+     * Woorden waarmee een H2 de conclusie of de veelgestelde vragen opent (nl, en, pt).
+     *
+     * @since 3.55.0
+     */
+    $woorden = (array) apply_filters( 'sfp_page_config_artikel_slotwoorden', array( 'conclusie', 'tot slot', 'tot besluit', 'samenvatting', 'kortom', 'veelgestelde vragen', 'faq', 'conclusion', 'in summary', 'summary', 'wrapping up', 'final thoughts', 'frequently asked', 'conclusão', 'resumo', 'perguntas frequentes' ) );
+    foreach ( $woorden as $woord ) {
+        if ( '' !== $woord && preg_match( '/(?:^|[^\\p{L}])' . preg_quote( strtolower( $woord ), '/' ) . '(?:[^\\p{L}]|$)/u', $tekst ) ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Zet de promokaart in de tekst (3.55.0, besluit Stephan 13-11-2026): vóór
+ * de tweede H2, met minstens drie alinea's lopende tekst sinds het vorige
+ * UX-element en tot het volgende. Past dat daar niet, dan het eerstvolgende
+ * punt daarna dat wel voldoet. Nooit na de conclusie of de veelgestelde
+ * vragen: voldoet geen punt, dan direct vóór de tweede H2 (of vóór de
+ * conclusie of FAQ als er geen tweede H2 vóór staat). Alleen zichtbaar op
+ * telefoon en tablet, waar de rechterkolom ontbreekt.
  *
  * @param  string $html  Getoonde inhoud.
  * @param  string $kaart HTML van de kaart.
@@ -669,46 +707,84 @@ function sfp_page_config_artikel_promo_in_tekst( $html, $kaart ) {
     if ( '' === $kaart ) {
         return $html;
     }
+    $plek = sfp_page_config_artikel_promo_plek( sfp_page_config_artikel_bovenlaag( $html ), strlen( $html ) );
+    return substr( $html, 0, $plek ) . $kaart . substr( $html, $plek );
+}
+
+/**
+ * De plek (tekenpositie) voor de promokaart in de inhoud.
+ *
+ * @since 3.55.0
+ *
+ * @param  array $delen  Bovenste laag uit sfp_page_config_artikel_bovenlaag().
+ * @param  int   $lengte Lengte van de inhoud.
+ * @return int
+ */
+function sfp_page_config_artikel_promo_plek( array $delen, $lengte ) {
     $minimum = 3;
-    $delen   = sfp_page_config_artikel_bovenlaag( $html );
     $aantal  = count( $delen );
 
-    // Per onderdeel: hoeveel alinea's volgen er tot het volgende UX-element.
-    $erna     = array_fill( 0, $aantal, 0 );
-    $ux_volgt = array_fill( 0, $aantal, false );
+    // Grens: het begin van de conclusie of de FAQ; daarna geen kaart.
+    $grens = $aantal;
+    foreach ( $delen as $i => $deel ) {
+        if ( ! empty( $deel['grens'] ) ) {
+            $grens = $i;
+            break;
+        }
+    }
+
+    // De eerste en de tweede H2 vóór de grens.
+    $h2 = array();
+    for ( $i = 0; $i < $grens && count( $h2 ) < 2; $i++ ) {
+        if ( 'kop' === $delen[ $i ]['soort'] && 2 === $delen[ $i ]['niveau'] ) {
+            $h2[] = $i;
+        }
+    }
+
+    // Alinea's sinds het vorige UX-element (vóór onderdeel i) en tot het volgende (vanaf i).
+    $ervoor = array_fill( 0, $aantal + 1, 0 );
+    $teller = 0;
+    for ( $i = 0; $i < $aantal; $i++ ) {
+        $ervoor[ $i ] = $teller;
+        if ( 'tekst' === $delen[ $i ]['soort'] ) {
+            ++$teller;
+        } elseif ( 'ux' === $delen[ $i ]['soort'] ) {
+            $teller = 0;
+        }
+    }
+    $ervoor[ $aantal ] = $teller;
+    $erna     = array_fill( 0, $aantal + 1, 0 );
+    $ux_volgt = array_fill( 0, $aantal + 1, false );
     $teller   = 0;
     $ux       = false;
     for ( $i = $aantal - 1; $i >= 0; $i-- ) {
-        $erna[ $i ]     = $teller;
-        $ux_volgt[ $i ] = $ux;
         if ( 'tekst' === $delen[ $i ]['soort'] ) {
             ++$teller;
         } elseif ( 'ux' === $delen[ $i ]['soort'] ) {
             $teller = 0;
             $ux     = true;
         }
+        $erna[ $i ]     = $teller;
+        $ux_volgt[ $i ] = $ux;
     }
 
-    $ervoor = 0;
-    $h2     = false;
-    foreach ( $delen as $i => $deel ) {
-        if ( 'kop' === $deel['soort'] ) {
-            $h2 = $h2 || 2 === $deel['niveau'];
+    // Punt i = direct vóór onderdeel i. Zoeken vanaf de tweede H2 (zonder tweede H2: na de eerste), tot en met de grens.
+    $start = isset( $h2[1] ) ? $h2[1] : ( isset( $h2[0] ) ? $h2[0] + 1 : $aantal );
+    for ( $i = $start; $i <= $grens; $i++ ) {
+        // Alleen tussen tekst en een kop of tekst: niet midden in een reeks UX-elementen.
+        if ( $i > 0 && 'tekst' !== $delen[ $i - 1 ]['soort'] ) {
             continue;
         }
-        if ( 'ux' === $deel['soort'] ) {
-            $ervoor = 0;
-            continue;
-        }
-        if ( 'tekst' !== $deel['soort'] ) {
-            continue;
-        }
-        ++$ervoor;
-        if ( $h2 && $ervoor >= $minimum && ( $erna[ $i ] >= $minimum || ! $ux_volgt[ $i ] ) ) {
-            return substr( $html, 0, $deel['eind'] ) . $kaart . substr( $html, $deel['eind'] );
+        if ( $ervoor[ $i ] >= $minimum && ( $erna[ $i ] >= $minimum || ! $ux_volgt[ $i ] ) ) {
+            return $i < $aantal ? $delen[ $i ]['begin'] : (int) $lengte;
         }
     }
-    return $html . $kaart;
+
+    // Geen punt dat voldoet: direct vóór de tweede H2, anders vóór de grens.
+    if ( isset( $h2[1] ) ) {
+        return $delen[ $h2[1] ]['begin'];
+    }
+    return $grens < $aantal ? $delen[ $grens ]['begin'] : (int) $lengte;
 }
 
 /**

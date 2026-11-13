@@ -4,6 +4,19 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.55.0] - 2026-11-13
+
+Kopkaart, pijlerregel en boekkaart in artikelen (besluiten Stephan 13-11-2026, overdracht opmerkingen-elementen-2026-11-13). Netwerkbreed. Terugdraaien: versie 3.54.0 terugzetten (zip uit de tag v3.54.0, map sfp-page-config).
+
+### Gewijzigd
+- Kopkaart van artikelen, begrippen en tools in vaste regels op elke breedte: "Door <naam>", de rol op een eigen regel (zonder komma), Gepubliceerd en Bijgewerkt, dan leestijd en Gefactcheckt. Tussen ongeveer 600 en 800 px brak de rol midden in de zin en viel Gefactcheckt los op een derde regel.
+- Actieknoppen alleen als icoon zolang de labels niet op één regel in de kaart passen, ook breder dan een telefoon (artikel.js meet de rij). Het label blijft voor schermlezers en als title.
+- Pijlerregel boven de H1 opgemaakt als de bloklabels: kopfont in kapitalen, 12 px, 900, letterafstand .08em, labelkleur. De link blijft onderstreept in de tekstlinkkleur, nu op 900; tikdoel 24 px blijft.
+- Boekkaart (inline promokaart, telefoon en tablet) staat vóór de tweede H2, met minstens drie alinea's tekst tot een ander UX-element; past dat niet, dan het eerstvolgende punt dat wel past, en nooit na de conclusie of de veelgestelde vragen. Voldoet geen punt, dan direct vóór de tweede H2. Op DPS stond de kaart in 36 artikelen na de FAQ.
+
+### Toegevoegd
+- Test tests/promo-plek.php; tests/pijlerregel.php bijgewerkt.
+
 ## [3.54.0] - 2026-11-12
 
 Reviewaantal pas vanaf een drempel en de H1 in de held Foto zonder lelijke afbreking (besluiten Stephan 12-11-2026). Terugdraaien: versie 3.53.0 terugzetten (zip uit de tag v3.53.0, map sfp-page-config).

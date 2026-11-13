@@ -7,6 +7,33 @@
     var offset = -1;
     var rustig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    /* Actierij (3.55.0, besluit Stephan 13-11-2026): alleen iconen zolang de labels niet op één regel passen. */
+    var rijen = alle('.sfp-art-acties');
+    function meetRijen() {
+        rijen.forEach(function (rij) {
+            rij.classList.remove('sfp-art-acties--iconen');
+            if (rij.clientWidth && rij.scrollWidth > rij.clientWidth + 1) { rij.classList.add('sfp-art-acties--iconen'); }
+        });
+    }
+    if (rijen.length) {
+        meetRijen();
+        if (window.ResizeObserver) {
+            var breedtes = [];
+            var waarnemer = new ResizeObserver(function () {
+                var anders = false;
+                rijen.forEach(function (rij, i) {
+                    var b = rij.parentNode ? rij.parentNode.clientWidth : 0;
+                    if (b !== breedtes[i]) { breedtes[i] = b; anders = true; }
+                });
+                if (anders) { meetRijen(); }
+            });
+            rijen.forEach(function (rij) { if (rij.parentNode) { waarnemer.observe(rij.parentNode); } });
+        } else {
+            window.addEventListener('resize', meetRijen);
+        }
+        if (doc.fonts && doc.fonts.ready) { doc.fonts.ready.then(meetRijen); }
+    }
+
     /* Hoogte van een vaste header (en de beheerbalk), zodat ankers, panelen en de rechterkolom eronder uitkomen. */
     function meetOffset() {
         var hoogte = 0;
