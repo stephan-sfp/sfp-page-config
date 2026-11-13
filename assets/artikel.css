@@ -60,7 +60,8 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 :root .sfp-art-kop__naam a{color:var(--sfp-b-tekstlink);font-weight:400;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 :root .sfp-art-kop__naam a:is(:hover,:focus){text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
 /* Kopkaart in vaste regels (3.55.0, besluit Stephan 13-11-2026): naam, rol, datums, leestijd en factcheck, op elke breedte. */
-.sfp-art-kop__rol{display:block}
+.sfp-art-kop__rol{display:block;margin-top:4px}
+/* 4 px tussen naam en titel (3.55.3, besluit Stephan 13-11-2026): iets minder dan de 6 px tussen titel en datums, zodat naam en titel bij elkaar blijven. */
 /* Scheidingsbolletjes (K32): elk onderdeel heeft een bolletje ervoor, en de strook van 22px links is weggeknipt. Zo valt het bolletje aan het begin van elke regel weg, hoe de regel ook breekt, zonder vast breekpunt. */
 .sfp-art-kop__meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;font-size:13px;line-height:1.3;color:var(--sfp-b-body);margin-left:-22px;clip-path:polygon(22px -12px,calc(100% + 12px) -12px,calc(100% + 12px) calc(100% + 12px),22px calc(100% + 12px))}
 .sfp-art-kop__meta>*{display:inline-flex;align-items:center;white-space:nowrap}

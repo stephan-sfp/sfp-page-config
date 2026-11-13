@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.55.3] - 2026-11-14
+
+Ruimte tussen naam en titel in de kopkaart (besluit Stephan 13-11-2026). Netwerkbreed. Terugdraaien: versie 3.55.2 terugzetten (zip uit de tag v3.55.2, map sfp-page-config).
+
+### Gewijzigd
+- Kopkaart van artikelen, begrippen en tools: 4 px tussen de regel Door en de titel (was 0); tussen titel en datums blijft 6 px.
+
 ## [3.55.2] - 2026-11-13
 
 Leestijd in de kopkaart (besluiten Stephan 13-11-2026). Netwerkbreed. Terugdraaien: versie 3.55.1 terugzetten (zip uit de tag v3.55.1, map sfp-page-config).
