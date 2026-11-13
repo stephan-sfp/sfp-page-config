@@ -64,8 +64,14 @@ html:has(body.sfp-artikel-pagina),html.sfp-artikel-html,body.sfp-artikel-pagina{
 /* Scheidingsbolletjes (K32): elk onderdeel heeft een bolletje ervoor, en de strook van 22px links is weggeknipt. Zo valt het bolletje aan het begin van elke regel weg, hoe de regel ook breekt, zonder vast breekpunt. */
 .sfp-art-kop__meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 0;font-size:13px;line-height:1.3;color:var(--sfp-b-body);margin-left:-22px;clip-path:polygon(22px -12px,calc(100% + 12px) -12px,calc(100% + 12px) calc(100% + 12px),22px calc(100% + 12px))}
 .sfp-art-kop__meta>*{display:inline-flex;align-items:center;white-space:nowrap}
-.sfp-art-kop__meta>*::before{content:"\2022";flex:0 0 22px;width:22px;text-align:center;font-weight:400;color:var(--sfp-b-body)}
-.sfp-art-kop__meta>.sfp-art-kop__breek{display:block;flex:0 0 100%;height:0}
+.sfp-art-kop__meta>*::before{content:"\2022";flex:0 0 22px;width:22px;text-align:center;font-family:var(--sfp-b-tekst);font-weight:400;font-size:13px;letter-spacing:0;color:var(--sfp-b-body)}
+.sfp-art-kop__meta>.sfp-art-kop__breek{display:none;flex:0 0 100%;height:0}
+/* Eigen regel voor leestijd en Gefactcheckt alleen als ze niet achter de datums passen (3.55.2, artikel.js meet). */
+.sfp-art-kop__meta--breek>.sfp-art-kop__breek{display:block}
+/* Telefoon: de datums staan al op twee regels; de leestijd houdt daar vast een eigen regel (geen verspringing na het laden). */
+@media (max-width:600px){.sfp-art-kop__meta>.sfp-art-kop__breek{display:block}}
+/* Met de inhoudsopgave in de zijkolom staat de leestijd daar al (Inhoud · 5 min): niet nog eens in de kopkaart (3.55.2, besluit Stephan 13-11-2026). */
+@media (min-width:1025px){body:has(.sfp-artikel__zij .sfp-art-toc) .sfp-art-kop__meta>.sfp-art-kop__leestijd{display:none}}
 .sfp-art-kop__meta>.sfp-art-kop__leestijd{font-family:var(--sfp-b-kop);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sfp-b-primair)}
 .sfp-art-kop__meta>.sfp-art-kop__breek::before{content:none}
 :root .sfp-art-kop__check{font-weight:400;color:var(--sfp-b-primair);text-decoration:none}

@@ -9,25 +9,35 @@
 
     /* Actierij (3.55.0, besluit Stephan 13-11-2026): alleen iconen zolang de labels niet op één regel passen. */
     var rijen = alle('.sfp-art-acties');
+    /* Kopkaart (3.55.2, besluit Stephan 13-11-2026): leestijd en Gefactcheckt staan achter de datums zolang alles op één
+       regel past; anders gaan ze samen naar een eigen regel. Het aantal regels blijft gelijk, dus er verspringt niets. */
+    var metas = alle('.sfp-art-kop__meta');
     function meetRijen() {
         rijen.forEach(function (rij) {
             rij.classList.remove('sfp-art-acties--iconen');
             if (rij.clientWidth && rij.scrollWidth > rij.clientWidth + 1) { rij.classList.add('sfp-art-acties--iconen'); }
         });
+        metas.forEach(function (meta) {
+            meta.classList.remove('sfp-art-kop__meta--breek');
+            var delen = Array.prototype.filter.call(meta.children, function (k) { return k.offsetParent !== null && !k.classList.contains('sfp-art-kop__breek'); });
+            /* Alleen afbreken als de eerste nieuwe regel met de leestijd of Gefactcheckt begint: dan blijft het aantal regels gelijk. */
+            var eerste = delen.filter(function (k) { return k.offsetTop > delen[0].offsetTop + 2; })[0];
+            if (eerste && /sfp-art-kop__(leestijd|check)/.test(eerste.className + ' ' + (eerste.firstElementChild ? eerste.firstElementChild.className : ''))) { meta.classList.add('sfp-art-kop__meta--breek'); }
+        });
     }
-    if (rijen.length) {
+    if (rijen.length || metas.length) {
         meetRijen();
         if (window.ResizeObserver) {
             var breedtes = [];
             var waarnemer = new ResizeObserver(function () {
                 var anders = false;
-                rijen.forEach(function (rij, i) {
+                rijen.concat(metas).forEach(function (rij, i) {
                     var b = rij.parentNode ? rij.parentNode.clientWidth : 0;
                     if (b !== breedtes[i]) { breedtes[i] = b; anders = true; }
                 });
                 if (anders) { meetRijen(); }
             });
-            rijen.forEach(function (rij) { if (rij.parentNode) { waarnemer.observe(rij.parentNode); } });
+            rijen.concat(metas).forEach(function (rij) { if (rij.parentNode) { waarnemer.observe(rij.parentNode); } });
         } else {
             window.addEventListener('resize', meetRijen);
         }
