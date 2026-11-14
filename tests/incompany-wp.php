@@ -101,17 +101,20 @@ $zonder_css = function ( $h ) {
 };
 $kv = $zonder_css( do_blocks( '<!-- wp:sfp/keuzehulp-vorm /-->' ) );
 $bevat( 'data-sfp-kv', $kv, 'keuzehulp vorm' );
-$is( 3, substr_count( $kv, '<fieldset class="sfp-kv__vraag">' ), 'drie vragen als fieldset' );
-$is( 8, substr_count( $kv, 'type="radio"' ), 'acht radioknoppen' );
+$is( 2, substr_count( $kv, '<fieldset class="sfp-kv__vraag">' ), 'twee vragen als fieldset (3.64.0: praktijk weg)' );
+$is( 6, substr_count( $kv, 'type="radio"' ), 'zes radioknoppen' );
+$bevat( '-praktijk"', $kv, 'geen vraag naar de praktijk', false );
+$bevat( 'data-gesprek="' . esc_attr( sfp_page_config_tekst( 'kv_regel_gesprek' ) ) . '"', $kv, 'regel bij 2-3 collega\'s' );
+$bevat( '<div class="sfp-kv__gesprek wp-block-buttons" hidden><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#" data-sfp-kv-slot>' . esc_html( sfp_page_config_tekst( 'kv_incompany_actie' ) ) . '</a>', $kv, 'gespreksknop zonder doel zoekt het slot' );
 $bevat( esc_html( sfp_page_config_tekst( 'kv_vraag1' ) ), $kv, 'standaardvraag 1' );
 $is( 4, preg_match_all( '/class="sfp-kv__kaart[ "]/', $kv ), 'vier kaarten' );
 $is( 1, preg_match( '/data-vorm="incompany".*data-vorm="training".*data-vorm="coaching".*data-vorm="elearning"/s', $kv ), 'incompany eerst' );
 $bevat( 'sfp-kv__kaart is-uitgelicht" data-vorm="incompany"', $kv, 'incompany uitgelicht in de beginstand' );
-$bevat( 'wp-block-button__link', $kv, 'zonder doel geen knop', false );
+$is( 1, substr_count( $kv, 'wp-block-button__link' ), 'zonder doel alleen de verborgen gespreksknop' );
 $bevat( 'sfp-lijst--plat', $kv, 'e-learning zonder vinkjes' );
 $bevat( sfp_page_config_tekst( 'kv_elearning_feit1' ), $kv, 'e-learning standaardregel' );
 $kv2 = $zonder_css( do_blocks( '<!-- wp:sfp/keuzehulp-vorm ' . wp_json_encode( array(
-    'vragen'  => array( 'v1' => 'Met hoeveel?', 'opties' => array( 'een', '', '', '' ) ),
+    'vragen'  => array( 'v1' => 'Met hoeveel?', 'opties' => array( 'een', '', '', '' ), 'v2' => 'Oude vraag', 'gesprekKnop' => 'Bel ons', 'gesprekDoel' => '#gesprek' ),
     'kaarten' => array(
         'incompany' => array( 'feiten' => array( 'A', '', 'B', 'C', 'D', 'E' ), 'doel' => '#adviesgesprek', 'doel2' => '/incompany/calculator/' ),
         'training'  => array( 'actie' => 'knop', 'tekst' => 'Naar de training', 'doel' => '/presentatietraining/' ),
@@ -119,6 +122,8 @@ $kv2 = $zonder_css( do_blocks( '<!-- wp:sfp/keuzehulp-vorm ' . wp_json_encode( a
 ) ) . ' /-->' ) );
 $bevat( 'Met hoeveel?</legend>', $kv2, 'eigen vraag' );
 $bevat( '<span>een</span>', $kv2, 'eigen antwoord' );
+$bevat( 'Oude vraag', $kv2, 'oude vraag 2 niet meer getoond', false );
+$bevat( 'href="#gesprek">Bel ons</a>', $kv2, 'eigen gespreksknop met doel' );
 $bevat( '<span>' . sfp_page_config_tekst( 'kv_optie2' ) . '</span>', $kv2, 'leeg antwoord valt terug' );
 $is( 1, preg_match( '/data-vorm="incompany".*?<ul><li>A<\/li><li>B<\/li><li>C<\/li><li>D<\/li><li class="sfp-kv__extra">/s', $kv2 ), 'hooguit vier feiten, lege overgeslagen, extra regel' );
 $bevat( 'href="#adviesgesprek">' . sfp_page_config_tekst( 'kv_incompany_actie' ) . '</a></div></div><p class="is-style-sfp-pijl"><a href="' . home_url( '/incompany/calculator/' ) . '">' . sfp_page_config_tekst( 'kv_incompany_actie2' ), $kv2, 'knop en tweede actie' );

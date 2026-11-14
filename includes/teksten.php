@@ -1341,6 +1341,13 @@ function sfp_page_config_teksten_register() {
             'en'    => 'Please answer question 2 too',
             'pt'    => 'Responda também à pergunta 2',
         ),
+        'kv_regel_gesprek' => array(
+            'groep' => 'Keuzehulp vorm',
+            'label' => 'Regel boven de kaart, bij 2 of 3 collega\'s',
+            'nl'    => 'Bespreek het in een adviesgesprek',
+            'en'    => 'Talk it through in a consultation',
+            'pt'    => 'Converse com a gente sobre isso',
+        ),
         'kv_incompany_label' => array(
             'groep' => 'Keuzehulp vorm',
             'label' => 'Incompany: label',
