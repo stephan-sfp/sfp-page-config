@@ -407,6 +407,7 @@
         });
     }
     leesOnder(alle('.sfp-art-toc__sub'));
+    alle('.sfp-art-toc').forEach(function (nav) { if (nav.querySelector('.sfp-art-toc__sub')) { nav.classList.add('sfp-art-toc--klap'); } });
     if (balk) { leesOnder(alle('.sfp-art-balk__sub', balk)); }
     var onderActief = null;
     var titelKnop = balk ? balk.querySelector('.sfp-art-balk__titel') : null;
@@ -441,6 +442,8 @@
         if (i !== actief) {
             actief = i;
             markeer(toc, i < 0 ? 0 : i);
+            /* Onderdelen (H3) alleen onder het hoofdstuk waar de lezer is (3.63.0). */
+            toc.forEach(function (a, n) { a.parentNode.classList.toggle('sfp-open', n === (i < 0 ? 0 : i)); });
             markeer(lijstLinks, i);
             if (titel) { titel.textContent = i < 0 ? rustTitel : koppen[i].textContent; }
         }
