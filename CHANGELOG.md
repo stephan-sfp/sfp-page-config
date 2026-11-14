@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.63.0] - 2026-11-14
+
+Auteurskaart, zelftestkaart en inhoudsopgave bij artikelen, op alle acht sites (besluiten Stephan 14-11-2026). Terugdraaien: versie 3.62.0 terugzetten.
+
+### Gerepareerd
+- Auteurskaart: de foto houdt zijn maat (72 px, op de telefoon 56 px), ook als een snippet of plugin de avatar een eigen breedte geeft. Op de telefoon raakte de foto de naam.
+
+### Gewijzigd
+- Zelftestkaart in de zijkolom: klein beeld links, tekst ernaast, net als de boekkaart. Het beeld stond boven de tekst over de volle breedte.
+- Inhoudsopgave: onderdelen (H3) lichter en compacter dan de hoofdstukken; het actieve onderdeel krijgt een kort streepje. Met script staan de onderdelen alleen open onder het hoofdstuk waar de lezer is; zonder script blijven ze allemaal zichtbaar.
+
 ## [3.62.0] - 2026-11-14
 
 Deelbeeld met een eigen achtergrondkleur per site, voor FL in het geel (besluit Stephan 14-11-2026). Terugdraaien: versie 3.61.0 terugzetten.

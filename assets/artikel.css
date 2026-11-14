@@ -193,9 +193,10 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
 .sfp-art-promo__test{width:60px;height:60px;border-radius:var(--sfp-b-r-kaart,6px);background:var(--sfp-b-primair);color:var(--sfp-b-secundair);display:grid;place-items:center}
 .sfp-art-promo__test svg{width:30px;height:30px}
 /* zelftestbeeld (3.39.0): het beeld van de test boven de tekst, in plaats van het icoon */
-:root .sfp-art-promo:has(>.sfp-art-promo__testbeeld){grid-template-columns:minmax(0,1fr);gap:14px}
+/* sinds 3.63.0 (besluit Stephan 14-11-2026) ook in de zijkolom klein links, de tekst ernaast, zoals de boekkaart */
+:root .sfp-art-promo:has(>.sfp-art-promo__testbeeld){grid-template-columns:60px minmax(0,1fr);gap:16px}
 .sfp-art-promo__testbeeld{display:block;line-height:0}
-:root .sfp-art-promo .sfp-art-promo__testbeeld img{display:block;width:100%;max-width:240px;height:auto;border:0;border-radius:0;box-shadow:none}
+:root .sfp-art-promo .sfp-art-promo__testbeeld img{display:block;width:100%;max-width:60px;height:auto;border:0;border-radius:0;box-shadow:none}
 /* in de tekst (telefoon en tablet, 3.39.1): het beeld klein links, de tekst ernaast, zoals met het icoon */
 :root .sfp-art-promo--inline:has(>.sfp-art-promo__testbeeld){grid-template-columns:96px minmax(0,1fr);gap:16px}
 :root .sfp-art-promo--inline .sfp-art-promo__testbeeld img{max-width:96px}
@@ -210,7 +211,7 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
 
 /* auteurskaart */
 .sfp-art-auteur{display:grid;grid-template-columns:72px minmax(0,1fr);column-gap:18px;row-gap:18px;align-items:center;background:var(--sfp-b-tint3);border-radius:var(--sfp-b-r-kaart);padding:28px;margin:24px 0 0}
-:root .sfp-art-auteur>img{width:72px;height:72px;border-radius:50%;display:block}
+:root .sfp-art-auteur>img{width:72px!important;height:72px!important;max-width:none!important;max-height:none!important;object-fit:cover;border-radius:50%;display:block}
 .sfp-art-auteur__kop{display:grid;gap:8px}
 :root .sfp-art-auteur :is(h2,h3){margin:0;padding:0}
 .sfp-art-auteur__tekst{grid-column:1/-1}
@@ -248,8 +249,12 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
 :root .sfp-art-toc li a{display:block;padding:7px 0 7px 14px;margin-left:-2px;border-left:2px solid transparent;font-weight:400;font-size:14px;line-height:1.4;color:var(--sfp-b-body);text-decoration:none}
 :root .sfp-art-toc li a:is(:hover,:focus){color:var(--sfp-b-primair)}
 :root .sfp-art-toc li a.sfp-actief{border-left-color:var(--sfp-b-secundair);color:var(--sfp-b-primair);font-weight:400}
-:root .sfp-art-toc ol.sfp-art-toc__sub{margin:0 0 4px;border-left:0}
-:root .sfp-art-toc .sfp-art-toc__sub li a{padding:4px 0 4px 28px;font-size:13px}
+:root .sfp-art-toc ol.sfp-art-toc__sub{margin:0 0 6px;border-left:0}
+/* onderdelen (H3), sinds 3.63.0 (besluit Stephan 14-11-2026): lichter en compacter dan de hoofdstukken, actief met een kort streepje; met script alleen onder het hoofdstuk waar de lezer is */
+:root .sfp-art-toc .sfp-art-toc__sub li a{position:relative;padding:3px 0 3px 26px;font-size:13px;line-height:1.35;color:color-mix(in srgb,var(--sfp-b-body) 85%,var(--sfp-b-wit))}
+:root .sfp-art-toc .sfp-art-toc__sub li a.sfp-actief{border-left-color:transparent;color:var(--sfp-b-primair)}
+:root .sfp-art-toc .sfp-art-toc__sub li a.sfp-actief::before{content:"";position:absolute;left:-2px;top:50%;width:2px;height:12px;margin-top:-6px;background:var(--sfp-b-secundair)}
+:root .sfp-art-toc--klap>ol>li:not(.sfp-open):not(:focus-within)>.sfp-art-toc__sub{display:none}
 
 /* tooltips (SFP Tooltip levert het vlak; de stippellijn onder de tekst komt hier vandaan, zoals in de dummy) */
 .sfp-art-inhoud .tooltip{text-decoration:none;border-bottom:1px dotted var(--sfp-b-primair);cursor:help}
@@ -397,7 +402,7 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
   .sfp-art-actie .sfp-kort{display:inline}
   .sfp-art-deel{grid-template-columns:1fr 1fr}
   .sfp-art-auteur{grid-template-columns:56px minmax(0,1fr);column-gap:14px;padding:20px}
-  :root .sfp-art-auteur>img{width:56px;height:56px}
+  :root .sfp-art-auteur>img{width:56px!important;height:56px!important}
   .sfp-art-voet{grid-template-columns:1fr;margin-top:40px}
   .sfp-art-voet__rij{padding:0 0 20px;gap:10px}
   .sfp-art-voet__rij+.sfp-art-voet__rij{padding:20px 0 0;border-left:0;border-top:1px solid var(--sfp-b-lijn)}
