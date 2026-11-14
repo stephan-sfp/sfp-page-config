@@ -262,7 +262,8 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
         foreach ( array( 40, 37, 34, 31, 28 ) as $maat ) {
             $rh     = $maat * 1.4 * $f;
             $tussen = $maat * 0.75 * $f;
-            $hoogte = 0;
+            // 3.60.0: een halve regel extra lucht tussen de kop en het eerste punt.
+            $hoogte = $rh / 2;
             $sets   = array();
             foreach ( $s['punten'] as $punt ) {
                 $set     = sfp_page_config_db_regels( $punt, $tekst, $pt( $maat ), $B - 2 * $rand - $inspr );
@@ -273,7 +274,7 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
                 break;
             }
         }
-        $y  = $boven + $maat * $f;
+        $y  = $boven + $rh / 2 + $maat * $f;
         $nr = 1;
         foreach ( $sets as $set ) {
             // Het rondje staat op het optische midden van de eerste regel: halverwege
@@ -287,13 +288,15 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
             $cx = (int) round( $rand + $cd / 2 );
             // Midden van de hele zin: bij meer regels zakt het rondje een halve regel per extra regel.
             $cy = (int) round( $y - ( $xh + $ch ) / 4 + ( count( $set[0] ) - 1 ) * $rh / 2 );
+            // 3.60.0: rondje in het primair met een rand in het secundair, cijfer wit.
+            $rd = (int) max( 2 * $f, round( $maat * 0.08 * $f ) );
             imagefilledellipse( $im, $cx, $cy, $cd, $cd, $sec );
+            imagefilledellipse( $im, $cx, $cy, $cd - 2 * $rd, $cd - 2 * $rd, $prim );
             $nm = $pt( $maat * 0.72 );
             $nb = imagettfbbox( $nm, 0, $kop, (string) $nr );
             $nx = $cx - ( $nb[0] + $nb[2] ) / 2;
             $ny = $cy - ( $nb[1] + $nb[7] ) / 2;
-            // Het cijfer in het primair op het secundaire rondje (contrast 6,9 op DGA; wit gaf 1,7).
-            imagettftext( $im, $nm, 0, (int) round( $nx ), (int) round( $ny ), $prim, $kop, (string) $nr );
+            imagettftext( $im, $nm, 0, (int) round( $nx ), (int) round( $ny ), $wit, $kop, (string) $nr );
             $y = sfp_page_config_db_schrijf_regels( $im, $set[0], $set[1], $rand + $inspr, $y, $tekst, $pt( $maat ), $rh, $wit, $wit ) + $tussen;
             ++$nr;
         }
