@@ -196,11 +196,14 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
     $H       = $doelH * $f;
     $im      = imagecreatetruecolor( $B, $H );
     imagealphablending( $im, true );
-    imagefill( $im, 0, 0, sfp_page_config_db_kleur( $im, $s['primair'] ) );
+    // 3.61.0: achtergrond, voorgrond, accent en baan uit het schema; zonder schema zoals voorheen.
+    $achter = isset( $s['achter'] ) ? $s['achter'] : $s['primair'];
+    $baan   = isset( $s['baan'] ) ? $s['baan'] : sfp_page_config_db_donkerder( $s['primair'], 0.12 );
+    imagefill( $im, 0, 0, sfp_page_config_db_kleur( $im, $achter ) );
 
-    $wit   = sfp_page_config_db_kleur( $im, $s['wit'] );
-    $sec   = sfp_page_config_db_kleur( $im, $s['secundair'] );
-    $prim  = sfp_page_config_db_kleur( $im, $s['primair'] );
+    $wit   = sfp_page_config_db_kleur( $im, isset( $s['voor'] ) ? $s['voor'] : $s['wit'] );
+    $sec   = sfp_page_config_db_kleur( $im, isset( $s['accent'] ) ? $s['accent'] : $s['secundair'] );
+    $prim  = sfp_page_config_db_kleur( $im, $achter );
     $kop   = $s['fonts']['kop'];
     $tekst = $s['fonts']['tekst'];
     $vet   = $s['fonts']['vet'];
@@ -210,7 +213,7 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
     };
 
     if ( $inzicht ) {
-        sfp_page_config_db_band( $im, $B, $H, sfp_page_config_db_kleur( $im, sfp_page_config_db_donkerder( $s['primair'], 0.12 ) ), -0.12, -0.30, 0.55, 1.60 );
+        sfp_page_config_db_band( $im, $B, $H, sfp_page_config_db_kleur( $im, $baan ), -0.12, -0.30, 0.55, 1.60 );
         $rand = 64 * $f;
         // Label.
         sfp_page_config_db_schrijf( $im, mb_strtoupper( $s['label'] ), $rand, $rand + 21 * $f, $kop, $pt( 21 ), $sec, 21 * $f * .1 );
@@ -236,7 +239,7 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
         $y    = $boven + ( ( $onder - $boven ) - $blok ) / 2 + $maat * $f * 0.86;
         sfp_page_config_db_schrijf_regels( $im, $regels, $spatie, $rand, $y, $kop, $pt( $maat ), $rh, $wit, $sec );
     } else {
-        sfp_page_config_db_band( $im, $B, $H, sfp_page_config_db_kleur( $im, sfp_page_config_db_donkerder( $s['primair'], 0.12 ) ), -0.30, -0.20, 0.70, 1.40 );
+        sfp_page_config_db_band( $im, $B, $H, sfp_page_config_db_kleur( $im, $baan ), -0.30, -0.20, 0.70, 1.40 );
         $rand = 70 * $f;
         $y    = $rand + 30 * $f;
         if ( '' !== (string) $s['label'] ) {
@@ -288,7 +291,7 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
             $cx = (int) round( $rand + $cd / 2 );
             // Midden van de hele zin: bij meer regels zakt het rondje een halve regel per extra regel.
             $cy = (int) round( $y - ( $xh + $ch ) / 4 + ( count( $set[0] ) - 1 ) * $rh / 2 );
-            // 3.60.0: rondje in het primair met een rand in het secundair, cijfer wit.
+            // 3.60.0: rondje in de achtergrondkleur met een rand in het accent, cijfer in de voorgrond.
             $rd = (int) max( 2 * $f, round( $maat * 0.08 * $f ) );
             imagefilledellipse( $im, $cx, $cy, $cd, $cd, $sec );
             imagefilledellipse( $im, $cx, $cy, $cd - 2 * $rd, $cd - 2 * $rd, $prim );

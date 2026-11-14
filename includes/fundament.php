@@ -60,6 +60,8 @@ function sfp_page_config_kleurrollen_rollen() {
         'body'      => 'Bodytekst',
         'pijl'      => 'Pijlen (vorige en volgende)',
         'label'     => 'Label (boven een blok)',
+        // 3.61.0: achtergrond van het deelbeeld; leeg is het primair (besluit Stephan 14-11-2026, FL geel).
+        'deelbeeld' => 'Achtergrond deelbeeld',
     );
 }
 
