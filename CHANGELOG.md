@@ -4,12 +4,22 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.56.2] - 2026-11-14
+
+Auteurskop: de foto houdt nu echt zijn maat, ook op telefoon (vervolg op 3.56.1). Netwerkbreed. Terugdraaien: versie 3.56.0 terugzetten (zip uit de tag v3.56.0, map sfp-page-config).
+
+### Gerepareerd
+- Het site-snippet "Auteursfoto in hoge resolutie" zet na het opbouwen van de pagina op elke Gravatar een eigen breedte (width:auto). Daardoor bleef de foto op telefoon 144 px in een kolom van 96 px. De maat van de foto wint nu van die stijl: 144 px op computer en tablet, 96 px op telefoon.
+
+### Verwijderd
+- De regel uit 3.56.1 die de stijl uit de foto haalde: die werkte niet, omdat het snippet de stijl pas daarna toevoegt.
+
 ## [3.56.1] - 2026-11-14
 
 Auteurskop: de foto valt niet meer over het label en de naam (besluit Stephan 13-11-2026). Netwerkbreed; de auteurskaart onder artikelen blijft gelijk. Terugdraaien: versie 3.56.0 terugzetten (zip uit de tag v3.56.0, map sfp-page-config).
 
 ### Gerepareerd
-- Een filter op de profielfoto (Gravatar) zette een eigen breedte op de foto, waardoor die 144 px werd in een kolom van 72 px en over label en naam liep. Die stijl gaat er in de Auteurskop af; de maat komt uit de plugin.
+- Een filter op de profielfoto (Gravatar) zette een eigen breedte op de foto, waardoor die 144 px werd in een kolom van 72 px en over label en naam liep. (Op telefoon pas opgelost in 3.56.2.)
 
 ### Gewijzigd
 - Auteurskop: grote foto van 144 px op computer en tablet, de eerste kolom groeit mee, 28 px tussen foto en tekst; label en naam staan verticaal gecentreerd naast de foto. Op telefoon 96 px met 18 px ertussen.
