@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.62.0] - 2026-11-14
+
+Deelbeeld met een eigen achtergrondkleur per site, voor FL in het geel (besluit Stephan 14-11-2026). Terugdraaien: versie 3.61.0 terugzetten.
+
+### Toegevoegd
+- Kleurrol Achtergrond deelbeeld in SFP Beheer, Kleurrollen. Leeg betekent het primair, zoals tot nu toe.
+- Op een lichte achtergrond worden tekst, cijfers, accent en cirkelrand het primair en wordt de schuine baan 30% lichter in plaats van 12% donkerder. Geldt voor het beeld en voor de kaart in HTML.
+
 ## [3.61.0] - 2026-11-14
 
 Bewijsregel in de held: het aantal cursisten met de koppen staat onder de Google-score in plaats van ernaast, op alle acht sites en in elke held-variant (besluit Stephan 14-11-2026). Terugdraaien: versie 3.60.0 terugzetten.

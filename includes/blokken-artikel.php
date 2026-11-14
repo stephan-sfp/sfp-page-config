@@ -291,7 +291,8 @@ function sfp_page_config_render_samenvatting( $attrs, $content ) {
                 $lijst .= '<li>' . esc_html( $punt ) . '</li>';
             }
             $kop   = '' !== $eigen ? '<span class="sfp-deelkaart__titel">' . esc_html( $eigen ) . '</span>' : '<span class="sfp-deelkaart__label">' . esc_html( sprintf( sfp_page_config_artikel_tekst( 'dingen' ), count( $punten ) ) ) . '</span><span class="sfp-deelkaart__titel">' . esc_html( $onderwerp ) . '</span>';
-            $kaart = '<div class="sfp-deelkaart sfp-deelkaart--vierkant">' . $kop . '<ol>' . $lijst . '</ol>' . sfp_page_config_deelkaart_voet() . '</div>';
+            $stijl = function_exists( 'sfp_page_config_deelkaart_stijl' ) ? sfp_page_config_deelkaart_stijl() : '';
+            $kaart = '<div class="sfp-deelkaart sfp-deelkaart--vierkant"' . ( '' !== $stijl ? ' style="' . esc_attr( $stijl ) . '"' : '' ) . '>' . $kop . '<ol>' . $lijst . '</ol>' . sfp_page_config_deelkaart_voet() . '</div>';
         }
         $paneel = '<div class="sfp-samenvatting__paneel" id="' . esc_attr( $id ) . '" hidden>' . $kaart
             . '<div class="sfp-samenvatting__knoppen"><span>' . esc_html( sfp_page_config_artikel_tekst( 'deel_samenvatting' ) ) . '</span>'
@@ -385,7 +386,8 @@ function sfp_page_config_render_inzicht( $attrs, $content ) {
         $srcset = ! empty( $beeld['klein'] ) ? ' srcset="' . esc_url( $beeld['klein'] ) . ' 800w, ' . esc_url( $beeld['url'] ) . ' ' . (int) $beeld['breedte'] . 'w" sizes="(max-width: 740px) calc(100vw - 32px), 680px"' : '';
         $kaart  = '<img class="sfp-inzicht__beeld" src="' . esc_url( $beeld['url'] ) . '"' . $srcset . ' width="' . (int) $beeld['breedte'] . '" height="' . (int) $beeld['hoogte'] . '" loading="lazy" decoding="async" alt="' . esc_attr( $label . ': ' . $kaal ) . '">';
     } else {
-        $kaart = '<div class="sfp-deelkaart sfp-deelkaart--liggend" role="img" aria-label="' . esc_attr( $label . ': ' . $kaal ) . '"><span class="sfp-deelkaart__label">' . esc_html( $label ) . '</span><p class="sfp-deelkaart__tekst">' . $tekst . '</p>' . sfp_page_config_deelkaart_voet() . '</div>';
+        $stijl = function_exists( 'sfp_page_config_deelkaart_stijl' ) ? sfp_page_config_deelkaart_stijl() : '';
+        $kaart = '<div class="sfp-deelkaart sfp-deelkaart--liggend"' . ( '' !== $stijl ? ' style="' . esc_attr( $stijl ) . '"' : '' ) . ' role="img" aria-label="' . esc_attr( $label . ': ' . $kaal ) . '"><span class="sfp-deelkaart__label">' . esc_html( $label ) . '</span><p class="sfp-deelkaart__tekst">' . $tekst . '</p>' . sfp_page_config_deelkaart_voet() . '</div>';
     }
     // Sinds 3.1.0: de deelknoppen achter een knop Delen, zoals bij de
     // samenvatting. Het beeld zelf blijft rustig; wie wil delen, klikt.

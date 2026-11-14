@@ -39,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Versie van het ontwerp. Ophogen laat alle beelden opnieuw maken bij de
  * eerstvolgende keer opslaan.
  */
-define( 'SFP_PAGE_CONFIG_DEELBEELD_ONTWERP', 5 );
+define( 'SFP_PAGE_CONFIG_DEELBEELD_ONTWERP', 6 );
 
 /* =========================================================================
  * Wat de server kan
@@ -267,7 +267,65 @@ function sfp_page_config_deelbeeld_kleuren() {
         }
         $kleuren[ $rol ] = $hex;
     }
-    return $kleuren;
+    // 3.61.0: de rol Achtergrond deelbeeld, zonder slot het primair.
+    $achter = isset( $slots['deelbeeld'] ) ? sfp_page_config_deelbeeld_slot_hex( (int) $slots['deelbeeld'] ) : '';
+    return array_merge( $kleuren, sfp_page_config_deelbeeld_schema( $kleuren, '' !== $achter ? $achter : $kleuren['primair'] ) );
+}
+
+/**
+ * Hoe het deelbeeld kleurt bij een achtergrond (3.61.0).
+ *
+ * Op een donkere achtergrond: tekst en cijfers wit, accent en cirkelrand in
+ * het secundair, de schuine baan 12% donkerder. Op een lichte achtergrond:
+ * tekst, cijfers, accent en rand in het primair, de baan 30% lichter.
+ *
+ * @param  array  $kleuren primair, secundair, wit.
+ * @param  string $achter  Achtergrond als hex.
+ * @return array{achter: string, voor: string, accent: string, baan: string, licht: bool}
+ */
+function sfp_page_config_deelbeeld_schema( array $kleuren, $achter ) {
+    $hex = ltrim( (string) $achter, '#' );
+    if ( 3 === strlen( $hex ) ) {
+        $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+    }
+    $rgb = array( hexdec( substr( $hex, 0, 2 ) ), hexdec( substr( $hex, 2, 2 ) ), hexdec( substr( $hex, 4, 2 ) ) );
+    $lin = array_map(
+        static function ( $v ) {
+            $v = $v / 255;
+            return $v <= 0.03928 ? $v / 12.92 : pow( ( $v + 0.055 ) / 1.055, 2.4 );
+        },
+        $rgb
+    );
+    $licht = ( 0.2126 * $lin[0] + 0.7152 * $lin[1] + 0.0722 * $lin[2] ) > 0.4;
+    $baan  = vsprintf(
+        '#%02x%02x%02x',
+        array_map(
+            static function ( $v ) use ( $licht ) {
+                return (int) round( $licht ? $v + ( 255 - $v ) * 0.30 : $v * 0.88 );
+            },
+            $rgb
+        )
+    );
+    return array(
+        'achter' => '#' . strtolower( $hex ),
+        'voor'   => $licht ? $kleuren['primair'] : $kleuren['wit'],
+        'accent' => $licht ? $kleuren['primair'] : $kleuren['secundair'],
+        'baan'   => $baan,
+        'licht'  => $licht,
+    );
+}
+
+/**
+ * De kleuren van de deelkaart in HTML als CSS-variabelen, gelijk aan het beeld.
+ *
+ * @return string Inhoud voor een style-attribuut, of leeg.
+ */
+function sfp_page_config_deelkaart_stijl() {
+    $k = sfp_page_config_deelbeeld_kleuren();
+    if ( null === $k ) {
+        return '';
+    }
+    return '--sfp-dk-achter:' . $k['achter'] . ';--sfp-dk-voor:' . $k['voor'] . ';--sfp-dk-accent:' . $k['accent'] . ';--sfp-dk-baan:' . $k['baan'];
 }
 
 /* =========================================================================
