@@ -4,9 +4,9 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.64.0-beta.1] - 2026-11-14
+## [3.64.0] - 2026-11-14
 
-Keuzehulp vorm met nieuwe logica (besluiten Stephan 14-11-2026). Terugdraaien: versie 3.63.0 terugzetten.
+Keuzehulp vorm met nieuwe logica (besluiten Stephan 14-11-2026, proef op DPS met beta.1). Terugdraaien: versie 3.63.0 terugzetten.
 
 ### Gewijzigd
 - Bij 4 of meer collega's raadt de keuzehulp altijd de incompanycursus aan.
