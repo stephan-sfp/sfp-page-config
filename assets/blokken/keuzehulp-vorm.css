@@ -60,3 +60,7 @@
   :root .sfp-kv__acties{flex-direction:column;align-items:stretch}
   :root .sfp-kv__kaart .wp-block-button,:root .sfp-kv__kaart .wp-block-button__link{width:100%}
 }
+
+/* 3.64.0: bij 2 of 3 collega's de knop naar het adviesgesprek in plaats van de gewone acties. */
+:root .sfp-kv.is-gesprek .sfp-kv__kaart[data-vorm=incompany]>:is(.wp-block-buttons,.is-style-sfp-pijl,.sfp-kv__acties):not(.sfp-kv__gesprek){display:none}
+:root .sfp-kv__gesprek[hidden]{display:none}

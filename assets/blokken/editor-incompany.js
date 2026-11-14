@@ -205,7 +205,9 @@
 				el( c.PanelBody, { title: 'Keuzehulp vorm', initialOpen: true },
 					el( 'p', { className: 'components-base-control__help' }, 'Typ vragen, antwoorden en kaartteksten in het blok; leeg is de lichte standaardtekst. In de editor staan alle kaarten; op de site komt de passende kaart bovenaan en is de incompanykaart de beginstand. Zonder script staan alle kaarten onder elkaar.' ),
 					veld( 'Regel na een keuze', vragen.gekozen, function ( v ) { zetVraag( 'gekozen', v ); }, 'Leeg: de standaard (Past het best bij jullie).' ),
-					veld( 'Regel als vraag 2 nog open is', vragen.vraag2, function ( v ) { zetVraag( 'vraag2', v ); }, 'Leeg: de standaard (Beantwoord ook vraag 2).' ),
+					veld( 'Regel bij 2 of 3 collega\'s', vragen.gesprek, function ( v ) { zetVraag( 'gesprek', v ); }, 'Leeg: de standaard (' + T( 'kv_regel_gesprek' ) + ').' ),
+					veld( 'Gespreksknop: tekst', vragen.gesprekKnop, function ( v ) { zetVraag( 'gesprekKnop', v ); }, 'Knop op de incompanykaart bij 2 of 3 collega\'s. Leeg: ' + T( 'kv_incompany_actie' ) ),
+					veld( 'Gespreksknop: doel', vragen.gesprekDoel, function ( v ) { zetVraag( 'gesprekDoel', v ); }, 'Een anker of pad. Leeg: het slot (Kolommen Boeking) op de pagina; zonder slot geen gespreksknop.' ),
 					veld( 'Naam voor schermlezers', a.label, function ( v ) { props.setAttributes( { label: v } ); }, 'Wordt voorgelezen, niet getoond.' )
 				),
 				VORMEN.map( paneelKaart )
@@ -213,8 +215,7 @@
 			el( 'div', blockProps,
 				el( 'div', { className: 'sfp-kv__vragen' },
 					vraag( 1, 'v1', T( 'kv_vraag1' ), opties1 ),
-					vraag( 2, 'v2', T( 'kv_vraag2' ), janee( 'a' ) ),
-					vraag( 3, 'v3', T( 'kv_vraag3' ), janee( 'b' ) )
+					vraag( 2, 'v3', T( 'kv_vraag3' ), janee( 'b' ) )
 				),
 				el( 'div', { className: 'sfp-kv__kaarten' },
 					tekst( 'p', 'is-style-sfp-label sfp-kv__uitkomst', vragen.start, T( 'kv_regel_start' ), function ( v ) { zetVraag( 'start', v ); } ),

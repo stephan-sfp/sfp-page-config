@@ -13,7 +13,7 @@
  *      nieuwe onderwerppagina staat er vanzelf bij; de volgorde is het veld
  *      Volgorde van de pagina.
  *   I3 Slot kort: de indeling Slot kort van het blok Kolommen.
- *   I4 Keuzehulp vorm (sfp/keuzehulp-vorm): drie vragen en vier vormkaarten.
+ *   I4 Keuzehulp vorm (sfp/keuzehulp-vorm): twee vragen en vier vormkaarten.
  *
  * Plus de gegevens voor Google: Service met provider en areaServed, en een
  * ItemList van de onderwerpen. Besluiten Stephan 12-11-2026 (AUQ): reviews
@@ -61,7 +61,7 @@ function sfp_page_config_incompany_blokken( $alle ) {
     );
     $alle['sfp/keuzehulp-vorm'] = array(
         'title'        => 'Keuzehulp vorm',
-        'description'  => 'Drie vragen en vier vormkaarten (incompany, open training, coaching, e-learning): de kaart die past komt bovenaan.',
+        'description'  => 'Twee vragen en vier vormkaarten (incompany, open training, coaching, e-learning): de kaart die past komt bovenaan.',
         'icon'         => 'yes-alt',
         'css'          => 'keuzehulp-vorm',
         'css_extra'    => array( 'lijst' ),
@@ -348,6 +348,9 @@ function sfp_page_config_kv_vragen( $ruw ) {
         'start'   => $s( 'start', 'kv_regel_start' ),
         'gekozen' => $s( 'gekozen', 'kv_regel_gekozen' ),
         'vraag2'  => $s( 'vraag2', 'kv_regel_vraag2' ),
+        'gesprek' => $s( 'gesprek', 'kv_regel_gesprek' ),
+        'gknop'   => $s( 'gesprekKnop', 'kv_incompany_actie' ),
+        'gdoel'   => isset( $ruw['gesprekDoel'] ) && is_scalar( $ruw['gesprekDoel'] ) ? trim( wp_strip_all_tags( (string) $ruw['gesprekDoel'] ) ) : '',
     );
 }
 
@@ -424,9 +427,10 @@ function sfp_page_config_render_keuzehulp_vorm( $attrs ) {
         'ja'  => $v['ja'],
         'nee' => $v['nee'],
     );
+    // 3.64.0 (besluit Stephan 14-11-2026): de vraag naar de praktijk is weg;
+    // hij bepaalde niets meer. Het attribuut blijft voor bestaande blokken.
     $vragen = $vraag( 1, $v['v1'], 'aantal', array_combine( array( '1', '2-3', '4-8', '9+' ), $v['opties'] ) )
-        . $vraag( 2, $v['v2'], 'praktijk', $jn )
-        . $vraag( 3, $v['v3'], 'tempo', $jn );
+        . $vraag( 2, $v['v3'], 'tempo', $jn );
 
     $kaarten = '';
     foreach ( sfp_page_config_kv_vormen() as $vorm ) {
@@ -449,6 +453,12 @@ function sfp_page_config_render_keuzehulp_vorm( $attrs ) {
         if ( '' !== $tweede ) {
             $actie = '<div class="sfp-kv__acties">' . $actie . $tweede . '</div>';
         }
+        // Bij 2 of 3 collega's: de knop naar het adviesgesprek in plaats van
+        // de gewone acties. Zonder eigen doel zoekt het script het slot.
+        if ( 'incompany' === $vorm && '' !== $v['gknop'] ) {
+            $gadres = '' !== $v['gdoel'] ? sfp_page_config_incompany_adres( $v['gdoel'] ) : '';
+            $actie .= '<div class="sfp-kv__gesprek wp-block-buttons" hidden><div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="' . esc_url( '' !== $gadres ? $gadres : '#' ) . '"' . ( '' === $gadres ? ' data-sfp-kv-slot' : '' ) . '>' . esc_html( $v['gknop'] ) . '</a></div></div>';
+        }
         $kaarten .= '<div class="sfp-kv__kaart' . ( 'incompany' === $vorm ? ' is-uitgelicht' : '' ) . '" data-vorm="' . esc_attr( $vorm ) . '">'
             . '<p class="is-style-sfp-label">' . esc_html( $k['label'] ) . '</p>'
             . '<h3 class="wp-block-heading">' . esc_html( $k['titel'] ) . '</h3>'
@@ -461,7 +471,7 @@ function sfp_page_config_render_keuzehulp_vorm( $attrs ) {
     return sfp_page_config_blokken_css_vangnet( 'sfp/keuzehulp-vorm' )
         . '<form ' . sfp_page_config_blok_omhulling( array( 'sfp-kv' ) ) . ' data-sfp-kv aria-label="' . esc_attr( '' !== $label ? $label : sfp_page_config_tekst( 'kv_naam' ) ) . '" onsubmit="return false">'
         . '<div class="sfp-kv__vragen">' . $vragen . '</div>'
-        . '<div class="sfp-kv__kaarten"><p class="is-style-sfp-label sfp-kv__uitkomst" aria-live="polite" data-start="' . esc_attr( $v['start'] ) . '" data-gekozen="' . esc_attr( $v['gekozen'] ) . '" data-vraag2="' . esc_attr( $v['vraag2'] ) . '">' . esc_html( $v['start'] ) . '</p>'
+        . '<div class="sfp-kv__kaarten"><p class="is-style-sfp-label sfp-kv__uitkomst" aria-live="polite" data-start="' . esc_attr( $v['start'] ) . '" data-gekozen="' . esc_attr( $v['gekozen'] ) . '" data-gesprek="' . esc_attr( $v['gesprek'] ) . '">' . esc_html( $v['start'] ) . '</p>'
         . $kaarten . '</div></form>';
 }
 
@@ -646,7 +656,7 @@ function sfp_page_config_incompany_editor() {
         SFP_PAGE_CONFIG_VERSION,
         true
     );
-    $sleutels = array( 'kv_vraag1', 'kv_vraag2', 'kv_vraag3', 'kv_optie1', 'kv_optie2', 'kv_optie3', 'kv_optie4', 'kv_ja', 'kv_nee', 'kv_regel_start', 'kv_incompany_extra', 'kv_incompany_actie2', 'kv_elearning_feit1', 'kv_elearning_feit2' );
+    $sleutels = array( 'kv_vraag1', 'kv_vraag2', 'kv_vraag3', 'kv_optie1', 'kv_optie2', 'kv_optie3', 'kv_optie4', 'kv_ja', 'kv_nee', 'kv_regel_start', 'kv_regel_gesprek', 'kv_incompany_extra', 'kv_incompany_actie2', 'kv_elearning_feit1', 'kv_elearning_feit2' );
     foreach ( sfp_page_config_kv_vormen() as $vorm ) {
         $sleutels[] = 'kv_' . $vorm . '_label';
         $sleutels[] = 'kv_' . $vorm . '_titel';
