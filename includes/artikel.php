@@ -435,22 +435,89 @@ function sfp_page_config_artikel_hoofdstuktitels( $content ) {
 }
 
 /**
- * Geef elk hoofdstuk (H2) in de inhoud een anker en lees de hoofdstukken uit.
+ * De H3's die onder een hoofdstuk in de inhoudsopgave komen. Per H2 staat dat
+ * in de kopinstelling sfpTocH3 (standaard uit); dan tellen de H3's die los in
+ * de tekst staan, tot de volgende H2. Een H3 in een kader of ander blok telt niet.
  *
- * @param  string        $html   Getoonde inhoud.
- * @param  string[]|null $alleen Titels uit sfp_page_config_artikel_hoofdstuktitels(), of null voor elke H2.
- * @return array{0: string, 1: array<int, array{id: string, titel: string}>}
+ * @param  string $content Ruwe inhoud van het bericht.
+ * @return array<int, string[]> Per hoofdstuknummer (0, 1, ...) de genormaliseerde titels.
  */
-function sfp_page_config_artikel_hoofdstukken( $html, $alleen = null ) {
+function sfp_page_config_artikel_subkoppen( $content ) {
+    if ( ! has_blocks( $content ) ) {
+        return array();
+    }
+    $sub = array();
+    $nr  = -1;
+    $aan = false;
+    foreach ( parse_blocks( $content ) as $blok ) {
+        if ( 'core/heading' !== $blok['blockName'] ) {
+            continue;
+        }
+        $niveau = isset( $blok['attrs']['level'] ) ? (int) $blok['attrs']['level'] : 2;
+        if ( 2 === $niveau ) {
+            ++$nr;
+            $aan = ! empty( $blok['attrs']['sfpTocH3'] );
+        } elseif ( 3 === $niveau && $aan && $nr >= 0 ) {
+            $titel = sanitize_title( wp_strip_all_tags( $blok['innerHTML'] ) );
+            if ( '' !== $titel ) {
+                $sub[ $nr ][] = $titel;
+            }
+        }
+    }
+    return $sub;
+}
+
+/**
+ * Geef elk hoofdstuk (H2) in de inhoud een anker en lees de hoofdstukken uit.
+ * Staan er voor een hoofdstuk H3's in $sub, dan krijgen die ook een anker en
+ * komen ze als 'sub' bij het hoofdstuk.
+ *
+ * @param  string               $html   Getoonde inhoud.
+ * @param  string[]|null        $alleen Titels uit sfp_page_config_artikel_hoofdstuktitels(), of null voor elke H2.
+ * @param  array<int, string[]> $sub    H3-titels per hoofdstuknummer uit sfp_page_config_artikel_subkoppen().
+ * @return array{0: string, 1: array<int, array{id: string, titel: string, sub?: array<int, array{id: string, titel: string}>}>}
+ */
+function sfp_page_config_artikel_hoofdstukken( $html, $alleen = null, $sub = array() ) {
     $hoofdstukken = array();
     $gebruikt     = array();
     $wijzer       = 0;
-    $html         = preg_replace_callback(
-        '#<h2\b([^>]*)>(.*?)</h2>#is',
-        function ( $m ) use ( &$hoofdstukken, &$gebruikt, &$wijzer, $alleen ) {
-            $titel = trim( wp_strip_all_tags( $m[2] ) );
+    $subwijzer    = 0;
+    $anker_van    = function ( $attrs, $titel, $standaard ) use ( &$gebruikt ) {
+        if ( preg_match( '/\bid=(["\'])(.*?)\1/i', $attrs, $id ) ) {
+            $gebruikt[ $id[2] ] = true;
+            return array( $id[2], $attrs );
+        }
+        $basis = sanitize_title( $titel );
+        $basis = '' !== $basis ? $basis : $standaard;
+        $anker = $basis;
+        $nr    = 2;
+        while ( isset( $gebruikt[ $anker ] ) ) {
+            $anker = $basis . '-' . $nr++;
+        }
+        $gebruikt[ $anker ] = true;
+        return array( $anker, $attrs . ' id="' . esc_attr( $anker ) . '"' );
+    };
+    $html = preg_replace_callback(
+        '#<h([23])\b([^>]*)>(.*?)</h\1>#is',
+        function ( $m ) use ( &$hoofdstukken, &$wijzer, &$subwijzer, $alleen, $sub, $anker_van ) {
+            $titel = trim( wp_strip_all_tags( $m[3] ) );
             if ( '' === $titel ) {
                 return $m[0];
+            }
+            $leesbaar = html_entity_decode( $titel, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+            if ( '3' === $m[1] ) {
+                // Een H3 telt alleen onder een hoofdstuk met de instelling aan, en alleen de eerstvolgende verwachte.
+                $nr = count( $hoofdstukken ) - 1;
+                if ( $nr < 0 || empty( $sub[ $nr ][ $subwijzer ] ) || sanitize_title( $titel ) !== $sub[ $nr ][ $subwijzer ] ) {
+                    return $m[0];
+                }
+                ++$subwijzer;
+                list( $anker, $attrs )           = $anker_van( $m[2], $titel, 'onderdeel' );
+                $hoofdstukken[ $nr ]['sub'][]    = array(
+                    'id'    => $anker,
+                    'titel' => $leesbaar,
+                );
+                return '<h3' . $attrs . '>' . $m[3] . '</h3>';
             }
             if ( null !== $alleen ) {
                 // Alleen de eerstvolgende verwachte kop telt; zo blijft een H2 in een blok buiten de inhoudsopgave.
@@ -459,25 +526,13 @@ function sfp_page_config_artikel_hoofdstukken( $html, $alleen = null ) {
                 }
                 ++$wijzer;
             }
-            $attrs = $m[1];
-            if ( preg_match( '/\bid=(["\'])(.*?)\1/i', $attrs, $id ) ) {
-                $anker = $id[2];
-            } else {
-                $basis = sanitize_title( $titel );
-                $basis = '' !== $basis ? $basis : 'hoofdstuk';
-                $anker = $basis;
-                $nr    = 2;
-                while ( isset( $gebruikt[ $anker ] ) ) {
-                    $anker = $basis . '-' . $nr++;
-                }
-                $attrs .= ' id="' . esc_attr( $anker ) . '"';
-            }
-            $gebruikt[ $anker ] = true;
-            $hoofdstukken[]     = array(
+            list( $anker, $attrs ) = $anker_van( $m[2], $titel, 'hoofdstuk' );
+            $subwijzer             = 0;
+            $hoofdstukken[]        = array(
                 'id'    => $anker,
-                'titel' => html_entity_decode( $titel, ENT_QUOTES | ENT_HTML5, 'UTF-8' )
+                'titel' => $leesbaar,
             );
-            return '<h2' . $attrs . '>' . $m[2] . '</h2>';
+            return '<h2' . $attrs . '>' . $m[3] . '</h2>';
         },
         (string) $html
     );
@@ -1026,7 +1081,14 @@ function sfp_page_config_artikel_zijkolom( $post, array $hoofdstukken ) {
     if ( count( $hoofdstukken ) >= 2 ) {
         $items = '';
         foreach ( $hoofdstukken as $h ) {
-            $items .= '<li><a href="#' . esc_attr( $h['id'] ) . '">' . esc_html( $h['titel'] ) . '</a></li>';
+            $onder = '';
+            if ( ! empty( $h['sub'] ) ) {
+                foreach ( $h['sub'] as $o ) {
+                    $onder .= '<li><a href="#' . esc_attr( $o['id'] ) . '">' . esc_html( $o['titel'] ) . '</a></li>';
+                }
+                $onder = '<ol class="sfp-art-toc__sub">' . $onder . '</ol>';
+            }
+            $items .= '<li><a href="#' . esc_attr( $h['id'] ) . '">' . esc_html( $h['titel'] ) . '</a>' . $onder . '</li>';
         }
         $toc = '<nav class="sfp-art-toc" aria-label="' . esc_attr( $t( 'inhoud' ) ) . '"><div class="sfp-blok-label sfp-art-toc__kop">' . esc_html( $t( 'inhoud' ) ) . ' <span>' . esc_html( sprintf( $t( 'minuten' ), sfp_page_config_artikel_leestijd( $post->post_content ) ) ) . '</span></div><ol>' . $items . '</ol></nav>';
     }
@@ -1059,8 +1121,20 @@ function sfp_page_config_artikel_balk( array $hoofdstukken ) {
     }
     $t     = 'sfp_page_config_artikel_tekst';
     $items = '<li class="sfp-art-balk__top"><a href="#page" data-sfp-top>' . esc_html( $t( 'naar_boven' ) ) . '</a></li>';
-    foreach ( $hoofdstukken as $h ) {
-        $items .= '<li><a href="#' . esc_attr( $h['id'] ) . '">' . esc_html( $h['titel'] ) . '</a></li>';
+    foreach ( $hoofdstukken as $n => $h ) {
+        if ( empty( $h['sub'] ) ) {
+            $items .= '<li><a href="#' . esc_attr( $h['id'] ) . '">' . esc_html( $h['titel'] ) . '</a></li>';
+            continue;
+        }
+        // Een hoofdstuk met onderdelen: de link plus een knop die de onderdelen open- en dichtklapt (start dicht).
+        $lijst = '';
+        foreach ( $h['sub'] as $o ) {
+            $lijst .= '<li><a href="#' . esc_attr( $o['id'] ) . '">' . esc_html( $o['titel'] ) . '</a></li>';
+        }
+        $id     = 'sfp-art-balk-sub-' . ( (int) $n + 1 );
+        $items .= '<li class="sfp-art-balk__met-sub"><div class="sfp-art-balk__hfd"><a href="#' . esc_attr( $h['id'] ) . '">' . esc_html( $h['titel'] ) . '</a>'
+            . '<button type="button" class="sfp-art-balk__klap" aria-expanded="false" aria-controls="' . esc_attr( $id ) . '" aria-label="' . esc_attr( sprintf( $t( 'onderdelen' ), $h['titel'] ) ) . '"></button></div>'
+            . '<ol class="sfp-art-balk__sub" id="' . esc_attr( $id ) . '" hidden>' . $lijst . '</ol></li>';
     }
     return '<nav class="sfp-art-balk" id="sfp-art-balk" aria-label="' . esc_attr( $t( 'inhoud' ) ) . '" hidden>'
         . '<ol class="sfp-art-balk__lijst" id="sfp-art-balk-lijst" hidden>' . $items . '</ol>'
@@ -1180,7 +1254,7 @@ function sfp_page_config_artikel_render( $post ) {
         return '<article id="post-' . (int) $post->ID . '" class="' . esc_attr( implode( ' ', get_post_class( 'sfp-artikel sfp-artikel--zonder-zij', $post ) ) ) . '"><div class="sfp-artikel__raster"><div class="sfp-artikel__kolom"><h1 class="entry-title sfp-art-titel">' . get_the_title( $post ) . '</h1><div class="entry-content clear sfp-art-inhoud">' . $inhoud . '</div></div></div></article>';
     }
 
-    list( $inhoud, $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ) );
+    list( $inhoud, $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ), sfp_page_config_artikel_subkoppen( $post->post_content ) );
     $inhoud                        = sfp_page_config_artikel_promo_in_tekst( $inhoud, sfp_page_config_artikel_promokaart( 'inline', $post ) );
     if ( function_exists( 'sfp_page_config_vorm' ) && 'pijler' === sfp_page_config_vorm( $post ) ) {
         $inhoud = sfp_page_config_gids_na_lead( $inhoud, sfp_page_config_gids_kaart( $post ) );
@@ -1403,3 +1477,23 @@ function sfp_page_config_artikel_rest_schrijf( WP_REST_Request $verzoek ) {
     }
     return sfp_page_config_artikel_rest_lees();
 }
+
+/**
+ * De kopinstelling sfpTocH3: bij een H2 de H3's eronder in de inhoudsopgave.
+ * Standaard uit. Geregistreerd zodat de blok- en REST-laag hem kennen.
+ */
+add_filter(
+    'register_block_type_args',
+    function ( $args, $naam ) {
+        if ( 'core/heading' === $naam ) {
+            $args['attributes']             = isset( $args['attributes'] ) ? $args['attributes'] : array();
+            $args['attributes']['sfpTocH3'] = array(
+                'type'    => 'boolean',
+                'default' => false,
+            );
+        }
+        return $args;
+    },
+    10,
+    2
+);

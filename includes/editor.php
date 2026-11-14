@@ -522,7 +522,7 @@ function sfp_page_config_editor_omlijsting( WP_Post $post ) {
     setup_postdata( $post );
     try {
         $inhoud                 = do_blocks( (string) $post->post_content );
-        list( , $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ) );
+        list( , $hoofdstukken ) = sfp_page_config_artikel_hoofdstukken( $inhoud, sfp_page_config_artikel_hoofdstuktitels( $post->post_content ), sfp_page_config_artikel_subkoppen( $post->post_content ) );
 
         $begrip = function_exists( 'sfp_page_config_is_begrip' ) && sfp_page_config_is_begrip( $post );
         $tool   = function_exists( 'sfp_page_config_is_tool_vorm' ) && sfp_page_config_is_tool_vorm( $post );

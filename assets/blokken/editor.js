@@ -2117,4 +2117,39 @@
 		return el( Fragment, null, inspector, el( 'div', blockProps, stappen ) );
 	}, { attributes: { vragen: { type: 'array', default: [] }, hulp: { type: 'object', default: {} }, voorbeeld: { type: 'boolean', default: false } }, example: { attributes: { voorbeeld: true } } } );
 
+	/* Kop H2: de H3's eronder in de inhoudsopgave (standaard uit). Geldt voor de H3's tot de volgende H2. */
+	( function () {
+		if ( ! wp.hooks || ! wp.compose ) {
+			return;
+		}
+		wp.hooks.addFilter( 'blocks.registerBlockType', 'sfp/toc-h3-attribuut', function ( instellingen, naam ) {
+			if ( 'core/heading' !== naam ) {
+				return instellingen;
+			}
+			var attrs = Object.assign( {}, instellingen.attributes, { sfpTocH3: { type: 'boolean', default: false } } );
+			return Object.assign( {}, instellingen, { attributes: attrs } );
+		} );
+		wp.hooks.addFilter( 'editor.BlockEdit', 'sfp/toc-h3', wp.compose.createHigherOrderComponent( function ( BlockEdit ) {
+			return function ( props ) {
+				if ( 'core/heading' !== props.name || 2 !== ( props.attributes.level || 2 ) ) {
+					return el( BlockEdit, props );
+				}
+				return el( Fragment, null,
+					el( BlockEdit, props ),
+					el( InspectorControls, null,
+						el( c.PanelBody, { title: 'Inhoudsopgave', initialOpen: false },
+							el( c.ToggleControl, {
+								label: 'Toon de H3-koppen eronder',
+								help: 'De H3-koppen tot de volgende H2 komen als ingesprongen links onder dit hoofdstuk. Op de telefoon klapt de lezer ze open.',
+								checked: !! props.attributes.sfpTocH3,
+								onChange: function ( v ) { props.setAttributes( { sfpTocH3: v ? true : undefined } ); },
+								__nextHasNoMarginBottom: true,
+							} )
+						)
+					)
+				);
+			};
+		}, 'sfpTocH3' ) );
+	}() );
+
 }( window.wp ) );
