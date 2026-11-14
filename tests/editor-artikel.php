@@ -39,6 +39,11 @@ controle( 1 === preg_match( '/\.sfp-vanzelf\{[^}]*max-width:760px/', $css ), 'de
 controle( false !== strpos( $css, ':is(#sfp-vanzelf-kop,#sfp-vanzelf-voet){box-sizing:border-box;width:auto;max-width:680px' ), 'Komt vanzelf in het artikel even breed als de kolom' );
 controle( false !== strpos( $css, '#sfp-vanzelf-kop{margin-top:16px;margin-bottom:24px}' ), 'ruimte onder de kopkaart zoals de site (24 px)' );
 
+controle( false !== strpos( $css, '.editor-visual-editor__post-title-wrapper>.wp-block-post-title{max-width:680px!important' ), 'titel in de leeskolom (Astra zet hem met !important breed)' );
+controle( false !== strpos( $css, ':root .editor-styles-wrapper.sfp-ed-raster{box-sizing:border-box}' ), 'canvas niet 20 px te breed' );
+controle( false !== strpos( $css, '.sfp-ed-raster--zij .sfp-editor-definitie .sfp-editor-promo{display:none}' ), 'begrip: boekkaart niet dubbel naast de zijkolom' );
+controle( false !== strpos( $css, '.sfp-ed-raster .sfp-tc-plek{width:auto;max-width:680px' ), 'tool in de leeskolom' );
+
 // FAQ.
 controle( false === strpos( $css, '.sfp-editor-vraag .rich-text' ), 'niet meer alle tekst in een FAQ-vraag vet' );
 controle( false !== strpos( $css, '.sfp-editor-vraag>.sfp-editor-vraagtekst{font-weight:700}' ), 'alleen de vraag zelf vet' );

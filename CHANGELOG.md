@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.57.0-beta.2] - 2026-11-14
+
+Proef op DPS, gelijk aan beta.1 plus correcties na de meting in de editor.
+
+### Gerepareerd
+- De titel staat nu ook in de leeskolom: Astra zette hem met voorrang op de volle breedte, over de zijkolom heen.
+- Het canvas was 20 px breder dan het scherm (rechts weggeknipt); nu niet meer.
+- Begrip: de boekkaart stond twee keer (naast de Definitie en in de zijkolom); nu alleen in de zijkolom, zoals op de site.
+- Tool: de tool staat in de leeskolom van 680 px, zoals op de site, in plaats van 760 px.
+
 ## [3.57.0-beta.1] - 2026-11-14
 
 Proef op DPS: de editor van een artikel, begrip en tool lijkt op de voorkant (besluiten Stephan 14-11-2026). Alleen de editor verandert; de voorkant en de opgeslagen inhoud blijven gelijk.
