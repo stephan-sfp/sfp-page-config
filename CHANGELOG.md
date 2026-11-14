@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.60.0] - 2026-11-14
+
+Deelbeeld van Wat je moet weten: meer lucht onder de kop en nieuwe cijfers, op alle acht sites (besluit Stephan 14-11-2026). Bestaande deelbeelden krijgen het nieuwe ontwerp bij de volgende keer opslaan of via opnieuw maken. Terugdraaien: versie 3.59.0 terugzetten.
+
+### Gewijzigd
+- Een halve regel extra ruimte tussen de kop en het eerste punt. De afstand tussen de punten blijft gelijk.
+- De cijfers zijn wit, in een cirkel in de primaire kleur met een rand in de secundaire kleur. Geldt voor het beeld en voor de kaart in HTML.
+
 ## [3.59.0] - 2026-11-14
 
 Het slot met tabs (gesprek of offerte) in een boeking netjes uitgelijnd en geschikt voor de telefoon, en geen streep meer onder de laatste uitkomst (besluiten Stephan 14-11-2026, proef op DPS met beta.1). Terugdraaien: versie 3.58.0 terugzetten.
