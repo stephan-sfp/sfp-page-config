@@ -23,3 +23,8 @@
 /* Factcheck (3.44.0): de vastgelegde controles. */
 .sfp-deze-pagina .sfp-dp-fc{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:13px}
 .sfp-deze-pagina .sfp-dp-fc li{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0}
+/* Rustig ritme (3.57.0): de plekken die te dicht op elkaar staan, met een knop erheen. */
+.sfp-deze-pagina .sfp-dp-ritme{display:flex;flex-direction:column;gap:8px}
+.sfp-deze-pagina .sfp-dp-ritme__lijst{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:12.5px;line-height:1.45}
+.sfp-deze-pagina .sfp-dp-ritme__lijst li{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-left:8px;border-left:3px solid #f0a000}
+.sfp-deze-pagina .sfp-dp-ritme__lijst .components-button{flex:0 0 auto;height:auto;padding:0}

@@ -335,6 +335,8 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
         'voorbeeld'   => null,
         'kop'         => '',
         'voet'        => '',
+        'zij'         => '',
+        'raster'      => false,
         'promo'       => false,
         'vorm'        => null,
     );
@@ -432,6 +434,9 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
         return $stand;
     }
 
+    // Het canvas staat in de leeskolom van de site (sinds 3.57.0).
+    $stand['raster'] = true;
+
     $pijler = null;
     if ( function_exists( 'sfp_page_config_vervolg_pijler' ) ) {
         $pijler          = sfp_page_config_vervolg_pijler( $post );
@@ -460,9 +465,10 @@ function sfp_page_config_editor_stand( WP_Post $post ) {
     $stand['promo'] = function_exists( 'sfp_page_config_artikel_promokaart' ) && '' !== sfp_page_config_artikel_promokaart( 'zij' );
 
     // Wat er vanzelf om het artikel heen staat, zoals bij de laatste keer opslaan.
-    list( $kop, $voet ) = sfp_page_config_editor_omlijsting( $post );
-    $stand['kop']       = $kop;
-    $stand['voet']      = $voet;
+    list( $kop, $voet, $zij ) = sfp_page_config_editor_omlijsting( $post );
+    $stand['kop']             = $kop;
+    $stand['voet']            = $voet;
+    $stand['zij']             = $zij;
 
     return $stand;
 }
@@ -508,14 +514,15 @@ function sfp_page_config_editor_cursusdata( $post_id ) {
 }
 
 /**
- * De kopkaart en wat onder het artikel staat, zoals de site ze toont.
+ * De kopkaart, wat onder het artikel staat en de zijkolom (sinds 3.57.0),
+ * zoals de site ze toont.
  *
  * @param  WP_Post $post Bericht.
- * @return array{0: string, 1: string}
+ * @return array{0: string, 1: string, 2: string}
  */
 function sfp_page_config_editor_omlijsting( WP_Post $post ) {
     if ( ! function_exists( 'sfp_page_config_artikel_kopkaart' ) ) {
-        return array( '', '' );
+        return array( '', '', '' );
     }
     $vorige          = isset( $GLOBALS['post'] ) ? $GLOBALS['post'] : null;
     $GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- tijdelijk, hieronder teruggezet.
@@ -540,16 +547,20 @@ function sfp_page_config_editor_omlijsting( WP_Post $post ) {
         $voet .= '' !== $vervolg ? '<div class="sfp-art-vervolg">' . $vervolg . '</div>' : '';
         $voet .= ( $begrip || $tool ) ? '' : sfp_page_config_artikel_auteurskaart( $post );
         $voet .= sfp_page_config_artikel_voetregels( $post );
+        // De zijkolom zoals de site: inhoudsopgave, bronnen, promokaart. Een
+        // tool heeft er geen.
+        $zij = ( ! $tool && function_exists( 'sfp_page_config_artikel_zijkolom' ) ) ? sfp_page_config_artikel_zijkolom( $post, $hoofdstukken ) : '';
     } catch ( Throwable $e ) {
         $kop  = '';
         $voet = '';
+        $zij  = '';
     } finally {
         $GLOBALS['post'] = $vorige; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
         if ( $vorige instanceof WP_Post ) {
             setup_postdata( $vorige );
         }
     }
-    return array( $kop, $voet );
+    return array( $kop, $voet, $zij );
 }
 
 /* =========================================================================
