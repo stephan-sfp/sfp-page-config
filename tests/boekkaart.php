@@ -42,7 +42,8 @@ boek_is( false !== strpos( $boek, 'font-size:26px' ) && false !== strpos( $boek,
 boek_is( false !== strpos( $boek, 'content:"\2713"' ) && false !== strpos( $boek, 'var(--sfp-rol-pijl,var(--sfp-b-primair))' ), 'vinkjes in de pijlrol' );
 boek_is( false === strpos( $boek, 'border-radius:50%;background' ), 'vinkjes zonder cirkel' );
 boek_is( false !== strpos( $boek, 'width:44px;height:44px;border-radius:50%' ), 'portret 44 px rond' );
-boek_is( false !== strpos( $boek, 'margin-top:auto' ), 'naam en portret onderaan' );
+boek_is( false !== strpos( $boek, 'gap:2px 12px;align-items:center;margin-top:8px' ), 'naam en portret direct onder de lijst, functie direct onder de naam (3.65.0)' );
+boek_is( false !== strpos( $boek, '.is-style-sfp-wie>:is(img,picture){grid-column:1;grid-row:1/span 2}' ), 'portret ook in een picture van Imagify (3.65.0)' );
 boek_is( false !== strpos( $boek, '.is-style-sfp-wie br{display:none}' ), 'rol als tweede regel na een regeleinde' );
 boek_is( false !== strpos( $boek, 'font-size:28px !important' ), 'kalenderkop 28 px' );
 boek_is( false !== strpos( $boek, 'box-shadow:none !important' ), 'formulier zonder eigen schaduw' );

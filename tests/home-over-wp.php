@@ -67,7 +67,7 @@ $is( true, strpos( $a, 'Artikel twee' ) < strpos( $a, 'Artikel een' ), 'nieuwste
 $bevat( 'sfp-geenbeeld', $a, 'zonder beeld een vlak' );
 $bevat( 'sfp-kaart__link', $a, 'hele kaart klikbaar' );
 $bevat( sfp_page_config_tekst( 'artikel_lees' ), $a, 'tekst uit teksten.php' );
-$bevat( 'sfp-artikel__uittreksel', $a, 'geen uittreksel standaard', false );
+$bevat( 'sfp-artikel__uittreksel', $a, 'geen uittreksel als het artikel geen tekst heeft (standaard aan sinds 3.65.0)', false );
 
 /* ---------- Team ---------- */
 $t = do_blocks( '<!-- wp:sfp/team --><!-- wp:sfp/teamlid {"naam":"Anna","rol":"Trainer","zin":"Zin","link":"/anna/","fotoId":' . $beeld . '} /--><!-- wp:sfp/teamlid {"naam":""} /--><!-- /wp:sfp/team -->' );

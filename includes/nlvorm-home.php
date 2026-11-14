@@ -90,7 +90,7 @@ function sfp_page_config_home_blokken( $alle ) {
             'categorie'  => $getal,
             'uittreksel' => array(
                 'type'    => 'boolean',
-                'default' => false,
+                'default' => true, // 3.65.0: standaard met samenvatting (overdracht DGA-ronde).
             ),
         ),
         'render'       => 'sfp_page_config_render_artikelen',

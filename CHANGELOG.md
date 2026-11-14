@@ -4,6 +4,29 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.65.0] - 2026-11-14
+
+Bouwstenen na de DGA-ronde van WordPress Toolkit (overdracht 14-11-2026), op alle sites. Terugdraaien: versie 3.64.0 terugzetten.
+
+### Gerepareerd
+- Slotkaart op de homepage: de functie onder de naam brak midden in woorden in een kolom van 56 px. Oorzaak: Imagify zet de foto in een `<picture>`, waardoor de regel voor de foto niet meer gold. De tekst staat nu naast de foto; zonder foto over de volle breedte.
+- Boekkaart: de functie staat direct onder de naam en de persoon direct onder de lijst, zonder lege ruimte ertussen. Ook hier speelde de `<picture>` van Imagify mee.
+- Boekkaart op incompanypagina's: geen gekleurd vlak meer links, gelijk aan de boekkaart op de coachingpagina's. De opmaak daarvan laadde niet mee op pagina's zonder Kolommen Boek of Inschrijven.
+- Dienstkaarten: de link onderin staat in alle kaarten van een rij op dezelfde hoogte, ook als die link een knop is.
+- Calculator op incompanypagina's: de knop "Bereken je training" is niet meer onderstreept. Een regel van Astra voor links in de inhoud woog zwaarder dan de knop.
+- Portfolio: logo's in de tabrij houden 44 px hoogte (tablet 34 px) en lopen niet meer over de opdrachtkaart. Ook hier liet de `<picture>` van Imagify het logo zonder maat.
+
+### Gewijzigd
+- Klikbare kaarten in de stijl vlak (dienstkaarten, artikelkaarten) krijgen de accentrand boven in de secundaire kleur, op alle sites gelijk.
+- Laatste artikelen: standaard met de eerste regels van het artikel onder de titel. Uitzetten kan per blok.
+- Reviewraster: hooguit vier per rij en alleen volle rijen (1 tot 3, 4 of 8 reviews). Kaarten met de rand en radius van de andere kaarten, 32 px ruimte na het uitklapblok of een kaart erboven.
+- "Lees verder" in de reviews als actielink: vet, onderstreept, in de kleur van de tekstlink.
+- Tabs die de variantkeuze volgen: zonder geplande groep staat "2 dagen" open als die variant een prijs heeft (was de langste variant).
+- Kernzin naast het portfolio op 18 px.
+
+### Toegevoegd
+- Reviews zonder echte naam (zoals "Cursist") verschijnen niet meer als kaart; ze tellen wel mee in het gemiddelde. De lijst met zulke namen staat in SFP Beheer, Teksten, Reviews.
+
 ## [3.64.0] - 2026-11-14
 
 Keuzehulp vorm met nieuwe logica (besluiten Stephan 14-11-2026, proef op DPS met beta.1). Terugdraaien: versie 3.63.0 terugzetten.

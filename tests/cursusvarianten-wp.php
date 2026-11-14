@@ -156,11 +156,11 @@ $d    = $maak(
 $html = $kaal( sfp_page_config_render_groepskaarten( array() ) );
 $bevat( 'sfp-groep--wachtlijst', $html, 'zonder groep: wachtlijstkaart' );
 $bevat( 'sfp-variantkeuze', $html, 'zonder groep: geen keuze', false );
-$is( 3, sfp_page_config_cursus_varianten( $d )['standaard'], 'zonder groep: standaard 3 dagen' );
+$is( 2, sfp_page_config_cursus_varianten( $d )['standaard'], 'zonder groep: standaard 2 dagen (3.65.0)' );
 $feit = sfp_page_config_nlvorm_feitenkaart( $held );
 $bevat( 'data-sfp-feit="duur"', $feit, 'zonder groep: geen Duur', false );
 $t = $kaal( do_blocks( $tabs ) );
-$bevat( 'aria-selected="true" data-sfp-dagen="3"', $t, 'zonder groep: tab 3 dagen open' );
+$bevat( 'aria-selected="true" data-sfp-dagen="2"', $t, 'zonder groep: tab 2 dagen open (3.65.0)' );
 $schema = sfp_page_config_nlvorm_schema_data( $d, array(), sfp_page_config_cursusinfo( $d ) );
 $is( 'Course', $schema['@type'] ?? '', 'zonder groep: toch een Course' );
 $is( false, isset( $schema['hasCourseInstance'] ), 'zonder groep: geen instanties' );

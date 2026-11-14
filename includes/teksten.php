@@ -268,6 +268,13 @@ function sfp_page_config_teksten_register() {
             'en'    => 'Read more',
             'pt'    => 'Leia mais',
         ),
+        'reviews_zonder_naam'         => array(
+            'groep' => 'Reviews',
+            'label' => 'Namen zonder echte naam (komma tussen de namen; zo\'n review komt niet als kaart in beeld)',
+            'nl'    => 'Cursist, Deelnemer, Anoniem, Anonieme cursist',
+            'en'    => 'Participant, Anonymous, Student, Delegate',
+            'pt'    => 'Aluno, Aluna, Participante, Anônimo',
+        ),
 
         'reviews_minder'              => array(
             'groep' => 'Reviews',

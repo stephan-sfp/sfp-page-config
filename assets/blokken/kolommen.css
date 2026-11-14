@@ -26,12 +26,14 @@
 :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>:is(ul,ol)>li{list-style:none;position:relative;padding-left:24px;margin:0;font-size:15px;line-height:1.45;color:var(--sfp-b-body)}
 .sfp-kolommen--boeking>.sfp-kolom:first-child>:is(ul,ol)>li::marker{content:""}
 .sfp-kolommen--boeking>.sfp-kolom:first-child>:is(ul,ol)>li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--sfp-rol-pijl,var(--sfp-b-primair));font-size:15px;line-height:inherit;font-weight:900}
-/* Naam met portret onderaan de kolom; de rol als tweede regel (na een regeleinde of in een span na de naam). */
-:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>.is-style-sfp-wie{display:grid;grid-template-columns:44px minmax(0,1fr);column-gap:12px;align-items:center;margin-top:auto;padding-top:4px;font-size:13px;line-height:1.35;color:color-mix(in srgb,var(--sfp-b-body) 75%,transparent)}
-.sfp-kolommen--boeking .is-style-sfp-wie img{grid-column:1;grid-row:1/span 2;width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 4px 14px color-mix(in srgb,var(--sfp-b-primair) 15%,transparent)}
-.sfp-kolommen--boeking .is-style-sfp-wie:not(:has(br,span)) img{grid-row:auto}
+/* Naam met portret direct onder de lijst (3.65.0), ook in een <picture> van Imagify; de rol als tweede regel (na een regeleinde of in een span na de naam). */
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>.is-style-sfp-wie{display:grid;grid-template-columns:44px minmax(0,1fr);gap:2px 12px;align-items:center;margin-top:8px;padding-top:4px;font-size:13px;line-height:1.35;color:color-mix(in srgb,var(--sfp-b-body) 75%,transparent)}
+.sfp-kolommen--boeking .is-style-sfp-wie>:is(img,picture){grid-column:1;grid-row:1/span 2}
+.sfp-kolommen--boeking .is-style-sfp-wie span:last-child{align-self:start}
+.sfp-kolommen--boeking .is-style-sfp-wie :is(img,picture){width:44px;height:44px;border-radius:50%;object-fit:cover;box-shadow:0 4px 14px color-mix(in srgb,var(--sfp-b-primair) 15%,transparent)}
+.sfp-kolommen--boeking .is-style-sfp-wie:not(:has(br,span)) :is(img,picture){grid-row:auto}
 .sfp-kolommen--boeking .is-style-sfp-wie :is(strong,span){grid-column:2;display:block}
-:root .sfp-kolommen--boeking .is-style-sfp-wie strong{font-size:15px;line-height:1.35;color:var(--sfp-b-primair)}
+:root .sfp-kolommen--boeking .is-style-sfp-wie strong{align-self:end;font-size:15px;line-height:1.35;color:var(--sfp-b-primair)}
 .sfp-kolommen--boeking .is-style-sfp-wie br{display:none}
 /* Kalender: zonder eigen schaduw, verticaal gecentreerd, kop in het kopfont. */
 :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:not(:first-child){display:flex;flex-direction:column;justify-content:center;padding:12px 0}

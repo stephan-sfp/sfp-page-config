@@ -57,7 +57,7 @@
 :root .sfp-kaart__tekst{display:flex;flex-direction:column;gap:10px;padding:24px 28px 28px;flex:1 1 auto;min-width:0}
 :root .sfp-kaart__tekst>*{margin:0}
 :root .sfp-kaart__tekst>:is(h2,h3){padding:0}
-:root .sfp-kaart__tekst>.is-style-sfp-pijl:last-child{margin-top:auto;padding-top:6px}
+:root .sfp-kaart__tekst>:is(.is-style-sfp-pijl,.wp-block-buttons):last-child{margin-top:auto;padding-top:6px}
 :root .sfp-kaart.sfp-kaart--beeld>.sfp-geenbeeld{aspect-ratio:16/9;background:var(--sfp-b-tint2);display:grid;place-items:center}
 :root .sfp-kaart.sfp-kaart--beeld>.sfp-geenbeeld img{width:30%!important;height:auto!important;aspect-ratio:1/1!important;object-fit:contain!important}
 
