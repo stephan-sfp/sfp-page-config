@@ -248,6 +248,8 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
 :root .sfp-art-toc li a{display:block;padding:7px 0 7px 14px;margin-left:-2px;border-left:2px solid transparent;font-weight:400;font-size:14px;line-height:1.4;color:var(--sfp-b-body);text-decoration:none}
 :root .sfp-art-toc li a:is(:hover,:focus){color:var(--sfp-b-primair)}
 :root .sfp-art-toc li a.sfp-actief{border-left-color:var(--sfp-b-secundair);color:var(--sfp-b-primair);font-weight:400}
+:root .sfp-art-toc ol.sfp-art-toc__sub{margin:0 0 4px;border-left:0}
+:root .sfp-art-toc .sfp-art-toc__sub li a{padding:4px 0 4px 28px;font-size:13px}
 
 /* tooltips (SFP Tooltip levert het vlak; de stippellijn onder de tekst komt hier vandaan, zoals in de dummy) */
 .sfp-art-inhoud .tooltip{text-decoration:none;border-bottom:1px dotted var(--sfp-b-primair);cursor:help}
@@ -274,6 +276,18 @@ html.sfp-tekst--grootst .sfp-artikel__kolom{font-size:21px;line-height:1.8}
   :root .sfp-art-balk__lijst a{display:flex;gap:12px;align-items:baseline;padding:12px 20px;font-size:15px;line-height:1.4;color:var(--sfp-b-primair);text-decoration:none;max-width:740px;margin:0 auto}
   .sfp-art-balk__lijst a::before{content:counter(sfp-hfd);flex:0 0 18px;font-family:var(--sfp-b-kop);font-weight:900;font-size:12px;color:var(--sfp-b-secundair)}
   :root .sfp-art-balk__lijst a.sfp-actief{font-weight:400;background:var(--sfp-b-tint3)}
+  .sfp-art-balk__hfd{display:flex;align-items:stretch;max-width:740px;margin:0 auto}
+  .sfp-art-balk__hfd:has(>a.sfp-actief){background:var(--sfp-b-tint3)}
+  :root .sfp-art-balk__hfd a{flex:1 1 auto;min-width:0;max-width:none;margin:0;padding-right:8px}
+  :root .sfp-art-balk .sfp-art-balk__klap{flex:0 0 48px;display:flex;align-items:center;justify-content:center;width:48px;margin:0;padding:0;border:0;background:none;cursor:pointer;color:var(--sfp-b-primair)}
+  :root .sfp-art-balk .sfp-art-balk__klap:is(:hover,:focus,:active){color:var(--sfp-b-primair);background:none}
+  .sfp-art-balk__klap::after{content:"+";font-family:var(--sfp-b-tekst);font-weight:400;font-size:22px;line-height:1}
+  .sfp-art-balk__klap[aria-expanded=true]::after{content:"\2212"}
+  .sfp-art-balk .sfp-art-balk__klap:focus-visible{outline-color:var(--sfp-b-primair)}
+  :root .sfp-art-balk__lijst ol.sfp-art-balk__sub{list-style:none;margin:0;padding:0 0 4px}
+  .sfp-art-balk__sub li{counter-increment:none}
+  :root .sfp-art-balk__sub a{padding:8px 20px 8px 50px;font-size:14px}
+  .sfp-art-balk__sub a::before{content:none}
 
   /* zwevende knoppen van thema en cookiemelding staan niet over de balk */
   body.sfp-artikel-pagina.sfp-art-balk-aan :is(#ast-scroll-top,.cmplz-manage-consent){display:none!important}

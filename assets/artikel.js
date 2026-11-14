@@ -378,8 +378,9 @@
         if (window.history && history.replaceState) { history.replaceState(null, '', '#' + id); }
         naSprong();
     }, true);
-    var toc = alle('.sfp-art-toc a');
-    var bron = balk ? alle('.sfp-art-balk__lijst a:not([data-sfp-top])', balk) : toc;
+    /* Hoofdstukken: alleen de links op het eerste niveau; de H3-links eronder volgen apart. */
+    var toc = alle('.sfp-art-toc > ol > li > a');
+    var bron = balk ? alle('.sfp-art-balk__lijst > li:not(.sfp-art-balk__top) > a, .sfp-art-balk__lijst > li > .sfp-art-balk__hfd > a', balk) : toc;
     var koppen = [];
     bron.forEach(function (a) {
         var kop = el(decodeURIComponent((a.getAttribute('href') || '').slice(1)));
@@ -388,7 +389,26 @@
     if (koppen.length < 2) { return; }
 
     var lijst = balk ? el('sfp-art-balk-lijst') : null;
-    var lijstLinks = lijst ? alle('a:not([data-sfp-top])', lijst) : [];
+    var lijstLinks = bron;
+    if (!balk) { lijstLinks = []; }
+    /* Onderdelen (H3) per hoofdstuk: [hoofdstuknummer, kop, links in inhoudsopgave en balk]. */
+    var onder = [];
+    function leesOnder(lijstjes) {
+        lijstjes.forEach(function (ol) {
+            var hfdLink = ol.parentNode.querySelector('a');
+            var nr = koppen.indexOf(hfdLink ? el(decodeURIComponent((hfdLink.getAttribute('href') || '').slice(1))) : null);
+            alle('a', ol).forEach(function (a) {
+                var kop = el(decodeURIComponent((a.getAttribute('href') || '').slice(1)));
+                if (!kop || nr < 0) { return; }
+                var gevonden = null;
+                onder.forEach(function (o) { if (o.kop === kop) { gevonden = o; } });
+                if (gevonden) { gevonden.links.push(a); } else { onder.push({ nr: nr, kop: kop, links: [a] }); }
+            });
+        });
+    }
+    leesOnder(alle('.sfp-art-toc__sub'));
+    if (balk) { leesOnder(alle('.sfp-art-balk__sub', balk)); }
+    var onderActief = null;
     var titelKnop = balk ? balk.querySelector('.sfp-art-balk__titel') : null;
     var titel = titelKnop ? titelKnop.querySelector('span') : null;
     var kopkaart = artikel.querySelector('.sfp-art-kop') || artikel.querySelector('.sfp-art-titel');
@@ -424,6 +444,17 @@
             markeer(lijstLinks, i);
             if (titel) { titel.textContent = i < 0 ? rustTitel : koppen[i].textContent; }
         }
+        var o = null;
+        onder.forEach(function (x) { if (x.nr === i && x.kop.getBoundingClientRect().top <= grens) { o = x; } });
+        if (o !== onderActief) {
+            onderActief = o;
+            onder.forEach(function (x) {
+                x.links.forEach(function (a) {
+                    a.classList.toggle('sfp-actief', x === o);
+                    if (x === o) { a.setAttribute('aria-current', 'true'); } else { a.removeAttribute('aria-current'); }
+                });
+            });
+        }
         if (balk) {
             /* Zichtbaar zolang de lezer in de tekst is: voorbij de kopkaart, en tot het einde van de tekst in beeld komt. Affiliate-uitleg, vervolgblok, auteurskaart en alles eronder blijven vrij. */
             var toon = kopkaart.getBoundingClientRect().bottom < offset && tekst.getBoundingClientRect().bottom > window.innerHeight;
@@ -450,6 +481,16 @@
                 var nu = lijst.querySelector('.sfp-actief');
                 if (nu && nu.scrollIntoView) { nu.scrollIntoView({ block: 'nearest' }); }
             }
+        });
+        /* Een hoofdstuk met onderdelen: de knop klapt de H3-links open en dicht; ze starten dicht. */
+        alle('.sfp-art-balk__klap', balk).forEach(function (knop) {
+            knop.addEventListener('click', function () {
+                var sub = el(knop.getAttribute('aria-controls'));
+                if (!sub) { return; }
+                var open = sub.hidden;
+                sub.hidden = !open;
+                knop.setAttribute('aria-expanded', open ? 'true' : 'false');
+            });
         });
         doc.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && !lijst.hidden) { sluitLijst(true); }

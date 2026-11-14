@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.56.0] - 2026-11-14
+
+H3-koppen in de inhoudsopgave, per H2 aan te zetten (wens Stephan 14-11-2026). Netwerkbreed; zonder de instelling verandert er niets. Terugdraaien: versie 3.55.3 terugzetten (zip uit de tag v3.55.3, map sfp-page-config); de instelling blijft dan in de kop staan maar doet niets.
+
+### Toegevoegd
+- Kopblok H2, paneel Inhoudsopgave: schakelaar "Toon de H3-koppen eronder" (standaard uit). Aan: de H3-koppen die los in de tekst staan tot de volgende H2 komen als ingesprongen links onder dat hoofdstuk. Een H3 in een kader of ander blok telt niet mee.
+- Inhoudsopgave in de zijkolom (vanaf 1025 px): de onderdelen staan direct zichtbaar, ingesprongen en iets kleiner; het onderdeel waar de lezer is, licht op.
+- Hoofdstukbalk op telefoon en tablet: naast zo'n hoofdstuk een plus-knop die de onderdelen open- en dichtklapt; ze starten dicht. Een tik op een onderdeel springt naar de H3 en sluit de lijst.
+- H3's zonder eigen anker krijgen er een; bestaande ankers blijven.
+
 ## [3.55.3] - 2026-11-14
 
 Ruimte tussen naam en titel in de kopkaart (besluit Stephan 13-11-2026). Netwerkbreed. Terugdraaien: versie 3.55.2 terugzetten (zip uit de tag v3.55.2, map sfp-page-config).
