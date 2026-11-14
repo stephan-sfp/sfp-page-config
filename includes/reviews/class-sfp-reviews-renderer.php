@@ -282,10 +282,24 @@ class SFP_Reviews_Renderer {
 	// GRID
 	// ─────────────────────────────────────────────
 
+	/**
+	 * Aantal kaarten in het raster (3.65.0): hooguit vier per rij en alleen
+	 * volle rijen. Eén tot drie blijven staan (de rij schaalt mee), vier tot
+	 * zeven worden er vier, acht of meer worden er acht.
+	 */
+	public static function raster_aantal( int $n ): int {
+		if ( $n < 4 ) {
+			return max( 0, $n );
+		}
+		return $n >= 8 ? 8 : 4;
+	}
+
 	private function grid( array $reviews ): string {
-		$cards = implode( '', array_map( [ $this, 'card' ], $reviews ) );
+		$reviews = array_slice( array_values( $reviews ), 0, self::raster_aantal( count( $reviews ) ) );
+		$cards   = implode( '', array_map( [ $this, 'card' ], $reviews ) );
 		return sprintf(
-			'<div class="sfp-reviews sfp-reviews--grid" role="region" aria-label="Reviews">%s</div>',
+			'<div class="sfp-reviews sfp-reviews--grid" role="region" aria-label="Reviews" style="--sfp-reviews-kolommen:%d">%s</div>',
+			max( 1, min( 4, count( $reviews ) ) ),
 			$cards
 		);
 	}

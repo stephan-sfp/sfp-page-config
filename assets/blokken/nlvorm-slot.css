@@ -19,10 +19,15 @@
 :root .sfp-kolommen--slot .latepoint-w.latepoint-w .latepoint-body{padding:0 !important}
 :root .sfp-kolommen--slot .latepoint-w.latepoint-w .latepoint-footer{padding-left:0 !important;padding-right:0 !important}
 :root .sfp-kolommen.sfp-kolommen--slot .sfp-kaart :is(.latepoint-book-form-wrapper,.wp-block-latepoint-book-form,.srfm-form-container){width:100%;margin:0}
-:root .sfp-kolommen.sfp-kolommen--slot .sfp-kaart>.is-style-sfp-wie{margin-top:auto;display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:12px;align-items:center}
-:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie img{grid-row:1/span 2}
-:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie strong{align-self:end}
-:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie span{align-self:start;font-size:14px}
+:root .sfp-kolommen.sfp-kolommen--slot .sfp-kaart>.is-style-sfp-wie{margin-top:auto;display:grid;grid-template-columns:56px minmax(0,1fr);gap:2px 12px;align-items:center}
+:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie>:is(img,picture){grid-column:1;grid-row:1/span 2;display:block;width:56px;height:56px;margin:0}
+:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie picture img{width:56px;height:56px;object-fit:cover}
+:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie strong{grid-column:2;align-self:end}
+:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie span{grid-column:2;align-self:start;font-size:14px}
+/* 3.65.0: Imagify zet de foto in een <picture>; zonder foto krijgt de tekst de volle breedte */
+:root .sfp-kolommen.sfp-kolommen--slot .sfp-kaart>.is-style-sfp-wie:not(:has(img)){grid-template-columns:minmax(0,1fr)}
+:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie:not(:has(img)) :is(strong,span){grid-column:1}
+:root .sfp-kolommen.sfp-kolommen--slot .is-style-sfp-wie br{display:none}
 :root .sfp-sectie__binnen>:is(h2,p)+.sfp-kolommen--slot{margin-top:36px}
 @media (max-width:980px){
   :root .sfp-kolommen.sfp-kolommen--slot{grid-template-columns:minmax(0,1fr)}

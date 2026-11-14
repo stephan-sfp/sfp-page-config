@@ -203,7 +203,7 @@ function sfp_page_config_reviews_render( $atts ) {
     $min          = (int) $atts['min_stars'];
     $limit        = max( 1, (int) $atts['limit'] );
     $manual_only  = filter_var( $atts['manual_only'], FILTER_VALIDATE_BOOLEAN );
-    $manual       = SFP_Reviews_Manual::get_filtered( $min );
+    $manual       = array_values( array_filter( SFP_Reviews_Manual::get_filtered( $min ), 'sfp_page_config_reviews_met_naam' ) );
     $show_summary = filter_var( $atts['summary'], FILTER_VALIDATE_BOOLEAN );
     $renderer     = new SFP_Reviews_Renderer();
 
@@ -251,6 +251,40 @@ function sfp_page_config_reviews_render( $atts ) {
         return '';
     }
     return sfp_page_config_reviews_vangnet() . $renderer->render( $reviews, $atts, $meta, $show_summary );
+}
+
+/**
+ * Heeft de review een echte naam? Een lege naam of een naam uit de lijst
+ * in Teksten (Reviews, "Namen zonder echte naam", alle drie de talen) telt
+ * niet: zo'n review mee in het gemiddelde, niet als kaart (3.65.0, wens
+ * Stephan 14-11-2026).
+ *
+ * @param  array $r Review.
+ * @return bool
+ */
+function sfp_page_config_reviews_met_naam( $r ) {
+    $naam = mb_strtolower( trim( (string) ( $r['author'] ?? '' ) ) );
+    if ( '' === $naam ) {
+        return false;
+    }
+    static $anoniem = null;
+    if ( null === $anoniem ) {
+        $anoniem = array();
+        $bron    = function_exists( 'sfp_page_config_teksten_register' ) ? sfp_page_config_teksten_register() : array();
+        $lijsten = isset( $bron['reviews_zonder_naam'] ) ? array( $bron['reviews_zonder_naam']['nl'] ?? '', $bron['reviews_zonder_naam']['en'] ?? '', $bron['reviews_zonder_naam']['pt'] ?? '' ) : array();
+        if ( function_exists( 'sfp_page_config_tekst' ) ) {
+            $lijsten[] = sfp_page_config_tekst( 'reviews_zonder_naam' );
+        }
+        foreach ( $lijsten as $lijst ) {
+            foreach ( explode( ',', (string) $lijst ) as $woord ) {
+                $woord = mb_strtolower( trim( $woord ) );
+                if ( '' !== $woord ) {
+                    $anoniem[ $woord ] = true;
+                }
+            }
+        }
+    }
+    return ! isset( $anoniem[ $naam ] );
 }
 
 /**

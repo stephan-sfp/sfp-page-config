@@ -47,6 +47,8 @@
 /* Knoppen */
 .sfp-calc .sfp-calc-knop{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:10px 28px;border:0;border-radius:var(--sfp-b-r-knop);background:var(--sfp-b-links);color:var(--sfp-b-knoptekst);font:900 16px/1.2 var(--sfp-b-kop);text-transform:uppercase;letter-spacing:.03em;text-decoration:none;text-align:center;cursor:pointer;box-shadow:none;margin:0}
 .sfp-calc .sfp-calc-knop:hover{background:var(--sfp-b-hover);color:var(--sfp-b-knoptekst);text-decoration:none}
+/* 3.65.0: Astra onderstreept links in de inhoud op (0,2,1); de knop als link blijft zonder onderstreping */
+:root .sfp-calc a.sfp-calc-knop,:root .sfp-calc a.sfp-calc-knop:is(:hover,:focus){text-decoration:none}
 .sfp-calc .sfp-calc-cta2{display:inline;font:700 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:0;margin:0;text-align:left;text-transform:none;letter-spacing:0;min-height:0;box-shadow:none}
 .sfp-calc .sfp-calc-cta2::after{content:" \2192"}
 .sfp-calc .sfp-calc-cta2:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}

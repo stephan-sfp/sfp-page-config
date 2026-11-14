@@ -198,9 +198,10 @@ function sfp_page_config_cursus_varianten( $post_id ) {
         $standaard = (int) $groepen[0]['dagen'];
     }
     if ( ! $standaard && $aan ) {
-        // Zonder groep: de langste variant met een prijs (bij DPS 3 dagen).
+        // Zonder groep: 2 dagen als die variant een prijs heeft (3.65.0, wens
+        // Stephan 14-11-2026), anders de langste variant met een prijs.
         $sleutels  = array_map( 'intval', array_keys( $info['prijzen'] ) );
-        $standaard = $sleutels ? max( $sleutels ) : 0;
+        $standaard = in_array( 2, $sleutels, true ) ? 2 : ( $sleutels ? max( $sleutels ) : 0 );
     }
     $cache[ $post_id ] = array(
         'aan'       => $aan,
@@ -863,7 +864,7 @@ function sfp_page_config_nlvorm_delen( $inhoud ) {
     if ( false !== strpos( $inhoud, '<!-- wp:sfp/groepskaarten' ) ) {
         $delen[] = 'nlvorm-groepen';
     }
-    if ( false !== strpos( $inhoud, '<!-- wp:sfp/founder' ) || preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"(boek|inschrijven)"/', $inhoud ) ) {
+    if ( false !== strpos( $inhoud, '<!-- wp:sfp/founder' ) || preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"(boek|inschrijven|boeking)"/', $inhoud ) ) {
         $delen[] = 'nlvorm-inschrijven';
     }
     if ( preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"pakketten"|<!-- wp:sfp\/uitklap \{[^}]*"variant":"vergelijk"/', $inhoud ) ) {

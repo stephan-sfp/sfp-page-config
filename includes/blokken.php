@@ -1241,7 +1241,7 @@ function sfp_page_config_render_kolommen( $attrs, $content, $blok = null ) {
     $carrousel  = 'reviews' === $indeling && ! empty( $attrs['carrousel'] );
     // De indelingen van de NL-vorm (3.30.0) hebben nlvorm.css nodig.
     $nlvorm     = in_array( $indeling, array( 'situaties', 'reviews' ), true ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inhoud' ) : '';
-    $nlvorm    .= in_array( $indeling, array( 'boek', 'inschrijven' ), true ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inschrijven' ) : '';
+    $nlvorm    .= in_array( $indeling, array( 'boek', 'inschrijven', 'boeking' ), true ) ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-inschrijven' ) : '';
     $nlvorm    .= 'pakketten' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-coach' ) : '';
     $nlvorm    .= 'slot' === $indeling || $carrousel ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-home' ) : '';
     $nlvorm    .= 'slot' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-slot' ) : '';

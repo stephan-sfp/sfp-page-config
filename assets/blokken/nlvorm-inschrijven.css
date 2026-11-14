@@ -32,6 +32,8 @@
 /* ---------- A12 Boekkaart op een NL-vormpagina ---------- */
 :root:has(.sfp-held--wit) .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{background:var(--sfp-b-tint3)}
 :root:has(.sfp-held--wit) .sfp-kolommen--boeking>.sfp-kolom:first-child>:is(ul,ol)>li::before{color:var(--sfp-b-secundair)}
+.sfp-kolommen--boeking .is-style-sfp-wie:has(span~span)>:is(img,picture){grid-row:1/span 3}
+.sfp-kolommen--boeking .is-style-sfp-wie picture img{box-shadow:none}
 :root:has(.sfp-held--wit) .sfp-boekkaart{box-shadow:0 16px 48px color-mix(in srgb,var(--sfp-b-primair) 12%,transparent)}
 @media (min-width:701px) and (max-width:980px){
   :root:has(.sfp-held--wit) .sfp-kolommen.sfp-kolommen--boeking{grid-template-columns:minmax(0,1fr)}
