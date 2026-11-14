@@ -118,3 +118,6 @@ html:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst){scroll-behavior:au
 :root .sfp-held__feit--vier>div:nth-child(3){border-left:0;padding-left:16px}
 }
 @media (min-width:1201px){:root .sfp-held__feit--vier>div{padding:18px 20px}:root .sfp-held__feit--vier>div:first-child{padding-left:18px}:root .sfp-held__feit--vier .is-style-sfp-label{white-space:nowrap}}
+/* bewijsregel (3.61.0, besluit Stephan 14-11-2026): het aantal cursisten met de koppen onder de Google-score, niet ernaast; geldt voor elke held-variant */
+:root body .sfp-held p.sfp-held__bewijs:has(>.sfp-held__deelnemers){flex-direction:column;align-items:flex-start;flex-wrap:nowrap;row-gap:14px;column-gap:0}
+:root body .sfp-held p.sfp-held__bewijs:has(>.sfp-held__deelnemers)>.sfp-held__score{border-right:0;padding-right:0;margin-right:0}
