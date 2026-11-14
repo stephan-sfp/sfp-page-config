@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.56.1] - 2026-11-14
+
+Auteurskop: de foto valt niet meer over het label en de naam (besluit Stephan 13-11-2026). Netwerkbreed; de auteurskaart onder artikelen blijft gelijk. Terugdraaien: versie 3.56.0 terugzetten (zip uit de tag v3.56.0, map sfp-page-config).
+
+### Gerepareerd
+- Een filter op de profielfoto (Gravatar) zette een eigen breedte op de foto, waardoor die 144 px werd in een kolom van 72 px en over label en naam liep. Die stijl gaat er in de Auteurskop af; de maat komt uit de plugin.
+
+### Gewijzigd
+- Auteurskop: grote foto van 144 px op computer en tablet, de eerste kolom groeit mee, 28 px tussen foto en tekst; label en naam staan verticaal gecentreerd naast de foto. Op telefoon 96 px met 18 px ertussen.
+- Foto uit het profielveld Foto laadt in een maat die ook op een scherp scherm 144 px scherp toont.
+
 ## [3.56.0] - 2026-11-14
 
 H3-koppen in de inhoudsopgave, per H2 aan te zetten (wens Stephan 14-11-2026). Netwerkbreed; zonder de instelling verandert er niets. Terugdraaien: versie 3.55.3 terugzetten (zip uit de tag v3.55.3, map sfp-page-config); de instelling blijft dan in de kop staan maar doet niets.
