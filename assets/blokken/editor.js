@@ -1612,8 +1612,13 @@
 
 	/*
 	 * Rustig ritme in artikelen: tussen twee UX-elementen horen minstens
-	 * drie alinea's. Staan er twee te dicht op elkaar, dan verschijnt een
-	 * waarschuwing boven het bericht. Publiceren blijft mogelijk.
+	 * drie alinea's. Staan er twee te dicht op elkaar, dan staat dat in het
+	 * paneel Deze pagina (Bij dit artikel) en krijgt het blok in het canvas
+	 * een oranje lijn links. Publiceren blijft mogelijk.
+	 *
+	 * Sinds 3.57.0 geen balk meer boven het canvas (besluit Stephan 14-11):
+	 * de stand staat in de winkel sfp/ritme, die het paneel en de markering
+	 * lezen.
 	 *
 	 * Alinea: een gevulde paragraaf of een lijst. Koppen tellen niet mee en
 	 * onderbreken de telling niet. UX-element: de eigen blokken (samenvatting,
@@ -1622,14 +1627,32 @@
 	 */
 	( function () {
 		var data = wp.data;
-		if ( ! data || ! data.subscribe || ! ( window.sfpBlokken && window.sfpBlokken.artikel ) ) {
+		if ( ! data || ! data.subscribe || ! data.createReduxStore || ! ( window.sfpBlokken && window.sfpBlokken.artikel ) ) {
 			return;
 		}
 		var MINIMUM = 3;
-		var MELDING = 'sfp-ux-ritme';
 		var TEKST = { 'core/list': 1, 'sfp/lijst': 1 };
 		var NEUTRAAL = { 'sfp/warming-up': 1, 'sfp/thermometer': 1, 'sfp/leestijd': 1, 'sfp/cursusdatum': 1, 'sfp/lestijd': 1 };
 		var KERN_UX = { 'core/image': 1, 'core/gallery': 1, 'core/table': 1, 'core/quote': 1, 'core/pullquote': 1, 'core/video': 1, 'core/embed': 1, 'core/media-text': 1, 'core/cover': 1 };
+		var LEEG = [];
+
+		if ( ! window.sfpRitmeWinkel ) {
+			window.sfpRitmeWinkel = true;
+			data.register( data.createReduxStore( 'sfp/ritme', {
+				reducer: function ( staat, actie ) {
+					if ( 'SFP_RITME' === ( actie && actie.type ) ) {
+						return actie.fouten;
+					}
+					return staat || LEEG;
+				},
+				actions: {
+					zet: function ( fouten ) { return { type: 'SFP_RITME', fouten: fouten }; },
+				},
+				selectors: {
+					fouten: function ( staat ) { return staat || LEEG; },
+				},
+			} ) );
+		}
 
 		function soort( blok ) {
 			var naam = blok.name || '';
@@ -1679,31 +1702,12 @@
 			}
 			laatsteBlokken = blokken;
 			var fouten = teDicht( blokken );
-			var sleutel = fouten.map( function ( f ) { return f.tekst; } ).join( '|' );
+			var sleutel = fouten.map( function ( f ) { return f.id + f.tekst; } ).join( '|' );
 			if ( sleutel === laatsteSleutel ) {
 				return;
 			}
 			laatsteSleutel = sleutel;
-			var meldingen = data.dispatch( 'core/notices' );
-			if ( ! meldingen ) {
-				return;
-			}
-			if ( ! fouten.length ) {
-				meldingen.removeNotice( MELDING );
-				return;
-			}
-			var eerste = fouten[ 0 ].id;
-			meldingen.createWarningNotice(
-				'Rustig ritme: tussen twee UX-elementen horen minstens drie alinea’s. Te dicht op elkaar: ' + fouten.map( function ( f ) { return f.tekst; } ).join( '; ' ) + '.',
-				{
-					id: MELDING,
-					isDismissible: true,
-					actions: [ {
-						label: 'Ga naar het eerste',
-						onClick: function () { data.dispatch( 'core/block-editor' ).selectBlock( eerste ); },
-					} ],
-				}
-			);
+			data.dispatch( 'sfp/ritme' ).zet( fouten.length ? fouten : LEEG );
 		} );
 	}() );
 
@@ -2150,6 +2154,116 @@
 				);
 			};
 		}, 'sfpTocH3' ) );
+	}() );
+
+	/*
+	 * Het canvas zoals de site (sinds 3.57.0, ontwerpregel 19).
+	 *
+	 * 1. Rustig ritme: een blok dat te dicht op het vorige UX-element staat,
+	 *    krijgt een oranje lijn links (klasse sfp-ed-ritme).
+	 * 2. Verhaalvorm van Kolommen, tekst en beeld: dezelfde regel als de site
+	 *    (sfp_page_config_kolommen_verhaal): label, kop en eerste alinea naast
+	 *    het beeld, de uitklaplink als voorbeeld, de rest eronder in drie
+	 *    kolommen, open en gewoon te bewerken. Alleen klassen en een
+	 *    rijhoogte op de omhulling: de opgeslagen inhoud verandert niet.
+	 */
+	( function () {
+		if ( ! wp.hooks || ! wp.compose || ! wp.data ) {
+			return;
+		}
+		var useSelect = wp.data.useSelect;
+		var MEER = ( window.sfpBlokken && window.sfpBlokken.verhaalMeer ) || '';
+
+		function klasseHeeft( blok, klasse ) {
+			var naam = blok && blok.attributes && blok.attributes.className ? ' ' + blok.attributes.className + ' ' : ' ';
+			return naam.indexOf( ' ' + klasse + ' ' ) >= 0;
+		}
+		function isAfgerondBeeld( blok ) {
+			return blok && 'core/image' === blok.name && klasseHeeft( blok, 'is-style-sfp-afgerond' );
+		}
+
+		// De rollen in een blok Kolommen, of null als de verhaalvorm niet past.
+		function verhaal( kolommen ) {
+			if ( ! kolommen || 'sfp/kolommen' !== kolommen.name ) { return null; }
+			var tekst = null, beeld = null;
+			for ( var i = 0; i < kolommen.innerBlocks.length; i++ ) {
+				var kind = kolommen.innerBlocks[ i ];
+				if ( isAfgerondBeeld( kind ) ) {
+					beeld = beeld || kind;
+					continue;
+				}
+				if ( 'sfp/kolom' !== kind.name ) { return null; }
+				var binnen = kind.innerBlocks;
+				if ( 1 === binnen.length && isAfgerondBeeld( binnen[ 0 ] ) && ! beeld ) {
+					beeld = kind;
+					continue;
+				}
+				if ( tekst ) { return null; }
+				tekst = kind;
+			}
+			if ( ! tekst || ! beeld ) { return null; }
+			var alineas = tekst.innerBlocks.filter( function ( b ) { return 'core/paragraph' === b.name && ! klasseHeeft( b, 'is-style-sfp-label' ); } );
+			if ( alineas.length < 3 ) { return null; }
+			var boven = [], meer = [], lead = null;
+			tekst.innerBlocks.forEach( function ( b ) {
+				if ( lead ) { meer.push( b.clientId ); return; }
+				boven.push( b.clientId );
+				if ( 'core/paragraph' === b.name && ! klasseHeeft( b, 'is-style-sfp-label' ) ) { lead = b.clientId; }
+			} );
+			return { kolommen: kolommen.clientId, tekst: tekst.clientId, beeld: beeld.clientId, boven: boven, lead: lead, meer: meer };
+		}
+
+		// De rol van één blok: [klassen, rijen voor het beeld].
+		function rol( select, clientId ) {
+			var bed = select( 'core/block-editor' );
+			var ritme = window.sfpRitmeWinkel ? select( 'sfp/ritme' ) : null;
+			var klassen = [];
+			if ( ritme && ritme.fouten().some( function ( f ) { return f.id === clientId; } ) ) {
+				klassen.push( 'sfp-ed-ritme' );
+			}
+			var ouders = bed.getBlockParents( clientId, true );
+			var kandidaten = [ clientId ].concat( ouders.slice( 0, 2 ) );
+			var rijen = 0;
+			for ( var i = 0; i < kandidaten.length; i++ ) {
+				var blok = bed.getBlock( kandidaten[ i ] );
+				if ( ! blok || 'sfp/kolommen' !== blok.name ) { continue; }
+				var v = verhaal( blok );
+				if ( ! v ) { break; }
+				if ( clientId === v.kolommen ) { klassen.push( 'sfp-ed-verhaal' ); }
+				else if ( clientId === v.tekst ) { klassen.push( 'sfp-ed-verhaal__tekst' ); }
+				else if ( clientId === v.beeld ) { klassen.push( 'sfp-ed-verhaal__beeld' ); rijen = v.boven.length; }
+				else if ( clientId === v.lead ) { klassen.push( 'sfp-ed-verhaal__boven', 'sfp-verhaal__lead', 'sfp-ed-verhaal__lead' ); }
+				else if ( v.boven.indexOf( clientId ) >= 0 ) { klassen.push( 'sfp-ed-verhaal__boven' ); }
+				else if ( v.meer.indexOf( clientId ) >= 0 ) {
+					var n = v.meer.indexOf( clientId );
+					klassen.push( 'sfp-ed-verhaal__meer' );
+					if ( n < 3 ) { klassen.push( 'sfp-ed-verhaal__meer--eerste' ); }
+					if ( 2 === n % 3 ) { klassen.push( 'sfp-ed-verhaal__meer--rechts' ); }
+				}
+				break;
+			}
+			return klassen.join( ' ' ) + '|' + rijen;
+		}
+
+		var metRol = wp.compose.createHigherOrderComponent( function ( BlockListBlock ) {
+			return function ( props ) {
+				var uitkomst = useSelect( function ( select ) { return rol( select, props.clientId ); }, [ props.clientId ] );
+				var delen = uitkomst.split( '|' );
+				if ( ! delen[ 0 ] ) {
+					return el( BlockListBlock, props );
+				}
+				var wp2 = Object.assign( {}, props.wrapperProps || {} );
+				wp2.className = ( ( wp2.className || '' ) + ' ' + delen[ 0 ] ).trim();
+				if ( delen[ 0 ].indexOf( 'sfp-ed-verhaal__lead' ) >= 0 && MEER ) {
+					wp2[ 'data-sfp-verhaal-meer' ] = MEER;
+				}
+				if ( +delen[ 1 ] > 0 ) {
+					wp2.style = Object.assign( {}, wp2.style || {}, { '--sfp-ed-verhaal-rijen': delen[ 1 ] } );
+				}
+				return el( BlockListBlock, Object.assign( {}, props, { wrapperProps: wp2 } ) );
+			};
+		}, 'sfpCanvasRol' );
+		wp.hooks.addFilter( 'editor.BlockListBlock', 'sfp-page-config/canvas-rol', metRol );
 	}() );
 
 }( window.wp ) );

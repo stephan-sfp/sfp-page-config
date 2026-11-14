@@ -1,7 +1,7 @@
 /* Alleen in de blokeditor. */
 .sfp-editor-label{display:block;font:600 11px/1.4 system-ui,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#757575;margin:0 0 6px}
 .sfp-editor-regel{border:1px dashed #c3c4c7;border-radius:6px;padding:10px 12px;margin:0 0 8px}
-.sfp-editor-regel .rich-text,.sfp-editor-vraag .rich-text{font-weight:700}
+.sfp-editor-regel .rich-text,.sfp-editor-vraag>.sfp-editor-vraagtekst{font-weight:700}
 .sfp-editor-vlak{border:1px dashed #c3c4c7;border-radius:6px;padding:12px 14px;margin:0 0 8px}
 .sfp-editor-uitleg{font:400 12px/1.5 system-ui,sans-serif;color:#757575;margin:4px 0 0}
 .block-editor-block-list__layout .sfp-inzicht .sfp-deelkaart__tekst{min-height:1.2em}
@@ -101,3 +101,45 @@
 :root .sfp-editor-portfolio .sfp-tabpaneel>*+*{margin-top:18px}
 :root .sfp-editor-portfolio .sfp-tablijst [role=tab]{filter:none;min-height:56px}
 :root .sfp-editor-kv [contenteditable]{cursor:text}
+
+/*
+ * Het canvas van een artikel, begrip of tool zoals de site (3.57.0, ontwerpregel 19).
+ * Astra zet het canvas van een bericht op volle breedte (ast-page-builder-template);
+ * de site toont het artikel in een leeskolom van 680 px, met de zijkolom van 300 px
+ * op 72 px rechts ervan, binnen 1180 px. Zonder zijkolom staat de kolom in het midden.
+ */
+.sfp-ed-raster{--sfp-ed-links:max(16px,calc(50% - 340px))}
+@media (min-width:1100px){.sfp-ed-raster--zij{--sfp-ed-links:max(24px,calc((100% - 1180px) / 2 + 24px))}}
+:root .editor-styles-wrapper.sfp-ed-raster .block-editor-block-list__layout.is-root-container,
+:root .editor-styles-wrapper.sfp-ed-raster .editor-visual-editor__post-title-wrapper>*,
+:root .editor-styles-wrapper.sfp-ed-raster :is(#sfp-vanzelf-kop,#sfp-vanzelf-voet){box-sizing:border-box;width:auto;max-width:680px;margin-left:var(--sfp-ed-links);margin-right:auto;padding-left:0;padding-right:0}
+:root .editor-styles-wrapper.sfp-ed-raster :is(#sfp-vanzelf-kop,#sfp-vanzelf-voet){padding:12px 16px 14px}
+:root .editor-styles-wrapper.sfp-ed-raster #sfp-vanzelf-kop{margin-top:16px;margin-bottom:24px}
+:root .editor-styles-wrapper.sfp-ed-raster #sfp-vanzelf-voet{margin-top:32px;margin-bottom:32px}
+/* De zijkolom: rechts naast de leeskolom, alleen als het canvas breed genoeg is (de site toont hem vanaf 1025 px). */
+.sfp-ed-raster :has(>#sfp-vanzelf-zij){position:relative}
+:root .editor-styles-wrapper #sfp-vanzelf-zij{display:none}
+@media (min-width:1100px){
+  :root .editor-styles-wrapper.sfp-ed-raster--zij #sfp-vanzelf-zij{display:block;position:absolute;left:calc(var(--sfp-ed-links) + 752px);width:300px;max-width:none;margin:0}
+}
+#sfp-vanzelf-zij .sfp-artikel__zij{position:static;display:grid;max-height:none;overflow:visible}
+/* Rustig ritme: een blok dat te dicht op het vorige UX-element staat. */
+:root .editor-styles-wrapper .block-editor-block-list__block.sfp-ed-ritme{box-shadow:-6px 0 0 #fff,-9px 0 0 #f0a000}
+/*
+ * Verhaalvorm van Kolommen, tekst en beeld (3.57.0): zoals de site, met de rest open.
+ * Raster van 33 sporen: tekst 18, beeld 15 (1,2 : 1 zoals de site); de rest in drie
+ * kolommen van elk 11 sporen. Het blok Kolom met de tekst doet niet mee als vak.
+ */
+@media (min-width:981px){
+  :root .editor-styles-wrapper .sfp-kolommen.sfp-ed-verhaal{display:grid;grid-template-columns:repeat(33,minmax(0,1fr));column-gap:0;row-gap:0;align-items:start}
+  :root .editor-styles-wrapper .sfp-ed-verhaal>.sfp-ed-verhaal__tekst{display:contents}
+  :root .editor-styles-wrapper .sfp-ed-verhaal .sfp-ed-verhaal__boven{grid-column:1/19;padding-right:48px;max-width:none;margin-left:0;margin-right:0}
+  :root .editor-styles-wrapper .sfp-ed-verhaal .sfp-ed-verhaal__beeld{grid-column:19/34;grid-row:1/span var(--sfp-ed-verhaal-rijen,3);align-self:stretch;position:relative;min-height:240px;margin:0}
+  :root .editor-styles-wrapper .sfp-ed-verhaal .sfp-ed-verhaal__beeld figure{height:100%;margin:0}
+  :root .editor-styles-wrapper .sfp-ed-verhaal .sfp-ed-verhaal__beeld img{width:100%;height:100%;object-fit:cover}
+  :root .editor-styles-wrapper .sfp-ed-verhaal .sfp-ed-verhaal__meer{grid-column:span 11;padding-right:48px;margin:20px 0 0;max-width:none}
+  :root .editor-styles-wrapper .sfp-ed-verhaal .sfp-ed-verhaal__meer--rechts{padding-right:0}
+  :root .editor-styles-wrapper .sfp-ed-verhaal .sfp-ed-verhaal__meer--eerste{margin-top:40px}
+}
+/* De uitklaplink van de site, als voorbeeld onder de eerste alinea (niet klikbaar). */
+:root .editor-styles-wrapper .sfp-ed-verhaal__lead[data-sfp-verhaal-meer]::after{content:attr(data-sfp-verhaal-meer) "\00a0\2193";display:block;margin-top:16px;font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;line-height:1.4;color:var(--sfp-b-tekstlink,var(--sfp-b-primair));text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;pointer-events:none;user-select:none}

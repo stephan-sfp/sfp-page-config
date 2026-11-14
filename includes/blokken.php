@@ -452,6 +452,8 @@ function sfp_page_config_blokken_registreer() {
                     'teksten' => $labels,
                     // De waarschuwingen in de editor (ritme, uitgelichte afbeelding) horen bij de artikelopmaak.
                     'artikel' => function_exists( 'sfp_page_config_artikel_aan' ) && sfp_page_config_artikel_aan(),
+                    // De uitklaplink van de verhaalvorm, zoals de site hem toont (sinds 3.57.0).
+                    'verhaalMeer' => sfp_page_config_tekst( 'verhaal_meer' ),
                 )
             ) . ';',
             'before'

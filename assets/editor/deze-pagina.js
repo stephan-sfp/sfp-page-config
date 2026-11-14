@@ -854,9 +854,35 @@
 					regel( 'Uitgelichte afbeelding', editor.beeld ? 'ingesteld' : 'ontbreekt', ! editor.beeld ),
 					stand.promo ? regel( 'Promokaart', 'naast het artikel' ) : null
 				),
+				el( Ritme, { key: 'ritme' } ),
 				hulp( 'Onderwerpen kies je bij Tags.' )
 			),
 			heeftDeelbeeld ? el( Deelbeeld, { id: editor.id, vuil: editor.vuil, opslaan: editor.opslaan } ) : null
+		);
+	}
+
+	/**
+	 * Rustig ritme (sinds 3.57.0): staan twee UX-elementen te dicht op
+	 * elkaar, dan staat dat hier, met een knop naar elke plek. In het canvas
+	 * heeft zo'n blok een oranje lijn links. Vroeger een balk boven het
+	 * canvas (besluit Stephan 14-11).
+	 */
+	function Ritme() {
+		var fouten = data.useSelect( function ( select ) {
+			return window.sfpRitmeWinkel ? select( 'sfp/ritme' ).fouten() : [];
+		}, [] );
+		if ( ! fouten.length ) {
+			return el( 'div', { className: 'sfp-dp-lijst' }, regel( 'Rustig ritme', 'in orde' ) );
+		}
+		return el( 'div', { className: 'sfp-dp-ritme' },
+			el( 'div', { className: 'sfp-dp-lijst' }, regel( 'Rustig ritme', 1 === fouten.length ? '1 plek te dicht' : fouten.length + ' plekken te dicht', true ) ),
+			hulp( 'Tussen twee UX-elementen horen minstens drie alinea’s. In het artikel staat een oranje lijn links van het blok.' ),
+			el( 'ul', { className: 'sfp-dp-ritme__lijst' }, fouten.map( function ( f ) {
+				return el( 'li', { key: f.id },
+					el( 'span', null, f.tekst ),
+					el( c.Button, { variant: 'link', onClick: function () { data.dispatch( 'core/block-editor' ).selectBlock( f.id ); } }, 'Ga naar' )
+				);
+			} ) )
 		);
 	}
 
@@ -1040,7 +1066,7 @@
 		return;
 	}
 
-	var omlijsting = { kop: '', voet: '' };
+	var omlijsting = { kop: '', voet: '', zij: '', raster: false };
 
 	function canvas() {
 		var iframe = document.querySelector( 'iframe[name="editor-canvas"]' );
@@ -1075,9 +1101,18 @@
 		if ( ! doc || ! doc.body ) { return; }
 		var titel = doc.querySelector( '.editor-visual-editor__post-title-wrapper' );
 		var wortel = doc.querySelector( '.is-root-container' );
+		// De leeskolom van de site (sinds 3.57.0): 680 px, met de zijkolom
+		// rechts ernaast als die er is; zonder zijkolom in het midden.
+		doc.body.classList.toggle( 'sfp-ed-raster', !! omlijsting.raster );
+		doc.body.classList.toggle( 'sfp-ed-raster--zij', !! ( omlijsting.raster && omlijsting.zij ) );
 		if ( titel ) {
 			var boven = vak( doc, 'sfp-vanzelf-kop', 'Komt vanzelf, zoals bij de laatste keer opslaan', omlijsting.kop );
 			if ( boven && titel.nextSibling !== boven ) { titel.parentNode.insertBefore( boven, titel.nextSibling ); }
+			var zij = vak( doc, 'sfp-vanzelf-zij', 'Komt vanzelf in de zijkolom', omlijsting.raster ? omlijsting.zij : '' );
+			if ( zij ) {
+				if ( zij.parentNode !== titel.parentNode ) { titel.parentNode.insertBefore( zij, titel ); }
+				zij.style.top = titel.offsetTop + 'px';
+			}
 		}
 		if ( wortel ) {
 			var onder = vak( doc, 'sfp-vanzelf-voet', 'Komt vanzelf onder het artikel', omlijsting.voet );
@@ -1086,7 +1121,8 @@
 	}
 
 	window.addEventListener( 'sfp-editor-stand', function ( e ) {
-		omlijsting = { kop: ( e.detail && e.detail.kop ) || '', voet: ( e.detail && e.detail.voet ) || '' };
+		var d = e.detail || {};
+		omlijsting = { kop: d.kop || '', voet: d.voet || '', zij: d.zij || '', raster: !! d.raster };
 		plaats();
 	} );
 
@@ -1094,7 +1130,7 @@
 	// het iframe dat laadt): zet de vakken dan terug.
 	var wacht = null;
 	data.subscribe( function () {
-		if ( wacht || ( ! omlijsting.kop && ! omlijsting.voet ) ) { return; }
+		if ( wacht || ( ! omlijsting.kop && ! omlijsting.voet && ! omlijsting.raster ) ) { return; }
 		wacht = setTimeout( function () { wacht = null; plaats(); }, 400 );
 	} );
 }( window.wp ) );
