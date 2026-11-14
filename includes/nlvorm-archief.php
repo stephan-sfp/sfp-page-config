@@ -1063,9 +1063,6 @@ function sfp_page_config_render_auteurskop() {
             )
         )
         : (string) get_avatar( $user->ID, 144, '', $naam, array( 'class' => 'sfp-auteur__foto' ) );
-    // Een filter op get_avatar zet width:auto in een inline stijl; die wint van de
-    // maat in de CSS en laat de foto over label en naam lopen. De maat komt uit de CSS.
-    $foto     = (string) preg_replace( '/\s+style=(["\'])[^"\']*\1/i', '', $foto, 1 );
     $rol      = trim( (string) get_user_meta( $user->ID, 'sfp_auteur_rol', true ) );
     $profiel  = esc_url( (string) get_user_meta( $user->ID, 'sfp_auteur_profiel', true ) );
     $eigen    = esc_url( (string) get_author_posts_url( $user->ID ) );
