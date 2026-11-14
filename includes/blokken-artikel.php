@@ -66,6 +66,8 @@ function sfp_page_config_blokken_artikel() {
             'attributes'   => array(
                 'label'     => $tekst,
                 'onderwerp' => $tekst,
+                // 3.58.0: volledige kop op het deelbeeld; vervangt label en onderwerp.
+                'kop'       => $tekst,
             ),
             'render'       => 'sfp_page_config_render_samenvatting',
         ),
@@ -277,15 +279,19 @@ function sfp_page_config_render_samenvatting( $attrs, $content ) {
         $punten = array_values( array_filter( array_map( 'wp_strip_all_tags', $m[1] ), 'strlen' ) );
         // Alleen het beeld dat bij deze punten hoort; anders de kaart in HTML.
         $beeld = function_exists( 'sfp_page_config_deelbeeld_voor' ) ? sfp_page_config_deelbeeld_voor( $post_id, 'samenvatting', $nr, sfp_page_config_deelbeeld_controle( implode( "\n", $punten ) ) ) : null;
+        // 3.58.0: een eigen volledige kop staat er één keer, zonder label en zonder titel.
+        $eigen  = trim( wp_strip_all_tags( sfp_page_config_blok_attr( $attrs, 'kop' ) ) );
+        $kopalt = '' !== $eigen ? $eigen : sprintf( sfp_page_config_artikel_tekst( 'dingen' ), count( $punten ) ) . ' ' . $onderwerp;
 
         if ( $beeld ) {
-            $kaart = '<img class="sfp-samenvatting__beeld" src="' . esc_url( $beeld['url'] ) . '" width="' . (int) $beeld['breedte'] . '" height="' . (int) $beeld['hoogte'] . '" loading="lazy" decoding="async" alt="' . esc_attr( sprintf( sfp_page_config_artikel_tekst( 'deelbeeld_alt' ), sprintf( sfp_page_config_artikel_tekst( 'dingen' ), count( $punten ) ) . ' ' . $onderwerp ) ) . '">';
+            $kaart = '<img class="sfp-samenvatting__beeld" src="' . esc_url( $beeld['url'] ) . '" width="' . (int) $beeld['breedte'] . '" height="' . (int) $beeld['hoogte'] . '" loading="lazy" decoding="async" alt="' . esc_attr( sprintf( sfp_page_config_artikel_tekst( 'deelbeeld_alt' ), $kopalt ) ) . '">';
         } else {
             $lijst = '';
             foreach ( $punten as $punt ) {
                 $lijst .= '<li>' . esc_html( $punt ) . '</li>';
             }
-            $kaart = '<div class="sfp-deelkaart sfp-deelkaart--vierkant"><span class="sfp-deelkaart__label">' . esc_html( sprintf( sfp_page_config_artikel_tekst( 'dingen' ), count( $punten ) ) ) . '</span><span class="sfp-deelkaart__titel">' . esc_html( $onderwerp ) . '</span><ol>' . $lijst . '</ol>' . sfp_page_config_deelkaart_voet() . '</div>';
+            $kop   = '' !== $eigen ? '<span class="sfp-deelkaart__titel">' . esc_html( $eigen ) . '</span>' : '<span class="sfp-deelkaart__label">' . esc_html( sprintf( sfp_page_config_artikel_tekst( 'dingen' ), count( $punten ) ) ) . '</span><span class="sfp-deelkaart__titel">' . esc_html( $onderwerp ) . '</span>';
+            $kaart = '<div class="sfp-deelkaart sfp-deelkaart--vierkant">' . $kop . '<ol>' . $lijst . '</ol>' . sfp_page_config_deelkaart_voet() . '</div>';
         }
         $paneel = '<div class="sfp-samenvatting__paneel" id="' . esc_attr( $id ) . '" hidden>' . $kaart
             . '<div class="sfp-samenvatting__knoppen"><span>' . esc_html( sfp_page_config_artikel_tekst( 'deel_samenvatting' ) ) . '</span>'

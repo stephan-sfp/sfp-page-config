@@ -3,3 +3,6 @@
 :root .sfp-stap{display:grid;grid-template-columns:minmax(0,1fr);row-gap:8px;align-content:start;padding:20px 0 0;margin:0;border-top:2px solid var(--sfp-b-secundair);counter-increment:sfp-stap;min-width:0;list-style:none}
 .sfp-stap::before{content:counter(sfp-stap);font-family:var(--sfp-b-display);font-weight:400;font-size:34px;line-height:1;color:var(--sfp-b-secundair)}
 @media (min-width:981px){:root .sfp-stappen{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* 3.58.0: een alinea direct boven dit blok in een sectie krijgt 32 px, zoals na een kop (kernzin houdt zijn eigen ruimte) */
+:root .sfp-sectie__binnen>p:not(.is-style-sfp-kernzin)+.sfp-stappen{margin-top:32px}

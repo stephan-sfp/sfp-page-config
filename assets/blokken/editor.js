@@ -279,8 +279,11 @@
 			return ( select( 'core/block-editor' ).getBlocks( props.clientId ) || [] ).some( function ( x ) { return 'sfp/tool' === x.name; } );
 		}, [ props.clientId ] );
 		var wit = 'wit' === a.variant;
-		var foto = 'foto' === a.variant;
-		var blockProps = useBlockProps( { className: 'sfp-held' + ( wit ? ' sfp-held--wit held-feit held-accent held-bewijs' : foto ? ' sfp-held--foto sfp-held--editor-foto held-bewijs' : ' sfp-held--recht' ) + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) + ( metTool ? ' sfp-held--tool' : '' ) } );
+		var gesplitst = 'gesplitst' === a.variant;
+		/* Gesplitst (3.58.0) heeft dezelfde velden als foto. */
+		var foto = 'foto' === a.variant || gesplitst;
+		var recht = ! wit && ! foto;
+		var blockProps = useBlockProps( { className: 'sfp-held' + ( wit ? ' sfp-held--wit held-feit held-accent held-bewijs' : gesplitst ? ' sfp-held--gesplitst sfp-held--editor-gesplitst held-bewijs' : foto ? ' sfp-held--foto sfp-held--editor-foto held-bewijs' : ' sfp-held--recht' + ( a.bewijs ? ' held-bewijs' : '' ) ) + ( 'breed' === a.variant ? ' sfp-held--breed' : '' ) + ( metTool ? ' sfp-held--tool' : '' ) } );
 		var inner = useInnerBlocksProps( { className: 'sfp-held__binnen' }, {
 			template: foto ? [
 				[ 'core/heading', { level: 1, className: 'h1-xl' } ],
@@ -327,8 +330,8 @@
 		var mobiel = wp.data.useSelect( function ( select ) { return a.mobielId ? select( 'core' ).getMedia( a.mobielId ) : null; }, [ a.mobielId ] );
 		var focusOpties = [ { label: 'Midden, iets boven', value: '50% 30%' }, { label: 'Boven', value: '50% 15%' }, { label: 'Midden', value: '50% 50%' }, { label: 'Links', value: '25% 30%' }, { label: 'Rechts', value: '75% 30%' }, { label: 'Rechts, iets boven', value: '68% 40%' }, { label: 'Iets rechts, boven', value: '60% 20%' } ];
 		var fotoVelden = foto ? [
-			uitleg( 'Tekst op de foto. Zet het zinsdeel dat moet opvallen in de titel op Accent. De tweede knop staat als Tekstlink. De eerste afbeelding in het blok is de foto.' ),
-			keuze( 'Wat blijft in beeld op computer en tablet', a.focus && '50% 30%' !== a.focus ? a.focus : '68% 40%', focusOpties.slice( 1 ), function ( v ) { props.setAttributes( { focus: v } ); } ),
+			gesplitst ? uitleg( 'Tekst links op de primaire kleur, foto rechts. Op een telefoon staat de foto boven de tekst. De tweede knop staat als Tekstlink. De eerste afbeelding in het blok is de foto.' ) : uitleg( 'Tekst op de foto. Zet het zinsdeel dat moet opvallen in de titel op Accent. De tweede knop staat als Tekstlink. De eerste afbeelding in het blok is de foto.' ),
+			gesplitst ? keuze( 'Wat blijft in beeld op computer en tablet', a.focus || '50% 30%', focusOpties, function ( v ) { props.setAttributes( { focus: v } ); } ) : keuze( 'Wat blijft in beeld op computer en tablet', a.focus && '50% 30%' !== a.focus ? a.focus : '68% 40%', focusOpties.slice( 1 ), function ( v ) { props.setAttributes( { focus: v } ); } ),
 			MediaUploadH ? el( 'div', { key: 'mobiel', className: 'sfp-linkveld' },
 				el( 'span', { className: 'sfp-vormkeuze__label' }, 'Foto op een telefoon' ),
 				mobiel && mobiel.source_url ? el( 'img', { src: ( mobiel.media_details && mobiel.media_details.sizes && mobiel.media_details.sizes.medium ? mobiel.media_details.sizes.medium.source_url : mobiel.source_url ), alt: '', style: { maxWidth: '100%', borderRadius: '4px' } } ) : null,
@@ -348,7 +351,7 @@
 		/* Voorbeeld van de feitenkaart en de bewijsregel (3.31.3): op de site maakt de plugin ze (includes/nlvorm.php). */
 		var H = window.sfpHeldWit || {};
 		var voorbeeld = [];
-		if ( wit || foto ) {
+		if ( wit || foto || ( recht && a.bewijs ) ) {
 			var opKaart = foto || a.feitenkaart === false ? [] : ( a.volgendeStart !== false && H.volgende ? [ H.volgende ] : [] ).concat( ( a.feiten || [] ).filter( function ( f ) { return f && f.label && f.waarde; } ) ).slice( 0, 3 );
 			if ( opKaart.length ) {
 				voorbeeld.push( el( 'div', { key: 'sfp-feit', className: 'sfp-held__feit sfp-held__feit--editor' + ( a.afbreken ? ' sfp-held__feit--afbreken' : '' ), 'aria-hidden': 'true' }, opKaart.map( function ( f, i ) {
@@ -365,8 +368,11 @@
 		}
 		return el( Fragment, null,
 			paneel( 'Bovenkant van de pagina', [
-				vormkeuze( 'Beeld', a.variant, [ { label: 'Tekst naast beeld', value: 'recht', vorm: 'n:1.2,1' }, { label: 'Beeld over de volle breedte', value: 'breed', vorm: 'o:1' }, { label: 'Wit met feitenkaart', value: 'wit', vorm: 'n:1.2,1', rand: true }, { label: 'Tekst op de foto (home)', value: 'foto', vorm: 'o:1', donker: true } ], function ( v ) { props.setAttributes( { variant: v } ); } ),
+				vormkeuze( 'Beeld', a.variant, [ { label: 'Tekst naast beeld', value: 'recht', vorm: 'n:1.2,1' }, { label: 'Beeld over de volle breedte', value: 'breed', vorm: 'o:1' }, { label: 'Wit met feitenkaart', value: 'wit', vorm: 'n:1.2,1', rand: true }, { label: 'Tekst op de foto (home)', value: 'foto', vorm: 'o:1', donker: true }, { label: 'Tekst en foto naast elkaar', value: 'gesplitst', vorm: 'n:1.4,1', donker: true } ], function ( v ) { props.setAttributes( { variant: v } ); } ),
 				wit || foto ? null : uitleg( 'Titel, intro, beeld en knoppen typ je in het blok zelf. Op een telefoon valt de intro weg.' ),
+				recht ? schakelaar( 'Bewijsregel tonen', !! a.bewijs, function ( v ) { props.setAttributes( { bewijs: v } ); }, 'Google-cijfer en deelnemers onder de knoppen, op een telefoon erboven.' ) : null,
+				recht && a.bewijs ? tekstveld( 'Deelnemers', a.deelnemers, function ( v ) { props.setAttributes( { deelnemers: v } ); }, 'Bijvoorbeeld: 2.500+ cursisten in ons netwerk. Leeg: alleen het cijfer.' ) : null,
+				recht && a.bewijs ? tekstveld( 'Initialen', a.initialen, function ( v ) { props.setAttributes( { initialen: v } ); }, 'Drie keer twee letters met een spatie ertussen.' ) : null,
 				a.anker ? linkNaarBlok( props, function () { return a.anker; } ) : null,
 			].concat( witVelden ).concat( fotoVelden ) ),
 			el( 'section', blockProps, el( 'div', inner, inner.children, voorbeeld ) )
@@ -403,6 +409,7 @@
 					{ label: 'Onder', value: 'onder' },
 					{ label: 'Even hoog', value: 'rekken' },
 				], function ( v ) { props.setAttributes( { uitlijning: v } ); } ),
+				'tekst-beeld' === a.indeling ? tekstveld( 'Tekst van de uitklaplink', a.meerTekst, function ( v ) { props.setAttributes( { meerTekst: v } ); }, 'Alleen bij een lang verhaal naast een afgerond beeld. Leeg: ' + ( ( window.sfpBlokken && window.sfpBlokken.verhaalMeer ) || 'de tekst van de site' ) + '.' ) : null,
 				'reviews' === a.indeling ? schakelaar( 'Carrousel op een telefoon', a.carrousel, function ( v ) { props.setAttributes( { carrousel: v } ); }, 'Op een telefoon veeg je door de reviews; op een tablet staan er twee.' ) : null,
 				'kort' === a.indeling ? uitleg( 'Slot kort: links Label, H2, Kernzin, Knoppen (knop en tekstlink met het telefoonnummer) en Wie; rechts één Review, of het LatePoint-boekformulier met de Review links onder de tekst. Op tablet en telefoon onder elkaar.' ) : null,
 				'kort' === a.indeling ? null : 'slot' === a.indeling ? uitleg( 'Twee kaarten naast elkaar: links het kennismakingsgesprek (LatePoint en Naam met portret), rechts het korte formulier (SureForms). Op tablet en telefoon onder elkaar.' ) : uitleg( 'Op een telefoon staan de kolommen onder elkaar.' ),
@@ -756,7 +763,8 @@
 		var inner = useInnerBlocksProps( {}, { allowedBlocks: [ 'core/list' ], template: [ [ 'core/list' ] ], templateLock: 'insert' } );
 		return el( Fragment, null,
 			paneel( 'Samenvatting', [
-				tekstveld( 'Onderwerp op het beeld om te delen', a.onderwerp, function ( v ) { props.setAttributes( { onderwerp: v } ); }, 'Leeg: de titel van het artikel.' ),
+				tekstveld( 'Volledige kop op het beeld', a.kop, function ( v ) { props.setAttributes( { kop: v } ); }, 'Bijvoorbeeld: 4 dingen om te weten over presentatiekaartjes. Staat er een kop, dan komt alleen deze tekst op het beeld, zonder label en zonder de titel van het artikel; hij blijft staan als de titel verandert.' ),
+				a.kop ? null : tekstveld( 'Onderwerp op het beeld om te delen', a.onderwerp, function ( v ) { props.setAttributes( { onderwerp: v } ); }, 'Leeg: de titel van het artikel.' ),
 				uitleg( 'Het label en de punten typ je in het blok zelf.' ),
 			] ),
 			el( 'aside', blockProps,
@@ -2210,7 +2218,7 @@
 				boven.push( b.clientId );
 				if ( 'core/paragraph' === b.name && ! klasseHeeft( b, 'is-style-sfp-label' ) ) { lead = b.clientId; }
 			} );
-			return { kolommen: kolommen.clientId, tekst: tekst.clientId, beeld: beeld.clientId, boven: boven, lead: lead, meer: meer };
+			return { kolommen: kolommen.clientId, tekst: tekst.clientId, beeld: beeld.clientId, boven: boven, lead: lead, meer: meer, meerTekst: ( kolommen.attributes.meerTekst || '' ).trim() };
 		}
 
 		// De rol van één blok: [klassen, rijen voor het beeld].
@@ -2224,6 +2232,7 @@
 			var ouders = bed.getBlockParents( clientId, true );
 			var kandidaten = [ clientId ].concat( ouders.slice( 0, 2 ) );
 			var rijen = 0;
+			var meerTekst = '';
 			for ( var i = 0; i < kandidaten.length; i++ ) {
 				var blok = bed.getBlock( kandidaten[ i ] );
 				if ( ! blok || 'sfp/kolommen' !== blok.name ) { continue; }
@@ -2232,7 +2241,7 @@
 				if ( clientId === v.kolommen ) { klassen.push( 'sfp-ed-verhaal' ); }
 				else if ( clientId === v.tekst ) { klassen.push( 'sfp-ed-verhaal__tekst' ); }
 				else if ( clientId === v.beeld ) { klassen.push( 'sfp-ed-verhaal__beeld' ); rijen = v.boven.length; }
-				else if ( clientId === v.lead ) { klassen.push( 'sfp-ed-verhaal__boven', 'sfp-verhaal__lead', 'sfp-ed-verhaal__lead' ); }
+				else if ( clientId === v.lead ) { klassen.push( 'sfp-ed-verhaal__boven', 'sfp-verhaal__lead', 'sfp-ed-verhaal__lead' ); meerTekst = v.meerTekst; }
 				else if ( v.boven.indexOf( clientId ) >= 0 ) { klassen.push( 'sfp-ed-verhaal__boven' ); }
 				else if ( v.meer.indexOf( clientId ) >= 0 ) {
 					var n = v.meer.indexOf( clientId );
@@ -2242,7 +2251,7 @@
 				}
 				break;
 			}
-			return klassen.join( ' ' ) + '|' + rijen;
+			return klassen.join( ' ' ) + '|' + rijen + '|' + meerTekst;
 		}
 
 		var metRol = wp.compose.createHigherOrderComponent( function ( BlockListBlock ) {
@@ -2254,8 +2263,9 @@
 				}
 				var wp2 = Object.assign( {}, props.wrapperProps || {} );
 				wp2.className = ( ( wp2.className || '' ) + ' ' + delen[ 0 ] ).trim();
-				if ( delen[ 0 ].indexOf( 'sfp-ed-verhaal__lead' ) >= 0 && MEER ) {
-					wp2[ 'data-sfp-verhaal-meer' ] = MEER;
+				var meerTekst = delen.slice( 2 ).join( '|' ) || MEER;
+				if ( delen[ 0 ].indexOf( 'sfp-ed-verhaal__lead' ) >= 0 && meerTekst ) {
+					wp2[ 'data-sfp-verhaal-meer' ] = meerTekst;
 				}
 				if ( +delen[ 1 ] > 0 ) {
 					wp2.style = Object.assign( {}, wp2.style || {}, { '--sfp-ed-verhaal-rijen': delen[ 1 ] } );

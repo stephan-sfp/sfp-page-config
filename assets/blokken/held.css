@@ -67,3 +67,16 @@
 
 /* 3.46.0: focusrand op de donkere held wit (branding.md, Focusrand). */
 :root .sfp-held:not(.sfp-held--wit) :focus-visible{outline-color:var(--sfp-b-wit)}
+
+/* Bewijsregel in held recht en breed (3.58.0, schakelaar in het blok): onder de knoppen, op tablet en telefoon erboven (H7). */
+:root .sfp-held--recht.held-bewijs .sfp-held__binnen{grid-template-areas:"kop" "intro" "foto" "bewijs" "knoppen"}
+:root .sfp-held--recht .sfp-held__binnen>p.sfp-held__bewijs{grid-area:bewijs;display:flex;align-items:center;flex-wrap:wrap;gap:14px 28px;margin:22px 0 0;font-size:15px;color:var(--sfp-b-wit);opacity:1;text-shadow:none;max-width:none;position:relative;z-index:2}
+:root .sfp-held--recht .sfp-held__bewijs :is(strong,a),:root .sfp-held--recht .sfp-held__score{color:var(--sfp-b-wit)}
+:root .sfp-held--recht .sfp-held__bewijs>*{flex:none;white-space:nowrap}
+:root .sfp-held--recht .sfp-held__binnen:has(>.sfp-held__bewijs)>.wp-block-buttons{padding-top:26px}
+@media (min-width:981px){
+ :root .sfp-held--recht.held-bewijs .sfp-held__binnen{grid-template-areas:"kop" "intro" "knoppen" "bewijs"}
+ :root .sfp-held--recht .sfp-held__binnen:has(>.sfp-held__bewijs)>.wp-block-buttons{padding:28px 0 0}
+ :root .sfp-held--recht .sfp-held__binnen>p.sfp-held__bewijs{margin:30px 0 72px;flex-wrap:nowrap;width:max-content}
+}
+:root .sfp-held--recht .sfp-held__score{border-right:0;padding-right:0;margin-right:0}

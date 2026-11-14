@@ -239,8 +239,13 @@ function sfp_page_config_deelbeeld_teken( array $s ) {
         sfp_page_config_db_band( $im, $B, $H, sfp_page_config_db_kleur( $im, sfp_page_config_db_donkerder( $s['primair'], 0.12 ) ), -0.30, -0.20, 0.70, 1.40 );
         $rand = 70 * $f;
         $y    = $rand + 30 * $f;
-        sfp_page_config_db_schrijf( $im, mb_strtoupper( $s['label'] ), $rand, $y, $kop, $pt( 30 ), $sec, 30 * $f * .1 );
-        $y                      += 30 * $f;
+        if ( '' !== (string) $s['label'] ) {
+            sfp_page_config_db_schrijf( $im, mb_strtoupper( $s['label'] ), $rand, $y, $kop, $pt( 30 ), $sec, 30 * $f * .1 );
+            $y += 30 * $f;
+        } else {
+            // 3.58.0: eigen kop zonder label; de kop begint waar het label stond.
+            $y -= 32 * $f;
+        }
         list( $regels, $spatie ) = sfp_page_config_db_regels( mb_strtoupper( $s['titel'] ), $kop, $pt( 58 ), $B - 2 * $rand );
         $y                       = sfp_page_config_db_schrijf_regels( $im, $regels, $spatie, $rand, $y + 54 * $f, $kop, $pt( 58 ), 58 * 1.15 * $f, $wit, $sec );
         // Voet.

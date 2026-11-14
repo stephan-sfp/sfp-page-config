@@ -63,3 +63,6 @@
   :root .sfp-uitklap--kaart table{min-width:0;font-size:13px}
   :root .sfp-uitklap--kaart :is(th,td){padding:9px 5px}
 }
+
+/* 3.58.0: een alinea direct boven dit blok in een sectie krijgt 32 px, zoals na een kop (kernzin houdt zijn eigen ruimte) */
+:root .sfp-sectie__binnen>p:not(.is-style-sfp-kernzin)+.sfp-uitklap{margin-top:32px}

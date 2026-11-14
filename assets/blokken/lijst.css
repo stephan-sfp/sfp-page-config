@@ -39,3 +39,6 @@
 :root .sfp-wel.is-style-sfp-bovenschrift{color:var(--sfp-b-goed,#1E8B45)}
 
 @media (max-width:600px){:root .sfp-lijst--regels li{padding:18px 0}}
+
+/* 3.58.0: een alinea direct boven dit blok in een sectie krijgt 32 px, zoals na een kop (kernzin houdt zijn eigen ruimte) */
+:root .sfp-sectie__binnen>p:not(.is-style-sfp-kernzin)+.sfp-lijst{margin-top:32px}

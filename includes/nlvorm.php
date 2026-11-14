@@ -658,7 +658,8 @@ function sfp_page_config_nlvorm_held( $attrs, $blok, $content ) {
  * @param  string        $content Binnenblokken als geheel (terugval).
  * @return string
  */
-function sfp_page_config_nlvorm_held_foto( $attrs, $blok, $content ) {
+function sfp_page_config_nlvorm_held_foto( $attrs, $blok, $content, $vorm = 'foto' ) {
+    $vorm  = 'gesplitst' === $vorm ? 'gesplitst' : 'foto';
     $tekst = '';
     $beeld = '';
     if ( $blok instanceof WP_Block && $blok->inner_blocks ) {
@@ -691,10 +692,14 @@ function sfp_page_config_nlvorm_held_foto( $attrs, $blok, $content ) {
         $beeld = preg_replace( '/class="([^"]*wp-block-image[^"]*)"/', 'class="$1 sfp-held__achter"', $beeld, 1 );
     }
     // De standaard van de held (50% 30%) is hier rechts, iets boven: daar staat de spreker op de foto.
-    $focus = sfp_page_config_blok_attr( $attrs, 'focus', '68% 40%' );
-    $stijl = '--sfp-held-focus:' . sfp_page_config_nlvorm_focus( '50% 30%' === $focus ? '68% 40%' : $focus )
+    $focus = sfp_page_config_blok_attr( $attrs, 'focus', 'foto' === $vorm ? '68% 40%' : '50% 30%' );
+    // Gesplitst (3.58.0): de foto heeft een eigen vlak, dus de standaard van de held geldt.
+    if ( 'foto' === $vorm && '50% 30%' === $focus ) {
+        $focus = '68% 40%';
+    }
+    $stijl = '--sfp-held-focus:' . sfp_page_config_nlvorm_focus( $focus )
         . ';--sfp-held-focus-m:' . sfp_page_config_nlvorm_focus( sfp_page_config_blok_attr( $attrs, 'focusMobiel', '60% 20%' ) );
-    return str_replace( '<section ', '<section style="' . esc_attr( $stijl ) . '" ', '<section ' . sfp_page_config_blok_omhulling( array( 'sfp-held', 'sfp-held--foto', 'held-bewijs' ), sfp_page_config_blok_attr( $attrs, 'anker' ) ) . '>' )
+    return str_replace( '<section ', '<section style="' . esc_attr( $stijl ) . '" ', '<section ' . sfp_page_config_blok_omhulling( array( 'sfp-held', 'sfp-held--' . $vorm, 'held-bewijs' ), sfp_page_config_blok_attr( $attrs, 'anker' ) ) . '>' )
         . $beeld . '<div class="sfp-held__binnen">' . $tekst . '</div></section>';
 }
 
@@ -834,8 +839,12 @@ function sfp_page_config_nlvorm_focus( $focus ) {
 function sfp_page_config_nlvorm_delen( $inhoud ) {
     $inhoud = (string) $inhoud;
     $delen  = array();
-    if ( preg_match( '/<!-- wp:sfp\/held \{[^}]*"variant":"(wit|foto)"/', $inhoud ) ) {
+    if ( preg_match( '/<!-- wp:sfp\/held \{[^}]*("variant":"(wit|foto|gesplitst)"|"bewijs":true)/', $inhoud ) ) {
         $delen[] = 'nlvorm-held';
+    }
+    // Sinds 3.58.0: held gesplitst.
+    if ( preg_match( '/<!-- wp:sfp\/held \{[^}]*"variant":"gesplitst"/', $inhoud ) ) {
+        $delen[] = 'held-gesplitst';
     }
     // Sinds 3.34.0: home (held foto, slot, kaart met beeld, reviews als
     // carrousel, laatste artikelen) en Over (team, tabs als kaart, netwerk).

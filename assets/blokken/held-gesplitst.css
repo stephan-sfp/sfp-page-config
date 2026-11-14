@@ -1,0 +1,40 @@
+/*
+ * Held gesplitst (3.58.0, besluit Stephan 14-11-2026, SLB-dummy): tekstvlak
+ * links (58 procent) in de primaire kleur, foto rechts (42 procent) met een
+ * harde naad. Tablet dezelfde verdeling. Telefoon: foto boven met een korte
+ * overloop naar de primaire kleur, tekst eronder; bewijsregel boven de
+ * knoppen (H7). De eerste afbeelding in de held is de foto; een aparte foto
+ * voor de telefoon gaat via <picture> (includes/nlvorm.php).
+ * Kleuren en fonts alleen uit de rolvariabelen.
+ */
+:root .sfp-held.sfp-held--gesplitst{display:grid;grid-template-columns:minmax(0,58fr) minmax(0,42fr);align-items:stretch;min-height:clamp(520px,70vh,720px);background:var(--sfp-b-primair);padding:0}
+:root .sfp-held.sfp-held--gesplitst>.sfp-held__achter.sfp-held__achter{grid-column:2;grid-row:1;position:relative;inset:auto;margin:0;width:auto;max-width:none;height:100%;min-height:0;z-index:0}
+:root .sfp-held--gesplitst>.sfp-held__achter :is(picture,img){display:block;width:100%;height:100%}
+:root .sfp-held--gesplitst>.sfp-held__achter img{position:absolute;inset:0;object-fit:cover;object-position:var(--sfp-held-focus,50% 30%);border-radius:0;max-width:none}
+:root .sfp-held--gesplitst::after{content:none}
+:root .sfp-held.sfp-held--gesplitst>.sfp-held__binnen{grid-column:1;grid-row:1;align-self:center;width:auto;max-width:none;margin:0;padding:88px 48px 88px max(24px,calc((100vw - 1180px) / 2 + 24px));grid-template-columns:minmax(0,600px);grid-template-areas:"kop""intro""knoppen""bewijs";position:relative;z-index:2}
+:root .sfp-held.sfp-held--gesplitst .sfp-held__binnen>h1{max-width:none;text-wrap:balance;text-shadow:none}
+:root .sfp-held--gesplitst .sfp-held__binnen>p:not(.sfp-held__bewijs){display:block;grid-area:intro;max-width:32em;margin:16px 0 0;opacity:1;color:var(--sfp-b-wit);text-shadow:none}
+:root .sfp-held--gesplitst .sfp-held__binnen>.wp-block-buttons{grid-area:knoppen;padding:28px 0 0;align-items:center;justify-content:flex-start;column-gap:32px}
+:root .sfp-held--gesplitst .sfp-held__binnen>p.sfp-held__bewijs{display:flex;align-items:center;grid-area:bewijs;margin:30px 0 0;color:var(--sfp-b-wit);font-size:15px;gap:14px 28px;flex-wrap:wrap;opacity:1;text-shadow:none;max-width:none}
+:root .sfp-held--gesplitst .sfp-held__bewijs :is(strong,a),:root .sfp-held--gesplitst .sfp-held__score{color:var(--sfp-b-wit)}
+:root .sfp-held--gesplitst .sfp-held__bewijs>*{flex:none;white-space:nowrap}
+:root .sfp-held.sfp-held--gesplitst .sfp-accent{color:inherit;background:none}
+@media (min-width:981px){:root .sfp-held--gesplitst .sfp-held__binnen>p.sfp-held__bewijs{flex-wrap:nowrap;width:max-content}}
+@media (min-width:701px) and (max-width:980px){
+  :root .sfp-held.sfp-held--gesplitst{grid-template-columns:minmax(0,58fr) minmax(0,42fr);min-height:520px}
+  :root .sfp-held.sfp-held--gesplitst>.sfp-held__binnen{padding:64px 32px 64px 24px;grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:700px){
+  :root .sfp-held.sfp-held--gesplitst{display:flex;flex-direction:column;min-height:0}
+  :root .sfp-held.sfp-held--gesplitst>.sfp-held__achter.sfp-held__achter{order:-1;height:auto;aspect-ratio:1/1;max-height:460px;flex:none}
+  :root .sfp-held--gesplitst>.sfp-held__achter img{object-position:var(--sfp-held-focus-m,50% 20%)}
+  :root .sfp-held--gesplitst>.sfp-held__achter::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 70%,var(--sfp-b-primair) 100%);pointer-events:none}
+  :root .sfp-held.sfp-held--gesplitst>.sfp-held__binnen{padding:8px 16px 40px;grid-template-columns:minmax(0,1fr);grid-template-areas:"kop""intro""bewijs""knoppen"}
+  :root .sfp-held--gesplitst .sfp-held__binnen>p:not(.sfp-held__bewijs){font-size:17px}
+  :root .sfp-held--gesplitst .sfp-held__binnen>p.sfp-held__bewijs{margin-top:22px;row-gap:14px}
+  :root .sfp-held--gesplitst .sfp-held__binnen>.wp-block-buttons{padding-top:26px;align-items:stretch;row-gap:22px}
+}
+:root body.ast-theme-transparent-header .sfp-held.sfp-held--gesplitst>.sfp-held__binnen{padding-top:calc(72px + 96px)}
+@media (max-width:980px){:root body.ast-theme-transparent-header .sfp-held.sfp-held--gesplitst>.sfp-held__binnen{padding-top:64px}}
+@media (max-width:700px){:root body.ast-theme-transparent-header .sfp-held.sfp-held--gesplitst>.sfp-held__binnen{padding-top:8px}}
