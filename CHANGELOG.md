@@ -4,9 +4,9 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
-## [3.59.0-beta.1] - 2026-11-14
+## [3.59.0] - 2026-11-14
 
-Proef op DPS: het slot met tabs (gesprek of offerte) in een boeking netjes uitgelijnd en geschikt voor de telefoon, en geen streep meer onder de laatste uitkomst (besluiten Stephan 14-11-2026). Terugdraaien: versie 3.58.0 terugzetten.
+Het slot met tabs (gesprek of offerte) in een boeking netjes uitgelijnd en geschikt voor de telefoon, en geen streep meer onder de laatste uitkomst (besluiten Stephan 14-11-2026, proef op DPS met beta.1). Terugdraaien: versie 3.58.0 terugzetten.
 
 ### Gewijzigd
 - Tabs in de tweede kolom van kolommen Boeking: tabs links op de inhoudslijn, beide panelen dezelfde binnenmarge als de LatePoint-kalender, bovenlijn gelijk met de kop van kolom 1. Werkt voor elke pagina met dit slot (incompany, training, coaching).
