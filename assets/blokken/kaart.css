@@ -46,3 +46,10 @@
 
 /* 3.46.0: focusrand op een donkere kaart wit (branding.md, Focusrand). */
 :root .sfp-kaart--donker :focus-visible{outline-color:var(--sfp-b-wit)}
+
+/* 3.58.0: een alinea direct boven dit blok in een sectie krijgt 32 px, zoals na een kop (kernzin houdt zijn eigen ruimte) */
+:root .sfp-sectie__binnen>p:not(.is-style-sfp-kernzin)+.sfp-kaart{margin-top:32px}
+
+/* Afbeeldingsstijl Logo (3.58.0): even groot ogende logo's, links, in een vak van vaste hoogte, zodat de tekst eronder gelijk loopt. Maat per logo uit de plugin (--sfp-logo-b/h), anders 48 px hoog. */
+:root .wp-block-image.is-style-sfp-logo{display:flex;align-items:center;height:64px;margin:0 0 16px;width:auto;max-width:100%}
+:root .wp-block-image.is-style-sfp-logo img{display:block;width:var(--sfp-logo-b,auto)!important;height:var(--sfp-logo-h,48px)!important;max-width:100%;object-fit:contain;object-position:left center;margin:0;box-shadow:none;border-radius:0}

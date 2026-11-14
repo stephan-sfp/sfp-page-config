@@ -18,3 +18,6 @@
 :root .sfp-tabs--variant .sfp-tabpaneel{max-width:none;margin:0;text-align:left;justify-items:stretch}
 :root .sfp-tabs--variant .sfp-uitklap--programma{margin-top:24px}
 @media (max-width:600px){.sfp-tablijst{gap:0}:root .sfp-tablijst [role=tab]{padding-left:8px;padding-right:8px}}
+
+/* 3.58.0: een alinea direct boven dit blok in een sectie krijgt 32 px, zoals na een kop (kernzin houdt zijn eigen ruimte) */
+:root .sfp-sectie__binnen>p:not(.is-style-sfp-kernzin)+.sfp-tabs{margin-top:32px}

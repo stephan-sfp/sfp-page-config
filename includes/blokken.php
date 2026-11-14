@@ -98,9 +98,14 @@ function sfp_page_config_blokken() {
                 'variant'       => array(
                     'type'    => 'string',
                     'default' => 'recht',
-                    'enum'    => array( 'recht', 'breed', 'wit', 'foto' )
+                    'enum'    => array( 'recht', 'breed', 'wit', 'foto', 'gesplitst' )
                 ),
                 'anker'         => $tekst,
+                // Held recht en breed (3.58.0): bewijsregel tonen (standaard uit).
+                'bewijs'        => array(
+                    'type'    => 'boolean',
+                    'default' => false
+                ),
                 // Held foto (3.34.0, home): aparte foto voor de telefoon.
                 'mobielId'      => array(
                     'type'    => 'number',
@@ -160,6 +165,8 @@ function sfp_page_config_blokken() {
                     'default' => '',
                     'enum'    => array( '', 'boven', 'midden', 'onder', 'rekken' )
                 ),
+                // Verhaalvorm (3.58.0): eigen tekst van de uitklaplink; leeg = tekst van de site.
+                'meerTekst'  => $tekst,
             ),
             'render'      => 'sfp_page_config_render_kolommen',
         ),
@@ -405,6 +412,7 @@ function sfp_page_config_blokstijlen() {
             'sfp-omslag'          => 'Boekomslag',
             'sfp-alleen-telefoon' => 'Alleen op een telefoon',
             'sfp-niet-telefoon'   => 'Niet op een telefoon',
+            'sfp-logo'            => 'Logo (gelijke maat, links)',
         ),
         'core/button'    => array(
             'sfp-licht'  => 'Licht (op donker)',
@@ -1036,7 +1044,7 @@ function sfp_page_config_blokken_editor_css() {
  * @return string[]
  */
 function sfp_page_config_blokken_editor_bestanden() {
-    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'verhaal', 'formulier', 'incompany', 'keuzehulp-vorm', 'editor' );
+    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'held-gesplitst', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'verhaal', 'formulier', 'incompany', 'keuzehulp-vorm', 'editor' );
 }
 
 /**
@@ -1185,11 +1193,17 @@ function sfp_page_config_render_sectie( $attrs, $content ) {
  * @return string
  */
 function sfp_page_config_render_held( $attrs, $content, $blok = null ) {
-    $variant = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'variant', 'recht' ), array( 'recht', 'breed', 'wit', 'foto' ) );
+    $variant = sfp_page_config_blok_kies( sfp_page_config_blok_attr( $attrs, 'variant', 'recht' ), array( 'recht', 'breed', 'wit', 'foto', 'gesplitst' ) );
     // Held foto (3.34.0, home): tekst op de foto, aparte foto voor de telefoon.
     if ( 'foto' === $variant && function_exists( 'sfp_page_config_nlvorm_held_foto' ) ) {
         return sfp_page_config_blokken_css_vangnet( 'sfp/held' ) . sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-held' ) . sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-home' )
             . sfp_page_config_nlvorm_held_foto( $attrs, $blok, $content );
+    }
+    // Held gesplitst (3.58.0, besluit Stephan 14-11-2026): tekstvlak links,
+    // foto rechts met een harde naad; telefoon foto boven, tekst eronder.
+    if ( 'gesplitst' === $variant && function_exists( 'sfp_page_config_nlvorm_held_foto' ) ) {
+        return sfp_page_config_blokken_css_vangnet( 'sfp/held' ) . sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-held' ) . sfp_page_config_blokken_css_vangnet_bestand( 'held-gesplitst' )
+            . sfp_page_config_nlvorm_held_foto( $attrs, $blok, $content, 'gesplitst' );
     }
     // Held wit (3.30.0, NL-vorm): tekst links, foto rechts met feitenkaart.
     if ( 'wit' === $variant && function_exists( 'sfp_page_config_nlvorm_held' ) ) {
@@ -1202,8 +1216,17 @@ function sfp_page_config_render_held( $attrs, $content, $blok = null ) {
     if ( false !== strpos( (string) $content, 'class="sfp-tool ' ) ) {
         $klassen[] = 'sfp-held--tool';
     }
-    return sfp_page_config_blokken_css_vangnet( 'sfp/held' )
-        . '<section ' . sfp_page_config_blok_omhulling( $klassen, sfp_page_config_blok_attr( $attrs, 'anker' ) ) . '><div class="sfp-held__binnen">' . $content . '</div></section>';
+    // Bewijsregel (3.58.0): alleen als de schakelaar aan staat, zodat
+    // bestaande helden recht en breed niet vanzelf veranderen.
+    $bewijs = '';
+    if ( ! empty( $attrs['bewijs'] ) && function_exists( 'sfp_page_config_nlvorm_bewijsregel' ) ) {
+        $bewijs = sfp_page_config_nlvorm_bewijsregel( $attrs );
+        if ( '' !== $bewijs ) {
+            $klassen[] = 'held-bewijs';
+        }
+    }
+    return sfp_page_config_blokken_css_vangnet( 'sfp/held' ) . ( '' !== $bewijs ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-held' ) : '' )
+        . '<section ' . sfp_page_config_blok_omhulling( $klassen, sfp_page_config_blok_attr( $attrs, 'anker' ) ) . '><div class="sfp-held__binnen">' . $content . $bewijs . '</div></section>';
 }
 
 /**
@@ -1310,7 +1333,9 @@ function sfp_page_config_kolommen_verhaal( $blok ) {
     static $n = 0;
     ++$n;
     $id     = 'sfp-verhaal-' . $n;
-    $open   = sfp_page_config_tekst( 'verhaal_meer' );
+    // Sinds 3.58.0 kan het blok een eigen tekst hebben (wens SLB: geen 'ons' op een persoonlijke site).
+    $eigen  = isset( $blok->attributes['meerTekst'] ) ? trim( wp_strip_all_tags( (string) $blok->attributes['meerTekst'] ) ) : '';
+    $open   = '' !== $eigen ? $eigen : sfp_page_config_tekst( 'verhaal_meer' );
     $dicht  = sfp_page_config_tekst( 'verhaal_minder' );
     $klik   = "var m=document.getElementById(this.getAttribute('aria-controls')),o=this.getAttribute('aria-expanded')!=='true';m.hidden=o?false:'until-found';this.setAttribute('aria-expanded',o?'true':'false');this.firstChild.textContent=o?this.dataset.dicht:this.dataset.open;";
     $knop   = '<button type="button" class="sfp-verhaal__knop" aria-expanded="false" aria-controls="' . esc_attr( $id ) . '" data-open="' . esc_attr( $open ) . '" data-dicht="' . esc_attr( $dicht ) . '" onclick="' . esc_attr( $klik ) . '">' . esc_html( $open ) . '<span aria-hidden="true"></span></button>';

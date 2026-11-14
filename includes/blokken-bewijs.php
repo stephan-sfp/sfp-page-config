@@ -261,6 +261,34 @@ function sfp_page_config_logostrook_maat( $id ) {
     return array( (int) round( $breedte ), (int) round( $hoogte ) );
 }
 
+add_filter( 'render_block_core/image', 'sfp_page_config_logo_stijl', 10, 2 );
+
+/**
+ * Afbeeldingsstijl Logo (3.58.0, wens SLB): elk logo krijgt dezelfde
+ * optische maat als in de logostrook, zodat logo's in kaarten even groot
+ * ogen. De maat staat als variabelen op de figure; de opmaak in kaart.css.
+ *
+ * @param  string $html  HTML van het blok.
+ * @param  array  $block Blok.
+ * @return string
+ */
+function sfp_page_config_logo_stijl( $html, $block ) {
+    $klasse = isset( $block['attrs']['className'] ) ? ' ' . $block['attrs']['className'] . ' ' : '';
+    $id     = isset( $block['attrs']['id'] ) ? (int) $block['attrs']['id'] : 0;
+    if ( false === strpos( $klasse, ' is-style-sfp-logo ' ) || $id <= 0 ) {
+        return $html;
+    }
+    $maat = sfp_page_config_logostrook_maat( $id );
+    if ( ! $maat ) {
+        return $html;
+    }
+    $stijl = '--sfp-logo-b:' . $maat[0] . 'px;--sfp-logo-h:' . $maat[1] . 'px;';
+    if ( preg_match( '/^(\s*<figure\b[^>]*?)\sstyle="([^"]*)"/', $html ) ) {
+        return preg_replace( '/^(\s*<figure\b[^>]*?)\sstyle="([^"]*)"/', '$1 style="' . esc_attr( $stijl ) . '$2"', $html, 1 );
+    }
+    return preg_replace( '/^(\s*<figure\b)/', '$1 style="' . esc_attr( $stijl ) . '"', $html, 1 );
+}
+
 /**
  * sfp/logostrook. Zonder logo's toont de site niets (ontwerpregel 14).
  *

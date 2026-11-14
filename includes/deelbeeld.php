@@ -383,12 +383,15 @@ function sfp_page_config_deelbeeld_slots( $post ) {
                     $decode                         = function ( $t ) {
                         return html_entity_decode( $t, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
                     };
+                    // 3.58.0: een eigen volledige kop staat er één keer, zonder label en zonder titel;
+                    // hij blijft bij een titelwijziging en een nieuwe kop maakt een nieuw beeld (hash).
+                    $eigen = $decode( trim( wp_strip_all_tags( sfp_page_config_blok_attr( $attrs, 'kop' ) ) ) );
                     $slots[ 'samenvatting-' . $nr ] = array(
                         'soort'    => 'samenvatting',
-                        'label'    => sprintf( sfp_page_config_artikel_tekst( 'dingen' ), count( $punten ) ),
-                        'titel'    => $decode( wp_strip_all_tags( $onderwerp ) ),
+                        'label'    => '' !== $eigen ? '' : sprintf( sfp_page_config_artikel_tekst( 'dingen' ), count( $punten ) ),
+                        'titel'    => '' !== $eigen ? $eigen : $decode( wp_strip_all_tags( $onderwerp ) ),
                         'punten'   => array_map( $decode, $punten ),
-                        'alt'      => sprintf( sfp_page_config_artikel_tekst( 'dingen' ), count( $punten ) ) . ' ' . $decode( wp_strip_all_tags( $onderwerp ) ),
+                        'alt'      => '' !== $eigen ? $eigen : sprintf( sfp_page_config_artikel_tekst( 'dingen' ), count( $punten ) ) . ' ' . $decode( wp_strip_all_tags( $onderwerp ) ),
                         'controle' => sfp_page_config_deelbeeld_controle( implode( "\n", $punten ) ),
                     );
                 }

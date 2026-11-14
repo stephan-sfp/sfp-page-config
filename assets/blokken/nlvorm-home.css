@@ -22,6 +22,8 @@
 :root .sfp-held--foto .sfp-held__bewijs strong,:root .sfp-held--foto .sfp-held__bewijs a,:root .sfp-held--foto .sfp-held__score{color:var(--sfp-b-wit)}
 :root .sfp-held--foto .sfp-held__bewijs>*{flex:none;white-space:nowrap}
 :root .sfp-held--foto .sfp-held__score{border-right:0;padding-right:0;margin-right:0}
+/* 3.58.0: op een computer op een regel, ook als hij breder is dan de tekstkolom */
+@media (min-width:981px){:root .sfp-held--foto .sfp-held__binnen>p.sfp-held__bewijs{flex-wrap:nowrap;width:max-content}}
 /* accent in de held Foto wit, net als de rest van de H1 (3.45.1, besluit Stephan 11-11-2026); (0,4,0) zodat de volgorde van laden niet uitmaakt */
 :root .sfp-held.sfp-held--foto .sfp-accent{color:inherit;background:none}
 @media (min-width:701px) and (max-width:980px){

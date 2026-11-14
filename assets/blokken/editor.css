@@ -154,3 +154,11 @@
 }
 /* Tool: de tool staat op de site in de leeskolom (680 px), niet 760 px breed. */
 :root .editor-styles-wrapper.sfp-ed-raster .sfp-tc-plek{width:auto;max-width:680px;margin-left:var(--sfp-ed-links);margin-right:auto}
+/* Held gesplitst (3.58.0) in de editor: de foto staat als blok in de held; tekst links, foto rechts zoals op de site. */
+:root .sfp-held.sfp-held--gesplitst.sfp-held--editor-gesplitst{display:block!important;min-height:0}
+:root .sfp-held--editor-gesplitst>.sfp-held__binnen{display:grid!important;grid-template-columns:minmax(0,58fr) minmax(0,42fr)!important;grid-template-areas:none!important;max-width:none!important;padding:0!important;align-items:start}
+:root .sfp-held--editor-gesplitst>.sfp-held__binnen>:not(.wp-block-image){grid-column:1!important;grid-area:auto;margin-left:max(24px,calc((100% - 1180px) / 2 + 24px));margin-right:48px;position:relative;z-index:2}
+:root .sfp-held--editor-gesplitst>.sfp-held__binnen>:first-child{margin-top:72px}
+:root .sfp-held--editor-gesplitst>.sfp-held__binnen>:last-child{margin-bottom:72px}
+:root .sfp-held--editor-gesplitst>.sfp-held__binnen>.wp-block-image{grid-column:2!important;grid-row:1 / span 20!important;align-self:stretch;margin:0!important;width:auto!important;max-width:none!important;-webkit-mask-image:none!important;mask-image:none!important;position:relative!important}
+:root .sfp-held--editor-gesplitst>.sfp-held__binnen>.wp-block-image :is(img,div){width:100%!important;height:100%!important;max-width:none!important;object-fit:cover;object-position:var(--sfp-held-focus,50% 30%)}

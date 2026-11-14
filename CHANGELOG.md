@@ -4,6 +4,21 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.58.0-beta.1] - 2026-11-14
+
+Proef op DPS: wensen uit de bouw van stephanborggreve.com en het deelbeeld van Wat je moet weten (besluiten Stephan 14-11-2026). Bestaande pagina's met held Foto, Recht of Breed behouden hun vorm; alleen de bewijsregel in held Foto staat op een computer op een regel en een alinea direct boven een blok krijgt ruimte.
+
+### Toegevoegd
+- Held, variant Tekst en foto naast elkaar: tekstvlak links (58 procent), foto rechts met een harde naad. Op een telefoon de foto boven, met een korte overloop naar de tekst eronder; een aparte telefoonfoto kan. Bewijsregel zoals in held Foto.
+- Held Recht en Breed: schakelaar Bewijsregel tonen (standaard uit), met deelnemers en initialen.
+- Kolommen, tekst en beeld: eigen tekst voor de uitklaplink van de verhaalvorm (leeg: de tekst van de site).
+- Afbeeldingsstijl Logo: logo's in dezelfde optische maat als in de logostrook, links, in een vak van vaste hoogte.
+- Samenvatting (Wat je moet weten): volledige kop op het deelbeeld per artikel. Die tekst staat er een keer, zonder label en zonder artikeltitel, en blijft staan als de titel verandert; een nieuwe kop maakt een nieuw beeld.
+
+### Gewijzigd
+- Bewijsregel in held Foto en de nieuwe held: op een computer op een regel, ook als hij breder is dan de tekstkolom.
+- Een gewone alinea direct boven Kolommen, Stappen, Kaart, Tabs, Uitklap of Lijst in een sectie krijgt 32 px ruimte, zoals na een kop. Een kernzin houdt zijn eigen ruimte.
+
 ## [3.57.0] - 2026-11-14
 
 De editor van een artikel, begrip en tool lijkt op de voorkant (besluiten Stephan 14-11-2026, proef op DPS met beta.1 en beta.2). Alleen de editor verandert; de voorkant en de opgeslagen inhoud blijven gelijk. Terugdraaien: versie 3.56.2 terugzetten (zip uit de tag v3.56.2, map sfp-page-config).
