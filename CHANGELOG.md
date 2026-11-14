@@ -4,6 +4,13 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.61.0] - 2026-11-14
+
+Bewijsregel in de held: het aantal cursisten met de koppen staat onder de Google-score in plaats van ernaast, op alle acht sites en in elke held-variant (besluit Stephan 14-11-2026). Terugdraaien: versie 3.60.0 terugzetten.
+
+### Gewijzigd
+- Google-score en aantal cursisten onder elkaar, links uitgelijnd; de scheidingsstreep tussen beide vervalt.
+
 ## [3.60.0] - 2026-11-14
 
 Deelbeeld van Wat je moet weten: meer lucht onder de kop en nieuwe cijfers, op alle acht sites (besluit Stephan 14-11-2026). Bestaande deelbeelden krijgen het nieuwe ontwerp bij de volgende keer opslaan of via opnieuw maken. Terugdraaien: versie 3.59.0 terugzetten.
