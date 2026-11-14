@@ -4,6 +4,23 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.57.0] - 2026-11-14
+
+De editor van een artikel, begrip en tool lijkt op de voorkant (besluiten Stephan 14-11-2026, proef op DPS met beta.1 en beta.2). Alleen de editor verandert; de voorkant en de opgeslagen inhoud blijven gelijk. Terugdraaien: versie 3.56.2 terugzetten (zip uit de tag v3.56.2, map sfp-page-config).
+
+### Gewijzigd
+- Leeskolom in de editor: titel, tekst en de vakken Komt vanzelf staan in een kolom van 680 px, op de plek van de site. Astra zette het canvas van een bericht op volle breedte, waardoor tekst tot de rand liep en kaders, samenvatting, citaat en FAQ 50 tot 70 px inspongen.
+- Zijkolom: inhoudsopgave, bronnen en promokaart van de site staan als Komt vanzelf rechts naast de kolom, als het canvas breed genoeg is. Zonder zijkolom (tool, smal scherm) staat de kolom in het midden, zoals op de site.
+- Rustig ritme: geen balk meer boven het canvas. De melding staat in Deze pagina, Bij dit artikel, met een knop naar elke plek; in het canvas heeft het blok een oranje lijn links.
+- Verhaalvorm van Kolommen, tekst en beeld ook in de editor: label, kop en eerste alinea naast het beeld, de uitklaplink als voorbeeld, de rest eronder in drie kolommen, open en te bewerken.
+
+### Gerepareerd
+- Komt vanzelf stond links op 760 px zonder ruimte eronder; nu even breed als de kolom, 24 px onder de kopkaart.
+- FAQ: de antwoorden waren in de editor vet; alleen de vraag is nog vet, zoals op de site.
+- Het canvas was 20 px breder dan het scherm (rechts weggeknipt).
+- Begrip: de boekkaart staat niet meer ook naast de Definitie als de zijkolom in beeld is.
+- Tool: de tool staat in de leeskolom van 680 px in plaats van 760 px.
+
 ## [3.57.0-beta.2] - 2026-11-14
 
 Proef op DPS, gelijk aan beta.1 plus correcties na de meting in de editor.
