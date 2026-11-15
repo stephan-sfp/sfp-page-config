@@ -36,6 +36,8 @@
 :root .sfp-tabpaneel__tekst>*{margin:0}
 :root .sfp-tabpaneel__tekst>:is(h2,h3){padding:0}
 :root .sfp-tabs--kaart .sfp-tabpaneel p{font-size:17px;max-width:44em}
+/* Kop in kader als titel van het tabblad (sinds 3.70.0): opmaak van een H3, geen kop. */
+:root .sfp-tabs--kaart .sfp-tabpaneel p.is-style-sfp-kaderkop{margin:0;padding:0;max-width:none;font-family:var(--sfp-b-kop);font-weight:900;font-size:clamp(18px,1.5vw + 10px,22px);line-height:1.42;text-transform:uppercase;text-wrap:balance;color:var(--sfp-b-primair)}
 :root .sfp-tabpaneel__icoon{width:140px;height:140px;display:grid;place-items:center}
 :root .sfp-tabpaneel__icoon i{display:block;width:96px;height:96px;background:var(--sfp-b-secundair);-webkit-mask:var(--sfp-icoon) center/contain no-repeat;mask:var(--sfp-icoon) center/contain no-repeat}
 :root .sfp-tabpaneel__icoon img{display:block;width:96px;height:96px;object-fit:contain;margin:0}

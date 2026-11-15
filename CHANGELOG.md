@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.70.0] - 2026-11-15
+
+### Gewijzigd
+- Tools: in de uitklap onder een test zijn de namen van de onderdelen en "Keuzevragen" geen kop (H4) meer, maar een label met dezelfde opmaak. Ze stonden in artikelen en begrippen in de koppenstructuur (besluit Stephan).
+- Tools: de uitklap heet "Zo berekenen we je uitslag" (was "Hoe deze test rekent"); Engels "How we calculate your result", Portugees "Como calculamos o seu resultado".
+- Keuzehulp: de vraag per stap is geen kop (H3) meer, maar een alinea met dezelfde opmaak. De focus springt nog steeds naar de vraag.
+- Tabs als kaart (Over): de titel van een tabblad is een alinea met de stijl Kop in kader in plaats van een H3. Een nieuw tabblad begint zo, en een kop in een bestaand tabblad wordt in de editor vanzelf omgezet, zoals bij het kader.
+
 ## [3.69.2] - 2026-11-15
 
 ### Gerepareerd

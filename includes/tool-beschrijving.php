@@ -1715,14 +1715,14 @@ function sfp_page_config_tool_hoe_rekent( array $b ) {
         if ( empty( $per[ $id ] ) ) {
             continue;
         }
-        $html .= '<h4>' . esc_html( $d['volledig'] ) . '</h4><ul>';
+        $html .= '<p class="sfp-tool__hoe-kop">' . esc_html( $d['volledig'] ) . '</p><ul>';
         foreach ( $per[ $id ] as $zin ) {
             $html .= '<li>' . esc_html( $zin ) . '</li>';
         }
         $html .= '</ul>';
     }
     if ( $los ) {
-        $html .= '<h4>' . esc_html( $t( 'tool_keuzevragen' ) ) . '</h4><ul>';
+        $html .= '<p class="sfp-tool__hoe-kop">' . esc_html( $t( 'tool_keuzevragen' ) ) . '</p><ul>';
         foreach ( $los as $v ) {
             $opties = array();
             foreach ( $v['opties'] as $o ) {
