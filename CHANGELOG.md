@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.67.0] - 2026-11-15
+
+### Toegevoegd
+- Incompanycalculator: na een inzending stuurt de site de begroting zelf naar automation A49 in SureContact, zoals de zelftest dat bij A9 doet. Sleutels: email, note, budget_reference, budget_url, budget_phase (explore, approval, schedule of procurement), department, advice_url, brand en language. Besluit 12-11 met Nina.
+- SFP Beheer, Calculator: veld voor het webhookadres van A49 (geheim: de stand toont alleen of het er is; leeg laten bewaart, - wist) en tellingen voor het versturen.
+- Mislukt versturen wordt tot vijf keer herhaald (na 1, 5, 15 en 60 minuten) en daarna in het logboek gemeld. Een proefbegroting gaat nooit naar SureContact.
+
+### Gewijzigd
+- Tabel van de calculator naar versie 3: kolommen voor de status van het versturen.
+
 ## [3.66.1] - 2026-11-15
 
 ### Gerepareerd

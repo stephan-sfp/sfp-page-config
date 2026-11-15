@@ -1649,6 +1649,7 @@
 			if (f.bevestiging && f.bevestiging !== 'same page') aandacht.push('Zet de bevestiging van het formulier op "bericht op dezelfde pagina" (nu: ' + f.bevestiging + '). Anders verlaat de bezoeker de pagina voor het eindscherm.');
 		}
 		if (!K.cloudflare_ok) aandacht.push('Cloudflare is niet ingesteld (Onderhoud, Zelftest): er komt geen pdf.');
+		if (!K.webhook_ok) aandacht.push('Vul het webhookadres van A49 in: zonder adres gaat de begroting niet naar SureContact.');
 		if (K.bedrijf_mist && K.bedrijf_mist.length) aandacht.push('Bedrijfsgegevens ontbreken in de pdf: ' + K.bedrijf_mist.join(', ') + ' (Onderdelen, Bedrijfsgegevens).');
 		if (!I.contact.naam) aandacht.push('Vul de contactpersoon in: die staat met profiel in de pdf.');
 
@@ -1658,6 +1659,7 @@
 		[['calculatorpagina', 'Calculatorpagina', 'De pagina met het volledige blok. De pdf-link wordt: /' + K.pdf_pad + '/'], ['boekpagina', 'Boekpagina adviesgesprek', 'Alleen bereikbaar via de calculator, met de eigen dienst in LatePoint.'], ['voorwaarden', 'Algemene voorwaarden', 'De link in de pdf.'], ['coaching_pagina', 'Individuele coaching', 'Voor de melding bij 1 tot 3 deelnemers.'], ['open_pagina', 'Open inschrijving', 'Voor de melding bij 1 tot 3 deelnemers.']].forEach(function (p) {
 			paginas[p[0]] = { invoer: paginaKeuze(I[p[0]], 'Geen'), label: p[1], hulp: p[2] };
 		});
+		var webhook = tekstInvoer('', K.webhook_ok ? 'Ingesteld (leeg laten om te bewaren, - om te wissen)' : 'https://api.surecontact.com/incoming-webhooks/...');
 		var form = el('select');
 		form.appendChild(el('option', { value: '', text: 'Geen' }));
 		(K.formulieren || []).forEach(function (x) { form.appendChild(el('option', { value: String(x.id), text: x.titel + ' (' + x.id + ')' })); });
@@ -1698,7 +1700,7 @@
 		['A', 'B'].forEach(function (r) { rt[r] = aanUit(I.routes[r], r === 'B' ? ['DPS', 'SFP', 'SWS'].indexOf(I.code) > -1 : K.norm.routes_aan[r]); });
 
 		function verzamel() {
-			var w = { code: code.value, proefmodus: proef.aan, formulier: form.value, logo: logo.waarde(), methode: methode.value, feiten: feiten.value, valuta: valuta.value,
+			var w = { code: code.value, proefmodus: proef.aan, formulier: form.value, webhook: webhook.value, logo: logo.waarde(), methode: methode.value, feiten: feiten.value, valuta: valuta.value,
 				contact: { foto: foto.waarde(), profiel: ct.profiel.value }, programma: {}, doelgroepzin: {}, uitleg: {}, referentie: {}, prijzen: {}, extras: {}, routes: {} };
 			Object.keys(paginas).forEach(function (k) { w[k] = paginas[k].invoer.value; });
 			['naam', 'functie', 'telefoon', 'email'].forEach(function (k) { w.contact[k] = ct[k].value; });
@@ -1729,12 +1731,13 @@
 			terugKnop(),
 			kop('Incompanycalculator', 'Een begroting voor een incompanytraining. De prijzen en regels zijn de netwerknorm; hier staan de gegevens van deze site en elke afwijking van de norm.'),
 			aandacht.length ? el('div', { class: 'sfpb-let' }, aandacht.map(function (w) { return el('span', { text: w }); })) : null,
-			el('p', { class: 'sfpb-hulp', text: 'Gestart: ' + c.gestart + '. Afgerond: ' + c.afgerond + ' (laatste 30 dagen ' + c.afgerond_30 + '; training ' + c.route_a + ', evenement ' + c.route_b + '). Pdf klaar ' + c.pdf_klaar + ', wacht ' + c.pdf_wacht + ', mislukt ' + c.pdf_mislukt + '. Proefbegrotingen tellen niet mee.' }),
+			el('p', { class: 'sfpb-hulp', text: 'Gestart: ' + c.gestart + '. Afgerond: ' + c.afgerond + ' (laatste 30 dagen ' + c.afgerond_30 + '; training ' + c.route_a + ', evenement ' + c.route_b + '). Pdf klaar ' + c.pdf_klaar + ', wacht ' + c.pdf_wacht + ', mislukt ' + c.pdf_mislukt + '. Naar SureContact ' + (c.crm_ok || 0) + ', wacht ' + (c.crm_wacht || 0) + ', mislukt ' + (c.crm_mislukt || 0) + '. Proefbegrotingen tellen niet mee.' }),
 			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
 				el('h2', { text: 'Basis' }),
 				veld('Sitecode', code, 'Twee tot vier letters, vooraan in het kenmerk (DPS-B-26-0042). Route B (eigen evenement) staat als norm aan bij DPS, SFP en SWS.', 'sfpb-calc-code'),
 				schakel(I.proefmodus === '1', 'Proefmodus: alleen beheerders zien de calculator, de pdf draagt het woord Proef', function (nu) { proef.aan = nu; }),
-				veld('SureForms-formulier (stap 8)', form, 'Met verborgen velden met deze labels: ' + (K.velden || []).join(', ') + '. Bevestiging: bericht op dezelfde pagina.', 'sfpb-calc-form')
+				veld('SureForms-formulier (stap 8)', form, 'Met verborgen velden met deze labels: ' + (K.velden || []).join(', ') + '. Bevestiging: bericht op dezelfde pagina.', 'sfpb-calc-form'),
+				veld('Webhookadres A49 (SureContact)', webhook, 'Na elke inzending stuurt de site deze sleutels naar A49: ' + (K.crm_sleutels || []).join(', ') + '. Een proefbegroting gaat er nooit heen.', 'sfpb-calc-webhook')
 			].concat(Object.keys(paginas).map(function (k) { return veld(paginas[k].label, paginas[k].invoer, paginas[k].hulp, 'sfpb-calc-' + k); })).concat([
 				logo.node,
 				opslaan(),

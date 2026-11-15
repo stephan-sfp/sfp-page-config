@@ -238,11 +238,18 @@ function sfp_calculator_wachtrij() {
     }
     $tabel = sfp_calculator_tabel();
     // phpcs:disable WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-    $ids = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$tabel} WHERE geanonimiseerd = 0 AND pdf_status IN ('wacht','bezig') AND (pdf_volgende IS NULL OR pdf_volgende <= %s) ORDER BY id LIMIT 3", gmdate( 'Y-m-d H:i:s' ) ) );
+    $nu  = gmdate( 'Y-m-d H:i:s' );
+    $ids = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$tabel} WHERE geanonimiseerd = 0 AND crm_status IN ('wacht','bezig') AND (crm_volgende IS NULL OR crm_volgende <= %s) ORDER BY id LIMIT 5", $nu ) );
+    foreach ( $ids as $id ) {
+        if ( function_exists( 'sfp_calculator_crm_verwerk' ) ) {
+            sfp_calculator_crm_verwerk( (int) $id );
+        }
+    }
+    $ids = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$tabel} WHERE geanonimiseerd = 0 AND pdf_status IN ('wacht','bezig') AND (pdf_volgende IS NULL OR pdf_volgende <= %s) ORDER BY id LIMIT 3", $nu ) );
     foreach ( $ids as $id ) {
         sfp_calculator_pdf_verwerk( (int) $id );
     }
-    $nog = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$tabel} WHERE geanonimiseerd = 0 AND pdf_status IN ('wacht','bezig')" );
+    $nog = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$tabel} WHERE geanonimiseerd = 0 AND (pdf_status IN ('wacht','bezig') OR crm_status IN ('wacht','bezig'))" );
     // phpcs:enable
     if ( ! $nog ) {
         wp_clear_scheduled_hook( 'sfp_calculator_wachtrij' );

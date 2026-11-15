@@ -166,6 +166,7 @@ function sfp_calculator_srfm_na( $entry_id, $form_id, $data ) {
             'entry_id'    => (int) $entry_id,
             'afgerond_op' => gmdate( 'Y-m-d H:i:s' ),
             'pdf_status'  => 'wacht',
+            'crm_status'  => 'wacht',
         )
     );
     sfp_calculator_na_antwoord( $id );
@@ -223,7 +224,7 @@ function sfp_calculator_srfm_contact( array $data ) {
 }
 
 /**
- * Handel een rij af na het antwoord aan de bezoeker (pdf maken).
+ * Handel een rij af na het antwoord aan de bezoeker (SureContact en pdf).
  *
  * @param  int $id Rij.
  * @return void
@@ -245,6 +246,10 @@ function sfp_calculator_na_antwoord( $id ) {
                 litespeed_finish_request();
             }
             foreach ( array_unique( $rijen ) as $rij_id ) {
+                // Eerst SureContact (de link werkt al voordat de pdf klaar is), dan de pdf.
+                if ( function_exists( 'sfp_calculator_crm_verwerk' ) ) {
+                    sfp_calculator_crm_verwerk( $rij_id );
+                }
                 sfp_calculator_pdf_verwerk( $rij_id );
             }
         },

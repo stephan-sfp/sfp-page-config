@@ -29,6 +29,7 @@ function sfp_calculator_leeg() {
         'calculatorpagina'  => 0,
         'boekpagina'        => 0,
         'formulier'         => 0,
+        'webhook'           => '',
         'voorwaarden'       => 0,
         'coaching_pagina'   => 0,
         'open_pagina'       => 0,
@@ -165,6 +166,15 @@ function sfp_calculator_instellingen_schoon( array $ruw ) {
     if ( array_key_exists( 'logo', $ruw ) ) {
         $id           = absint( $ruw['logo'] );
         $inst['logo'] = $id && wp_attachment_is_image( $id ) ? $id : 0;
+    }
+    // Webhookadres van A49: leeg laat het bewaarde adres staan, '-' wist het.
+    if ( array_key_exists( 'webhook', $ruw ) ) {
+        $adres = trim( (string) $ruw['webhook'] );
+        if ( '-' === $adres ) {
+            $inst['webhook'] = '';
+        } elseif ( '' !== $adres && 0 === strpos( $adres, 'https://' ) ) {
+            $inst['webhook'] = esc_url_raw( $adres, array( 'https' ) );
+        }
     }
     if ( array_key_exists( 'feiten', $ruw ) ) {
         $inst['feiten'] = sanitize_textarea_field( (string) $ruw['feiten'] );
