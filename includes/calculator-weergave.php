@@ -213,29 +213,7 @@ function sfp_calculator_pagina_logo() {
     if ( $id <= 0 ) {
         $id = (int) get_theme_mod( 'custom_logo' );
     }
-    if ( $id > 0 && 'image/svg+xml' === get_post_mime_type( $id ) ) {
-        $url = wp_get_attachment_url( $id );
-        if ( $url ) {
-            return '<img src="' . esc_url( $url ) . '" class="sfp-calc-top-logo" alt="' . esc_attr( get_bloginfo( 'name' ) ) . '" loading="eager" decoding="async">';
-        }
-    }
-    if ( $id > 0 ) {
-        $img = wp_get_attachment_image(
-            $id,
-            'medium',
-            false,
-            array(
-                'class'    => 'sfp-calc-top-logo',
-                'alt'      => get_bloginfo( 'name' ),
-                'loading'  => 'eager',
-                'decoding' => 'async',
-            )
-        );
-        if ( '' !== $img ) {
-            return $img;
-        }
-    }
-    return '<span class="sfp-calc-top-naam">' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
+    return sfp_page_config_balk_logo( $id, 'sfp-calc-top' );
 }
 
 /**

@@ -176,6 +176,11 @@ html:has(body.sfp-calc-pagina){background:var(--sfp-b-wit,#fff)}
 .sfp-calc-top{position:sticky;top:0;z-index:50;background:var(--sfp-b-wit,#fff)}
 .sfp-calc-top-in{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1248px;margin:0 auto;padding:10px 24px;min-height:64px}
 .sfp-calc-top-logo{display:block;height:auto;max-height:44px;width:auto;max-width:60vw}
+.sfp-calc-top-logo-svg{height:44px}
+@media (max-width:640px){.sfp-calc-top-logo-svg{height:38px}}
+/* Imagify verpakt het logo in een picture en zet de klasse daarop (sinds 3.69.1): ook het img erin begrenzen. */
+.sfp-calc-top-logo img{display:block;height:auto;max-height:44px;width:auto;max-width:60vw}
+@media (max-width:640px){.sfp-calc-top-logo img{max-height:38px}}
 .sfp-calc-top-naam{font:900 16px/1.2 var(--sfp-b-kop);color:var(--sfp-b-primair);text-transform:uppercase;letter-spacing:.04em}
 .sfp-calc-sluit{display:inline-flex;align-items:center;justify-content:center;flex:none;width:48px;height:48px;margin:0 -8px 0 0;border-radius:50%;color:var(--sfp-b-primair)}
 .sfp-calc-sluit:hover{background:var(--sfp-b-tint3)}
