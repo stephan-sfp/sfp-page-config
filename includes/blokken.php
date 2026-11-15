@@ -398,6 +398,7 @@ function sfp_page_config_blokstijlen() {
             'sfp-klein'        => 'Klein',
             'sfp-lead'         => 'Lead (eerste alinea van een artikel)',
             'sfp-kernzin'      => 'Kernzin (vet, onder een kop)',
+            'sfp-kaderkop'     => 'Kop in kader (opmaak van een H3, geen kop)',
             'sfp-omvang'       => 'Omvang (pakket)',
             'sfp-plus'         => 'Plus-regel (pakket: Alles in X, plus)',
         ),

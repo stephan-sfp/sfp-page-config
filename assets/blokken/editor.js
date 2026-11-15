@@ -784,11 +784,39 @@
 		{ label: 'Checklist', value: 'checklist' },
 		{ label: 'Eigen label of geen', value: 'vrij' },
 	];
+	/*
+	 * Een kader is een UX-element, geen hoofdstuk (sinds 3.69.0): een kop erin
+	 * wordt een alinea met de stijl Kop in kader (opmaak van een H3), zodat
+	 * de koppenstructuur van het artikel klopt. Geldt ook voor geplakte koppen
+	 * en voor bestaande kaders zodra de editor ze opent.
+	 */
+	function kaderZonderKoppen( clientId ) {
+		var ids = wp.data.useSelect( function ( select ) {
+			return ( select( 'core/block-editor' ).getBlocks( clientId ) || [] ).filter( function ( b ) { return 'core/heading' === b.name; } ).map( function ( b ) { return b.clientId; } ).join( ',' );
+		}, [ clientId ] );
+		wp.element.useEffect( function () {
+			if ( ! ids ) {
+				return;
+			}
+			var bewerker = wp.data.select( 'core/block-editor' );
+			ids.split( ',' ).forEach( function ( id ) {
+				var kop = bewerker.getBlock( id );
+				if ( ! kop ) {
+					return;
+				}
+				var klassen = ( kop.attributes.className || '' ).split( /\s+/ ).filter( function ( k ) { return k && 0 !== k.indexOf( 'is-style-' ); } );
+				klassen.push( 'is-style-sfp-kaderkop' );
+				wp.data.dispatch( 'core/block-editor' ).replaceBlock( id, wp.blocks.createBlock( 'core/paragraph', { content: kop.attributes.content, className: klassen.join( ' ' ), anchor: kop.attributes.anchor } ) );
+			} );
+		}, [ ids ] );
+	}
+
 	blok( 'sfp/kader', function ( props ) {
 		var a = props.attributes;
 		var blockProps = useBlockProps( { className: 'sfp-kader sfp-kader--' + a.soort } );
 		var inner = useInnerBlocksProps( {}, { template: 'checklist' === a.soort ? [ [ 'core/list' ] ] : [ [ 'core/paragraph' ] ] } );
 		var standaard = 'vrij' === a.soort ? 'Eigen label (leeg: geen label)' : t( 'kader_' + a.soort, '' );
+		kaderZonderKoppen( props.clientId );
 		return el( Fragment, null,
 			paneel( 'Kader', [
 				keuze( 'Soort', a.soort, kaderSoorten, function ( v ) { props.setAttributes( { soort: v } ); }, 'Alle soorten hebben dezelfde rustige vorm; alleen het label verschilt.' ),

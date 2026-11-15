@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.69.0] - 2026-11-15
+
+### Toegevoegd
+- Alineastijl "Kop in kader": opmaak van een H3 (kopfont, kapitalen, 18 tot 22 px, primaire kleur) zonder een kop te zijn. Ook te kiezen in artikelen, begrippen en tools.
+
+### Gewijzigd
+- Kader: een kop in een kader wordt in de editor vanzelf een alinea met de stijl Kop in kader, ook bij plakken en bij bestaande kaders zodra je de pagina opent. Een kader is een UX-element, geen hoofdstuk: zo klopt de koppenstructuur van het artikel (besluit Stephan).
+- Praktijkblok "Uit de trainingspraktijk": tekst 16 px met regelafstand 1,6, gelijk aan de andere kaders. Daarvoor nam het blok de citaatmaat van Astra over (17,6 px, regel 1,75) en las het als gewone tekst (besluit Stephan).
+
 ## [3.68.0] - 2026-11-15
 
 ### Gewijzigd

@@ -705,7 +705,7 @@ function sfp_page_config_tool_canvas_css() {
  * @return string[]
  */
 function sfp_page_config_vorm_alineastijlen() {
-    return array( 'sfp-lead', 'sfp-pijl', 'sfp-klein' );
+    return array( 'sfp-lead', 'sfp-pijl', 'sfp-klein', 'sfp-kaderkop' );
 }
 
 /**

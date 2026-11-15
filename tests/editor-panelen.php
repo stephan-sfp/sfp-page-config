@@ -542,7 +542,7 @@ same( $instellingen, $pagina, 'pagina: alles blijft' );
 $GLOBALS['aan']['artikel'] = false;
 same( $instellingen, sfp_page_config_editor_vorm_instellingen( $instellingen, $context ), 'Artikelen uit: alles blijft' );
 $GLOBALS['aan']['artikel'] = true;
-same( array( 'sfp-lead', 'sfp-pijl', 'sfp-klein' ), sfp_page_config_vorm_alineastijlen(), 'drie alineastijlen in een vorm' );
+same( array( 'sfp-lead', 'sfp-pijl', 'sfp-klein', 'sfp-kaderkop' ), sfp_page_config_vorm_alineastijlen(), 'vier alineastijlen in een vorm (Kop in kader sinds 3.69.0)' );
 
 /* ---------- Beheer: link van de eigen site als pagina ---------- */
 

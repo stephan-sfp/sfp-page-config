@@ -8,6 +8,8 @@
 :root .sfp-kader>.sfp-blok-label{font-size:13px;margin:0 0 14px}
 :root .sfp-kader :is(h2,h3,h4){margin:0 0 8px;padding:0}
 :root .sfp-kader p{margin:0 0 12px}
+/* Kop in kader (sinds 3.69.0): opmaak van een H3 zonder kop te zijn, zodat de koppenstructuur van het artikel klopt. */
+:root .sfp-kader p.is-style-sfp-kaderkop,:root p.is-style-sfp-kaderkop{margin:0 0 8px;font-family:var(--sfp-b-kop);font-weight:900;font-size:clamp(18px,1.5vw + 10px,22px);line-height:1.42;text-transform:uppercase;text-wrap:balance;color:var(--sfp-b-primair)}
 :root .sfp-kader :is(ul,ol),:root .sfp-kader .wp-block-list{margin:0 0 12px 1.2em;padding:0}
 :root .sfp-kader li{margin:0 0 6px}
 :root .sfp-kader>:last-child{margin-bottom:0}
