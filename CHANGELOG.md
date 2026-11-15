@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.68.0] - 2026-11-15
+
+### Gewijzigd
+- Inhoudsopgave: de H3-koppen onder een hoofdstuk staan nu standaard in de inhoudsopgave, op alle artikelen (besluit Stephan). Kopblok H2, paneel Inhoudsopgave, schakelaar "Toon de H3-koppen eronder" staat standaard aan; uitzetten per hoofdstuk blijft mogelijk. Een H3 in een kader of ander blok en een H4 tellen nog steeds niet mee.
+
 ## [3.67.1] - 2026-11-15
 
 ### Verwijderd

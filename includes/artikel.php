@@ -436,7 +436,7 @@ function sfp_page_config_artikel_hoofdstuktitels( $content ) {
 
 /**
  * De H3's die onder een hoofdstuk in de inhoudsopgave komen. Per H2 staat dat
- * in de kopinstelling sfpTocH3 (standaard uit); dan tellen de H3's die los in
+ * in de kopinstelling sfpTocH3 (standaard aan sinds 3.68.0, uit met false); dan tellen de H3's die los in
  * de tekst staan, tot de volgende H2. Een H3 in een kader of ander blok telt niet.
  *
  * @param  string $content Ruwe inhoud van het bericht.
@@ -456,7 +456,7 @@ function sfp_page_config_artikel_subkoppen( $content ) {
         $niveau = isset( $blok['attrs']['level'] ) ? (int) $blok['attrs']['level'] : 2;
         if ( 2 === $niveau ) {
             ++$nr;
-            $aan = ! empty( $blok['attrs']['sfpTocH3'] );
+            $aan = ! isset( $blok['attrs']['sfpTocH3'] ) || ! empty( $blok['attrs']['sfpTocH3'] );
         } elseif ( 3 === $niveau && $aan && $nr >= 0 ) {
             $titel = sanitize_title( wp_strip_all_tags( $blok['innerHTML'] ) );
             if ( '' !== $titel ) {
@@ -1480,7 +1480,8 @@ function sfp_page_config_artikel_rest_schrijf( WP_REST_Request $verzoek ) {
 
 /**
  * De kopinstelling sfpTocH3: bij een H2 de H3's eronder in de inhoudsopgave.
- * Standaard uit. Geregistreerd zodat de blok- en REST-laag hem kennen.
+ * Standaard aan (3.68.0); uit staat als false in het blok. Geregistreerd zodat
+ * de blok- en REST-laag hem kennen.
  */
 add_filter(
     'register_block_type_args',
@@ -1489,7 +1490,7 @@ add_filter(
             $args['attributes']             = isset( $args['attributes'] ) ? $args['attributes'] : array();
             $args['attributes']['sfpTocH3'] = array(
                 'type'    => 'boolean',
-                'default' => false,
+                'default' => true,
             );
         }
         return $args;

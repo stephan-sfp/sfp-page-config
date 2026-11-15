@@ -2138,7 +2138,7 @@
 			if ( 'core/heading' !== naam ) {
 				return instellingen;
 			}
-			var attrs = Object.assign( {}, instellingen.attributes, { sfpTocH3: { type: 'boolean', default: false } } );
+			var attrs = Object.assign( {}, instellingen.attributes, { sfpTocH3: { type: 'boolean', default: true } } );
 			return Object.assign( {}, instellingen, { attributes: attrs } );
 		} );
 		wp.hooks.addFilter( 'editor.BlockEdit', 'sfp/toc-h3', wp.compose.createHigherOrderComponent( function ( BlockEdit ) {
@@ -2152,9 +2152,9 @@
 						el( c.PanelBody, { title: 'Inhoudsopgave', initialOpen: false },
 							el( c.ToggleControl, {
 								label: 'Toon de H3-koppen eronder',
-								help: 'De H3-koppen tot de volgende H2 komen als ingesprongen links onder dit hoofdstuk. Op de telefoon klapt de lezer ze open.',
-								checked: !! props.attributes.sfpTocH3,
-								onChange: function ( v ) { props.setAttributes( { sfpTocH3: v ? true : undefined } ); },
+								help: 'Standaard aan. De H3-koppen tot de volgende H2 komen als ingesprongen links onder dit hoofdstuk. Op de telefoon klapt de lezer ze open.',
+								checked: false !== props.attributes.sfpTocH3,
+								onChange: function ( v ) { props.setAttributes( { sfpTocH3: v ? undefined : false } ); },
 								__nextHasNoMarginBottom: true,
 							} )
 						)
