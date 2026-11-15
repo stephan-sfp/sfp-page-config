@@ -183,6 +183,9 @@ html:has(body.sfp-zt-testpagina){background:var(--sfp-b-wit,#fff)}
 .sfp-zt-top-logo{display:block;height:auto;max-height:44px;width:auto;max-width:60vw}
 .sfp-zt-top-logo-svg{height:44px}
 @media (max-width:640px){.sfp-zt-top-logo-svg{height:38px}}
+/* Imagify verpakt het logo in een picture en zet de klasse daarop (sinds 3.69.1): ook het img erin begrenzen. */
+.sfp-zt-top-logo img{display:block;height:auto;max-height:44px;width:auto;max-width:60vw}
+@media (max-width:640px){.sfp-zt-top-logo img{max-height:38px}}
 .sfp-zt-top-naam{font:900 16px/1.2 var(--sfp-b-kop);color:var(--sfp-b-primair);text-transform:uppercase;letter-spacing:.04em}
 .sfp-zt-sluit{display:inline-flex;align-items:center;justify-content:center;flex:none;width:48px;height:48px;margin:0 -8px 0 0;padding:0;border:0;border-radius:50%;background:transparent;color:var(--sfp-b-primair);cursor:pointer;box-shadow:none}
 .sfp-zt-sluit:hover{background:var(--sfp-b-tint3);color:var(--sfp-b-primair)}
@@ -265,7 +268,7 @@ body.sfp-zt-testpagina .sfp-zt-kaartje.hoofd{padding:15px}
 @media (orientation:landscape) and (max-height:520px){
 .sfp-zt-top{position:static}
 .sfp-zt-top-in{min-height:48px;padding:6px 24px}
-.sfp-zt-top-logo{max-height:34px}
+.sfp-zt-top-logo,.sfp-zt-top-logo img{max-height:34px}
 .sfp-zt-top-logo-svg{height:34px}
 body.sfp-zt-testpagina .sfp-zt-testpagina-inhoud{padding:12px 24px 24px}
 body.sfp-zt-testpagina .sfp-zt-scherm{gap:14px}

@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.69.1] - 2026-11-15
+
+### Gerepareerd
+- Calculatorpagina: het logo stond groot over de kop heen op alle sites met een calculator. Imagify verpakt een PNG-logo in een extra laagje en zet de maximale hoogte daarop, niet op het logo zelf. Het logo zelf is nu ook begrensd, op de calculatorpagina en op de testpagina van de zelftest.
+- Calculatorpagina: een SVG-logo krijgt een vaste hoogte (44 px, op de telefoon 38 px), zoals op de testpagina van de zelftest. Daarvoor werd het afgesneden.
+
+### Gewijzigd
+- Calculatorpagina en testpagina van de zelftest gebruiken nu dezelfde code voor het logo in de balk bovenaan, zodat ze gelijk blijven.
+
 ## [3.69.0] - 2026-11-15
 
 ### Toegevoegd

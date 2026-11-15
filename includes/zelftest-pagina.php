@@ -165,6 +165,45 @@ function sfp_zelftest_pagina_body_class( $klassen ) {
 }
 
 /**
+ * Het logo in de smalle balk van de testpagina en de calculatorpagina
+ * (sinds 3.69.1 gedeeld, zodat beide gelijk blijven). Een SVG rechtstreeks
+ * met een vaste hoogte; een andere afbeelding via WordPress op volle grootte.
+ * Zonder logo de naam van de site.
+ *
+ * @param  int    $id    Bijlage-id van het logo, of 0.
+ * @param  string $basis Klassevoorvoegsel, bijvoorbeeld sfp-zt-top of sfp-calc-top.
+ * @return string HTML.
+ */
+function sfp_page_config_balk_logo( $id, $basis ) {
+    $id    = (int) $id;
+    $basis = sanitize_html_class( $basis );
+    if ( $id > 0 && 'image/svg+xml' === get_post_mime_type( $id ) ) {
+        // SVG heeft geen formaten in WordPress: rechtstreeks, scherp op elke grootte.
+        $url = wp_get_attachment_url( $id );
+        if ( $url ) {
+            return '<img src="' . esc_url( $url ) . '" class="' . $basis . '-logo ' . $basis . '-logo-svg" alt="' . esc_attr( get_bloginfo( 'name' ) ) . '" loading="eager" decoding="async">';
+        }
+    }
+    if ( $id > 0 ) {
+        $img = wp_get_attachment_image(
+            $id,
+            'full',
+            false,
+            array(
+                'class'    => $basis . '-logo',
+                'alt'      => get_bloginfo( 'name' ),
+                'loading'  => 'eager',
+                'decoding' => 'async',
+            )
+        );
+        if ( '' !== $img ) {
+            return $img;
+        }
+    }
+    return '<span class="' . $basis . '-naam">' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
+}
+
+/**
  * Het logo van de site (niet klikbaar), of de naam van de site.
  *
  * @return string HTML.
@@ -177,28 +216,5 @@ function sfp_zelftest_pagina_logo() {
     if ( $id <= 0 ) {
         $id = (int) get_theme_mod( 'custom_logo' );
     }
-    if ( $id > 0 && 'image/svg+xml' === get_post_mime_type( $id ) ) {
-        // SVG heeft geen formaten in WordPress: rechtstreeks, scherp op elke grootte.
-        $url = wp_get_attachment_url( $id );
-        if ( $url ) {
-            return '<img src="' . esc_url( $url ) . '" class="sfp-zt-top-logo sfp-zt-top-logo-svg" alt="' . esc_attr( get_bloginfo( 'name' ) ) . '" loading="eager" decoding="async">';
-        }
-    }
-    if ( $id > 0 ) {
-        $img = wp_get_attachment_image(
-            $id,
-            'full',
-            false,
-            array(
-                'class'    => 'sfp-zt-top-logo',
-                'alt'      => get_bloginfo( 'name' ),
-                'loading'  => 'eager',
-                'decoding' => 'async',
-            )
-        );
-        if ( '' !== $img ) {
-            return $img;
-        }
-    }
-    return '<span class="sfp-zt-top-naam">' . esc_html( get_bloginfo( 'name' ) ) . '</span>';
+    return sfp_page_config_balk_logo( $id, 'sfp-zt-top' );
 }
