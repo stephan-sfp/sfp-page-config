@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.66.1] - 2026-11-15
+
+### Gerepareerd
+- Calculator als kaart: de voorbeeldbegroting vult de kolom (tot 460 px). In een kolom als raster kromp hij tot 268 px.
+
 ## [3.66.0] - 2026-11-15
 
 Besluiten van Stephan na 3.65.0. Terugdraaien: versie 3.65.0 terugzetten.
