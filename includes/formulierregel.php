@@ -129,7 +129,7 @@ function sfp_page_config_formulierregel_blok( $html, $block ) {
     $stijl = '';
     if ( ! $css ) {
         $css   = true;
-        $stijl = '<style id="sfp-formulierregel">.sfp-form-fallback{margin:24px 0 0;font-size:.9em;color:var(--ast-global-color-3)}</style>';
+        $stijl = '<style id="sfp-formulierregel">:root .sfp-form-fallback.sfp-form-fallback{margin:24px 0 0;font-size:.9em;color:var(--ast-global-color-3)}</style>';
     }
     return $html . $stijl . sfp_page_config_formulierregel_html();
 }

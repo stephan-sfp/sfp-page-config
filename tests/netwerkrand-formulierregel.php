@@ -13,7 +13,7 @@ $c = function ( $v, $w ) use ( &$fout ) { if ( ! $v ) { ++$fout; echo "FOUT: $w\
 $c( false !== strpos( $home, '<a class="sfp-kaart sfp-klikkaart sfp-netwerk__kaart"' ), 'netwerkkaart zonder vlak' );
 $c( false === strpos( $home, 'sfp-kaart--vlak sfp-klikkaart sfp-netwerk__kaart' ), 'geen vlakke netwerkkaart' );
 $c( false !== strpos( $css, 'border-top-color:var(--sfp-b-secundair)}' ), 'accentrand blijft bij hover' );
-$c( false !== strpos( $fr, '.sfp-form-fallback{margin:24px 0 0;' ), 'formulierregel 24 px' );
+$c( false !== strpos( $fr, ':root .sfp-form-fallback.sfp-form-fallback{margin:24px 0 0;' ), 'formulierregel 24 px' );
 $c( false !== strpos( $fr, "has_block( 'sfp/contactgegevens', get_queried_object_id() )" ), 'niet op contact' );
 echo 'netwerkrand-formulierregel: ' . ( 5 - $fout ) . " goed, $fout fout\n";
 exit( $fout ? 1 : 0 );

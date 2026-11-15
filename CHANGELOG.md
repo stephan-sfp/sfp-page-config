@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.72.1] - 2026-11-15
+
+### Gerepareerd
+- Regel "Bel ... of mail naar ..." onder een formulier: overal 24 px ruimte. Binnen een sectie of kaart zette een algemene regel de ruimte op 0, en onder het inschrijfformulier stond 22 px.
+
 ## [3.72.0] - 2026-11-15
 
 ### Gewijzigd

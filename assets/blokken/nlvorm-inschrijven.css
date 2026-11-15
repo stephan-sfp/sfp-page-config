@@ -94,7 +94,7 @@
 :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-dropdown-common-wrap .ts-control::after{display:none}
 :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-dropdown-common-wrap::after{content:"";position:absolute;right:18px;top:25px;width:9px;height:9px;margin-top:-7px;border-right:2px solid var(--sfp-b-primair);border-bottom:2px solid var(--sfp-b-primair);transform:rotate(45deg);pointer-events:none;z-index:3}
 :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-submit-container{margin-top:6px}
-:root .sfp-kolommen--inschrijven .sfp-kaart>:is(.wp-block-sureforms-form,.srfm-form-container)~p{margin-top:22px;font-size:14px;color:var(--sfp-b-body)}
+:root .sfp-kolommen--inschrijven .sfp-kaart>:is(.wp-block-sureforms-form,.srfm-form-container)~p{margin-top:24px;font-size:14px;color:var(--sfp-b-body)}
 @media (min-width:601px) and (max-width:980px){
   :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-block-width-50{flex:0 1 calc(50% - 10px)}
 }
