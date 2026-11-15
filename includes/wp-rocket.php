@@ -94,8 +94,6 @@ function sfp_page_config_css_inline_handles() {
         'sfp-zelftest',
         // Sinds 3.36.0: de incompanycalculator.
         'sfp-calculator',
-        // Sinds 3.66.0: de calculator als kaart.
-        'sfp-calculator-kaart',
     );
 }
 

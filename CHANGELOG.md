@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.67.1] - 2026-11-15
+
+### Verwijderd
+- Calculator als kaart (3.66.0): het blad met de voorbeeldbegroting is eruit (besluit Stephan). Op de incompanypagina's komt een echte voorbeeldbegroting als beeld op een tablet in de inhoud, met de knop ernaast, zoals de zelftest op DPS. Het calculatorblok toont weer het formulier.
+
 ## [3.67.0] - 2026-11-15
 
 ### Toegevoegd
