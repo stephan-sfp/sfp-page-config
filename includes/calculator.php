@@ -165,7 +165,7 @@ function sfp_calculator_instellingen_schoon( array $ruw ) {
     }
     if ( array_key_exists( 'logo', $ruw ) ) {
         $id           = absint( $ruw['logo'] );
-        $inst['logo'] = $id && wp_attachment_is_image( $id ) ? $id : 0;
+        $inst['logo'] = $id && ( wp_attachment_is_image( $id ) || 'image/svg+xml' === get_post_mime_type( $id ) ) ? $id : 0;
     }
     // Webhookadres van A49: leeg laat het bewaarde adres staan, '-' wist het.
     if ( array_key_exists( 'webhook', $ruw ) ) {
