@@ -208,7 +208,7 @@ function sfp_page_config_render_keuzehulp( $attrs ) {
         $teller   = $tellers[ $v['id'] ];
         $stappen .= '<div class="sfp-keuzehulp__stap" data-stap="' . esc_attr( $v['id'] ) . '"' . ( 0 === $i ? '' : ' hidden' ) . '>'
             . ( $teller[1] > 1 ? '<p class="sfp-keuzehulp__teller">' . esc_html( sfp_page_config_tekst_f( 'keuzehulp_vraag_van', $teller[0], $teller[1] ) ) . '</p>' : '' )
-            . '<h3 class="sfp-keuzehulp__vraag" tabindex="-1">' . esc_html( $v['vraag'] ) . '</h3>'
+            . '<p class="sfp-keuzehulp__vraag" tabindex="-1">' . esc_html( $v['vraag'] ) . '</p>'
             . '<div class="sfp-keuzehulp__antwoorden">' . $knoppen . '</div>'
             . ( '' !== $links ? '<div class="sfp-keuzehulp__links">' . $links . '</div>' : '' )
             . '</div>';
@@ -230,7 +230,7 @@ function sfp_page_config_render_keuzehulp( $attrs ) {
         $kop      = trim( (string) ( $hulp['kop'] ?? '' ) );
         $zin      = trim( (string) ( $hulp['tekst'] ?? '' ) );
         $stappen .= '<div class="sfp-keuzehulp__stap sfp-keuzehulp__stap--hulp" data-stap="hulp" hidden>'
-            . '<h3 class="sfp-keuzehulp__vraag" tabindex="-1">' . esc_html( '' !== $kop ? $kop : $t( 'keuzehulp_hulp_kop' ) ) . '</h3>'
+            . '<p class="sfp-keuzehulp__vraag" tabindex="-1">' . esc_html( '' !== $kop ? $kop : $t( 'keuzehulp_hulp_kop' ) ) . '</p>'
             . ( '' !== $zin ? '<p class="sfp-keuzehulp__zin">' . esc_html( $zin ) . '</p>' : '' )
             . $knop . $form
             . '<div class="sfp-keuzehulp__links"><button type="button" class="sfp-keuzehulp__link sfp-keuzehulp__terug" data-opnieuw>' . esc_html( $t( 'keuzehulp_opnieuw' ) ) . '</button></div>'

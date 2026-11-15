@@ -188,7 +188,7 @@ ol.sfp-tool__lijst>li::before{content:counter(sfp-lijst);position:absolute;left:
 :is(.sfp-tool__hoe,.sfp-tool__onderbouwing) summary::-webkit-details-marker{display:none}
 :is(.sfp-tool__hoe,.sfp-tool__onderbouwing) summary::before{content:"";flex:0 0 auto;width:7px;height:7px;margin:0 2px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .15s}
 :is(.sfp-tool__hoe,.sfp-tool__onderbouwing)[open] summary::before{transform:rotate(45deg) translate(-2px,-2px)}
-.sfp-tool__hoe h4{margin:14px 0 6px;font-family:var(--sfp-b-kop);font-weight:900;font-size:15px;text-transform:uppercase;color:var(--sfp-b-primair)}
+:root .sfp-tool__hoe .sfp-tool__hoe-kop{margin:14px 0 6px;font-family:var(--sfp-b-kop);font-weight:900;font-size:clamp(16px,10px + 1vw,20px);line-height:1.45;text-transform:uppercase;color:var(--sfp-b-primair)}
 .sfp-tool__hoe ul{margin:0 0 8px;padding-left:1.3em}
 .sfp-tool__hoe small{color:var(--sfp-b-body)}
 .sfp-tool__noscript{padding:14px 16px;border-radius:var(--sfp-b-r-knop,6px);background:var(--sfp-b-tint2);margin:0 0 14px}

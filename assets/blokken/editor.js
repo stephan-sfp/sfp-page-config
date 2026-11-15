@@ -649,6 +649,8 @@
 			return ouder ? ( be2.getBlockAttributes( ouder ) || {} ).vorm || '' : '';
 		}, [ props.clientId ] );
 		var kaartVorm = 'kaart' === ouderVorm;
+		// Een tabblad als kaart (Over) is een UX-element: een kop erin wordt Kop in kader (sinds 3.70.0).
+		kaderZonderKoppen( props.clientId, ! kaartVorm );
 		var portfolioVorm = 'portfolio' === ouderVorm;
 		var logo = wp.data.useSelect( function ( select ) { return props.attributes.logoId ? select( 'core' ).getMedia( props.attributes.logoId ) : null; }, [ props.attributes.logoId ] );
 		var icoon = wp.data.useSelect( function ( select ) { return props.attributes.icoonId ? select( 'core' ).getMedia( props.attributes.icoonId ) : null; }, [ props.attributes.icoonId ] );
@@ -662,7 +664,7 @@
 			[ 'sfp/kolommen', { indeling: 'twee' }, [ lijstKolom( 'De opdracht' ), lijstKolom( 'De opbrengst' ) ] ],
 			[ 'core/image', { sizeSlug: 'large' } ],
 			[ 'sfp/review' ],
-		] : kaartVorm ? [ [ 'core/heading', { level: 3 } ], [ 'core/paragraph' ] ] : [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ];
+		] : kaartVorm ? [ [ 'core/paragraph', { className: 'is-style-sfp-kaderkop' } ], [ 'core/paragraph' ] ] : [ [ 'core/paragraph', { className: 'is-style-sfp-groot' } ], [ 'core/paragraph' ] ];
 		// Als kaart (3.51.0): tekst links en het icoon rechts in het canvas, zoals op de site.
 		var inner = useInnerBlocksProps( kaartVorm ? { className: 'sfp-tabpaneel__tekst' } : blockProps, { template: sjabloon } );
 		var vastIcoon = ! props.attributes.icoonId && props.attributes.icoon ? ( window.sfpIconen || [] ).filter( function ( ic ) { return ic.id === props.attributes.icoon; } )[ 0 ] : null;
@@ -790,10 +792,10 @@
 	 * de koppenstructuur van het artikel klopt. Geldt ook voor geplakte koppen
 	 * en voor bestaande kaders zodra de editor ze opent.
 	 */
-	function kaderZonderKoppen( clientId ) {
+	function kaderZonderKoppen( clientId, uit ) {
 		var ids = wp.data.useSelect( function ( select ) {
-			return ( select( 'core/block-editor' ).getBlocks( clientId ) || [] ).filter( function ( b ) { return 'core/heading' === b.name; } ).map( function ( b ) { return b.clientId; } ).join( ',' );
-		}, [ clientId ] );
+			return uit ? '' : ( select( 'core/block-editor' ).getBlocks( clientId ) || [] ).filter( function ( b ) { return 'core/heading' === b.name; } ).map( function ( b ) { return b.clientId; } ).join( ',' );
+		}, [ clientId, uit ] );
 		wp.element.useEffect( function () {
 			if ( ! ids ) {
 				return;
@@ -2148,7 +2150,7 @@
 		var stappen = vragen.length ? vragen.map( function ( v, i ) {
 			return el( 'div', { key: v.id || i, className: 'sfp-keuzehulp__stap', style: i ? { marginTop: '28px', paddingTop: '20px', borderTop: '1px dashed rgba(0,0,0,.2)' } : null },
 				el( 'p', { className: 'sfp-keuzehulp__teller' }, 'Vraag ' + ( i + 1 ) ),
-				el( 'h3', { className: 'sfp-keuzehulp__vraag' }, v.vraag || 'Typ de vraag in de zijbalk' ),
+				el( 'p', { className: 'sfp-keuzehulp__vraag' }, v.vraag || 'Typ de vraag in de zijbalk' ),
 				el( 'div', { className: 'sfp-keuzehulp__antwoorden' }, ( v.antwoorden || [] ).map( function ( an, j ) {
 					return el( 'span', { key: j, className: 'sfp-keuzehulp__antwoord' }, an.tekst || 'Antwoord' );
 				} ) )
