@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.69.2] - 2026-11-15
+
+### Gerepareerd
+- SFP Beheer, Calculator: een SVG als logo werd bij opslaan geweigerd, waardoor de calculator terugviel op het logo van de site. Een SVG wordt nu bewaard, net als bij de zelftest.
+
 ## [3.69.1] - 2026-11-15
 
 ### Gerepareerd
