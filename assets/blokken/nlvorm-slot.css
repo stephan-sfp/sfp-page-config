@@ -5,7 +5,7 @@
  */
 /* Variant A (3.36.0, punt 15, besluit Stephan 9-11, dummy slotvarianten): één witte kaart met twee kolommen en een dunne lijn ertussen.
    De twee kaarten in het slot verliezen hun eigen rand, bovenrand en achtergrond; de kalender heeft geen eigen kaart meer. */
-:root .sfp-kolommen.sfp-kolommen--slot{grid-template-columns:repeat(2,minmax(0,1fr));gap:0;align-items:stretch;background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);box-shadow:0 14px 40px color-mix(in srgb,var(--sfp-b-primair) 7%,transparent);overflow:hidden}
+:root .sfp-kolommen.sfp-kolommen--slot{grid-template-columns:repeat(2,minmax(0,1fr));gap:0;align-items:stretch;background:var(--sfp-b-wit);border:1px solid var(--sfp-b-lijn);border-radius:var(--sfp-b-r-kaart);box-shadow:0 14px 40px color-mix(in srgb,var(--sfp-b-primair) 7%,transparent);overflow:hidden;border-top:4px solid var(--sfp-b-secundair)}
 :root .sfp-kolommen.sfp-kolommen--slot>.sfp-kolom>.sfp-kaart{height:100%}
 :root .sfp-kolommen.sfp-kolommen--slot>.sfp-kolom{min-width:0}
 :root .sfp-kolommen.sfp-kolommen--slot>.sfp-kaart,:root .sfp-kolommen.sfp-kolommen--slot>.sfp-kolom>.sfp-kaart{background:transparent;border:0;border-radius:0;box-shadow:none;padding:32px;gap:14px;min-width:0}

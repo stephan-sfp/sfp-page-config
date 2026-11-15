@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.72.0] - 2026-11-15
+
+### Gewijzigd
+- Accentrand bovenaan (besluit Stephan): ook op de kaarten bij "Herkenbaar?" (situaties) en op de kaart onderaan met gesprek en formulier (slot).
+
 ## [3.71.0] - 2026-11-15
 
 ### Gewijzigd
