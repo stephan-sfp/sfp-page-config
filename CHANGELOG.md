@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.71.0] - 2026-11-15
+
+### Gewijzigd
+- Blok Netwerk (Over): de labelkaarten krijgen de accentrand bovenaan, zoals de groepskaarten (besluit Stephan).
+- Regel "Bel ... of mail naar ..." onder een formulier: 24 px ruimte boven de regel (was 12 px). Op een pagina met het blok Contactgegevens verschijnt de regel niet meer, want daar staan bellen en mailen al.
+
 ## [3.70.1] - 2026-11-15
 
 ### Gerepareerd
