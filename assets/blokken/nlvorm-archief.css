@@ -123,3 +123,5 @@
   /* Eén gids: halve breedte, zoals in de dummy (computer en tablet). */
   :root .sfp-archiefgidsen:not(.sfp-archiefgidsen--meer){grid-template-columns:minmax(0,calc((100% - 24px)/2))}
 }
+/* 3.66.0: kernzin onder de paginatitel schaalt mee (branding.md, Kernzin) */
+:root :is(.sfp-archiefkop .is-style-sfp-kernzin,h1+.is-style-sfp-kernzin){font-size:clamp(18px,1.5vw + 12px,24px)}

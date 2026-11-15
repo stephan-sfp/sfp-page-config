@@ -80,3 +80,5 @@
  :root .sfp-held--recht .sfp-held__binnen>p.sfp-held__bewijs{margin:30px 0 72px;flex-wrap:nowrap;width:max-content}
 }
 :root .sfp-held--recht .sfp-held__score{border-right:0;padding-right:0;margin-right:0}
+/* 3.66.0: kernzin onder de paginatitel schaalt mee (branding.md, Kernzin) */
+:root .sfp-held__tekst>.is-style-sfp-kernzin{font-size:clamp(18px,1.5vw + 12px,24px)}

@@ -36,7 +36,7 @@ boek_is( false !== strpos( $boek, 'border-radius:var(--sfp-b-r-kaart)' ), 'radiu
 boek_is( false !== strpos( $boek, 'overflow:hidden' ), 'inhoud afgesneden op de radius' );
 boek_is( false !== strpos( $boek, 'border:1px solid color-mix(in srgb,var(--sfp-b-primair) 8%,transparent)' ), 'rand primair 8%' );
 boek_is( false !== strpos( $boek, 'box-shadow:0 14px 40px color-mix(in srgb,var(--sfp-b-primair) 7%,transparent)' ), 'schaduw primair 7%' );
-boek_is( false !== strpos( $boek, 'background:var(--sfp-b-tint2)' ) && false !== strpos( $boek, 'padding:40px 40px 32px' ) && false !== strpos( $boek, 'gap:16px' ), 'tekstkolom tint 2, 40/40/32, 16 px' );
+boek_is( false !== strpos( $boek, 'background:var(--sfp-b-tint3)' ) && false !== strpos( $boek, 'padding:40px 40px 32px' ) && false !== strpos( $boek, 'gap:16px' ), 'tekstkolom tint 3 (3.66.0), 40/40/32, 16 px' );
 boek_is( false !== strpos( $boek, 'padding:32px 28px' ), 'tekstkolom 32/28 onder 1024 px' );
 boek_is( false !== strpos( $boek, 'font-size:26px' ) && false !== strpos( $boek, 'text-transform:uppercase' ), 'kop 26 px in hoofdletters' );
 boek_is( false !== strpos( $boek, 'content:"\2713"' ) && false !== strpos( $boek, 'var(--sfp-rol-pijl,var(--sfp-b-primair))' ), 'vinkjes in de pijlrol' );

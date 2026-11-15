@@ -62,7 +62,8 @@
 
 /* alinea-stijlen */
 /* kernzin (branding.md, 3.30.0): bodyfont 700, primair, meeschalend onder een kop */
-:root .is-style-sfp-kernzin{font-family:var(--sfp-b-tekst);font-weight:700;color:var(--sfp-b-primair);font-size:clamp(18px,1.5vw + 12px,24px);line-height:1.4;text-wrap:pretty;max-width:52ch}
+:root .is-style-sfp-kernzin{font-family:var(--sfp-b-tekst);font-weight:700;color:var(--sfp-b-primair);font-size:18px;line-height:1.4;text-wrap:pretty;max-width:52ch}
+/* 3.66.0: 18 px; onder een paginatitel schaalt hij mee via held.css en nlvorm-archief.css (branding.md, Kernzin) */
 :root :is(.sfp-sectie,.sfp-held) :is(h1,h2,h3)+p.is-style-sfp-kernzin{margin-top:16px}
 /* beeld alleen op een telefoon, of juist niet (3.30.0; grens 700 pixels) */
 @media (min-width:701px){:root .is-style-sfp-alleen-telefoon{display:none!important}}

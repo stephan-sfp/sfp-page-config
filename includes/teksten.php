@@ -2056,6 +2056,7 @@ function sfp_calculator_teksten( $taal = '' ) {
         'ingebed_kop'             => 'Wat kost een training voor jouw team?',
         'ingebed_zin'             => 'Vul in hoeveel mensen meedoen en bereken in 3 minuten je begroting.',
         'ingebed_knop'            => 'Bereken je training',
+        'kaart_voorbeeld'         => 'Voorbeeld voor {n} deelnemers',
     );
     if ( 'nl' === $taal ) {
         return $nl;
@@ -2402,6 +2403,7 @@ function sfp_calculator_teksten( $taal = '' ) {
         'ingebed_kop'             => 'What does a training for your team cost?',
         'ingebed_zin'             => 'Enter how many people take part and calculate your budget in 3 minutes.',
         'ingebed_knop'            => 'Calculate your training',
+        'kaart_voorbeeld'         => 'Example for {n} participants',
     );
     return array_merge( $nl, $en );
 }

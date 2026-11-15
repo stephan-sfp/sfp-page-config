@@ -16,8 +16,6 @@
 :root .sfp-tabs--portfolio .sfp-tablijst [role=tab]{overflow:hidden}
 :root .sfp-tabs--portfolio .sfp-tablijst picture{display:block;height:44px;max-width:100%}
 :root .sfp-tabs--portfolio .sfp-tablijst picture img{display:block;height:100%;width:auto;max-width:100%;object-fit:contain;border-radius:0;margin:0;box-shadow:none}
-/* 3.65.0: kernzin in de intro naast het portfolio op 18 px (branding.md, Kernzin: elders 18 px) */
-:root .sfp-sectie__binnen:has(>.sfp-tabs--portfolio)>.sfp-kolommen .sfp-kolom>.is-style-sfp-kernzin{font-size:18px}
 :root .sfp-tabs--portfolio .sfp-portfolio__naam{font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;line-height:1.2;color:var(--sfp-b-primair)}
 :root .sfp-tabs--portfolio .sfp-tabpaneel{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;max-width:none;margin:0;padding:40px;text-align:left;justify-items:stretch;align-items:start}
 :root .sfp-tabs--portfolio .sfp-tabpaneel[hidden]{display:none}
