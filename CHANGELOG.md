@@ -4,6 +4,17 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.66.0] - 2026-11-15
+
+Besluiten van Stephan na 3.65.0. Terugdraaien: versie 3.65.0 terugzetten.
+
+### Toegevoegd
+- Incompanycalculator ingebed als kaart, zoals de zelftest met beeld op DPS: een voorbeeldbegroting als blad (groepsnorm, training van 2 dagen, bedragen uit de rekenregels van de site) met de knop "Bereken je training" eronder. De hele kaart is de link naar de calculatorpagina. Per blok terug te zetten naar het oude formulier (Als kaart met voorbeeldbegroting).
+
+### Gewijzigd
+- Boekkaart: op alle sites dezelfde opmaak als op de coachingpagina's (lichte achtergrond links), ook op SLB, SwS en FL.
+- Kernzin: 18 px, behalve onder een paginatitel (held, archiefkop), waar hij meeschaalt tot 24 px (branding.md, Kernzin).
+
 ## [3.65.0] - 2026-11-14
 
 Bouwstenen na de DGA-ronde van WordPress Toolkit (overdracht 14-11-2026), op alle sites. Terugdraaien: versie 3.64.0 terugzetten.

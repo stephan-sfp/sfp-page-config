@@ -83,7 +83,7 @@ $check( 'kaart: accentrand op vlak en klikbaar', false !== strpos( $css( 'blokke
 $check( 'kaart: knop onderin', false !== strpos( $css( 'blokken/nlvorm-home.css' ), '.sfp-kaart__tekst>:is(.is-style-sfp-pijl,.wp-block-buttons):last-child{margin-top:auto' ) );
 $check( 'calculator: knop zonder onderstreping', false !== strpos( $css( 'calculator/calculator.css' ), ':root .sfp-calc a.sfp-calc-knop' ) );
 $check( 'portfolio: logo in picture', false !== strpos( $css( 'blokken/incompany.css' ), '.sfp-tablijst picture{display:block;height:44px' ) );
-$check( 'portfolio: kernzin 18 px', false !== strpos( $css( 'blokken/incompany.css' ), '.is-style-sfp-kernzin{font-size:18px}' ) );
+$check( 'kernzin 18 px buiten een paginatitel (3.66.0)', false !== strpos( $css( 'blokken/basis.css' ), 'max-width:52ch}' ) && false !== strpos( $css( 'blokken/basis.css' ), '.is-style-sfp-kernzin{font-family:var(--sfp-b-tekst);font-weight:700;color:var(--sfp-b-primair);font-size:18px' ) );
 $check( 'geen hexkleur toegevoegd', ! preg_match( '/#[0-9a-f]{6}/i', $css( 'blokken/incompany.css' ) . $css( 'blokken/nlvorm-slot.css' ) ) );
 
 echo ( $fouten ? "$fouten van $aantal controles mislukt\n" : "OK: $aantal controles\n" );

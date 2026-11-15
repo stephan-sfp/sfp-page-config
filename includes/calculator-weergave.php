@@ -43,10 +43,20 @@ function sfp_calculator_registreer() {
                         'type'    => 'boolean',
                         'default' => false,
                     ),
+                    // 3.66.0: ingebed als kaart met een voorbeeldbegroting (wens Stephan 14-11-2026); uit = het oude formulier.
+                    'kaart'   => array(
+                        'type'    => 'boolean',
+                        'default' => true,
+                    ),
                 ),
                 'supports'        => array( 'html' => false ),
                 'render_callback' => function ( $attributen ) {
-                    return sfp_calculator_shortcode( array( 'ingebed' => ! empty( $attributen['ingebed'] ) ? '1' : '0' ) );
+                    return sfp_calculator_shortcode(
+                        array(
+                            'ingebed' => ! empty( $attributen['ingebed'] ) ? '1' : '0',
+                            'kaart'   => ! isset( $attributen['kaart'] ) || ! empty( $attributen['kaart'] ) ? '1' : '0',
+                        )
+                    );
                 },
             )
         );
@@ -80,8 +90,9 @@ function sfp_calculator_editor_gegevens() {
  * @return string
  */
 function sfp_calculator_shortcode( $atts ) {
-    $atts    = shortcode_atts( array( 'ingebed' => '0' ), (array) $atts, 'sfp_calculator' );
+    $atts    = shortcode_atts( array( 'ingebed' => '0', 'kaart' => '1' ), (array) $atts, 'sfp_calculator' );
     $ingebed = in_array( (string) $atts['ingebed'], array( '1', 'true', 'ja' ), true );
+    $kaart   = $ingebed && in_array( (string) $atts['kaart'], array( '1', 'true', 'ja' ), true );
     if ( ! sfp_calculator_zichtbaar() ) {
         if ( current_user_can( 'edit_posts' ) && function_exists( 'sfp_page_config_onderdeel_aan' ) && ! sfp_page_config_onderdeel_aan( 'calculator' ) ) {
             return '<p class="sfp-calc-leeg">Incompanycalculator: het onderdeel staat uit (SFP Beheer, Onderdelen).</p>';
@@ -108,6 +119,7 @@ function sfp_calculator_shortcode( $atts ) {
         // Alleen ingelogd een nonce: een bewaarde pagina voor bezoekers heeft er geen nodig.
         'nonce'      => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : '',
         'ingebed'    => $ingebed,
+        'kaart'      => false,
         'norm'       => $norm,
         't'          => sfp_calculator_teksten( $taal ),
         'uitleg'     => $inst['uitleg'],
@@ -122,20 +134,78 @@ function sfp_calculator_shortcode( $atts ) {
         'contact'    => sfp_calculator_contact_config( $inst ),
     );
 
+    $kaart_html      = $kaart ? sfp_calculator_kaart_html( $norm, $config['pagina'], $taal ) : '';
+    $config['kaart'] = '' !== $kaart_html;
+
     sfp_page_config_css_inline( 'sfp-calculator', 'calculator/calculator.css' );
     if ( function_exists( 'sfp_page_config_blokken_css_variabelen' ) ) {
         wp_add_inline_style( 'sfp-calculator', sfp_page_config_blokken_css_variabelen() );
+    }
+    if ( $config['kaart'] ) {
+        sfp_page_config_css_inline( 'sfp-calculator-kaart', 'calculator/kaart.css' );
     }
     wp_enqueue_script( 'sfp-calculator-motor', sfp_page_config_asset_url( 'calculator/motor.js' ), array(), SFP_PAGE_CONFIG_VERSION, true );
     wp_enqueue_script( 'sfp-calculator', sfp_page_config_asset_url( 'calculator/calculator.js' ), array( 'sfp-calculator-motor' ), SFP_PAGE_CONFIG_VERSION, true );
     wp_add_inline_script( 'sfp-calculator', 'window.sfpCalculatorConfig=' . wp_json_encode( $config, JSON_HEX_TAG | JSON_HEX_AMP ) . ';', 'before' );
 
     $t = sfp_calculator_teksten( $taal );
-    return '<div class="sfp-calc' . ( $ingebed ? ' sfp-calc--ingebed' : '' ) . '" id="sfp-calculator" lang="' . esc_attr( $taal ) . '">'
+    return '<div class="sfp-calc' . ( $ingebed ? ' sfp-calc--ingebed' : '' ) . ( '' !== $kaart_html ? ' sfp-calc--kaart' : '' ) . '" id="sfp-calculator" lang="' . esc_attr( $taal ) . '">'
         . ( sfp_calculator_proef() ? '<p class="sfp-calc-proef">' . esc_html( $t['proef_balk'] ) . '</p>' : '' )
-        . '<div class="sfp-calc-app" aria-live="polite"><p class="sfp-calc-laden">&nbsp;</p></div>'
+        . '<div class="sfp-calc-app" aria-live="polite">' . ( '' !== $kaart_html ? $kaart_html : '<p class="sfp-calc-laden">&nbsp;</p>' ) . '</div>'
         . ( '' !== $html ? '<div class="sfp-calc-formulier" hidden>' . $html . '</div>' : '' )
         . '</div>';
+}
+
+/**
+ * Ingebed als kaart (3.66.0): een voorbeeldbegroting met de bedragen van
+ * deze site en een knop naar de calculatorpagina, zoals de zelftest met
+ * beeld op DPS. Het voorbeeld rekent met de groepsnorm en de training van
+ * 2 dagen (anders de eerste vorm); de bedragen komen uit de rekenregels,
+ * niet uit de tekst.
+ *
+ * @param  array  $norm   Norm van de site.
+ * @param  string $pagina Calculatorpagina.
+ * @param  string $taal   Taal.
+ * @return string Leeg als er geen pagina of geen vorm is.
+ */
+function sfp_calculator_kaart_html( array $norm, $pagina, $taal ) {
+    $vormen = isset( $norm['vormen'] ) && is_array( $norm['vormen'] ) ? array_keys( $norm['vormen'] ) : array();
+    if ( '' === (string) $pagina || ! $vormen ) {
+        return '';
+    }
+    $vorm  = in_array( '2', array_map( 'strval', $vormen ), true ) ? '2' : (string) $vormen[0];
+    $n     = max( 1, (int) $norm['groep_norm'] );
+    $ber   = sfp_calculator_reken(
+        array(
+            'route'  => 'A',
+            'mensen' => array( 'soort' => 'getal', 'aantal' => $n ),
+            'vorm'   => $vorm,
+        ),
+        $norm
+    );
+    $o     = isset( $ber['uitkomst']['regels'] ) ? $ber['uitkomst'] : array();
+    if ( empty( $o['regels'] ) ) {
+        return '';
+    }
+    $valuta = isset( $norm['valuta'] ) ? $norm['valuta'] : 'EUR';
+    $t      = function ( $s, $v = array() ) use ( $taal ) {
+        return sfp_calculator_t( $s, $v, $taal );
+    };
+    $rijen = '';
+    foreach ( $o['regels'] as $r ) {
+        $rijen .= '<span class="sfp-calc-vb__rij"><span>' . esc_html( $t( 'regel_' . $r['code'] ) ) . '</span><span>'
+            . esc_html( $r['gratis'] ? $t( 'inbegrepen' ) : sfp_calculator_bedrag( (int) $r['bedrag'], $valuta ) ) . '</span></span>';
+    }
+    $rijen .= '<span class="sfp-calc-vb__rij is-totaal"><span>' . esc_html( $t( 'totaal' ) . ' ' . $t( 'excl' ) ) . '</span><span>'
+        . esc_html( sfp_calculator_bedrag( (int) $o['totaal_excl'], $valuta ) ) . '</span></span>';
+    return '<a class="sfp-calc-vb" id="sfp-calc-naar" href="' . esc_url( $pagina ) . '">'
+        . '<span class="sfp-calc-vb__blad" aria-hidden="true">'
+        . '<span class="sfp-calc-vb__lab">' . esc_html( $t( 'begroting' ) ) . '</span>'
+        . '<span class="sfp-calc-vb__voorbeeld">' . esc_html( $t( 'kaart_voorbeeld', array( 'n' => $n ) ) ) . '</span>'
+        . $rijen
+        . '</span>'
+        . '<span class="sfp-calc-knop">' . esc_html( $t( 'ingebed_knop' ) ) . '</span>'
+        . '</a>';
 }
 
 /* =========================================================================

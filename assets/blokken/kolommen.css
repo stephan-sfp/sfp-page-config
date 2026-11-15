@@ -17,7 +17,7 @@
    De kaart draagt ook de klasse sfp-boekkaart: daar haakt het LatePoint-snippet op in. */
 :root .sfp-kolommen--boeking{max-width:1140px;margin:0 auto;gap:0;background:var(--sfp-b-wit);border:1px solid color-mix(in srgb,var(--sfp-b-primair) 8%,transparent);border-radius:var(--sfp-b-r-kaart);box-shadow:0 14px 40px color-mix(in srgb,var(--sfp-b-primair) 7%,transparent);overflow:hidden}
 :root .sfp-kolommen--boeking>*{align-self:stretch;height:auto}
-:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{display:flex;flex-direction:column;gap:16px;background:var(--sfp-b-tint2);color:var(--sfp-b-primair);padding:40px 40px 32px;overflow-wrap:normal;word-break:normal;hyphens:manual}
+:root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{display:flex;flex-direction:column;gap:16px;background:var(--sfp-b-tint3);color:var(--sfp-b-primair);padding:40px 40px 32px;overflow-wrap:normal;word-break:normal;hyphens:manual}
 :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>*{margin:0}
 :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>:is(h2,h3){font-family:var(--sfp-b-kop);font-weight:var(--sfp-kopfont-gewicht,900);text-transform:uppercase;color:var(--sfp-b-primair);font-size:26px;line-height:1.15;padding:0;text-wrap:balance}
 :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child>p:not([class*="is-style-"]){font-size:15px;line-height:1.55;color:var(--sfp-b-body)}

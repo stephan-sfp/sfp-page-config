@@ -21,17 +21,18 @@
 		description: 'De incompanycalculator: volledig op de calculatorpagina, ingebed op de incompany-pagina\'s.',
 		category: 'sfp-bouwstenen',
 		icon: 'calculator',
-		attributes: { ingebed: { type: 'boolean', default: false } },
+		attributes: { ingebed: { type: 'boolean', default: false }, kaart: { type: 'boolean', default: true } },
 		supports: { html: false, multiple: false },
 		edit: function (props) {
 			var melding = !gegevens.aan ? 'Het onderdeel Calculator staat uit (SFP Beheer, Onderdelen).'
-				: (props.attributes.ingebed ? 'Ingebed: route en aantal mensen, daarna door naar de calculatorpagina.' : 'Volledig: alle stappen, voor de calculatorpagina.')
+				: (props.attributes.ingebed ? (props.attributes.kaart !== false ? 'Ingebed als kaart: voorbeeldbegroting met een knop naar de calculatorpagina.' : 'Ingebed: route en aantal mensen, daarna door naar de calculatorpagina.') : 'Volledig: alle stappen, voor de calculatorpagina.')
 				+ (gegevens.proef ? ' Proefmodus: alleen beheerders zien hem.' : '');
 			var blokProps = useBlockProps ? useBlockProps({ className: 'sfp-calc-editor' }) : { className: 'sfp-calc-editor' };
 			return el('div', blokProps,
 				InspectorControls ? el(InspectorControls, null,
 					el(PanelBody, { title: 'Incompanycalculator', initialOpen: true },
-						el(ToggleControl, { label: 'Ingebed (op een incompany-pagina)', checked: !!props.attributes.ingebed, onChange: function (w) { props.setAttributes({ ingebed: w }); } })
+						el(ToggleControl, { label: 'Ingebed (op een incompany-pagina)', checked: !!props.attributes.ingebed, onChange: function (w) { props.setAttributes({ ingebed: w }); } }),
+						props.attributes.ingebed ? el(ToggleControl, { label: 'Als kaart met voorbeeldbegroting', checked: props.attributes.kaart !== false, onChange: function (w) { props.setAttributes({ kaart: w }); } }) : null
 					)
 				) : null,
 				el('div', { style: { border: '1px dashed currentColor', borderRadius: '6px', padding: '24px', textAlign: 'center' } },

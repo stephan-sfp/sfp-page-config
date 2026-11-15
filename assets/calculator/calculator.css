@@ -180,3 +180,4 @@ html:has(body.sfp-calc-pagina){background:var(--sfp-b-wit,#fff)}
 .sfp-calc-sluit{display:inline-flex;align-items:center;justify-content:center;flex:none;width:48px;height:48px;margin:0 -8px 0 0;border-radius:50%;color:var(--sfp-b-primair)}
 .sfp-calc-sluit:hover{background:var(--sfp-b-tint3)}
 .sfp-calc-pagina-inhoud{padding:32px 20px 72px}
+
