@@ -1,0 +1,16 @@
+/*
+ * Naam met portret (stijl Naam met portret op een alinea). Sinds 3.73.0 een
+ * eigen bestand (10 KB-grens van basis.css); laadt altijd mee met basis.
+ * Overal zoals in de slot: portret links over twee regels, naam en rol onder
+ * elkaar, ook met de picture van Imagify. Slot en boekingskolom houden hun
+ * eigen maten (nlvorm-slot.css, kolommen.css).
+ */
+:root .is-style-sfp-wie{display:grid;grid-template-columns:56px minmax(0,1fr);gap:2px 12px;align-items:center}
+.is-style-sfp-wie>:is(img,picture),.is-style-sfp-wie img{display:block;width:56px;height:56px;margin:0;border-radius:50%;object-fit:cover}
+.is-style-sfp-wie>:is(img,picture){grid-row:1/span 2}
+.is-style-sfp-wie :is(strong,span){grid-column:-2;display:block;align-self:start;font-size:14px}
+.is-style-sfp-wie strong{align-self:end;font-size:inherit;color:var(--sfp-b-primair)}
+.is-style-sfp-wie br{display:none}
+.is-style-sfp-wie:not(:has(br,span))>*{grid-row:auto;align-self:center}
+:root .is-style-sfp-wie:not(:has(img)){grid-template-columns:minmax(0,1fr)}
+.sfp-kolommen--boeking .is-style-sfp-wie span{font-size:inherit}

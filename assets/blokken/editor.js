@@ -139,6 +139,26 @@
 		return uit;
 	}
 
+	/** Ankers op de pagina, behalve dat van één blok (3.73.0). */
+	function gebruikteAnkersBehalve( clientId ) {
+		var uit = {};
+		( function loop( blokken ) {
+			( blokken || [] ).forEach( function ( b ) {
+				if ( b.attributes && b.clientId !== clientId ) {
+					if ( b.attributes.anchor ) { uit[ b.attributes.anchor ] = true; }
+					if ( b.attributes.anker ) { uit[ b.attributes.anker ] = true; }
+				}
+				loop( b.innerBlocks );
+			} );
+		}( wp.data.select( 'core/block-editor' ).getBlocks() ) );
+		return uit;
+	}
+
+	/** Een getypt anker: kleine letters, zonder accenten, spatie wordt streepje (3.73.0). */
+	function ankerInvoer( v ) {
+		return String( v || '' ).toLowerCase().normalize( 'NFD' ).replace( /[\u0300-\u036f]/g, '' ).replace( /^#/, '' ).replace( /\s+/g, '-' ).replace( /[^a-z0-9_-]/g, '' );
+	}
+
 	/**
 	 * "Link naar dit blok": de plugin maakt het anker zelf (ontwerpregel 7).
 	 * Een bestaand anker blijft staan, zodat links ernaar blijven werken.
@@ -684,8 +704,15 @@
 			props.attributes.logoId ? el( c.Button, { key: 'w', variant: 'link', isDestructive: true, onClick: function () { props.setAttributes( { logoId: 0 } ); } }, 'Geen logo' ) : null,
 			uitleg( 'Het logo staat in de tabbalk: grijs, en in kleur als de tab open staat. De alt-tekst maakt de plugin: de naam met (logo). Zonder logo staat de naam in de balk.' ),
 		] ) : null;
+		// Anker (3.73.0): een link of de knop onderaan naar #anker opent deze tab.
+		var ankerPaneel = portfolioVorm ? null : paneel( 'Link naar deze tab', [
+			tekstveld( 'Anker', props.attributes.anker, function ( v ) { props.setAttributes( { anker: ankerInvoer( v ) } ); }, 'Bijvoorbeeld: orientatiegesprek. Een link naar #orientatiegesprek, of de knop onderaan met dat anker, opent deze tab. Elk anker maar een keer per pagina.' ),
+			props.attributes.anker && gebruikteAnkersBehalve( props.clientId )[ props.attributes.anker ] ? el( 'span', { key: 'dubbel', className: 'sfp-blokmelding' }, 'Dit anker staat al op een ander blok van deze pagina. Kies een ander.' ) : null,
+			linkNaarBlok( props, function () { var t = wp.data.select( 'core/block-editor' ).getBlockAttributes( props.clientId ); return ( t && t.titel ) || 'tab'; } ),
+		] );
 		return el( Fragment, null,
 			logoPaneel,
+			ankerPaneel,
 			kaartVorm && MediaUploadT ? paneel( 'Icoon', [
 				icoon && icoon.source_url ? el( 'img', { key: 'v', src: icoon.source_url, alt: '', style: { display: 'block', width: '72px', height: '72px', objectFit: 'contain', marginBottom: '12px' } } ) : null,
 				props.attributes.icoonId ? null : el( 'div', { key: 'set', className: 'sfp-iconenkeuze', role: 'radiogroup', 'aria-label': 'Icoon uit de vaste set', style: { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '6px', marginBottom: '12px' } },
