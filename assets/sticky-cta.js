@@ -47,6 +47,17 @@
     }
 
     /**
+     * Het tabpaneel (sfp/tabs) waarin een onderdeel staat, of null (3.73.0).
+     *
+     * @param {Element} el Onderdeel.
+     * @return {Element|null}
+     */
+    function tabPaneel(el) {
+        var p = el && el.closest ? el.closest('.sfp-tabs [role="tabpanel"]') : null;
+        return p && p.id ? p : null;
+    }
+
+    /**
      * Zoek het formulier waar de knop heen springt.
      *
      * @param {Object} cfg Instelling.
@@ -65,7 +76,9 @@
         if (cfg.vast) {
             var boek = document.querySelector('.sfp-boek-sectie, .sfp-boekkaart, .latepoint-book-form-wrapper');
             if (boek) {
-                el = boek.closest('.sfp-boek-sectie, .sfp-sectie, section') || boek;
+                // Sinds 3.73.0: staat het gesprek in een tab, dan naar die tab;
+                // het tabsscript opent hem.
+                el = tabPaneel(boek) || boek.closest('.sfp-boek-sectie, .sfp-sectie, section') || boek;
                 if (!el.id) el.id = 'plan-een-gesprek';
                 return el;
             }
@@ -268,7 +281,7 @@
         // de bovenkant en het formulier. Is er een onderin beeld (het onderste
         // derde van het scherm), dan wijkt de balk.
         var knoppenOnder = 0;
-        var knoppen = vindKnoppen(bovenkant, formulier);
+        var knoppen = vindKnoppen(bovenkant, formulier && tabPaneel(formulier) ? formulier.closest('.sfp-tabs') : formulier);
         if (knoppen.length) {
             var inZone = typeof WeakSet !== 'undefined' ? new WeakSet() : null;
             var zone = new IntersectionObserver(function (entries) {
@@ -284,10 +297,13 @@
         }
 
         if (formulier) {
+            // Een doel in een tab (3.73.0) is verborgen zolang een andere tab
+            // open staat: dan telt het blok Tabs als het formulier.
+            var waar = tabPaneel(formulier) ? formulier.closest('.sfp-tabs') : formulier;
             new IntersectionObserver(function (entries) {
                 formulierVisible = entries[entries.length - 1].isIntersecting;
                 updateVisibility();
-            }, { threshold: 0 }).observe(formulier);
+            }, { threshold: 0 }).observe(waar);
         }
     }
 

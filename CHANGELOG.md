@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.73.0] - 2026-11-16
+
+### Toegevoegd
+- Tabs: elke tab kan een anker krijgen (zijbalk van de tab, "Link naar deze tab"). Een link naar #anker opent die tab en zet de tabbalk in beeld onder de kopbalk, bij laden, bij een wijziging van het anker en bij een klik. Nodig voor de groepstrainingen en SwS, waar het gesprek achter een tab komt.
+
+### Gewijzigd
+- Knop onderaan: staat het doel in een tab, dan opent de knop die tab. De knop wijkt zolang het blok Tabs in beeld is, ook als een andere tab open staat. In de wachtlijststand gaat de knop naar de tab met de boekkaart.
+- Naam met portret (wie-regel): overal portret links, naam en rol onder elkaar, zoals in de slot. Buiten de slot vielen naam en rol naast elkaar uit elkaar. De opmaak staat in een eigen bestand (wie.css) dat met basis.css meelaadt, zodat basis.css onder de 10 KB blijft.
+
 ## [3.72.1] - 2026-11-15
 
 ### Gerepareerd

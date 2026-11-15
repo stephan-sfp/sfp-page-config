@@ -310,6 +310,8 @@ function sfp_page_config_blokken() {
                     'type'    => 'number',
                     'default' => 0
                 ),
+                // Anker (3.73.0): een link of de knop onderaan naar #anker opent deze tab.
+                'anker'   => $tekst,
             ),
             'render'      => 'sfp_page_config_render_tab',
         ),
@@ -899,7 +901,9 @@ function sfp_page_config_blokken_bestanden_voor( array $namen ) {
     unset( $bestanden['basis'] );
     $bestanden = array_keys( $bestanden );
     if ( $basis ) {
-        array_unshift( $bestanden, 'basis' );
+        // Sinds 3.73.0: de wie-regel in een eigen bestand, altijd met basis.
+        $bestanden = array_values( array_diff( $bestanden, array( 'wie' ) ) );
+        array_unshift( $bestanden, 'basis', 'wie' );
     }
     return $bestanden;
 }
@@ -1045,7 +1049,7 @@ function sfp_page_config_blokken_editor_css() {
  * @return string[]
  */
 function sfp_page_config_blokken_editor_bestanden() {
-    return array( 'basis', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'held-gesplitst', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'verhaal', 'formulier', 'incompany', 'keuzehulp-vorm', 'editor' );
+    return array( 'basis', 'wie', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'held-gesplitst', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'verhaal', 'formulier', 'incompany', 'keuzehulp-vorm', 'editor' );
 }
 
 /**
@@ -1118,9 +1122,17 @@ function sfp_page_config_blokken_js() {
         . 'document.querySelectorAll(".sfp-tabs").forEach(function(w){var t=[].slice.call(w.querySelectorAll("[role=tab]"));if(!t.length)return;'
         . 'function k(x,f){t.forEach(function(y){var o=y===x;y.setAttribute("aria-selected",o?"true":"false");y.tabIndex=o?0:-1;var p=document.getElementById(y.getAttribute("aria-controls"));if(p)p.hidden=!o;});if(f)x.focus();}'
         . 't.forEach(function(x,i){x.addEventListener("click",function(){k(x);});x.addEventListener("keydown",function(e){var n=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(n)k(t[(i+n+t.length)%t.length],1);});});});'
-        . 'function o(){var h=location.hash.slice(1);if(!h)return;var d=document.getElementById(decodeURIComponent(h));if(d&&d.tagName==="DETAILS")d.open=true;}'
-        . 'o();window.addEventListener("hashchange",o);'
-        . 'document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[href^=\\"#\\"]");if(a&&a.getAttribute("href")===location.hash)setTimeout(o,0);});'
+        // Sinds 3.73.0: een anker in een tab (of de tab zelf) opent die tab en
+        // brengt de tabbalk in beeld, onder een vaste kopbalk.
+        . 'function g(h){var d=null;try{d=document.getElementById(decodeURIComponent(h))}catch(e){d=document.getElementById(h)}return d}'
+        . 'function p(d){var q=d.getAttribute("role")==="tab"?document.getElementById(d.getAttribute("aria-controls")):d.closest("[role=tabpanel]");return q&&q.closest(".sfp-tabs")?q:null}'
+        . 'function b(){var m=0;document.querySelectorAll(".site-header,#masthead,#ast-fixed-header,.ast-sticky-active").forEach(function(k){var s=getComputedStyle(k),r=k.getBoundingClientRect();if(/fixed|sticky/.test(s.position)&&r.height&&r.top<=1&&r.bottom>m)m=r.bottom});return m}'
+        . 'function n(w){var y=w.getBoundingClientRect().top+window.pageYOffset-b()-16;window.scrollTo(0,Math.max(0,y))}'
+        . 'function o(h,z){if(!h)return 0;var d=g(h);if(!d)return 0;var q=p(d);if(q){var w=q.closest(".sfp-tabs"),x=w.querySelector("[aria-controls=\\""+q.id+"\\"]");if(x&&x.getAttribute("aria-selected")!=="true")x.click();}if(d.tagName==="DETAILS")d.open=true;if(q&&z)n(q.closest(".sfp-tabs"));return q?1:0}'
+        . 'var h0=location.hash.slice(1);if(o(h0,1)){window.addEventListener("load",function(){if(location.hash.slice(1)===h0)o(h0,1)})}'
+        . 'window.addEventListener("hashchange",function(){o(location.hash.slice(1),1)});'
+        . 'document.addEventListener("click",function(e){if(e.defaultPrevented||e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var a=e.target.closest&&e.target.closest("a[href^=\\"#\\"]");if(!a)return;var h=a.getAttribute("href").slice(1),d=h&&g(h);if(!d)return;'
+        . 'if(p(d)){e.preventDefault();e.stopPropagation();o(h,1);if(history.replaceState)history.replaceState(null,"","#"+h);}else if(d.tagName==="DETAILS"){setTimeout(function(){o(h,0)},0)}},true);'
         . '})();';
     echo '<script id="sfp-blokken-js" nowprocket>' . $js . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- vaste JS uit dit bestand.
 }
@@ -1561,8 +1573,11 @@ function sfp_page_config_render_tabs( $attrs, $content, $block = null ) {
         if ( 'sfp/tab' !== $tab->name ) {
             continue;
         }
-        $id       = wp_unique_id( 'sfp-tab-' );
-        $titel    = wp_kses( sfp_page_config_blok_attr( $tab->attributes, 'titel' ), sfp_page_config_blok_titel_kses() );
+        // Sinds 3.73.0: een tab met een anker houdt dat anker als id, zodat een
+        // link naar #anker (of de knop onderaan) die tab opent.
+        $anker    = sanitize_title( sfp_page_config_blok_attr( $tab->attributes, 'anker' ) );
+        $id       = '' !== $anker ? $anker : wp_unique_id( 'sfp-tab-' );
+        $titel   = wp_kses( sfp_page_config_blok_attr( $tab->attributes, 'titel' ), sfp_page_config_blok_titel_kses() );
         $eerste   = $open === $nr;
         $knoppen .= '<button type="button" role="tab" id="' . esc_attr( $id ) . '-k" aria-controls="' . esc_attr( $id ) . '" aria-selected="' . ( $eerste ? 'true' : 'false' ) . '"' . ( $eerste ? '' : ' tabindex="-1"' ) . ( ! empty( $dagen[ $nr ] ) ? ' data-sfp-dagen="' . esc_attr( (string) $dagen[ $nr ] ) . '"' : '' ) . '>' . $titel . '</button>';
         $binnen   = $tab->render();

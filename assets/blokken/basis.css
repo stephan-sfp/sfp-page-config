@@ -86,9 +86,6 @@
 .is-style-sfp-groot{font-family:var(--sfp-b-kop);font-weight:700;font-size:clamp(19px,.5vw + 15px,22px);line-height:1.3;color:var(--sfp-b-primair)}
 .is-style-sfp-prijs{font-weight:700;font-size:15px;line-height:1.3;color:var(--sfp-b-primair);padding-top:14px;border-top:1px solid var(--sfp-b-lijn)}
 .is-style-sfp-prijs .sfp-excl{font-weight:400;font-size:13px;color:var(--sfp-b-body)}
-:root .is-style-sfp-wie{display:flex;gap:12px;align-items:center}
-.is-style-sfp-wie img{width:56px;height:56px;border-radius:50%;display:block}
-.is-style-sfp-wie strong{display:block;color:var(--sfp-b-primair)}
 :root .sfp-sectie .is-style-sfp-mailregel{margin-top:40px;padding:0 16px;font-size:15px;line-height:1.9;text-align:center}
 .is-style-sfp-klein{font-size:14px}
 
