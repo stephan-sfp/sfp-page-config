@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SFP_CALCULATOR_DB_VERSIE', '2' );
+define( 'SFP_CALCULATOR_DB_VERSIE', '3' );
 
 /**
  * Naam van de tabel.
@@ -71,13 +71,17 @@ function sfp_calculator_tabel_klaar() {
   pdf_pogingen tinyint(3) unsigned NOT NULL DEFAULT 0,
   pdf_volgende datetime NULL DEFAULT NULL,
   pdf_bestand varchar(100) NOT NULL DEFAULT '',
+  crm_status varchar(10) NOT NULL DEFAULT '',
+  crm_pogingen tinyint(3) unsigned NOT NULL DEFAULT 0,
+  crm_volgende datetime NULL DEFAULT NULL,
   geanonimiseerd tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY  (id),
   UNIQUE KEY kenmerk (kenmerk),
   KEY email (email),
   KEY gestart_op (gestart_op),
   KEY afgerond_op (afgerond_op),
-  KEY pdf_status (pdf_status)
+  KEY pdf_status (pdf_status),
+  KEY crm_status (crm_status)
 ) {$charset};";
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta( $sql );
@@ -193,6 +197,9 @@ function sfp_calculator_tellingen() {
         'pdf_klaar'   => 0,
         'pdf_wacht'   => 0,
         'pdf_mislukt' => 0,
+        'crm_ok'      => 0,
+        'crm_wacht'   => 0,
+        'crm_mislukt' => 0,
     );
     if ( ! sfp_calculator_tabel_klaar() ) {
         return $leeg;
@@ -208,7 +215,10 @@ function sfp_calculator_tellingen() {
                 SUM(afgerond_op IS NOT NULL AND route = 'B') AS route_b,
                 SUM(pdf_status = 'klaar') AS pdf_klaar,
                 SUM(pdf_status = 'wacht') AS pdf_wacht,
-                SUM(pdf_status = 'mislukt') AS pdf_mislukt
+                SUM(pdf_status = 'mislukt') AS pdf_mislukt,
+                SUM(crm_status = 'verstuurd') AS crm_ok,
+                SUM(crm_status IN ('wacht','bezig')) AS crm_wacht,
+                SUM(crm_status IN ('mislukt','geen')) AS crm_mislukt
              FROM {$tabel} WHERE proef = 0", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
             $grens
         ),

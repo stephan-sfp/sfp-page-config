@@ -690,9 +690,14 @@ function sfp_calculator_stand() {
     $inst = sfp_calculator_instellingen();
     $foto = (int) $inst['contact']['foto'];
     $logo = (int) $inst['logo'];
+    // Het webhookadres is een geheim: de stand meldt alleen of het er is.
+    $webhook         = '' !== (string) $inst['webhook'];
+    $inst['webhook'] = '';
     return array(
         'aan'           => function_exists( 'sfp_page_config_onderdeel_aan' ) && sfp_page_config_onderdeel_aan( 'calculator' ),
         'instellingen'  => $inst,
+        'webhook_ok'    => $webhook,
+        'crm_sleutels'  => array_keys( sfp_calculator_crm_payload_leeg() ),
         'norm'          => sfp_calculator_norm(),
         'site_norm'     => sfp_calculator_site_norm( $inst ),
         'prijs_paden'   => sfp_calculator_prijs_paden(),
