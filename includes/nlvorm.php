@@ -345,6 +345,15 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
         if ( function_exists( 'sfp_page_config_cursus_varianten_aan' ) && sfp_page_config_cursus_varianten_aan( $info ) ) {
             sfp_page_config_nlvorm_schema_groepen( $post_id, array(), $info );
         }
+        // Met cursusvarianten de prijs van de standaardvariant (2 dagen als die
+        // een prijs heeft), in de vorm van de groepskaarten (3.70.1, wens Stephan 15-11-2026).
+        if ( function_exists( 'sfp_page_config_cursus_varianten' ) ) {
+            $v = sfp_page_config_cursus_varianten( $post_id );
+            if ( $v['aan'] && $v['standaard'] > 0 ) {
+                $bedrag = sfp_page_config_cursus_prijs( $v['info'], $v['standaard'] );
+                $prijs  = $bedrag > 0 ? '<p class="is-style-sfp-prijs"><span class="sfp-groep__duur">' . esc_html( sfp_page_config_variant_naam( $v['standaard'] ) ) . '</span> &bull; &euro;&nbsp;' . esc_html( number_format_i18n( $bedrag ) ) . ' <span class="sfp-excl">' . esc_html( sfp_page_config_tekst( 'groep_excl_btw' ) ) . '</span></p>' : $prijs;
+            }
+        }
         // Geen groep gepland (3.31.0): één wachtlijstkaart, zonder datumrijen.
         $link = '<a class="sfp-tekstlink" href="#' . esc_attr( $doel ) . '" data-sfp-groep="wachtlijst">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_link' ) ) . '</a>';
         return $css . '<div ' . sfp_page_config_blok_omhulling( array( 'sfp-groepen', 'sfp-groepen--leeg' ) ) . '>'
