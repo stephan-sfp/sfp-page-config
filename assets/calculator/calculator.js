@@ -791,12 +791,6 @@
 
 		/* ---------- Ingebed ---------- */
 
-		if (C.ingebed && C.kaart) {
-			// 3.66.0: de kaart staat al in de pagina; alleen meten.
-			var kaart = $('#sfp-calc-naar');
-			if (kaart) kaart.addEventListener('click', function () { meld('calculator_start'); });
-			return;
-		}
 		if (C.ingebed) {
 			app.innerHTML = '<div class="sfp-calc-ingebed"><h2 class="sfp-calc-ikop">' + esc(t('ingebed_kop')) + '</h2><p class="sfp-calc-intro">' + esc(t('ingebed_zin')) + '</p>'
 				+ '<div class="sfp-calc-irij"><div class="sfp-calc-veld"><label for="sfp-calc-iaantal">' + esc(t('mensen_aantal')) + '</label><input id="sfp-calc-iaantal" type="number" inputmode="numeric" min="1" max="' + N.max_deelnemers + '"></div>'

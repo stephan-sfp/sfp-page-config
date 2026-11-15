@@ -84,7 +84,6 @@ $bestanden = array(
     'sfp-longread-nav'      => 'longread-nav.css',
     'sfp-zelftest'          => 'zelftest/zelftest.css',
     'sfp-calculator'        => 'calculator/calculator.css',
-    'sfp-calculator-kaart'  => 'calculator/kaart.css',
 );
 
 // Every handle that goes inline is known to the exclusion list, and the other way round.
