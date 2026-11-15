@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.70.1] - 2026-11-15
+
+### Gerepareerd
+- Trainingspagina zonder geplande groep (wachtlijst): de kaart toonde de gewone prijs (bij de vier NL-trainingen € 1.995, de prijs van 3 dagen). Met cursusvarianten toont hij nu de standaardvariant, 2 dagen, in de vorm van de groepskaarten: "2 dagen • € 1.495 excl. btw" (wens Stephan).
+
 ## [3.70.0] - 2026-11-15
 
 ### Gewijzigd
