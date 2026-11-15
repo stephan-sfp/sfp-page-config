@@ -35,6 +35,8 @@
 /* 3.65.0: een klikbare kaart voert altijd de accentrand boven, ook in de stijl vlak (dienstkaarten, artikelkaarten), op alle sites gelijk */
 :root .sfp-kaart--vlak.sfp-kaart--link{border-top:4px solid var(--sfp-b-secundair)}
 :root .sfp-kaart--vlak.sfp-kaart--link:hover{border-top-color:var(--sfp-b-secundair)}
+/* 3.72.0: situatiekaarten (Herkenbaar?) voeren ook de accentrand boven (besluit Stephan 15-11-2026) */
+:root .sfp-kolommen--situaties>.sfp-kaart.sfp-kaart--vlak{border-top:4px solid var(--sfp-b-secundair)}
 /* 3.65.0: de link onderin (pijlregel of knop) staat in elke kaart van een rij op dezelfde hoogte */
 :root .sfp-kaart--link>.wp-block-buttons:last-child,:root .sfp-kaart--link>.wp-block-buttons:nth-last-child(2):has(+.sfp-kaart__link){margin-top:auto}
 /* Klikbare kaart (branding.md, 3.36.0): onder de muis iets omhoog met een zachte schaduw in de primaire kleur, nooit grijs; zonder beweging als de bezoeker dat zo heeft ingesteld */
