@@ -461,7 +461,7 @@ function sfp_page_config_render_netwerk() {
                 )
             )
             : '';
-        $kaarten .= '<a class="sfp-kaart sfp-kaart--vlak sfp-klikkaart sfp-netwerk__kaart" href="' . esc_url( $l['url'] ) . '">' . $icoon
+        $kaarten .= '<a class="sfp-kaart sfp-klikkaart sfp-netwerk__kaart" href="' . esc_url( $l['url'] ) . '">' . $icoon
             . '<span class="sfp-netwerk__tekst"><strong>' . esc_html( $l['naam'] ) . '</strong>' . esc_html( $l['zin'] ) . '</span>'
             . '<span class="sfp-netwerk__naar" aria-hidden="true">' . esc_html( sfp_page_config_tekst( 'netwerk_naar' ) ) . '</span></a>';
     }

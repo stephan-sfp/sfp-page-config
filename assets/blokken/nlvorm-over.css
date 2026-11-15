@@ -46,7 +46,7 @@
 :root .sfp-netwerk{gap:24px}
 :root .sfp-kolommen+.sfp-netwerk,:root .sfp-sectie__binnen>:is(h2,p)+.sfp-netwerk{margin-top:36px}
 :root .sfp-kaart.sfp-netwerk__kaart{display:flex;flex-direction:column;gap:14px;align-items:flex-start;text-decoration:none;color:var(--sfp-b-body);padding:32px 28px}
-:root .sfp-netwerk__kaart:hover{border-color:var(--sfp-b-primair)}
+:root .sfp-netwerk__kaart:hover{border-color:var(--sfp-b-primair);border-top-color:var(--sfp-b-secundair)}
 /* 3.36.0 (punt 10): klikbare kaart (branding.md). De hele kaart is de link, titel en zin zonder onderstreping; onder in de kaart de tekstlink met pijl.
    Astra onderstreept links in de inhoud tot (0,5,1) onder de muis; deze regel staat op (0,6,1). */
 :root .entry-content a.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart,:root a.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart.sfp-netwerk__kaart{text-decoration:none;color:var(--sfp-b-body)}

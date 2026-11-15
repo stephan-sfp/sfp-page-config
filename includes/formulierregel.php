@@ -121,11 +121,15 @@ function sfp_page_config_formulierregel_blok( $html, $block ) {
     if ( ! $id || ! in_array( $id, sfp_page_config_formulierregel_ids(), true ) ) {
         return $html;
     }
+    // Niet op een pagina met het blok Contactgegevens: daar staan bellen en mailen al (3.71.0, besluit Stephan 15-11-2026).
+    if ( is_singular() && has_block( 'sfp/contactgegevens', get_queried_object_id() ) ) {
+        return $html;
+    }
     static $css = false;
     $stijl = '';
     if ( ! $css ) {
         $css   = true;
-        $stijl = '<style id="sfp-formulierregel">.sfp-form-fallback{margin:.75rem 0 0;font-size:.9em;color:var(--ast-global-color-3)}</style>';
+        $stijl = '<style id="sfp-formulierregel">.sfp-form-fallback{margin:24px 0 0;font-size:.9em;color:var(--ast-global-color-3)}</style>';
     }
     return $html . $stijl . sfp_page_config_formulierregel_html();
 }
