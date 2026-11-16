@@ -4,6 +4,18 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.76.0] - 2026-11-16
+
+### Toegevoegd
+- Prijstabel in SFP Beheer, Onderdelen, Prijzen: een tabel voor het hele netwerk, in euro exclusief btw, met een kolom voor de Nederlandse sites en een voor SpeakwithSteve. Bewerken op de bronsite (SFP); de andere sites halen hem elk uur op en na elke opslag, en rekenen met de bewaarde tabel als de bron even weg is (besluit Stephan 16-11).
+- Openbare leesroute /wp-json/sfp/v1/prijzen voor de offertebouwer en de andere sites.
+- Korte code [sfp_prijs sleutel="..."] voor een bedrag in een pagina.
+- Instelling per site: welke kolom de site leest (SwS: eigen bedragen).
+
+### Gewijzigd
+- De incompanycalculator haalt al zijn bedragen uit de prijstabel; de uitkomsten blijven gelijk.
+- Cursusdata: een training met prijzen per aantal dagen volgt de tabel als het veld voor dat aantal dagen leeg is. SFP Beheer, Prijzen toont welke trainingen een eigen prijs hebben.
+
 ## [3.75.1] - 2026-11-16
 
 ### Gerepareerd
