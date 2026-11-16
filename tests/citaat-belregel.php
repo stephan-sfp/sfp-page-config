@@ -15,6 +15,9 @@ $c    = array(
 	'oude citaatmaat weg'      => false === strpos( $css, 'clamp(20px,1.1vw + 8px,24px)' ),
 	'kapitalen blijven'        => 1 === preg_match( '/sfp-founder__citaat p,:root \.sfp-founder__citaat-tekst\{[^}]*text-transform:uppercase/', $css ),
 	'stijl altijd mee'         => false === strpos( $php, 'static $css' ),
+	'founder hoeken gelijk'    => false === strpos( $css, 'var(--sfp-b-r-kaart) 56px' ),
+	'boekingskaart sticky'     => false !== strpos( $css, ':root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{align-self:start;position:sticky;top:24px}' ),
+	'body clip bij boeking'    => false !== strpos( $css, 'html:has(.sfp-kolommen--boeking),body:has(.sfp-kolommen--boeking){overflow-x:clip!important}' ),
 	'stijl 24 px boven'        => false !== strpos( $php, ':root .sfp-form-fallback.sfp-form-fallback{margin:24px 0 0;' ),
 );
 foreach ( $c as $wat => $ok ) {

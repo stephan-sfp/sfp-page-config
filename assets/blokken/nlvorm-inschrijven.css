@@ -58,7 +58,7 @@
 @media (min-width:981px){
   :root .sfp-kolommen--inschrijven{align-items:stretch}
   :root .sfp-kolommen--inschrijven>.sfp-kolom:has(.sfp-founder){grid-template-rows:auto auto minmax(0,1fr)}
-  :root .sfp-founder{display:block;position:relative;overflow:hidden;border-radius:var(--sfp-b-r-kaart) var(--sfp-b-r-kaart) var(--sfp-b-r-kaart) 56px;min-height:420px;margin-top:14px;isolation:isolate}
+  :root .sfp-founder{display:block;position:relative;overflow:hidden;border-radius:var(--sfp-b-r-kaart);min-height:420px;margin-top:14px;isolation:isolate}
 }
 :root .sfp-founder__foto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block;z-index:0;border-radius:0;max-width:none}
 :root .sfp-founder__tekst{position:absolute;inset:auto 0 0 0;z-index:1;padding:120px 32px 30px;background:linear-gradient(180deg,transparent 0,color-mix(in srgb,var(--sfp-b-primair) 88%,transparent) 55%,color-mix(in srgb,var(--sfp-b-primair) 96%,transparent) 100%);display:grid;gap:14px}
@@ -70,7 +70,7 @@
 :root .sfp-founder__wie{display:grid;gap:2px;margin:0;font-size:13px;color:var(--sfp-b-wit);line-height:1.35}
 :root .sfp-founder__wie span{opacity:.85}
 :root .sfp-founder__wie strong{color:var(--sfp-b-wit);font-size:15px}
-:root .sfp-editor-founder{display:block;position:relative;min-height:420px;background:var(--sfp-b-primair);border-radius:var(--sfp-b-r-kaart) var(--sfp-b-r-kaart) var(--sfp-b-r-kaart) 56px;overflow:hidden}
+:root .sfp-editor-founder{display:block;position:relative;min-height:420px;background:var(--sfp-b-primair);border-radius:var(--sfp-b-r-kaart);overflow:hidden}
 @media (min-width:701px) and (max-width:980px){:root .sfp-kolommen--inschrijven{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:32px}}
 @media (max-width:700px){:root .sfp-kolommen--inschrijven{grid-template-columns:minmax(0,1fr);gap:32px}:root .sfp-kolommen--inschrijven .sfp-kaart{padding:30px 22px 26px}}
 
@@ -103,3 +103,11 @@
 }
 :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-block textarea{min-height:110px;resize:vertical}
 :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-textarea-block{flex:1 1 100%!important}
+/* 3.74.0: de linkerkaart staat bovenaan en blijft staan bij scrollen (besluit Stephan 16-11). De netwerkbrede Customizer-CSS zet html en body op overflow-x:hidden; dan werkt sticky niet. clip knipt hetzelfde af zonder scrollende laag (zoals bij artikelen). De achtergrond van de linkerhelft komt van de kaart zelf, zodat hij doorloopt onder de kolom. */
+@media (min-width:768px){
+  :root .sfp-kolommen.sfp-kolommen--boeking{overflow:clip;background:linear-gradient(90deg,var(--sfp-b-tint3) 0 45%,var(--sfp-b-wit) 45% 100%)}
+}
+@media (min-width:768px) and (min-height:720px){
+  html:has(.sfp-kolommen--boeking),body:has(.sfp-kolommen--boeking){overflow-x:clip!important}
+  :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{align-self:start;position:sticky;top:24px}
+}
