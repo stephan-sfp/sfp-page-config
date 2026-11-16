@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.74.0] - 2026-11-16
+
+### Gewijzigd
+- Boekingskaart (indeling boeking): de linkerkaart staat bovenaan en blijft staan bij scrollen, vanaf tablet (768 px breed, 720 px hoog). De achtergrond van de linkerhelft loopt door tot onderaan. Op pagina's met een boekingskaart knipt html en body voortaan met clip in plaats van hidden, zoals bij artikelen; anders werkt meescrollen niet.
+- Foto met citaat: de hoek linksonder is gelijk aan de andere hoeken (was 56 px).
+
 ## [3.73.2] - 2026-11-16
 
 ### Gerepareerd
