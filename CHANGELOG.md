@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.73.2] - 2026-11-16
+
+### Gerepareerd
+- Belregel onder een formulier in een tab: kreeg geen opmaak en stond tegen de verzendknop. WordPress tekent de inhoud van een tab twee keer en de stijl ging alleen bij de eerste keer mee. De stijl gaat nu altijd mee; ook in een tab 24 px ruimte, kleinere letter en tekstkleur, zoals buiten tabs.
+
+### Gewijzigd
+- Foto met citaat: het citaat is kleiner, 22 px op 1440 en 19 px op 1024 (was 24 en 20). Kapitalen blijven (besluit Stephan 16-11).
+
 ## [3.73.1] - 2026-11-16
 
 ### Gewijzigd

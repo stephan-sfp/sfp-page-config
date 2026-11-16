@@ -125,12 +125,11 @@ function sfp_page_config_formulierregel_blok( $html, $block ) {
     if ( is_singular() && has_block( 'sfp/contactgegevens', get_queried_object_id() ) ) {
         return $html;
     }
-    static $css = false;
-    $stijl = '';
-    if ( ! $css ) {
-        $css   = true;
-        $stijl = '<style id="sfp-formulierregel">:root .sfp-form-fallback.sfp-form-fallback{margin:24px 0 0;font-size:.9em;color:var(--ast-global-color-3)}</style>';
-    }
+    // De stijl gaat sinds 3.73.2 altijd mee. Eerder alleen bij de eerste keer,
+    // maar WordPress tekent de inhoud van een tab twee keer (eerst zelf, daarna
+    // via het blok Tabs) en gooit die eerste uitvoer weg: in een tab ontbrak de
+    // stijl en stond de regel tegen de verzendknop.
+    $stijl = '<style class="sfp-formulierregel">:root .sfp-form-fallback.sfp-form-fallback{margin:24px 0 0;font-size:.9em;color:var(--ast-global-color-3)}</style>';
     return $html . $stijl . sfp_page_config_formulierregel_html();
 }
 
