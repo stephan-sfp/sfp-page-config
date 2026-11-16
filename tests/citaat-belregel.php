@@ -8,7 +8,7 @@
  */
 $root = dirname( __DIR__ );
 $fout = 0;
-$css  = file_get_contents( $root . '/assets/blokken/nlvorm-inschrijven.css' );
+$css  = file_get_contents( $root . '/assets/blokken/nlvorm-inschrijven.css' ) . file_get_contents( $root . '/assets/blokken/nlvorm-boeking.css' );
 $php  = file_get_contents( $root . '/includes/formulierregel.php' );
 $c    = array(
 	'citaat 22/19 px'          => false !== strpos( $css, 'font-size:clamp(19px,.7vw + 11.9px,22px)' ),
@@ -18,6 +18,8 @@ $c    = array(
 	'founder hoeken gelijk'    => false === strpos( $css, 'var(--sfp-b-r-kaart) 56px' ),
 	'boekingskaart sticky'     => false !== strpos( $css, ':root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{align-self:start;position:sticky;top:24px}' ),
 	'body clip bij boeking'    => false !== strpos( $css, 'html:has(.sfp-kolommen--boeking),body:has(.sfp-kolommen--boeking){overflow-x:clip!important}' ),
+	'belofte opmaak'           => false !== strpos( $css, ':root .sfp-kolommen--boeking .sfp-tabpaneel>.sfp-gesprek-belofte{padding:24px 40px 0;' ),
+	'kalenderkop weg bij datum' => false !== strpos( $css, '.current-step-booking__datepicker .latepoint-heading-w{display:none}' ),
 	'stijl 24 px boven'        => false !== strpos( $php, ':root .sfp-form-fallback.sfp-form-fallback{margin:24px 0 0;' ),
 );
 foreach ( $c as $wat => $ok ) {

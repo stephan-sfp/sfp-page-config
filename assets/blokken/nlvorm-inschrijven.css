@@ -103,11 +103,3 @@
 }
 :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-block textarea{min-height:110px;resize:vertical}
 :root .sfp-kolommen--inschrijven .srfm-form-container .srfm-textarea-block{flex:1 1 100%!important}
-/* 3.74.0: de linkerkaart staat bovenaan en blijft staan bij scrollen (besluit Stephan 16-11). De netwerkbrede Customizer-CSS zet html en body op overflow-x:hidden; dan werkt sticky niet. clip knipt hetzelfde af zonder scrollende laag (zoals bij artikelen). De achtergrond van de linkerhelft komt van de kaart zelf, zodat hij doorloopt onder de kolom. */
-@media (min-width:768px){
-  :root .sfp-kolommen.sfp-kolommen--boeking{overflow:clip;background:linear-gradient(90deg,var(--sfp-b-tint3) 0 45%,var(--sfp-b-wit) 45% 100%)}
-}
-@media (min-width:768px) and (min-height:720px){
-  html:has(.sfp-kolommen--boeking),body:has(.sfp-kolommen--boeking){overflow-x:clip!important}
-  :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{align-self:start;position:sticky;top:24px}
-}

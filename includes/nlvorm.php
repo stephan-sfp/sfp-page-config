@@ -876,6 +876,10 @@ function sfp_page_config_nlvorm_delen( $inhoud ) {
     if ( false !== strpos( $inhoud, '<!-- wp:sfp/founder' ) || preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"(boek|inschrijven|boeking)"/', $inhoud ) ) {
         $delen[] = 'nlvorm-inschrijven';
     }
+    // Sinds 3.75.0: de aanvullingen van de boekingskaart in een eigen bestand.
+    if ( preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"boeking"/', $inhoud ) ) {
+        $delen[] = 'nlvorm-boeking';
+    }
     if ( preg_match( '/<!-- wp:sfp\/kolommen \{[^}]*"indeling":"pakketten"|<!-- wp:sfp\/uitklap \{[^}]*"variant":"vergelijk"/', $inhoud ) ) {
         $delen[] = 'nlvorm-coach';
     }

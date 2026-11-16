@@ -1049,7 +1049,7 @@ function sfp_page_config_blokken_editor_css() {
  * @return string[]
  */
 function sfp_page_config_blokken_editor_bestanden() {
-    return array( 'basis', 'wie', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'held-gesplitst', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-over', 'nlvorm-archief', 'verhaal', 'formulier', 'incompany', 'keuzehulp-vorm', 'editor' );
+    return array( 'basis', 'wie', 'held', 'kolommen', 'kaart', 'stappen', 'uitklap', 'tabs', 'lijst', 'faq', 'tabel', 'deelkaart', 'samenvatting', 'kader', 'citaat', 'inzicht', 'lees-ook', 'vervolg', 'logostrook', 'keuzehulp', 'review-kaart', 'definitie', 'zelftest-cta', 'kopieer', 'bronnen', 'praktijkblok', 'auteursbio', 'merkwaarden', 'nlvorm-held', 'held-gesplitst', 'nlvorm-inhoud', 'nlvorm-groepen', 'nlvorm-inschrijven', 'nlvorm-coach', 'nlvorm-home', 'nlvorm-slot', 'nlvorm-boeking', 'nlvorm-over', 'nlvorm-archief', 'verhaal', 'formulier', 'incompany', 'keuzehulp-vorm', 'editor' );
 }
 
 /**
@@ -1258,6 +1258,7 @@ function sfp_page_config_render_kolommen( $attrs, $content, $blok = null ) {
     $nlvorm    .= 'pakketten' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-coach' ) : '';
     $nlvorm    .= 'slot' === $indeling || $carrousel ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-home' ) : '';
     $nlvorm    .= 'slot' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-slot' ) : '';
+    $nlvorm    .= 'boeking' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'nlvorm-boeking' ) : '';
     // Slot kort (3.53.0, I3): tekst links, review of boekformulier rechts.
     $nlvorm    .= 'kort' === $indeling ? sfp_page_config_blokken_css_vangnet_bestand( 'review-kaart' ) . sfp_page_config_blokken_css_vangnet_bestand( 'incompany' ) : '';
     $uitlijning = sfp_page_config_blok_attr( $attrs, 'uitlijning' );
