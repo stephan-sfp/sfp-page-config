@@ -501,11 +501,12 @@
 		S.onderdelen.forEach(function (o) {
 			// Snippetbeheer staat sinds 3.19.0 bij Onderhoud: geen onderdeel voor een redacteur.
 			if (o.id === 'snippets') return;
-			var sw = schakel(o.aan, o.aan ? 'Aan' : 'Uit', function (nu, knop) {
+			var vast = o.id === 'prijzen';
+			var sw = vast ? el('span', { class: 'sfpb-zacht', text: 'Altijd aan' }) : schakel(o.aan, o.aan ? 'Aan' : 'Uit', function (nu, knop) {
 				var w = {}; w[o.id] = nu;
 				bewaarInstellingen(knop, 'od-' + o.id, { onderdelen: w });
 			});
-			sw.setAttribute('aria-label', o.naam + ' aan of uit');
+			if (!vast) sw.setAttribute('aria-label', o.naam + ' aan of uit');
 			raster.appendChild(el('div', { class: 'sfpb-kaart' }, [
 				el('h2', { text: o.naam }),
 				el('p', { class: 'sfpb-zacht sfpb-groei', text: o.uitleg }),
@@ -1588,6 +1589,116 @@
 		]);
 	}
 
+	/* ---------- Onderdeel: prijzen (sinds 3.76.0) ---------- */
+
+	/** Centen naar invoertekst (1995 -> "19,95", 300000 -> "3000"). */
+	function prijsInvoer(c) {
+		if (c === null || c === undefined) return '';
+		return c % 100 === 0 ? String(c / 100) : (c / 100).toFixed(2).replace('.', ',');
+	}
+
+	/** Invoertekst naar centen; leeg of onleesbaar: null. */
+	function prijsCenten(t) {
+		t = String(t || '').trim().replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+		if (t === '' || isNaN(Number(t))) return null;
+		return Math.round(Number(t) * 100);
+	}
+
+	function prijsTekst(c) {
+		if (c === null || c === undefined) return '';
+		var heel = c % 100 === 0;
+		var n = (c / 100).toFixed(heel ? 0 : 2).split('.');
+		return '€ ' + n[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.') + (heel ? '' : ',' + n[1]);
+	}
+
+	function detailPrijzen() {
+		var P = S.prijzen;
+		if (!P) return el('section', { class: 'sfpb-scherm' }, [terugKnop(), kop('Prijzen', 'De stand kon niet worden gelezen.')]);
+		var kolommen = Object.keys(P.kolommen);
+		var invoer = {};
+		var groep = '';
+		var rijen = [];
+		Object.keys(P.regels).forEach(function (k) {
+			var r = P.regels[k];
+			if (r.groep !== groep) {
+				groep = r.groep;
+				rijen.push(el('tr', {}, [el('th', { text: groep, colspan: String(2 + kolommen.length) })]));
+			}
+			invoer[k] = {};
+			var cellen = [el('td', { text: r.label }), el('td', { class: 'sfpb-zacht', text: r.eenheid })];
+			kolommen.forEach(function (kol) {
+				var w = P.waarden[k] ? P.waarden[k][kol] : null;
+				if (P.bron) {
+					var i = tekstInvoer(prijsInvoer(w), '', 'text');
+					i.setAttribute('inputmode', 'decimal');
+					i.setAttribute('aria-label', r.label + ', ' + P.kolommen[kol]);
+					i.style.maxWidth = '9em';
+					invoer[k][kol] = i;
+					cellen.push(el('td', {}, [i]));
+				} else {
+					cellen.push(el('td', { text: prijsTekst(w) }));
+				}
+			});
+			rijen.push(el('tr', {}, cellen));
+		});
+		var tabel = el('table', { class: 'sfpb-tabel' }, [
+			el('thead', {}, [el('tr', {}, [el('th', { text: 'Regel' }), el('th', { text: 'Per' })].concat(kolommen.map(function (kol) { return el('th', { text: P.kolommen[kol] }); })))]),
+			el('tbody', {}, rijen)
+		]);
+
+		var aandacht = [];
+		if (!P.bron && P.herkomst === 'vangnet') aandacht.push('Deze site heeft de tabel nog niet opgehaald en rekent met de bedragen uit de plugin. Klik op Nu ophalen.');
+		else if (P.oud) aandacht.push('De tabel is meer dan een dag niet opgehaald (laatst: ' + P.opgehaald + '). De site rekent met de bewaarde tabel.');
+
+		var knoppen = P.bron
+			? el('div', { class: 'sfpb-rij' }, [
+				el('button', { class: 'sfpb-knop sfpb-hoofd', type: 'button', text: 'Opslaan', klik: function () {
+					var regels = {};
+					Object.keys(invoer).forEach(function (k) {
+						regels[k] = {};
+						kolommen.forEach(function (kol) { regels[k][kol] = prijsCenten(invoer[k][kol].value); });
+					});
+					doe(this, 'prijzen', api('/prijzen', 'POST', { regels: regels }), 'Opgeslagen; de andere sites krijgen een seintje');
+				} }),
+				flitsPlek('prijzen')
+			])
+			: el('div', { class: 'sfpb-rij' }, [
+				el('button', { class: 'sfpb-knop', type: 'button', text: 'Nu ophalen', klik: function () {
+					doe(this, 'prijzen', api('/prijzen/ophalen', 'POST', {}), 'Opgehaald');
+				} }),
+				flitsPlek('prijzen')
+			]);
+
+		var kolomKeuze = pillen(kolommen.map(function (kol) { return [kol, P.kolommen[kol]]; }), P.kolom, function (kol) {
+			bewaarInstellingen(null, 'prijzen-kolom', { prijs_kolom: kol === 'nl' ? '' : kol });
+		}, 'Kolom van deze site');
+
+		var afw = P.afwijkingen && P.afwijkingen.length
+			? el('ul', { class: 'sfpb-lijst' }, P.afwijkingen.map(function (a) {
+				return el('li', { text: a.titel + ': ' + a.dagen + (a.dagen === 1 ? ' dag ' : ' dagen ') + prijsTekst(a.eigen * 100) + ' (tabel ' + prijsTekst(a.tabel * 100) + ')' });
+			}))
+			: el('p', { class: 'sfpb-hulp', text: 'Geen: elke training volgt de tabel.' });
+
+		return el('section', { class: 'sfpb-scherm' }, [
+			terugKnop(),
+			kop('Prijzen', P.bron
+				? 'De prijstabel van het netwerk, in euro exclusief btw. Wat je hier opslaat, halen de andere sites op.'
+				: 'De prijstabel van het netwerk, in euro exclusief btw. Bewerken doe je op ' + P.bron_host + '; deze site haalt hem elk uur op.'),
+			el('div', { class: 'sfpb-stapel sfpb-ruim' }, [
+				aandacht.length ? el('div', { class: 'sfpb-let' }, aandacht.map(function (w) { return el('span', { text: w }); })) : null,
+				el('p', { class: 'sfpb-hulp', text: (P.bijgewerkt ? 'Bijgewerkt op de bron: ' + P.bijgewerkt + '. ' : '') + (P.opgehaald ? 'Opgehaald: ' + P.opgehaald + '.' : '') }),
+				tabel,
+				knoppen,
+				el('h2', { text: 'Kolom van deze site' }),
+				el('div', { class: 'sfpb-rij' }, [kolomKeuze, flitsPlek('prijzen-kolom')]),
+				el('p', { class: 'sfpb-hulp', text: 'Een lege prijs in deze kolom valt terug op de andere kolom. In een pagina: [sfp_prijs sleutel="sws_fast"].' }),
+				el('h2', { text: 'Trainingen met een eigen prijs' }),
+				el('p', { class: 'sfpb-hulp', text: 'In Cursusdata kan een training een eigen prijs per aantal dagen hebben. Laat het veld leeg om de tabel te volgen.' }),
+				afw
+			])
+		]);
+	}
+
 	/* ---------- Onderdeel: incompanycalculator (sinds 3.36.0) ---------- */
 
 	/** Aanroep naar /sfp/v1/calculator; het antwoord vervangt S.calculator. */
@@ -2423,7 +2534,7 @@
 		else if (ui.scherm === 'onderhoud') scherm = schermOnderhoud();
 		else if (ui.scherm === 'cursusdata') scherm = schermCursusdata();
 		else if (ui.scherm === 'onderdelen') {
-			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk, logostrook: detailLogostrook, contact: detailContact, formulierregel: detailFormulierregel, bedrijf: detailBedrijf, calculator: detailCalculator };
+			var details = { knop: detailKnop, artikel: detailArtikel, reviews: detailReviews, tooltips: detailTooltips, whatsapp: detailWhatsapp, footer: detailFooter, zelftest: detailZelftest, tools: detailTools, kleurrollen: detailKleurrollen, banner: detailBanner, uspstrook: detailUspstrook, merkwaarden: detailMerkwaarden, netwerk: detailNetwerk, logostrook: detailLogostrook, contact: detailContact, formulierregel: detailFormulierregel, bedrijf: detailBedrijf, calculator: detailCalculator, prijzen: detailPrijzen };
 			scherm = Object.prototype.hasOwnProperty.call(details, ui.detail) ? details[ui.detail]() : schermOnderdelen();
 		} else scherm = schermOverzicht();
 

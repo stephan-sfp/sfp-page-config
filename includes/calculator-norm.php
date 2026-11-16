@@ -23,6 +23,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return array
  */
 function sfp_calculator_norm() {
+    // Sinds 3.76.0 komen de bedragen uit de prijstabel; de getallen hieronder
+    // zijn het vangnet als die er niet is (bijvoorbeeld in de tests).
+    $p = function ( $sleutel, $terugval ) {
+        return function_exists( 'sfp_prijs_euro' ) ? sfp_prijs_euro( $sleutel, $terugval ) : $terugval;
+    };
+    $boek = function_exists( 'sfp_prijs' ) && null !== sfp_prijs( 'boek' ) ? (int) sfp_prijs( 'boek' ) : 1995;
     return array(
         'valuta'               => 'EUR',
         'btw_hoog'             => 21,
@@ -30,19 +36,19 @@ function sfp_calculator_norm() {
         // Per groep, excl. btw. 2 dagen: persoonlijke begeleiding als keuze; 3 dagen: inbegrepen.
         'vormen'               => array(
             '1' => array(
-                'prijs'       => 3000,
+                'prijs'       => $p( 'ic_1', 3000 ),
                 'begeleiding' => 'nee',
             ),
             '2' => array(
-                'prijs'       => 6000,
+                'prijs'       => $p( 'ic_2', 6000 ),
                 'begeleiding' => 'keuze',
             ),
             '3' => array(
-                'prijs'       => 9000,
+                'prijs'       => $p( 'ic_3c', 9000 ),
                 'begeleiding' => 'inbegrepen',
             ),
         ),
-        'begeleiding_prijs'    => 1000,
+        'begeleiding_prijs'    => $p( 'begeleiding', 1000 ),
         // Groepen (B1).
         'groep_norm'           => 8,
         'groep_ruimte'         => 10,
@@ -50,25 +56,25 @@ function sfp_calculator_norm() {
         'maatwerk_groepen'     => 5,
         'max_deelnemers'       => 500,
         // Extra's (B5, B6, B7, extra's versie 1).
-        'blok_prijs'           => 1000,
+        'blok_prijs'           => $p( 'coachblok', 1000 ),
         'blok_uren'            => 4,
         'abonnement_uren'      => 12,
-        'clinic_prijs'         => 250,
+        'clinic_prijs'         => $p( 'clinic', 250 ),
         'clinic_gratis_vanaf'  => 3,
-        'boek_centen'          => 1995,
+        'boek_centen'          => $boek,
         'boek_gratis_vanaf'    => 2,
-        'acteur_prijs'         => 1250,
+        'acteur_prijs'         => $p( 'acteur', 1250 ),
         'terugkom'             => array(
-            'dagdeel' => 1500,
-            'online'  => 750,
+            'dagdeel' => $p( 'terug_dagdeel', 1500 ),
+            'online'  => $p( 'terug_online', 750 ),
         ),
-        'scan_individueel'     => 250,
-        'scan_team'            => 750,
+        'scan_individueel'     => $p( 'scan_ind', 250 ),
+        'scan_team'            => $p( 'scan_team', 750 ),
         // Groepsvoordeel (B12).
         'voordeel_vanaf_groep' => 3,
-        'voordeel_bedrag'      => 1000,
+        'voordeel_bedrag'      => $p( 'groepsvoordeel', 1000 ),
         // Eigen evenement (B4): richtprijs per coach per dag.
-        'evenement_prijs'      => 2000,
+        'evenement_prijs'      => $p( 'evenement', 2000 ),
         'extras_aan'           => array(
             'coachuren' => true,
             'clinic'    => true,

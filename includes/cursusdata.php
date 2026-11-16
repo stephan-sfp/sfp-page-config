@@ -223,6 +223,14 @@ function sfp_page_config_cursus_prijs( array $info, $dagen ) {
     if ( ! empty( $info['prijzen'][ $sleutel ] ) ) {
         return (int) $info['prijzen'][ $sleutel ];
     }
+    // Sinds 3.76.0: met cursusvarianten en zonder eigen prijs voor dit aantal
+    // dagen geldt de prijstabel (open_1, open_2, open_3).
+    if ( ! empty( $info['prijzen'] ) && function_exists( 'sfp_prijs' ) ) {
+        $c = sfp_prijs( 'open_' . (int) $dagen );
+        if ( null !== $c && $c > 0 ) {
+            return (int) round( $c / 100 );
+        }
+    }
     return isset( $info['prijs'] ) ? (int) $info['prijs'] : 0;
 }
 

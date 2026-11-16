@@ -177,6 +177,11 @@ function sfp_page_config_onderdelen() {
             'uitleg' => 'Juridische naam, rechtsvorm, KvK, btw-nummer, IBAN en adres van deze site, met de labelnaam erbij. De begroting van de incompanycalculator leest ze hier; later ook de footer en de feitelijke verantwoording.',
             'detail' => true,
         ),
+        'prijzen'      => array(
+            'naam'   => 'Prijzen',
+            'uitleg' => 'De prijstabel van het netwerk. Je bewerkt hem op de bronsite (SFP); de andere sites halen hem elk uur op. De calculator, Cursusdata, de offertebouwer en de korte code [sfp_prijs] lezen hieruit.',
+            'detail' => true,
+        ),
         'calculator'   => array(
             'naam'   => 'Incompanycalculator',
             'uitleg' => 'Een begroting voor een incompanytraining: de bezoeker kiest vorm, groepen en extra\'s en ontvangt de begroting als pdf. De gegevens gaan via een SureForms-formulier.',
@@ -506,6 +511,14 @@ function sfp_page_config_norm() {
         'label' => 'Site van de coach in de gegevens voor Google',
         'norm'  => function_exists( 'sfp_page_config_coach_norm' ) ? sfp_page_config_coach_norm() : '',
     );
+    $norm['prijs_kolom']        = array(
+        'label' => 'Kolom van de prijstabel die deze site leest',
+        'norm'  => '',
+    );
+    $norm['prijsbron']          = array(
+        'label' => 'Site met de prijstabel',
+        'norm'  => function_exists( 'sfp_prijzen_bron_norm' ) ? sfp_prijzen_bron_norm() : '',
+    );
     $norm['update_kanaal']      = array(
         'label' => 'Soort versies die deze site krijgt',
         'norm'  => '',
@@ -816,6 +829,22 @@ function sfp_page_config_instellingen_bewaar( array $wijzigingen ) {
                 $regels           = array_values( array_unique( array_filter( array_map( 'sanitize_text_field', array_map( 'trim', array_map( 'strval', $regels ) ) ), 'strlen' ) ) );
                 $alle[ $sleutel ] = implode( "\n", $regels );
                 $bewaard[]        = $sleutel;
+                break;
+
+            case 'prijs_kolom':
+                // Sinds 3.76.0: welke kolom van de prijstabel deze site leest. Leeg is nl.
+                $alle[ $sleutel ] = 'sws' === $ruw ? 'sws' : '';
+                $bewaard[]        = $sleutel;
+                break;
+
+            case 'prijsbron':
+                // Sinds 3.76.0: adres van de site met de prijstabel. Leeg is de norm.
+                $url              = esc_url_raw( trim( (string) $ruw ), array( 'https' ) );
+                $alle[ $sleutel ] = ( '' !== $url && function_exists( 'sfp_prijzen_bron_norm' ) && untrailingslashit( $url ) === untrailingslashit( sfp_prijzen_bron_norm() ) ) ? '' : $url;
+                $bewaard[]        = $sleutel;
+                if ( function_exists( 'sfp_prijzen_vergeet' ) ) {
+                    sfp_prijzen_vergeet();
+                }
                 break;
 
             case 'update_kanaal':
