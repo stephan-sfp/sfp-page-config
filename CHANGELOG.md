@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.75.0] - 2026-11-16
+
+### Toegevoegd
+- Boekingsindeling: opmaak voor de belofte boven de kalender (alinea met klasse sfp-gesprek-belofte, eerste blok in de gesprekstab). Gewone tekstmaat, op één lijn met de tabs en de kalender.
+- Eigen bestand nlvorm-boeking.css voor de aanvullingen op de boekingskaart (ook de sticky linkerkaart uit 3.74.0), zodat kolommen.css en nlvorm-inschrijven.css onder de 10 KB blijven.
+
+### Gewijzigd
+- Boekingsindeling met een belofte: in de stap datum vervalt de kalenderkop ("Kies een datum en tijd") en de lege strook eronder; de kalender staat direct onder de belofte (besluit Stephan 16-11). Latere stappen houden hun kop.
+
 ## [3.74.0] - 2026-11-16
 
 ### Gewijzigd

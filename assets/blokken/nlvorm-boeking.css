@@ -1,0 +1,21 @@
+/*
+ * SFP Page Config: indeling boeking (sfp/kolommen), aanvullingen sinds 3.74.0.
+ * Eigen bestand (10 KB-grens van kolommen.css en nlvorm-inschrijven.css); laadt
+ * alleen op pagina's met een boekingskaart.
+ */
+/* 3.74.0: de linkerkaart staat bovenaan en blijft staan bij scrollen (besluit Stephan 16-11). De netwerkbrede Customizer-CSS zet html en body op overflow-x:hidden; dan werkt sticky niet. clip knipt hetzelfde af zonder scrollende laag (zoals bij artikelen). De achtergrond van de linkerhelft komt van de kaart zelf, zodat hij doorloopt onder de kolom. */
+@media (min-width:768px){
+  :root .sfp-kolommen.sfp-kolommen--boeking{overflow:clip;background:linear-gradient(90deg,var(--sfp-b-tint3) 0 45%,var(--sfp-b-wit) 45% 100%)}
+}
+@media (min-width:768px) and (min-height:720px){
+  html:has(.sfp-kolommen--boeking),body:has(.sfp-kolommen--boeking){overflow-x:clip!important}
+  :root .sfp-kolommen.sfp-kolommen--boeking>.sfp-kolom:first-child{align-self:start;position:sticky;top:24px}
+}
+/* 3.75.0: de belofte boven de kalender in de boekingsindeling (besluit Stephan 16-11). Gewone tekstmaat, linkerlijn gelijk aan tabs en kalender. In de stap datum vervalt de kalenderkop; de belofte vervangt hem. */
+:root .sfp-kolommen--boeking .sfp-tabpaneel>.sfp-gesprek-belofte{padding:24px 40px 0;margin:0;font-size:inherit;line-height:1.6;color:var(--sfp-b-body);text-align:left}
+:root .sfp-kolommen--boeking .sfp-tabpaneel:has(>.sfp-gesprek-belofte) .current-step-booking__datepicker .latepoint-heading-w{display:none}
+:root .sfp-kolommen--boeking .sfp-tabpaneel:has(>.sfp-gesprek-belofte) .current-step-booking__datepicker .latepoint-body{padding-top:16px}
+@media (max-width:767px){
+  :root .sfp-kolommen--boeking .sfp-tabpaneel>.sfp-gesprek-belofte{padding:16px 15px 0}
+  :root .sfp-kolommen--boeking .sfp-tabpaneel:has(>.sfp-gesprek-belofte) .current-step-booking__datepicker .latepoint-body{padding-top:12px}
+}
