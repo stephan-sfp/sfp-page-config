@@ -152,6 +152,8 @@ function sfp_page_config_rocket_rucss_ids() {
         'sfp-bronnen-inline-css',
         'sfp-praktijkblok-inline-css',
         'sfp-auteursbio-inline-css',
+        // 3.75.1: de opmaak van de belregel onder een formulier (24 px ruimte).
+        'sfp-formulierregel',
     );
     foreach ( sfp_page_config_css_inline_handles() as $handle ) {
         $ids[] = $handle . '-inline-css';

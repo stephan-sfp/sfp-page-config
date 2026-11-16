@@ -10,6 +10,7 @@ $root = dirname( __DIR__ );
 $fout = 0;
 $css  = file_get_contents( $root . '/assets/blokken/nlvorm-inschrijven.css' ) . file_get_contents( $root . '/assets/blokken/nlvorm-boeking.css' );
 $php  = file_get_contents( $root . '/includes/formulierregel.php' );
+$wpr  = file_get_contents( $root . '/includes/wp-rocket.php' );
 $c    = array(
 	'citaat 22/19 px'          => false !== strpos( $css, 'font-size:clamp(19px,.7vw + 11.9px,22px)' ),
 	'oude citaatmaat weg'      => false === strpos( $css, 'clamp(20px,1.1vw + 8px,24px)' ),
@@ -20,6 +21,7 @@ $c    = array(
 	'body clip bij boeking'    => false !== strpos( $css, 'html:has(.sfp-kolommen--boeking),body:has(.sfp-kolommen--boeking){overflow-x:clip!important}' ),
 	'belofte opmaak'           => false !== strpos( $css, ':root .sfp-kolommen--boeking .sfp-tabpaneel>.sfp-gesprek-belofte{padding:24px 40px 0;' ),
 	'kalenderkop weg bij datum' => false !== strpos( $css, '.current-step-booking__datepicker .latepoint-heading-w{display:none}' ),
+	'stijl buiten used CSS'    => false !== strpos( $wpr, "'sfp-formulierregel'," ),
 	'stijl 24 px boven'        => false !== strpos( $php, ':root .sfp-form-fallback.sfp-form-fallback{margin:24px 0 0;' ),
 );
 foreach ( $c as $wat => $ok ) {
