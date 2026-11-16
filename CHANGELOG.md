@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.73.1] - 2026-11-16
+
+### Gewijzigd
+- Calculator: incompany 3 dagen kost nu € 9.000 per groep (was € 8.500), volgens de prijslijst van 13-11-2026.
+
 ## [3.73.0] - 2026-11-16
 
 ### Toegevoegd

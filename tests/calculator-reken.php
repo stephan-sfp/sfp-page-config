@@ -145,8 +145,8 @@ $t( 'B2', 6000 === $u( 'aantal 8, 2 dagen' )['totaal_excl'], '2 dagen = 6000' );
 $t( 'B3', 7000 === $u( '8, 2 dagen met begeleiding' )['totaal_excl'], '2 dagen met begeleiding = 7000' );
 $t( 'B12', 22000 === $u( '32, 2 dagen voordeel korting' )['totaal_excl'] && 2000 === $u( '32, 2 dagen voordeel korting' )['voordeel'], '4 groepen van 2 dagen: 24000 met 2000 voordeel' );
 $alle = $u( '8, 3 dagen alle extras' );
-// 8500 + coach 8x1000 + clinic gratis + boek gratis + acteur 2x1250 + terug 1500 + lotj 8x1000 + teamscan 750.
-$t( 'extras', 8500 + 8000 + 2500 + 1500 + 8000 + 750 === $alle['totaal_excl'], 'alle extra\'s bij 3 dagen' );
+// 9000 + coach 8x1000 + clinic gratis + boek gratis + acteur 2x1250 + terug 1500 + lotj 8x1000 + teamscan 750.
+$t( 'extras', 9000 + 8000 + 2500 + 1500 + 8000 + 750 === $alle['totaal_excl'], 'alle extra\'s bij 3 dagen' );
 $zeven = $u( '7, 1 dag clinic boek scan individueel' );
 // 3000 + clinic 1750 + boek 7x19,95=139,65 -> 140 + scan 1750 + online 750.
 $t( 'btw', 7390 === $zeven['totaal_excl'] && 13 === $zeven['btw']['9'] && 1523 === $zeven['btw']['21'], 'btw per tarief' );
