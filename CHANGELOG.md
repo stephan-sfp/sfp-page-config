@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.75.1] - 2026-11-16
+
+### Gerepareerd
+- Belregel onder een formulier: WP Rocket (used CSS) haalde de opmaak weg, waardoor de regel tegen de verzendknop stond zodra de used CSS klaar was, in en buiten tabs. De stijl staat nu op de lijst die WP Rocket ongemoeid laat.
+
 ## [3.75.0] - 2026-11-16
 
 ### Toegevoegd
