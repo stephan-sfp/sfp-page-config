@@ -38,7 +38,7 @@ function sfp_calculator_norm() {
                 'begeleiding' => 'keuze',
             ),
             '3' => array(
-                'prijs'       => 8500,
+                'prijs'       => 9000,
                 'begeleiding' => 'inbegrepen',
             ),
         ),
