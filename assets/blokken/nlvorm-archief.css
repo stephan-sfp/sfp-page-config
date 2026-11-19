@@ -113,7 +113,6 @@
   :root .sfp-archiefgids__zin,:root .sfp-archiefgids__link{display:none}
   :root .sfp-kolommen.sfp-raster{row-gap:12px}
   :root .sfp-raster .sfp-artikel h3{font-size:15px;line-height:1.3}
-  :root .sfp-raster .sfp-artikel .is-style-sfp-label{font-size:11px}
   :root .sfp-auteur{grid-template-columns:96px minmax(0,1fr);column-gap:18px;padding:20px}
   :root .sfp-auteur--zonder-foto{grid-template-columns:minmax(0,1fr)}
   :root .sfp-auteur .sfp-auteur__foto{width:96px!important;height:96px!important}

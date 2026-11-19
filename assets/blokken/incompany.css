@@ -29,7 +29,6 @@
 :root .sfp-portfolio__tekst .sfp-lijst--vink li{font-size:16px;line-height:1.45;padding-left:28px;color:var(--sfp-b-body)}
 .sfp-portfolio__tekst .sfp-lijst--vink li::before{width:18px;height:18px;background-size:12px}
 :root .sfp-tabs--portfolio .sfp-portfolio__tekst p{font-size:17px}
-:root .sfp-tabs--portfolio .sfp-portfolio__tekst .is-style-sfp-label{font-size:12px}
 :root .sfp-tabs--portfolio .sfp-portfolio__tekst .is-style-sfp-pijl{font-size:15px}
 :root .sfp-portfolio__beeld{display:grid;gap:16px;min-width:0}
 :root .sfp-portfolio__beeld .wp-block-image{margin:0}
