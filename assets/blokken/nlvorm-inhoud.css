@@ -84,7 +84,7 @@
 :root .sfp-uitklap--programma .sfp-uitklap__regel{display:flex;flex-direction:column;box-shadow:none;margin:0}
 :root .sfp-uitklap--programma :is(summary,.sfp-uitklap__kop){padding:22px;font-size:20px;font-family:var(--sfp-b-tekst);font-weight:700;text-transform:none;letter-spacing:0}:root .sfp-uitklap--programma .sfp-uitklap__titel b{font-weight:inherit}
 :root .sfp-uitklap--programma .sfp-uitklap__titel{display:grid;gap:6px}
-:root .sfp-uitklap--programma .sfp-uitklap__titel .is-style-sfp-label,:root .sfp-uitklap--programma .sfp-uitklap__label{margin:0;font-size:12px}
+:root .sfp-uitklap--programma .sfp-uitklap__titel .is-style-sfp-label,:root .sfp-uitklap--programma .sfp-uitklap__label{margin:0}
 :root .sfp-uitklap--programma .sfp-uitklap__inhoud{padding:0 22px 28px;display:grid;gap:18px}
 :root .sfp-uitklap--programma .sfp-uitklap__inhoud>p{padding:0;margin:0;font-size:16px;max-width:66ch}
 :root .sfp-uitklap--programma .sfp-lijst--vink ul{display:grid;gap:8px;margin:0}

@@ -10,7 +10,7 @@
  * Kleuren en fonts alleen uit de rolvariabelen; geen merkkleur of fontnaam.
  */
 :root .sfp-logostrook{margin:0}
-:root .sfp-logostrook__label{margin:0;text-align:center;font-family:var(--sfp-b-kop);font-weight:900;font-size:16px;line-height:1.25;text-transform:uppercase;color:var(--sfp-b-primair)}
+:root .sfp-logostrook__label{margin:0;text-align:center;font-family:var(--sfp-b-kop);font-weight:900;font-size:var(--sfp-b-h3);line-height:1.25;text-transform:uppercase;color:var(--sfp-b-primair)}
 :root .sfp-logostrook__logos{margin:0;padding:0;list-style:none}
 :root .sfp-logostrook__label + .sfp-logostrook__logos{margin-top:44px}
 :root .sfp-logostrook__logos > li{margin:0;padding:0;list-style:none}

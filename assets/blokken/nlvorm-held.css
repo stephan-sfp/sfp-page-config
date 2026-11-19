@@ -16,7 +16,6 @@ html:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst){scroll-behavior:au
 :root:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst) .sfp-sectie--tint{background:var(--sfp-b-tint3)}
 :root:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst) .sfp-sectie :is(h2,h3).has-text-align-center{margin-bottom:0}
 :root:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst) :is(.is-style-sfp-label,.sfp-blok-label,.sfp-logostrook__label){color:var(--sfp-b-primair)}
-:root:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst) .sfp-logostrook__label{font-size:clamp(18px,.6vw + 14px,22px)}
 :root:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin{margin:16px 0 0;max-width:52ch}
 :root:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+*{margin-top:48px}
 :root:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst) .sfp-sectie__binnen>h2+p.is-style-sfp-kernzin+:is(.sfp-kolommen,.sfp-uitklap--programma,.sfp-groepen){margin-top:56px}
@@ -50,7 +49,7 @@ html:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst){scroll-behavior:au
 :root .sfp-held__feit{display:flex;position:absolute;left:-28px;bottom:-36px;background:var(--sfp-b-wit);border-radius:var(--sfp-b-r-kaart);box-shadow:0 12px 32px color-mix(in srgb,var(--sfp-b-primair) 14%,transparent);padding:0;z-index:2;overflow:hidden}
 :root .sfp-held__feit>div{display:grid;gap:6px;padding:18px 24px;border-left:1px solid color-mix(in srgb,var(--sfp-b-primair) 10%,transparent)}
 :root .sfp-held__feit>div:first-child{border-left:4px solid var(--sfp-b-secundair);padding-left:22px}
-:root .sfp-held__feit .is-style-sfp-label{font-size:11px;letter-spacing:.14em;margin:0;color:var(--sfp-b-label)}
+:root .sfp-held__feit .is-style-sfp-label{margin:0;color:var(--sfp-b-label)}
 :root .sfp-held__feit strong{font-family:var(--sfp-b-tekst);font-weight:700;color:var(--sfp-b-primair);font-size:17px;line-height:1.2;white-space:nowrap}
 /* bewijsregel onder de knoppen */
 :root .sfp-held__bewijs{display:flex;align-items:center;gap:0;margin:4px 0 0;font-size:15px;color:var(--sfp-b-body)}
@@ -90,7 +89,7 @@ html:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst){scroll-behavior:au
   :root .sfp-held--wit .is-style-sfp-tekst .wp-block-button__link{justify-content:center}
   :root .sfp-held__feit>div{padding:10px}
   :root .sfp-held__feit>div:first-child{padding-left:12px}
-  :root .sfp-held__feit .is-style-sfp-label{font-size:10px;white-space:nowrap;letter-spacing:.08em}
+  :root .sfp-held__feit .is-style-sfp-label{white-space:nowrap}
   :root .sfp-held__feit strong{font-size:14px;white-space:nowrap}
   :root .sfp-held__feit>div:nth-child(n+4){display:none}
   :root .sfp-held__feit .sfp-lang{display:none}

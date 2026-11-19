@@ -4,6 +4,14 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.77.0] - 2026-11-19
+
+### Gewijzigd
+- Alle labels dezelfde maat op alle acht sites en elk scherm (besluit Stephan 19-11): één labelregel, 12 px, letterafstand 0.12em, gewicht 900, hoofdletters, voor is-style-sfp-label, sfp-blok-label, sfp-boek-label en fictief-label. De regel staat bij de gedeelde variabelen, zodat hij op elke pagina met plugin-CSS staat, ook zonder basis.css (zoals een pagina met alleen kolommen op SwS).
+- Geen eigen labelmaten meer: feitenkaart in de held (11 px, op telefoon 10 px), kaart in het archief op telefoon (11 px), promoblok (11 px), kader en samenvatting (13 px). Artikellabels van 0.08em naar 0.12em letterafstand.
+- Alinearegels in de uitkomstregel (17 px), het tabpaneel (18 px) en de programma-inhoud (16 px) gaan niet meer over het label heen.
+- De kop van de logostrook is een kop (besluit Stephan 19-11): overal de maat van de h3 (22 px computer en tablet, 18 px telefoon), op elke pagina. Voorheen 16 px op pagina's zonder held, waardoor SLB op de home en de subpagina's een andere maat toonde. Nieuwe variabele --sfp-b-h3.
+
 ## [3.76.0] - 2026-11-16
 
 ### Toegevoegd

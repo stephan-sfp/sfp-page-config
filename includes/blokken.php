@@ -852,7 +852,31 @@ function sfp_page_config_blokken_css_variabelen() {
         // vlakken, beelden. Omslagen van boeken en albums hebben geen radius.
         . '--sfp-b-r-knop:6px;--sfp-b-r-kaart:6px;'
         // De drie functionele kleuren uit de merkbron: de enige vaste hexcodes.
-        . '--sfp-b-goed:#1E8B45;--sfp-b-fout:#A4262C;--sfp-b-ster:#FBBC04}';
+        . '--sfp-b-goed:#1E8B45;--sfp-b-fout:#A4262C;--sfp-b-ster:#FBBC04;'
+        // Kopmaat h3 van het netwerk (3.77.0): 22 px op computer en tablet, 18 px op telefoon.
+        // Voor koppen die geen h3-element zijn, zoals de kop van de logostrook.
+        . '--sfp-b-h3:clamp(18px,1.5vw + 10px,22px)}'
+        . sfp_page_config_label_css();
+}
+
+/**
+ * Eén labelregel voor het hele netwerk (3.77.0, besluit Stephan 19-11-2026).
+ *
+ * Elk label (de kleine kapitalen boven of naast een kop of kaart) heeft op
+ * alle acht sites en op elk scherm dezelfde maat: 12 px, letterafstand
+ * 0.12em, gewicht 900, hoofdletters. De maat staat met !important, zodat geen
+ * component- of alinearegel (tabpaneel, uitklap, uitkomstregel, held) er
+ * overheen gaat. Kleur en marges blijven bij de blokken.
+ *
+ * Staat bij de variabelen, zodat de regel op elke pagina met plugin-CSS
+ * staat (artikel, blokken, vangnet, editor), ook als basis.css er niet is.
+ *
+ * @return string
+ */
+function sfp_page_config_label_css() {
+    return ':root :is(.is-style-sfp-label,.sfp-blok-label,.sfp-boek-label,.fictief-label)'
+        . '{font-family:var(--sfp-b-kop);font-weight:var(--sfp-kopfont-gewicht,900)!important;font-size:12px!important;'
+        . 'letter-spacing:.12em!important;text-transform:uppercase!important;font-style:normal}';
 }
 
 /**
