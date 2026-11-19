@@ -4,6 +4,12 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.78.0] - 2026-11-19
+
+### Gerepareerd
+- Grote uitklap direct onder een kop: 32 px ruimte, net als na een alinea. Stond op 0 px, waardoor de bovenrand tegen de kop plakte (onder meer het blok Herkenbaar op de incompanypagina's). Programma, kaart en verhaal houden hun eigen ruimte.
+- Uitkomstregels: onder elke regel net zoveel ruimte als erboven (32 px, op telefoon 24 px). Het nummer liep over negen rijen, waardoor lege rijen met tussenruimte ruim 40 px extra gaven. Het nummer staat nu los naast de eerste regel en telt geen rijen mee, ook niet bij een reviewkaart in de regel.
+
 ## [3.77.0] - 2026-11-19
 
 ### Gewijzigd

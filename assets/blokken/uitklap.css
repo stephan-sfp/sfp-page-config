@@ -66,3 +66,5 @@
 
 /* 3.58.0: een alinea direct boven dit blok in een sectie krijgt 32 px, zoals na een kop (kernzin houdt zijn eigen ruimte) */
 :root .sfp-sectie__binnen>p:not(.is-style-sfp-kernzin)+.sfp-uitklap{margin-top:32px}
+/* 3.78.0: de grote uitklap direct na een h2 ook 32 px (stond op 0 px); programma, kaart en verhaal houden hun eigen ruimte */
+:root .sfp-sectie__binnen>h2+.sfp-uitklap--groot{margin-top:32px}
