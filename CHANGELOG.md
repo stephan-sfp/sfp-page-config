@@ -4,6 +4,11 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.78.1] - 2026-11-20
+
+### Gerepareerd
+- FAQ-schema: een prijs met de korte code [sfp_prijs] in een FAQ-antwoord of -vraag komt nu als bedrag in het FAQPage-schema (bijvoorbeeld "€ 1.500"), in de opmaak van de site. Stond als letterlijke code in het schema, waardoor Google en AI-tools geen bedragen lazen. Raakt onder meer de kostenvraag op de 19 incompanypagina's. Andere korte codes worden in het schema niet uitgevoerd; links blijven staan, want Google staat ze toe.
+
 ## [3.78.0] - 2026-11-19
 
 ### Gerepareerd
