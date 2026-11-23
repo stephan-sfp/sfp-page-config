@@ -1765,6 +1765,34 @@ function sfp_page_config_render_faq( $attrs, $content ) {
 }
 
 /**
+ * Zet [sfp_prijs ...] om in het bedrag, voor het FAQPage-schema. Het blok
+ * krijgt zijn binnenblokken voordat the_content de korte codes uitvoert;
+ * zonder deze stap komt de code letterlijk in het schema. Alleen deze code:
+ * andere korte codes (formulieren, calculator) horen niet in een antwoord.
+ *
+ * @param  string $html Vraag of antwoord.
+ * @return string
+ */
+function sfp_page_config_faq_prijzen( $html ) {
+    $html = (string) $html;
+    if ( false === strpos( $html, '[sfp_prijs' ) || ! function_exists( 'sfp_prijzen_shortcode' ) ) {
+        return $html;
+    }
+    return (string) preg_replace_callback(
+        '/(\[?)\[sfp_prijs(\s[^\]]*)?\](\]?)/',
+        function ( $m ) {
+            // [[sfp_prijs]] is een ontsnapte code: laat de tekst staan.
+            if ( '[' === $m[1] && ']' === $m[3] ) {
+                return substr( $m[0], 1, -1 );
+            }
+            $atts = shortcode_parse_atts( isset( $m[2] ) ? html_entity_decode( $m[2], ENT_QUOTES, 'UTF-8' ) : '' );
+            return $m[1] . sfp_prijzen_shortcode( is_array( $atts ) ? $atts : array() ) . $m[3];
+        },
+        $html
+    );
+}
+
+/**
  * sfp/faq-vraag. Registreert het paar voor het schema.
  *
  * @param  array  $attrs   Attributen.
@@ -1778,7 +1806,8 @@ function sfp_page_config_render_faq_vraag( $attrs, $content ) {
         return '';
     }
     // Alinea's worden regelovergangen; links en nadruk blijven staan.
-    $antwoord = preg_replace( '#</p>\s*<p[^>]*>#', '<br><br>', (string) $content );
+    // Korte codes draaien pas later in the_content; voor het schema nu al.
+    $antwoord = preg_replace( '#</p>\s*<p[^>]*>#', '<br><br>', sfp_page_config_faq_prijzen( (string) $content ) );
     $antwoord = trim(
         wp_kses(
             $antwoord,
@@ -1798,7 +1827,7 @@ function sfp_page_config_render_faq_vraag( $attrs, $content ) {
     if ( '' !== $antwoord && ! is_admin() ) {
         sfp_page_config_faq_verzamel(
             array(
-                'vraag'    => html_entity_decode( $tekst, ENT_QUOTES, 'UTF-8' ),
+                'vraag'    => html_entity_decode( sfp_page_config_faq_prijzen( $tekst ), ENT_QUOTES, 'UTF-8' ),
                 'antwoord' => $antwoord
             )
         );
