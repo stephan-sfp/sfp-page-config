@@ -349,10 +349,7 @@
 		var MediaUploadH = be.MediaUpload;
 		var mobiel = wp.data.useSelect( function ( select ) { return a.mobielId ? select( 'core' ).getMedia( a.mobielId ) : null; }, [ a.mobielId ] );
 		var focusOpties = [ { label: 'Midden, iets boven', value: '50% 30%' }, { label: 'Boven', value: '50% 15%' }, { label: 'Midden', value: '50% 50%' }, { label: 'Links', value: '25% 30%' }, { label: 'Rechts', value: '75% 30%' }, { label: 'Rechts, iets boven', value: '68% 40%' }, { label: 'Iets rechts, boven', value: '60% 20%' } ];
-		var fotoVelden = foto ? [
-			gesplitst ? uitleg( 'Tekst links op de primaire kleur, foto rechts. Op een telefoon staat de foto boven de tekst. De tweede knop staat als Tekstlink. De eerste afbeelding in het blok is de foto.' ) : uitleg( 'Tekst op de foto. Zet het zinsdeel dat moet opvallen in de titel op Accent. De tweede knop staat als Tekstlink. De eerste afbeelding in het blok is de foto.' ),
-			gesplitst ? keuze( 'Wat blijft in beeld op computer en tablet', a.focus || '50% 30%', focusOpties, function ( v ) { props.setAttributes( { focus: v } ); } ) : keuze( 'Wat blijft in beeld op computer en tablet', a.focus && '50% 30%' !== a.focus ? a.focus : '68% 40%', focusOpties.slice( 1 ), function ( v ) { props.setAttributes( { focus: v } ); } ),
-			MediaUploadH ? el( 'div', { key: 'mobiel', className: 'sfp-linkveld' },
+		var mobielVeld = MediaUploadH ? el( 'div', { key: 'mobiel', className: 'sfp-linkveld' },
 				el( 'span', { className: 'sfp-vormkeuze__label' }, 'Foto op een telefoon' ),
 				mobiel && mobiel.source_url ? el( 'img', { src: ( mobiel.media_details && mobiel.media_details.sizes && mobiel.media_details.sizes.medium ? mobiel.media_details.sizes.medium.source_url : mobiel.source_url ), alt: '', style: { maxWidth: '100%', borderRadius: '4px' } } ) : null,
 				el( MediaUploadH, {
@@ -362,8 +359,12 @@
 					render: function ( o ) { return el( c.Button, { variant: 'secondary', onClick: o.open }, a.mobielId ? 'Andere foto' : 'Kies een foto' ); },
 				} ),
 				a.mobielId ? el( c.Button, { variant: 'link', isDestructive: true, onClick: function () { props.setAttributes( { mobielId: 0 } ); } }, 'Zelfde foto als op de computer' ) : null,
-				uitleg( 'Staand beeld. Leeg: dezelfde foto als op de computer.' )
-			) : null,
+				uitleg( ( gesplitst ? 'Vierkant beeld' : foto ? 'Staand beeld in 9:16' : 'Beeld in 4:3' ) + ', minstens 1200 px breed, voor een scherpe foto op een telefoon. Leeg: dezelfde foto als op de computer.' )
+			) : null;
+		var fotoVelden = foto ? [
+			gesplitst ? uitleg( 'Tekst links op de primaire kleur, foto rechts. Op een telefoon staat de foto boven de tekst. De tweede knop staat als Tekstlink. De eerste afbeelding in het blok is de foto.' ) : uitleg( 'Tekst op de foto. Zet het zinsdeel dat moet opvallen in de titel op Accent. De tweede knop staat als Tekstlink. De eerste afbeelding in het blok is de foto.' ),
+			gesplitst ? keuze( 'Wat blijft in beeld op computer en tablet', a.focus || '50% 30%', focusOpties, function ( v ) { props.setAttributes( { focus: v } ); } ) : keuze( 'Wat blijft in beeld op computer en tablet', a.focus && '50% 30%' !== a.focus ? a.focus : '68% 40%', focusOpties.slice( 1 ), function ( v ) { props.setAttributes( { focus: v } ); } ),
+			mobielVeld,
 			keuze( 'Wat blijft in beeld op een telefoon', a.focusMobiel || '60% 20%', focusOpties, function ( v ) { props.setAttributes( { focusMobiel: v } ); } ),
 			tekstveld( 'Deelnemers', a.deelnemers, function ( v ) { props.setAttributes( { deelnemers: v } ); }, 'In de bewijsregel naast het Google-cijfer. Bijvoorbeeld: 2.500+ cursisten in ons netwerk.' ),
 			tekstveld( 'Initialen', a.initialen, function ( v ) { props.setAttributes( { initialen: v } ); }, 'Drie keer twee letters met een spatie ertussen.' ),
@@ -394,7 +395,7 @@
 				recht && a.bewijs ? tekstveld( 'Deelnemers', a.deelnemers, function ( v ) { props.setAttributes( { deelnemers: v } ); }, 'Bijvoorbeeld: 2.500+ cursisten in ons netwerk. Leeg: alleen het cijfer.' ) : null,
 				recht && a.bewijs ? tekstveld( 'Initialen', a.initialen, function ( v ) { props.setAttributes( { initialen: v } ); }, 'Drie keer twee letters met een spatie ertussen.' ) : null,
 				a.anker ? linkNaarBlok( props, function () { return a.anker; } ) : null,
-			].concat( witVelden ).concat( fotoVelden ) ),
+			].concat( witVelden ).concat( fotoVelden ).concat( foto ? [] : [ mobielVeld ] ) ),
 			el( 'section', blockProps, el( 'div', inner, inner.children, voorbeeld ) )
 		);
 	} );

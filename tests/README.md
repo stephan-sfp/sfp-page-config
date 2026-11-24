@@ -204,3 +204,11 @@ wp eval-file wp-content/plugins/sfp-page-config/tests/incompany-wp.php
 ```
 
 Runs inside a real WordPress (a local test install, never a live site). Checks the topic name ("Cursus Pitchen" becomes "Pitchen"), link targets, the topic row (only published children with page type Incompany, in menu order), Tabs as portfolio (logo alt, label, photo and review on the right, one link per panel), the layout Slot kort, Keuzehulp vorm (questions, defaults, own texts, at most four facts, actions only with a target, second action) and Service plus ItemList only on pages with one of these blocks.
+
+# Heldfoto (3.79.0)
+
+```sh
+php tests/held-beeld.php
+```
+
+Checks the sizes per hero variant (crop included), the phone photo as picture source, and the "photo too small for a phone" check in SFP Beheer, Overzicht.

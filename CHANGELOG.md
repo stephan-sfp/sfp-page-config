@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.79.0] - 2026-11-24
+
+### Gerepareerd
+- Heldfoto scherp op telefoons en tablets: de held vertelt de browser nu hoe breed de foto werkelijk getoond wordt, inclusief de uitsnede per variant (gesplitst, recht, breed, wit, foto). Tot nu toe ging de browser uit van de vlakbreedte, terwijl een liggende foto in een vierkant of staand vlak veel breder wordt weergegeven. Gevolg was een te klein bestand en een zachte foto, vooral op SLB, SwS en FL.
+
+### Toegevoegd
+- Veld "Foto op een telefoon" in het blok Held voor alle varianten, niet meer alleen voor de foto-held. Leeg: dezelfde foto als op de computer.
+- Melding "Heldfoto te klein voor telefoon" per pagina in SFP Beheer, Overzicht, als het bestand kleiner is dan een telefoon met een scherp scherm nodig heeft. Een te klein bestand is met code niet scherp te krijgen.
+
 ## [3.78.1] - 2026-11-20
 
 ### Gerepareerd
