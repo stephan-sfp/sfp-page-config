@@ -1249,6 +1249,23 @@ function sfp_page_config_render_held( $attrs, $content, $blok = null ) {
             . sfp_page_config_nlvorm_held( $attrs, $blok, $content ) . '</section>';
     }
     $klassen = array( 'sfp-held', 'sfp-held--recht', 'breed' === $variant ? 'sfp-held--breed' : '' );
+    // Sizes uit de uitsnede en de telefoonfoto (3.79.0, includes/held-beeld.php).
+    $foto_id = 0;
+    if ( $blok instanceof WP_Block ) {
+        foreach ( $blok->inner_blocks as $kind ) {
+            if ( 'core/image' === $kind->name && ! empty( $kind->attributes['id'] ) ) {
+                $foto_id = (int) $kind->attributes['id'];
+                break;
+            }
+        }
+    }
+    if ( $foto_id > 0 && function_exists( 'sfp_page_config_held_beeld_sizes' ) ) {
+        $content = sfp_page_config_held_beeld_sizes( $content, $variant, $foto_id );
+        $mobiel  = isset( $attrs['mobielId'] ) ? (int) $attrs['mobielId'] : 0;
+        if ( $mobiel > 0 && preg_match( '/<img\b[^>]*\bwp-image-' . $foto_id . '\b[^>]*>/i', $content, $img ) ) {
+            $content = str_replace( $img[0], sfp_page_config_held_telefoonbron( $img[0], $mobiel, $variant ), $content );
+        }
+    }
     // Een tool in de held staat in de tweede kolom (3.21.0).
     if ( false !== strpos( (string) $content, 'class="sfp-tool ' ) ) {
         $klassen[] = 'sfp-held--tool';

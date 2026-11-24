@@ -208,6 +208,10 @@ function sfp_page_config_controleer_pagina( $post ) {
     if ( function_exists( 'sfp_page_config_tool_controle' ) ) {
         $meldingen = array_merge( $meldingen, sfp_page_config_tool_controle( $post ) );
     }
+    // Heldfoto te klein voor een telefoon (3.79.0).
+    if ( function_exists( 'sfp_page_config_held_beeld_controle' ) ) {
+        $meldingen = array_merge( $meldingen, sfp_page_config_held_beeld_controle( $post ) );
+    }
 
     // Wat bewust zo is, telt niet mee.
     $negeer = sfp_page_config_controle_genegeerd( $post->ID );

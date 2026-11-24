@@ -649,6 +649,11 @@ function sfp_page_config_nlvorm_held( $attrs, $blok, $content ) {
     $tekst .= sfp_page_config_nlvorm_bewijsregel( $attrs );
     // Sinds 3.34.0 (O4) kan de feitenkaart uit, ook met cursusdata.
     $feit   = isset( $attrs['feitenkaart'] ) && false === $attrs['feitenkaart'] ? '' : sfp_page_config_nlvorm_feitenkaart( $attrs );
+    if ( '' !== $beeld ) {
+        // Sizes uit de uitsnede en de telefoonfoto (3.79.0, includes/held-beeld.php).
+        $beeld = sfp_page_config_held_beeld_sizes( $beeld, 'wit' );
+        $beeld = sfp_page_config_held_telefoonbron( $beeld, isset( $attrs['mobielId'] ) ? (int) $attrs['mobielId'] : 0, 'wit' );
+    }
     if ( '' !== $beeld && '' !== $feit ) {
         $pos   = strrpos( $beeld, '</figure>' );
         $beeld = false !== $pos ? substr( $beeld, 0, $pos ) . $feit . substr( $beeld, $pos ) : $beeld . $feit;
@@ -691,14 +696,9 @@ function sfp_page_config_nlvorm_held_foto( $attrs, $blok, $content, $vorm = 'fot
         if ( false === strpos( $beeld, 'fetchpriority=' ) ) {
             $beeld = preg_replace( '/<img\b/', '<img fetchpriority="high"', $beeld, 1 );
         }
-        $mobiel = isset( $attrs['mobielId'] ) ? (int) $attrs['mobielId'] : 0;
-        $src    = $mobiel > 0 && wp_attachment_is_image( $mobiel ) ? wp_get_attachment_image_srcset( $mobiel, 'large' ) : '';
-        if ( ! $src && $mobiel > 0 && wp_attachment_is_image( $mobiel ) ) {
-            $src = (string) wp_get_attachment_image_url( $mobiel, 'large' );
-        }
-        if ( $src ) {
-            $beeld = preg_replace( '/(<img\b[^>]*>)/', '<picture><source media="(max-width: 700px)" srcset="' . esc_attr( $src ) . '" sizes="100vw">$1</picture>', $beeld, 1 );
-        }
+        // Sizes uit de uitsnede en de telefoonfoto (3.79.0, includes/held-beeld.php).
+        $beeld = sfp_page_config_held_beeld_sizes( $beeld, $vorm );
+        $beeld = sfp_page_config_held_telefoonbron( $beeld, isset( $attrs['mobielId'] ) ? (int) $attrs['mobielId'] : 0, $vorm );
         $beeld = preg_replace( '/class="([^"]*wp-block-image[^"]*)"/', 'class="$1 sfp-held__achter"', $beeld, 1 );
     }
     // De standaard van de held (50% 30%) is hier rechts, iets boven: daar staat de spreker op de foto.
