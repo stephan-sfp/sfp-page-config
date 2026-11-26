@@ -1121,6 +1121,13 @@ function sfp_page_config_teksten_register() {
             'en'    => 'request',
             'pt'    => 'solicitar',
         ),
+        'tijd_teken'                  => array(
+            'groep' => 'Formulieren en cursusdata',
+            'label' => 'Teken tussen uur en minuten op de groepskaart',
+            'nl'    => '.',
+            'en'    => ':',
+            'pt'    => ':',
+        ),
         'tijd_uur'                    => array(
             'groep' => 'Formulieren en cursusdata',
             'label' => 'Achter een lestijd',

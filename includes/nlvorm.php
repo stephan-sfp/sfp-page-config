@@ -310,6 +310,48 @@ function sfp_page_config_variant_script() {
 }
 
 /**
+ * Lestijd in de schrijfwijze van de site (3.80.0): "09.00-17.00 uur" in het
+ * Nederlands, "09:00-17:00" in het Engels en Portugees. Het teken tussen uur
+ * en minuten komt uit Teksten (tijd_teken), het achtervoegsel ook (tijd_uur).
+ * Leeg als begin of einde ontbreekt of ongeldig is.
+ *
+ * @param  string $start "HH:MM" of "HH.MM".
+ * @param  string $eind  "HH:MM" of "HH.MM".
+ * @param  string $teken Tussen uur en minuten.
+ * @param  string $uur   Achter de tijd; leeg voor niets.
+ * @return string
+ */
+function sfp_page_config_lestijd_kort( $start, $eind, $teken, $uur ) {
+    $start = sfp_page_config_sanitize_time( $start );
+    $eind  = sfp_page_config_sanitize_time( $eind );
+    if ( '' === $start || '' === $eind ) {
+        return '';
+    }
+    $teken = '' !== (string) $teken ? (string) $teken : ':';
+    $tijd  = str_replace( ':', $teken, $start ) . '-' . str_replace( ':', $teken, $eind );
+    return '' !== trim( (string) $uur ) ? $tijd . ' ' . trim( (string) $uur ) : $tijd;
+}
+
+/**
+ * De regel met de lestijd op een groepskaart of de wachtlijstkaart (3.80.0,
+ * besluit Stephan 26-11-2026). Eerst de lestijd van de groep, anders de
+ * standaardlestijd van de site (Instellingen, Cursusdata), net als het
+ * Course-schema. Zonder lestijd geen regel.
+ *
+ * @param  string $start Begin van de groep, of leeg.
+ * @param  string $eind  Einde van de groep, of leeg.
+ * @return string
+ */
+function sfp_page_config_groep_lestijd_html( $start, $eind ) {
+    if ( '' === (string) $start || '' === (string) $eind ) {
+        $start = (string) sfp_page_config_get_setting( 'cursus_tijd_default_start', '' );
+        $eind  = (string) sfp_page_config_get_setting( 'cursus_tijd_default_eind', '' );
+    }
+    $tijd = sfp_page_config_lestijd_kort( $start, $eind, sfp_page_config_tekst( 'tijd_teken' ), sfp_page_config_tekst( 'tijd_uur' ) );
+    return '' !== $tijd ? '<p class="sfp-groep__meta sfp-groep__tijd">' . esc_html( $tijd ) . '</p>' : '';
+}
+
+/**
  * sfp/groepskaarten.
  *
  * @param  array $attrs Attributen.
@@ -362,6 +404,7 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
             . '<span class="sfp-groep__status sfp-groep__status--wachtlijst">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_status' ) ) . '</span></div>'
             . '<h3>' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_kop' ) ) . '</h3>'
             . '<p class="sfp-groep__zin">' . esc_html( sfp_page_config_tekst( 'groep_wachtlijst_zin' ) ) . '</p>'
+            . sfp_page_config_groep_lestijd_html( '', '' )
             . ( '' !== $info['plaats'] ? '<p class="sfp-groep__meta">' . esc_html( $info['plaats'] ) . '</p>' : '' )
             . $prijs
             . $link
@@ -398,6 +441,7 @@ function sfp_page_config_render_groepskaarten( $attrs ) {
             . '<span class="sfp-groep__status' . ( '' !== $g['status'] ? ' sfp-groep__status--' . esc_attr( $g['status'] ) : '' ) . '">' . esc_html( $statussen[ $g['status'] ] ) . '</span></div>'
             . '<h3>' . esc_html( sfp_page_config_tekst_f( 'groep_start', trim( $eerste['nr'] . ' ' . $eerste['maand'] ) ) ) . '</h3>'
             . '<ul class="sfp-groep__data">' . $rijen . '</ul>'
+            . sfp_page_config_groep_lestijd_html( $g['start'], $g['eind'] )
             . ( '' !== $info['plaats'] ? '<p class="sfp-groep__meta">' . esc_html( $info['plaats'] ) . '</p>' : '' )
             . $prijs
             . ( $vol ? '' : '<a class="sfp-tekstlink" href="#' . esc_attr( $doel ) . '" data-sfp-groep="' . esc_attr( (string) $g['nr'] ) . '">' . esc_html( $v['aan'] ? sfp_page_config_tekst_f( 'groep_inschrijven', $per_var[ (int) $g['dagen'] ] ) : sfp_page_config_tekst_f( 'groep_inschrijven', $g['nr'] ) ) . '</a>' )

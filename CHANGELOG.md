@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.80.0] - 2026-11-26
+
+### Toegevoegd
+- Lestijd op de groepskaart, onder de dagen, in de schrijfwijze van de site: "09.00-17.00 uur" in het Nederlands, "09:00-17:00" in het Engels en Portugees. Eerst de lestijd van de groep uit Cursusdata, anders de standaardlestijd van de site (Instellingen, Cursusdata). Zo kan de losse regel met plaats, tijd en groepsgrootte boven de groepskaarten weg (besluit Stephan 26-11).
+- Ook de wachtlijstkaart toont de standaardlestijd van de site als die is ingevuld, zodat de lestijd niet verdwijnt op trainingen zonder geplande groep.
+- Tekst "Teken tussen uur en minuten op de groepskaart" in Teksten (punt in het Nederlands, dubbele punt in het Engels en Portugees).
+
+### Gewijzigd
+- Een kaart zonder lestijd van de groep en zonder standaardlestijd blijft zoals hij was: geen regel.
+
 ## [3.79.0] - 2026-11-24
 
 ### Gerepareerd
