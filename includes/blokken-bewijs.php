@@ -329,22 +329,30 @@ function sfp_page_config_render_logostrook( $attrs ) {
         $label = sfp_page_config_tekst( 'logostrook_label' );
     }
 
+    // Sinds 3.80.1: alleen de eerste vijf logo's (de plekken die op een
+    // computer direct in beeld staan) laden direct; zij krijgen de klasse
+    // sfp-logostrook__logo--direct, die WP Rocket overslaat. De rest laat
+    // WP Rocket lui laden; het wisselscript laadt het volgende logo kort voor
+    // de wissel. sizes volgt de echte weergavemaat van elk logo (de CSS:
+    // telefoon 75 procent), zodat de browser geen te grote variant kiest.
     $items = '';
+    $n     = 0;
     foreach ( $rijen as $rij ) {
         $id   = $rij['id'];
+        $maat = sfp_page_config_logostrook_maat( $id );
         $attr = array(
-            'class'    => 'sfp-logostrook__logo',
+            'class'    => $n < sfp_page_config_logostrook_direct() ? 'sfp-logostrook__logo sfp-logostrook__logo--direct' : 'sfp-logostrook__logo',
             'loading'  => 'lazy',
             'decoding' => 'async',
-            'sizes'    => '(max-width: 600px) 165px, 220px',
+            'sizes'    => sfp_page_config_logostrook_sizes( $maat ),
         );
         if ( '' !== $rij['alt'] ) {
             $attr['alt'] = $rij['alt'];
         }
         $img = wp_get_attachment_image( $id, 'medium', false, $attr );
         if ( '' !== $img ) {
-            $maat   = sfp_page_config_logostrook_maat( $id );
             $items .= '<li' . ( $maat ? ' style="--sfp-logo-b:' . $maat[0] . 'px;--sfp-logo-h:' . $maat[1] . 'px"' : '' ) . '>' . $img . '</li>';
+            ++$n;
         }
     }
     if ( '' === $items ) {
@@ -366,6 +374,33 @@ function sfp_page_config_render_logostrook( $attrs ) {
         . ( '' !== $label ? '<p class="sfp-logostrook__label">' . esc_html( $label ) . '</p>' : '' )
         . '<ul class="sfp-logostrook__logos" role="list"' . ( count( $ids ) < 5 ? ' style="--sfp-logos-n:' . count( $ids ) . ';--sfp-logos-nt:' . min( 3, count( $ids ) ) . '"' : '' ) . '>' . $items . '</ul>'
         . '</div>';
+}
+
+/**
+ * Aantal logo's dat direct laadt: de plekken die op een computer tegelijk in
+ * beeld staan (CSS: li:nth-child(n+6) verborgen).
+ *
+ * @return int
+ */
+function sfp_page_config_logostrook_direct() {
+    return 5;
+}
+
+/**
+ * sizes voor een logo uit zijn weergavemaat: computer de breedte uit
+ * sfp_page_config_logostrook_maat(), telefoon (tot 600 px) 75 procent
+ * daarvan, zoals in logostrook.css. Zonder maat de grenzen uit de CSS.
+ *
+ * @param  int[]|null $maat Breedte en hoogte in px.
+ * @return string
+ */
+function sfp_page_config_logostrook_sizes( $maat ) {
+    if ( ! $maat || $maat[0] <= 0 ) {
+        return '(max-width: 600px) 165px, 220px';
+    }
+    $b = min( 220, (int) $maat[0] );
+    $t = min( 165, max( 1, (int) round( $maat[0] * 0.75 ) ) );
+    return '(max-width: 600px) ' . $t . 'px, ' . $b . 'px';
 }
 
 /**

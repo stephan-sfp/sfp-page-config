@@ -17,20 +17,25 @@
 		if ( ! img ) {
 			return null;
 		}
-		// Ook als een lazyload-plugin de bron nog in data-lazy-* bewaart.
+		// De lazyload van WP Rocket bewaart de bron in data-lazy-* (3.80.1:
+		// alle logo's buiten de eerste vijf). Eerst sizes, dan srcset, dan
+		// src, zodat de browser meteen de juiste maat kiest. Zonder lazy geldt
+		// sizes="auto" niet: dan de maat per logo die erachter staat.
 		[ el ].concat( Array.prototype.slice.call( el.querySelectorAll( 'source,img' ) ) ).forEach( function ( b ) {
-			[ 'srcset', 'src' ].forEach( function ( a ) {
+			[ 'sizes', 'srcset', 'src' ].forEach( function ( a ) {
 				var w = b.getAttribute( 'data-lazy-' + a );
 				if ( w ) {
 					b.setAttribute( a, w );
 					b.removeAttribute( 'data-lazy-' + a );
 				}
+				if ( 'sizes' === a ) {
+					var z = b.getAttribute( 'sizes' ) || '';
+					if ( /^auto\s*,/.test( z ) ) {
+						b.setAttribute( 'sizes', z.replace( /^auto\s*,\s*/, '' ) );
+					}
+				}
 			} );
 		} );
-		// Zonder lazy geldt sizes="auto" niet; dan de vaste maat.
-		if ( /^auto,?/.test( img.getAttribute( 'sizes' ) || '' ) ) {
-			img.setAttribute( 'sizes', '(max-width: 600px) 165px, 220px' );
-		}
 		img.loading = 'eager';
 		return img;
 	}
@@ -74,7 +79,8 @@
 			}
 			var nieuw = voorraad[ 0 ];
 			var img = laad( nieuw );
-			if ( img && ! img.complete ) {
+			// Pas wisselen als het echte logo binnen is: geen leeg vak.
+			if ( img && ( ! img.complete || ! img.naturalWidth || /^data:/.test( img.currentSrc || img.src ) ) ) {
 				return;
 			}
 			var k;

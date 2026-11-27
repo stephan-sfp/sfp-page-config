@@ -110,7 +110,8 @@ $same( 2, substr_count( $html, '<img ' ), 'Twee logo\'s' );
 $waar( strpos( $html, 'proef-klant-b logo' ) < strpos( $html, 'proef-klant-a logo' ), 'Logo\'s in de gekozen volgorde' );
 $bevat( $html, 'alt="proef-klant-a logo"', 'Alt-tekst uit de mediabibliotheek' );
 $bevat( $html, 'loading="lazy"', 'Logo\'s laden lui' );
-$bevat( $html, '(max-width: 600px) 120px, 150px"', 'Logo\'s met passende maat' );
+$bevat( $html, '(max-width: 600px) 90px, 120px"', 'Logo\'s met passende maat (3.80.1: per logo)' );
+$same( 2, substr_count( $html, 'sfp-logostrook__logo--direct' ), 'Twee logo\'s: beide direct (3.80.1)' );
 $html = sfp_page_config_render_logostrook(
     array(
         'logos' => array( $a ),
