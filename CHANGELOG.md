@@ -4,6 +4,15 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.80.1] - 2026-11-27
+
+### Gerepareerd
+- Logostrook: alleen de eerste vijf logo's (wat op een computer direct in beeld staat) laden bij het openen van de pagina; de andere laden pas vlak voordat ze in beeld wisselen. Tot nu toe haalde de browser alle logo's direct op (tot 87 stuks, 670 tot 850 KB op SFP, DPS en SLB), nog voor de heldfoto. Oorzaak: sinds 3.37.1 sloot de plugin alle logo's uit van de lazyload van WP Rocket, en WP Rocket haalde daarbij ook loading="lazy" van de afbeelding. Nu slaat WP Rocket alleen de eerste vijf over (klasse sfp-logostrook__logo--direct) en laadt hij de rest lui, ook binnen picture van Imagify en bij een losse afbeelding.
+- Logostrook: de browser kiest per logo een bestand dat past bij de werkelijke weergavemaat (sizes per logo, telefoon 75 procent), in plaats van 165 of 220 px voor elk logo. Een staand logo van 36 px hoog laadt geen variant van 768 px meer.
+
+### Gewijzigd
+- Wisselscript van de logostrook: zet ook data-lazy-sizes van WP Rocket om en wisselt pas als het echte logo geladen is, zodat er geen leeg vak verschijnt.
+
 ## [3.80.0] - 2026-11-26
 
 ### Toegevoegd
