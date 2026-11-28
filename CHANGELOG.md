@@ -4,6 +4,16 @@ Alle belangrijke wijzigingen aan SFP Page Config worden in dit bestand bijgehoud
 
 Formaat volgt [Keep a Changelog](https://keepachangelog.com/nl/1.1.0/), versies volgen [semver](https://semver.org/lang/nl/).
 
+## [3.81.0] - 2026-11-28
+
+### Gewijzigd
+- Knoppen en links volgen de nieuwe regel uit branding.md (Knoppen en links): de rol bepaalt de kleur. Commercieel krijgt de accentkleur (Links en knoppen), al het andere de primaire kleur.
+- Secundaire knop (knopstijl Tweede) op een donkere achtergrond: in elke held behalve Wit rand en tekst wit, onder de muis wit gevuld met tekst in de primaire kleur. Tot nu toe bleef hij primair op de donkere held en was hij onleesbaar.
+- Primaire link (pijllink en knopstijl Tekst) staat in de accentkleur, ook onder artikelen en in de promo voor een training of zelftest. Op een donkere held is hij wit.
+- Pijllink in een kaart: een kaart naar een blogpost en de automatische artikelkaart zijn neutraal (primair), elke andere kaart voert de accentkleur. De plugin herkent dat zelf aan het doel van de kaart (nieuwe klasse sfp-kaart--bericht); de netwerkkaarten op Over voeren de accentkleur.
+- Gewone tekstlink van de plugin staat bij alle acht merken in de primaire kleur, niet meer in de linkkleur uit Astra.
+- Onderstreping onder de muis: 3 px in de kleur van de link zelf, niet meer in de accentkleur. Geldt voor alle links van de plugin, op licht en donker.
+
 ## [3.80.1] - 2026-11-27
 
 ### Gerepareerd

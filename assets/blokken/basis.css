@@ -51,14 +51,16 @@
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link{background:transparent;border-color:rgba(255,255,255,.55);color:var(--sfp-b-wit)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-licht .wp-block-button__link:hover{background:transparent;border-color:var(--sfp-b-wit);color:var(--sfp-b-wit)}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link{background:transparent;border-color:var(--sfp-b-primair);color:var(--sfp-b-primair)}
-/* Tweede is de omlijnde knop (3.31.0, besluit 7-11): rand en tekst in primair, bij hover gevuld */
+/* Tweede is de secundaire knop (branding.md, Knoppen en links): rand en tekst in primair, bij hover gevuld */
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tweede .wp-block-button__link:hover{background:var(--sfp-b-primair);border-color:var(--sfp-b-primair);color:var(--sfp-b-wit)}
+/* op donker (3.81.0): in elke held behalve Wit rand en tekst wit, onder de muis wit gevuld met tekst in primair */
+:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tweede .wp-block-button__link{border-color:var(--sfp-b-wit);color:var(--sfp-b-wit)}
+:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tweede .wp-block-button__link:hover{background:var(--sfp-b-wit);border-color:var(--sfp-b-wit);color:var(--sfp-b-primair)}
 /* tekstlink: tweede keus naast een volle knop (branding.md, 3.30.0): het bodyfont op 700, gewone letters, onderstreept, met pijl */
-:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link{background:transparent;border-color:transparent;color:var(--sfp-b-tekstlink);padding-left:0;padding-right:0;font-family:var(--sfp-b-tekst);font-weight:700!important;font-size:16px;text-transform:none;letter-spacing:0;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link{background:transparent;border-color:transparent;color:var(--sfp-b-links);padding-left:0;padding-right:0;font-family:var(--sfp-b-tekst);font-weight:700!important;font-size:16px;text-transform:none;letter-spacing:0;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 :root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link::after{content:"\00a0\2192"}
-:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link:hover{background:transparent;border-color:transparent;color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
-:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link,:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link:hover{color:var(--sfp-b-wit)}
-:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link:hover{text-decoration-color:var(--sfp-b-links)}
+:root :is(.sfp-sectie,.sfp-held) .is-style-sfp-tekst .wp-block-button__link:hover{background:transparent;border-color:transparent;text-decoration-thickness:3px;text-decoration-color:currentColor;text-decoration-skip-ink:none}
+:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-tekst .wp-block-button__link{color:var(--sfp-b-wit)}
 
 /* alinea-stijlen */
 /* kernzin (branding.md, 3.30.0): bodyfont 700, primair, meeschalend onder een kop */
@@ -70,15 +72,19 @@
 @media (max-width:700px){:root .is-style-sfp-niet-telefoon{display:none!important}}
 :root .sfp-sectie .is-style-sfp-intro{font-size:19px;line-height:1.6;max-width:34em}
 .is-style-sfp-pijl{font-family:var(--sfp-b-tekst);font-weight:700;font-size:15px;line-height:1.3;letter-spacing:0}
-.is-style-sfp-pijl a{color:var(--sfp-b-tekstlink);text-decoration:underline;text-underline-offset:4px}
+.is-style-sfp-pijl a{color:var(--sfp-b-links);text-decoration:underline;text-underline-offset:4px}
 .is-style-sfp-pijl a::after{content:" \2192"}
-.is-style-sfp-pijl a:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.is-style-sfp-pijl a:is(:hover,:focus){text-decoration-thickness:3px;text-decoration-color:currentColor}
+/* op donker is elke link wit (3.81.0) */
+:root .sfp-held:not(.sfp-held--wit) .is-style-sfp-pijl a{color:var(--sfp-b-wit)}
 /* Pijllink in een kaart (3.27.1, besluit 5-11-2026): de aanwijzing onder in een klikbare kaart volgt de tweede call-to-action uit branding.md: bodyfont, 700, altijd onderstreept, 3 px onder de muis. Specificiteit (0,3,1), zodat de onderstreping niet van de paginacontext afhangt (Astra's .ast-single-post .entry-content a is (0,2,1)). Buiten een kaart blijft de Pijllink zoals hij was. */
 :root .sfp-kaart .is-style-sfp-pijl{font-family:var(--sfp-b-tekst)}
-:root .sfp-kaart .is-style-sfp-pijl a{color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+:root .sfp-kaart .is-style-sfp-pijl a{color:var(--sfp-b-links);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
 /* 3.36.0 (punt 9): kleur van de tekstlink op een lichte achtergrond (branding.md, Kleur per onderdeel); onder de muis blijft de kleur, de onderstreping wordt 3 px in Links en knoppen */
-:root .sfp-kaart .is-style-sfp-pijl a:is(:hover,:focus),:root .sfp-kaart.sfp-kaart--link:hover .is-style-sfp-pijl a{color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
-:root .sfp-kaart--donker .is-style-sfp-pijl a,:root .sfp-kaart--donker .is-style-sfp-pijl a:is(:hover,:focus){color:var(--sfp-b-wit)}
+:root .sfp-kaart .is-style-sfp-pijl a:is(:hover,:focus),:root .sfp-kaart.sfp-kaart--link:hover .is-style-sfp-pijl a{text-decoration-thickness:3px;text-decoration-color:currentColor}
+/* kaart naar een blogpost (3.81.0): de pijllink is neutraal, elke andere kaart voert de accentkleur */
+:root .sfp-kaart.sfp-kaart--bericht .is-style-sfp-pijl a{color:var(--sfp-b-tekstlink)}
+:root .sfp-kaart.sfp-kaart--donker .is-style-sfp-pijl a{color:var(--sfp-b-wit)}
 /* Label boven een kop (3.24.0), bijvoorbeeld op de boekkaart; doorgestreept (s) voor een oude prijs. */
 .is-style-sfp-label{font-family:var(--sfp-b-kop);font-weight:var(--sfp-kopfont-gewicht,900);font-size:12px;line-height:1.3;letter-spacing:.12em;text-transform:uppercase;color:var(--sfp-b-label)}
 .is-style-sfp-label s{opacity:.55;margin-right:2px}

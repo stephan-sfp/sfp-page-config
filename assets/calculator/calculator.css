@@ -12,7 +12,7 @@
 .sfp-calc [hidden]{display:none!important}
 .sfp-calc p{margin:0}
 .sfp-calc a{color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px}
-.sfp-calc a:hover{text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.sfp-calc a:hover{text-decoration-thickness:3px;text-decoration-color:currentColor}
 .sfp-calc :focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
 .sfp-calc-laden{min-height:460px}
 .sfp-calc--ingebed .sfp-calc-laden{min-height:220px}
@@ -51,11 +51,11 @@
 :root .sfp-calc a.sfp-calc-knop,:root .sfp-calc a.sfp-calc-knop:is(:hover,:focus){text-decoration:none}
 .sfp-calc .sfp-calc-cta2{display:inline;font:700 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:0;margin:0;text-align:left;text-transform:none;letter-spacing:0;min-height:0;box-shadow:none}
 .sfp-calc .sfp-calc-cta2::after{content:" \2192"}
-.sfp-calc .sfp-calc-cta2:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.sfp-calc .sfp-calc-cta2:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:currentColor}
 .sfp-calc .sfp-calc-cta2.klein{font-size:15px}
 .sfp-calc .sfp-calc-terug{font:400 15px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);background:none;border:0;padding:0;margin:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-transform:none;letter-spacing:0;min-height:0;box-shadow:none}
 .sfp-calc .sfp-calc-terug::before{content:"\2190";display:inline-block;margin-right:6px;text-decoration:none}
-.sfp-calc .sfp-calc-terug:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.sfp-calc .sfp-calc-terug:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:currentColor}
 
 /* Velden */
 .sfp-calc-veld{display:flex;flex-direction:column;gap:8px}

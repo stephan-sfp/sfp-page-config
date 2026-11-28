@@ -74,7 +74,7 @@
 :root :is(.sfp-art-kop,.sfp-art-maker) button.sfp-art-kop__check--knop{display:inline-flex;align-items:center;gap:0;font:inherit;font-weight:400;color:var(--sfp-b-primair);background:none;border:0;margin:0;padding:0;min-height:24px;cursor:pointer;text-decoration:none}
 .sfp-art-kop__check--knop>span{text-decoration:underline;text-decoration-color:var(--sfp-b-lijn-sterk);text-decoration-thickness:1px;text-underline-offset:4px}
 :root :is(.sfp-art-kop,.sfp-art-maker) button.sfp-art-kop__check--knop:is(:hover,:focus,:active){color:var(--sfp-b-primair);background:none;text-decoration:none}
-.sfp-art-kop__check--knop:is(:hover,:focus-visible)>span{text-decoration-color:var(--sfp-b-links);text-decoration-thickness:3px}
+.sfp-art-kop__check--knop:is(:hover,:focus-visible)>span{text-decoration-color:currentColor;text-decoration-thickness:3px}
 :root :is(.sfp-art-kop,.sfp-art-maker) .sfp-art-kop__check--knop .sfp-art-kop__pijl{width:14px;height:14px;margin:0 0 0 4px;color:var(--sfp-b-primair);flex:0 0 auto;transition:transform .2s}
 .sfp-art-kop__check--knop[aria-expanded="true"] .sfp-art-kop__pijl{transform:rotate(180deg)}
 .sfp-art-fc{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start}

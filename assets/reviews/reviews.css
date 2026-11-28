@@ -216,7 +216,7 @@
 	border:      none !important;
 	box-shadow:  none !important;
 	text-decoration-thickness: 3px !important;
-	text-decoration-color: var(--sfp-b-links, currentColor) !important;
+	text-decoration-color:currentColor !important;
 }
 
 /* Vermelding van een eigen review (sinds 3.14.0), klein onder de tekst. */

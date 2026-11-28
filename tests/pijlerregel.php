@@ -30,7 +30,7 @@ pr_is( false !== strpos( $a, 'font-weight:900' ), 'link op 900, zoals de regel (
 pr_is( false === strpos( $a, 'display:inline-block' ), 'link blijft inline: de regel verschuift niet' );
 pr_is( false === strpos( $a, 'border-bottom' ), 'geen rand meer die met de opvulling meezakt' );
 pr_is( false !== strpos( $a, 'color:var(--sfp-b-tekstlink)' ) && false !== strpos( $a, 'text-decoration:underline' ), 'gewone tekstlink: kleur tekstlink, onderstreept (3.46.0)' );
-pr_is( false !== strpos( $css, ':root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}' ), 'aanwijzen: onderstreping 3 px in de actiekleur' );
+pr_is( false !== strpos( $css, ':root .sfp-art-pijler a:is(:hover,:focus){color:var(--sfp-b-tekstlink);text-decoration-thickness:3px;text-decoration-color:currentColor}' ), 'aanwijzen: onderstreping 3 px in de kleur van de link (3.81.0)' );
 preg_match( '/:root \\.sfp-art-pijler\{([^}]*)\}/', $css, $r );
 $r = $r[1] ?? '';
 foreach ( array( 'font-family:var(--sfp-b-kop)', 'font-weight:900', 'font-size:12px', 'text-transform:uppercase', 'letter-spacing:.08em', 'color:var(--sfp-b-label)' ) as $eis ) {
