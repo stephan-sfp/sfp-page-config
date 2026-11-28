@@ -12,7 +12,7 @@
 .sfp-zt-wrap{max-width:720px;margin:0 auto}
 .sfp-zt p{margin:0}
 .sfp-zt a{color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px}
-.sfp-zt a:hover{text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.sfp-zt a:hover{text-decoration-thickness:3px;text-decoration-color:currentColor}
 .sfp-zt :focus-visible{outline:3px solid var(--sfp-b-primair);outline-offset:3px}
 .sfp-zt-laden{min-height:420px}
 /* De testtitel is op de testpagina een H1 (3.25.0): geen woordafstand van een algemene H1-regel van thema of site. */
@@ -33,7 +33,7 @@
 .sfp-zt .sfp-zt-knop[aria-busy="true"]{opacity:.7;cursor:progress}
 .sfp-zt .sfp-zt-cta2{display:inline;font:700 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:0;margin:0;text-align:left;text-transform:none;letter-spacing:0;min-height:0;box-shadow:none}
 .sfp-zt .sfp-zt-cta2::after{content:" \2192"}
-.sfp-zt .sfp-zt-cta2:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.sfp-zt .sfp-zt-cta2:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:currentColor}
 .sfp-zt .sfp-zt-cta2.klein{font-size:14px}
 .sfp-zt .sfp-zt-cta2[aria-disabled="true"]{opacity:.5;cursor:default}
 .sfp-zt input[type=text],.sfp-zt input[type=email]{width:100%;font:400 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);background:var(--sfp-b-wit);border:1.5px solid var(--zt-veld);border-radius:var(--sfp-b-r-knop);padding:12px 14px;min-height:50px;margin:0}
@@ -71,7 +71,7 @@
 .sfp-zt .sfp-zt-mob-tijd{margin:14px 0 0;text-align:center;font-size:14px;color:var(--sfp-b-body)}
 .sfp-zt .sfp-zt-mob-ander{align-self:center;margin:18px 0 0;padding:6px 4px;background:none;border:0;box-shadow:none;min-height:0;font:400 16px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);text-transform:none;letter-spacing:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .sfp-zt .sfp-zt-mob-ander::after{content:" \2192";display:inline-block;margin-left:6px;text-decoration:none}
-.sfp-zt .sfp-zt-mob-ander:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.sfp-zt .sfp-zt-mob-ander:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:currentColor}
 @media (max-width:640px){
 .sfp-zt-keuzes.heeft-mob{display:none}
 .sfp-zt-mob{display:flex;flex-direction:column;margin-top:14px}
@@ -99,7 +99,7 @@
 .sfp-zt-vraagvoet .sfp-zt-knop{width:auto;min-width:220px}
 .sfp-zt .sfp-zt-terug{font:400 15px/1.4 var(--sfp-b-tekst);color:var(--sfp-b-primair);background:none;border:0;padding:0;margin:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-transform:none;letter-spacing:0;min-height:0;box-shadow:none}
 .sfp-zt .sfp-zt-terug::before{content:"\2190";display:inline-block;margin-right:6px;text-decoration:none}
-.sfp-zt .sfp-zt-terug:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+.sfp-zt .sfp-zt-terug:hover{background:none;color:var(--sfp-b-primair);text-decoration-thickness:3px;text-decoration-color:currentColor}
 @media (prefers-reduced-motion:reduce){.sfp-zt-voortgang b{transition:none}}
 
 /* Uitleg voor vraag 1 (sinds 3.5.2) */

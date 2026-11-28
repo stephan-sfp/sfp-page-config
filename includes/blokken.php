@@ -826,7 +826,6 @@ function sfp_page_config_blokken_css_variabelen() {
     $primair = isset( $brand['primary'] ) && '' !== $brand['primary'] ? $brand['primary'] : 'var(--ast-global-color-2)';
     $links   = isset( $brand['cta_bg'] ) && '' !== $brand['cta_bg'] ? $brand['cta_bg'] : 'var(--ast-global-color-0)';
     $hover   = isset( $brand['cta_hover'] ) && '' !== $brand['cta_hover'] ? $brand['cta_hover'] : $links;
-    $link    = isset( $brand['link'] ) && '' !== $brand['link'] ? $brand['link'] : $links;
 
     return ':root{'
         . '--sfp-b-primair:var(--sfp-rol-primair,' . $primair . ');'
@@ -836,7 +835,8 @@ function sfp_page_config_blokken_css_variabelen() {
         . '--sfp-b-label:var(--sfp-rol-label,var(--sfp-b-primair));'
         . '--sfp-b-links:var(--sfp-rol-links,' . $links . ');'
         . '--sfp-b-hover:var(--sfp-rol-hover,' . $hover . ');'
-        . '--sfp-b-tekstlink:var(--sfp-rol-tekstlink,' . $link . ');'
+        // Gewone tekstlink (3.81.0, branding.md Knoppen en links): primair bij alle acht.
+        . '--sfp-b-tekstlink:var(--sfp-rol-tekstlink,var(--sfp-b-primair));'
         . '--sfp-b-knoptekst:' . ( isset( $brand['cta_text'] ) && '' !== $brand['cta_text'] ? $brand['cta_text'] : '#fff' ) . ';'
         . '--sfp-b-tint1:var(--sfp-rol-tint-1,var(--sfp-b-tint3));'
         . '--sfp-b-tint2:var(--sfp-rol-tint-2,var(--ast-global-color-8));'
@@ -1412,6 +1412,25 @@ function sfp_page_config_render_kolom( $attrs, $content ) {
 }
 
 /**
+ * Leidt deze link naar een bericht van het type post (een blogpost)?
+ *
+ * Een kaart naar een blogpost is niet commercieel: de pijllink staat dan in
+ * de kleur van een gewone link. Elke andere kaart voert de accentkleur
+ * (branding.md, Kleur per onderdeel, Pijllink in een kaart).
+ *
+ * @param  string $link Doel van de kaart.
+ * @return bool
+ */
+function sfp_page_config_kaart_naar_bericht( $link ) {
+    $link = html_entity_decode( (string) $link, ENT_QUOTES );
+    if ( '' === $link || 0 === strpos( $link, '#' ) ) {
+        return false;
+    }
+    $id = url_to_postid( $link );
+    return $id > 0 && 'post' === get_post_type( $id );
+}
+
+/**
  * sfp/kaart.
  *
  * Met een link wordt de hele kaart klikbaar via een onzichtbare laag;
@@ -1433,6 +1452,8 @@ function sfp_page_config_render_kaart( $attrs, $content, $blok = null ) {
         ! empty( $attrs['smal'] ) ? 'sfp-kaart--smal' : '',
         '' !== $link ? 'sfp-kaart--link' : '',
         $beeld ? 'sfp-kaart--beeld' : '',
+        // Kaart naar een blogpost (3.81.0, branding.md): de pijllink is neutraal.
+        sfp_page_config_kaart_naar_bericht( $link ) ? 'sfp-kaart--bericht' : '',
     );
     $laag    = '' !== $link ? '<a class="sfp-kaart__link" href="' . $link . '" tabindex="-1" aria-hidden="true"></a>' : '';
     $extra   = '';

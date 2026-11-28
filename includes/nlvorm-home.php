@@ -270,7 +270,7 @@ function sfp_page_config_artikel_kaart( WP_Post $post, $uittreksel = false, arra
     $pijl  = ! isset( $opties['pijl'] ) || $opties['pijl'];
     // Zonder pijllink staat de titel zelf als link (voor schermlezers en het toetsenbord).
     $kop = $pijl ? esc_html( $titel ) : '<a href="' . esc_url( $link ) . '">' . esc_html( $titel ) . '</a>';
-    return '<article class="sfp-kaart sfp-kaart--vlak sfp-kaart--beeld sfp-kaart--link sfp-artikel">' . $beeld
+    return '<article class="sfp-kaart sfp-kaart--vlak sfp-kaart--beeld sfp-kaart--link sfp-kaart--bericht sfp-artikel">' . $beeld
         . '<div class="sfp-kaart__tekst">' . ( '' !== $label ? '<p class="is-style-sfp-label">' . esc_html( $label ) . '</p>' : '' )
         . '<h3 class="wp-block-heading">' . $kop . '</h3>' . $tekst
         . ( '' !== $meta ? '<p class="sfp-artikel__meta">' . esc_html( $meta ) . '</p>' : '' )

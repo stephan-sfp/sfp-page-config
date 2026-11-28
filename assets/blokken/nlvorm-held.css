@@ -56,7 +56,7 @@ html:has(.sfp-held--wit,.sfp-held--foto,.sfp-held--gesplitst){scroll-behavior:au
 :root .sfp-held__bewijs strong{color:var(--sfp-b-primair)}
 :root .sfp-held .sfp-held__score{display:inline-flex;align-items:center;gap:8px;color:var(--sfp-b-tekstlink);text-decoration:none!important;padding-right:16px;border-right:1px solid var(--sfp-b-lijn-sterk);margin-right:16px}
 :root .sfp-held__score:last-child{border-right:0;padding-right:0;margin-right:0}
-:root a.sfp-held__score span:last-child{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}:root a.sfp-held__score:is(:hover,:focus) span:last-child{text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links)}
+:root a.sfp-held__score span:last-child{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}:root a.sfp-held__score:is(:hover,:focus) span:last-child{text-decoration-thickness:3px;text-decoration-color:currentColor}
 :root .sfp-held__sterren{color:var(--sfp-b-ster);letter-spacing:1px;font-size:16px}
 :root .sfp-held__deelnemers{display:inline-flex;align-items:center;gap:10px}
 :root .sfp-held__koppen{display:inline-flex}

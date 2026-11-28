@@ -37,7 +37,7 @@
 /* tekstlink buiten een knop (Groepskaarten): het bodyfont op 700, met pijl */
 :root .sfp-tekstlink{font-family:var(--sfp-b-tekst);font-weight:400;font-size:16px;color:var(--sfp-b-tekstlink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-transform:none;letter-spacing:0}
 :root .sfp-tekstlink::after{content:"\00a0\2192"}
-:root .sfp-tekstlink:hover{text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
+:root .sfp-tekstlink:hover{text-decoration-thickness:2px;text-decoration-color:currentColor;text-decoration-skip-ink:none}
 
 /* wachtlijstkaart (3.31.0): geen geplande groep, één kaart zonder datumrijen */
 :root .sfp-kolommen--groepen.sfp-kolommen--een{grid-template-columns:minmax(0,1fr);max-width:calc((100% - 32px)/2)}
@@ -51,7 +51,7 @@
 :root .sfp-groep--klikbaar .sfp-tekstlink::before{content:"";position:absolute;inset:0;z-index:1;border-radius:inherit}
 :root .sfp-groep--klikbaar .sfp-tekstlink:focus-visible{outline:none}
 :root .sfp-groep--klikbaar:has(.sfp-tekstlink:focus-visible){outline:2px solid var(--sfp-b-primair);outline-offset:3px}
-:root .sfp-groep--klikbaar:hover .sfp-tekstlink{text-decoration-thickness:2px;text-decoration-color:var(--sfp-b-links);text-decoration-skip-ink:none}
+:root .sfp-groep--klikbaar:hover .sfp-tekstlink{text-decoration-thickness:2px;text-decoration-color:currentColor;text-decoration-skip-ink:none}
 
 /* Variantkeuze (3.43.0): 1, 2 of 3 dagen boven de groepskaarten; de gekozen variant gevuld in primair */
 :root .sfp-variantkeuze{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;margin:8px 0 24px;border:1px solid var(--sfp-b-lijn-sterk);border-radius:999px;background:var(--sfp-b-wit);justify-self:start}

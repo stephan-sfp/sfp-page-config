@@ -5,7 +5,7 @@
 :root .sfp-verhaal>.sfp-verhaal__tekst{align-content:start}
 :root .sfp-verhaal__lead{font-size:19px;line-height:1.6}
 :root .sfp-verhaal .sfp-verhaal__knop{all:unset;box-sizing:border-box;cursor:pointer;justify-self:start;padding:4px 0;font-family:var(--sfp-b-tekst);font-weight:700;font-size:16px;line-height:1.4;color:var(--sfp-b-tekstlink,var(--sfp-b-primair));text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
-:root .sfp-verhaal .sfp-verhaal__knop:is(:hover,:focus-visible){text-decoration-thickness:3px;text-decoration-color:var(--sfp-b-links,currentColor)}
+:root .sfp-verhaal .sfp-verhaal__knop:is(:hover,:focus-visible){text-decoration-thickness:3px;text-decoration-color:currentColor}
 :root .sfp-verhaal .sfp-verhaal__knop:focus-visible{outline:2px solid var(--sfp-b-primair);outline-offset:3px;border-radius:2px}
 :root .sfp-verhaal__knop span::after{content:"\00a0\2193"}
 :root .sfp-verhaal__knop[aria-expanded=true] span::after{content:"\00a0\2191"}
